@@ -1570,7 +1570,6 @@
     <module>manager</module>
     <module>gateway</module>
     <module>test</module>
-    <module>deployment</module>
   </modules>
 
   <profiles>
@@ -1597,6 +1596,9 @@
     </profile>
     <profile>
       <id>release</id>
+      <modules>
+        <module>deployment</module>
+      </modules>
       <build>
         <plugins>
           <plugin>
