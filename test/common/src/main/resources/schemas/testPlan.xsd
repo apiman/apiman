@@ -47,6 +47,7 @@
         <xsd:attribute name="name" type="xsd:string" use="required" />
         <xsd:attribute name="endpoint" type="xsd:string" use="optional" />
         <xsd:attribute name="delay" type="xsd:integer" use="optional" />
+        <xsd:attribute name="skipStorage" type="xsd:string" use="optional" />
       </xsd:extension>
     </xsd:simpleContent>
   </xsd:complexType>

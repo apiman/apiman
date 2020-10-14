@@ -1,0 +1,34 @@
+POST /developers admin/admin
+Content-Type: application/json
+
+{
+   "id": "developer1",
+   "clients":[
+      {
+         "clientId":"Client1",
+         "organizationId":"Organization1"
+      },
+      {
+         "clientId":"ClientB",
+         "organizationId":"Test"
+      }
+   ]
+}
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-developer1-id: id
+
+{
+    "id": "${developer1-id}",
+    "clients": [
+        {
+            "clientId": "Client1",
+            "organizationId": "Organization1"
+        },
+        {
+            "clientId": "ClientB",
+            "organizationId": "Test"
+        }
+    ]
+}

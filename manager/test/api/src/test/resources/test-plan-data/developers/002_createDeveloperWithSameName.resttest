@@ -1,0 +1,15 @@
+POST /developers admin/admin
+Content-Type: application/json
+
+{
+   "id": "developer1"
+}
+----
+409
+Content-Type: application/json
+
+{
+    "type": "DeveloperAlreadyExistsException",
+    "errorCode": 16002,
+    "message" : "!!DeveloperAlreadyExists!!"
+}

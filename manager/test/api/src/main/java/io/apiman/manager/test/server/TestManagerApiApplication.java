@@ -15,13 +15,12 @@
  */
 package io.apiman.manager.test.server;
 
-import io.apiman.manager.api.rest.impl.*;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
-
-import java.util.HashSet;
-import java.util.Set;
+import io.apiman.manager.api.rest.impl.*;
 
 import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * JAX-RS {@link Application} used for testing.
@@ -47,6 +46,7 @@ public class TestManagerApiApplication extends ApiManagerApplication {
         classes.add(PluginResourceImpl.class);
         classes.add(ActionResourceImpl.class);
         classes.add(DownloadResourceImpl.class);
+        classes.add(DeveloperResourceImpl.class);
         classes.add(RestExceptionMapper.class);
     }
 

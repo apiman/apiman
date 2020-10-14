@@ -15,12 +15,20 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -31,23 +39,15 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.exportimport.GlobalElementsEnum;
 import io.apiman.manager.api.exportimport.OrgElementsEnum;
-import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 /**
  * Stream global elements
@@ -175,6 +175,29 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         validityCheckEnd(GlobalElementsEnum.PolicyDefinitions);
         writeEndArray(GlobalElementsEnum.PolicyDefinitions);
         unlock(GlobalElementsEnum.PolicyDefinitions);
+        return this;
+    }
+
+    @Override
+    public IExportWriter startDevelopers() {
+        validityCheckStart(GlobalElementsEnum.Developers);
+        lock(GlobalElementsEnum.Developers);
+        writeStartArray(GlobalElementsEnum.Developers);
+        return this;
+    }
+
+    @Override
+    public IExportWriter writeDeveloper(DeveloperBean bean) {
+        writeCheck(GlobalElementsEnum.Developers);
+        writePojo(bean);
+        return this;
+    }
+
+    @Override
+    public IExportWriter endDevelopers() {
+        validityCheckEnd(GlobalElementsEnum.Developers);
+        writeEndArray(GlobalElementsEnum.Developers);
+        unlock(GlobalElementsEnum.Developers);
         return this;
     }
 

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <!--Most tests are copied from test-plans/all-testPlan.xml and test-plans/public-api-testPlan.xml-->
+  <testGroup name="Create Entities">
+    <test name="Create Gateway" skipStorage="jpa">test-plan-data/all/creates/000_create-gateway.resttest</test>
+    <test name="Create Organization" skipStorage="jpa">test-plan-data/all/creates/001_create_org.resttest</test>
+    <test name="Create Plan" skipStorage="jpa">test-plan-data/all/creates/002_create-plan1.resttest</test>
+    <test name="Create Plan Version" skipStorage="jpa">test-plan-data/all/creates/003_create-plan1-version-1.0.resttest</test>
+    <test name="Lock Plan" skipStorage="jpa">test-plan-data/all/publish/003_lock-plan-1.resttest</test>
+    <test name="Create Client" skipStorage="jpa">test-plan-data/all/creates/004_create-client1.resttest</test>
+    <test name="Create Client Version" skipStorage="jpa">test-plan-data/all/creates/005_create-client1-version-1.0.resttest</test>
+    <test name="Create API" skipStorage="jpa">test-plan-data/all/creates/006_create-api1.resttest</test>
+    <test name="Create API Version" skipStorage="jpa">test-plan-data/public-api/003_create-api-version.resttest</test>
+    <test name="Update API Version" skipStorage="jpa">test-plan-data/all/creates/007.5_update-api1-version-1.0.resttest</test>
+    <test name="Add API Definition" skipStorage="jpa">test-plan-data/developers/definitions/001_add-api-definition.resttest</test>
+    <test name="Publish API" skipStorage="jpa">test-plan-data/all/publish/001_publish-api-1.resttest</test>
+    <test name="Create Contract" skipStorage="jpa">test-plan-data/all/creates/008_create-contract1.resttest</test>
+    <test name="Register Client" skipStorage="jpa">test-plan-data/all/publish/002_register-client-1.resttest</test>
+  </testGroup>
+
+  <!--jpa is not implemented so we skip the tests always-->
+  <testGroup name="Developers">
+    <test name="Create Developer" skipStorage="jpa">test-plan-data/developers/001_createDeveloper.resttest</test>
+    <test name="Create Developer with same name" skipStorage="jpa">test-plan-data/developers/002_createDeveloperWithSameName.resttest</test>
+    <test name="Get Developer" skipStorage="jpa">test-plan-data/developers/003_getDeveloper.resttest</test>
+    <test name="Create Second Developer" skipStorage="jpa">test-plan-data/developers/004_createSecondDeveloper.resttest</test>
+    <test name="Get All Developers" skipStorage="jpa">test-plan-data/developers/005_getAllDevelopers.resttest</test>
+    <test name="Get All Matching Clients" skipStorage="jpa">test-plan-data/developers/006_getAllMatchingClientVersions.resttest</test>
+    <test name="Get All Matching Contracts" skipStorage="jpa">test-plan-data/developers/007_getAllMatchingContracts.resttest</test>
+    <test name="Get All Matching API Versions" skipStorage="jpa">test-plan-data/developers/008_getAllMatchingApiVersions.resttest</test>
+    <test name="Get API Definition" skipStorage="jpa">test-plan-data/developers/definitions/002_get-api-definition.resttest</test>
+    <test name="Delete Developer" skipStorage="jpa">test-plan-data/developers/009_deleteDeveloper.resttest</test>
+    <test name="Update Second Developer" skipStorage="jpa">test-plan-data/developers/010_updateSecondDeveloper.resttest</test>
+    <test name="Get Second Developer" skipStorage="jpa">test-plan-data/developers/011_getUpdatedSecondDeveloper.resttest</test>
+    <test name="Get All Public API Versions" skipStorage="jpa">test-plan-data/developers/012_getAllPublicApiVersions.resttest</test>
+    <test name="Get not authorized" skipStorage="jpa">test-plan-data/developers/013_getNotAuthorized.resttest</test>
+  </testGroup>
+
+  <!--  Test exceptions and try to get data from already deleted/non-existent developer-->
+  <testGroup name="Already Deleted">
+    <test name="Get non-existent Developer" skipStorage="jpa">test-plan-data/developers/alreadyDeleted/001_getAlreadyDeleted.resttest</test>
+    <test name="Get All Matching Clients" skipStorage="jpa">test-plan-data/developers/alreadyDeleted/002_getAllMatchingClientVersions.resttest</test>
+    <test name="Get All Matching Contracts" skipStorage="jpa">test-plan-data/developers/alreadyDeleted/003_getAllMatchingContracts.resttest</test>
+    <test name="Get All Matching API Versions" skipStorage="jpa">test-plan-data/developers/alreadyDeleted/004_getAllMatchingApiVersions.resttest</test>
+  </testGroup>
+
+  <testGroup name="Public Api Definitions">
+    <test name="Create API" skipStorage="jpa">test-plan-data/developers/publicApiDefinitions/001_create-api2.resttest</test>
+    <test name="Add Public API Version" skipStorage="jpa">test-plan-data/developers/publicApiDefinitions/002_create-public-api-version.resttest</test>
+    <test name="Add Public API Definition" skipStorage="jpa">test-plan-data/developers/publicApiDefinitions/003_add-public-api-definition.resttest</test>
+    <test name="Get Public API Definition" skipStorage="jpa">test-plan-data/developers/publicApiDefinitions/004_get-public-api-definition.resttest</test>
+    <test name="Add Private API Version" skipStorage="jpa">test-plan-data/developers/publicApiDefinitions/005_create-private-api-version.resttest</test>
+    <test name="Add Private API Definition" skipStorage="jpa">test-plan-data/developers/publicApiDefinitions/006_add-private-api-definition.resttest</test>
+    <test name="Get Private API Definition - access denied" skipStorage="jpa">test-plan-data/developers/publicApiDefinitions/007_get-private-api-definition-access-denied.resttest</test>
+  </testGroup>
+
+</testPlan>

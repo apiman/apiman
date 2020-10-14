@@ -1787,7 +1787,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
-    private ApiVersionBean getApiVersionFromStorage(String organizationId, String apiId, String version) throws StorageException {
+    protected ApiVersionBean getApiVersionFromStorage(String organizationId, String apiId, String version) throws StorageException {
         ApiVersionBean apiVersion = storage.getApiVersion(organizationId, apiId, version);
         if (apiVersion == null) {
             throw ExceptionFactory.apiVersionNotFoundException(apiId, version);

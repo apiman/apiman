@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
-  xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-  version="2.5">
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
 
   <!-- Locale Filter -->
   <filter>
@@ -33,16 +33,6 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <!-- Security Context Filter -->
-  <filter>
-    <filter-name>SecurityContext</filter-name>
-    <filter-class>io.apiman.manager.api.security.impl.DefaultSecurityContextFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>SecurityContext</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
   <!-- Transaction Watchdog -->
   <filter>
     <filter-name>TransactionWatchdog</filter-name>
@@ -50,6 +40,16 @@
   </filter>
   <filter-mapping>
     <filter-name>TransactionWatchdog</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- Security Context Filter -->
+  <filter>
+    <filter-name>SecurityContext</filter-name>
+    <filter-class>io.apiman.manager.api.security.impl.DefaultSecurityContextFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>SecurityContext</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
@@ -156,12 +156,40 @@
       <role-name>apiuser</role-name>
     </auth-constraint>
   </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/gateways/*</url-pattern>
+      <http-method>GET</http-method>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/developers/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+      <http-method>HEAD</http-method>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/search/clients></url-pattern>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>devportaluser</role-name>
+    </auth-constraint>
+  </security-constraint>
   <login-config>
+    <!-- The realm-name has nothing to do with the keycloak realm, it is the name of the realm if you are using tomcats/wildflys own auth -->
     <auth-method>BASIC</auth-method>
     <realm-name>${env.APIMAN_AUTH_REALM:apiman}</realm-name>
   </login-config>
   <security-role>
     <role-name>apiuser</role-name>
+  </security-role>
+  <security-role>
+    <role-name>devportaluser</role-name>
   </security-role>
 
 </web-app>

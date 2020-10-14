@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Scheer PAS Schweiz AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.apiman.common.es.util;
 
 import java.util.HashMap;
@@ -162,6 +178,9 @@ public class EsIndexMapping {
                     addKeywordTypeToIndexField(EsConstants.ES_FIELD_ORGANIZATION_ID, indexFieldProperties);
                     // date types
                     addDateTypeToIndexField(EsConstants.ES_FIELD_CREATED_ON, indexFieldProperties);
+                    break;
+                case EsConstants.INDEX_MANAGER_POSTFIX_DEVELOPER:
+                    addKeywordTypeToIndexField(EsConstants.ES_FIELD_ID, indexFieldProperties);
                     break;
                 case EsConstants.INDEX_MANAGER_POSTFIX_METADATA:
                     addDateTypeToIndexField(EsConstants.ES_FIELD_EXPORTED_ON, indexFieldProperties);

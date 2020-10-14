@@ -21,14 +21,13 @@ import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.swagger.jaxrs.config.BeanConfig;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -52,7 +51,7 @@ public class ApiManagerApplication extends Application {
         //add swagger 2.0 config
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion(new Version().getVersionString());
-        beanConfig.setBasePath("/apiman"); //$NON-NLS-1$
+        beanConfig.setBasePath(getBasePath()); //$NON-NLS-1$
         beanConfig.setResourcePackage("io.apiman.manager.api.rest"); //$NON-NLS-1$
         beanConfig.setTitle("API Manager REST API");
         beanConfig.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs.");
@@ -68,6 +67,7 @@ public class ApiManagerApplication extends Application {
         classes.add(PluginResourceImpl.class);
         classes.add(ActionResourceImpl.class);
         classes.add(DownloadResourceImpl.class);
+        classes.add(DeveloperResourceImpl.class);
 
         //add swagger 2.0 resource
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
@@ -86,5 +86,11 @@ public class ApiManagerApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         return classes;
+    }
+
+    private String getBasePath() {
+        String basePath = "/apiman";
+        String prefix = System.getenv("SYSTEM_PREFIX");
+        return prefix == null ? basePath : prefix.trim().toLowerCase() + basePath;
     }
 }

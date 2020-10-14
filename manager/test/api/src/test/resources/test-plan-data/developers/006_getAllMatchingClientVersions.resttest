@@ -1,0 +1,14 @@
+GET /developers/${developer1-id}/clients admin/admin
+----
+200
+Content-Type: application/json
+
+[{
+	"organizationId": "Organization1",
+	"organizationName": "Organization 1",
+	"name": "Client 1",
+	"description": "This is the description of Client 1.",
+	"status": "Registered",
+	"version": "1.0",
+	"apiKey": "*"
+}]

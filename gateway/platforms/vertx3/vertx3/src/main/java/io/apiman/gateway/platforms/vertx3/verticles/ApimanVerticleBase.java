@@ -24,6 +24,8 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.UUID;
 /**
  * Standard base for all apiman verticles.
@@ -36,11 +38,13 @@ public abstract class ApimanVerticleBase extends AbstractVerticle {
     protected VertxEngineConfig apimanConfig;
     protected String uuid = SimpleStringUtils.join(".", UUID.randomUUID().toString(), verticleType().name());
     protected Logger log = LoggerFactory.getLogger(this.getClass());
+    protected HashSet<String> allowedCorsOrigins = new HashSet<>();
 
     @Override
     public void start(Future<Void> startFuture) {
         apimanConfig = getEngineConfig();
         log.info("Starting verticle: {0}. UUID: {1}.", verticleType(), uuid);
+        setAllowedCorsOrigins();
     }
 
     /**
@@ -80,6 +84,16 @@ public abstract class ApimanVerticleBase extends AbstractVerticle {
             for (String protocol : allowedProtocols) {
                 httpsServerOptions.addEnabledSecureTransportProtocol(protocol);
             }
+        }
+    }
+
+    /**
+     * Read system property and set allowed CORS Headers
+     */
+    private void setAllowedCorsOrigins() {
+        String corsOrigins = System.getProperty("allowed_cors_origins");
+        if (corsOrigins != null) {
+            allowedCorsOrigins = new HashSet<>(Arrays.asList(corsOrigins.trim().split(",")));
         }
     }
 }
