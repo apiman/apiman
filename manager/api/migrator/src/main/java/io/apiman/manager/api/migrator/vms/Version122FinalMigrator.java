@@ -16,13 +16,12 @@
 
 package io.apiman.manager.api.migrator.vms;
 
-import io.apiman.manager.api.core.IApiKeyGenerator;
-import io.apiman.manager.api.core.UuidApiKeyGenerator;
-import io.apiman.manager.api.migrator.IVersionMigrator;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.apiman.manager.api.core.IApiKeyGenerator;
+import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.migrator.IVersionMigrator;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -108,5 +107,12 @@ public class Version122FinalMigrator implements IVersionMigrator {
             }
         }
         
+    }
+
+    /**
+     * @see io.apiman.manager.api.migrator.IVersionMigrator#migrateDeveloper(ObjectNode)
+     */
+    @Override
+    public void migrateDeveloper(ObjectNode node) {
     }
 }

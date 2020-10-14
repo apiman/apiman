@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <!--  This is the same test plan as the import-testPlan.xml but with developers.-->
+  <!--  Developers are not implemented in JPA so we need additional tests for ES.-->
+  <!--  If JPA is implemented this tests should be moved back to the original test.-->
+
+  <testGroup name="Importing">
+    <test name="Import Data with Developer" skipStorage="jpa">test-plan-data/import/003_import-with-developer.resttest</test>
+  </testGroup>
+
+</testPlan>

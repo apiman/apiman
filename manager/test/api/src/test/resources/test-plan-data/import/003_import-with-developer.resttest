@@ -1,0 +1,41 @@
+POST /system/import admin/admin
+Content-Type: application/json
+
+{
+	"Metadata": {
+		"exportedOn": "2020-04-21T12:13:00Z",
+		"apimanVersion": "7.7.0"
+	},
+	"Developers": [{
+		"id": "Developer1",
+		"clients": [{
+			"clientId": "ClientB",
+			"organizationId": "Test"
+		}, {
+			"clientId": "Client1",
+			"organizationId": "Organization1"
+		}]
+	}, {
+		"id": "Developer2",
+		"clients": [{
+			"clientId": "ClientA",
+			"organizationId": "Test"
+		}, {
+			"clientId": "ClientB",
+			"organizationId": "Test"
+		}]
+	}]
+}
+----
+200
+Content-Type: text/plain;charset=utf-8
+
+INFO: ----------------------------
+INFO: Starting apiman data import.
+INFO: Importing a developer: Developer1
+INFO: Importing a developer: Developer2
+INFO: Publishing APIs to the gateway.
+INFO: Registering clients in the gateway.
+INFO: -----------------------------------
+INFO: Data import completed successfully!
+INFO: -----------------------------------

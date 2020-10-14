@@ -18,7 +18,7 @@ package io.apiman.manager.api.rest.exceptions;
 
 /**
  * Thrown when attempting to delete an org, but it still has active sub-elements
- * (such as still published APIs or Client Apps).
+ * (such as still published APIs or Clients).
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */

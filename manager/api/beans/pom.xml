@@ -66,6 +66,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <Export-Package>io.apiman.manager.api.beans.*</Export-Package>
             <Import-Package>org.hibernate.proxy,javassist.util.proxy,!org.jboss.errai.common.client.api.annotations,*</Import-Package>
           </instructions>
         </configuration>

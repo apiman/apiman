@@ -73,6 +73,7 @@ public class EsConstants {
     public static final String INDEX_MANAGER_POSTFIX_CLIENT_VERSION = "clientversion";
     public static final String INDEX_MANAGER_POSTFIX_CLIENT_POLICIES = "clientpolicies";
     public static final String INDEX_MANAGER_POSTFIX_CONTRACT = "contract";
+    public static final String INDEX_MANAGER_POSTFIX_DEVELOPER = "developer";
     public static final String INDEX_MANAGER_POSTFIX_METADATA = "metadata";
 
 
@@ -97,6 +98,7 @@ public class EsConstants {
             INDEX_MANAGER_POSTFIX_CLIENT_VERSION,
             INDEX_MANAGER_POSTFIX_CLIENT_POLICIES,
             INDEX_MANAGER_POSTFIX_CONTRACT,
+            INDEX_MANAGER_POSTFIX_DEVELOPER,
             INDEX_MANAGER_POSTFIX_METADATA
     };
 

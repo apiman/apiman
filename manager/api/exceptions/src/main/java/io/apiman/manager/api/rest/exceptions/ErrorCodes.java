@@ -205,4 +205,13 @@ public final class ErrorCodes {
     public static final int DOWNLOAD_NOT_FOUND                   = 15001;
 
     public static final String DOWNLOAD_NOT_FOUND_INFO           = null;
+
+    //
+    // Devportal related
+    //
+    public static final int DEVELOPER_NOT_FOUND                 = 16001;
+    public static final int DEVELOPER_ALREADY_EXISTS            = 16002;
+
+    public static final String DEVELOPER_NOT_FOUND_INFO         = null;
+    public static final String DEVELOPER_ALREADY_EXISTS_INFO    = null;
 }

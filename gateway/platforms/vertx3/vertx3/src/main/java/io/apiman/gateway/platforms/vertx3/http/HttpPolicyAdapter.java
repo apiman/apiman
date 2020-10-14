@@ -15,12 +15,7 @@
  */
 package io.apiman.gateway.platforms.vertx3.http;
 
-import io.apiman.gateway.engine.IApiClientResponse;
-import io.apiman.gateway.engine.IApiRequestExecutor;
-import io.apiman.gateway.engine.IEngine;
-import io.apiman.gateway.engine.IEngineResult;
-import io.apiman.gateway.engine.IPolicyErrorWriter;
-import io.apiman.gateway.engine.IPolicyFailureWriter;
+import io.apiman.gateway.engine.*;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
@@ -30,6 +25,8 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+
+import java.util.HashSet;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -42,18 +39,21 @@ public class HttpPolicyAdapter {
     private final IEngine engine;
     private final Logger log = LoggerFactory.getLogger(HttpPolicyAdapter.class);
     private final boolean isTls;
+    private HashSet<String> allowedCorsOrigins;
 
     public HttpPolicyAdapter(HttpServerRequest req,
                       IPolicyFailureWriter policyFailureWriter,
                       IPolicyErrorWriter policyErrorWriter,
                       IEngine engine,
-                      boolean isTls) {
+                      boolean isTls,
+                      HashSet<String> allowedCorsOrigins) {
         this.vertxRequest = req;
         this.policyFailureWriter = policyFailureWriter;
         this.policyErrorWriter = policyErrorWriter;
         this.engine = engine;
         this.isTls = isTls;
         this.vertxResponse = req.response();
+        this.allowedCorsOrigins = allowedCorsOrigins;
     }
 
     public void execute() {
@@ -116,6 +116,9 @@ public class HttpPolicyAdapter {
         // Everything worked
         if (engineResult.isResponse()) {
             ApiResponse response = engineResult.getApiResponse();
+
+            setCorsHeadersForSwaggerUi(request, response);
+
             HttpApiFactory.buildResponse(vertxResponse, response, vertxRequest.version());
 
             if (!response.getHeaders().containsKey("Content-Length")) { //$NON-NLS-1$
@@ -131,6 +134,79 @@ public class HttpPolicyAdapter {
             log.debug(String.format("Failed with policy failure (denial): %s", engineResult.getPolicyFailure())); //$NON-NLS-1$
             handlePolicyFailure(request, engineResult.getPolicyFailure(), vertxResponse);
         }
+    }
+
+    /**
+     * Set correct CORS headers in the response for SwaggerUis
+     * @param request the ApiRequest
+     * @param response the ApiResponse
+     * @llink  @see io.apiman.common.servlet.ApimanCorsFilter
+     */
+    private void setCorsHeadersForSwaggerUi(ApiRequest request, ApiResponse response) {
+        if (hasOriginHeader(request) && originIsAllowed(request)) {
+            // check if response already contains CORS Headers - we don't overwrite existing CORS Headers from API or CORS Policy
+            if (hasNoCorsAccessControlAllowOrigin(response)) {
+                // Check if the request from the UI is a preflight request
+                if (isPreflightRequest(request)) {
+                    response.getHeaders().clear();
+                    // we allow all requested methods and headers
+                    response.getHeaders().add("Access-Control-Allow-Origin", request.getHeaders().get("Origin"));
+                    response.getHeaders().add("Access-Control-Allow-Credentials", "true");
+                    response.getHeaders().add("Access-Control-Max-Age", "1800");
+                    response.getHeaders().add("Access-Control-Allow-Methods", request.getHeaders().get("Access-Control-Request-Method"));
+                    response.getHeaders().add("Access-Control-Allow-Headers", request.getHeaders().get("Access-Control-Request-Headers"));
+                    response.setCode(200);
+                    response.setMessage("OK");
+                } else {
+                    response.getHeaders().add("Access-Control-Allow-Origin", request.getHeaders().get("Origin"));
+                    response.getHeaders().add("Access-Control-Allow-Credentials", "true");
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if the origin of the request is in the list of allows cors origins.
+     *
+     * @param request the ApiRequest
+     * @return true if the origin is allowed, else false
+     */
+    private boolean originIsAllowed(ApiRequest request) {
+        String origin = request.getHeaders().get("Origin").trim();
+        return allowedCorsOrigins.contains(origin);
+    }
+
+    /**
+     * Returns true if the Access-Control-Allow-Origin is not present.
+     *
+     * @param response the ApiResponse
+     * @return true if has no Access-Control-Allow-Origin header, else false
+     */
+    private boolean hasNoCorsAccessControlAllowOrigin(ApiResponse response) {
+        return !response.getHeaders().containsKey("Access-Control-Allow-Origin");
+    }
+
+    /**
+     * Determines whether the request is a CORS preflight request.
+     *
+     * @param request the ApiRequest
+     * @return true if preflight, else false
+     * @link io.apiman.common.servlet.ApimanCorsFilter#isPreflightRequest
+     */
+    private boolean isPreflightRequest(ApiRequest request) {
+        return request.getType().equals("OPTIONS") && hasOriginHeader(request);
+    }
+
+    /**
+     * Returns true if the Origin request header is present.
+     *
+     * @param request the ApiRequest
+     * @return true if has origin header, else false
+     * @link io.apiman.common.servlet.ApimanCorsFilter#hasOriginHeader
+     */
+    private boolean hasOriginHeader(ApiRequest request){
+        String origin = request.getHeaders().get("Origin");
+        return origin != null && origin.trim().length() > 0;
     }
 
     private void handleError(ApiRequest apimanRequest, Throwable error, HttpServerResponse vertxResponse) {

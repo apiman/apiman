@@ -15,16 +15,12 @@
  */
 package io.apiman.common.servlet;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * A simple CORS filter for apiman.
@@ -33,10 +29,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ApimanCorsFilter implements Filter {
 
+    private HashSet<String> allowedCorsOrigins = new HashSet<>();
+
     /**
      * Constructor.
      */
     public ApimanCorsFilter() {
+        String corsOrigins = System.getProperty("allowed_cors_origins");
+        if (corsOrigins != null) {
+            allowedCorsOrigins = new HashSet<>(Arrays.asList(corsOrigins.trim().split(",")));
+        }
     }
 
     /**
@@ -74,6 +76,17 @@ public class ApimanCorsFilter implements Filter {
             }
             chain.doFilter(httpReq, httpResp);
         }
+    }
+
+    /**
+     * Check if the origin of the request is in the list of allows cors origins.
+     *
+     * @param httpReq the http servlet request
+     * @return true if the origin is allowed, else false
+     */
+    private boolean originIsAllowed(HttpServletRequest httpReq) {
+        String origin = httpReq.getHeader("Origin").trim();
+        return allowedCorsOrigins.contains(origin);
     }
 
     /**

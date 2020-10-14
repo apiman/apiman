@@ -54,7 +54,7 @@ import java.util.*;
 @Named("ApimanLogFactory")
 public class TestCdiFactory {
 
-    private static final int JEST_TIMEOUT = 6000;
+    private static final int JEST_TIMEOUT = -1;
 
     @Produces @ApplicationScoped
     public static ISecurityContext provideSecurityContext(@New DefaultSecurityContext defaultSC) {

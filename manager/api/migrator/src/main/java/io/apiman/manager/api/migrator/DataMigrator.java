@@ -16,21 +16,19 @@
 
 package io.apiman.manager.api.migrator;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.impl.SystemOutLogger;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.migrator.i18n.Messages;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Used to migrate exported data from an older version of apiman to the 
@@ -212,6 +210,18 @@ public class DataMigrator implements IReaderHandler {
             chain.migrateOrg(node);
         }
         writer.writeOrg(node);
+    }
+
+    /**
+     * @see io.apiman.manager.api.migrator.IReaderHandler#onDeveloper(ObjectNode)
+     */
+    @Override
+    public void onDeveloper(ObjectNode node) throws IOException {
+        if (chain.hasMigrators()) {
+            logger.info(Messages.i18n.format("DataMigrator.MigratingDeveloper", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            chain.migrateDeveloper(node);
+        }
+        writer.writeDeveloper(node);
     }
 
     /**
