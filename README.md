@@ -1,4 +1,5 @@
 # Apiman - Developer Portal
+
 A developer portal for Apiman!
 Allow developers to access your APIs. Developers can view and test your APIs to develop their own apps.
 
@@ -12,6 +13,7 @@ Try out the api:
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli).
 
 ### Note before setup (current restrictions)
+
 The developer portal currently works only with an apiman setup including keycloak as user management, elasticsearch as database for the apiman management ui and vert.x as gateway server.
 Pull requests are welcome :-)
 
@@ -51,20 +53,24 @@ At any time, you can pull changes from the upstream and merge them onto your mai
 
 The general idea is to keep your 'main' branch in-sync with the 'upstream/main'.
 
+
+## Running the Developer Portal as docker container
+
 ### Build docker image locally
 
 To build the docker image locally you have to run the following command or use Intellij run configurations:
 
 `docker build -t apiman-devportal:latest .`
 
-## Running the Developer Portal as docker container
+### Start with docker-compose
+
 You can start the docker container with
 `docker-compose up`
 
 This command uses the existing [docker-compose.yml file](docker-compose.yml) with configured container environment variables.
 You may need to change these environment variables for your production setup. See configuration in the next chapter.
 
-## Docker container environment variables
+### Docker container environment variables
 
 To ensure that the developer portal docker container can start correctly you have to configure some environment variables.
 
@@ -75,10 +81,17 @@ To ensure that the developer portal docker container can start correctly you hav
 | KEYCLOAK_REALM       | apiman                        | the realm name for your apiman installation configured in keycloak        |
 
 ### Technical background:
+
 On container start the script [start-nginx-with-devportal.sh](docker/start-nginx-with-devportal.sh) uses the environment variable values to configure the angular app environment settings for your apiman installation.
 You can find these angular app settings in [environment.prod.ts](/src/environments/environment.prod.ts).
 
 The idea behind this mechanism is from this nice [blog entry](https://blog.codecentric.de/en/2019/03/docker-angular-dockerize-app-easily/).
+
+## Further Documentation
+
+For more information please check out our [documentation](https://doc.scheer-pas.com/display/APIMGMNT/Developer+Portal).
+
+Please open a new [github issue](https://github.com/apiman/apiman-developer-portal/issues) for documentation changes.
 
 ## Modifications for local development on the angular app
 
@@ -134,7 +147,8 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 The configuration file for the tests can be found in the [karma.conf.js](karma.conf.js) file. Here you can make settings about the used browsers or used junit reporter for example.
 Currently we support only Chromium for running the tests. So you may have to install it or configure another browser in the [karma.conf.js](karma.conf.js).
 
-## Writing new unit tests
+### Writing new unit tests
+
 Each angular component delivers a [filename].spec.ts file in which you can write your test.
 Some existing unit tests can be found in [create-developer.component.spec.ts](/src/app/components/admin/create-developer/create-developer.component.spec.ts).
 
@@ -158,10 +172,6 @@ More information can you find in the Angular Guide in chapter [Testing](https://
 ## Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
 ## Looking for support?
 
