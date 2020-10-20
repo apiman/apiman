@@ -14,10 +14,10 @@
   ~ limitations under the License.
   -->
 
-<h1 *ngIf="developer">Edit Developer&#58; {{developer.id}}</h1>
+<h1 *ngIf="developer">Edit Developer</h1>
 
 <div class="wrapper">
-  <h3>Update Client-Mapping</h3>
+  <h3>Update Client Mapping of {{developer.id}}</h3>
   <app-client-mapping #clientmapping [assignedClients]="assignedClients"></app-client-mapping>
   <p>
     <button (click)="updateDeveloper()">Update</button>
