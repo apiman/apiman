@@ -23,7 +23,7 @@
 
   <!-- Client Mapping Column -->
   <ng-container matColumnDef="clients">
-    <th mat-header-cell *matHeaderCellDef>Client-Mapping</th>
+    <th mat-header-cell *matHeaderCellDef>Client Mapping</th>
     <td mat-cell *matCellDef="let element">
       <ul>
         <li *ngFor="let client of element.clients">{{client.organizationId}} / {{client.clientId}}</li>
@@ -36,7 +36,7 @@
     <th mat-header-cell *matHeaderCellDef>Options</th>
     <td mat-cell *matCellDef="let element">
       <mat-icon [routerLink]="['/admin/edit/developer', element.id]" matTooltip="Edit Client-Mapping for this user">edit</mat-icon>
-      <mat-icon (click)="deleteDeveloper(element)" matTooltip="Delete Client-Mapping for this user">delete</mat-icon>
+      <mat-icon (click)="deleteDeveloper(element)" matTooltip="Delete Client Mapping for this user">delete</mat-icon>
     </td>
   </ng-container>
 
