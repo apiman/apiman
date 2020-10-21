@@ -31,8 +31,6 @@ jobs:
         run: npm run-script build
       - name: Do production build
         run: npm run-script build-production
-      - name: Do docker image build
-        run: docker build -t apiman-devportal:latest .
   Tests:
     runs-on: ubuntu-latest
     steps:
