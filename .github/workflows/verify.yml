@@ -13,7 +13,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  Builds:
+  Build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -31,7 +31,7 @@ jobs:
         run: npm run-script build
       - name: Do production build
         run: npm run-script build-production
-  Tests:
+  Test:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -55,6 +55,7 @@ jobs:
           deduplicate_classes_by_file_name: false
 
   Publish:
+    needs: [Build, Test]
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && github.repository_owner == 'Apiman'
     steps:
