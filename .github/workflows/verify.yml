@@ -25,11 +25,11 @@ jobs:
         with:
           node-version: '12'
           check-latest: true
-      - name: Install node modules 
+      - name: Install node modules
         run: npm install --also=dev
-      - name: Do local build 
+      - name: Do local build
         run: npm run-script build
-      - name: Do production build 
+      - name: Do production build
         run: npm run-script build-production
       - name: Do docker image build
         run: docker build -t apiman-devportal:latest .
@@ -40,7 +40,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install node modules
         run: npm install --also=dev
-      - name: Do browser tests 
+      - name: Do browser tests
         run: npm run-script test
         env:
           #Uses the default chrome browser from the ubuntu-latest image
@@ -55,3 +55,16 @@ jobs:
           files: junit/api-mgmt-dev-portal/*.xml
           report_individual_runs: true
           deduplicate_classes_by_file_name: false
+
+  Publish:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && github.repository_owner == 'Apiman'
+    steps:
+      # Build and push new Docker images
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - name: Building Docker Images
+        run: docker build . --file Dockerfile --tag apiman/developer-portal:latest
+      - name: Push The Tagged Docker Images
+        run: docker push apiman/developer-portal:latest
+
