@@ -17,6 +17,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {Injectable} from '@angular/core';
 
 /**
  * Api Version
@@ -174,6 +175,9 @@ export interface GatewayEndpoint {
   endpoint: string;
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 
 /**
  * A service which executes the REST calls to Api Mgmt UI REST Interface
@@ -185,10 +189,8 @@ export class ApiDataService {
   /**
    * Constructor
    * @param http The http client
-   * @param apiMgmtUiRestUrl The Api Mgmt UI REST url
    */
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   /**
    * Get all public apis

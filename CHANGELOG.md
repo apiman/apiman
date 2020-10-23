@@ -11,6 +11,7 @@
 
 ### Minor
 
+- GW-423: Allow to change the CSS
 - BPAAS-6902: Remove workaround because of merge of PR#122 in keycloak-nodejs-admin-client
 - BPAAS-6902: Update keycloak versions
 - GW-431: Scrolling for Create Client Mapping

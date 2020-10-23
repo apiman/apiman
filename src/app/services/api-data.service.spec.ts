@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { ApiDataService } from './api-data.service';
-import {KeycloakService} from 'keycloak-angular';
+import {ApiDataService} from './api-data.service';
 import {HttpClient} from '@angular/common/http';
 
 describe('ApiDataService', () => {
   const httpClient = jasmine.createSpy('HttpClient');
 
   beforeEach(() => TestBed.configureTestingModule({
-    providers: [
-      { provide: HttpClient, useValue: httpClient},
-    ]
+    providers: [{
+      provide: HttpClient, useValue: httpClient
+    }]
   }));
 
   it('should be created', () => {
-    const service: ApiDataService = TestBed.get(ApiDataService);
+    const service: ApiDataService = TestBed.inject(ApiDataService);
     expect(service).toBeTruthy();
   });
 });

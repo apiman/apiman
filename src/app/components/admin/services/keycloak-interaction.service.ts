@@ -20,7 +20,11 @@ import {TokenService} from '../../../services/token.service';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import GroupRepresentation from 'keycloak-admin/lib/defs/groupRepresentation';
 import {environment} from '../../../../environments/environment';
+import {Injectable} from '@angular/core';
 
+@Injectable({
+  providedIn: 'root'
+})
 export class KeycloakInteractionService {
 
   private kcAdminClient: KcAdminClient;

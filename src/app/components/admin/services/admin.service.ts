@@ -20,7 +20,11 @@ import {ClientSearchResult, Developer} from '../../../services/api-data.service'
 import {HttpClient} from '@angular/common/http';
 import {KeycloakInteractionService} from './keycloak-interaction.service';
 import {environment} from '../../../../environments/environment';
+import {Injectable} from '@angular/core';
 
+@Injectable({
+  providedIn: 'root'
+})
 export class AdminService {
 
   private apiMgmtUiRestUrl: string = environment.apiMgmtUiRestUrl;

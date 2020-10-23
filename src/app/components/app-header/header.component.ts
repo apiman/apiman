@@ -16,6 +16,7 @@
 
 import {Component} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-app-header',
@@ -25,9 +26,9 @@ import {KeycloakService} from 'keycloak-angular';
 export class HeaderComponent {
 
   public user: string = this.keycloak.getKeycloakInstance().profile.username;
+  public logo: string = environment.logoUrl;
 
-  constructor(private keycloak: KeycloakService) {
-  }
+  constructor(private keycloak: KeycloakService) {}
 
   /**
    * Logout a user and clear the session tokens

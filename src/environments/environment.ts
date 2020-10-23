@@ -22,7 +22,8 @@ export const environment = {
   production: false,
   apiMgmtRealm: '[keycloakRealm]',
   apiMgmtUiRestUrl: 'https://[apimanUiRestEndpoint]:[port]/apiman',
-  keycloakAuthUrl: 'https://[keycloakEndpoint]:[port]/auth'
+  keycloakAuthUrl: 'https://[keycloakEndpoint]:[port]/auth',
+  logoUrl: 'assets/ScheerPASLogo.svg'
 };
 
 /*
