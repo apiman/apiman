@@ -26,7 +26,6 @@ describe('ApiDataService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       { provide: HttpClient, useValue: httpClient},
-      { provide: 'API_MGMT_UI_REST_URL', useValue: 'https://dummyURL.com/apiman' }
     ]
   }));
 

@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-import {Inject, Injectable} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
 import KcAdminClient from 'keycloak-admin';
 import {TokenService} from '../../../services/token.service';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import GroupRepresentation from 'keycloak-admin/lib/defs/groupRepresentation';
+import {environment} from '../../../../environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class KeycloakInteractionService {
 
   private kcAdminClient: KcAdminClient;
-
 
   /**
    * Constructor of Keycloak Interaction Service
@@ -35,12 +31,10 @@ export class KeycloakInteractionService {
    * @param keycloakRestUrl the keycloak rest url
    */
   constructor(private keycloak: KeycloakService,
-              private tokenService: TokenService,
-              @Inject('KEYCLOAK_AUTH_URL') private keycloakRestUrl: string,
-              @Inject('API_MGTM_REALM') private apiMgmtRealm: string) {
+              private tokenService: TokenService) {
     this.kcAdminClient = new KcAdminClient({
-      baseUrl: this.keycloakRestUrl,
-      realmName: this.apiMgmtRealm
+      baseUrl: environment.keycloakAuthUrl,
+      realmName: environment.apiMgmtRealm,
     });
     // set initial token
     const token = keycloak.getKeycloakInstance().token;

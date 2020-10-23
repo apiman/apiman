@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {forkJoin, from, Observable, Subject} from 'rxjs';
 import {concatMap, map, mergeAll, mergeMap, switchMap, toArray} from 'rxjs/operators';
 import {ApiDataService, ApiVersion, Client, Contract} from '../../../services/api-data.service';
@@ -25,6 +25,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Sort} from '@angular/material/sort';
 import {KeycloakService} from 'keycloak-angular';
 import {formatDate} from '@angular/common';
+import {environment} from '../../../../environments/environment';
 
 export interface ApiListElement {
   id: string;
@@ -72,6 +73,8 @@ class GatewayEndpoint {
 
 export class ApiListComponent implements OnInit {
 
+  private apiMgmtUiRestUrl: string = environment.apiMgmtUiRestUrl;
+
   columnHeaders: string[] = ['api', 'publicAPI', 'apiVersion', 'tryApi', 'options'];
   expandedElements: Array<ApiListElement> = [];
 
@@ -94,8 +97,7 @@ export class ApiListComponent implements OnInit {
               private apiDataService: ApiDataService,
               private toasterService: ToasterService,
               private loadingSpinnerService: SpinnerService,
-              private keycloak: KeycloakService,
-              @Inject('API_MGMT_UI_REST_URL') private apiMgmtUiRestUrl: string) {
+              private keycloak: KeycloakService) {
   }
 
   /**

@@ -103,18 +103,6 @@ import {TokenService} from './services/token.service';
       useFactory: initializer,
       multi: true,
       deps: [KeycloakService, TokenService]
-    },
-    {
-      provide: 'API_MGMT_UI_REST_URL',
-      useValue: environment.apiMgmtUiRestUrl
-    },
-    {
-      provide: 'KEYCLOAK_AUTH_URL',
-      useValue: environment.keycloakAuthUrl
-    },
-    {
-      provide: 'API_MGTM_REALM',
-      useValue: environment.apiMgmtRealm
     }
   ],
   bootstrap: [AppComponent]

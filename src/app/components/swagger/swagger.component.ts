@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnInit} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {environment} from '../../../environments/environment';
 
 declare const SwaggerUIBundle: any;
 
@@ -26,7 +27,10 @@ declare const SwaggerUIBundle: any;
 })
 export class SwaggerComponent implements OnInit {
 
-  constructor(@Inject('API_MGMT_UI_REST_URL') private apiMgmtUiRestUrl: string, private route: ActivatedRoute) { }
+  private apiMgmtUiRestUrl: string = environment.apiMgmtUiRestUrl;
+
+  constructor(private route: ActivatedRoute) {
+  }
 
   /**
    * Load the swagger definition and display it with the swagger ui bundle library on component initialization

@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-import {Inject, Injectable} from '@angular/core';
 import {from, Observable, of} from 'rxjs';
 import {mergeMap} from 'rxjs/operators';
 import {ClientSearchResult, Developer} from '../../../services/api-data.service';
 import {HttpClient} from '@angular/common/http';
 import {KeycloakInteractionService} from './keycloak-interaction.service';
+import {environment} from '../../../../environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class AdminService {
+
+  private apiMgmtUiRestUrl: string = environment.apiMgmtUiRestUrl;
 
   /**
    * Constructor of Admin Service
@@ -33,8 +32,7 @@ export class AdminService {
    * @param apiMgmtUiRestUrl Api Management UI REST Url
    */
   constructor(private http: HttpClient,
-              private keycloak: KeycloakInteractionService, @Inject('API_MGMT_UI_REST_URL')
-              private apiMgmtUiRestUrl: string) {
+              private keycloak: KeycloakInteractionService) {
   }
 
   /**
