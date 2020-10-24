@@ -66,7 +66,6 @@ public class ApimanCorsFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpResp = (HttpServletResponse) response;
 
-        httpResp.setHeader("Access-Control-Origin-Allow", String.join(",", allowedCorsOrigins));
         if (isPreflightRequest(httpReq) && originIsAllowed(httpReq)) {
             httpResp.setHeader("Access-Control-Allow-Origin", httpReq.getHeader("Origin")); //$NON-NLS-1$ //$NON-NLS-2$
             if(!allowedCorsOrigins.contains("*")){
@@ -85,8 +84,6 @@ public class ApimanCorsFilter implements Filter {
                 }
                 httpResp.setHeader("Access-Control-Allow-Credentials", "true"); //$NON-NLS-1$ //$NON-NLS-2$
                 httpResp.setHeader("Access-Control-Expose-Headers", "X-Apiman-Error"); //$NON-NLS-1$ //$NON-NLS-2$
-            } else {
-                httpResp.setHeader("Access-Control-Origin-Not-Allow", httpReq.getHeader("Origin")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             chain.doFilter(httpReq, httpResp);
         }
