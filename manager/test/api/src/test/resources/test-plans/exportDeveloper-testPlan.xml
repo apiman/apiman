@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <!--  This is the same test plan as the export-testPlan.xml but with developers.-->
+  <!--  Developers are not implemented in JPA so we need additional tests for ES.-->
+  <!--  If JPA is implemented this tests should be moved back to the original test.-->
+
+  <testGroup name="Create Entities">
+    <test name="Create Developer" skipStorage="jpa">test-plan-data/developers/001_createDeveloper.resttest</test>
+    <test name="Create Second Developer" skipStorage="jpa">test-plan-data/developers/004_createSecondDeveloper.resttest</test>
+  </testGroup>
+
+  <testGroup name="Exporting">
+    <test name="Export" skipStorage="jpa">test-plan-data/export/export/005_exportDeveloper.resttest</test>
+  </testGroup>
+
+
+</testPlan>

@@ -23,6 +23,8 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.developers.DeveloperMappingBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.download.DownloadType;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
@@ -623,6 +625,38 @@ public class EsMarshalling {
                     .field("path", bean.getPath())
                     .field("expires", bean.getExpires().getTime())
                 .endObject();
+            postMarshall(bean);
+            return builder;
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    /**
+     * Marshals the given bean into the given map.
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
+     */
+    public static XContentBuilder marshall(DeveloperBean bean) throws StorageException {
+        try (XContentBuilder builder = XContentFactory.jsonBuilder()) {
+            preMarshall(bean);
+            builder
+                    .startObject()
+                    .field("id", bean.getId());
+
+            Set<DeveloperMappingBean> clients = bean.getClients();
+            if (clients != null && !clients.isEmpty()) {
+                builder.startArray("clients");
+                for (DeveloperMappingBean developerMappingBean : clients) {
+                    builder.startObject()
+                            .field("clientId", developerMappingBean.getClientId())
+                            .field("organizationId", developerMappingBean.getOrganizationId())
+                            .endObject();
+                }
+                builder.endArray();
+            }
+            builder.endObject();
             postMarshall(bean);
             return builder;
         } catch (IOException e) {
@@ -1357,6 +1391,30 @@ public class EsMarshalling {
         bean.setCreatedBy(asString(map.get("createdBy")));
         bean.setCreatedOn(asDate(map.get("createdOn")));
 
+        postMarshall(bean);
+        return bean;
+    }
+
+    /**
+     * Unmarshals the given map source into a bean.
+     * @param source the source
+     * @return the developer
+     */
+    public static DeveloperBean unmarshallDeveloper(Map<String, Object> source) {
+        if (source == null) {
+            return null;
+        }
+        DeveloperBean bean = new DeveloperBean();
+        bean.setId(asString(source.get("id")));
+        List<Map<String, Object>> clients = (List<Map<String, Object>>) source.get("clients");
+        if (clients != null) {
+            for (Map<String, Object> clientsMap : clients) {
+                DeveloperMappingBean developerMappingBean = new DeveloperMappingBean();
+                developerMappingBean.setClientId(asString(clientsMap.get("clientId")));
+                developerMappingBean.setOrganizationId(asString(clientsMap.get("organizationId")));
+                bean.getClients().add(developerMappingBean);
+            }
+        }
         postMarshall(bean);
         return bean;
     }

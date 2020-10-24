@@ -1,0 +1,3 @@
+DELETE /developers/${developer1-id} admin/admin
+----
+204

@@ -1,0 +1,10 @@
+GET /developers/Developer1/apis admin/admin
+----
+404
+Content-Type: application/json
+
+{
+    "type": "DeveloperNotFoundException",
+    "errorCode": 16001,
+    "message" : "Developer not found."
+}

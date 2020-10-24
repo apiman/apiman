@@ -40,4 +40,6 @@ public interface IVersionMigrator {
     
     public void migrateOrg(ObjectNode node);
 
+    void migrateDeveloper(ObjectNode node);
+
 }

@@ -8,11 +8,7 @@
 
 package io.apiman.test.common.plan;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.*;
 
 
 /**
@@ -26,6 +22,7 @@ import javax.xml.bind.annotation.XmlValue;
  *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="endpoint" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="skipStorage" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/extension>
  *   &lt;/simpleContent>
  * &lt;/complexType>
@@ -47,6 +44,8 @@ public class TestType {
     protected String endpoint;
     @XmlAttribute(name = "delay")
     private Integer delay;
+    @XmlAttribute(name = "skipStorage")
+    private String skipStorage;
 
     /**
      * Gets the value of the value property.
@@ -70,6 +69,30 @@ public class TestType {
      */
     public void setValue(String value) {
         this.value = value;
+    }
+
+    /**
+     * Gets the value of the skipStorage property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getSkipStorage() {
+        return skipStorage;
+    }
+
+    /**
+     * Sets the value of the skipStorage property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public void setSkipStorage(String skipStorage) {
+        this.skipStorage = skipStorage;
     }
 
     /**

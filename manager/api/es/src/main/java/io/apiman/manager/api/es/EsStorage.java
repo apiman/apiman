@@ -26,6 +26,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.*;
@@ -148,6 +149,14 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     @Override
     public void rollbackTx() {
         // No Transaction support for ES
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createDeveloper(DeveloperBean)
+     */
+    @Override
+    public void createDeveloper(DeveloperBean developerBean) throws StorageException {
+        indexEntity(EsConstants.INDEX_MANAGER_POSTFIX_DEVELOPER, developerBean.getId(), EsMarshalling.marshall(developerBean));
     }
 
     /**
@@ -520,6 +529,14 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     }
 
     /**
+     * @see io.apiman.manager.api.core.IStorage#updateDeveloper(DeveloperBean)
+     */
+    @Override
+    public void updateDeveloper(DeveloperBean developer) throws StorageException {
+        updateEntity(EsConstants.INDEX_MANAGER_POSTFIX_DEVELOPER, developer.getId(), EsMarshalling.marshall(developer));
+    }
+
+    /**
      * @see io.apiman.manager.api.core.IStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
@@ -832,6 +849,11 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
         deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_DOWNLOAD, download.getId());
     }
 
+    @Override
+    public void deleteDeveloper(DeveloperBean developer) throws StorageException {
+        deleteEntity(EsConstants.INDEX_MANAGER_POSTFIX_DEVELOPER, developer.getId());
+    }
+
     /**
      * @see io.apiman.manager.api.core.IStorage#deletePolicyDefinition(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
      */
@@ -1031,6 +1053,19 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     public DownloadBean getDownload(String id) throws StorageException {
         Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_DOWNLOAD, id);
         return EsMarshalling.unmarshallDownload(source);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getDeveloper(String)
+     */
+    @Override
+    public DeveloperBean getDeveloper(String id) throws StorageException {
+        Map<String, Object> source = getEntity(EsConstants.INDEX_MANAGER_POSTFIX_DEVELOPER, id);
+        if (source == null) {
+            return null;
+        }
+        DeveloperBean developerBean = EsMarshalling.unmarshallDeveloper(source);
+        return developerBean;
     }
 
     /**
@@ -2341,6 +2376,16 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     }
 
     @Override
+    public Iterator<DeveloperBean> getDevelopers() throws StorageException {
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_DEVELOPER, new IUnmarshaller<DeveloperBean>() {
+            @Override
+            public DeveloperBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallDeveloper(source);
+            }
+        });
+    }
+
+    @Override
     public Iterator<ContractBean> getAllContracts(OrganizationBean organizationBean, int lim) throws StorageException {
         return getAll(EsConstants.INDEX_MANAGER_POSTFIX_CONTRACT, EsMarshalling::unmarshallContract, matchOrgQuery(organizationBean.getId())); //$NON-NLS-1$
     }
@@ -2373,6 +2418,28 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     @Override
     public Iterator<PlanVersionBean> getAllPlanVersions(OrganizationBean organizationBean, PlanStatus status, int lim) throws StorageException {
         return getAll(EsConstants.INDEX_MANAGER_POSTFIX_PLAN_VERSION, EsMarshalling::unmarshallPlanVersion, matchOrgAndStatusQuery(organizationBean.getId(), status.name())); //$NON-NLS-1$
+    }
+
+    @Override
+    public Iterator<ApiVersionBean> getAllPublicApiVersions() throws StorageException {
+        BoolQueryBuilder qb = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = qb.filter();
+        filter.add(QueryBuilders.termQuery("publicAPI", true));
+
+        return getAll(EsConstants.INDEX_MANAGER_POSTFIX_API_VERSION, new IUnmarshaller<ApiVersionBean>() { //$NON-NLS-1$
+            @Override
+            public ApiVersionBean unmarshal(Map<String, Object> source) {
+                ApiVersionBean apiVersion = EsMarshalling.unmarshallApiVersion(source);
+                String organizationId = String.valueOf(source.get("organizationId"));
+                String apiId = String.valueOf(source.get("apiId"));
+                try {
+                    apiVersion.setApi(getApi(organizationId, apiId));
+                } catch (StorageException e) {
+                    // Do nothing
+                }
+                return apiVersion;
+            }
+        }, qb);
     }
 
     @Override

@@ -16,12 +16,14 @@
 
 package io.apiman.manager.api.exportimport.manager;
 
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -33,20 +35,18 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.common.logging.IApimanLogger;
-import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
-import java.util.Date;
-import java.util.Iterator;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Date;
+import java.util.Iterator;
 
 @ApplicationScoped
 public class StorageExporter {
@@ -87,6 +87,7 @@ public class StorageExporter {
                 exportPlugins();
                 exportRoles();
                 exportPolicyDefs();
+                exportDevelopers();
 
                 exportOrgs();
             } finally {
@@ -390,6 +391,26 @@ public class StorageExporter {
             writer.endPolicyDefs();
         }
         catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void exportDevelopers() {
+        Iterator<DeveloperBean> iter;
+        try {
+            iter = storage.getDevelopers();
+            writer.startDevelopers();
+
+            // iter can be null because jpa storage is not implemented
+            while (iter != null && iter.hasNext()){
+                DeveloperBean bean = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingDeveloper") + bean); //$NON-NLS-1$
+                writer.writeDeveloper(bean);
+            }
+
+            writer.endDevelopers();
+
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

@@ -16,9 +16,9 @@
 
 package io.apiman.manager.api.migrator;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.util.List;
 
 /**
  * Models a chain of version migrators.  Used to apply a set of migrators to a 
@@ -103,6 +103,16 @@ public class VersionMigratorChain implements IVersionMigrator {
     public void migrateOrg(ObjectNode node) {
         for (IVersionMigrator migrator : migrators) {
             migrator.migrateOrg(node);
+        }
+    }
+
+    /**
+     * @see io.apiman.manager.api.migrator.IVersionMigrator#migrateDeveloper(com.fasterxml.jackson.databind.node.ObjectNode)
+     */
+    @Override
+    public void migrateDeveloper(ObjectNode node) {
+        for (IVersionMigrator migrator : migrators) {
+            migrator.migrateDeveloper(node);
         }
     }
 

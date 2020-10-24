@@ -19,9 +19,10 @@ package io.apiman.manager.api.exportimport.manager;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
-import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -188,6 +189,14 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void audit(AuditEntryBean ab) {
         System.out.println("\taudit: " + ab);
+    }
+
+    /**
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#developer(DeveloperBean)
+     */
+    @Override
+    public void developer(DeveloperBean developer) {
+        System.out.println("developer:" + developer);
     }
 
     /**

@@ -22,6 +22,7 @@ import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -39,16 +40,6 @@ import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +47,11 @@ import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -281,6 +277,16 @@ public class EsMarshallingTest {
         DownloadBean bean = createBean(DownloadBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
         Assert.assertEquals("{\"id\":\"ID\",\"type\":\"exportJson\",\"path\":\"PATH\",\"expires\":1}", Strings.toString(builder));
+    }
+
+    /**
+     * Test method for {@link io.apiman.manager.api.es.EsMarshalling#marshall(DeveloperBean)}
+     */
+    @Test
+    public void testMarshallDeveloperBean() throws Exception {
+        DeveloperBean bean = createBean(DeveloperBean.class);
+        XContentBuilder builder = EsMarshalling.marshall(bean);
+        Assert.assertEquals("{\"id\":\"ID\",\"clients\":[{\"clientId\":\"CLIENTID\",\"organizationId\":\"ORGANIZATIONID\"},{\"clientId\":\"CLIENTID\",\"organizationId\":\"ORGANIZATIONID\"}]}", Strings.toString(builder));
     }
 
     /**

@@ -1,0 +1,27 @@
+POST /organizations/Organization1/apis/API2/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "private",
+  "endpoint" : "http://localhost:8080/endpoint",
+  "endpointType" : "rest",
+  "endpointContentType" : "json"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "api" : {
+    "organization" : {
+      "id" : "Organization1"
+    },
+    "id" : "API2",
+    "name" : "API 2",
+    "description" : "This is the description of API 2.",
+    "createdBy":"admin"
+  },
+  "status" : "Created",
+  "version" : "private",
+  "createdBy" : "admin"
+}

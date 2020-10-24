@@ -1,0 +1,39 @@
+GET /developers/${developer1-id}/apis admin/admin
+----
+200
+Content-Type: application/json
+
+[{
+	"api": {
+		"organization": {
+			"name": "Organization 1",
+			"description": null,
+			"createdBy": "admin",
+			"modifiedBy": "admin"
+		},
+		"name": "API 1",
+		"description": "This is the description of API 1.",
+		"createdBy": "admin",
+		"numPublished": 1
+	},
+	"status": "Published",
+	"endpoint": "http://localhost:8080/ping",
+	"endpointType": "rest",
+	"endpointContentType": "json",
+	"endpointProperties": {},
+	"gateways": [{
+		"gatewayId": "TheGateway"
+	}],
+	"publicAPI": true,
+	"plans": [{
+		"planId": "Plan1",
+		"version": "1.0"
+	}],
+	"version": "1.0",
+	"createdBy": "admin",
+	"modifiedBy": "admin",
+	"retiredOn": null,
+	"definitionType": "SwaggerJSON",
+	"parsePayload": false,
+	"definitionUrl": null
+}]

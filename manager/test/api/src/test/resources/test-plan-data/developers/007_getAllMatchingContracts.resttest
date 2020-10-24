@@ -1,0 +1,21 @@
+GET /developers/${developer1-id}/contracts admin/admin
+----
+200
+Content-Type: application/json
+
+[{
+	"clientOrganizationId": "Organization1",
+	"clientOrganizationName": "Organization 1",
+	"clientId": "Client1",
+	"clientName": "Client 1",
+	"clientVersion": "1.0",
+	"apiOrganizationId": "Organization1",
+	"apiOrganizationName": "Organization 1",
+	"apiId": "API1",
+	"apiName": "API 1",
+	"apiVersion": "1.0",
+	"apiDescription": "This is the description of API 1.",
+	"planName": "Plan 1",
+	"planId": "Plan1",
+	"planVersion": "1.0"
+}]

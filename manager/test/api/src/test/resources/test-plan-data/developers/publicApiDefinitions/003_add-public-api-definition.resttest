@@ -1,0 +1,14 @@
+PUT /organizations/Organization1/apis/API2/versions/public/definition admin/admin
+Content-Type: application/json
+
+{
+  "swaggerVersion": "1.2",
+  "apis": [
+    {
+      "path": "http://localhost:8000/listings/greetings",
+      "description": "Generating greetings in our application."
+    }
+  ]
+}
+----
+204
