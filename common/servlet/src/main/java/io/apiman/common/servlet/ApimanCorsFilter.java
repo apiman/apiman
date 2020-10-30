@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import org.apache.commons.configuration.Configuration;
+import io.apiman.common.config.ConfigFactory;
 
 /**
  * A simple CORS filter for apiman.
@@ -29,16 +31,23 @@ import java.util.HashSet;
  */
 public class ApimanCorsFilter implements Filter {
 
+    public static final Configuration config;
+    static {
+        config = ConfigFactory.createConfig();
+    }
+
+    public static final String MANAGER_UI_ALLOWED_CORS_ORIGINS = "apiman-manager-ui.allowed-cors-origins";
+
     private HashSet<String> allowedCorsOrigins = new HashSet<>();
 
     /**
      * Constructor.
      */
     public ApimanCorsFilter() {
-        String corsOrigins = System.getProperty("allowed_cors_origins");
-        if (corsOrigins != null) {
-            allowedCorsOrigins = new HashSet<>(Arrays.asList(corsOrigins.trim().split(",")));
-        }
+        String corsOrigins = System.getProperty(MANAGER_UI_ALLOWED_CORS_ORIGINS,
+                                                config.getString(MANAGER_UI_ALLOWED_CORS_ORIGINS,
+                                                                "*"));
+        allowedCorsOrigins = new HashSet<>(Arrays.asList(corsOrigins.trim().split(",")));
     }
 
     /**
@@ -59,6 +68,9 @@ public class ApimanCorsFilter implements Filter {
 
         if (isPreflightRequest(httpReq) && originIsAllowed(httpReq)) {
             httpResp.setHeader("Access-Control-Allow-Origin", httpReq.getHeader("Origin")); //$NON-NLS-1$ //$NON-NLS-2$
+            if(!allowedCorsOrigins.contains("*")){
+                httpResp.setHeader("Vary", "Origin"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
             httpResp.setHeader("Access-Control-Allow-Credentials", "true"); //$NON-NLS-1$ //$NON-NLS-2$
             httpResp.setHeader("Access-Control-Max-Age", "1800"); //$NON-NLS-1$ //$NON-NLS-2$
             httpResp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,HEAD,DELETE"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -67,6 +79,9 @@ public class ApimanCorsFilter implements Filter {
         } else {
             if (hasOriginHeader(httpReq) && originIsAllowed(httpReq)) {
                 httpResp.setHeader("Access-Control-Allow-Origin", httpReq.getHeader("Origin")); //$NON-NLS-1$ //$NON-NLS-2$
+                if(!allowedCorsOrigins.contains("*")){
+                    httpResp.setHeader("Vary", "Origin"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
                 httpResp.setHeader("Access-Control-Allow-Credentials", "true"); //$NON-NLS-1$ //$NON-NLS-2$
                 httpResp.setHeader("Access-Control-Expose-Headers", "X-Apiman-Error"); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -82,7 +97,8 @@ public class ApimanCorsFilter implements Filter {
      */
     private boolean originIsAllowed(HttpServletRequest httpReq) {
         String origin = httpReq.getHeader("Origin").trim();
-        return allowedCorsOrigins.contains(origin);
+        return allowedCorsOrigins.contains("*") ||
+            allowedCorsOrigins.contains(origin);
     }
 
     /**
