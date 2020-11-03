@@ -1,4 +1,4 @@
-ARG CLI_VERSION="0.3.0"
+ARG CLI_VERSION="0.4.0"
 FROM apiman/cli:${CLI_VERSION} AS cli
 
 FROM openjdk:8
