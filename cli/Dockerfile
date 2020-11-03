@@ -1,6 +1,6 @@
 FROM openjdk:8 AS build
 
-ARG CLI_VERSION="0.3.0"
+ARG CLI_VERSION="0.4.0"
 ARG RELEASE_TYPE="tag"
 
 COPY files /tmp
