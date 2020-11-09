@@ -285,6 +285,7 @@
     <module>repository</module>
     <module>auth-3scale</module>
     <module>custom-path-parser-demo</module>
+    <module>timeout-policy</module>
   </modules>
 
   <profiles>

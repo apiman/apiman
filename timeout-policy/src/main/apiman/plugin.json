@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "Timeout Policy Plugin",
+  "description" : "This policy configures timeout for the back-end connection.",
+  "version" : "${project.version}"
+}
