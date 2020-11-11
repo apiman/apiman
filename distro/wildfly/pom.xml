@@ -14,7 +14,7 @@
   <properties>
     <docker.wildfly.version>wildfly</docker.wildfly.version>
     <docker.base-image>jboss/wildfly:20.0.1.Final</docker.base-image>
-    <docker.target-image-name>apiman/on-wildfly:master</docker.target-image-name>
+    <docker.target-image-name>apiman/on-wildfly:latest</docker.target-image-name>
     <docker.target-image-name.alias>wildfly-master</docker.target-image-name.alias>
   </properties>
 

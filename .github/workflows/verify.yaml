@@ -46,3 +46,9 @@ jobs:
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-file
       - name: Run Tests (AMG 1)
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=amg-1
+      - name: Build and Publish Docker Images
+        if: github.ref == 'refs/heads/master'
+        run: |
+          mvn clean package docker:build -P docker -DskipTests
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          docker push apiman/on-wildfly:latest
