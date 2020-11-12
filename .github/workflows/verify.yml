@@ -57,7 +57,7 @@ jobs:
   Publish:
     needs: [Build, Test]
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.repository_owner == 'Apiman'
+    if: github.ref == 'refs/heads/main' && github.repository_owner == 'Apiman'
     steps:
       # Build and push new Docker images
       - name: Login to DockerHub Registry
