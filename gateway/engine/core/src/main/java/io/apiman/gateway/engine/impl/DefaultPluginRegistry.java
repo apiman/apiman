@@ -15,17 +15,6 @@
  */
 package io.apiman.gateway.engine.impl;
 
-import io.apiman.common.plugin.Plugin;
-import io.apiman.common.plugin.PluginClassLoader;
-import io.apiman.common.plugin.PluginCoordinates;
-import io.apiman.common.plugin.PluginSpec;
-import io.apiman.common.plugin.PluginUtils;
-import io.apiman.gateway.engine.IPluginRegistry;
-import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncResult;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.i18n.Messages;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,6 +40,17 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+
+import io.apiman.common.plugin.Plugin;
+import io.apiman.common.plugin.PluginClassLoader;
+import io.apiman.common.plugin.PluginCoordinates;
+import io.apiman.common.plugin.PluginSpec;
+import io.apiman.common.plugin.PluginUtils;
+import io.apiman.gateway.engine.IPluginRegistry;
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.i18n.Messages;
 
 /**
  * A simple plugin registry that stores plugins in a temporary location.  This
@@ -387,6 +388,11 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         OutputStream ostream = null;
         try {
             URLConnection connection = artifactUrl.openConnection();
+            // add the basic authentification contains in the Url
+            if (artifactUrl.getUserInfo() != null) {
+                String authStr = java.util.Base64.getEncoder().encodeToString(artifactUrl.getUserInfo().getBytes(StandardCharsets.UTF_8));
+                connection.addRequestProperty("Authorization", "Basic " + authStr);
+            }
             connection.connect();
             if (connection instanceof HttpURLConnection) {
                 HttpURLConnection httpConnection = (HttpURLConnection) connection;

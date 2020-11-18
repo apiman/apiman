@@ -15,6 +15,18 @@
  */
 package io.apiman.gateway.platforms.vertx3.engine;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
@@ -27,19 +39,9 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
 
 /**
  * A vertx implementation of the API Gateway's plugin registry. This version simply extends the default
@@ -154,7 +156,14 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
         request.exceptionHandler((Handler<Throwable>) error -> {
             handler.handle(AsyncResultImpl.create(error, File.class));
         });
-
+        
+        // add the basic authentification contains in the Url
+        if (artifactUrl.getUserInfo() != null) {
+            String authStr = java.util.Base64.getEncoder().encodeToString(artifactUrl.getUserInfo().getBytes(StandardCharsets.UTF_8));           
+            request.putHeader(HttpHeaders.AUTHORIZATION, "Basic " + authStr);
+        }
+        
+        
         request.end();
     }
 
