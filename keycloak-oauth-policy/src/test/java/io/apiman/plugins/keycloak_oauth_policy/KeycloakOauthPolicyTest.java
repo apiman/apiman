@@ -6,7 +6,11 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
@@ -23,36 +27,37 @@ import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
-import java.security.SignatureException;
+import java.security.*;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPublicKey;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.keycloak.common.util.KeyUtils;
+import org.keycloak.common.util.PemUtils;
 import org.keycloak.common.util.Time;
+import org.keycloak.jose.jwk.JSONWebKeySet;
+import org.keycloak.jose.jwk.JWK;
+import org.keycloak.jose.jwk.JWKBuilder;
 import org.keycloak.jose.jws.JWSBuilder;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.AccessToken.Access;
 import org.keycloak.representations.AddressClaimSet;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockserver.client.MockServerClient;
+import org.mockserver.junit.MockServerRule;
 
 /**
  * Test the {@link KeycloakOauthPolicy}.
@@ -77,6 +82,11 @@ public class KeycloakOauthPolicyTest {
     @Mock
     private IPolicyContext mContext;
     private ForwardRoles forwardRoles;
+
+    @Rule
+    // http://www.mock-server.com/mock_server/running_mock_server.html#junit_rule
+    public MockServerRule mockServerRule = new MockServerRule(this, 1080);
+    private MockServerClient mockServerClient = mockServerRule.getClient();
 
     static {
         if (Security.getProvider("BC") == null)
@@ -135,6 +145,46 @@ public class KeycloakOauthPolicyTest {
         // Data store
         given(mContext.getComponent(ISharedStateComponent.class)).
             willReturn(new InMemorySharedStateComponent());
+
+        initializeJwksBackend();
+
+    }
+
+    private void initializeJwksBackend() {
+        JWK[] jwk = {JWKBuilder.create()
+                .kid(KeyUtils.createKeyId(idpPair.getPublic()))
+                .algorithm("RS256")
+                .rsa(idpPair.getPublic(), idpCertificates[0])};
+        JSONWebKeySet jwks = new JSONWebKeySet();
+        jwks.setKeys(jwk);
+
+        String jwksString = null;
+        try {
+            jwksString = new ObjectMapper().writeValueAsString(jwks);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        mockServerClient.when(request()
+                .withMethod("GET")
+                .withPath("/auth/realms/apiman-realm/protocol/openid-connect/certs"))
+                .respond(response().withStatusCode(200).withBody(jwksString));
+
+        mockServerClient.when(request()
+                .withMethod("GET")
+                .withPath("/auth/realms/apiman-realm/.well-known/openid-configuration"))
+                .respond(response().withStatusCode(200)
+                .withBody("{\n" +
+                        "  \"issuer\": \"http://localhost:1080/auth/realms/apiman-realm\",\n" +
+                        "  \"authorization_endpoint\": \"http://localhost:1080/auth/realms/apiman-realm/protocol/openid-connect/auth\",\n" +
+                        "  \"token_endpoint\": \"http://localhost:1080/auth/realms/apiman-realm/protocol/openid-connect/token\",\n" +
+                        "  \"token_introspection_endpoint\": \"http://localhost:1080/auth/realms/apiman-realm/protocol/openid-connect/token/introspect\",\n" +
+                        "  \"userinfo_endpoint\": \"http://localhost:1080/auth/realms/apiman-realm/protocol/openid-connect/userinfo\",\n" +
+                        "  \"end_session_endpoint\": \"http://localhost:1080/auth/realms/apiman-realm/protocol/openid-connect/logout\",\n" +
+                        "  \"jwks_uri\": \"http://localhost:1080/auth/realms/apiman-realm/protocol/openid-connect/certs\",\n" +
+                        "  \"check_session_iframe\": \"http://localhost:1080/auth/realms/apiman-realm/protocol/openid-connect/login-status-iframe.html\",\n" +
+                        "  \"introspection_endpoint\": \"http://localhost:1080/auth/realms/apiman-realm/protocol/openid-connect/token/introspect\"\n" +
+                        "}"));
     }
 
     private String generateAndSerializeToken() throws CertificateEncodingException, IOException {
@@ -143,7 +193,35 @@ public class KeycloakOauthPolicyTest {
         config.setRealm("apiman-realm");
         config.setRealmCertificateString(certificateAsPem(idpCertificates[0]));
 
-        return new JWSBuilder().jsonContent(token).rsa256(idpPair.getPrivate());
+        return new JWSBuilder().kid(KeyUtils.createKeyId(idpPair.getPublic())).jsonContent(token).rsa256(idpPair.getPrivate());
+    }
+
+    @Test
+    public void shouldSucceedWithValidJwksUrl() throws IOException, CertificateEncodingException {
+        String token = generateAndSerializeToken();
+
+        config.setRealmCertificateString(null);
+        config.setRealm("http://localhost:1080/auth/realms/apiman-realm/");
+
+        apiRequest.getQueryParams().put("access_token", token);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain, times(1)).doApply(apiRequest);
+        verify(mChain, never()).doFailure(any(PolicyFailure.class));
+    }
+
+    @Test
+    public void shouldFailWithWrongToken() throws NoSuchAlgorithmException {
+        String encoded = new JWSBuilder().kid(KeyUtils.createKeyId(idpPair.getPublic())).jsonContent(token).rsa256(KeyPairGenerator.getInstance("RSA").generateKeyPair().getPrivate());
+
+        config.setRealmCertificateString(null);
+        config.setRealm("http://localhost:1080/auth/realms/apiman-realm");
+
+        apiRequest.getQueryParams().put("access_token", encoded);
+        keycloakOauthPolicy.apply(apiRequest, mContext, config, mChain);
+
+        verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
+        verify(mChain, never()).doApply(any(ApiRequest.class));
     }
 
     @Test

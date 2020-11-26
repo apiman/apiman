@@ -15,15 +15,6 @@
  */
 package io.apiman.plugins.keycloak_oauth_policy;
 
-import java.util.Collections;
-
-import org.apache.commons.lang.StringUtils;
-import org.keycloak.RSATokenVerifier;
-import org.keycloak.common.VerificationException;
-import org.keycloak.common.constants.KerberosConstants;
-import org.keycloak.representations.AccessToken;
-import org.keycloak.representations.AccessToken.Access;
-
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
@@ -39,6 +30,18 @@ import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 import io.apiman.plugins.keycloak_oauth_policy.failures.PolicyFailureFactory;
 import io.apiman.plugins.keycloak_oauth_policy.util.Holder;
+import org.apache.commons.lang.StringUtils;
+import org.keycloak.TokenVerifier;
+import org.keycloak.adapters.KeycloakDeployment;
+import org.keycloak.adapters.KeycloakDeploymentBuilder;
+import org.keycloak.adapters.rotation.JWKPublicKeyLocator;
+import org.keycloak.common.VerificationException;
+import org.keycloak.common.constants.KerberosConstants;
+import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.AccessToken.Access;
+import org.keycloak.representations.adapters.config.AdapterConfig;
+
+import java.util.Collections;
 
 /**
  * A Keycloak OAuth policy.
@@ -52,6 +55,8 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
     private static final String BEARER = "Bearer "; //$NON-NLS-1$
     private static final String NEGOTIATE = "Negotiate "; //$NON-NLS-1$
     private final PolicyFailureFactory failureFactory = new PolicyFailureFactory();
+    private KeycloakDeployment keycloakDeployment = null;
+    private String realmCache = null;
 
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
@@ -69,6 +74,10 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
     @Override
     protected void doApply(final ApiRequest request, final IPolicyContext context,
             final KeycloakOauthConfigBean config, final IPolicyChain<ApiRequest> chain) {
+
+        if (keycloakDeployment == null || checkIfRealmChanged(config.getRealm())) {
+            configureKeycloakDeployment(config);
+        }
 
         final String rawToken = getRawAuthToken(request);
         final Holder<Boolean> successStatus = new Holder<>(true);
@@ -135,8 +144,21 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
             IPolicyContext context, KeycloakOauthConfigBean config, IPolicyChain<ApiRequest> chain,
             String rawToken) {
         try {
-            AccessToken parsedToken = RSATokenVerifier.verifyToken(rawToken, config.getRealmCertificate()
-                    .getPublicKey(), config.getRealm());
+
+            TokenVerifier<AccessToken> verifier = TokenVerifier.create(rawToken, AccessToken.class)
+                    .withChecks(TokenVerifier.IS_ACTIVE);
+
+            AccessToken parsedToken;
+            if (config.getRealmCertificate() != null) {
+                parsedToken = verifier.publicKey(config.getRealmCertificate().getPublicKey())
+                        .verify()
+                        .getToken();
+            } else {
+                String kid = verifier.getHeader().getKeyId();
+                parsedToken = verifier.publicKey(keycloakDeployment.getPublicKeyLocator().getPublicKey(kid, keycloakDeployment))
+                        .verify()
+                        .getToken();
+            }
 
             delegateKerberosTicket(request, config, parsedToken);
             forwardHeaders(request, config, rawToken, parsedToken);
@@ -236,5 +258,41 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
 
     private ISharedStateComponent getDataStore(IPolicyContext context) {
         return context.getComponent(ISharedStateComponent.class);
+    }
+
+    private void configureKeycloakDeployment(KeycloakOauthConfigBean config) {
+        if (config.getRealm() == null) return;
+
+        AdapterConfig adapterConfig = new AdapterConfig();
+        String realmUrl = getRealmUrl(config);
+        adapterConfig.setRealm(getRealmName(realmUrl));
+        adapterConfig.setAuthServerUrl(getAuthServerUrl(realmUrl));
+        // We just need a dummy resource because we only need the keycloak deployment for validating tokens
+        adapterConfig.setResource("api-gateway-api");
+
+        keycloakDeployment = KeycloakDeploymentBuilder.build(adapterConfig);
+        keycloakDeployment.setPublicKeyLocator(new JWKPublicKeyLocator());
+
+        realmCache = realmUrl;
+    }
+
+    private String getRealmUrl(KeycloakOauthConfigBean config) {
+        String realmUrl = config.getRealm();
+        if (realmUrl.endsWith("/")) {
+            realmUrl = realmUrl.substring(0, realmUrl.length() - 1);
+        }
+        return realmUrl;
+    }
+
+    private String getAuthServerUrl(String realmUrl) {
+        return StringUtils.substringBefore(realmUrl, "/realms/").trim();
+    }
+
+    private String getRealmName(String realmUrl) {
+        return StringUtils.substringAfter(realmUrl, "/realms/").trim();
+    }
+
+    private boolean checkIfRealmChanged(String realm) {
+        return !realmCache.equals(realm);
     }
 }

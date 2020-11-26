@@ -84,8 +84,10 @@
     <version.commons-validator>1.6</version.commons-validator>
     <version.com.google.guava>21.0</version.com.google.guava>
     <version.com.fasterxml.jackson>2.10.0</version.com.fasterxml.jackson>
-    <version.org.keycloak>2.0.0.Final</version.org.keycloak>
-    <version.org.bouncycastle>1.52</version.org.bouncycastle>
+    <version.org.apache.httpcomponents>4.5.13</version.org.apache.httpcomponents>
+    <version.org.jboss.logging>3.4.1.Final</version.org.jboss.logging>
+    <version.org.keycloak>11.0.3</version.org.keycloak>
+    <version.org.bouncycastle>1.60</version.org.bouncycastle>
     <version.org.json>20140107</version.org.json>
     <version.org.mock-server>5.6.0</version.org.mock-server>
     <version.io.jsonwebtoken.jjwt>0.9.1</version.io.jsonwebtoken.jjwt>
@@ -205,6 +207,16 @@
         </dependency>
       <!-- others -->
       <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${version.org.apache.httpcomponents}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>${version.org.jboss.logging}</version>
+      </dependency>
+      <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>${version.commons-lang}</version>
@@ -233,6 +245,11 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${version.com.google.guava}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-adapter-core</artifactId>
+        <version>${version.org.keycloak}</version>
       </dependency>
       <dependency>
         <groupId>org.keycloak</groupId>
@@ -435,6 +452,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M1</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
