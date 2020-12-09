@@ -8,7 +8,7 @@ import java.net.NoRouteToHostException;
 import java.net.UnknownHostException;
 
 /**
- * This class provides helper methods for vertx and servlet gateway implementations.
+ * This class provides helper methods for vert.x and servlet gateway implementations.
  */
 public final class ErrorHandler {
 
@@ -30,7 +30,7 @@ public final class ErrorHandler {
             ce = new ConnectorException("Unable to connect to backend", error); //$NON-NLS-1$
             ce.setStatusCode(502); // BAD GATEWAY
         } else if (error instanceof InterruptedIOException || error instanceof java.util.concurrent.TimeoutException) {
-            ce = new ConnectorException("Connection to backend terminated" + error.getMessage(), error); //$NON-NLS-1$
+            ce = new ConnectorException("Connection to backend terminated. " + error.getMessage(), error); //$NON-NLS-1$
             ce.setStatusCode(504); // GATEWAY TIMEOUT
 
         }
