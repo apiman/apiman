@@ -1,3 +1,5 @@
+![Verify Build Workflow](https://github.com/apiman/apiman-developer-portal/workflows/Verify%20Build%20Workflow/badge.svg?branch=main)
+
 # Apiman - Developer Portal
 
 A developer portal for Apiman!
