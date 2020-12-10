@@ -63,7 +63,7 @@ jobs:
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Building Docker Images
-        run: docker build --file Dockerfile --tag apiman/developer-portal:latest --rm .
+        run: docker build -t="apiman/developer-portal:latest" .
       - name: Push The Tagged Docker Images
         run: docker push apiman/developer-portal:latest
 
