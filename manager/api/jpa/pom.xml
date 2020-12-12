@@ -66,6 +66,10 @@
       <groupId>commons-dbutils</groupId>
       <artifactId>commons-dbutils</artifactId>
     </dependency>
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
