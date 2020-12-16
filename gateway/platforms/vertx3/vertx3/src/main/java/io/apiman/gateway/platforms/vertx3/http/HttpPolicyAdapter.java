@@ -114,7 +114,7 @@ public class HttpPolicyAdapter {
 
     private void handleEngineResult(ApiRequest request, IEngineResult engineResult) {
         // Everything worked
-        if (engineResult.isResponse()) {
+        if (engineResult.isResponse() && responseIsNotClosed()) {
             ApiResponse response = engineResult.getApiResponse();
 
             setCorsHeadersForSwaggerUi(request, response);
@@ -210,70 +210,56 @@ public class HttpPolicyAdapter {
     }
 
     private void handleError(ApiRequest apimanRequest, Throwable error, HttpServerResponse vertxResponse) {
-        vertxResponse.setChunked(true);
-        policyErrorWriter.write(apimanRequest, error, new IApiClientResponse() {
-
-            @Override
-            public void write(StringBuffer buffer) {
-                vertxRequest.resume();
-                vertxResponse.end(buffer.toString());
-            }
-
-            @Override
-            public void write(StringBuilder builder) {
-                vertxRequest.resume();
-                vertxResponse.end(builder.toString());
-            }
-
-            @Override
-            public void write(String body) {
-                vertxRequest.resume();
-                vertxResponse.end(body);
-            }
-
-            @Override
-            public void setStatusCode(int code) {
-                vertxResponse.setStatusCode(code);
-            }
-
-            @Override
-            public void setHeader(String headerName, String headerValue) {
-                vertxResponse.putHeader(headerName, headerValue);
-            }
-        });
+        if (responseIsNotClosed()) {
+            vertxResponse.setChunked(true);
+            policyErrorWriter.write(apimanRequest, error, new DefaultApiClientResponse());
+        } else {
+            // probably log this
+        }
     }
 
     private void handlePolicyFailure(ApiRequest apimanRequest, PolicyFailure policyFailure, HttpServerResponse vertxResponse) {
-        vertxResponse.setChunked(true);
-        policyFailureWriter.write(apimanRequest, policyFailure, new IApiClientResponse() {
+        if (responseIsNotClosed()) {
+            vertxResponse.setChunked(true);
+            policyFailureWriter.write(apimanRequest, policyFailure, new DefaultApiClientResponse());
+        } else {
+            // probably log this
+        }
+    }
 
-            @Override
-            public void write(StringBuffer buffer) {
-                vertxRequest.resume();
-                vertxResponse.end(buffer.toString());
-            }
+    private boolean responseIsNotClosed() {
+        return !vertxResponse.closed() && !vertxResponse.ended();
+    }
 
-            @Override
-            public void write(StringBuilder builder) {
-                vertxRequest.resume();
-                vertxResponse.end(builder.toString());
-            }
 
-            @Override
-            public void write(String body) {
-                vertxRequest.resume();
-                vertxResponse.end(body);
-            }
+    private class DefaultApiClientResponse implements IApiClientResponse {
 
-            @Override
-            public void setStatusCode(int code) {
-                vertxResponse.setStatusCode(code);
-            }
+        @Override
+        public void setStatusCode(int code) {
+            vertxResponse.setStatusCode(code);
+        }
 
-            @Override
-            public void setHeader(String headerName, String headerValue) {
-                vertxResponse.putHeader(headerName, headerValue);
-            }
-        });
+        @Override
+        public void setHeader(String headerName, String headerValue) {
+            vertxResponse.putHeader(headerName, headerValue);
+        }
+
+        @Override
+        public void write(String body) {
+            vertxRequest.resume();
+            vertxResponse.end(body);
+        }
+
+        @Override
+        public void write(StringBuilder builder) {
+            vertxRequest.resume();
+            vertxResponse.end(builder.toString());
+        }
+
+        @Override
+        public void write(StringBuffer buffer) {
+            vertxRequest.resume();
+            vertxResponse.end(buffer.toString());
+        }
     }
 }
