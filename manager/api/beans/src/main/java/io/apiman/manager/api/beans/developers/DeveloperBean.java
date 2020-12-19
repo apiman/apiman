@@ -16,8 +16,11 @@
 
 package io.apiman.manager.api.beans.developers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.apiman.manager.api.beans.clients.ClientBean;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -26,13 +29,22 @@ import java.util.Set;
  * Models a developer
  * The Keycloak Username is used as ID
  */
+@Entity
+@Table(name = "developers")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeveloperBean implements Serializable {
 
     private static final long serialVersionUID = 7127400624541487145L;
 
+    @Id
+    @Column(nullable = false)
     private String id;
-    private Set<DeveloperMappingBean> clients = new LinkedHashSet<>();
+    @ManyToMany
+    @JoinTable(name = "developers_clients",
+        joinColumns = @JoinColumn(name="developer_id", referencedColumnName="id"),
+        inverseJoinColumns = @JoinColumn(name="client_id", referencedColumnName="id"))
+    @JsonIgnore
+    private Set<ClientBean> clients = new LinkedHashSet<>();
 
     /**
      * Constructor
@@ -45,7 +57,7 @@ public class DeveloperBean implements Serializable {
      *
      * @return The list of clients
      */
-    public Set<DeveloperMappingBean> getClients() {
+    public Set<ClientBean> getClients() {
         return clients;
     }
 
@@ -54,7 +66,7 @@ public class DeveloperBean implements Serializable {
      *
      * @param clients The list of clients
      */
-    public void setClients(Set<DeveloperMappingBean> clients) {
+    public void setClients(Set<ClientBean> clients) {
         this.clients = clients;
     }
 

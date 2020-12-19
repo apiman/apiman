@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.beans.clients;
 
+import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
@@ -23,17 +24,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -72,6 +63,9 @@ public class ClientBean implements Serializable, Cloneable {
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval=true, fetch=FetchType.LAZY, mappedBy="client")
     @JsonIgnore
     private Set<ClientVersionBean> clientVersionSet = new LinkedHashSet<>();
+    @ManyToMany(mappedBy = "clients")
+    @JsonIgnore
+    private Set<DeveloperBean> developers = new LinkedHashSet<>();
 
     /**
      * @return the id

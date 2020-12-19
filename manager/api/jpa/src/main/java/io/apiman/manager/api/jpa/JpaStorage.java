@@ -177,8 +177,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createDeveloper(DeveloperBean)
      */
     @Override
-    public void createDeveloper(DeveloperBean developerBean) {
-        // TODO: Implement
+    public void createDeveloper(DeveloperBean developerBean) throws StorageException {
+        super.create(developerBean);
     }
 
     /**
@@ -330,7 +330,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void updateDeveloper(DeveloperBean developer) throws StorageException {
-        // TODO: Implement
+        super.update(developer);
     }
 
     /**
@@ -504,7 +504,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deleteDeveloper(DeveloperBean developer) throws StorageException {
-        // TODO: Implement
+        super.delete(developer);
     }
 
     /**
@@ -606,8 +606,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public DeveloperBean getDeveloper(String id) throws StorageException {
-        // TODO: Implement
-        return null;
+        return super.get(id, DeveloperBean.class);
     }
 
     /**
@@ -2285,8 +2284,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public Iterator<DeveloperBean> getDevelopers() throws StorageException {
-        // TODO: Implement
-        return null;
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql =
+            "SELECT d "
+                + "FROM DeveloperBean d "
+                + "ORDER BY d.id ASC";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(DeveloperBean.class, query);
     }
 
     @Override
