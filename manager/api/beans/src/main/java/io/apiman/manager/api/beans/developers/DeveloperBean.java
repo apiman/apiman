@@ -39,12 +39,8 @@ public class DeveloperBean implements Serializable {
     @Id
     @Column(nullable = false)
     private String id;
-    @ManyToMany
-    @JoinTable(name = "developers_clients",
-        joinColumns = @JoinColumn(name="developer_id", referencedColumnName="id"),
-        inverseJoinColumns = @JoinColumn(name="client_id", referencedColumnName="id"))
-    @JsonIgnore
-    private Set<ClientBean> clients = new LinkedHashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "developer")
+    private Set<DeveloperMappingBean> clients = new LinkedHashSet<>();
 
     /**
      * Constructor
@@ -57,7 +53,7 @@ public class DeveloperBean implements Serializable {
      *
      * @return The list of clients
      */
-    public Set<ClientBean> getClients() {
+    public Set<DeveloperMappingBean> getClients() {
         return clients;
     }
 
@@ -66,7 +62,7 @@ public class DeveloperBean implements Serializable {
      *
      * @param clients The list of clients
      */
-    public void setClients(Set<ClientBean> clients) {
+    public void setClients(Set<DeveloperMappingBean> clients) {
         this.clients = clients;
     }
 

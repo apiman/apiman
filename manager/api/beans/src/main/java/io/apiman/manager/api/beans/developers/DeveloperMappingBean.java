@@ -16,22 +16,52 @@
 
 package io.apiman.manager.api.beans.developers;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
  * Models the mapping data for a developer
  */
+@Entity
+@Table(name = "developer_clients")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeveloperMappingBean implements Serializable {
 
     private static final long serialVersionUID = -5334196591430185705L;
 
+    @Id
+    @Column(nullable = false)
+    private Long id;
+    @Column(nullable=false)
     private String clientId;
+    @Column(nullable=false)
     private String organizationId;
+    @ManyToOne
+    @JoinColumn(name = "developer")
+    private DeveloperBean developerBean;
 
     /**
      * Constructor
      */
     public DeveloperMappingBean() {
+    }
+
+    /**
+     * Get the id
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Set the id
+     * @param id the id
+     */
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /**
@@ -64,6 +94,14 @@ public class DeveloperMappingBean implements Serializable {
      */
     public void setOrganizationId(String organizationId) {
         this.organizationId = organizationId;
+    }
+
+    public DeveloperBean getDeveloperBean() {
+        return developerBean;
+    }
+
+    public void setDeveloperBean(DeveloperBean developerBean) {
+        this.developerBean = developerBean;
     }
 
     /* (non-Javadoc)

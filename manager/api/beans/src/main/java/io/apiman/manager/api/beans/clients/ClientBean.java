@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package io.apiman.manager.api.beans.clients;
-
-import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
@@ -63,9 +61,6 @@ public class ClientBean implements Serializable, Cloneable {
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval=true, fetch=FetchType.LAZY, mappedBy="client")
     @JsonIgnore
     private Set<ClientVersionBean> clientVersionSet = new LinkedHashSet<>();
-    @ManyToMany(mappedBy = "clients")
-    @JsonIgnore
-    private Set<DeveloperBean> developers = new LinkedHashSet<>();
 
     /**
      * @return the id
