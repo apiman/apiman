@@ -286,6 +286,7 @@ public class EsMarshallingTest {
     public void testMarshallDeveloperBean() throws Exception {
         DeveloperBean bean = createBean(DeveloperBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
+        System.out.println(builder);
         Assert.assertEquals("{\"id\":\"ID\",\"clients\":[{\"clientId\":\"CLIENTID\",\"organizationId\":\"ORGANIZATIONID\"},{\"clientId\":\"CLIENTID\",\"organizationId\":\"ORGANIZATIONID\"}]}", Strings.toString(builder));
     }
 

@@ -37,7 +37,6 @@ public class DeveloperBean implements Serializable {
     private static final long serialVersionUID = 7127400624541487145L;
 
     @Id
-    @Column(nullable = false)
     private String id;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "developer")
     private Set<DeveloperMappingBean> clients = new LinkedHashSet<>();
