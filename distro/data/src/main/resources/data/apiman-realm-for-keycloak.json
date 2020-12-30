@@ -108,17 +108,19 @@
             "enabled" : true,
             "baseUrl" : "/apimanui",
             "redirectUris" : [
-                "https://localhost:8443/apimanui/*"
+                "https://localhost:8443/apimanui/*",
+                "http://localhost:8080/apimanui/*"
             ],
             "secret" : "password",
-            "webOrigins" : [ "*" ]
+            "webOrigins" : [ "+" ]
         },
         {
             "name" : "apiman",
             "enabled" : true,
             "baseUrl" : "/apiman",
             "redirectUris" : [
-                "https://localhost:8443/apiman/*"
+                "https://localhost:8443/apiman/*",
+                "http://localhost:8080/apiman/*"
             ],
             "secret" : "password",
             "webOrigins" : [ "*" ]
@@ -128,11 +130,12 @@
             "enabled" : true,
             "baseUrl" : "/apiman-gateway-api",
             "redirectUris" : [
-                "https://localhost:8443/apiman-gateway-api/*"
+                "https://localhost:8443/apiman-gateway-api/*",
+                "http://localhost:8080/apiman-gateway-api/*"
             ],
             "secret" : "password",
             "directGrantsOnly" : true,
-            "webOrigins" : [ "*" ]
+            "webOrigins" : [ "+" ]
         },
         {
             "name" : "devportal",
