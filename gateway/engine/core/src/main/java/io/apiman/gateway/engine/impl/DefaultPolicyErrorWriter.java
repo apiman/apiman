@@ -65,7 +65,7 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
             isXml = true;
         }
         String message = createErrorMessage(request, error);
-        logger.error("DefaultPolicyErrorWriter: "+ message, error);
+        logger.error(message, error);
         response.setHeader("X-Gateway-Error", message);
 
         int statusCode = 500;
