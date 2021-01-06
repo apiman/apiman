@@ -15,7 +15,6 @@
  */
 package io.apiman.gateway.engine.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.logging.DefaultDelegateFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IApiClientResponse;
@@ -24,10 +23,13 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.gateway.engine.beans.exceptions.IStatusCode;
 
+import java.io.StringWriter;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A default implementation of the error formatter.
