@@ -49,11 +49,8 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
-import java.net.NoRouteToHostException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.util.Map.Entry;
 
 /**
@@ -318,7 +315,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         @Override
         public void handle(Throwable error) {
             ConnectorException ce = ErrorHandler.handleConnectionError(error);
-            logger.error(error.getMessage(), error);
+            logger.error("Connection Error: " + error.getMessage(), error);
 
             resultHandler.handle(AsyncResultImpl
                     .<IApiConnectionResponse> create(ce));
