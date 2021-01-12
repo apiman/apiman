@@ -5,7 +5,7 @@ module ApimanModals {
 
     export var Modals = _module.factory('Modals',
         ['Logger', '$uibModal',
-        (Logger, $uibModal) => {
+            (Logger, $uibModal) => {
                 return {
                     // Simple data entry dialog
                     ///////////////////////////
@@ -50,60 +50,135 @@ module ApimanModals {
                         });
 
                         modalInstance.result.then(yesCallback, noCallback);
+                    },
+                    // A standard error dialog
+                    /////////////////////////////////
+                    error: function (title, message, okCallBack) {
+                        var options = {
+                            title: title,
+                            message: message
+                        };
+
+                        var modalInstance = $uibModal.open({
+                            animation: true,
+                            templateUrl: 'errorModal.html',
+                            controller: 'ModalErrorCtrl',
+                            resolve: {
+                                options: function () {
+                                    return options;
+                                }
+                            }
+                        });
+
+                        modalInstance.result.then(okCallBack);
+                    },
+                    rpcerror: function (rpcdata, title, okCallBack) {
+                        var message = "";
+
+                        if (title == null) {
+                            title = "We ran into an error!"
+                        }
+
+                        if (rpcdata == null || rpcdata == undefined) {
+                            message = "An unspecified error occurred when calling the management api."
+                        }
+
+                        try 
+                        {
+                            switch (typeof(rpcdata)) {
+                                case "string":
+                                    message = JSON.parse(rpcdata).message;
+                                    break;
+    
+                                case "object":
+                                    message = rpcdata.message;
+                                    break;
+    
+                                default:
+                                    alert(typeof(rpcdata))
+                                    message = "An unspecified error occurred when calling the management api."
+                                    break;
+                            }
+    
+                        }
+                        catch(error)
+                        {
+                            message = "An unspecified error occurred when calling the management api."
+                        }
+                  
+                        var options = {
+                            title: title,
+                            message: message
+                            
+                        };
+
+                        var modalInstance = $uibModal.open({
+                            animation: true,
+                            templateUrl: 'errorModal.html',
+                            controller: 'ModalErrorCtrl',
+                            resolve: {
+                                options: function () {
+                                    return options;
+                                }
+                            }
+                        });
+
+                        modalInstance.result.then(okCallBack);
+
                     }
                 }
             }]);
 
 
-    export var ClientAppDeleteModalCtrl = _module.controller('ModalClientAppDeleteCtrl', 
+    export var ClientAppDeleteModalCtrl = _module.controller('ModalClientAppDeleteCtrl',
         function ($location, $rootScope, $scope, $uibModalInstance, OrgSvcs, Configuration, PageLifecycle, client, params) {
-        
-        $scope.confirmClientName = '';
-        $scope.client = client;
 
-        // Used for enabling/disabling the submit button
-        $scope.okayToDelete = false;
-        
-        $scope.typed = function () {
-            // For user convenience, compare lower case values so that check is not case-sensitive
-            $scope.okayToDelete = ($scope.confirmClientName.toLowerCase() === client.name.toLowerCase());
-        };
-        
-        // Yes, delete the API
-        $scope.yes = function () {
-            var deleteAction = {
-                entityId: client.id,
-                entityType: 'clients',
-                organizationId: params.org
+            $scope.confirmClientName = '';
+            $scope.client = client;
+
+            // Used for enabling/disabling the submit button
+            $scope.okayToDelete = false;
+
+            $scope.typed = function () {
+                // For user convenience, compare lower case values so that check is not case-sensitive
+                $scope.okayToDelete = ($scope.confirmClientName.toLowerCase() === client.name.toLowerCase());
             };
-            
-            OrgSvcs.remove(deleteAction).$promise.then(function(res) {
-                $scope.okayToDelete = false;
-                
-                setTimeout(function() {
+
+            // Yes, delete the API
+            $scope.yes = function () {
+                var deleteAction = {
+                    entityId: client.id,
+                    entityType: 'clients',
+                    organizationId: params.org
+                };
+
+                OrgSvcs.remove(deleteAction).$promise.then(function (res) {
+                    $scope.okayToDelete = false;
+
+                    setTimeout(function () {
+                        $uibModalInstance.close();
+
+                        // Redirect users to their list of APIs
+                        $location.path($rootScope.pluginName + '/users/' + Configuration.user.username + '/clients');
+                    }, 800);
+
+                    // We should display some type of Toastr/Growl notification to the user here
+                }, function (err) {
+                    $scope.okayToDelete = false;
                     $uibModalInstance.close();
-                    
-                    // Redirect users to their list of APIs
-                    $location.path($rootScope.pluginName + '/users/' + Configuration.user.username + '/clients');
-                }, 800);
-                
-                // We should display some type of Toastr/Growl notification to the user here
-            }, function(err) {
-                $scope.okayToDelete = false;
-                $uibModalInstance.close();
-                PageLifecycle.handleError(err);
-            });
-        };
-        
-        // No, do NOT delete the API
-        $scope.no = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-    });
+                    PageLifecycle.handleError(err);
+                });
+            };
+
+            // No, do NOT delete the API
+            $scope.no = function () {
+                $uibModalInstance.dismiss('cancel');
+            };
+        });
 
     export var ModalSelectApiCtrl = _module.controller('ModalSelectApiCtrl',
         ['$scope', '$uibModalInstance', 'ApimanSvcs', 'Logger', 'OrgSvcs', 'options',
-        ($scope, $uibModalInstance, ApimanSvcs, Logger, OrgSvcs, options) => {
+            ($scope, $uibModalInstance, ApimanSvcs, Logger, OrgSvcs, options) => {
 
                 $scope.options = options;
                 $scope.selectedApi = undefined;
@@ -119,7 +194,7 @@ module ApimanModals {
                     } else {
                         $scope.searchButton.state = 'in-progress';
 
-                        var body:any = {};
+                        var body: any = {};
                         body.filters = [];
 
                         body.filters.push({
@@ -157,8 +232,8 @@ module ApimanModals {
                         });
                     }
                 };
-                
-                $scope.$watch('selectedApiVersion', function(newValue) {
+
+                $scope.$watch('selectedApiVersion', function (newValue) {
                     Logger.info("===========> Api Version: {0}", newValue);
                 }, false);
 
@@ -199,7 +274,7 @@ module ApimanModals {
                         $scope.selectedApiVersion = undefined;
                     });
                 };
-                
+
                 $scope.onApiVersionSelected = function (apiVersion) {
                     Logger.info("===========> Called onApiVersionSelected: {0}", apiVersion);
                     $scope.selectedApiVersion = apiVersion;
@@ -218,13 +293,13 @@ module ApimanModals {
 
     export var ModalGetValueCtrl = _module.controller('ModalGetValueCtrl',
         ['$scope', '$uibModalInstance', 'Logger', 'options',
-        ($scope, $uibModalInstance, Logger, options) => {
+            ($scope, $uibModalInstance, Logger, options) => {
                 $scope.options = options;
                 $scope.title = $scope.options.title;
                 $scope.message = $scope.options.message;
                 $scope.label = $scope.options.label;
                 $scope.value = $scope.options.initialValue;
-                
+
                 $scope.ok = function () {
                     $uibModalInstance.close($scope.value);
                 };
@@ -238,7 +313,7 @@ module ApimanModals {
 
     export var ModalConfirmCtrl = _module.controller('ModalConfirmCtrl',
         ['$scope', '$uibModalInstance', 'Logger', 'options',
-        ($scope, $uibModalInstance, Logger, options) => {
+            ($scope, $uibModalInstance, Logger, options) => {
 
                 $scope.options = options;
                 $scope.title = $scope.options.title;
@@ -250,6 +325,21 @@ module ApimanModals {
 
                 $scope.cancel = function () {
                     $uibModalInstance.dismiss('cancel');
+                };
+            }
+        ]
+    );
+
+    export var ModalErrorCtrl = _module.controller('ModalErrorCtrl',
+        ['$scope', '$uibModalInstance', 'Logger', 'options',
+            ($scope, $uibModalInstance, Logger, options) => {
+
+                $scope.options = options;
+                $scope.title = $scope.options.title;
+                $scope.message = $scope.options.message;
+
+                $scope.ok = function () {
+                    $uibModalInstance.close();
                 };
             }
         ]

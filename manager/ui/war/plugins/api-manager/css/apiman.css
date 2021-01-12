@@ -1245,10 +1245,12 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   border-bottom: 1px solid rgb(238, 238, 238);
 }
 
-.modal-header .modal-danger
+.modal-danger
 {
   background-color: #B42000;
+  color: white;
 }
+
 
 .modal-body {
   padding: 25px;
