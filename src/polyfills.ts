@@ -81,7 +81,3 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
-
-// tslint:disable-next-line:max-line-length
-// Needed because of introducing `global` with https://github.com/keycloak/keycloak-nodejs-admin-client/commit/1af584633c0f71018f1e371913969890556345b0#diff-4331b2c911b89191f9727aad9fa0e2e0e9af8405d8eff66688f83b36de773313
-(window as any).global = window;
