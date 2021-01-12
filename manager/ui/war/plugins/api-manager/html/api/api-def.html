@@ -69,6 +69,7 @@
                            name="definitionUrl"
                            class="apiman-form-control form-control"
                            type="text"
+                           ng-disabled="selectedDefinitionType.value == 'None'"
                     >
                     <span class="input-group-btn">
                       <div apiman-permission="apiEdit"
@@ -78,7 +79,7 @@
                         <button type="button" class="btn btn-default"
                                 ng-click="updateDefinitionFromUrl()"
                                 style="margin-left: 5px"
-                                ng-disabled="updatedApiDefinitionUrl == null"
+                                ng-disabled="updatedApiDefinitionUrl == null || selectedDefinitionType.value == 'None'"
                                 apiman-i18n-key="load-definition">Load Definition
                         </button>
                       </div>
@@ -131,6 +132,7 @@
         </div>
         <!-- /Content -->
       </div>
+      <div ng-include="'plugins/api-manager/html/modals/errorModal.html'"></div>
     </div> <!-- /container -->
   </div>
   </body>

@@ -3,8 +3,8 @@
 module Apiman {
 
  export var ApiDefController = _module.controller('Apiman.ApiDefController',
-        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ApiDefinitionSvcs', 'Configuration', 'EntityStatusSvc', 'CurrentUser',
-        ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, ApiDefinitionSvcs, Configuration, EntityStatusSvc, CurrentUser) => {
+        ['$q', '$rootScope', '$scope', '$location', 'Modals', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ApiDefinitionSvcs', 'Configuration', 'EntityStatusSvc', 'CurrentUser',
+        ($q, $rootScope, $scope, $location, Modals, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, ApiDefinitionSvcs, Configuration, EntityStatusSvc, CurrentUser) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -45,6 +45,7 @@ module Apiman {
                         $scope.saveButton.state = 'complete';
                     },
                     function(error) {
+                        Modals.rpcerror(error,null,null);
                         Logger.error("Error updating definition: {0}", error);
                         $scope.saveButton.state = 'error';
                     });
@@ -80,6 +81,7 @@ module Apiman {
                         $scope.updatedApiDefinition = definition;
                     },
                     function(error) {
+                        Modals.rpcerror(error,null,null);
                         Logger.error("Error loading definition: {0}", error);
                     });
             };
@@ -155,6 +157,7 @@ module Apiman {
                         $scope.saveButton.state = 'complete';
                     },
                     function(error) {
+                        Modals.rpcerror(error,null,null);
                         Logger.error("Error updating definition: {0}", error);
                         $scope.saveButton.state = 'error';
                     })
