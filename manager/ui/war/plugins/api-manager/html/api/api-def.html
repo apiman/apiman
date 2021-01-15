@@ -99,7 +99,7 @@
                           ng-blur="blur=true;focus=false;"
                           data-field="data"
                           class="apiman-form-control form-control apiman-form-data top-spacer"
-                          ng-disabled="isEntityDisabled()">
+                          ng-disabled="isEntityDisabled() || selectedDefinitionType.value == 'None'">
                 </textarea>
               </div>
 
