@@ -57,8 +57,8 @@ describe('CreateDeveloperComponent', () => {
     }
   }];
 
-  const adminService = jasmine.createSpyObj('adminService', ['getKeycloakUsers', 'getAllClients']);
-  adminService.getKeycloakUsers.and.returnValue(from(
+  const adminService = jasmine.createSpyObj('adminService', ['getDevPortalUsers', 'getAllClients']);
+  adminService.getDevPortalUsers.and.returnValue(from(
     keycloakUsers
   ));
   adminService.getAllClients.and.returnValue(from(

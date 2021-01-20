@@ -15,8 +15,8 @@
  */
 
 import {Inject, Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
-import {catchError, map, mergeMap} from 'rxjs/operators';
+import {from, Observable, of} from 'rxjs';
+import {mergeMap} from 'rxjs/operators';
 import {ClientSearchResult, Developer} from '../../../services/api-data.service';
 import {HttpClient} from '@angular/common/http';
 import {KeycloakInteractionService} from './keycloak-interaction.service';
@@ -57,8 +57,8 @@ export class AdminService {
   /**
    * Get all keycloak users
    */
-  public getKeycloakUsers() {
-    return this.keycloak.getAllUsers();
+  public getDevPortalUsers() {
+    return from(this.keycloak.getDevPortalUsers());
   }
 
   /**
