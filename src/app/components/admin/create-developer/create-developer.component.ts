@@ -57,7 +57,7 @@ export class CreateDeveloperComponent implements OnInit, OnDestroy {
    * On init life circle
    */
   ngOnInit(): void {
-    const getKeycloakUserTask = this.adminService.getKeycloakUsers().pipe(map(keycloakUsers => {
+    const getKeycloakUserTask = this.adminService.getDevPortalUsers().pipe(map(keycloakUsers => {
       this.keycloakUsers = keycloakUsers;
       this.filteredKeycloakUsers = keycloakUsers.filter((user => this.checkDeveloperNotExists(user.username)));
     }));

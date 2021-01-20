@@ -17,9 +17,9 @@
 import {Inject, Injectable} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
 import KcAdminClient from 'keycloak-admin';
-import {from} from 'rxjs';
-import {map, mergeMap} from 'rxjs/operators';
 import {TokenService} from '../../../services/token.service';
+import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
+import GroupRepresentation from 'keycloak-admin/lib/defs/groupRepresentation';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,7 @@ import {TokenService} from '../../../services/token.service';
 export class KeycloakInteractionService {
 
   private kcAdminClient: KcAdminClient;
+
 
   /**
    * Constructor of Keycloak Interaction Service
@@ -55,9 +56,19 @@ export class KeycloakInteractionService {
 
   /**
    * Get all keycloak users
-   * Max value: https://www.keycloak.org/docs-api/9.0/rest-api/index.html#_users_resource
+   * id, max value: https://www.keycloak.org/docs-api/12.0/rest-api/index.html#_groups_resource
    */
-  public getAllUsers() {
-    return from(this.kcAdminClient.users.find({max: (Math.pow(2, 31) - 1)}));
+  public async getDevPortalUsers(): Promise<UserRepresentation[]> {
+    const keycloakGroups: GroupRepresentation[] = [];
+    const devPortalGroups: GroupRepresentation[] = [];
+    const devPortalUsers: UserRepresentation[] = [];
+    keycloakGroups.push(...(await this.kcAdminClient.groups.find()));
+    devPortalGroups.push(...(keycloakGroups.filter(group => {
+      return group.name === 'API-Management-Developer-Portal-Users' || group.name === 'API-Management-Administrators';
+    })));
+    for (const group of devPortalGroups){
+      devPortalUsers.push(...(await this.kcAdminClient.groups.listMembers({id: group.id, max: (Math.pow(2, 31) - 1)})));
+    }
+    return devPortalUsers;
   }
 }
