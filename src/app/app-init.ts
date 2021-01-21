@@ -42,6 +42,7 @@ export function initializer(keycloak: KeycloakService, tokenService: TokenServic
       token: sessionStorage.getItem('api_mgmt_keycloak_token'),
       refreshToken: sessionStorage.getItem('api_mgmt_keycloak_refresh_token')
     },
+    loadUserProfileAtStartUp: true, // because of https://github.com/mauriciovigolo/keycloak-angular/pull/269
     enableBearerInterceptor: true,
     bearerExcludedUrls: ['/assets', '/clients/public']
   }).then(success => {
