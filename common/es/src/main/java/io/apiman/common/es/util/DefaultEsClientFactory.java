@@ -113,7 +113,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             throw new RuntimeException("Missing client.host configuration for EsRegistry."); //$NON-NLS-1$
         }
 
-        logger.info(String.format("Demand elasticsearch client for %s:%d over %s for index prefix %s", host, port, protocol, indexNamePrefix));
+        logger.info(String.format("Demand elasticsearch-client for %s://%s:%d for index prefix %s", protocol, host, port, indexNamePrefix));
 
         synchronized (clients) {
             String clientKey = StringUtils.isNotBlank(indexNamePrefix) ? "es:" + host + ':' + port + '/' + indexNamePrefix : null;
@@ -122,7 +122,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
 
             if (clientKey != null && clients.containsKey(clientKey)) {
                 client = clients.get(clientKey);
-                logger.info("Use cached elasticsearch client with client key " + clientKey);
+                logger.info("Use cached elasticsearch-client with client key " + clientKey);
             } else {
                 CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
                 if(username != null && password != null) {
@@ -152,7 +152,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                     // put client to list if polling is successful
                     if(clientKey != null) {
                         clients.put(clientKey, client);
-                        logger.info(String.format("Created elasticsearch client for %s:%d over %s for index prefix %s", host, port, protocol, indexNamePrefix));
+                        logger.info(String.format("Created new elasticsearch-client for %s://%s:%d for index prefix %s", protocol, host, port, indexNamePrefix));
                     }
                 } catch (Exception e) {
                     logger.error(e);
