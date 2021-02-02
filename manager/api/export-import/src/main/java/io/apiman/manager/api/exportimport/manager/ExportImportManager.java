@@ -72,7 +72,7 @@ public class ExportImportManager {
 
     private void doImport() {
         IImportReader reader = eiFactories.get(config.getProvider()).createReader(config, importLogger);
-        importDispatcher.start();
+        importDispatcher.start(config.getJsonFile());
         reader.setDispatcher(importDispatcher);
         try {
             reader.read();

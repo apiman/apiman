@@ -268,7 +268,7 @@ public class SystemResourceImpl implements ISystemResource {
 
                 try {
                     importer.setLogger(logger);
-                    importer.start();
+                    importer.start(migratedImportFile.getAbsolutePath());
                     reader.setDispatcher(importer);
                     reader.read();
                 } catch (Exception e) {
