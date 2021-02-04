@@ -45,7 +45,7 @@ jobs:
           CHROMIUM_BIN: /usr/bin/google-chrome
       - name: Publish unit test results
         #Taken from https://github.com/marketplace/actions/publish-unit-test-results
-        uses: EnricoMi/publish-unit-test-result-action@v1.3
+        uses: EnricoMi/publish-unit-test-result-action@v1.7
         if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
