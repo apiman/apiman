@@ -239,12 +239,6 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             String trustStorePath = config.get("client.truststore");
             String trustStorePassword = config.get("client.truststore.password");
 
-            Path trustStorePathObject = Paths.get(trustStorePath);
-            KeyStore truststore = KeyStore.getInstance("pkcs12");
-            try (InputStream is = Files.newInputStream(trustStorePathObject)) {
-                truststore.load(is, trustStorePassword.toCharArray());
-            }
-
             SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
 
             String trustCertificate = config.get("client.trust.certificate");
