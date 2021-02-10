@@ -1,0 +1,58 @@
+POST /search/apis admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [],
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  },
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 5
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+  "beans":[
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"123456",
+      "name":"123456",
+      "description":"This is the description of 123456."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"654321",
+      "name":"654321",
+      "description":"This is the description of 654321."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"TESTAPI1",
+      "name":"TEST API 1",
+      "description":"This is the description of TEST API 1."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"TESTAPI2",
+      "name":"TEST API 2",
+      "description":"This is the description of TEST API 2."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"TestApi5",
+      "name":"Test Api 5",
+      "description":"This is the description of Test Api 5."
+    }
+  ],
+  "totalSize":10
+}

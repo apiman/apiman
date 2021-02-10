@@ -1,0 +1,85 @@
+POST /search/apis admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [
+    {
+      "name" : "name",
+      "value" : "*Test*",
+      "operator" : "like"
+    }
+  ],
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  },
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+  "beans":[
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"TESTAPI1",
+      "name":"TEST API 1",
+      "description":"This is the description of TEST API 1."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"TESTAPI2",
+      "name":"TEST API 2",
+      "description":"This is the description of TEST API 2."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"TestApi5",
+      "name":"Test Api 5",
+      "description":"This is the description of Test Api 5."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"TestApi6",
+      "name":"Test Api 6",
+      "description":"This is the description of Test Api 6."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"Test_Api_7",
+      "name":"Test_Api_7",
+      "description":"This is the description of Test_Api_7."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"Test_Api_8",
+      "name":"Test_Api_8",
+      "description":"This is the description of Test_Api_8."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"testapi3",
+      "name":"test api 3",
+      "description":"This is the description of test api 3."
+    },
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"testapi4",
+      "name":"test api 4",
+      "description":"This is the description of test api 4."
+    }
+  ],
+  "totalSize":8
+}

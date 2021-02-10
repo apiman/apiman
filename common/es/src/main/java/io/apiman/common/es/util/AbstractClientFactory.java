@@ -143,6 +143,7 @@ public abstract class AbstractClientFactory {
         CreateIndexRequest createIndexRequest = new CreateIndexRequest(indexToCreate);
         //add field properties to index
         final Map<String, Object> documentMapping = EsIndexMapping.getDocumentMapping(indexPrefix, indexPostfix);
+
         createIndexRequest.mapping(documentMapping);
         CreateIndexResponse createIndexResponse = client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
 

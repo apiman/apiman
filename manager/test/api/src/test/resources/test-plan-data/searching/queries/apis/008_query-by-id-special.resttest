@@ -1,0 +1,32 @@
+POST /search/apis admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [
+    {
+      "name" : "id",
+      "value" : "Test_Api_8",
+      "operator" : "eq"
+    }
+  ],
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+  "beans":[
+    {
+      "organizationId":"TestOrganization1",
+      "organizationName":"Test Organization 1",
+      "id":"Test_Api_8",
+      "name":"Test_Api_8",
+      "description":"This is the description of Test_Api_8."
+    }
+  ],
+  "totalSize":1
+}

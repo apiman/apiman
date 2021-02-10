@@ -3,29 +3,57 @@
 
   <!-- First, create a bunch of Organizations -->
   <testGroup name="Populate With Data">
-    <test name="Create Organization 1">test-plan-data/searching/populate/001_create.resttest</test>
-    <test name="Create Organization 2">test-plan-data/searching/populate/002_create.resttest</test>
-    <test name="Create Organization 3">test-plan-data/searching/populate/003_create.resttest</test>
-    <test name="Create Organization 4">test-plan-data/searching/populate/004_create.resttest</test>
-    <test name="Create Organization 5">test-plan-data/searching/populate/005_create.resttest</test>
-    <test name="Create Organization 6">test-plan-data/searching/populate/006_create.resttest</test>
-    <test name="Create Organization 7">test-plan-data/searching/populate/007_create.resttest</test>
-    <test name="Create Organization 8">test-plan-data/searching/populate/008_create.resttest</test>
-    <test name="Create Organization 9">test-plan-data/searching/populate/009_create.resttest</test>
-    <test name="Create Organization 10">test-plan-data/searching/populate/010_create.resttest</test>
+    <!-- Organizations -->
+    <test name="Create Organization 1">test-plan-data/searching/populate/organizations/001_create.resttest</test>
+    <test name="Create Organization 2">test-plan-data/searching/populate/organizations/002_create.resttest</test>
+    <test name="Create Organization 3">test-plan-data/searching/populate/organizations/003_create.resttest</test>
+    <test name="Create Organization 4">test-plan-data/searching/populate/organizations/004_create.resttest</test>
+    <test name="Create Organization 5">test-plan-data/searching/populate/organizations/005_create.resttest</test>
+    <test name="Create Organization 6">test-plan-data/searching/populate/organizations/006_create.resttest</test>
+    <test name="Create Organization 7">test-plan-data/searching/populate/organizations/007_create.resttest</test>
+    <test name="Create Organization 8">test-plan-data/searching/populate/organizations/008_create.resttest</test>
+    <test name="Create Organization 9">test-plan-data/searching/populate/organizations/009_create.resttest</test>
+    <test name="Create Organization 10">test-plan-data/searching/populate/organizations/010_create.resttest</test>
+    <!-- APIs -->
+    <test name="Create API 1">test-plan-data/searching/populate/apis/001_create.resttest</test>
+    <test name="Create API 2">test-plan-data/searching/populate/apis/002_create.resttest</test>
+    <test name="Create API 3">test-plan-data/searching/populate/apis/003_create.resttest</test>
+    <test name="Create API 4">test-plan-data/searching/populate/apis/004_create.resttest</test>
+    <test name="Create API 5">test-plan-data/searching/populate/apis/005_create.resttest</test>
+    <test name="Create API 6">test-plan-data/searching/populate/apis/006_create.resttest</test>
+    <test name="Create API 7">test-plan-data/searching/populate/apis/007_create.resttest</test>
+    <test name="Create API 8">test-plan-data/searching/populate/apis/008_create.resttest</test>
+    <test name="Create API 9">test-plan-data/searching/populate/apis/009_create.resttest</test>
+    <test name="Create API 10">test-plan-data/searching/populate/apis/010_create.resttest</test>
   </testGroup>
 
   <!-- Now, execute a number of queries -->
   <testGroup name="Test Various Queries">
-    <test name="Query All">test-plan-data/searching/queries/001_query-all.resttest</test>
-    <test name="Query First Page">test-plan-data/searching/queries/002_query-page-1.resttest</test>
-    <test name="Query Second Page">test-plan-data/searching/queries/003_query-page-2.resttest</test>
-    <test name="Query By ID">test-plan-data/searching/queries/004_query-by-id.resttest</test>
-    <test name="Descending Order">test-plan-data/searching/queries/005_query-order-by-desc.resttest</test>
-    <test name="Query By Name">test-plan-data/searching/queries/006_query-by-name.resttest</test>
-    <test name="Query API Catalogs">test-plan-data/searching/queries/007_query-api-catalog.resttest</test>
-    <test name="List API Catalog Namespaces">test-plan-data/searching/queries/008_list-api-namespaces.resttest</test>
-    <test name="Query By Name (Caps)">test-plan-data/searching/queries/009_query-by-name-caps.resttest</test>
+    <!-- Organizations -->
+    <test name="Query Organization All">test-plan-data/searching/queries/organizations/001_query-all.resttest</test>
+    <test name="Query Organization First Page">test-plan-data/searching/queries/organizations/002_query-page-1.resttest</test>
+    <test name="Query Organization Second Page">test-plan-data/searching/queries/organizations/003_query-page-2.resttest</test>
+    <test name="Query Organization By ID">test-plan-data/searching/queries/organizations/004_query-by-id.resttest</test>
+    <test name="Query Organization All Descending Order">test-plan-data/searching/queries/organizations/005_query-order-by-desc.resttest</test>
+    <test name="Query Organization By Name">test-plan-data/searching/queries/organizations/006_query-by-name.resttest</test>
+    <test name="Query Organization By Name (Caps)">test-plan-data/searching/queries/organizations/007_query-by-name-caps.resttest</test>
+    <!-- APIs -->
+    <test name="Query Api All">test-plan-data/searching/queries/apis/001_query-all.resttest</test>
+    <test name="Query Api All Descending Order">test-plan-data/searching/queries/apis/002_query-order-by-desc.resttest</test>
+    <test name="Query Api First Page">test-plan-data/searching/queries/apis/003_query-page-1.resttest</test>
+    <test name="Query Api Second Page">test-plan-data/searching/queries/apis/004_query-page-2.resttest</test>
+    <test name="Query Api By ID Uppercase">test-plan-data/searching/queries/apis/005_query-by-id-upper.resttest</test>
+    <test name="Query Api By ID Lowercase">test-plan-data/searching/queries/apis/006_query-by-id-lower.resttest</test>
+    <test name="Query Api By ID Mixedcase">test-plan-data/searching/queries/apis/007_query-by-id-mixed.resttest</test>
+    <test name="Query Api By ID Special">test-plan-data/searching/queries/apis/008_query-by-id-special.resttest</test>
+    <test name="Query Api By Name Uppercase">test-plan-data/searching/queries/apis/009_query-by-name-upper.resttest</test>
+    <test name="Query Api By Name Lowercase">test-plan-data/searching/queries/apis/010_query-by-name-lower.resttest</test>
+    <test name="Query Api By Name Mixedcase">test-plan-data/searching/queries/apis/011_query-by-name-mixed.resttest</test>
+    <test name="Query Api By Name Special">test-plan-data/searching/queries/apis/012_query-by-name-special.resttest</test>
+    <!-- Misc -->
+    <test name="Query API Catalogs">test-plan-data/searching/queries/misc/001_query-api-catalog.resttest</test>
+    <test name="List API Catalog Namespaces">test-plan-data/searching/queries/misc/002_query-api-namespaces.resttest</test>
+    <test name="Find Users by Name">test-plan-data/searching/queries/misc/003_query-users.resttest</test>
   </testGroup>
 
   <!-- Now, test that request validation is working -->
@@ -36,11 +64,6 @@
     <test name="Invalid Filter Name">test-plan-data/searching/validation/004_query-invalid-filter-name.resttest</test>
     <test name="Invalid Filter Value">test-plan-data/searching/validation/005_query-invalid-filter-value.resttest</test>
     <test name="Invalid Filter Operator">test-plan-data/searching/validation/006_query-invalid-filter-operator.resttest</test>
-  </testGroup>
-
-  <!-- How about some user testing? -->
-  <testGroup name="User Testing">
-    <test name="Find Users by Name">test-plan-data/searching/users/001_find-users.resttest</test>
   </testGroup>
 
 </testPlan>

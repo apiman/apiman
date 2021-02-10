@@ -1,0 +1,41 @@
+POST /search/apiCatalog/entries admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [
+    {
+      "name" : "name",
+      "value" : "Test",
+      "operator" : "like"
+    }
+  ],
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  },
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+  "beans": [
+    {
+      "endpoint": "http://api1.example.org/api",
+      "endpointType": "rest",
+      "name": "Test API 1",
+      "description": "The first test API."
+    },
+    {
+      "endpoint": "http://api2.example.org/api",
+      "endpointType": "rest",
+      "name": "Test API 2",
+      "description": "The second test API."
+    }
+  ],
+  "totalSize": 2
+}
