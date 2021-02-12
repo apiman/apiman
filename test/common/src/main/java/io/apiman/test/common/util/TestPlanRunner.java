@@ -34,6 +34,8 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -45,6 +47,7 @@ import org.custommonkey.xmlunit.ElementNameQualifier;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
+import org.junit.ComparisonFailure;
 import org.mvel2.MVEL;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
@@ -456,13 +459,20 @@ public class TestPlanRunner {
             List<String> lines = IOUtils.readLines(inputStream);
             StringBuilder builder = new StringBuilder();
             for (String line : lines) {
-                builder.append(line).append("\n");
+                // Replace single backslashes with double backslashes to escape them for the regex compiler.
+                // These occur for example in Windows paths
+                builder.append(line.replace("\\","\\\\")).append("\n");
             }
 
             String actual = builder.toString();
             String expected = restTest.getExpectedResponsePayload();
+
             if (expected != null) {
-                Assert.assertEquals("Response payload (text/plain) mismatch.", expected, actual);
+                Pattern pattern = Pattern.compile(expected);
+                Matcher matcher = pattern.matcher(actual);
+                if (!matcher.matches()) {
+                    throw new ComparisonFailure("Response payload (text/plain) mismatch.\n", expected, actual);
+                }
             }
         } catch (Exception e) {
             throw new Error(e);

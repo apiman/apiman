@@ -370,5 +370,5 @@ Content-Type: application/json
 Content-Type: text/plain;charset=utf-8
 
 INFO: ----------------------------
-INFO: Starting apiman data import.
+INFO: Starting apiman data import: .*apiman_import_migrated.*.json
 INFO: Import not needed.

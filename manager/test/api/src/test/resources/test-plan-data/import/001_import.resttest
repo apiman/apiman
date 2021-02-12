@@ -370,7 +370,7 @@ Content-Type: application/json
 Content-Type: text/plain;charset=utf-8
 
 INFO: ----------------------------
-INFO: Starting apiman data import.
+INFO: Starting apiman data import: .*apiman_import_migrated.*.json
 INFO: Importing a user: importeduser
 INFO: Importing a gateway: The Gateway
 INFO: Importing an organization: Organization 1
