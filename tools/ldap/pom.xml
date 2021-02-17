@@ -20,39 +20,38 @@
     </dependency>
     <dependency>
       <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-server-annotations</artifactId>
+      <version>${version.org.apache.directory.server}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
       <artifactId>apacheds-core-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.directory.server</groupId>
-      <artifactId>apacheds-core-entry</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.directory.server</groupId>
-      <artifactId>apacheds-i18n</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.directory.server</groupId>
-      <artifactId>apacheds-jdbm-partition</artifactId>
+      <version>${version.org.apache.directory.server}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.directory.server</groupId>
       <artifactId>apacheds-protocol-ldap</artifactId>
+      <version>${version.org.apache.directory.server}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.directory.server</groupId>
-      <artifactId>apacheds-server-annotations</artifactId>
+      <artifactId>apacheds-i18n</artifactId>
+      <version>${version.org.apache.directory.server}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-jdbm-partition</artifactId>
+      <version>${version.org.apache.directory.server}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-core-integ</artifactId>
+      <version>${version.org.apache.directory.server}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.directory.server</groupId>
       <artifactId>apacheds-test-framework</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.directory.shared</groupId>
-      <artifactId>shared-ldap</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.directory.shared</groupId>
-      <artifactId>shared-ldif</artifactId>
+      <version>${version.org.apache.directory.server}</version>
     </dependency>
   </dependencies>
   <build>

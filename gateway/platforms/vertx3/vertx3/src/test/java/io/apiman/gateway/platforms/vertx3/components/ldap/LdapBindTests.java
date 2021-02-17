@@ -30,7 +30,7 @@ import org.junit.Test;
 public class LdapBindTests extends LdapTestParent {
 
     @Test
-    public void bindPasswordSuccess() throws InterruptedException {
+    public void bindPasswordSuccess() {
         config.setBindDn("uid=admin,ou=system");
         config.setBindPassword("secret");
 
@@ -42,7 +42,7 @@ public class LdapBindTests extends LdapTestParent {
                      result.getError().printStackTrace(System.out);
 
                  context.assertTrue(result.isSuccess());
-                 context.assertTrue(result.getResult().getResultCode().equals(LdapResultCode.SUCCESS));
+                 context.assertEquals(LdapResultCode.SUCCESS, result.getResult().getResultCode());
                  async.complete();
              });
 
@@ -53,7 +53,7 @@ public class LdapBindTests extends LdapTestParent {
     }
 
     @Test
-    public void shouldFailWhenUidInvalid() throws InterruptedException {
+    public void shouldFailWhenUidInvalid() {
         config.setBindDn("uid=tacos,ou=system");
         config.setBindPassword("secret");
 
@@ -65,7 +65,7 @@ public class LdapBindTests extends LdapTestParent {
                      result.getError().printStackTrace(System.out);
 
                  context.assertTrue(result.isSuccess());
-                 context.assertTrue(result.getResult().getResultCode().equals(LdapResultCode.INVALID_CREDENTIALS));
+                 context.assertEquals(LdapResultCode.INVALID_CREDENTIALS, result.getResult().getResultCode());
                  async.complete();
              });
 
@@ -76,7 +76,7 @@ public class LdapBindTests extends LdapTestParent {
     }
 
     @Test
-    public void shouldFailWhenOuInvalid() throws InterruptedException {
+    public void shouldFailWhenOuInvalid() {
         config.setBindDn("uid=admin,ou=tacos");
         config.setBindPassword("secret");
 
@@ -88,7 +88,7 @@ public class LdapBindTests extends LdapTestParent {
                      result.getError().printStackTrace(System.out);
 
                  context.assertTrue(result.isSuccess());
-                 context.assertTrue(result.getResult().getResultCode().equals(LdapResultCode.INVALID_CREDENTIALS));
+                 context.assertEquals(LdapResultCode.INVALID_CREDENTIALS, result.getResult().getResultCode());
                  async.complete();
              });
 
@@ -99,7 +99,7 @@ public class LdapBindTests extends LdapTestParent {
     }
 
     @Test
-    public void shouldFailWhenPasswordInvalid() throws InterruptedException {
+    public void shouldFailWhenPasswordInvalid() {
         config.setBindDn("uid=admin,ou=system");
         config.setBindPassword("miso-soup");
 
@@ -108,7 +108,7 @@ public class LdapBindTests extends LdapTestParent {
 
              ldapClientComponent.bind(config, result -> {
                  context.assertTrue(result.isSuccess());
-                 context.assertTrue(result.getResult().getResultCode().equals(LdapResultCode.INVALID_CREDENTIALS));
+                 context.assertEquals(LdapResultCode.INVALID_CREDENTIALS, result.getResult().getResultCode());
                  async.complete();
              });
 
@@ -117,28 +117,4 @@ public class LdapBindTests extends LdapTestParent {
 
         completion.awaitSuccess();
     }
-
-    boolean runTwice = false;
-
-    @Test
-    public void shouldErrorWhenFieldsInvalid() throws InterruptedException {
-        config.setBindDn("x");
-        config.setBindPassword("x");
-
-        TestCompletion completion = TestSuite.create("").test("",  context -> {
-             Async async = context.async();
-
-             ldapClientComponent.bind(config, result -> {
-                 context.assertTrue(result.isSuccess());
-                 context.assertTrue(result.getResult().getResultCode().equals(LdapResultCode.INVALID_DN_SYNTAX));
-                 context.assertTrue(result.getResult().getMessage().equals("Incorrect DN given : x (0x78 ) is invalid"));
-                 async.complete();
-             });
-
-             async.awaitSuccess();
-        }).run();
-
-        completion.awaitSuccess();
-    }
-
 }

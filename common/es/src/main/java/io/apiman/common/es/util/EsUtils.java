@@ -29,6 +29,15 @@ public class EsUtils {
     }
 
     /**
+     * Backwards compatible name for "ES" and "jest" client.
+     * @return true if "jest" or "es"
+     */
+    public static boolean isEsOrJest(String esClientName) {
+        return "jest".equalsIgnoreCase(esClientName) ||
+            "es".equalsIgnoreCase(esClientName);
+    }
+
+    /**
      * Gets the root cause of an exception.
      * @param e the root cause
      * @return the throwable

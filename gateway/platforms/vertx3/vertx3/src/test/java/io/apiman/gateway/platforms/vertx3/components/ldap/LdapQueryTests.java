@@ -45,7 +45,7 @@ public class LdapQueryTests extends LdapTestParent  {
     }
 
     @Test
-    public void shouldConnectSuccessfully() throws InterruptedException {
+    public void shouldConnectSuccessfully()  {
         config.setBindDn("uid=admin,ou=system");
         config.setBindPassword("secret");
 
@@ -64,24 +64,25 @@ public class LdapQueryTests extends LdapTestParent  {
     }
 
     @Test
-    public void shouldCompleteSimpleQuery() throws InterruptedException {
+    public void shouldCompleteSimpleQuery()  {
         config.setBindDn("uid=admin,ou=system");
         config.setBindPassword("secret");
 
         connect((connection, context) -> {
             Async async = context.async();
             connection.search("ou=people,o=apiman", "(uid=msavy)", LdapSearchScope.SUBTREE)
-            .search(searchResult -> {
-                context.assertTrue(searchResult.isSuccess());
-                List<ILdapSearchEntry> result = searchResult.getResult();
-                context.assertEquals(1, result.size());
-                async.complete();
-            });
+                 .setLdapErrorHandler(result -> context.fail(result.getCause()))
+                 .search(searchResult -> {
+                    context.assertTrue(searchResult.isSuccess());
+                    List<ILdapSearchEntry> result = searchResult.getResult();
+                    context.assertEquals(1, result.size());
+                    async.complete();
+                });
         });
     }
 
     @Test
-    public void shouldCompleteMultipleSimpleQueries() throws InterruptedException {
+    public void shouldCompleteMultipleSimpleQueries()  {
         config.setBindDn("uid=admin,ou=system");
         config.setBindPassword("secret");
 
@@ -89,45 +90,48 @@ public class LdapQueryTests extends LdapTestParent  {
             Async async = context.async();
             Async async2 = context.async();
             connection.search("ou=people,o=apiman", "(uid=msavy)", LdapSearchScope.SUBTREE)
-            .search(searchResult -> {
-                context.assertTrue(searchResult.isSuccess());
+                 .setLdapErrorHandler(result -> context.fail(result.getCause()))
+                 .search(searchResult -> {
+                    context.assertTrue(searchResult.isSuccess());
 
-                List<ILdapSearchEntry> result = searchResult.getResult();
-                context.assertEquals(1, result.size());
-                async.complete();
-            });
+                    List<ILdapSearchEntry> result = searchResult.getResult();
+                    context.assertEquals(1, result.size());
+                    async.complete();
+                });
 
-            connection.search("ou=people,o=apiman", "(uid=ewittman)", LdapSearchScope.SUBTREE).
-            search(searchResult -> {
-                context.assertTrue(searchResult.isSuccess());
+            connection.search("ou=people,o=apiman", "(uid=ewittman)", LdapSearchScope.SUBTREE)
+                 .setLdapErrorHandler(result -> context.fail(result.getCause()))
+                 .search(searchResult -> {
+                    context.assertTrue(searchResult.isSuccess());
 
-                List<ILdapSearchEntry> result = searchResult.getResult();
-                context.assertEquals(1, result.size());
-                async2.complete();
-            });
+                    List<ILdapSearchEntry> result = searchResult.getResult();
+                    context.assertEquals(1, result.size());
+                    async2.complete();
+                });
         });
     }
 
     @Test
-    public void shouldReturnEmptyForUnmatchedFilter() throws InterruptedException {
+    public void shouldReturnEmptyForUnmatchedFilter()  {
         config.setBindDn("uid=admin,ou=system");
         config.setBindPassword("secret");
 
         connect((connection, context) -> {
             Async async = context.async();
             connection.search("ou=people,o=apiman", "(uid=sushi)", LdapSearchScope.SUBTREE)
-            .search(searchResult -> {
-                context.assertTrue(searchResult.isSuccess());
+                 .setLdapErrorHandler(result -> context.fail(result.getCause()))
+                 .search(searchResult -> {
+                     context.assertTrue(searchResult.isSuccess());
 
-                List<ILdapSearchEntry> result = searchResult.getResult();
-                context.assertEquals(0, result.size());
-                async.complete();
-            });
+                     List<ILdapSearchEntry> result = searchResult.getResult();
+                     context.assertEquals(0, result.size());
+                     async.complete();
+                 });
         });
     }
 
     @Test
-    public void shouldErrorIfSearchDnInvalid() throws InterruptedException {
+    public void shouldErrorIfSearchDnInvalid()  {
         config.setBindDn("uid=admin,ou=system");
         config.setBindPassword("secret");
 
@@ -146,7 +150,7 @@ public class LdapQueryTests extends LdapTestParent  {
     }
 
     @Test
-    public void shouldErrorIfSearchFilterInvalid() throws InterruptedException {
+    public void shouldErrorIfSearchFilterInvalid()  {
         config.setBindDn("uid=admin,ou=system");
         config.setBindPassword("secret");
 

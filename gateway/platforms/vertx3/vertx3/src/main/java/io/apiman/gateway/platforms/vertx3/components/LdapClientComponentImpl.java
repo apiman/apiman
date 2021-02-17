@@ -25,6 +25,7 @@ import io.apiman.gateway.engine.impl.DefaultLdapClientConnection;
 import io.apiman.gateway.engine.impl.DefaultLdapComponent;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.components.ldap.LdapClientConnectionImpl;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 
 import java.util.Map;
@@ -42,7 +43,7 @@ public class LdapClientComponentImpl extends DefaultLdapComponent {
 
     @Override
     public void connect(LdapConfigBean config, final IAsyncResultHandler<ILdapClientConnection> handler) {
-        final LdapClientConnectionImpl connection = new LdapClientConnectionImpl(vertx, config, DEFAULT_SOCKET_FACTORY);
+        final LdapClientConnectionImpl connection = new LdapClientConnectionImpl(vertx, config, socketFactory);
         connection.connect(result -> {
                 if (result.isSuccess()) {
                     handler.handle(AsyncResultImpl.create(connection));
@@ -54,9 +55,9 @@ public class LdapClientComponentImpl extends DefaultLdapComponent {
 
     @Override
     public void bind(LdapConfigBean config, IAsyncResultHandler<ILdapResult> handler) {
-        vertx.executeBlocking(blocking -> {
-            DefaultLdapClientConnection.bind(DEFAULT_SOCKET_FACTORY, config, handler);
-            blocking.succeeded();
+        vertx.executeBlocking((Promise<Object> blocking) -> {
+            DefaultLdapClientConnection.bind(socketFactory, config, handler);
+            blocking.complete();
         }, res -> {});
     }
 }

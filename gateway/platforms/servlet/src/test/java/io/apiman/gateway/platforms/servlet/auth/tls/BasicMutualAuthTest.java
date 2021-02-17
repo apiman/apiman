@@ -35,13 +35,14 @@ import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.net.ssl.SSLSocket;
-import javax.security.cert.CertificateException;
-import javax.security.cert.X509Certificate;
+import java.security.cert.X509Certificate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -177,16 +178,12 @@ public class BasicMutualAuthTest {
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
        IApiConnection connection = connector.connect(request,
-               new IAsyncResultHandler<IApiConnectionResponse>() {
+            (IAsyncResult<IApiConnectionResponse> result) -> {
+                if (result.isError())
+                    throw new RuntimeException(result.getError());
 
-        @Override
-        public void handle(IAsyncResult<IApiConnectionResponse> result) {
-            if (result.isError())
-                throw new RuntimeException(result.getError());
-
-          Assert.assertTrue(result.isSuccess());
-        }
-       });
+              Assert.assertTrue(result.isSuccess());
+            });
 
        connection.end();
     }
@@ -210,18 +207,14 @@ public class BasicMutualAuthTest {
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
        IApiConnection connection = connector.connect(request,
-               new IAsyncResultHandler<IApiConnectionResponse>() {
+            (IAsyncResult<IApiConnectionResponse> result) -> {
+                Assert.assertTrue(result.isError());
 
-        @Override
-        public void handle(IAsyncResult<IApiConnectionResponse> result) {
-            Assert.assertTrue(result.isError());
-
-            System.out.println(result.getError());
-            Assert.assertTrue(result.getError() instanceof ConnectorException);
-            // Would like to assert on SSL error, but is sun specific info
-            // TODO improve connector to handle this situation better
-        }
-       });
+                System.out.println(result.getError());
+                Assert.assertTrue(result.getError() instanceof ConnectorException);
+                // Would like to assert on SSL error, but is sun specific info
+                // TODO improve connector to handle this situation better
+            });
 
        connection.end();
     }
@@ -245,20 +238,16 @@ public class BasicMutualAuthTest {
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
         IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IApiConnectionResponse>() {
+             (IAsyncResult<IApiConnectionResponse> result) -> {
+                 Assert.assertTrue(result.isError());
 
-         @Override
-         public void handle(IAsyncResult<IApiConnectionResponse> result) {
-             Assert.assertTrue(result.isError());
+                 System.out.println(result.getError());
+                 Assert.assertTrue(result.getError() instanceof ConnectorException);
+                 // Would like to assert on SSL error, but is sun specific info
+                 // TODO improve connector to handle this situation better
+             });
 
-             System.out.println(result.getError());
-             Assert.assertTrue(result.getError() instanceof ConnectorException);
-             // Would like to assert on SSL error, but is sun specific info
-             // TODO improve connector to handle this situation better
-         }
-        });
-
-                connection.end();
+        connection.end();
     }
 
     /**
@@ -280,13 +269,9 @@ public class BasicMutualAuthTest {
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
        IApiConnection connection = connector.connect(request,
-               new IAsyncResultHandler<IApiConnectionResponse>() {
-
-        @Override
-        public void handle(IAsyncResult<IApiConnectionResponse> result) {
-            Assert.assertTrue(result.isSuccess());
-        }
-       });
+            (IAsyncResult<IApiConnectionResponse> result) -> {
+                Assert.assertTrue(result.isSuccess());
+            });
 
        connection.end();
     }
@@ -311,26 +296,23 @@ public class BasicMutualAuthTest {
 
         config.put(TLSOptions.TLS_KEYALIASES, "gateway2");
 
-        InputStream inStream = new FileInputStream(getResourcePath("2waytest/basic_mutual_auth_2/gateway2.cer"));
-        final X509Certificate expectedCert = X509Certificate.getInstance(inStream);
-        inStream.close();
+        X509Certificate expectedCert;
+        try(InputStream inStream = new FileInputStream(getResourcePath("2waytest/basic_mutual_auth_2/gateway2.cer"))) {
+            expectedCert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(inStream);
+        }
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
         IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IApiConnectionResponse>() {
+             (IAsyncResult<IApiConnectionResponse> result) -> {
+                 if (result.isError())
+                     throw new RuntimeException(result.getError());
 
-                    @Override
-                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
-                        if (result.isError())
-                            throw new RuntimeException(result.getError());
-
-                        Assert.assertTrue(result.isSuccess());
-                        // Assert that the expected certificate (associated with the private key by virtue)
-                        // was the one used.
-                        Assert.assertEquals(expectedCert.getSerialNumber(), clientSerial);
-                    }
-                });
+                 Assert.assertTrue(result.isSuccess());
+                 // Assert that the expected certificate (associated with the private key by virtue)
+                 // was the one used.
+                 Assert.assertEquals(expectedCert.getSerialNumber(), clientSerial);
+             });
 
         connection.end();
     }
@@ -355,26 +337,23 @@ public class BasicMutualAuthTest {
         // Only gateway2 is valid. `unrelated` is real but not trusted by API. others don't exist.
         config.put(TLSOptions.TLS_KEYALIASES, "unrelated, owt, or, nowt, gateway2, sonorous, unrelated");
 
-        InputStream inStream = new FileInputStream(getResourcePath("2waytest/basic_mutual_auth_2/gateway2.cer"));
-        final X509Certificate expectedCert = X509Certificate.getInstance(inStream);
-        inStream.close();
+        X509Certificate expectedCert;
+        try(InputStream inStream = new FileInputStream(getResourcePath("2waytest/basic_mutual_auth_2/gateway2.cer"))) {
+            expectedCert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(inStream);
+        }
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
         IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IApiConnectionResponse>() {
+             (IAsyncResult<IApiConnectionResponse> result) -> {
+                 if (result.isError())
+                     throw new RuntimeException(result.getError());
 
-                    @Override
-                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
-                        if (result.isError())
-                            throw new RuntimeException(result.getError());
-
-                        Assert.assertTrue(result.isSuccess());
-                        // Assert that the expected certificate (associated with the private key by virtue)
-                        // was the one used.
-                        Assert.assertEquals(expectedCert.getSerialNumber(), clientSerial);
-                    }
-                });
+                 Assert.assertTrue(result.isSuccess());
+                 // Assert that the expected certificate (associated with the private key by virtue)
+                 // was the one used.
+                 Assert.assertEquals(expectedCert.getSerialNumber(), clientSerial);
+             });
 
         connection.end();
     }
@@ -401,13 +380,9 @@ public class BasicMutualAuthTest {
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
         IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IApiConnectionResponse>() {
-
-                    @Override
-                    public void handle(IAsyncResult<IApiConnectionResponse> result) {
-                        Assert.assertTrue(result.isError());
-                    }
-                });
+             (IAsyncResult<IApiConnectionResponse> result) -> {
+                 Assert.assertTrue(result.isError());
+             });
 
                 connection.end();
     }
@@ -424,14 +399,10 @@ public class BasicMutualAuthTest {
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
         IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.DEFAULT, false, new ConnectorConfigImpl());
         IApiConnection connection = connector.connect(request,
-                new IAsyncResultHandler<IApiConnectionResponse>() {
-
-         @Override
-         public void handle(IAsyncResult<IApiConnectionResponse> result) {
-                 Assert.assertTrue(result.isError());
-                 System.out.println(result.getError());
-             }
-        });
+             (IAsyncResult<IApiConnectionResponse> result) -> {
+                     Assert.assertTrue(result.isError());
+                     System.out.println(result.getError());
+             });
 
         connection.end();
     }

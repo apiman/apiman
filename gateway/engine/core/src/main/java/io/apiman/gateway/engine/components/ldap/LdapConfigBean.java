@@ -15,6 +15,9 @@
  */
 package io.apiman.gateway.engine.components.ldap;
 
+import java.util.Objects;
+import java.util.StringJoiner;
+
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
@@ -104,5 +107,35 @@ public class LdapConfigBean {
      */
     public void setScheme(String scheme) {
         this.scheme = scheme;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LdapConfigBean)) {
+            return false;
+        }
+        LdapConfigBean that = (LdapConfigBean) o;
+        return port == that.port && Objects.equals(bindDn, that.bindDn) && Objects
+            .equals(bindPassword, that.bindPassword) && Objects.equals(host, that.host)
+            && Objects.equals(scheme, that.scheme);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bindDn, bindPassword, host, port, scheme);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", LdapConfigBean.class.getSimpleName() + "[", "]")
+            .add("bindDn='" + bindDn + "'")
+            .add("bindPassword='" + bindPassword + "'")
+            .add("host='" + host + "'")
+            .add("port=" + port)
+            .add("scheme='" + scheme + "'")
+            .toString();
     }
 }

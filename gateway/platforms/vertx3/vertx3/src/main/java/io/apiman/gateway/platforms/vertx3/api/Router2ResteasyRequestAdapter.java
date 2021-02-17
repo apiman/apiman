@@ -25,6 +25,7 @@ import io.vertx.core.net.NetSocket;
 import io.vertx.core.net.SocketAddress;
 import io.vertx.ext.web.RoutingContext;
 
+import java.util.Map;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 import javax.security.cert.X509Certificate;
@@ -234,6 +235,21 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     @Override
     public HttpServerRequest streamPriorityHandler(Handler<StreamPriority> handler) {
         return null;
+    }
+
+    @Override
+    public @Nullable Cookie getCookie(String name) {
+        return request.getCookie(name);
+    }
+
+    @Override
+    public int cookieCount() {
+        return request.cookieCount();
+    }
+
+    @Override
+    public Map<String, Cookie> cookieMap() {
+        return request.cookieMap();
     }
 
     @Override

@@ -1,12 +1,15 @@
 dn: ou=users,dc=example,dc=com
+changetype: add
 objectClass: organizationalUnit
 ou: Users
 
 dn: ou=groups,dc=example,dc=com
+changetype: add
 objectClass: organizationalUnit
 ou: groups
 
 dn: uid=admin,ou=users,dc=example,dc=com
+changetype: add
 objectClass: inetOrgPerson
 uid: admin
 userpassword: admin
@@ -14,6 +17,7 @@ cn: Admin
 sn: Admin
 
 dn: uid=user,ou=users,dc=example,dc=com
+changetype: add
 objectClass: inetOrgPerson
 uid: user
 cn: Arthur Dent
@@ -21,6 +25,7 @@ sn: Dent
 userpassword: user
 
 dn: uid=nobody,ou=users,dc=example,dc=com
+changetype: add
 objectClass: top
 objectClass: inetOrgPerson
 cn: The root
@@ -29,12 +34,14 @@ uid: nobody
 userpassword: nobody
 
 dn: cn=user,ou=groups,dc=example,dc=com
+changetype: add
 objectClass: groupOfNames
 cn: user
 member: uid=user
 member: uid=admin
 
 dn: cn=admin,ou=groups,dc=example,dc=com
+changetype: add
 objectClass: groupOfNames
 cn: admin
 member: uid=admin

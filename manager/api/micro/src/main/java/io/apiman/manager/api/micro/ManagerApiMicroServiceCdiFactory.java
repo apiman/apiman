@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.micro;
 
+import io.apiman.common.es.util.EsUtils;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -113,7 +114,7 @@ public class ManagerApiMicroServiceCdiFactory {
         IStorage storage;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = initJpaStorage(config, jpaStorage);
-        } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
+        } else if (EsUtils.isEsOrJest(config.getStorageType())) { //$NON-NLS-1$
             storage = new EsStorage(config.getStorageESClientFactoryConfig());
         } else {
             try {
@@ -137,7 +138,7 @@ public class ManagerApiMicroServiceCdiFactory {
                                                     IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageQueryType())) { //$NON-NLS-1$
             return initJpaStorage(config, jpaStorage);
-        } else if ("es".equals(config.getStorageQueryType())) { //$NON-NLS-1$
+        } else if (EsUtils.isEsOrJest(config.getStorageQueryType())) { //$NON-NLS-1$
             return new EsStorage(config.getStorageESClientFactoryConfig());
         } else {
             try {
@@ -153,7 +154,7 @@ public class ManagerApiMicroServiceCdiFactory {
     public static IMetricsAccessor provideMetricsAccessor(ManagerApiMicroServiceConfig config,
                                                           @New NoOpMetricsAccessor noopMetrics, IPluginRegistry pluginRegistry) {
         IMetricsAccessor metrics;
-        if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
+        if (EsUtils.isEsOrJest(config.getMetricsType())) { //$NON-NLS-1$
             metrics = new EsMetricsAccessor(config.getMetricsESClientFactoryConfig());
         } else {
             try {
@@ -212,7 +213,7 @@ public class ManagerApiMicroServiceCdiFactory {
 
     @Produces @ApplicationScoped @Named("storage-factory")
     public static IEsClientFactory provideStorageESClientFactory(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
-        if ("es".equals(config.getStorageType()) && sStorageESClientFactory == null) { //$NON-NLS-1$
+        if (EsUtils.isEsOrJest(config.getStorageType()) && sStorageESClientFactory == null) { //$NON-NLS-1$
             try {
                 String factoryClass = config.getStorageESClientFactory();
                 if (factoryClass == null) {
