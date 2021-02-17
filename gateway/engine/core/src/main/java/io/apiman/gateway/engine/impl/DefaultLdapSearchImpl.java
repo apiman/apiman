@@ -58,6 +58,10 @@ public class DefaultLdapSearchImpl implements ILdapSearch {
             List<SearchResultEntry> searchResults = connection.search(searchDn, searchScope, filter).getSearchEntries();
             result.handle(AsyncResultImpl.create(searchResults));
         } catch (LDAPException e) {
+            if (ldapErrorHandler == null) {
+                // TODO wire in logger
+                System.err.println("LDAP Error Handler not set. Error may be swallowed; this is probably not what you intended.");
+            }
             ldapErrorHandler.handle(DefaultExceptionFactory.create(e));
         } catch (Exception e) {
             result.handle(AsyncResultImpl.<List<SearchResultEntry>>create(e));
@@ -66,16 +70,12 @@ public class DefaultLdapSearchImpl implements ILdapSearch {
 
     @Override
     public void search(final IAsyncResultHandler<List<ILdapSearchEntry>> resultHandler) {
-        getResults(searchDn, filter, scope, new IAsyncResultHandler<List<SearchResultEntry>>() {
-
-            @Override
-            public void handle(IAsyncResult<List<SearchResultEntry>> results) {
-                if (results.isSuccess()) {
-                    List<ILdapSearchEntry> searchResults = toSearchEntry(results.getResult());
-                    resultHandler.handle(AsyncResultImpl.create(searchResults));
-                } else {
-                    resultHandler.handle(AsyncResultImpl.<List<ILdapSearchEntry>>create(results.getError()));
-                }
+        getResults(searchDn, filter, scope, (IAsyncResult<List<SearchResultEntry>> results) -> {
+            if (results.isSuccess()) {
+                List<ILdapSearchEntry> searchResults = toSearchEntry(results.getResult());
+                resultHandler.handle(AsyncResultImpl.create(searchResults));
+            } else {
+                resultHandler.handle(AsyncResultImpl.<List<ILdapSearchEntry>>create(results.getError()));
             }
         });
     }

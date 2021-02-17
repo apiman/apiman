@@ -72,8 +72,10 @@ public abstract class AbstractEsComponent {
      * @return the client factory to use to create the ES client
      */
     protected IEsClientFactory createEsClientFactory() {
-        String factoryClass = config.get("client.type"); //$NON-NLS-1$
-        if ("es".equals(factoryClass)) { //$NON-NLS-1$
+        String factoryClass = config.get("client.type");
+        // In order to maintain backwards compatibility, we still accept 'jest' for the factory name, even
+        // though jest has now been replaced with an official HTTP client from Elastic.
+        if (EsUtils.isEsOrJest(factoryClass)) { //$NON-NLS-1$
             factoryClass = DefaultEsClientFactory.class.getName();
         } else if ("local".equals(factoryClass)) { //$NON-NLS-1$
             factoryClass = LocalClientFactory.class.getName();
@@ -94,8 +96,10 @@ public abstract class AbstractEsComponent {
      * @throws IOException
      */
     protected void deleteIndices(RestHighLevelClient client) throws IOException {
+        // In order to maintain backwards compatibility, we still accept 'jest' for the factory name, even
+        // though jest has now been replaced with an official HTTP client from Elastic.
         String factoryClass = config.get("client.type"); //$NON-NLS-1$
-        if ("es".equals(factoryClass)) { //$NON-NLS-1$
+        if (EsUtils.isEsOrJest(factoryClass)) {
             DefaultEsClientFactory.deleteIndices(client);
         }
     }

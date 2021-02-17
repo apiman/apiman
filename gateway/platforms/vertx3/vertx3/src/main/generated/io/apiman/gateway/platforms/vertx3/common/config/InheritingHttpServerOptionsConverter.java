@@ -158,6 +158,16 @@ public class InheritingHttpServerOptionsConverter {
             obj.setMaxInitialLineLength(((Number)member.getValue()).intValue());
           }
           break;
+        case "maxWebSocketFrameSize":
+          if (member.getValue() instanceof Number) {
+            obj.setMaxWebSocketFrameSize(((Number)member.getValue()).intValue());
+          }
+          break;
+        case "maxWebSocketMessageSize":
+          if (member.getValue() instanceof Number) {
+            obj.setMaxWebSocketMessageSize(((Number)member.getValue()).intValue());
+          }
+          break;
         case "maxWebsocketFrameSize":
           if (member.getValue() instanceof Number) {
             obj.setMaxWebsocketFrameSize(((Number)member.getValue()).intValue());
@@ -183,9 +193,19 @@ public class InheritingHttpServerOptionsConverter {
             obj.setPemTrustOptions(new io.vertx.core.net.PemTrustOptions((JsonObject)member.getValue()));
           }
           break;
+        case "perFrameWebSocketCompressionSupported":
+          if (member.getValue() instanceof Boolean) {
+            obj.setPerFrameWebSocketCompressionSupported((Boolean)member.getValue());
+          }
+          break;
         case "perFrameWebsocketCompressionSupported":
           if (member.getValue() instanceof Boolean) {
             obj.setPerFrameWebsocketCompressionSupported((Boolean)member.getValue());
+          }
+          break;
+        case "perMessageWebSocketCompressionSupported":
+          if (member.getValue() instanceof Boolean) {
+            obj.setPerMessageWebSocketCompressionSupported((Boolean)member.getValue());
           }
           break;
         case "perMessageWebsocketCompressionSupported":
@@ -243,6 +263,16 @@ public class InheritingHttpServerOptionsConverter {
             obj.setSsl((Boolean)member.getValue());
           }
           break;
+        case "sslHandshakeTimeout":
+          if (member.getValue() instanceof Number) {
+            obj.setSslHandshakeTimeout(((Number)member.getValue()).longValue());
+          }
+          break;
+        case "sslHandshakeTimeoutUnit":
+          if (member.getValue() instanceof String) {
+            obj.setSslHandshakeTimeoutUnit(java.util.concurrent.TimeUnit.valueOf((String)member.getValue()));
+          }
+          break;
         case "tcpCork":
           if (member.getValue() instanceof Boolean) {
             obj.setTcpCork((Boolean)member.getValue());
@@ -286,6 +316,31 @@ public class InheritingHttpServerOptionsConverter {
         case "usePooledBuffers":
           if (member.getValue() instanceof Boolean) {
             obj.setUsePooledBuffers((Boolean)member.getValue());
+          }
+          break;
+        case "webSocketAllowServerNoContext":
+          if (member.getValue() instanceof Boolean) {
+            obj.setWebSocketAllowServerNoContext((Boolean)member.getValue());
+          }
+          break;
+        case "webSocketCompressionLevel":
+          if (member.getValue() instanceof Number) {
+            obj.setWebSocketCompressionLevel(((Number)member.getValue()).intValue());
+          }
+          break;
+        case "webSocketPreferredClientNoContext":
+          if (member.getValue() instanceof Boolean) {
+            obj.setWebSocketPreferredClientNoContext((Boolean)member.getValue());
+          }
+          break;
+        case "webSocketSubProtocols":
+          if (member.getValue() instanceof JsonArray) {
+            java.util.ArrayList<java.lang.String> list =  new java.util.ArrayList<>();
+            ((Iterable<Object>)member.getValue()).forEach( item -> {
+              if (item instanceof String)
+                list.add((String)item);
+            });
+            obj.setWebSocketSubProtocols(list);
           }
           break;
         case "websocketAllowServerNoContext":
@@ -374,6 +429,8 @@ public class InheritingHttpServerOptionsConverter {
     json.put("maxChunkSize", obj.getMaxChunkSize());
     json.put("maxHeaderSize", obj.getMaxHeaderSize());
     json.put("maxInitialLineLength", obj.getMaxInitialLineLength());
+    json.put("maxWebSocketFrameSize", obj.getMaxWebSocketFrameSize());
+    json.put("maxWebSocketMessageSize", obj.getMaxWebSocketMessageSize());
     json.put("maxWebsocketFrameSize", obj.getMaxWebsocketFrameSize());
     json.put("maxWebsocketMessageSize", obj.getMaxWebsocketMessageSize());
     if (obj.getOpenSslEngineOptions() != null) {
@@ -385,7 +442,9 @@ public class InheritingHttpServerOptionsConverter {
     if (obj.getPemTrustOptions() != null) {
       json.put("pemTrustOptions", obj.getPemTrustOptions().toJson());
     }
+    json.put("perFrameWebSocketCompressionSupported", obj.getPerFrameWebSocketCompressionSupported());
     json.put("perFrameWebsocketCompressionSupported", obj.getPerFrameWebsocketCompressionSupported());
+    json.put("perMessageWebSocketCompressionSupported", obj.getPerMessageWebSocketCompressionSupported());
     json.put("perMessageWebsocketCompressionSupported", obj.getPerMessageWebsocketCompressionSupported());
     if (obj.getPfxKeyCertOptions() != null) {
       json.put("pfxKeyCertOptions", obj.getPfxKeyCertOptions().toJson());
@@ -401,6 +460,10 @@ public class InheritingHttpServerOptionsConverter {
     json.put("sni", obj.isSni());
     json.put("soLinger", obj.getSoLinger());
     json.put("ssl", obj.isSsl());
+    json.put("sslHandshakeTimeout", obj.getSslHandshakeTimeout());
+    if (obj.getSslHandshakeTimeoutUnit() != null) {
+      json.put("sslHandshakeTimeoutUnit", obj.getSslHandshakeTimeoutUnit().name());
+    }
     json.put("tcpCork", obj.isTcpCork());
     json.put("tcpFastOpen", obj.isTcpFastOpen());
     json.put("tcpKeepAlive", obj.isTcpKeepAlive());
@@ -412,6 +475,14 @@ public class InheritingHttpServerOptionsConverter {
     }
     json.put("useAlpn", obj.isUseAlpn());
     json.put("usePooledBuffers", obj.isUsePooledBuffers());
+    json.put("webSocketAllowServerNoContext", obj.getWebSocketAllowServerNoContext());
+    json.put("webSocketCompressionLevel", obj.getWebSocketCompressionLevel());
+    json.put("webSocketPreferredClientNoContext", obj.getWebSocketPreferredClientNoContext());
+    if (obj.getWebSocketSubProtocols() != null) {
+      JsonArray array = new JsonArray();
+      obj.getWebSocketSubProtocols().forEach(item -> array.add(item));
+      json.put("webSocketSubProtocols", array);
+    }
     json.put("websocketAllowServerNoContext", obj.getWebsocketAllowServerNoContext());
     json.put("websocketCompressionLevel", obj.getWebsocketCompressionLevel());
     json.put("websocketPreferredClientNoContext", obj.getWebsocketPreferredClientNoContext());

@@ -5,6 +5,8 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
 import io.apiman.gateway.engine.components.ldap.ILdapResult;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * Allows simple BIND and query operations to an LDAP server.
@@ -29,4 +31,10 @@ public interface ILdapComponent extends IComponent {
      * @param handler the handler indicating the success of the LDAP BIND.
      */
     void bind(LdapConfigBean config, IAsyncResultHandler<ILdapResult> handler);
+
+    /**
+     * Set a custom socket factory for TLS
+     * @return this
+     */
+    ILdapComponent setSocketFactory(SSLSocketFactory socketFactory);
 }

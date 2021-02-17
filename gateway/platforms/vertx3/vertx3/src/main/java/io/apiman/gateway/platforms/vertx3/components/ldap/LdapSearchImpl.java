@@ -40,7 +40,9 @@ public class LdapSearchImpl extends DefaultLdapSearchImpl {
     @Override
     public void search(IAsyncResultHandler<List<ILdapSearchEntry>> result) {
         vertx.executeBlocking(blocking -> {
+            System.out.println("Blocking request starting");
             super.search(result);
+            System.out.println("Blocking request completed");
             blocking.complete();
         }, res -> {});
     }

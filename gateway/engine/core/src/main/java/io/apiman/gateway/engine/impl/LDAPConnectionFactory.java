@@ -43,7 +43,9 @@ public class LDAPConnectionFactory {
 
         @Override
         protected void handleRemovedElem(Map.Entry<LdapConfigBean, LDAPConnectionPool> eldest) {
-            eldest.getValue().close();
+            // When evicted, close the associated connection pool.
+            LDAPConnectionPool pool = eldest.getValue();
+            pool.close();
         }
     };
 
@@ -56,8 +58,13 @@ public class LDAPConnectionFactory {
     }
 
     public static void releaseConnection(LDAPConnection connection) {
-        if (connection != null && connection.getConnectionPool() != null)
-            connection.getConnectionPool().releaseConnection(connection);
+        if (connection != null) {
+            if (connection.getConnectionPool() != null) {
+                connection.getConnectionPool().releaseConnection(connection);
+            } else {
+                connection.close();
+            }
+        }
     }
 
     public static void releaseDefunct(LDAPConnection connection) {

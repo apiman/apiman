@@ -16,6 +16,7 @@
 
 package io.apiman.gateway.engine.impl;
 
+import com.unboundid.util.ssl.SSLUtil;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -24,30 +25,24 @@ import io.apiman.gateway.engine.components.ldap.ILdapClientConnection;
 import io.apiman.gateway.engine.components.ldap.ILdapResult;
 import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
 import io.apiman.gateway.engine.components.ldap.result.DefaultExceptionFactory;
-
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
-
-import com.unboundid.util.ssl.SSLUtil;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class DefaultLdapComponent implements ILdapComponent {
 
-    public DefaultLdapComponent() {
-    }
+    protected SSLSocketFactory socketFactory;
 
-    protected static SSLSocketFactory DEFAULT_SOCKET_FACTORY;
-
-    static {
+    {
         try {
-            TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            TrustManagerFactory tmFactory = TrustManagerFactory
+                .getInstance(TrustManagerFactory.getDefaultAlgorithm());
             tmFactory.init((KeyStore) null);
 
             X509TrustManager trustManager = null;
@@ -57,35 +52,42 @@ public class DefaultLdapComponent implements ILdapComponent {
                     break;
                 }
             }
-            DEFAULT_SOCKET_FACTORY = new SSLUtil(trustManager).createSSLSocketFactory();
-            } catch (GeneralSecurityException e) {
-                throw new RuntimeException(e);
-            }
+            socketFactory = new SSLUtil(trustManager).createSSLSocketFactory();
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public DefaultLdapComponent() {
+    }
+
+    /**
+     * Set a custom socket factory, if needed (for TLS).
+     */
+    public DefaultLdapComponent setSocketFactory(SSLSocketFactory socketFactory) {
+        this.socketFactory = socketFactory;
+        return this;
     }
 
     @Override
     public void connect(LdapConfigBean config, final IAsyncResultHandler<ILdapClientConnection> handler) {
-        final DefaultLdapClientConnection connection = new DefaultLdapClientConnection(config, DEFAULT_SOCKET_FACTORY);
-        connection.connect(new IAsyncResultHandler<ILdapResult>() {
-
-            @Override
-            public void handle(IAsyncResult<ILdapResult> result) {
-                if (result.isSuccess()) { // Could still be a non-success return
-                    ILdapResult ldapResult = result.getResult();
-                    if (ldapResult.getResultCode().isSuccess()) {
-                        handler.handle(AsyncResultImpl.<ILdapClientConnection>create(connection));
-                    } else { // We don't have any fine-grained handling of exceptions, so bundle all into one.
-                        handler.handle(AsyncResultImpl.<ILdapClientConnection>create(DefaultExceptionFactory.create(ldapResult)));
-                    }
-                } else {
-                    handler.handle(AsyncResultImpl.<ILdapClientConnection>create(result.getError()));
+        final DefaultLdapClientConnection connection = new DefaultLdapClientConnection(config, socketFactory);
+        connection.connect((IAsyncResult<ILdapResult> result) -> {
+            if (result.isSuccess()) { // Could still be a non-success return
+                ILdapResult ldapResult = result.getResult();
+                if (ldapResult.getResultCode().isSuccess()) {
+                    handler.handle(AsyncResultImpl.<ILdapClientConnection>create(connection));
+                } else { // We don't have any fine-grained handling of exceptions, so bundle all into one.
+                    handler.handle(AsyncResultImpl.<ILdapClientConnection>create(DefaultExceptionFactory.create(ldapResult)));
                 }
+            } else {
+                handler.handle(AsyncResultImpl.<ILdapClientConnection>create(result.getError()));
             }
         });
     }
 
     @Override
     public void bind(LdapConfigBean config, IAsyncResultHandler<ILdapResult> handler) {
-        DefaultLdapClientConnection.bind(DEFAULT_SOCKET_FACTORY, config, handler);
+        DefaultLdapClientConnection.bind(socketFactory, config, handler);
     }
 }

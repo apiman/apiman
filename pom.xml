@@ -85,12 +85,12 @@
     <version.deploy.plugin>2.8.2</version.deploy.plugin>
     <version.install.plugin>2.5.2</version.install.plugin>
     <version.jar.plugin>2.5</version.jar.plugin>
-    <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
+    <version.javadoc.plugin>3.2.0</version.javadoc.plugin>
     <version.maven-gpg-plugin.plugin>1.5</version.maven-gpg-plugin.plugin>
     <version.nexus-staging-maven-plugin.plugin>1.6.3</version.nexus-staging-maven-plugin.plugin>
     <version.resources.plugin>3.1.0</version.resources.plugin>
     <version.source.plugin>2.4</version.source.plugin>
-    <version.surefire.plugin>2.17</version.surefire.plugin>
+    <version.surefire.plugin>3.0.0-M5</version.surefire.plugin>
     <version.surefire-report.plugin>2.17</version.surefire-report.plugin>
     <version.failsafe.plugin>2.14</version.failsafe.plugin>
     <version.war.plugin>2.5</version.war.plugin>
@@ -105,7 +105,7 @@
     <version.com.lmax>3.4.2</version.com.lmax>
     <version.com.squareup.okhttp>2.4.0</version.com.squareup.okhttp>
     <version.com.squareup.okio>1.4.0</version.com.squareup.okio>
-    <version.com.unboundid.unboundid-ldapsdk>3.0.0</version.com.unboundid.unboundid-ldapsdk>
+    <version.com.unboundid.unboundid-ldapsdk>5.1.3</version.com.unboundid.unboundid-ldapsdk>
     <version.commons-beanutils>1.9.4</version.commons-beanutils>
     <version.commons-codec>1.10</version.commons-codec>
     <version.commons-collections>3.2.2</version.commons-collections>
@@ -124,10 +124,10 @@
     <version.junit>4.13.1</version.junit>
     <version.org.junit.jupiter>5.4.2</version.org.junit.jupiter>
     <version.org.apache.commons.commons-lang3>3.3.2</version.org.apache.commons.commons-lang3>
-    <version.org.apache.directory.server>1.5.7</version.org.apache.directory.server>
-    <version.org.apache.directory.shared-ldap>0.9.19</version.org.apache.directory.shared-ldap>
-    <version.org.apache.httpcomponents.httpclient>4.5.6</version.org.apache.httpcomponents.httpclient>
-    <version.org.apache.httpcomponents.httpcore>4.4.10</version.org.apache.httpcomponents.httpcore>
+    <version.org.apache.directory.server>2.0.0.AM25</version.org.apache.directory.server>
+    <version.org.apache.directory.api-all>2.0.0.AM2</version.org.apache.directory.api-all>
+    <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
+    <version.org.apache.httpcomponents.httpcore>4.4.14</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpasyncclient>4.1.4</version.org.apache.httpcomponents.httpasyncclient>
     <version.org.apache.logging.log4j>2.12.0</version.org.apache.logging.log4j>
     <version.org.eclipse.jetty>9.4.14.v20181114</version.org.eclipse.jetty>
@@ -140,33 +140,57 @@
     <version.org.jboss.jandex>2.0.2.Final</version.org.jboss.jandex>
     <version.org.jboss.logging.jboss-logging>3.3.0.Final</version.org.jboss.logging.jboss-logging>
     <version.org.jboss.resteasy>3.1.4.Final</version.org.jboss.resteasy>
-    <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
     <version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>1.0.0.Final</version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>
     <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.0.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
     <version.org.jboss.weld.weld>2.3.3.Final</version.org.jboss.weld.weld>
     <version.org.keycloak>12.0.1</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
-    <version.org.mvel>2.2.7.Final</version.org.mvel>
+    <version.org.mvel>2.4.12.Final</version.org.mvel>
     <version.org.osgi>4.2.0</version.org.osgi>
     <version.org.picketbox>4.9.6.Final</version.org.picketbox>
     <version.org.slf4j>1.7.21</version.org.slf4j>
-    <version.org.testcontainers>1.14.1</version.org.testcontainers>
-    <version.io.netty>4.1.8.Final</version.io.netty>
+    <version.org.testcontainers>1.15.2</version.org.testcontainers>
+    <version.io.netty>4.1.49.Final</version.io.netty>
     <version.io.swagger>1.6.0</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
-    <version.io.vertx>3.7.0</version.io.vertx>
+    <version.io.vertx>3.9.5</version.io.vertx>
     <version.net.openhft>0.6</version.net.openhft>
     <version.com.ibm.icu4j>57.1</version.com.ibm.icu4j>
     <version.com.hazelcast>3.6.4</version.com.hazelcast>
     <version.com.jcbai>1.16</version.com.jcbai>
-    <version.javax.json.javax.json-api>1.0</version.javax.json.javax.json-api>
-    <version.pl.allegro.tech.embedded-elastic>2.5.0</version.pl.allegro.tech.embedded-elastic>
     <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
-    <version.org.redisson>3.9.1</version.org.redisson>
+    <version.org.redisson>3.15.0</version.org.redisson>
+
+    <!-- Sun and javax dependencies to maintain compatibility with Java 9+ module changes -->
+    <version.com.sun.xml.ws>2.3.2</version.com.sun.xml.ws>
+    <version.javax.json.javax.json-api>1.0</version.javax.json.javax.json-api>
+    <version.javax.xml.bind>2.3.0</version.javax.xml.bind>
+    <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.sun.xml.ws</groupId>
+        <artifactId>jaxws-ri</artifactId>
+        <version>${version.com.sun.xml.ws}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>${version.javax.xml.bind}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-core</artifactId>
+        <version>${version.javax.xml.bind}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+        <version>${version.javax.xml.bind}</version>
+      </dependency>
       <!-- Internal Projects -->
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -707,11 +731,6 @@
         <version>${version.org.elasticsearch}</version>
       </dependency>
       <dependency>
-        <groupId>pl.allegro.tech</groupId>
-        <artifactId>embedded-elasticsearch</artifactId>
-        <version>${version.pl.allegro.tech.embedded-elastic}</version>
-      </dependency>
-      <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
         <version>${version.org.junit.jupiter}</version>
@@ -789,11 +808,6 @@
       </dependency>
       <dependency>
         <groupId>org.apache.directory.server</groupId>
-        <artifactId>apacheds-core-entry</artifactId>
-        <version>${version.org.apache.directory.server}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.directory.server</groupId>
         <artifactId>apacheds-protocol-ldap</artifactId>
         <version>${version.org.apache.directory.server}</version>
       </dependency>
@@ -808,14 +822,9 @@
         <version>${version.org.apache.directory.server}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.directory.shared</groupId>
-        <artifactId>shared-ldap</artifactId>
-        <version>${version.org.apache.directory.shared-ldap}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.directory.shared</groupId>
-        <artifactId>shared-ldif</artifactId>
-        <version>${version.org.apache.directory.shared-ldap}</version>
+        <groupId>org.apache.directory.api</groupId>
+        <artifactId>api-all</artifactId>
+        <version>${version.org.apache.directory.api-all}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.directory.server</groupId>
@@ -1083,9 +1092,9 @@
         <version>${version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.spec.javax.servlet</groupId>
-        <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-        <version>${version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec}</version>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>${version.jakarta.servlet}</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate.javax.persistence</groupId>
@@ -1337,36 +1346,13 @@
           <version>${version.docker.plugin}</version>
         </plugin>
         <plugin>
-          <groupId>io.vertx</groupId>
-          <artifactId>vertx-maven-plugin</artifactId>
-          <version>${version.vertx.plugin}</version>
-          <dependencies>
-            <dependency>
-              <groupId>io.vertx</groupId>
-              <artifactId>vertx-core</artifactId>
-              <version>${version.io.vertx}</version>
-            </dependency>
-            <dependency>
-              <groupId>io.vertx</groupId>
-              <artifactId>vertx-platform</artifactId>
-              <version>${version.io.vertx}</version>
-            </dependency>
-            <dependency>
-              <groupId>io.vertx</groupId>
-              <artifactId>vertx-hazelcast</artifactId>
-              <version>${version.io.vertx}</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${version.surefire.plugin}</version>
           <configuration>
-            <systemProperties>
+            <systemPropertyVariables>
               <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
-            </systemProperties>
-            <argLine>-Xmx1024m</argLine>
+            </systemPropertyVariables>
           </configuration>
         </plugin>
         <plugin>
@@ -1523,7 +1509,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>${maven.surefire.report.plugin.version}</version>
+        <version>${version.surefire-report.plugin}</version>
       </plugin>
     </plugins>
   </reporting>
@@ -1638,7 +1624,9 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
+              <doclint>none</doclint>
+              <!-- https://bugs.openjdk.java.net/browse/JDK-8212233 -->
+              <source>8</source>
             </configuration>
           </plugin>
         </plugins>

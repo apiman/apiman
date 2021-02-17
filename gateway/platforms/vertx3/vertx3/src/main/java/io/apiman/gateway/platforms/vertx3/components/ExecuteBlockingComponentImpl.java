@@ -25,6 +25,7 @@ import io.apiman.gateway.engine.components.IExecuteBlockingComponent;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 
 import java.util.Map;
@@ -43,8 +44,8 @@ public class ExecuteBlockingComponentImpl implements IExecuteBlockingComponent {
 
     @Override
     public <T> void executeBlocking(IAsyncHandler<IAsyncFuture<T>> blockingCode, IAsyncResultHandler<T> resultHandler) {
-        vertx.<T>executeBlocking(future -> {
-            blockingCode.handle(wrapFuture(future));
+        vertx.<T>executeBlocking((Promise<T> future) -> {
+            blockingCode.handle(wrapPromise(future));
         }, result -> {
             resultHandler.handle(wrapResult(result));
         });
@@ -58,12 +59,12 @@ public class ExecuteBlockingComponentImpl implements IExecuteBlockingComponent {
         }
     }
 
-    private <T> IAsyncFuture<T> wrapFuture(Future<T> future) {
+    private <T> IAsyncFuture<T> wrapPromise(Promise<T> promise) {
         return IAsyncFuture.<T>create().setActionHandler(action -> {
             if (action.isSuccess()) {
-                future.complete(action.getResult());
+                promise.complete(action.getResult());
             } else {
-                future.fail(action.getError());
+                promise.fail(action.getError());
             }
         });
     }

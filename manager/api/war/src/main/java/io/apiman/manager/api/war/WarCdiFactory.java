@@ -16,6 +16,7 @@
 package io.apiman.manager.api.war;
 
 import io.apiman.common.es.util.DefaultEsClientFactory;
+import io.apiman.common.es.util.EsUtils;
 import io.apiman.common.es.util.IEsClientFactory;
 import io.apiman.common.logging.IApimanDelegateLogger;
 import io.apiman.common.logging.IApimanLogger;
@@ -26,7 +27,14 @@ import io.apiman.common.util.ReflectionUtils;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.idm.UserBean;
-import io.apiman.manager.api.core.*;
+import io.apiman.manager.api.core.IApiCatalog;
+import io.apiman.manager.api.core.IApiKeyGenerator;
+import io.apiman.manager.api.core.IMetricsAccessor;
+import io.apiman.manager.api.core.INewUserBootstrapper;
+import io.apiman.manager.api.core.IPluginRegistry;
+import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.IStorageQuery;
+import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -42,15 +50,14 @@ import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
-import org.apache.commons.lang3.StringUtils;
-
+import java.lang.reflect.Constructor;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
-import java.lang.reflect.Constructor;
-import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -112,7 +119,7 @@ public class WarCdiFactory {
         IStorage storage;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = initJpaStorage(config, jpaStorage);
-        } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
+        } else if (EsUtils.isEsOrJest(config.getStorageType())) { //$NON-NLS-1$
             storage = new EsStorage(config.getStorageESClientFactoryConfig());
         } else {
             try {
@@ -129,7 +136,7 @@ public class WarCdiFactory {
     public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage, IStorage storage, IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             return initJpaStorage(config, jpaStorage);
-        } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
+        } else if (EsUtils.isEsOrJest(config.getStorageType())) { //$NON-NLS-1$
             return new EsStorage(config.getStorageESClientFactoryConfig());
         } else if (storage != null && storage instanceof IStorageQuery) {
             return (IStorageQuery) storage;
@@ -147,7 +154,7 @@ public class WarCdiFactory {
     public static IMetricsAccessor provideMetricsAccessor(WarApiManagerConfig config,
                                                           @New NoOpMetricsAccessor noopMetrics, IPluginRegistry pluginRegistry) {
         IMetricsAccessor metrics;
-        if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
+        if (EsUtils.isEsOrJest(config.getMetricsType())) { //$NON-NLS-1$
             metrics = new EsMetricsAccessor(config.getStorageESClientFactoryConfig());
         } else if (config.getMetricsType().equals(EsMetricsAccessor.class.getName())) {
             metrics = new EsMetricsAccessor(config.getStorageESClientFactoryConfig());
@@ -212,7 +219,7 @@ public class WarCdiFactory {
 
     @Produces @ApplicationScoped @Named("storage-factory")
     public static IEsClientFactory provideStorageESClientFactory(WarApiManagerConfig config, IPluginRegistry pluginRegistry) {
-        if ("es".equals(config.getStorageType()) && sStorageEsClientFactory == null) { //$NON-NLS-1$
+        if (EsUtils.isEsOrJest(config.getStorageType()) && sStorageEsClientFactory == null) { //$NON-NLS-1$
             try {
                 String factoryClass = config.getStorageESClientFactory();
                 if (factoryClass == null) {
