@@ -33,13 +33,53 @@ else
   export LOGO_FILE_URL="assets/ScheerPASLogo.svg"
 fi
 
+# Set the default about logo
+if [ -n "$ABOUT_LOGO_FILE_URL" ]
+then
+  printf "Using custom about img url: %s\n" "$ABOUT_LOGO_FILE_URL"
+else
+  export ABOUT_LOGO_FILE_URL="assets/about-logo.png"
+fi
+
+# Set the fist link
+if [ -n "$FIRST_LINK" ]
+then
+  printf "Using first link: %s\n" "$FIRST_LINK"
+else
+  export FIRST_LINK="https://scheer-pas.com"
+fi
+
+# Set the fist link label
+if [ -n "$FIRST_LINK_LABEL" ]
+then
+  printf "Using first link label: %s\n" "$FIRST_LINK_LABEL"
+else
+  export FIRST_LINK_LABEL="Project Site"
+fi
+
+# Set the second link
+if [ -n "$SECOND_LINK" ]
+then
+  printf "Using second link: %s\n" "$SECOND_LINK"
+else
+  export SECOND_LINK="https://doc.scheer-pas.com/display/APIMGMNT"
+fi
+
+# Set the second link label
+if [ -n "$SECOND_LINK_LABEL" ]
+then
+  printf "Using second link label: %s\n" "$SECOND_LINK_LABEL"
+else
+  export SECOND_LINK_LABEL="User Guide"
+fi
+
 
 # replace all occurences of placeholders with environment variables
 # see https://blog.codecentric.de/en/2019/03/docker-angular-dockerize-app-easily/
 
 for mainFileName in /usr/share/nginx/html/main*.js
 do
-  envsubst "\$KEYCLOAK_REALM \$API_MGMT_UI_REST_URL \$KEYCLOAK_AUTH_URL \$LOGO_FILE_URL"  < "$mainFileName" > main.tmp
+  envsubst "\$KEYCLOAK_REALM \$API_MGMT_UI_REST_URL \$KEYCLOAK_AUTH_URL \$LOGO_FILE_URL \$ABOUT_LOGO_FILE_URL \$FIRST_LINK \$FIRST_LINK_LABEL \$SECOND_LINK \$SECOND_LINK_LABEL"  < "$mainFileName" > main.tmp
   mv main.tmp "${mainFileName}"
 done
 

@@ -16,6 +16,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { version } from '../../../package.json';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-about',
@@ -25,6 +26,11 @@ import { version } from '../../../package.json';
 export class AboutComponent implements OnInit {
 
   public devportalVersion: string;
+  public aboutLogo: string = environment.aboutLogoUrl;
+  public firstLink: string = environment.firstLink;
+  public firstLinkLabel: string = environment.firstLinkLabel;
+  public secondLink: string = environment.secondLink;
+  public secondLinkLabel: string = environment.secondLinkLabel;
 
   constructor() { }
 
