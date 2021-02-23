@@ -52,6 +52,7 @@ import org.apache.directory.server.ldap.handlers.extended.StartTlsHandler;
 import org.apache.directory.server.ldap.handlers.sasl.plain.PlainMechanismHandler;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -61,6 +62,7 @@ import org.junit.runner.RunWith;
  *
  * @author jhauray
  */
+@Ignore
 @SuppressWarnings({ "nls", "javadoc" })
 @RunWith(FrameworkRunner.class)
 @CreateLdapServer(
