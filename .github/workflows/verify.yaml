@@ -2,7 +2,6 @@ name: Verify Build Workflow
 on:
   push:
     paths-ignore:
-      - '.github/**'
       - '.gitignore'
       - 'LICENSE'
       - 'README*'
