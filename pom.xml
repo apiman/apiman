@@ -150,7 +150,7 @@
     <version.org.picketbox>4.9.6.Final</version.org.picketbox>
     <version.org.slf4j>1.7.21</version.org.slf4j>
     <version.org.testcontainers>1.15.2</version.org.testcontainers>
-    <version.io.netty>4.1.49.Final</version.io.netty>
+    <version.io.netty>4.1.59.Final</version.io.netty>
     <version.io.swagger>1.6.0</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.5</version.io.vertx>
