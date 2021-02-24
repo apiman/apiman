@@ -9,6 +9,39 @@
   <artifactId>apiman-manager-test-api</artifactId>
   <name>apiman-manager-test-api</name>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${version.surefire.plugin}</version>
+        <dependencies>
+          <!-- Make sure we support JUnit 5 also (aka. Jupiter) -->
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit-platform</artifactId>
+            <version>${version.surefire.plugin}</version>
+          </dependency>
+          <!--
+            History repeating itself: another dep pulled in TestNG.
+            This then caused surefire not to run JUnit, but instead runs TestNG.
+            The result is a 'pass' with 0 tests run.
+            This is the official way to force surefire to run JUnit:
+            https://maven.apache.org/surefire/maven-surefire-plugin/examples/providers.html
+            -->
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit47</artifactId>
+            <version>${version.surefire.plugin}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <failIfNoTests>true</failIfNoTests>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
