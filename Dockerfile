@@ -14,6 +14,9 @@ RUN npm run build-production
 # Stage 2
 FROM nginx:1.19.2-alpine
 
+# one of pas-service|pas-app|database|xuml-service|python-service|other
+LABEL com.scheer-pas.container-type="pas-app"
+
 COPY --from=base /usr/src/app/dist/api-mgmt-dev-portal /usr/share/nginx/html
 
 #copy ssl keys
