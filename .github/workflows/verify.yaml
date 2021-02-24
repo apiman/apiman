@@ -54,7 +54,7 @@ jobs:
       - name: Build and Publish Docker Images & Deploy OSSRH Snapshots
         if: github.ref == 'refs/heads/master' && matrix.java == 8
         run: |
-          mvn clean package docker:build -P docker -DskipTests
+          mvn -B clean package docker:build -P docker -DskipTests
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker push apiman/on-wildfly:latest
           mvn -B deploy
