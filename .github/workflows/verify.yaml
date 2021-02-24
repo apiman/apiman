@@ -31,6 +31,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
+          server-id: ${{ secrets.OSSRH_ID }}
+          server-username: ${{ secrets.OSSRH_USERNAME }}
+          server-password: ${{ secrets.OSSRH_TOKEN }}
       - name: Build Project
         run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true -T1C -B
       - name: Run Tests (Servlet ES)
@@ -48,9 +51,13 @@ jobs:
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-file
       - name: Run Tests (AMG 1)
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=amg-1
-      - name: Build and Publish Docker Images
+      - name: Build and Publish Docker Images & Deploy OSSRH Snapshots
         if: github.ref == 'refs/heads/master'
         run: |
           mvn clean package docker:build -P docker -DskipTests
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker push apiman/on-wildfly:latest
+          mvn -B deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
