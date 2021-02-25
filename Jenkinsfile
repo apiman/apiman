@@ -46,7 +46,7 @@ pipeline {
         }
       }
       steps {
-        sh "npm install --cache /tmp"
+        sh "npm ci --cache /tmp"
         sh "npm run build"
         sh "npm run test"
       }
