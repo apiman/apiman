@@ -56,7 +56,7 @@ jobs:
       - name: Build Project
         run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -T1C -B
 
-      - name: Run platform-specific integration tests ({{ matrix.integration-suite.name }})
+      - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
 
       - name: Publish Test Report
@@ -83,28 +83,7 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-      - name: Build Project
-        run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true -T1C -B
-      - name: Run Tests (Servlet ES)
-        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es
-      - name: Run Tests (Vert.x 3 Mem)
-        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-mem
-      - name: Run Tests (Vert.x 3 ES)
-        env:
-          ELASTICSEARCH_VERSION: $(mvn help:evaluate -Dexpression=version.org.elasticsearch -q -DforceStdout) 
-        run: |
-          docker run -d -p 19250:9200 -p 9300:9300 -e "discovery.type=single-node" --name=elasticsearch-7 docker.elastic.co/elasticsearch/elasticsearch-oss:${{ env.ELASTICSEARCH_VERSION }}
-          mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-es
-          docker stop elasticsearch-7 && docker rm elasticsearch-7
-      - name: Run Tests (Vert.x 3 File)
-        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-file
-      - name: Run Tests (AMG 1)
-        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=amg-1
-      - name: Publish Test Report
-        if: ${{ always() }}
-        uses: scacap/action-surefire-report@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}  
+      
       - name: Build and Publish Docker Images & Deploy OSSRH Snapshots
         run: |
           mvn -B clean package docker:build -P docker -DskipTests
