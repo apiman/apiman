@@ -73,6 +73,7 @@
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
     <!-- Plugin Versions -->
+    <version.ant>1.10.9</version.ant>
     <version.antrun.plugin>1.7</version.antrun.plugin>
     <version.assembly.plugin>3.2.0</version.assembly.plugin>
     <version.buildhelper.plugin>1.9.1</version.buildhelper.plugin>
@@ -1264,6 +1265,13 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
           <version>${version.antrun.plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.ant</groupId>
+              <artifactId>ant</artifactId>
+              <version>${version.ant}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
