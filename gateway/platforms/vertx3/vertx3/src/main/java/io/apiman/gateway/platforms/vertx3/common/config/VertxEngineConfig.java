@@ -49,6 +49,8 @@ import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate;
 import io.vertx.core.json.JsonObject;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
@@ -103,7 +105,9 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String SSL_PATH = "path";
     private static final String VARIABLES = "variables";
 
-    private JsonObject config;
+    private static final Logger logger = LoggerFactory.getLogger(VertxEngineConfig.class);
+
+    private final JsonObject config;
 
     public VertxEngineConfig(JsonObject config) {
         this.config = config;
@@ -322,14 +326,16 @@ public class VertxEngineConfig implements IEngineConfig {
 
     @SuppressWarnings("unchecked")
     protected void jsonMapToProperties(String pathSoFar, Object value, Map<String, String> output) {
-        if (value instanceof Map) { // Descend again
+        if (value instanceof Map) {
+            // Descend again
             Map<String, Object> map = (Map<String, Object>) value;
-            map.entrySet()
-                .forEach(elem -> jsonMapToProperties(determineKey(pathSoFar, elem.getKey()), elem.getValue(), output));
-        } else if (value instanceof List) { // Join objects and descend
+            map.forEach((key, value1) -> jsonMapToProperties(determineKey(pathSoFar, key), value1, output));
+        } else if (value instanceof List) {
+            // Join objects and descend
             List<Object> list = (List<Object>) value;
             list.forEach(elem -> jsonMapToProperties(pathSoFar, elem, output));
-        } else { // Value
+        } else {
+            // Value
             if (output.containsKey(pathSoFar)) {
                 output.put(pathSoFar, SimpleStringUtils.join(",", output.get(pathSoFar), valueOrNull(value)));
             } else {
@@ -465,9 +471,13 @@ public class VertxEngineConfig implements IEngineConfig {
         node.forEach(elem -> {
            Object value = elem.getValue();
            if (value instanceof JsonObject) {
+               // If still a JSON object, we haven't reached the leaf yet, so keep recursing.
                substituteLeafVars((JsonObject) value);
            } else if (value instanceof String) {
-               node.put(elem.getKey(), SUBSTITUTOR.replace((String) value));
+               // Use substitutor to replace the value, looking in various locations such as sys props and env
+               String newValue = SUBSTITUTOR.replace((String) value);
+               node.put(elem.getKey(), newValue);
+               logger.trace("Variable substitution: {0} = ({1} -> {2})", elem.getKey(), value, newValue);
            }
         });
     }

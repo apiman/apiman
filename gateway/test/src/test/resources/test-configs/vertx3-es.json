@@ -1,5 +1,5 @@
 {
-    "factory" : "io.apiman.gateway.test.junit.vertx3.Vertx3GatewayTestServerFactory",
+    "factory" : "io.apiman.gateway.test.junit.vertx3.Vertx3GatewayEsServerFactory",
     "config" : "vertx3/conf-es.json",
     "resetter" : "io.apiman.gateway.test.junit.vertx3.EsResetter"   
 }

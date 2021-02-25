@@ -92,12 +92,12 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
      */
     private RestHighLevelClient createEsClient(Map<String, String> config, String indexNamePrefix, List<String> defaultIndices) {
         String host = config.get("client.host"); //$NON-NLS-1$
-        Integer port = NumberUtils.toInt(config.get("client.port"), 9200); //$NON-NLS-1$
+        int port = NumberUtils.toInt(config.get("client.port"), 9200); //$NON-NLS-1$
         String protocol = config.get("client.protocol"); //$NON-NLS-1$
         String initialize = config.get("client.initialize"); //$NON-NLS-1$
         String username = config.get("client.username"); //$NON-NLS-1$
         String password = config.get("client.password"); //$NON-NLS-1$
-        Integer timeout = NumberUtils.toInt(config.get("client.timeout"), 10000); //$NON-NLS-1$
+        int timeout = NumberUtils.toInt(config.get("client.timeout"), 10000); //$NON-NLS-1$
 
         long pollingTime = NumberUtils.toLong(config.get("client.polling.time"), 600); //$NON-NLS-1$
 

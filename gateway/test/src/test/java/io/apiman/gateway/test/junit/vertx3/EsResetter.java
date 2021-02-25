@@ -51,7 +51,7 @@ public class EsResetter extends AbstractEsComponent implements Resetter {
             // and subtly horrible things will happen, and you'll waste a whole day debugging it! :-)
             DefaultEsClientFactory.clearClientCache();
 
-            final RestHighLevelClient client = getClient();
+            final RestHighLevelClient client = super.getClient();
             deleteIndices(client, latch);
 
             client.indices().flush(new FlushRequest(), RequestOptions.DEFAULT);

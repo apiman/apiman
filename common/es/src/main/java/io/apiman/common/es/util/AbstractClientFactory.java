@@ -38,9 +38,9 @@ public abstract class AbstractClientFactory {
 
     private static IApimanLogger logger = new DefaultDelegateFactory().createLogger(AbstractClientFactory.class);
 
-    protected static Map<String, RestHighLevelClient> clients = new HashMap<>();
+    protected static final Map<String, RestHighLevelClient> clients = new HashMap<>();
 
-    protected static Set<String> createdIndices = new HashSet<String>();
+    protected static final Set<String> createdIndices = new HashSet<>();
 
     /**
      * Clears all the clients from the cache.  Useful for unit testing.

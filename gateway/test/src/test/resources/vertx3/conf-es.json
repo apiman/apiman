@@ -17,7 +17,7 @@
         "type": "${test.foo.es.type}",
         "cluster-name": "elasticsearch",
         "host": "localhost",
-        "port": 19250,
+        "port": "${test.TEST_CONTAINERS_ES_PORT}",
         "initialize": true,
         "polling": {
           "time": 60,
@@ -93,7 +93,7 @@
             "type": "es",
             "cluster-name": "elasticsearch",
             "host": "localhost",
-            "port": 19250,
+            "port": "${test.TEST_CONTAINERS_ES_PORT}",
             "initialize": true,
             "polling": {
               "time": 60,
@@ -110,7 +110,7 @@
             "type": "es",
             "cluster-name": "elasticsearch",
             "host": "localhost",
-            "port": 19250,
+            "port": "${test.TEST_CONTAINERS_ES_PORT}",
             "initialize": true,
             "polling": {
               "time": 60,
