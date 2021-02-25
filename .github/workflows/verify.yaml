@@ -51,6 +51,11 @@ jobs:
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=vertx3-file
       - name: Run Tests (AMG 1)
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B -Dapiman.gateway-test.config=amg-1
+      - name: Publish Test Report
+        if: ${{ always() }}
+        uses: scacap/action-surefire-report@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  
       - name: Build and Publish Docker Images & Deploy OSSRH Snapshots
         if: github.ref == 'refs/heads/master' && matrix.java == 8
         run: |
