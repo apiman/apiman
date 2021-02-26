@@ -16,8 +16,6 @@
 
 package io.apiman.common.es.util;
 
-import org.elasticsearch.common.collect.List;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -308,7 +306,9 @@ public class EsIndexMapping {
                     break;
             }
         }
-        setIndexMapping(fieldNames, indexFieldProperties);
+        if (fieldNames != null) {
+            setIndexMapping(fieldNames, indexFieldProperties);
+        }
         return indexFieldProperties;
     }
 
@@ -331,10 +331,10 @@ public class EsIndexMapping {
      * @param indexFieldProperties the index field properties
      */
     private static void setDateTypeToIndexField(String fieldName, Map<String, Object> indexFieldProperties) {
-        // create keyword type property
-        Map<String, Object> keywordTypeProperty = new HashMap<>();
-        keywordTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_DATE);
-        setFieldMapping(fieldName, keywordTypeProperty, indexFieldProperties);
+        // create date type property
+        Map<String, Object> dateTypeProperty = new HashMap<>();
+        dateTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_DATE);
+        setFieldMapping(fieldName, dateTypeProperty, indexFieldProperties);
     }
 
     /**
@@ -344,10 +344,10 @@ public class EsIndexMapping {
      * @param indexFieldProperties the index field properties
      */
     private static void setBooleanTypeToIndexField(String fieldName, Map<String, Object> indexFieldProperties) {
-        // create keyword type property
-        Map<String, Object> keywordTypeProperty = new HashMap<>();
-        keywordTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_BOOLEAN);
-        setFieldMapping(fieldName, keywordTypeProperty, indexFieldProperties);
+        // create boolean type property
+        Map<String, Object> booleanTypeProperty = new HashMap<>();
+        booleanTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_BOOLEAN);
+        setFieldMapping(fieldName, booleanTypeProperty, indexFieldProperties);
     }
 
     /**
@@ -357,10 +357,10 @@ public class EsIndexMapping {
      * @param indexFieldProperties the index field properties
      */
     private static void setIpTypeToIndexField(String fieldName, Map<String, Object> indexFieldProperties) {
-        // create keyword type property
-        Map<String, Object> keywordTypeProperty = new HashMap<>();
-        keywordTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_IP);
-        setFieldMapping(fieldName, keywordTypeProperty, indexFieldProperties);
+        // create ip type property
+        Map<String, Object> ipTypeProperty = new HashMap<>();
+        ipTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_IP);
+        setFieldMapping(fieldName, ipTypeProperty, indexFieldProperties);
     }
 
     /**
@@ -370,10 +370,10 @@ public class EsIndexMapping {
      * @param indexFieldProperties the index field properties
      */
     private static void setLongTypeToIndexField(String fieldName, Map<String, Object> indexFieldProperties) {
-        // create keyword type property
-        Map<String, Object> keywordTypeProperty = new HashMap<>();
-        keywordTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_LONG);
-        setFieldMapping(fieldName, keywordTypeProperty, indexFieldProperties);
+        // create long type property
+        Map<String, Object> longTypeProperty = new HashMap<>();
+        longTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_LONG);
+        setFieldMapping(fieldName, longTypeProperty, indexFieldProperties);
     }
 
     /**
@@ -383,20 +383,33 @@ public class EsIndexMapping {
      * @param indexFieldProperties the index field properties
      */
     private static void setObjectTypeToIndexField(String fieldName, Map<String, Object> indexFieldProperties) {
-        // create keyword type property
-        Map<String, Object> keywordTypeProperty = new HashMap<>();
-        keywordTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_OBJECT);
-        setFieldMapping(fieldName, keywordTypeProperty, indexFieldProperties);
+        // create object type property
+        Map<String, Object> objectTypeProperty = new HashMap<>();
+        objectTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_OBJECT);
+        setFieldMapping(fieldName, objectTypeProperty, indexFieldProperties);
     }
 
     /**
-     * Set field data to index text field
+     * Sets Binary Type to index field
+     *
+     * @param fieldName            the field name
+     * @param indexFieldProperties the index field properties
+     */
+    private static void setBinaryTypeToIndexField(String fieldName, Map<String, Object> indexFieldProperties) {
+        // create binary type property
+        Map<String, Object> binaryTypeProperty = new HashMap<>();
+        binaryTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_BINARY);
+        setFieldMapping(fieldName, binaryTypeProperty, indexFieldProperties);
+    }
+
+    /**
+     * Set text Type to index field
      *
      * @param fieldName            the field name
      * @param indexFieldProperties the index field properties
      */
     private static void setTextTypeToIndexField(String fieldName, Map<String, Object> indexFieldProperties) {
-        // create keyword type property
+        // create type properties
         Map<String, Object> textTypeProperty = new HashMap<>();
         Map<String, Object> keywordTypeProperty = new HashMap<>();
         Map<String, Object> multiFieldProperty = new HashMap<>();
@@ -405,7 +418,7 @@ public class EsIndexMapping {
         textTypeProperty.put("fielddata", true);
         keywordTypeProperty.put("type", EsConstants.ES_MAPPING_TYPE_KEYWORD);
         keywordTypeProperty.put("ignore_above", 256);
-        multiFieldProperty.put("text", keywordTypeProperty);
+        multiFieldProperty.put("keyword", keywordTypeProperty);
         textTypeProperty.put("fields", multiFieldProperty);
         setFieldMapping(fieldName, textTypeProperty, indexFieldProperties);
     }
@@ -434,6 +447,9 @@ public class EsIndexMapping {
         for (String fieldName : fieldNames) {
             String mappingType = EsConstants.esFieldMapping.get(fieldName);
             switch (mappingType) {
+                case EsConstants.ES_MAPPING_TYPE_BINARY:
+                    setBinaryTypeToIndexField(fieldName, indexFieldProperties);
+                    break;
                 case EsConstants.ES_MAPPING_TYPE_BOOLEAN:
                     setBooleanTypeToIndexField(fieldName, indexFieldProperties);
                     break;
