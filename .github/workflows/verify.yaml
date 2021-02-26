@@ -59,12 +59,13 @@ jobs:
       - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
 
-      - name: Publish Test Report
-        if: ${{ always() }}
-        uses: mikepenz/action-junit-report@v2
-        with:
-          report_paths: '**/build/test-results/test/TEST-*.xml'
-          github_token: ${{ secrets.GITHUB_TOKEN }} 
+# Temporarily disabled until we get a GH access token with appropriate permissions onto secrets.
+#       - name: Publish Test Report
+#         if: ${{ always() }}
+#         uses: mikepenz/action-junit-report@v2
+#         with:
+#           report_paths: '**/build/test-results/test/TEST-*.xml'
+#           github_token: ${{ secrets.GITHUB_TOKEN }} 
         
   publish-snapshots:
     name: Publish master snapshot artifacts 
