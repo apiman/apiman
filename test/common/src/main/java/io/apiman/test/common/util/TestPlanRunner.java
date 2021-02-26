@@ -34,8 +34,6 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -47,7 +45,6 @@ import org.custommonkey.xmlunit.ElementNameQualifier;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
-import org.junit.ComparisonFailure;
 import org.mvel2.MVEL;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
@@ -63,6 +60,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jcabi.http.Request;
 import com.jcabi.http.Response;
 import com.jcabi.http.request.ApacheRequest;
+
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * Runs a test plan.
@@ -468,11 +467,9 @@ public class TestPlanRunner {
             String expected = restTest.getExpectedResponsePayload();
 
             if (expected != null) {
-                Pattern pattern = Pattern.compile(expected);
-                Matcher matcher = pattern.matcher(actual);
-                if (!matcher.matches()) {
-                    throw new ComparisonFailure("Response payload (text/plain) mismatch.\n", expected, actual);
-                }
+                assertThat(actual)
+                    .withFailMessage("Response payload (text/plain) mismatch. Expected %s != %s\n", expected, actual)
+                    .matches(expected);
             }
         } catch (Exception e) {
             throw new Error(e);
