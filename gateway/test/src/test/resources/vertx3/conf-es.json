@@ -16,7 +16,7 @@
       "client": {
         "type": "${test.foo.es.type}",
         "cluster-name": "elasticsearch",
-        "host": "localhost",
+        "host": "${test.TEST_CONTAINERS_ES_HOST}",
         "port": "${test.TEST_CONTAINERS_ES_PORT}",
         "initialize": true,
         "polling": {
@@ -92,7 +92,7 @@
           "client": {
             "type": "es",
             "cluster-name": "elasticsearch",
-            "host": "localhost",
+            "host": "${test.TEST_CONTAINERS_ES_HOST}",
             "port": "${test.TEST_CONTAINERS_ES_PORT}",
             "initialize": true,
             "polling": {
@@ -109,7 +109,7 @@
           "client": {
             "type": "es",
             "cluster-name": "elasticsearch",
-            "host": "localhost",
+            "host": "${test.TEST_CONTAINERS_ES_HOST}",
             "port": "${test.TEST_CONTAINERS_ES_PORT}",
             "initialize": true,
             "polling": {
