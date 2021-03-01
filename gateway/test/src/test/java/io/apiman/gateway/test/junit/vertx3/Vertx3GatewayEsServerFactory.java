@@ -26,6 +26,7 @@ public class Vertx3GatewayEsServerFactory implements IGatewayTestServerFactory {
         );
 
         static final String TEST_CONTAINERS_PORT_ENV_VAR = "test.TEST_CONTAINERS_ES_PORT";
+        static final String TEST_CONTAINERS_HOST_ENV_VAR = "test.TEST_CONTAINERS_ES_HOST";
 
         // Start this early to ensure that we've injected the port into the environment before anything
         // interesting happens.
@@ -38,10 +39,17 @@ public class Vertx3GatewayEsServerFactory implements IGatewayTestServerFactory {
             logger.info("Setting ES test-containers port sys property {} to: {} ",
                 TEST_CONTAINERS_PORT_ENV_VAR, testContainer.getFirstMappedPort());
 
+            logger.info("Setting ES test-containers host sys property {} to: {} ",
+                TEST_CONTAINERS_HOST_ENV_VAR, testContainer.getContainerIpAddress());
+
             // In conf-es.json this will be substituted at run time
             System.setProperty(
                 TEST_CONTAINERS_PORT_ENV_VAR,
                 String.valueOf(testContainer.getFirstMappedPort())
+            );
+
+            System.setProperty(TEST_CONTAINERS_HOST_ENV_VAR,
+                String.valueOf(testContainer.getContainerIpAddress())
             );
         }
 
