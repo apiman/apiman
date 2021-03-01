@@ -1600,7 +1600,7 @@ INFO: Migrating Policy Def: "JSONP Policy"
 INFO: Migrating Organization: "Test"
 INFO: Migrating Organization: "Foo"
 INFO: ----------------------------
-INFO: Starting apiman data import.
+INFO: Starting apiman data import: .*apiman_import_migrated.*.json
 INFO: Importing a user: admin
 INFO: Importing a gateway: The Gateway
 INFO: Importing a plugin: io.apiman.plugins/apiman-plugins-log-policy/1.2.2.Final
@@ -1623,7 +1623,7 @@ INFO: Importing a policy definition: Time Restricted Access Policy
 INFO: Importing a policy definition: Log Headers Policy
 INFO: Importing a policy definition: JSONP Policy
 INFO: Importing an organization: Test
-INFO:   Importing a role membership: admin+OrganizationOwner=>Test
+INFO:   Importing a role membership: admin\+OrganizationOwner=>Test
 INFO:   Importing a plan: Gold
 INFO:     Importing a plan version: 1.0
 INFO:       Importing a plan policy: Rate Limiting Policy
@@ -1674,7 +1674,7 @@ INFO:   Importing an audit entry: 98
 INFO:   Importing an audit entry: 99
 INFO:   Importing an audit entry: 101
 INFO: Importing an organization: Foo
-INFO:   Importing a role membership: admin+OrganizationOwner=>Foo
+INFO:   Importing a role membership: admin\+OrganizationOwner=>Foo
 INFO:   Importing a plan: Good
 INFO:     Importing a plan version: 1.0
 INFO:       Importing a plan policy: Caching Policy

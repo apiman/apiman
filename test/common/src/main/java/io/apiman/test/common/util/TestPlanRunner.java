@@ -61,6 +61,8 @@ import com.jcabi.http.Request;
 import com.jcabi.http.Response;
 import com.jcabi.http.request.ApacheRequest;
 
+import static org.assertj.core.api.Assertions.*;
+
 /**
  * Runs a test plan.
  *
@@ -456,13 +458,18 @@ public class TestPlanRunner {
             List<String> lines = IOUtils.readLines(inputStream);
             StringBuilder builder = new StringBuilder();
             for (String line : lines) {
-                builder.append(line).append("\n");
+                // Replace single backslashes with double backslashes to escape them for the regex compiler.
+                // These occur for example in Windows paths
+                builder.append(line.replace("\\","\\\\")).append("\n");
             }
 
             String actual = builder.toString();
             String expected = restTest.getExpectedResponsePayload();
+
             if (expected != null) {
-                Assert.assertEquals("Response payload (text/plain) mismatch.", expected, actual);
+                assertThat(actual)
+                    .withFailMessage("Response payload (text/plain) mismatch. Expected %s != %s\n", expected, actual)
+                    .matches(expected);
             }
         } catch (Exception e) {
             throw new Error(e);

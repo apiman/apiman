@@ -31,7 +31,7 @@ Content-Type: application/json
 Content-Type: text/plain;charset=utf-8
 
 INFO: ----------------------------
-INFO: Starting apiman data import.
+INFO: Starting apiman data import: .*apiman_import_migrated.*.json
 INFO: Importing a developer: Developer1
 INFO: Importing a developer: Developer2
 INFO: Publishing APIs to the gateway.

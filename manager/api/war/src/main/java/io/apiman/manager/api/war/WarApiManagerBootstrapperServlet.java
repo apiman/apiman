@@ -102,7 +102,7 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
 
         try {
             importer.setLogger(logger);
-            importer.start();
+            importer.start(file.getAbsolutePath());
             reader.setDispatcher(importer);
             reader.read();
         } catch (Exception e) {

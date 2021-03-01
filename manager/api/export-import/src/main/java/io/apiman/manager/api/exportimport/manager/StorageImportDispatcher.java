@@ -109,9 +109,9 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     /**
      * Starts the import.
      */
-    public void start() {
+    public void start(String fileName) {
         logger.info("----------------------------"); //$NON-NLS-1$
-        logger.info(Messages.i18n.format("StorageImportDispatcher.StartingImport")); //$NON-NLS-1$
+        logger.info(Messages.i18n.format("StorageImportDispatcher.StartingImport") + fileName); //$NON-NLS-1$
         currentMetadata.setImportedOn(new Date());
         currentMetadata.setApimanVersionAtImport(version.getVersionString());
 
