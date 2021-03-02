@@ -27,7 +27,7 @@
     "angular2-toaster": "^8.0.0",
     "keycloak-admin": "~1.14.5",
     "keycloak-angular": "~8.1.0",
-    "keycloak-js": "~12.0.1",
+    "keycloak-js": "~12.0.4",
     "ngx-logger": "^4.0.7",
     "rxjs": "^6.6.3",
     "swagger-ui-dist": "^3.24.3",
