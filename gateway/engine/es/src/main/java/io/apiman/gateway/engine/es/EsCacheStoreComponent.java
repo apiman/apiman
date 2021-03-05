@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.es;
 
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
+import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
@@ -27,6 +28,8 @@ import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.storage.model.CacheEntry;
+import java.util.Collections;
+import java.util.HashMap;
 import org.apache.commons.codec.binary.Base64;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
@@ -35,8 +38,6 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
@@ -231,14 +232,10 @@ public class EsCacheStoreComponent extends AbstractEsComponent implements ICache
         return EsConstants.CACHE_INDEX_NAME;
     }
 
-    /**
-     * @see AbstractEsComponent#getDefaultIndices()
-     * @return default indices
-     */
     @Override
-    protected List<String> getDefaultIndices() {
-        String[] indices = {EsConstants.INDEX_CACHE_CACHE_ENTRY};
-        return Arrays.asList(indices);
+    public Map<String, EsIndexProperties> getEsIndices() {
+        // This component manages its own indexes
+        return Collections.emptyMap();
     }
 
     /**

@@ -15,6 +15,7 @@
  */
 package io.apiman.common.es.util;
 
+import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.logging.DefaultDelegateFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.Holder;
@@ -51,7 +52,6 @@ import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -63,34 +63,40 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class DefaultEsClientFactory extends AbstractClientFactory implements IEsClientFactory {
 
-    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(DefaultEsClientFactory.class);
+    private final IApimanLogger logger = new DefaultDelegateFactory().createLogger(DefaultEsClientFactory.class);
 
     /**
      * Creates a client from information in the config map.
      * @param config the configuration
+     * @param esIndices the ES index definitions
      * @param defaultIndexPrefix the default index prefix to use if not specified in the config
-     * @param defaultIndices the default indices for the component
      * @return the ES client
      */
     @Override
-    public RestHighLevelClient createClient(Map<String, String> config, String defaultIndexPrefix, List<String> defaultIndices) {
+    public RestHighLevelClient createClient(Map<String, String> config,
+        Map<String, EsIndexProperties> esIndices,
+        String defaultIndexPrefix) {
+
         RestHighLevelClient client;
         String indexNamePrefix = config.get("client.indexPrefix"); //$NON-NLS-1$
         if (indexNamePrefix == null) {
             indexNamePrefix = defaultIndexPrefix;
         }
-        client = this.createEsClient(config, indexNamePrefix, defaultIndices);
+        client = this.createEsClient(config, esIndices, indexNamePrefix);
         return client;
     }
 
     /**
      * Creates a transport client from a configuration map.
      * @param config the configuration
+     * @param esIndexes the ES index definitions
      * @param indexNamePrefix the prefix of the index
-     * @param defaultIndices the default indices for the component
      * @return the ES client
      */
-    private RestHighLevelClient createEsClient(Map<String, String> config, String indexNamePrefix, List<String> defaultIndices) {
+    private RestHighLevelClient createEsClient(Map<String, String> config,
+        Map<String, EsIndexProperties> esIndexes,
+        String indexNamePrefix) {
+
         String host = config.get("client.host"); //$NON-NLS-1$
         int port = NumberUtils.toInt(config.get("client.port"), 9200); //$NON-NLS-1$
         String protocol = config.get("client.protocol"); //$NON-NLS-1$
@@ -160,7 +166,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             }
 
             if ("true".equals(initialize)) { //$NON-NLS-1$
-                this.initializeIndices(client, indexNamePrefix, defaultIndices);
+                this.initializeIndices(client, esIndexes, indexNamePrefix);
             }
 
             return client;

@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.es;
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.es.util.EsUtils;
+import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.logging.DefaultDelegateFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IRegistry;
@@ -27,8 +28,17 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.exceptions.*;
+import io.apiman.gateway.engine.beans.exceptions.ApiNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.ApiRetiredException;
+import io.apiman.gateway.engine.beans.exceptions.ClientNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.NoContractFoundException;
+import io.apiman.gateway.engine.beans.exceptions.PublishingException;
+import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.es.i18n.Messages;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -53,7 +63,6 @@ import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilde
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
-import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
@@ -642,14 +651,12 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
         return EsConstants.GATEWAY_INDEX_NAME;
     }
 
-    /**
-     * @see AbstractEsComponent#getDefaultIndices()
-     * @return default indices
-     */
     @Override
-    protected List<String> getDefaultIndices() {
-        String[] indices = {EsConstants.INDEX_APIS, EsConstants.INDEX_CLIENTS};
-        return Arrays.asList(indices);
+    public Map<String, EsIndexProperties> getEsIndices() {
+        Map<String, EsIndexProperties> indexMap = new HashMap<>();
+        indexMap.put(EsConstants.INDEX_APIS, EsRegistryIndexes.GATEWAY_APIS);
+        indexMap.put(EsConstants.INDEX_CLIENTS, EsRegistryIndexes.GATEWAY_CLIENTS);
+        return indexMap;
     }
 
 }

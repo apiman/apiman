@@ -17,14 +17,14 @@ package io.apiman.gateway.engine.es;
 
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
+import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.es.beans.PrimitiveBean;
 import io.apiman.gateway.engine.storage.util.BackingStoreUtil;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -37,6 +37,8 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.common.xcontent.XContentType;
 
+import static io.apiman.common.es.util.builder.index.EsIndexUtils.KEYWORD_PROP;
+import static io.apiman.common.es.util.builder.index.EsIndexUtils.TEXT_AND_KEYWORD_PROP_256;
 import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
 /**
@@ -169,14 +171,19 @@ public class EsSharedStateComponent extends AbstractEsComponent implements IShar
         return EsConstants.GATEWAY_INDEX_NAME;
     }
 
-    /**
-     * @see AbstractEsComponent#getDefaultIndices()
-     * @return default indices
-     */
     @Override
-    protected List<String> getDefaultIndices() {
-        String[] indices = {EsConstants.INDEX_SHARED_STATE_PROPERTY};
-        return Arrays.asList(indices);
+    public Map<String, EsIndexProperties> getEsIndices() {
+
+        EsIndexProperties indexDefinition = EsIndexProperties.builder()
+            .addProperty(EsConstants.ES_FIELD_ORGANIZATION_ID, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_TYPE, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_VALUE, TEXT_AND_KEYWORD_PROP_256)
+            .addProperty(EsConstants.ES_FIELD_VERSION, KEYWORD_PROP)
+            .build();
+
+        Map<String, EsIndexProperties> indexMap = new HashMap<>();
+        indexMap.put(EsConstants.INDEX_SHARED_STATE_PROPERTY, indexDefinition);
+        return indexMap;
     }
 
     /**

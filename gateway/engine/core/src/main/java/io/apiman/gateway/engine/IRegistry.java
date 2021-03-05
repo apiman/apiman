@@ -84,7 +84,6 @@ public interface IRegistry {
     /**
      * Gets the {@link Client} referenced by the given API Key.
      *
-     * @param request an inbound API request
      * @param handler the result handler
      * @throws InvalidContractException when contract is invalid
      */

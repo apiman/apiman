@@ -15,10 +15,10 @@
  */
 package io.apiman.common.es.util;
 
+import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,16 +37,16 @@ public class LocalClientFactory extends AbstractClientFactory implements IEsClie
     /**
      * Creates a client from information in the config map.
      * @param config the configuration
-     * @param defaultIndexName the default index to use if not specified in the config
      * @return the ES client
      */
-    public RestHighLevelClient createClient(Map<String, String> config, String defaultIndexName, List<String> defaultIndices) {
+    @Override
+    public RestHighLevelClient createClient(Map<String, String> config,  Map<String, EsIndexProperties> esIndices, String defaultIndexPrefix) {
         RestHighLevelClient client;
         String indexName = config.get("client.indexPrefix"); //$NON-NLS-1$
         if (indexName == null) {
-            indexName = defaultIndexName;
+            indexName = defaultIndexPrefix;
         }
-        client = createLocalClient(config, indexName, defaultIndices);
+        client = createLocalClient(config, indexName, esIndices);
         return client;
     }
 
@@ -56,10 +56,10 @@ public class LocalClientFactory extends AbstractClientFactory implements IEsClie
      * @param indexName the name of the ES index
      * @return the ES client
      */
-    public RestHighLevelClient createLocalClient(Map<String, String> config, String indexName, List<String> defaultIndices) {
+    public RestHighLevelClient createLocalClient(Map<String, String> config, String indexName, Map<String, EsIndexProperties> indexDef) {
         String clientLocClassName = config.get("client.class"); //$NON-NLS-1$
         String clientLocFieldName = config.get("client.field"); //$NON-NLS-1$
-        return createLocalClient(clientLocClassName, clientLocFieldName, indexName, defaultIndices);
+        return createLocalClient(clientLocClassName, clientLocFieldName, indexName, indexDef);
     }
 
     /**
@@ -70,12 +70,12 @@ public class LocalClientFactory extends AbstractClientFactory implements IEsClie
      * @param indexName the name of the ES index
      * @return the ES client
      */
-    public RestHighLevelClient createLocalClient(String className, String fieldName, String indexName, List<String> defaultIndices) {
+    public RestHighLevelClient createLocalClient(String className, String fieldName, String indexName, Map<String, EsIndexProperties> indexDef) {
         String clientKey = "local:" + className + '/' + fieldName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
                 final RestHighLevelClient client = clients.get(clientKey);
-                initializeIndices(client, indexName, defaultIndices);
+                initializeIndices(client, indexDef, indexName);
                 return client;
             } else {
                 try {
@@ -83,7 +83,7 @@ public class LocalClientFactory extends AbstractClientFactory implements IEsClie
                     Field field = clientLocClass.getField(fieldName);
                     RestHighLevelClient client = (RestHighLevelClient) field.get(null);
                     clients.put(clientKey, client);
-                    initializeIndices(client, indexName, defaultIndices);
+                    initializeIndices(client, indexDef, indexName);
                     return client;
                 } catch (ClassNotFoundException | NoSuchFieldException | SecurityException
                         | IllegalArgumentException | IllegalAccessException e) {

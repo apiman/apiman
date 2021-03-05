@@ -16,12 +16,14 @@
 package io.apiman.manager.api.es;
 
 import io.apiman.common.es.util.EsConstants;
+import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.manager.api.beans.metrics.*;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.metrics.MetricsAccessorHelper;
+import java.util.Collections;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -38,7 +40,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -746,13 +747,8 @@ public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAc
         return EsConstants.METRICS_INDEX_NAME;
     }
 
-    /**
-     * @see AbstractEsComponent#getDefaultIndices()
-     * @return default indices
-     */
     @Override
-    protected List<String> getDefaultIndices() {
-        String[] indices = {""};
-        return Arrays.asList(indices);
+    public Map<String, EsIndexProperties> getEsIndices() {
+        return Collections.emptyMap();
     }
 }

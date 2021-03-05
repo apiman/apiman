@@ -181,7 +181,7 @@ public class ManagerApiTestServer {
 
     private static RestHighLevelClient createEsClient() {
         Map<String, String> config = getTestClientConfig();
-        return new DefaultEsClientFactory().createClient(config, ES_DEFAULT_INDEX, getDefaultIndices());
+        return new DefaultEsClientFactory().createClient(config, Collections.emptyMap(), ES_DEFAULT_INDEX);
     }
 
     public static Map<String, String> getTestClientConfig() {
@@ -344,13 +344,5 @@ public class ManagerApiTestServer {
         } catch (IOException e) {
             System.err.println("Error flushing indices " + indices);
         }
-    }
-
-    /**
-     * Get default indices for metrics
-     * @return default indeces for metrics
-     */
-    private static List<String> getDefaultIndices() {
-        return Arrays.asList(EsConstants.MANAGER_INDEX_POSTFIXES);
     }
 }
