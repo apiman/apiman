@@ -19,6 +19,7 @@ package io.apiman.gateway.engine.es;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
+import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.logging.DefaultDelegateFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IComponentRegistry;
@@ -29,12 +30,19 @@ import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import static io.apiman.common.es.util.builder.index.EsIndexUtils.BOOL_PROP;
+import static io.apiman.common.es.util.builder.index.EsIndexUtils.DATE_PROP;
+import static io.apiman.common.es.util.builder.index.EsIndexUtils.IP_PROP;
+import static io.apiman.common.es.util.builder.index.EsIndexUtils.KEYWORD_PROP;
+import static io.apiman.common.es.util.builder.index.EsIndexUtils.LONG_PROP;
+import static io.apiman.common.es.util.builder.index.EsIndexUtils.TEXT_AND_KEYWORD_PROP_256;
 import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
 /**
@@ -51,7 +59,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
     private final BlockingQueue<RequestMetric> queue;
     private final int batchSize;
 
-    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(PollCachingEsRegistry.class);
+    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(EsMetrics.class);
 
     /**
      * Constructor.
@@ -59,7 +67,6 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
      */
     public EsMetrics(Map<String, String> config) {
         super(config);
-
         int queueSize = DEFAULT_QUEUE_SIZE;
         String queueSizeConfig = config.get("queue.size"); //$NON-NLS-1$
         if (queueSizeConfig != null) {
@@ -119,6 +126,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
      */
     protected void processQueue() {
         try {
+            RestHighLevelClient client = getClient();
             Collection<RequestMetric> batch = new ArrayList<>(this.batchSize);
             RequestMetric rm = queue.take();
             batch.add(rm);
@@ -142,7 +150,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
                     logger.error("Failed to add metric(s) to ES", e); //$NON-NLS-1$
                 }
             };
-            getClient().bulkAsync(request, RequestOptions.DEFAULT, listener);
+            client.bulkAsync(request, RequestOptions.DEFAULT, listener);
         } catch (InterruptedException | JsonProcessingException e) {
             logger.error("Failed to add metric(s) to ES", e); //$NON-NLS-1$
         }
@@ -156,13 +164,40 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
         return EsConstants.METRICS_INDEX_NAME;
     }
 
-    /**
-     * @see AbstractEsComponent#getDefaultIndices()
-     * @return default indices
-     */
     @Override
-    protected List<String> getDefaultIndices() {
-        String[] indices = {""};
-        return Arrays.asList(indices);
+    public Map<String, EsIndexProperties> getEsIndices() {
+        EsIndexProperties propertiesMap = EsIndexProperties.builder()
+            .addProperty(EsConstants.ES_FIELD_API_DURATION, LONG_PROP)
+            .addProperty(EsConstants.ES_FIELD_API_END, DATE_PROP)
+            .addProperty(EsConstants.ES_FIELD_API_ID,  KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_API_ORG_ID, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_API_START, DATE_PROP)
+            .addProperty(EsConstants.ES_FIELD_API_VERSION, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_BYTES_DOWNLOADED, LONG_PROP)
+            .addProperty(EsConstants.ES_FIELD_BYTES_UPLOADED, LONG_PROP)
+            .addProperty(EsConstants.ES_FIELD_CLIENT_ID, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_CLIENT_ORG_ID, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_CLIENT_VERSION, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_CONTRACT_ID, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_ERROR, BOOL_PROP)
+            .addProperty(EsConstants.ES_FIELD_ERROR_MESSAGE, TEXT_AND_KEYWORD_PROP_256)
+            .addProperty(EsConstants.ES_FIELD_FAILURE, BOOL_PROP)
+            .addProperty(EsConstants.ES_FIELD_FAILURE_CODE, LONG_PROP)
+            .addProperty(EsConstants.ES_FIELD_FAILURE_REASON, TEXT_AND_KEYWORD_PROP_256)
+            .addProperty(EsConstants.ES_FIELD_METHOD, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_PLAN_ID, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_REMOTE_ADDR, IP_PROP)
+            .addProperty(EsConstants.ES_FIELD_REQUEST_DURATION, LONG_PROP)
+            .addProperty(EsConstants.ES_FIELD_REQUEST_END, DATE_PROP)
+            .addProperty(EsConstants.ES_FIELD_REQUEST_START, DATE_PROP)
+            .addProperty(EsConstants.ES_FIELD_RESOURCE, TEXT_AND_KEYWORD_PROP_256)
+            .addProperty(EsConstants.ES_FIELD_RESPONSE_CODE, LONG_PROP)
+            .addProperty(EsConstants.ES_FIELD_RESPONSE_MESSAGE, TEXT_AND_KEYWORD_PROP_256)
+            .addProperty(EsConstants.ES_FIELD_URL, TEXT_AND_KEYWORD_PROP_256)
+            .addProperty(EsConstants.ES_FIELD_USER, TEXT_AND_KEYWORD_PROP_256)
+            .build();
+        Map<String, EsIndexProperties> indexMap = new HashMap<>();
+        indexMap.put("", propertiesMap);
+        return indexMap;
     }
 }

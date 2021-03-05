@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.es;
 
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
+import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
@@ -24,8 +25,7 @@ import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 import io.apiman.gateway.engine.rates.RateLimiterBucket;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
@@ -37,6 +37,8 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.rest.RestStatus;
 
+import static io.apiman.common.es.util.builder.index.EsIndexUtils.KEYWORD_PROP;
+import static io.apiman.common.es.util.builder.index.EsIndexUtils.LONG_PROP;
 import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
 /**
@@ -146,15 +148,19 @@ public class EsRateLimiterComponent extends AbstractEsComponent implements IRate
         return EsConstants.GATEWAY_INDEX_NAME;
     }
 
-    /**
-     * @see AbstractEsComponent#getDefaultIndices()
-     * @return default indices
-     */
     @Override
-    protected List<String> getDefaultIndices() {
-        String[] indices = {EsConstants.INDEX_RATE_BUCKET};
-        return Arrays.asList(indices);
+    public Map<String, EsIndexProperties> getEsIndices() {
+        EsIndexProperties indexDef = EsIndexProperties.builder()
+            .addProperty(EsConstants.ES_FIELD_COUNT, LONG_PROP)
+            .addProperty(EsConstants.ES_FIELD_LAST, LONG_PROP)
+            .addProperty(EsConstants.ES_FIELD_ORGANIZATION_ID, KEYWORD_PROP)
+            .addProperty(EsConstants.ES_FIELD_VERSION, KEYWORD_PROP)
+            .build();
+        Map<String, EsIndexProperties> indexMap = new HashMap<>();
+        indexMap.put(EsConstants.INDEX_RATE_BUCKET, indexDef);
+        return indexMap;
     }
+
     /**
      * get index full name for rate bucket
      * @return full index name

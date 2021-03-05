@@ -15,10 +15,10 @@
  */
 package io.apiman.common.es.util;
 
+import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,6 +45,10 @@ public abstract class AbstractEsComponent {
         this.indexPrefix = indexPrefix;
     }
 
+    /**
+     * Constructor.
+     * @param esClient a configured high-level client.
+     */
     public AbstractEsComponent(RestHighLevelClient esClient) {
         this.config = null;
         this.esClient = esClient;
@@ -65,7 +69,7 @@ public abstract class AbstractEsComponent {
      */
     protected RestHighLevelClient createClient() {
         IEsClientFactory factory = createEsClientFactory();
-        return factory.createClient(config, getDefaultIndexPrefix(), getDefaultIndices());
+        return factory.createClient(config, getEsIndices(), getDefaultIndexPrefix());
     }
 
     /**
@@ -110,15 +114,18 @@ public abstract class AbstractEsComponent {
     protected abstract String getDefaultIndexPrefix();
 
     /**
-     * Get the default indecies for this component.
-     */
-    protected abstract List<String> getDefaultIndices();
-
-    /**
      * Gets the index name to use when reading/writing to ES.
      */
     protected String getIndexPrefix() {
         return indexPrefix + "_";
     }
 
+    /**
+     * Get the ES index definitions for this component.
+     *
+     * It may be used for purposes such as DB initialisation.
+     *
+     * @return the list of valid Elasticsearch index definitions
+     */
+    public abstract Map<String, EsIndexProperties> getEsIndices();
 }

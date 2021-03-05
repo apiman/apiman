@@ -19,6 +19,7 @@ package io.apiman.manager.test.es;
 import io.apiman.common.es.util.AbstractClientFactory;
 import io.apiman.common.es.util.DefaultEsClientFactory;
 import io.apiman.common.es.util.EsConstants;
+import io.apiman.gateway.engine.es.EsMetrics;
 import io.apiman.manager.api.beans.metrics.*;
 import io.apiman.manager.api.core.metrics.MetricsAccessorHelper;
 import io.apiman.manager.api.es.EsMetricsAccessor;
@@ -88,7 +89,18 @@ public class EsMetricsAccessorTest {
         config.put("client.host", node.getContainerIpAddress());
         config.put("client.port", node.getFirstMappedPort().toString());
         config.put("client.initialize", "true");
-        return new DefaultEsClientFactory().createClient(config, APIMAN_METRICS_INDEX_NAME, getDefaultIndices());
+        config.put("client.type", "es");
+
+        // We want the metrics client to initialise its indexes and this is an easy way of doing that.
+        // Normally it would be triggered at startup of the component, but we bypass it in these tests.
+        EsMetrics metrics = new EsMetrics(config);
+        System.out.println(metrics.getEsIndices());
+
+        return new DefaultEsClientFactory()
+            .createClient(config,
+                Collections.emptyMap(),
+                APIMAN_METRICS_INDEX_NAME
+            );
     }
 
     private static void loadTestData(RestHighLevelClient client) throws Exception {

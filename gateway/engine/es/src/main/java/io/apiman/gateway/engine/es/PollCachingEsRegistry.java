@@ -15,8 +15,9 @@
  */
 package io.apiman.gateway.engine.es;
 
-import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
+import io.apiman.common.es.util.builder.index.EsIndexProperties;
+import io.apiman.common.es.util.builder.index.EsIndexUtils;
 import io.apiman.common.logging.DefaultDelegateFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.IAsyncResult;
@@ -30,8 +31,6 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -227,15 +226,16 @@ public class PollCachingEsRegistry extends CachingEsRegistry {
         }
     }
 
-    /**
-     * @see AbstractEsComponent#getDefaultIndices()
-     * @return default indices
-     */
     @Override
-    protected List<String> getDefaultIndices() {
-        List<String> indices = new ArrayList<String>();
-        indices.addAll(super.getDefaultIndices());
-        indices.add(EsConstants.INDEX_DATA_VERSION);
-        return indices;
+    public Map<String, EsIndexProperties> getEsIndices() {
+        Map<String, EsIndexProperties> indexes = super.getEsIndices();
+        indexes.put(EsConstants.INDEX_DATA_VERSION,
+            EsIndexProperties.builder()
+                .addProperty(EsConstants.ES_FIELD_ORGANIZATION_ID, EsIndexUtils.KEYWORD_PROP)
+                .addProperty(EsConstants.ES_FIELD_UPDATED_ON, EsIndexUtils.DATE_PROP)
+                .addProperty(EsConstants.ES_FIELD_VERSION, EsIndexUtils.LONG_PROP)
+            .build()
+        );
+        return indexes;
     }
 }
