@@ -68,10 +68,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
-    <!-- Distribution URLs -->
-    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
-
     <!-- Plugin Versions -->
     <version.ant>1.10.9</version.ant>
     <version.antrun.plugin>1.7</version.antrun.plugin>
