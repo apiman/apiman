@@ -72,24 +72,24 @@
     <version.ant>1.10.9</version.ant>
     <version.antrun.plugin>1.7</version.antrun.plugin>
     <version.assembly.plugin>3.2.0</version.assembly.plugin>
-    <version.buildhelper.plugin>1.9.1</version.buildhelper.plugin>
+    <version.buildhelper.plugin>3.2.0</version.buildhelper.plugin>
     <version.buildnumber.plugin>1.3</version.buildnumber.plugin>
     <version.bundle.plugin>2.5.3</version.bundle.plugin>
-    <version.clean.plugin>2.6</version.clean.plugin>
+    <version.clean.plugin>3.1.0</version.clean.plugin>
     <version.com.qmino.miredot-plugin>1.6.2</version.com.qmino.miredot-plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
     <version.dependency.plugin>2.10</version.dependency.plugin>
     <version.deploy.plugin>2.8.2</version.deploy.plugin>
     <version.install.plugin>2.5.2</version.install.plugin>
-    <version.jar.plugin>2.5</version.jar.plugin>
+    <version.jar.plugin>3.2.0</version.jar.plugin>
     <version.javadoc.plugin>3.2.0</version.javadoc.plugin>
     <version.maven-gpg-plugin.plugin>1.5</version.maven-gpg-plugin.plugin>
-    <version.nexus-staging-maven-plugin.plugin>1.6.3</version.nexus-staging-maven-plugin.plugin>
-    <version.resources.plugin>3.1.0</version.resources.plugin>
-    <version.source.plugin>2.4</version.source.plugin>
+    <version.nexus-staging-maven-plugin.plugin>1.6.8</version.nexus-staging-maven-plugin.plugin>
+    <version.resources.plugin>3.2.0</version.resources.plugin>
+    <version.source.plugin>3.2.0</version.source.plugin>
     <version.surefire.plugin>3.0.0-M5</version.surefire.plugin>
-    <version.surefire-report.plugin>2.17</version.surefire-report.plugin>
-    <version.failsafe.plugin>2.14</version.failsafe.plugin>
+    <version.surefire-report.plugin>3.0.0-M5</version.surefire-report.plugin>
+    <version.failsafe.plugin>3.0.0-M5</version.failsafe.plugin>
     <version.war.plugin>2.5</version.war.plugin>
     <version.exec.plugin>1.3.2</version.exec.plugin>
     <version.docker.plugin>0.26.0</version.docker.plugin>
