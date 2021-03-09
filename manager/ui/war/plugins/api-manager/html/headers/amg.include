@@ -16,7 +16,10 @@
     </button>
     <a class="navbar-brand"
        href="{{ pluginName }}/">
-      <img src="//rawgit.com/patternfly/patternfly/master/dist/img/brand.svg" />
+     <!-- 
+      Following SVG no longer available at URL.
+      <img src="//rawgit.com/patternfly/patternfly/master/dist/img/brand.svg" /> 
+      -->
     </a>
   </div>
   <div class="collapse navbar-collapse navbar-collapse-1">
