@@ -68,6 +68,7 @@
     <test name="Get Plan 2 (not found)">test-plan-data/plans/delete/004_get-plan2-not-found.resttest</test>
     <test name="Get Plan 2 activity (empty) ">test-plan-data/plans/delete/005_activity.resttest</test>
     <test name="Get Plan 2 version activity (empty)">test-plan-data/plans/delete/006_version-activity.resttest</test>
+    <test name="Check delete do not affect other plans">test-plan-data/plans/delete/007_get-plan1-version-1.0.resttest</test>
   </testGroup>
 
 </testPlan>
