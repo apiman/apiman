@@ -656,33 +656,32 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
         String clientId = client.getId().replace('"', '_');
         String orgId = client.getOrganization().getId().replace('"', '_');
 
-            BoolQueryBuilder qb = QueryBuilders.boolQuery();
-            List<QueryBuilder> filter = qb.filter();
+        BoolQueryBuilder qb = QueryBuilders.boolQuery();
+        List<QueryBuilder> filter = qb.filter();
 
-            // part 1.1
-            BoolQueryBuilder subBoolQuery1 = QueryBuilders.boolQuery();
-            List<QueryBuilder> subShouldQuery1 = subBoolQuery1.should();
-            subShouldQuery1.add(QueryBuilders.termQuery("clientOrganizationId", orgId));
-            subShouldQuery1.add(QueryBuilders.termQuery("organizationId", orgId));
-            filter.add(subBoolQuery1);
+        // contract
+        BoolQueryBuilder shouldMatchClientOrgAndOrgId = QueryBuilders.boolQuery();
+        shouldMatchClientOrgAndOrgId.should().add(QueryBuilders.termQuery("clientOrganizationId", orgId));
+        shouldMatchClientOrgAndOrgId.should().add(QueryBuilders.termQuery("organizationId", orgId));
 
-        BoolQueryBuilder subBoolQuery2 = QueryBuilders.boolQuery();
-        List<QueryBuilder> shouldQuery2 = qb.should();
+        BoolQueryBuilder shouldMatchTypesAndEntityIds = QueryBuilders.boolQuery();
+        List<QueryBuilder> shouldMatchCombination = shouldMatchTypesAndEntityIds.should();
 
-        // part 2.1
-        BoolQueryBuilder part1 = QueryBuilders.boolQuery();
-        List<QueryBuilder> part1filter = part1.filter();
-        part1filter.add(QueryBuilders.termQuery("entityId", clientId));
-        part1filter.add(QueryBuilders.termQuery("entityType", AuditEntityType.Client.name()));
-        // part 2.2
-        BoolQueryBuilder part2 = QueryBuilders.boolQuery();
-        List<QueryBuilder> part2filter = part2.filter();
-        part2filter.add(QueryBuilders.termQuery("entityId", clientId));
-        part2filter.add(QueryBuilders.termQuery("type", AuditEntityType.Client.name()));
-        // part 2.3
-        shouldQuery2.add(QueryBuilders.termQuery("clientId", clientId));
+        // all audit entries with given clientId
+        BoolQueryBuilder shouldMatchEntityIdAndEntityType = QueryBuilders.boolQuery();
+        shouldMatchEntityIdAndEntityType.filter().add(QueryBuilders.termQuery("entityId", clientId));
+        shouldMatchEntityIdAndEntityType.filter().add(QueryBuilders.termQuery("entityType", AuditEntityType.Client.name()));
+        shouldMatchCombination.add(shouldMatchEntityIdAndEntityType);
 
-        filter.add(subBoolQuery2);
+        BoolQueryBuilder shouldMatchEntityIdAndType = QueryBuilders.boolQuery();
+        shouldMatchEntityIdAndType.filter().add(QueryBuilders.termQuery("entityId", clientId));
+        shouldMatchEntityIdAndType.filter().add(QueryBuilders.termQuery("type", AuditEntityType.Client.name()));
+        shouldMatchCombination.add(shouldMatchEntityIdAndType);
+
+        shouldMatchCombination.add(QueryBuilders.termQuery("clientId", clientId));
+
+        filter.add(shouldMatchClientOrgAndOrgId);
+        filter.add(shouldMatchTypesAndEntityIds);
 
         try {
 
@@ -807,13 +806,13 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
         shouldFilters.add(subBoolQuery1);
 
         BoolQueryBuilder subBoolQuery2 = QueryBuilders.boolQuery();
-        List<QueryBuilder> subBoolQuery2Filter = subBoolQuery1.filter();
+        List<QueryBuilder> subBoolQuery2Filter = subBoolQuery2.filter();
         subBoolQuery2Filter.add(QueryBuilders.termQuery("planId", planId));
         subBoolQuery2Filter.add(QueryBuilders.termQuery("organizationId", orgId));
         shouldFilters.add(subBoolQuery2);
 
         BoolQueryBuilder subBoolQuery3 = QueryBuilders.boolQuery();
-        List<QueryBuilder> subBoolQuery3Filter = subBoolQuery1.filter();
+        List<QueryBuilder> subBoolQuery3Filter = subBoolQuery3.filter();
         subBoolQuery3Filter.add(QueryBuilders.termQuery("entityId", planId));
         subBoolQuery3Filter.add(QueryBuilders.termQuery("type", AuditEntityType.Plan.name()));
         shouldFilters.add(subBoolQuery3);
