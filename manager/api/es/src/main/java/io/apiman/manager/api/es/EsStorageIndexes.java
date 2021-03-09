@@ -59,6 +59,7 @@ public class EsStorageIndexes {
         .addProperty(EsConstants.ES_FIELD_NAME, TEXT_AND_KEYWORD_PROP_256)
         .addProperty(EsConstants.ES_NESTED_FIELD_TEMPLATES_TEMPLATE, TEXT_AND_KEYWORD_PROP_256)
         .addProperty(EsConstants.ES_FIELD_DELETED, BOOL_PROP)
+        .addProperty(EsConstants.ES_FIELD_POLICY_IMPL, TEXT_AND_KEYWORD_PROP_256)
         .build();
 
     static final EsIndexProperties MANAGER_PLUGIN = EsIndexProperties.builder()
@@ -248,10 +249,10 @@ public class EsStorageIndexes {
         .build();
 
     static final EsIndexProperties MANAGER_CLIENT_POLICIES = EsIndexProperties.builder()
-        .addProperty(EsConstants.ES_FIELD_DEFINITION_ID, KEYWORD_PROP)
+        .addProperty(EsConstants.ES_NESTED_FIELD_POLICIES_DEFINITION_ID, KEYWORD_PROP)
         .addProperty(EsConstants.ES_FIELD_ENTITY_ID, KEYWORD_PROP)
         .addProperty(EsConstants.ES_FIELD_ENTITY_VERSION, KEYWORD_PROP)
-        .addProperty(EsConstants.ES_FIELD_ID, KEYWORD_PROP)
+        .addProperty(EsConstants.ES_NESTED_FIELD_POLICIES_ID, KEYWORD_PROP)
         .addProperty(EsConstants.ES_FIELD_ORGANIZATION_ID, KEYWORD_PROP)
         .addProperty(EsConstants.ES_FIELD_TYPE, KEYWORD_PROP)
         .addProperty(EsConstants.ES_NESTED_FIELD_POLICIES_CONFIGURATION, TEXT_AND_KEYWORD_PROP_256)
