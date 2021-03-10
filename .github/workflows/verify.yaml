@@ -73,13 +73,48 @@ jobs:
 #         uses: mikepenz/action-junit-report@v2
 #         with:
 #           report_paths: '**/build/test-results/test/TEST-*.xml'
-#           github_token: ${{ secrets.GITHUB_TOKEN }} 
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  code-analysis:
+    name: Code analysis
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
+    
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
         
   publish-snapshots:
     name: Publish master snapshot artifacts 
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
-    needs: [ build-verify ]
+    needs: [ build-verify, code-analysis ]
 
     steps:
       - name: Checkout Code
