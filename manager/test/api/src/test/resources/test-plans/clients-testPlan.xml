@@ -65,8 +65,8 @@
 
   <!-- Deleting -->
   <testGroup name="Deleting Clients (With subordinate elements)">
-    <test name="Delete Client 1">test-plan-data/clients/delete/002_delete-client-1.resttest</test>
-    <test name="Get Client 1 (404)">test-plan-data/clients/delete/003_get-client-1.resttest</test>
-    <test name="Check delete do not affect other clients">test-plan-data/clients/delete/004_get-client1-version-1.0.resttest</test>
+    <test name="Delete Client 2">test-plan-data/clients/delete/001_delete-client-1.resttest</test>
+    <test name="Get Client 2 (404)">test-plan-data/clients/delete/002_get-client-1.resttest</test>
+    <test name="Check delete do not affect other clients">test-plan-data/clients/delete/003_get-client-1-version-1.0.resttest</test>
   </testGroup>
 </testPlan>
