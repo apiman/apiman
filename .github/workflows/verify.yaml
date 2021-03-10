@@ -84,6 +84,14 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+        
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       - name: Set up JDK 8 (for deploying assets, docker builds, etc)
         uses: actions/setup-java@v1
