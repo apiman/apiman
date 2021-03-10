@@ -1,0 +1,19 @@
+GET /organizations/Organization1/plans/Plan1/versions/1.0 admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "plan" : {
+    "organization" : {
+      "id" : "Organization1"
+    },
+    "id" : "Plan1",
+    "name" : "Plan 1",
+    "description" : "[UPDATED] This is the description of Plan 1!",
+    "createdBy":"admin"
+  },
+  "status" : "Locked",
+  "version" : "1.0",
+  "createdBy" : "admin"
+}

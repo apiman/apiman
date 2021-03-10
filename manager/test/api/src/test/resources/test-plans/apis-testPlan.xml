@@ -143,6 +143,7 @@
     <test name="Retire API 1">test-plan-data/apis/publish/005_retire-api-1.resttest</test>
     <test name="Delete API 1">test-plan-data/apis/publish/006_delete-api-1.resttest</test>
     <test name="Delete API 1 (404)">test-plan-data/apis/delete_unpublished/004_get-unpublished-api1-404.resttest</test>
+    <test name="Check delete do not affect other APIs">test-plan-data/apis/versions/011_get-api-5-version-7.0.resttest</test>
   </testGroup>
 
 </testPlan>

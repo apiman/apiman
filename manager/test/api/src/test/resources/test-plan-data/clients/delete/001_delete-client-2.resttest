@@ -1,0 +1,3 @@
+DELETE /organizations/Organization1/clients/Client2 admin/admin
+----
+204

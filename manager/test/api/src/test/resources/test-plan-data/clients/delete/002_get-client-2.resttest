@@ -1,0 +1,8 @@
+GET /organizations/Organization1/clients/Client2 admin/admin
+----
+404
+Content-Type: application/json
+X-Apiman-Error: true
+
+{"type":"ClientNotFoundException","errorCode":4002,"message":"Client does not exist: Client2","moreInfoUrl":null}
+
