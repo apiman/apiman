@@ -78,7 +78,7 @@ jobs:
   code-analysis:
     name: Code analysis
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
+    if: github.repository_owner == 'Apiman'
     
     steps:
       - uses: actions/checkout@v2
