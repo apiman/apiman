@@ -44,7 +44,7 @@ fi
 if [ "$DEBUG_MODE" = "true" ]; then
     DEBUG_OPT=`echo $JAVA_OPTS $APIMAN_GATEWAY_OPTS | grep "\-agentlib:jdwp"`
     if [ "x$DEBUG_OPT" = "x" ]; then
-        APIMAN_GATEWAY_OPTS="$APIMAN_GATEWAY_OPTS -agentlib:jdwp=transport=dt_socket,address=$DEBUG_PORT,server=y,suspend=n"
+        APIMAN_GATEWAY_OPTS="$APIMAN_GATEWAY_OPTS -agentlib:jdwp=transport=dt_socket,address=0.0.0.0:$DEBUG_PORT,server=y,suspend=n"
         echo "Debugging mode enabled: $APIMAN_GATEWAY_OPTS"
     else
         echo "Debug already enabled in JAVA_OPTS or APIMAN_GATEWAY_OPTS, ignoring --debug argument"
