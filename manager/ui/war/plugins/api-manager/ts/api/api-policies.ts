@@ -68,8 +68,10 @@ module Apiman {
                         version: params.version,
                         policiesOrActivity: 'policies',
                         policyId: policy.id
-                    }, function(reply) {
+                    }, function() {
                         removePolicy(policy);
+                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
+                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     }, PageLifecycle.handleError);
                 }, function () {
                     //console.log('Modal dismissed at: ' + new Date());
