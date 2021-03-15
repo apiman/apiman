@@ -55,8 +55,18 @@ module Apiman {
                 });
     
                 modalInstance.result.then(function () {
-                    OrgSvcs.delete({ organizationId: params.org, entityType: 'clients', entityId: params.client, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies', policyId: policy.id }, function(reply) {
+                    OrgSvcs.delete({
+                        organizationId: params.org,
+                        entityType: 'clients',
+                        entityId: params.client,
+                        versionsOrActivity: 'versions',
+                        version: params.version,
+                        policiesOrActivity: 'policies',
+                        policyId: policy.id
+                    }, function() {
                         removePolicy(policy);
+                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
+                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
                     }, PageLifecycle.handleError);
                 }, function () {
                     //console.log('Modal dismissed at: ' + new Date());
