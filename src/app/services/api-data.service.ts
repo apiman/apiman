@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {environment} from '../../environments/environment';
+import {Injectable} from '@angular/core';
 
 /**
  * Api Version
@@ -183,13 +184,13 @@ export interface GatewayEndpoint {
  */
 export class ApiDataService {
 
+  private apiMgmtUiRestUrl: string = environment.apiMgmtUiRestUrl;
+
   /**
    * Constructor
    * @param http The http client
-   * @param apiMgmtUiRestUrl The Api Mgmt UI REST url
    */
-  constructor(private http: HttpClient, @Inject('API_MGMT_UI_REST_URL') private apiMgmtUiRestUrl: string) {
-  }
+  constructor(private http: HttpClient) {}
 
   /**
    * Get all public apis

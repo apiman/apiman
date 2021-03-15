@@ -25,10 +25,10 @@ The developer portal requires following realm roles in keycloak to allow users a
 
 | Keycloak realm role | Description                                                                                   |
 |---------------------|-----------------------------------------------------------------------------------------------|
-| devportaluser       | The role to get access as developer/client to use managed apis                                                   |
+| devportaluser       | The role to get access as developer/client to use managed apis                                |
 | apiadmin            | The role to get access as admin to share apis with developers via 'Administration' menu entry |
 
-The [apiman manager](https://github.com/apiman/apiman) delivers also keycloak groups to assign the above roles:
+These roles are assigned to users via following groups:
 
 | Keycloak groups          | Description                                                                                    |
 |--------------------------|------------------------------------------------------------------------------------------------|
@@ -36,7 +36,8 @@ The [apiman manager](https://github.com/apiman/apiman) delivers also keycloak gr
 | API-Mgmt-Devportal-Users | The group to get access as developer/client                                                    |
 | API-Mgmt-Administrators  | The group to get access as admin to share apis with developers via 'Administration' menu entry |
 
-**Note:** We prefer assigning users to the groups, not assigning the roles directly to the users. Just for comfort reasons, if at anytime more roles will introduced for an application like the developer portal. If this is the case you can simply change the group settings instead assigning each user the new roles.
+**Note:** You have to assign the groups to the user instead of assigning the roles directly to the users!
+You can find an example [keycloak-realm](https://github.com/apiman/apiman/blob/master/distro/data/src/main/resources/data/apiman-realm-for-keycloak.json) in the manager project to set up these groups in keycloak.
 
 ## Get the code
 
@@ -56,56 +57,45 @@ At any time, you can pull changes from the upstream and merge them onto your mai
 The general idea is to keep your 'main' branch in-sync with the 'upstream/main'.
 
 
-## Running the Developer Portal as docker container
-
-### Build docker image locally
+## Running the Developer Portal
 
 To build the docker image locally you have to run the following command or use Intellij run configurations:
 
-`docker build -t apiman-devportal:latest .`
-
-### Start with docker-compose
-
-You can start the docker container with
-`docker-compose up`
+```bash
+docker build -t apiman-devportal:latest .
+docker-compose up
+```
 
 This command uses the existing [docker-compose.yml file](docker-compose.yml) with configured container environment variables.
 You may need to change these environment variables for your production setup. See configuration in the next chapter.
-
-### Docker container environment variables
-
-To ensure that the developer portal docker container can start correctly you have to configure some environment variables.
-
-| Variable             | Example                       | Description                                                               |
-|----------------------|-------------------------------|---------------------------------------------------------------------------|
-| API_MGMT_UI_REST_URL | https://localhost:8443/apiman | the address of the [apiman manager](https://github.com/apiman/apiman) ui  |
-| KEYCLOAK_AUTH_URL    | https://localhost:8443/auth   | the address of the keycloak server                                        |
-| KEYCLOAK_REALM       | apiman                        | the realm name for your apiman installation configured in keycloak        |
 
 ### Technical background:
 
 On container start the script [start-nginx-with-devportal.sh](docker/start-nginx-with-devportal.sh) uses the environment variable values to configure the angular app environment settings for your apiman installation.
 You can find these angular app settings in [environment.prod.ts](/src/environments/environment.prod.ts).
+If you want to start the Developer Portal Angular App directly without docker (e.g. for local development) then you may have to modify the angular [environment.ts](/src/environments/environment.ts) file to match your local machine / docker environment.
 
 The idea behind this mechanism is from this nice [blog entry](https://blog.codecentric.de/en/2019/03/docker-angular-dockerize-app-easily/).
+
+## Environment Variables for local development and docker
+
+In the angular environment the variables have a slightly different name.
+
+| Docker Environment   | Angular Environment | Example                         | Description                                                              | Required |
+|----------------------|---------------------|---------------------------------|--------------------------------------------------------------------------|----------|
+| API_MGMT_UI_REST_URL | apiMgmtUiRestUrl    | https://localhost:8443/apiman   | the address of the [apiman manager](https://github.com/apiman/apiman) ui | yes      |
+| KEYCLOAK_AUTH_URL    | keycloakAuthUrl     | https://localhost:8443/auth     | the address of the keycloak server                                       | yes      |
+| KEYCLOAK_REALM       | apiMgmtRealm        | apiman                          | the realm name for your apiman installation configured in keycloak       | yes      |
+| LOGO_FILE_URL        | logoUrl             | https://localhost:8443/logo.png | an optional url to a custom logo                                         | optional |
+| FAVICON_FILE_URL     | -                   | https://localhost:8443/fav.ico  | an optional url to a custom favicon                                      | optional |
+| CSS_FILE_URL         | -                   | https://localhost:8443/my.css   | an optional url to a custom css url                                      | optional |
 
 ## Further Documentation
 
 For more information please check out our [documentation](https://doc.scheer-pas.com/display/APIMGMNT/Developer+Portal).
-
 Please open a new [github issue](https://github.com/apiman/apiman-developer-portal/issues) for documentation changes.
 
-## Modifications for local development on the angular app
-
-If you want to start the Developer Portal Angular App directly without docker (e.g. for local development) then you may have to modify the angular [environment.ts](/src/environments/environment.ts) file to match your local machine / docker environment.
-
-In the angular environment the variables have a slightly different name but the description is the same as in the last chapter:
-
-| Docker Environment   | Angular Environment | Example                       | Description                                                                 |
-|----------------------|---------------------|-------------------------------|-----------------------------------------------------------------------------|
-| API_MGMT_UI_REST_URL | apiMgmtUiRestUrl    | https://localhost:8443/apiman | the address of the [apiman manager](https://github.com/apiman/apiman) ui    |
-| KEYCLOAK_AUTH_URL    | keycloakAuthUrl     | https://localhost:8443/auth   | the address of the keycloak server                                          |
-| KEYCLOAK_REALM       | apiMgmtRealm        | apiman                        | the realm name for your apiman installation configured in keycloak          |
+## Local development notes
 
 After these changes you can run `ng serve` for a dev server. Navigate to `http://localhost:80/`. The app will automatically reload if you change any of the source files.
 
