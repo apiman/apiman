@@ -26,7 +26,7 @@ jobs:
           node-version: '12'
           check-latest: true
       - name: Install node modules
-        run: npm install --also=dev
+        run: npm ci --also=dev
       - name: Do local build
         run: npm run-script build
       - name: Do production build
@@ -37,7 +37,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Install node modules
-        run: npm install --also=dev
+        run: npm ci --also=dev
       - name: Do browser tests
         run: npm run-script test
         env:
