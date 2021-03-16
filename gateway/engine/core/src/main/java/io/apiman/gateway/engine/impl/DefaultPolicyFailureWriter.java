@@ -74,7 +74,11 @@ public class DefaultPolicyFailureWriter implements IPolicyFailureWriter {
             errorCode = 404;
         }
 
-        if (failure.getResponseCode() >= 300) {
+        if (failure.getResponseCode() == 0) {
+            // If no response code is set in PolicyFailure, then we can set a default error code to ensure
+            // the body and HTTP response code match.
+            failure.setResponseCode(errorCode);
+        } else if (failure.getResponseCode() >= 300) {
             errorCode = failure.getResponseCode();
         }
 
