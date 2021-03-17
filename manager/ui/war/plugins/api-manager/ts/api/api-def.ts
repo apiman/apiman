@@ -41,10 +41,7 @@ module Apiman {
                     function() {
                         Logger.debug("Updated the api definition!");
                         $scope.apiDefinition = $scope.updatedApiDefinition;
-                        $rootScope.isDirty = false;
-                        $scope.saveButton.state = 'complete';
-                        EntityStatusSvc.getEntity().modifiedOn = Date.now();
-                        EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
+                        finishModification();
                     },
                     function(error) {
                         Logger.error("Error updating definition: {0}", error);
@@ -110,6 +107,13 @@ module Apiman {
                 }
             };
 
+            const finishModification = function() {
+                $rootScope.isDirty = false;
+                $scope.saveButton.state = 'complete';
+                EntityStatusSvc.getEntity().modifiedOn = Date.now();
+                EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
+            };
+
             $scope.$watch('updatedApi', checkDirty, true);
 
             $scope.$watch('updatedApiDefinition', function(newValue, oldValue) {
@@ -153,8 +157,7 @@ module Apiman {
                     function() {
                         Logger.debug("Updated the api definition!");
                         loadDefinition();
-                        $rootScope.isDirty = false;
-                        $scope.saveButton.state = 'complete';
+                        finishModification();
                     },
                     function(error) {
                         Logger.error("Error updating definition: {0}", error);
