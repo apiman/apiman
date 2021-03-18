@@ -109,7 +109,7 @@
     <version.commons-configuration>1.10</version.commons-configuration>
     <version.commons-dbcp>1.4</version.commons-dbcp>
     <version.commons-dbutils>1.6</version.commons-dbutils>
-    <version.commons-io>2.4</version.commons-io>
+    <version.commons-io>2.8.0</version.commons-io>
     <version.commons-lang>2.6</version.commons-lang>
     <version.commons-logging>1.2</version.commons-logging>
     <version.commons-pool>1.6</version.commons-pool>
