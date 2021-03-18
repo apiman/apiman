@@ -97,7 +97,7 @@
     <version.git-commit-id.plugin>2.2.1</version.git-commit-id.plugin>
 
     <!-- Dependency Versions -->
-    <version.com.fasterxml.jackson>2.10.0</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.10.5.1</version.com.fasterxml.jackson>
     <version.com.h2database>1.3.173</version.com.h2database>
     <version.com.lmax>3.4.2</version.com.lmax>
     <version.com.squareup.okhttp>2.4.0</version.com.squareup.okhttp>
