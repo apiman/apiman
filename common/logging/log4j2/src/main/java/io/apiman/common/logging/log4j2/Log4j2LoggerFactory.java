@@ -17,6 +17,7 @@ package io.apiman.common.logging.log4j2;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
+import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.FormattedMessageFactory;
@@ -26,14 +27,18 @@ import org.apache.logging.log4j.message.FormattedMessageFactory;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@ApimanLoggerFactory(name = "log4j2")
 public class Log4j2LoggerFactory implements IDelegateFactory {
+
+    private final FormattedMessageFactory formattedMessageFactory =  new FormattedMessageFactory();
+
     @Override
     public IApimanLogger createLogger(String name) {
-        return new Log4j2LoggerImpl(LogManager.getLogger(name, new FormattedMessageFactory()));
+        return new Log4j2LoggerImpl(LogManager.getLogger(name, formattedMessageFactory));
     }
 
     @Override
     public IApimanLogger createLogger(Class<?> klazz) {
-        return new Log4j2LoggerImpl(LogManager.getLogger(klazz, new FormattedMessageFactory()));
+        return new Log4j2LoggerImpl(LogManager.getLogger(klazz, formattedMessageFactory));
     }
 }

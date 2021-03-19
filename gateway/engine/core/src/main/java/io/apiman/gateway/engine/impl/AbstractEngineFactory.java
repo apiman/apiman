@@ -58,7 +58,6 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
         IConnectorFactory cfactory = createConnectorFactory(pluginRegistry);
         IPolicyFactory pfactory = createPolicyFactory(pluginRegistry);
         IMetrics metrics = createMetrics(pluginRegistry);
-        IDelegateFactory logFactory = createLoggerFactory(pluginRegistry);
         IApiRequestPathParser pathParser = createRequestPathParser(pluginRegistry);
 
         List<IGatewayInitializer> initializers = createInitializers(pluginRegistry);
@@ -67,7 +66,7 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
         }
 
         complete();
-        return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics, logFactory, pathParser);
+        return new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics, pathParser);
     }
 
     /**
@@ -129,6 +128,7 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
      * Creates the logger factory
      * @return anew log factory
      */
+    @Deprecated
     protected abstract IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry);
 
 

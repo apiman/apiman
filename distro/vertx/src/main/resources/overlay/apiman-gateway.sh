@@ -54,6 +54,8 @@ fi
 # Launch
 $JAVA $JAVA_OPTS \
     $APIMAN_GATEWAY_OPTS \
+    `# Explicitly tell Apiman to use log4j2`
+    -Dio.apiman.logger=log4j2
     `# Use Log4j2 by default.` \
     -Dlog4j.configurationFile="$DIRNAME/log4j2.xml" \
     `# Set Vert.x's logger to use Log4j2 (NB: this is separate from apiman's policy/internal logging).` \

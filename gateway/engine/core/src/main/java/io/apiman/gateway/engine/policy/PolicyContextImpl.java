@@ -36,21 +36,15 @@ public class PolicyContextImpl implements IPolicyContext {
 
     private final IComponentRegistry componentRegistry;
     private final Map<String, Object> conversation = new HashMap<>();
-    private final IDelegateFactory logFactory;
-    // Using String instead of Class to avoid any accidental memory leak issues.
-    private final static Map<String, IApimanLogger> loggers = new HashMap<>();
     private IConnectorInterceptor connectorInterceptor;
     private IConnectorConfig connectorConfig;
 
     /**
      * Constructor.
      * @param componentRegistry the component registry
-     * @param logFactory the log factory
      */
-    public PolicyContextImpl(IComponentRegistry componentRegistry,
-            IDelegateFactory logFactory) {
+    public PolicyContextImpl(IComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;
-        this.logFactory = logFactory;
     }
 
     /**
@@ -108,17 +102,6 @@ public class PolicyContextImpl implements IPolicyContext {
     @Override
     public IConnectorInterceptor getConnectorInterceptor() {
         return connectorInterceptor;
-    }
-
-    @Override
-    public IApimanLogger getLogger(Class<?> klazz) {
-        if (loggers.containsKey(klazz.getCanonicalName())) {
-            return loggers.get(klazz.getCanonicalName());
-        } else {
-            IApimanLogger logger = logFactory.createLogger(klazz);
-            loggers.put(klazz.getCanonicalName(), logger);
-            return logger;
-        }
     }
 
     @Override

@@ -111,6 +111,7 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
     }
 
     @Override
+    @Deprecated
     protected IDelegateFactory createLoggerFactory(IPluginRegistry pluginRegistry) {
         return new DefaultDelegateFactory();
     }

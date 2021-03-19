@@ -16,6 +16,7 @@
 package io.apiman.common.es.util;
 
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.DefaultDelegateFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.Holder;
@@ -63,7 +64,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class DefaultEsClientFactory extends AbstractClientFactory implements IEsClientFactory {
 
-    private final IApimanLogger logger = new DefaultDelegateFactory().createLogger(DefaultEsClientFactory.class);
+    private final IApimanLogger logger = ApimanLoggerFactory.getLogger(DefaultEsClientFactory.class);
 
     /**
      * Creates a client from information in the config map.

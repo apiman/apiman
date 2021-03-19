@@ -34,10 +34,10 @@ public class VertxLoggerDelegate implements IDelegateFactory {
         return new VertxApimanLogger(LoggerFactory.getLogger(klazz));
     }
 
-    class VertxApimanLogger implements IApimanLogger {
-        private Logger logger;
+    static class VertxApimanLogger implements IApimanLogger {
+        private final Logger logger;
 
-        public VertxApimanLogger(Logger logger) {
+        VertxApimanLogger(Logger logger) {
             this.logger = logger;
         }
 

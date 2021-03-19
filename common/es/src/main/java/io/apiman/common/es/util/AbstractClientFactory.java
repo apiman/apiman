@@ -18,6 +18,7 @@ package io.apiman.common.es.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.DefaultDelegateFactory;
 import io.apiman.common.logging.IApimanLogger;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ import org.elasticsearch.common.xcontent.XContentType;
  */
 public abstract class AbstractClientFactory {
 
-    private static IApimanLogger logger = new DefaultDelegateFactory().createLogger(AbstractClientFactory.class);
+    private static final IApimanLogger logger = ApimanLoggerFactory.getLogger(AbstractClientFactory.class);
 
     protected static final Map<String, RestHighLevelClient> clients = new HashMap<>();
 

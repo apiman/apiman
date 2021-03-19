@@ -17,6 +17,8 @@ package io.apiman.common.logging.slf4j;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
+import io.apiman.common.logging.annotations.ApimanLoggerFactory;
+
 import org.slf4j.LoggerFactory;
 
 /**
@@ -24,7 +26,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@ApimanLoggerFactory(name="slf4j")
 public class Slf4jLoggerFactory implements IDelegateFactory {
+
     @Override
     public IApimanLogger createLogger(String name) {
         return new Slf4jLoggerImpl(LoggerFactory.getLogger(name));

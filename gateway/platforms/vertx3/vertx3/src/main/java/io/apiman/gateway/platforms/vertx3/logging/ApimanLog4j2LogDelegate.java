@@ -14,8 +14,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  */
 public class ApimanLog4j2LogDelegate implements LogDelegate {
 
-    private ExtendedLogger logger;
-    final static String FQCN = Logger.class.getCanonicalName();
+    private final ExtendedLogger logger;
+    private final static String FQCN = Logger.class.getCanonicalName();
 
     ApimanLog4j2LogDelegate(final String name) {
       logger = (ExtendedLogger) org.apache.logging.log4j.LogManager.getLogger(name, new FormattedMessageFactory());

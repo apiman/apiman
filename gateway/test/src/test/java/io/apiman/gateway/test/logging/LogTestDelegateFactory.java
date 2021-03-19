@@ -18,14 +18,12 @@ package io.apiman.gateway.test.logging;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
+import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
 import java.util.Map;
 
+@ApimanLoggerFactory(name = "test")
 public class LogTestDelegateFactory implements IDelegateFactory {
-
-    public LogTestDelegateFactory() {}
-    public LogTestDelegateFactory(Map<String, String> opts) {}
-
     @Override
     public IApimanLogger createLogger(String name) {
         return new TestLogger(name);

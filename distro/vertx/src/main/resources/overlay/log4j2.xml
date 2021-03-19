@@ -10,16 +10,10 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
   <Appenders>
     <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
     <RandomAccessFile name="RandomAccessFile" fileName="apiman-gateway.log" immediateFlush="false" append="false">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
-      </PatternLayout>
+      <JsonLayout />
     </RandomAccessFile>
     <Console name="Console-Appender" target="SYSTEM_OUT" immediateFlush="false">
-      <PatternLayout>
-          <pattern>
-              [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
-          </pattern>
-      </PatternLayout>
+      <JsonLayout />
     </Console>
   </Appenders>
   <Loggers>
