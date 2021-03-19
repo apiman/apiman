@@ -155,7 +155,7 @@
     <version.net.openhft>0.6</version.net.openhft>
     <version.com.ibm.icu4j>57.1</version.com.ibm.icu4j>
     <version.com.hazelcast>3.6.4</version.com.hazelcast>
-    <version.com.jcbai>1.16</version.com.jcbai>
+    <version.com.jcbai>1.17.5</version.com.jcbai>
     <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
     <version.org.redisson>3.15.0</version.org.redisson>
     <version.net.javacrumbs.json-unit>2.24.0</version.net.javacrumbs.json-unit>
