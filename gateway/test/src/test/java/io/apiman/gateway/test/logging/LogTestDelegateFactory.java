@@ -22,7 +22,7 @@ import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
 import java.util.Map;
 
-@ApimanLoggerFactory(name = "test")
+@ApimanLoggerFactory(name = "test-logger")
 public class LogTestDelegateFactory implements IDelegateFactory {
     @Override
     public IApimanLogger createLogger(String name) {

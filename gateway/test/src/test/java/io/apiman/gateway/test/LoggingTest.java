@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 @RunWith(GatewayRestTester.class)
 @GatewayRestTestPlan("test-plans/policies/logging-testPlan.xml")
 @GatewayRestTestSystemProperties({
-    "io.apiman.logger", "test"
+    "io.apiman.logger", "test-logger"
 })
 public class LoggingTest {
 
