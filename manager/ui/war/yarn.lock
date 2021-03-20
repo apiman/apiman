@@ -745,6 +745,11 @@ bootstrap-select@1.12.2:
   dependencies:
     jquery ">=1.8"
 
+bootstrap-select@1.13.18:
+  version "1.13.18"
+  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.13.18.tgz#4557119d58dc1159189977161c803962220e4dda"
+  integrity sha512-V1IzK4rxBq5FrJtkzSH6RmFLFBsjx50byFbfAf8jYyXROWs7ZpprGjdHeoyq2HSsHyjJhMMwjsQhRoYAfxCGow==
+
 bootstrap-slider@^9.9.0:
   version "9.10.0"
   resolved "https://registry.yarnpkg.com/bootstrap-slider/-/bootstrap-slider-9.10.0.tgz#1103d6bc00cfbfa8cfc9a2599ab518c55643da3f"
@@ -4725,7 +4730,7 @@ patternfly-bootstrap-treeview@~2.1.10:
     bootstrap "^3.4.1"
     jquery "^3.4.1"
 
-patternfly@^3.59.4:
+patternfly@^3.59.5:
   version "3.59.5"
   resolved "https://registry.yarnpkg.com/patternfly/-/patternfly-3.59.5.tgz#5f515a65b47c4a159d9c300f93134f7c523b8e86"
   integrity sha512-SMQynv9eFrWWG0Ujta5+jPjxHdQB3xkTLiDW5VP8XXc0nGUxXb4EnZh21qiMeGGJYaKpu9CzaPEpCvuBxgYWHQ==
