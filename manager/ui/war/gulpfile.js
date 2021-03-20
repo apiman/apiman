@@ -24,6 +24,7 @@ var replace = require('gulp-replace');
 var runSequence = require('run-sequence');
 var typescript = require('gulp-typescript');
 var watch = require('gulp-watch');
+const { IncomingMessage } = require('http');
 
 
 // ---------------------- Configuration ---->>
@@ -104,14 +105,21 @@ gulp.task('concat', function() {
 
 // Connect Task
 gulp.task('connect', function() {
+// NextHandleFunction = (req: IncomingMessage, res: http.ServerResponse, next: NextFunction)
     connect.server({
         root: '.',
         livereload: false,
         port: 2772,
-        fallback: 'index.html'
+        fallback: 'index.html',
+        middleware: (_, opt) => {
+            return [(req, res, next) => {
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,OPTIONS,HEAD');
+                next();
+            }]
+          }
     });
 });
-
 
 // CSS Task
 // Concatenates CSS files into one (/lib/styles.css)
