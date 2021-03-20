@@ -153,7 +153,7 @@
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.6</version.io.vertx>
     <version.net.openhft>0.6</version.net.openhft>
-    <version.com.ibm.icu4j>57.1</version.com.ibm.icu4j>
+    <version.com.ibm.icu4j>57.2</version.com.ibm.icu4j>
     <version.com.hazelcast>3.6.4</version.com.hazelcast>
     <version.com.jcbai>1.17.5</version.com.jcbai>
     <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
