@@ -78,10 +78,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
         String defaultIndexPrefix) {
 
         RestHighLevelClient client;
-        String indexNamePrefix = config.get("client.indexPrefix"); //$NON-NLS-1$
-        if (indexNamePrefix == null) {
-            indexNamePrefix = defaultIndexPrefix;
-        }
+        String indexNamePrefix = config.getOrDefault("client.indexPrefix", defaultIndexPrefix); //$NON-NLS-1$
         client = this.createEsClient(config, esIndices, indexNamePrefix);
         return client;
     }
