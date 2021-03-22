@@ -70,7 +70,7 @@
 
     <!-- Plugin Versions -->
     <version.ant>1.10.9</version.ant>
-    <version.antrun.plugin>1.7</version.antrun.plugin>
+    <version.antrun.plugin>3.0.0</version.antrun.plugin>
     <version.assembly.plugin>3.2.0</version.assembly.plugin>
     <version.buildhelper.plugin>3.2.0</version.buildhelper.plugin>
     <version.buildnumber.plugin>1.3</version.buildnumber.plugin>
