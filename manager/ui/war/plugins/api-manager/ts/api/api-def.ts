@@ -12,7 +12,7 @@ module Apiman {
             $scope.version = params.version;
             $scope.showMetrics = Configuration.ui.metrics;
             $scope.textAreaHeight = '100';
-
+            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
             $scope.typeOptions = [
                 { "label" : "No API Definition",     "value" : "None" },
                 { "label" : "Swagger (JSON)",        "value" : "SwaggerJSON" },
@@ -27,10 +27,14 @@ module Apiman {
                     }
                 });
             };
-
             selectType('None');
 
-            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
+            $scope.finishModification = function () {
+                $rootScope.isDirty = false;
+                $scope.saveButton.state = 'complete';
+                EntityStatusSvc.getEntity().modifiedOn = Date.now();
+                EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
+            };
 
             $scope.saveApi = function() {
                 console.log('$scope.selectedDefinitionType.value: ' + $scope.selectedDefinitionType.value);
@@ -38,11 +42,10 @@ module Apiman {
 
                 ApiDefinitionSvcs.updateApiDefinition(params.org, params.api, params.version,
                     $scope.updatedApiDefinition, $scope.selectedDefinitionType.value,
-                    function(definition) {
+                    function() {
                         Logger.debug("Updated the api definition!");
                         $scope.apiDefinition = $scope.updatedApiDefinition;
-                        $rootScope.isDirty = false;
-                        $scope.saveButton.state = 'complete';
+                        $scope.finishModification();
                     },
                     function(error) {
                         Logger.error("Error updating definition: {0}", error);
@@ -151,8 +154,7 @@ module Apiman {
                     function() {
                         Logger.debug("Updated the api definition!");
                         loadDefinition();
-                        $rootScope.isDirty = false;
-                        $scope.saveButton.state = 'complete';
+                        $scope.finishModification();
                     },
                     function(error) {
                         Logger.error("Error updating definition: {0}", error);
