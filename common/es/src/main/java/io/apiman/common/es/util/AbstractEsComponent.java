@@ -38,10 +38,7 @@ public abstract class AbstractEsComponent {
      */
     public AbstractEsComponent(Map<String, String> config) {
         this.config = config;
-        String indexPrefix = config.get("client.indexPrefix"); //$NON-NLS-1$
-        if (indexPrefix == null) {
-            indexPrefix = getDefaultIndexPrefix();
-        }
+        String indexPrefix = config.getOrDefault("client.indexPrefix", getDefaultIndexPrefix()); //$NON-NLS-1$
         this.indexPrefix = indexPrefix;
     }
 
