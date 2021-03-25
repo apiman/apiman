@@ -36,7 +36,7 @@ export var ApiDefController = _module.controller('Apiman.ApiDefController',
                 EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
             };
 
-            let isValidDefinition = function (data, definitionType) {
+            $scope.isValidDefinition = (data, definitionType) => {
                 switch (definitionType) {
                     case 'SwaggerJSON':
                         try {
@@ -61,7 +61,7 @@ export var ApiDefController = _module.controller('Apiman.ApiDefController',
                 console.log('$scope.selectedDefinitionType.value: ' + $scope.selectedDefinitionType.value);
                 $scope.saveButton.state = 'in-progress';
 
-                if (!isValidDefinition($scope.updatedApiDefinition, $scope.selectedDefinitionType.value)) {
+                if (!$scope.isValidDefinition($scope.updatedApiDefinition, $scope.selectedDefinitionType.value)) {
                     Modals.error('Invalid API Definition!','The specified API definition is not a valid ' + $scope.selectedDefinitionType.value, null);
                     $scope.saveButton.state = 'error';
                     return;
