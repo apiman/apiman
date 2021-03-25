@@ -1,0 +1,21 @@
+<!-- Error Modal -->
+<script id="errorModal.html" type="text/ng-template">
+    <div class="modal-header modal-danger">
+        <h3 class="modal-title">{{ title }}</h3>
+    </div>
+    <div class="row modal-body">
+        <div class="col-sm-2">
+            <i class="fa fa-warning" style="font-size:48px;color:red"></i>
+        </div>
+        <div class="col-sm-10">
+            {{ message }}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger"
+                type="button"
+                ng-click="ok()"
+                apiman-i18n-key="ok">OK
+        </button>
+    </div>
+</script>
