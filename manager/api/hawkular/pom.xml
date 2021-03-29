@@ -32,12 +32,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-core</artifactId>
     </dependency>
-
-    <!-- Third Party Libs -->
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-    </dependency>
   </dependencies>
 
   <build>

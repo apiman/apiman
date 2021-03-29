@@ -16,17 +16,16 @@
 
 package io.apiman.gateway.engine.impl;
 
+import com.unboundid.ldap.sdk.Attribute;
+import com.unboundid.ldap.sdk.LDAPException;
 import io.apiman.gateway.engine.components.ldap.ILdapAttribute;
 import io.apiman.gateway.engine.components.ldap.ILdapDn;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import org.joda.time.DateTime;
-
-import com.unboundid.ldap.sdk.Attribute;
-import com.unboundid.ldap.sdk.LDAPException;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -76,8 +75,9 @@ public class DefaultLdapAttribute implements ILdapAttribute {
     }
 
     @Override
-    public DateTime getValueAsDateTime() {
-        return new DateTime(attribute.getValueAsDate());
+    public OffsetDateTime getValueAsDateTime() {
+        OffsetDateTime offsetDateTime = attribute.getValueAsDate().toInstant().atOffset(ZoneOffset.UTC);
+        return offsetDateTime;
     }
 
     @Override

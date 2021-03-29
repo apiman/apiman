@@ -15,10 +15,9 @@
  */
 package io.apiman.gateway.engine.components.ldap;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
-
-import org.joda.time.DateTime;
 
 /**
  * Simple model of an LDAP Attribute
@@ -72,9 +71,9 @@ public interface ILdapAttribute {
     Boolean getAsBoolean();
 
     /**
-     * @return as DateTime representation
+     * @return as OffsetDateTime representation
      */
-    DateTime getValueAsDateTime();
+    OffsetDateTime getValueAsDateTime();
 
     /**
      * @return as Integer representation

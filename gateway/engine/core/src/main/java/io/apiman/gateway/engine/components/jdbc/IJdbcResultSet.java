@@ -16,9 +16,8 @@
 package io.apiman.gateway.engine.components.jdbc;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
-
-import org.joda.time.DateTime;
 
 /**
  * Simple result set, akin to {@link java.sql.ResultSet}
@@ -140,7 +139,7 @@ public interface IJdbcResultSet {
      * @return the result as a Date
      * @throws IndexOutOfBoundsException when index is invalid
      */
-    DateTime getDateTime(int index);
+    OffsetDateTime getDateTime(int index);
 
     /**
      * Close the result set

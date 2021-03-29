@@ -23,10 +23,11 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.joda.time.DateTime;
 
 /**
  * A simple/default implementation of a {@link IJdbcResultSet}.
@@ -205,10 +206,10 @@ public class DefaultJdbcResultSet implements IJdbcResultSet {
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getDateTime(int)
      */
     @Override
-    public DateTime getDateTime(int index) {
+    public OffsetDateTime getDateTime(int index) {
         try {
-            Date date = resultSet.getDate(index);
-            return new DateTime(date);
+            OffsetDateTime offsetDateTime = resultSet.getDate(index).toInstant().atOffset(ZoneOffset.UTC);
+            return offsetDateTime;
         } catch (SQLException e) {
             return null;
         }

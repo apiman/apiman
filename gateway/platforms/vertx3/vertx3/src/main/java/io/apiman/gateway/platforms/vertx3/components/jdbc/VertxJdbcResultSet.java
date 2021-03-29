@@ -20,10 +20,10 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.ext.sql.ResultSet;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.List;
-
-import org.joda.time.DateTime;
 
 /**
 * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -174,8 +174,9 @@ public class VertxJdbcResultSet implements IJdbcResultSet {
      * @see io.apiman.gateway.engine.components.jdbc.IJdbcResultSet#getDateTime(int)
      */
     @Override
-    public DateTime getDateTime(int index) {
-        return new DateTime(rows.get(row).getString(index));
+    public OffsetDateTime getDateTime(int index) {
+        OffsetDateTime offsetDateTime =  OffsetDateTime.parse(rows.get(row).getString(index));
+        return offsetDateTime;
     }
 
     /**

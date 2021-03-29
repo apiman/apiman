@@ -26,13 +26,11 @@ import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
+import java.time.Clock;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalTime;
 
 /**
  * Policy that restrict access to resource by time when resource can be accessed.
@@ -46,7 +44,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
+     * @see AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
     protected Class<TimeRestrictedAccessConfig> getConfigurationClass() {
@@ -93,7 +91,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
         }
         List<TimeRestrictedAccess> rulesEnabledForPath = getRulesMatchingPath(config, destination);
         if(rulesEnabledForPath.size()!=0){
-            DateTime currentTime = new DateTime(DateTimeZone.UTC);
+            OffsetDateTime currentTime = OffsetDateTime.now(Clock.systemUTC());
             for (TimeRestrictedAccess rule : rulesEnabledForPath) {
                 boolean matchesDay = matchesDay(currentTime, rule);
                 if (matchesDay) {
@@ -128,7 +126,6 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
     /**
      * Returns true if the given DateTime matches the time range indicated by the
      * filter/rule.
-     * @param currentTime
      * @param filter
      */
     private boolean matchesTime(TimeRestrictedAccess filter) {
@@ -139,22 +136,23 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
         }
         long startMs = start.getTime();
         long endMs = end.getTime();
-        DateTime currentTime = new LocalTime(DateTimeZone.UTC).toDateTime(new DateTime(0l));
-        long nowMs = currentTime.toDate().getTime();
-        
+        OffsetDateTime currentTime = OffsetDateTime.now(Clock.systemUTC());
+        long nowMs = currentTime.toInstant().toEpochMilli();
+
         return nowMs >= startMs && nowMs < endMs;
     }
 
     /**
      * Returns true if the given time matches the day-of-week restrictions specified
      * by the included filter/rule.
+     *
      * @param currentTime
      * @param filter
      */
-    private boolean matchesDay(DateTime currentTime, TimeRestrictedAccess filter) {
+    private boolean matchesDay(OffsetDateTime currentTime, TimeRestrictedAccess filter) {
         Integer dayStart = filter.getDayStart();
         Integer dayEnd = filter.getDayEnd();
-        int dayNow = currentTime.getDayOfWeek();
+        int dayNow = currentTime.getDayOfWeek().getValue();
         if (dayStart >= dayEnd) {
             return dayNow >= dayStart && dayNow <= dayEnd;
         } else {
