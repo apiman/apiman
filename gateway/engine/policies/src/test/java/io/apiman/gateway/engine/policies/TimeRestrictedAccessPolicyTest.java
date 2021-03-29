@@ -92,7 +92,7 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         assertEquals(expected.getPathPattern(), actual.getPathPattern());
     }
 
-    //@Test
+    @Test
     public void testApply() throws Exception {
         TimeRestrictedAccessPolicy policy = new TimeRestrictedAccessPolicy();
 
