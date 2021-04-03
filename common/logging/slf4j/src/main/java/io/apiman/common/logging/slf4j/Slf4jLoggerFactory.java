@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-@ApimanLoggerFactory(name="slf4j")
+@ApimanLoggerFactory(name = "slf4j")
 public class Slf4jLoggerFactory implements IDelegateFactory {
 
     @Override

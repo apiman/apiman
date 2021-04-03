@@ -19,11 +19,13 @@ import io.apiman.common.logging.DefaultTimeImpl;
 import io.apiman.common.logging.IApimanDelegateLogger;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.Time;
+import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.MessageFormat;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -110,6 +112,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @author Marc Savy @{literal<msavy@redhat.com>}
  */
+//@ApimanLoggerFactory(name = "json")
 public class JsonLoggerImpl implements IApimanDelegateLogger {
     /**
      * @author Marc Savy <msavy@redhat.com>
@@ -120,10 +123,10 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
     }
 
     private static Time time = new DefaultTimeImpl();
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     static {
-        //mapper.set TODO set pretty print?
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     private Logger delegatedLogger;
