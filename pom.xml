@@ -180,11 +180,6 @@
         <artifactId>apiman-test-common</artifactId>
         <version>${version.apiman}</version>
       </dependency>
-      <dependency>
-        <groupId>io.apiman</groupId>
-        <artifactId>apiman-gateway-engine-3scale</artifactId>
-        <version>${version.apiman}</version>
-      </dependency>
       <!-- testing -->
       <dependency>
         <groupId>junit</groupId>
@@ -312,7 +307,6 @@
     <module>unique-header-policy</module>
     <module>url-whitelist-policy</module>
     <module>repository</module>
-    <module>auth-3scale</module>
     <module>custom-path-parser-demo</module>
     <module>timeout-policy</module>
   </modules>
