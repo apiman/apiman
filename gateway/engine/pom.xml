@@ -27,6 +27,5 @@
     <module>vertx-eb-inmemory</module>
     <module>vertx-polling</module>
     <module>vertx-shareddata</module>
-    <module>3scale</module>
   </modules>
 </project>
