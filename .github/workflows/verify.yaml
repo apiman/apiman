@@ -23,7 +23,7 @@ jobs:
     if: github.repository_owner == 'Apiman'
     strategy:
       matrix:
-        java: [ 8, 11, 15 ]
+        java: [ 8, 11, 16 ]
         integration-suite:
           # Default, empty string to avoid setting
           - name: Default configuration (JPA)
