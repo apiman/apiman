@@ -61,7 +61,7 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
         int queueSize = DEFAULT_QUEUE_SIZE;
         String queueSizeConfig = config.get("queue.size"); //$NON-NLS-1$
         if (queueSizeConfig != null) {
-            queueSize = new Integer(queueSizeConfig);
+            queueSize = Integer.valueOf(queueSizeConfig);
         }
         queue = new LinkedBlockingDeque<>(queueSize);
         startConsumerThread();
@@ -69,16 +69,13 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
 
     /**
      * Starts a thread which will serially pull information off the blocking
-     * queue and submit that information to hawkular metrics.
+     * queue and submit that information to JDBC metrics.
      */
     private void startConsumerThread() {
         stopped = false;
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!stopped) {
-                    processQueue();
-                }
+        thread = new Thread(() -> {
+            while (!stopped) {
+                processQueue();
             }
         }, "JdbcMetricsConsumer"); //$NON-NLS-1$
         thread.setDaemon(true);

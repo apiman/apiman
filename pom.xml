@@ -283,11 +283,6 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-api-hawkular</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-api-core</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -465,11 +460,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-engine-es</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-gateway-engine-hawkular</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
