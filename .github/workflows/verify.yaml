@@ -62,7 +62,7 @@ jobs:
             ${{ runner.os }}-maven-
       
       - name: Build Project
-        run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -T1C -B
+        run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B
 
       - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
         run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
