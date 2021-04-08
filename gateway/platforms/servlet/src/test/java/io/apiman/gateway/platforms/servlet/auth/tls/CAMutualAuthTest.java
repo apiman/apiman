@@ -81,7 +81,7 @@ public class CAMutualAuthTest {
         http_config = new HttpConfiguration();
         http_config.setSecureScheme("https");
 
-        SslContextFactory sslContextFactory = new SslContextFactory();
+        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setKeyStorePath(getResourcePath("2waytest/mutual_trust_via_ca/service_ks.jks"));
         sslContextFactory.setKeyStorePassword("password");
         sslContextFactory.setKeyManagerPassword("password");
