@@ -91,7 +91,7 @@ public class BasicAuthTest {
 
         handlers.addHandler(sch);
 
-        SslContextFactory sslContextFactory = new SslContextFactory();
+        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setTrustStorePath(getResourcePath("common_ts.jks"));
         sslContextFactory.setTrustStorePassword("password");
         sslContextFactory.setKeyStorePath(getResourcePath("service_ks.jks"));

@@ -93,7 +93,7 @@ public class BasicMutualAuthTest {
         http_config = new HttpConfiguration();
         http_config.setSecureScheme("https");
 
-        SslContextFactory sslContextFactory = new SslContextFactory();
+        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setKeyStorePath(getResourcePath("2waytest/basic_mutual_auth/service_ks.jks"));
 
         sslContextFactory.setKeyStorePassword("password");

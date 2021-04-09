@@ -80,7 +80,7 @@ public class StandardTLSTest {
         http_config = new HttpConfiguration();
         http_config.setSecureScheme("https");
 
-        SslContextFactory sslContextFactory = new SslContextFactory();
+        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setTrustStorePath(getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
         sslContextFactory.setTrustStorePassword("password");
         sslContextFactory.setKeyStorePath(getResourcePath("2waytest/mutual_trust_via_ca/service_ks.jks"));

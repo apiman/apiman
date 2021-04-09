@@ -74,7 +74,7 @@ public class CipherAndProtocolSelectionTest {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
-    private SslContextFactory jettySslContextFactory;
+    private SslContextFactory.Server jettySslContextFactory;
 
     @Before
     public void setupJetty() throws Exception {
@@ -84,7 +84,7 @@ public class CipherAndProtocolSelectionTest {
         http_config = new HttpConfiguration();
         http_config.setSecureScheme("https");
 
-        jettySslContextFactory = new SslContextFactory();
+        jettySslContextFactory = new SslContextFactory.Server();
         jettySslContextFactory.setTrustStorePath(getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
         jettySslContextFactory.setTrustStorePassword("password");
         jettySslContextFactory.setKeyStorePath(getResourcePath("2waytest/mutual_trust_via_ca/service_ks.jks"));
