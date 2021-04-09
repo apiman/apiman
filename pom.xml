@@ -66,6 +66,7 @@
     <version.apiman>2.0.1-SNAPSHOT</version.apiman>
     <version.javadoc.plugin>3.2.0</version.javadoc.plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
+    <version.deploy.plugin>2.8.2</version.deploy.plugin>
     <version.enforcer.plugin>1.4</version.enforcer.plugin>
     <version.maven-gpg-plugin.plugin>1.5</version.maven-gpg-plugin.plugin>
     <version.nexus-staging-maven-plugin.plugin>1.6.3</version.nexus-staging-maven-plugin.plugin>
@@ -420,6 +421,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>${version.assembly.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.deploy.plugin}</version>
         </plugin>
       <!--   <plugin> -->
       <!--     <groupId>org.apache.maven.plugins</groupId> -->
