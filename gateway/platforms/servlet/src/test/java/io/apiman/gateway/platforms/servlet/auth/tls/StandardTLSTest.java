@@ -82,10 +82,10 @@ public class StandardTLSTest {
 
         SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setTrustStorePath(getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        sslContextFactory.setTrustStorePassword("password");
+        sslContextFactory.setTrustStorePassword("changeme");
         sslContextFactory.setKeyStorePath(getResourcePath("2waytest/mutual_trust_via_ca/service_ks.jks"));
-        sslContextFactory.setKeyStorePassword("password");
-        sslContextFactory.setKeyManagerPassword("password");
+        sslContextFactory.setKeyStorePassword("changeme");
+        sslContextFactory.setKeyManagerPassword("changeme");
         // Use default trust store
         // No client auth
         sslContextFactory.setNeedClientAuth(false);
@@ -152,7 +152,7 @@ public class StandardTLSTest {
     @Test
     public void shouldSucceedWithValidTLS() {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
@@ -183,7 +183,7 @@ public class StandardTLSTest {
     public void shouldFailWhenCANotTrusted() {
         // Keystore does not trust the root CA API is signed with.
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 

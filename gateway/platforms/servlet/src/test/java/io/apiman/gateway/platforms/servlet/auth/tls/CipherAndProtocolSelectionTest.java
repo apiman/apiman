@@ -86,10 +86,10 @@ public class CipherAndProtocolSelectionTest {
 
         jettySslContextFactory = new SslContextFactory.Server();
         jettySslContextFactory.setTrustStorePath(getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        jettySslContextFactory.setTrustStorePassword("password");
+        jettySslContextFactory.setTrustStorePassword("changeme");
         jettySslContextFactory.setKeyStorePath(getResourcePath("2waytest/mutual_trust_via_ca/service_ks.jks"));
-        jettySslContextFactory.setKeyStorePassword("password");
-        jettySslContextFactory.setKeyManagerPassword("password");
+        jettySslContextFactory.setKeyStorePassword("changeme");
+        jettySslContextFactory.setKeyManagerPassword("changeme");
         // Use default trust store
         // No client auth
         jettySslContextFactory.setNeedClientAuth(false);
@@ -159,7 +159,7 @@ public class CipherAndProtocolSelectionTest {
         final String preferredCipher = getPrefferedCipher();
 
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
         config.put(TLSOptions.TLS_DISALLOWEDCIPHERS, preferredCipher);
@@ -195,7 +195,7 @@ public class CipherAndProtocolSelectionTest {
         String preferredCipher = getPrefferedCipher();
 
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
         config.put(TLSOptions.TLS_ALLOWEDCIPHERS, preferredCipher);
@@ -229,7 +229,7 @@ public class CipherAndProtocolSelectionTest {
     @Test
     public void shouldFailWhenNoValidProtocolAllowed() throws Exception {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
         config.put(TLSOptions.TLS_ALLOWEDPROTOCOLS, "SSLv3");
@@ -263,7 +263,7 @@ public class CipherAndProtocolSelectionTest {
     @Test
     public void shouldFailWhenAllAvailableProtocolsExcluded() throws Exception {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
         config.put(TLSOptions.TLS_ALLOWEDPROTOCOLS, "SSLv3");
@@ -296,7 +296,7 @@ public class CipherAndProtocolSelectionTest {
     @Test
     public void shouldFailWhenRemoteProtocolsAreExcluded() throws Exception {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
         config.put(TLSOptions.TLS_DISALLOWEDPROTOCOLS, "SSLv3");
@@ -332,7 +332,7 @@ public class CipherAndProtocolSelectionTest {
         String preferredCipher = getPrefferedCipher();
 
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
         config.put(TLSOptions.TLS_DISALLOWEDCIPHERS, preferredCipher);
@@ -368,7 +368,8 @@ public class CipherAndProtocolSelectionTest {
 
     private String getPrefferedCipher() throws Exception {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 

@@ -83,10 +83,10 @@ public class CAMutualAuthTest {
 
         SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setKeyStorePath(getResourcePath("2waytest/mutual_trust_via_ca/service_ks.jks"));
-        sslContextFactory.setKeyStorePassword("password");
-        sslContextFactory.setKeyManagerPassword("password");
+        sslContextFactory.setKeyStorePassword("changeme");
+        sslContextFactory.setKeyManagerPassword("changeme");
         sslContextFactory.setTrustStorePath(getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        sslContextFactory.setTrustStorePassword("password");
+        sslContextFactory.setTrustStorePassword("changeme");
         sslContextFactory.setNeedClientAuth(true);
 
         HttpConfiguration https_config = new HttpConfiguration(http_config);
@@ -150,10 +150,10 @@ public class CAMutualAuthTest {
     @Test
     public void shouldSucceedWithValidMTLS() {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/mutual_trust_via_ca/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "changeme");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
@@ -184,10 +184,10 @@ public class CAMutualAuthTest {
     public void shouldFailWhenCANotTrusted() {
         // Keystore does not trust the root CA API is signed with.
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/mutual_trust_via_ca/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "changeme");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
