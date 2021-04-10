@@ -19,7 +19,7 @@ parseArgs() {
         case "$1" in
             --debug)
                 DEBUG_MODE=true
-                if [ -n "$2" ] && [ "$2" = `echo "$2" | sed 's/-//'` ]; then
+                if [ -n "$2" ] && [ "$2" = "$(echo "$2" | sed 's/-//')" ]; then
                     DEBUG_PORT=$2
                     shift
                 fi
@@ -42,7 +42,7 @@ fi
 
 # Set debug settings if not already set
 if [ "$DEBUG_MODE" = "true" ]; then
-    DEBUG_OPT=`echo $JAVA_OPTS $APIMAN_GATEWAY_OPTS | grep "\-agentlib:jdwp"`
+    DEBUG_OPT=$(echo "$JAVA_OPTS" "$APIMAN_GATEWAY_OPTS" | grep "\-agentlib:jdwp")
     if [ "x$DEBUG_OPT" = "x" ]; then
         APIMAN_GATEWAY_OPTS="$APIMAN_GATEWAY_OPTS -agentlib:jdwp=transport=dt_socket,address=0.0.0.0:$DEBUG_PORT,server=y,suspend=n"
         echo "Debugging mode enabled: $APIMAN_GATEWAY_OPTS"
@@ -52,10 +52,10 @@ if [ "$DEBUG_MODE" = "true" ]; then
 fi
 
 # Launch
-$JAVA $JAVA_OPTS \
-    $APIMAN_GATEWAY_OPTS \
-    `# Explicitly tell Apiman to use log4j2`
-    -Dio.apiman.logger=log4j2
+$JAVA "$JAVA_OPTS" \
+    "$APIMAN_GATEWAY_OPTS" \
+    `# Explicitly tell Apiman to use log4j2` \
+    -Dapiman.logger-delegate=log4j2 \
     `# Use Log4j2 by default.` \
     -Dlog4j.configurationFile="$DIRNAME/log4j2.xml" \
     `# Set Vert.x's logger to use Log4j2 (NB: this is separate from apiman's policy/internal logging).` \

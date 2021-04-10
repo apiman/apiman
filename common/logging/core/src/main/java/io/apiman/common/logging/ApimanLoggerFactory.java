@@ -2,6 +2,8 @@ package io.apiman.common.logging;
 
 public class ApimanLoggerFactory {
 
+    public static final String APIMAN_LOGGER = "apiman.logger-delegate";
+
     private static volatile boolean LOGGER_RESOLVED = false;
     private static IDelegateFactory LOGGER_FACTORY;
 
@@ -26,7 +28,7 @@ public class ApimanLoggerFactory {
     }
 
     private static IDelegateFactory resolveLoggerFactory() {
-        String sysProp = System.getProperty("io.apiman.logger");
+        String sysProp = System.getProperty(APIMAN_LOGGER);
         if (sysProp == null) {
             return ApimanLoggerFactoryRegistry.getDefaultLoggerFactory();
         }
