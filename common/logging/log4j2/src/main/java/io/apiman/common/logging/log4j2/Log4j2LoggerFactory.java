@@ -27,7 +27,7 @@ import org.apache.logging.log4j.message.FormattedMessageFactory;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-@ApimanLoggerFactory(name = "log4j2")
+@ApimanLoggerFactory("log4j2")
 public class Log4j2LoggerFactory implements IDelegateFactory {
 
     private final FormattedMessageFactory formattedMessageFactory =  new FormattedMessageFactory();

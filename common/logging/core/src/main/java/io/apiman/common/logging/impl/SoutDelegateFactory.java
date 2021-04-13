@@ -1,6 +1,10 @@
-package io.apiman.common.logging;
+package io.apiman.common.logging.impl;
 
-import io.apiman.common.logging.impl.SystemOutLogger;
+import io.apiman.common.logging.ApimanLoggerFactoryRegistry;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.IDelegateFactory;
+import io.apiman.common.logging.annotations.ApimanLoggerFactory;
+
 import java.util.Map;
 
 /**
@@ -8,11 +12,8 @@ import java.util.Map;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@ApimanLoggerFactory("sout")
 public class SoutDelegateFactory implements IDelegateFactory {
-
-    static {
-        ApimanLoggerFactoryRegistry.register("default", new SoutDelegateFactory());
-    }
 
     public SoutDelegateFactory() {
     }

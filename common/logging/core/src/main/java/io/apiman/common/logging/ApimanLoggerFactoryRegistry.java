@@ -16,6 +16,7 @@
 package io.apiman.common.logging;
 
 import io.apiman.common.logging.annotations.ApimanLoggerFactory;
+import io.apiman.common.logging.impl.SoutDelegateFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class ApimanLoggerFactoryRegistry {
         for (Class<?> loggerFactory : loggerFactories) {
             try {
                 IDelegateFactory instance = (IDelegateFactory) loggerFactory.newInstance();
-                String name = loggerFactory.getAnnotation(ApimanLoggerFactory.class).name();
+                String name = loggerFactory.getAnnotation(ApimanLoggerFactory.class).value();
                 DELEGATE_FACTORY_MAP.put(name, instance);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException(e);

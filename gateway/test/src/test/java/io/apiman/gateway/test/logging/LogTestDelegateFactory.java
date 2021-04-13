@@ -20,9 +20,7 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
-import java.util.Map;
-
-@ApimanLoggerFactory(name = "test-logger")
+@ApimanLoggerFactory("test-logger")
 public class LogTestDelegateFactory implements IDelegateFactory {
     @Override
     public IApimanLogger createLogger(String name) {

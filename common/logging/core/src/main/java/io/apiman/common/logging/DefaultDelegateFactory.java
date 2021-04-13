@@ -13,7 +13,7 @@ import java.util.Map;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @Deprecated
-@ApimanLoggerFactory(name = "default")
+@ApimanLoggerFactory("default")
 public class DefaultDelegateFactory implements IDelegateFactory {
 
     public DefaultDelegateFactory() {
