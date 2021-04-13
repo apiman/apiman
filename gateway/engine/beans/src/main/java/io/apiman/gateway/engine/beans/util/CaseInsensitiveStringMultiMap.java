@@ -95,8 +95,7 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap, Serializa
     }
 
     private long getHash(String text) {
-        return LongHashFunction.xx_r39().hash(text,
-                LOWER_CASE_ACCESS_INSTANCE, 0, text.length());
+        return LongHashFunction.xx().hash(text, LOWER_CASE_ACCESS_INSTANCE, 0, text.length());
     }
 
     @Override
