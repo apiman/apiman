@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.test;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.gateway.test.junit.GatewayRestTestPlan;
 import io.apiman.gateway.test.junit.GatewayRestTestSystemProperties;
 import io.apiman.gateway.test.junit.GatewayRestTester;
@@ -27,7 +28,7 @@ import org.junit.runner.RunWith;
 @RunWith(GatewayRestTester.class)
 @GatewayRestTestPlan("test-plans/policies/logging-testPlan.xml")
 @GatewayRestTestSystemProperties({
-    "io.apiman.logger", "test-logger"
+    ApimanLoggerFactory.APIMAN_LOGGER, "test-logger"
 })
 public class LoggingTest {
 
