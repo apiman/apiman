@@ -112,7 +112,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @author Marc Savy @{literal<msavy@redhat.com>}
  */
-//@ApimanLoggerFactory(name = "json")
+@ApimanLoggerFactory("simple-json")
 public class JsonLoggerImpl implements IApimanDelegateLogger {
     /**
      * @author Marc Savy <msavy@redhat.com>
