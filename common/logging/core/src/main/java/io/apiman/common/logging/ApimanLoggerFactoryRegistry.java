@@ -20,7 +20,7 @@ public class ApimanLoggerFactoryRegistry {
     }
 
     private static void resolveAllImplementations() {
-        Reflections reflection = new Reflections("io.apiman");
+        Reflections reflection = new Reflections("io.apiman.common.logging");
         Set<Class<?>> loggerFactories = reflection.getTypesAnnotatedWith(ApimanLoggerFactory.class);
 
         for (Class<?> loggerFactory : loggerFactories) {
