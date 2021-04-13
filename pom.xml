@@ -161,7 +161,7 @@
     <version.net.javacrumbs.json-unit>2.24.0</version.net.javacrumbs.json-unit>
 
     <!-- Sun and javax dependencies to maintain compatibility with Java 9+ module changes -->
-    <version.com.sun.xml.ws>2.3.2</version.com.sun.xml.ws>
+    <version.com.sun.xml.ws>3.0.0</version.com.sun.xml.ws>
     <version.javax.json.javax.json-api>1.0</version.javax.json.javax.json-api>
     <version.javax.xml.bind>2.3.0</version.javax.xml.bind>
     <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
