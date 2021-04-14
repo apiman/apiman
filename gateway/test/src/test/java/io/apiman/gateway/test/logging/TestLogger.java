@@ -22,8 +22,18 @@ import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
 @SuppressWarnings("nls")
 public class TestLogger implements IApimanLogger {
 
-    private CaseInsensitiveStringMultiMap mm;
-    private String name;
+    /**
+     * Other code will create loggers before our test runs, and we don't want to break anything,
+     * so we'll provide an empty map here. The test itself can override the map with
+     * {@link #setHeaders(CaseInsensitiveStringMultiMap)} to allow REST tests to reflect the results of
+     * logging as headers (and hence make testable assertions).
+     */
+    private CaseInsensitiveStringMultiMap mm = new CaseInsensitiveStringMultiMap();
+    private final String name;
+
+    public TestLogger() {
+        this.name = "test";
+    }
 
     public TestLogger(String name) {
         this.name = name;

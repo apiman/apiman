@@ -15,7 +15,6 @@
  */
 package io.apiman.gateway.engine.impl;
 
-import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.IApiRequestExecutor;
@@ -53,7 +52,6 @@ public class EngineImpl implements IEngine {
     private IConnectorFactory connectorFactory;
     private IPolicyFactory policyFactory;
     private IMetrics metrics;
-    private IDelegateFactory logFactory;
     private IApiRequestPathParser requestPathParser;
 
     /**
@@ -64,20 +62,18 @@ public class EngineImpl implements IEngine {
      * @param connectorFactory the connector factory
      * @param policyFactory the policy factory
      * @param metrics the metrics implementation
-     * @param logFactory the logger factory
      * @param pathParser the path parser
      */
     public EngineImpl(final IRegistry registry, final IPluginRegistry pluginRegistry,
-            final IComponentRegistry componentRegistry, final IConnectorFactory connectorFactory,
-            final IPolicyFactory policyFactory, final IMetrics metrics, final IDelegateFactory logFactory,
-            final IApiRequestPathParser pathParser) {
+        final IComponentRegistry componentRegistry, final IConnectorFactory connectorFactory,
+        final IPolicyFactory policyFactory, final IMetrics metrics,
+        final IApiRequestPathParser pathParser) {
         setRegistry(registry);
         setPluginRegistry(pluginRegistry);
         setComponentRegistry(componentRegistry);
         setConnectorFactory(connectorFactory);
         setPolicyFactory(policyFactory);
         setMetrics(metrics);
-        setLogFactory(logFactory);
         setApiRequestPathParser(pathParser);
 
         policyFactory.setPluginRegistry(pluginRegistry);
@@ -112,7 +108,7 @@ public class EngineImpl implements IEngine {
         return new ApiRequestExecutorImpl(request,
                 resultHandler,
                 registry,
-                new PolicyContextImpl(getComponentRegistry(), getLogFactory()),
+                new PolicyContextImpl(getComponentRegistry()),
                 policyFactory,
                 getConnectorFactory(),
                 getMetrics(),
@@ -203,21 +199,6 @@ public class EngineImpl implements IEngine {
      */
     public void setMetrics(IMetrics metrics) {
         this.metrics = metrics;
-    }
-
-    /**
-     * @return the log factory
-     */
-    public IDelegateFactory getLogFactory() {
-        return logFactory;
-    }
-
-    /**
-     * Set the log factory
-     * @param logFactory the log factory
-     */
-    public void setLogFactory(IDelegateFactory logFactory) {
-        this.logFactory = logFactory;
     }
 
     private void initialize(Object... m) {

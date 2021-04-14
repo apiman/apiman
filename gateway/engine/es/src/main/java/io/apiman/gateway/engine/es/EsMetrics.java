@@ -20,11 +20,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
-import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.metrics.RequestMetric;
+
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -33,9 +34,12 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.BOOL_PROP;
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.DATE_PROP;
@@ -52,14 +56,13 @@ import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER
  */
 public class EsMetrics extends AbstractEsComponent implements IMetrics {
 
+    private static final IApimanLogger logger = ApimanLoggerFactory.getLogger(EsMetrics.class);
     private static final int DEFAULT_QUEUE_SIZE = 10000;
     private static final int DEFAULT_BATCH_SIZE = 1000;
 
     protected IComponentRegistry componentRegistry;
     private final BlockingQueue<RequestMetric> queue;
     private final int batchSize;
-
-    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(EsMetrics.class);
 
     /**
      * Constructor.

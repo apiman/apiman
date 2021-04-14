@@ -11,4 +11,11 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>apiman-common-logging-core</artifactId>
     <name>apiman-common-logging-core</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+        </dependency>
+    </dependencies>
 </project>

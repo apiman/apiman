@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2021 Scheer PAS Schweiz AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.apiman.common.logging.annotations;
 
-package io.apiman.gateway.test.logging;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.logging.IDelegateFactory;
-import io.apiman.common.logging.annotations.ApimanLoggerFactory;
+/**
+ * Label logging delegate factories. Factories must implement
+ * {@link io.apiman.common.logging.IDelegateFactory}
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ */
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ApimanLoggerFactory {
 
-@ApimanLoggerFactory("test-logger")
-public class LogTestDelegateFactory implements IDelegateFactory {
-    @Override
-    public IApimanLogger createLogger(String name) {
-        return new TestLogger(name);
-    }
-
-    @Override
-    public IApimanLogger createLogger(Class<?> klazz) {
-        return new TestLogger(klazz);
-    }
-
+    /**
+     * Unique name of the logger factory
+     */
+    String value();
 }

@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.policy;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorConfig;
@@ -79,8 +80,10 @@ public interface IPolicyContext {
      * @param klazz the class
      * @return A logger associated with the conversation.
      */
-    IApimanLogger getLogger(Class<?> klazz);
-
+    @Deprecated
+    default IApimanLogger getLogger(Class<?> klazz) {
+        return ApimanLoggerFactory.getLogger(klazz);
+    }
 
     /**
      * Mutate connector attributes
