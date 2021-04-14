@@ -86,7 +86,7 @@
     <version.maven-gpg-plugin.plugin>1.6</version.maven-gpg-plugin.plugin>
     <version.nexus-staging-maven-plugin.plugin>1.6.8</version.nexus-staging-maven-plugin.plugin>
     <version.resources.plugin>3.2.0</version.resources.plugin>
-    <version.source.plugin>3.2.0</version.source.plugin>
+    <version.source.plugin>3.2.1</version.source.plugin>
     <version.surefire.plugin>3.0.0-M5</version.surefire.plugin>
     <version.surefire-report.plugin>3.0.0-M5</version.surefire-report.plugin>
     <version.failsafe.plugin>3.0.0-M5</version.failsafe.plugin>
@@ -152,7 +152,7 @@
     <version.io.netty>4.1.49.Final</version.io.netty>
     <version.io.swagger>1.6.0</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
-    <version.io.vertx>3.9.6</version.io.vertx>
+    <version.io.vertx>3.9.7</version.io.vertx>
     <version.net.openhft>0.12</version.net.openhft>
     <version.com.ibm.icu4j>68.2</version.com.ibm.icu4j>
     <version.com.hazelcast>3.6.4</version.com.hazelcast>
