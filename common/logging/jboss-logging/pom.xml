@@ -9,8 +9,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>apiman-common-logging-jboss-logging</artifactId>
-  <name>apiman-common-logging-jboss-logging</name>
+  <artifactId>apiman-common-logging-jboss</artifactId>
+  <name>apiman-common-logging-jboss</name>
   <dependencies>
     <dependency>
       <groupId>io.apiman</groupId>
