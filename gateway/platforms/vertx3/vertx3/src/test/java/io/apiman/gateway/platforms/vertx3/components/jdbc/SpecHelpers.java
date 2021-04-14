@@ -62,7 +62,7 @@ public interface SpecHelpers {
         IJdbcClient client = component.createStandalone(options);
 
         client.connect(explodeOnFailure(context, async, connectionResult -> {
-            System.out.println("Successfully connected!");
+            System.out.println("Dropping everything in the DB!");
             IJdbcConnection connection = connectionResult;
             connection.execute(explodeOnFailure(context, async,
                     onSuccess -> {
