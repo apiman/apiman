@@ -35,16 +35,14 @@ import java.net.ProxySelector;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import javax.net.SocketFactory;
 
 import com.squareup.okhttp.CertificatePinner;
 import com.squareup.okhttp.ConnectionPool;
 import com.squareup.okhttp.ConnectionSpec;
+import com.squareup.okhttp.Dns;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Protocol;
-import com.squareup.okhttp.internal.Internal;
-import com.squareup.okhttp.internal.Network;
 import com.squareup.okhttp.internal.Util;
 import com.squareup.okhttp.internal.http.AuthenticatorAdapter;
 
@@ -56,19 +54,20 @@ import com.squareup.okhttp.internal.http.AuthenticatorAdapter;
 public class HttpConnectorFactory implements IConnectorFactory {
 
     private static final List<ConnectionSpec> DEFAULT_CONNECTION_SPECS = Util.immutableList(
-            ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT);
+        ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT);
 
-    private OkHttpClient okClient;
+    private final OkHttpClient okClient;
 
     // Standard auth
     private SSLSessionStrategy standardSslStrategy;
     // 2WAY auth (i.e. mutual auth)
     private SSLSessionStrategy mutualAuthSslStrategy;
-    private TLSOptions tlsOptions;
-    private HttpConnectorOptions connectorOptions;
+    private final TLSOptions tlsOptions;
+    private final HttpConnectorOptions connectorOptions;
 
     /**
      * Constructor.
+     *
      * @param config map of configuration options
      */
     public HttpConnectorFactory(Map<String, String> config) {
@@ -95,29 +94,30 @@ public class HttpConnectorFactory implements IConnectorFactory {
         client.setProtocols(Util.immutableList(Protocol.HTTP_1_1));
         client.setConnectionSpecs(DEFAULT_CONNECTION_SPECS);
         client.setSocketFactory(SocketFactory.getDefault());
-        Internal.instance.setNetwork(client, Network.DEFAULT);
+        client.setDns(Dns.SYSTEM);
 
         return client;
     }
 
     /**
-     * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.auth.RequiredAuthType)
+     * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(ApiRequest, Api, RequiredAuthType,
+     * boolean, IConnectorConfig)
      */
     @Override
     public IApiConnector createConnector(ApiRequest request, final Api api,
-            final RequiredAuthType requiredAuthType, boolean hasDataPolicy,
-            final IConnectorConfig connectorConfig) {
+        final RequiredAuthType requiredAuthType, boolean hasDataPolicy,
+        final IConnectorConfig connectorConfig) {
         return new IApiConnector() {
             /**
              * @see io.apiman.gateway.engine.IApiConnector#connect(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
              */
             @Override
             public IApiConnection connect(ApiRequest request,
-                    IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
+                IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
 
                 HttpApiConnection connection = new HttpApiConnection(okClient, request, api,
-                        requiredAuthType, getSslStrategy(requiredAuthType), hasDataPolicy,
-                        connectorConfig, handler);
+                    requiredAuthType, getSslStrategy(requiredAuthType), hasDataPolicy,
+                    connectorConfig, handler);
                 return connection;
             }
         };
@@ -125,6 +125,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
 
     /**
      * Creates the SSL strategy based on configured TLS options.
+     *
      * @param authType
      * @return an appropriate SSL strategy
      */
