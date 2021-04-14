@@ -93,13 +93,13 @@ public class BasicMutualAuthTest {
         http_config = new HttpConfiguration();
         http_config.setSecureScheme("https");
 
-        SslContextFactory sslContextFactory = new SslContextFactory();
+        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setKeyStorePath(getResourcePath("2waytest/basic_mutual_auth/service_ks.jks"));
 
-        sslContextFactory.setKeyStorePassword("password");
-        sslContextFactory.setKeyManagerPassword("password");
+        sslContextFactory.setKeyStorePassword("changeme");
+        sslContextFactory.setKeyManagerPassword("changeme");
         sslContextFactory.setTrustStorePath(getResourcePath("2waytest/basic_mutual_auth/service_ts.jks"));
-        sslContextFactory.setTrustStorePassword("password");
+        sslContextFactory.setTrustStorePassword("changeme");
         sslContextFactory.setNeedClientAuth(true);
 
         HttpConfiguration https_config = new HttpConfiguration(http_config);
@@ -167,11 +167,11 @@ public class BasicMutualAuthTest {
      */
     @Test
     public void shouldSucceedWithValidMTLS() {
-        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
+        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ks.jks"));
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "changeme");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
@@ -196,11 +196,11 @@ public class BasicMutualAuthTest {
      */
     @Test
     public void shouldFailWhenGatewayDoesNotTrustApi() {
-        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
+        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "changeme");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
@@ -228,10 +228,10 @@ public class BasicMutualAuthTest {
     @Test
     public void shouldFailWhenApiDoesNotTrustGateway() {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/service_not_trust_gw/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/service_not_trust_gw/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "changeme");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
@@ -259,10 +259,10 @@ public class BasicMutualAuthTest {
     @Test
     public void shouldSucceedWhenAllowedSelfSigned() {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "changeme");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "true");
 
@@ -278,88 +278,6 @@ public class BasicMutualAuthTest {
 
     /**
      * Scenario:
-     *   - Select client key alias `gateway2`.
-     *   - Mutual trust exists between gateway and API
-     *   - We must use the `gateway2` cert NOT `gateway`.
-     * @throws CertificateException the certificate exception
-     * @throws IOException the IO exception
-     */
-    @Test
-    public void shouldSucceedWhenValidKeyAlias() throws CertificateException, IOException  {
-        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
-        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
-        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
-
-        config.put(TLSOptions.TLS_KEYALIASES, "gateway2");
-
-        X509Certificate expectedCert;
-        try(InputStream inStream = new FileInputStream(getResourcePath("2waytest/basic_mutual_auth_2/gateway2.cer"))) {
-            expectedCert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(inStream);
-        }
-
-        HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
-        IApiConnection connection = connector.connect(request,
-             (IAsyncResult<IApiConnectionResponse> result) -> {
-                 if (result.isError())
-                     throw new RuntimeException(result.getError());
-
-                 Assert.assertTrue(result.isSuccess());
-                 // Assert that the expected certificate (associated with the private key by virtue)
-                 // was the one used.
-                 Assert.assertEquals(expectedCert.getSerialNumber(), clientSerial);
-             });
-
-        connection.end();
-    }
-
-    /**
-     * Scenario:
-     *   - First alias invalid, second valid.
-     *   - Mutual trust exists between gateway and API.
-     *   - We must fall back to the valid alias.
-     * @throws CertificateException the certificate exception
-     * @throws IOException the IO exception
-     */
-    @Test
-    public void shouldFallbackWhenMultipleAliasesAvailable() throws CertificateException, IOException  {
-        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
-        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
-        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
-        // Only gateway2 is valid. `unrelated` is real but not trusted by API. others don't exist.
-        config.put(TLSOptions.TLS_KEYALIASES, "unrelated, owt, or, nowt, gateway2, sonorous, unrelated");
-
-        X509Certificate expectedCert;
-        try(InputStream inStream = new FileInputStream(getResourcePath("2waytest/basic_mutual_auth_2/gateway2.cer"))) {
-            expectedCert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(inStream);
-        }
-
-        HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IApiConnector connector = factory.createConnector(request, api, RequiredAuthType.MTLS, false, new ConnectorConfigImpl());
-        IApiConnection connection = connector.connect(request,
-             (IAsyncResult<IApiConnectionResponse> result) -> {
-                 if (result.isError())
-                     throw new RuntimeException(result.getError());
-
-                 Assert.assertTrue(result.isSuccess());
-                 // Assert that the expected certificate (associated with the private key by virtue)
-                 // was the one used.
-                 Assert.assertEquals(expectedCert.getSerialNumber(), clientSerial);
-             });
-
-        connection.end();
-    }
-
-    /**
-     * Scenario:
      *   - Select invalid key alias (no such key).
      *   - Negotiation will fail
      * @throws CertificateException the certificate exception
@@ -368,10 +286,10 @@ public class BasicMutualAuthTest {
     @Test
     public void shouldFailWithInValidKeyAlias() throws CertificateException, IOException  {
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "changeme");
         config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "changeme");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "changeme");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
         // No such key exists in the keystore
@@ -410,6 +328,7 @@ public class BasicMutualAuthTest {
     private String getResourcePath(String res) {
         URL resource = CAMutualAuthTest.class.getResource(res);
         try {
+            System.out.println(res);
             return Paths.get(resource.toURI()).toFile().getAbsolutePath();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);

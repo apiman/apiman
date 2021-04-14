@@ -2,9 +2,9 @@
 /// <reference path="../rpc.ts"/>
 module Apiman {
 
- export var ApiDefController = _module.controller('Apiman.ApiDefController',
-        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ApiDefinitionSvcs', 'Configuration', 'EntityStatusSvc', 'CurrentUser',
-        ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, ApiDefinitionSvcs, Configuration, EntityStatusSvc, CurrentUser) => {
+export var ApiDefController = _module.controller('Apiman.ApiDefController',
+    ['$q', '$rootScope', '$scope', '$location', 'Modals', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'ApiDefinitionSvcs', 'Configuration', 'EntityStatusSvc', 'CurrentUser',
+        ($q, $rootScope, $scope, $location, Modals, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, ApiDefinitionSvcs, Configuration, EntityStatusSvc, CurrentUser) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -12,7 +12,7 @@ module Apiman {
             $scope.version = params.version;
             $scope.showMetrics = Configuration.ui.metrics;
             $scope.textAreaHeight = '100';
-
+            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
             $scope.typeOptions = [
                 { "label" : "No API Definition",     "value" : "None" },
                 { "label" : "Swagger (JSON)",        "value" : "SwaggerJSON" },
@@ -20,51 +20,82 @@ module Apiman {
                 { "label" : "WSDL",                  "value" : "WSDL" }
             ];
 
-            var selectType = function(newType) {
-                angular.forEach($scope.typeOptions, function(option) {
+            var selectType = function (newType) {
+                angular.forEach($scope.typeOptions, function (option) {
                     if (option.value == newType) {
                         $scope.selectedDefinitionType = option;
                     }
                 });
             };
-
             selectType('None');
 
-            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
+            $scope.finishModification = function () {
+                $rootScope.isDirty = false;
+                $scope.saveButton.state = 'complete';
+                EntityStatusSvc.getEntity().modifiedOn = Date.now();
+                EntityStatusSvc.getEntity().modifiedBy = CurrentUser.getCurrentUser();
+            };
 
-            $scope.saveApi = function() {
+            $scope.isValidDefinition = (data, definitionType) => {
+                switch (definitionType) {
+                    case 'SwaggerJSON':
+                        try {
+                            $.parseJSON(data);
+                            return true;
+                        } catch (error) {
+                            return false;
+                        }
+                    case 'WSDL':
+                        try {
+                            $.parseXML(data);
+                            return true;
+                        } catch (error) {
+                            return false;
+                        }
+                        default:
+                            return true;
+                }
+            }
+
+            $scope.saveApi = function () {
                 console.log('$scope.selectedDefinitionType.value: ' + $scope.selectedDefinitionType.value);
                 $scope.saveButton.state = 'in-progress';
 
+                if (!$scope.isValidDefinition($scope.updatedApiDefinition, $scope.selectedDefinitionType.value)) {
+                    Modals.error('Invalid API Definition!','The specified API definition is not a valid ' + $scope.selectedDefinitionType.value, null);
+                    $scope.saveButton.state = 'error';
+                    return;
+                }
+
                 ApiDefinitionSvcs.updateApiDefinition(params.org, params.api, params.version,
                     $scope.updatedApiDefinition, $scope.selectedDefinitionType.value,
-                    function(definition) {
+                    function() {
                         Logger.debug("Updated the api definition!");
                         $scope.apiDefinition = $scope.updatedApiDefinition;
-                        $rootScope.isDirty = false;
-                        $scope.saveButton.state = 'complete';
+                        $scope.finishModification();
                     },
-                    function(error) {
+                    function (error) {
+                        Modals.rpcerror(error, null, null);
                         Logger.error("Error updating definition: {0}", error);
                         $scope.saveButton.state = 'error';
                     });
             };
 
 
-            $scope.$on('afterdrop', function(event, data) {
+            $scope.$on('afterdrop', function (event, data) {
                 let newValue = data.value;
 
                 if (newValue) {
                     if (newValue.lastIndexOf('{', 0) === 0) {
-                        $scope.$apply(function() {
+                        $scope.$apply(function () {
                             selectType('SwaggerJSON');
                         });
                     } else if (newValue.lastIndexOf('<', 0) === 0) {
-                        $scope.$apply(function() {
+                        $scope.$apply(function () {
                             selectType('WSDL');
                         });
                     } else {
-                        $scope.$apply(function() {
+                        $scope.$apply(function () {
                             selectType('SwaggerYAML');
                         });
                     }
@@ -73,13 +104,14 @@ module Apiman {
 
             var pageData = ApiEntityLoader.getCommonData($scope, $location);
 
-            var loadDefinition = function() {
+            var loadDefinition = function () {
                 ApiDefinitionSvcs.getApiDefinition(params.org, params.api, params.version,
-                    function(definition) {
+                    function (definition) {
                         $scope.apiDefinition = definition;
                         $scope.updatedApiDefinition = definition;
                     },
-                    function(error) {
+                    function (error) {
+                        Modals.rpcerror(error, null, null);
                         Logger.error("Error loading definition: {0}", error);
                     });
             };
@@ -88,7 +120,7 @@ module Apiman {
                 $scope.apimanDefinitionUrl = ApiDefinitionSvcs.getApimanDefinitionUrl(params.org, params.api, params.version)
             };
 
-            var checkDirty = function() {
+            var checkDirty = function () {
                 if ($scope.version) {
                     var dirty = false;
 
@@ -110,7 +142,7 @@ module Apiman {
 
             $scope.$watch('updatedApi', checkDirty, true);
 
-            $scope.$watch('updatedApiDefinition', function(newValue, oldValue) {
+            $scope.$watch('updatedApiDefinition', function (newValue, oldValue) {
                 if (!newValue && !oldValue) {
                     return;
                 }
@@ -120,7 +152,7 @@ module Apiman {
 
             $scope.$watch('selectedDefinitionType', checkDirty, true);
 
-            $scope.reset = function() {
+            $scope.reset = function () {
                 selectType($scope.definitionType);
                 $scope.updatedApiDefinition = $scope.apiDefinition;
                 $scope.updatedApiDefinitionUrl = $scope.version.definitionUrl;
@@ -148,20 +180,20 @@ module Apiman {
                 let definitionUrl = $scope.updatedApiDefinitionUrl;
                 let definitionType = $scope.selectedDefinitionType.value;
                 ApiDefinitionSvcs.updateApiDefinitionFromUrl(params.org, params.api, params.version, definitionUrl, definitionType,
-                    function() {
+                    function () {
                         Logger.debug("Updated the api definition!");
                         loadDefinition();
-                        $rootScope.isDirty = false;
-                        $scope.saveButton.state = 'complete';
+                        $scope.finishModification();
                     },
-                    function(error) {
+                    function (error) {
+                        Modals.rpcerror(error, null, null);
                         Logger.error("Error updating definition: {0}", error);
                         $scope.saveButton.state = 'error';
                     })
 
             };
 
-            PageLifecycle.loadPage('ApiDef', 'apiView', pageData, $scope, function() {
+            PageLifecycle.loadPage('ApiDef', 'apiView', pageData, $scope, function () {
                 $scope.definitionType = $scope.version.definitionType;
                 $scope.updatedApiDefinitionUrl = $scope.version.definitionUrl;
 
@@ -178,7 +210,7 @@ module Apiman {
 
                 $scope.reset();
 
-                PageLifecycle.setPageTitle('api-def', [ $scope.api.name ]);
+                PageLifecycle.setPageTitle('api-def', [$scope.api.name]);
             });
         }]);
 }

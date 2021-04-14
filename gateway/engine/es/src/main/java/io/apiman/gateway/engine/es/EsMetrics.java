@@ -109,17 +109,14 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
 
     /**
      * Starts a thread which will serially pull information off the blocking
-     * queue and submit that information to hawkular metrics.
+     * queue and submit that information to ES metrics.
      */
     private void startConsumerThread() {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (Boolean.TRUE) {
-                    processQueue();
-                }
-            }
-        }, "EsMetricsConsumer"); //$NON-NLS-1$
+        Thread thread = new Thread(() -> {
+		    while (true) {
+		        processQueue();
+		    }
+		}, "EsMetricsConsumer"); //$NON-NLS-1$
         thread.setDaemon(true);
         thread.start();
     }

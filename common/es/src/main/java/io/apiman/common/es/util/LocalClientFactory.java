@@ -42,10 +42,7 @@ public class LocalClientFactory extends AbstractClientFactory implements IEsClie
     @Override
     public RestHighLevelClient createClient(Map<String, String> config,  Map<String, EsIndexProperties> esIndices, String defaultIndexPrefix) {
         RestHighLevelClient client;
-        String indexName = config.get("client.indexPrefix"); //$NON-NLS-1$
-        if (indexName == null) {
-            indexName = defaultIndexPrefix;
-        }
+        String indexName = config.getOrDefault("client.indexPrefix", defaultIndexPrefix); //$NON-NLS-1$
         client = createLocalClient(config, indexName, esIndices);
         return client;
     }
