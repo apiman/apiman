@@ -52,8 +52,8 @@ if [ "$DEBUG_MODE" = "true" ]; then
 fi
 
 # Launch
-$JAVA "$JAVA_OPTS" \
-    "$APIMAN_GATEWAY_OPTS" \
+$JAVA $JAVA_OPTS \
+    $APIMAN_GATEWAY_OPTS \
     `# Explicitly tell Apiman to use log4j2` \
     -Dapiman.logger-delegate=log4j2 \
     `# Use Log4j2 by default.` \
