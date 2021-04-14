@@ -62,10 +62,10 @@ jobs:
             ${{ runner.os }}-maven-
       
       - name: Build Project
-        run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B
+        run: ./mvnw clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B
 
       - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
-        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
+        run: ./mvnw test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
 
 # Temporarily disabled until we get a GH access token with appropriate permissions onto secrets.
 #       - name: Publish Test Report
@@ -103,10 +103,10 @@ jobs:
       
       - name: Build and Publish Docker Images & Deploy OSSRH Snapshots
         run: |
-          mvn -B clean package docker:build -P docker -DskipTests
+          ./mvnw -B clean package docker:build -P docker -DskipTests
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker push apiman/on-wildfly:latest
-          mvn -B deploy -DskipTests -Dmaven.test.skip=true
+          ./mvnw -B deploy -DskipTests -Dmaven.test.skip=true
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
