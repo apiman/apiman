@@ -95,7 +95,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             IndexRequest indexRequest = new IndexRequest(getIndexPrefix() + EsConstants.INDEX_APIS)
                     .id(id)
                     .source(JSON_MAPPER.writeValueAsBytes(api), XContentType.JSON)
-                    .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+                    .setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
 
             IndexResponse response = getClient().index(indexRequest, RequestOptions.DEFAULT);
 
@@ -121,7 +121,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
         try {
             DeleteRequest deleteRequest = new DeleteRequest(getIndexPrefix() + EsConstants.INDEX_APIS)
                     .id(id)
-                    .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+                    .setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
 
             DeleteResponse response = getClient().delete(deleteRequest, RequestOptions.DEFAULT);
 
@@ -148,7 +148,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             IndexRequest indexRequest = new IndexRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS)
                     .source(JSON_MAPPER.writeValueAsBytes(client), XContentType.JSON)
                     .id(id)
-                    .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+                    .setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
 
             IndexResponse response = getClient().index(indexRequest, RequestOptions.DEFAULT);
 
@@ -214,7 +214,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
 
             DeleteRequest deleteRequest = new DeleteRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS)
                     .id(id)
-                    .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+                    .setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
 
             DeleteResponse response = getClient().delete(deleteRequest, RequestOptions.DEFAULT);
             if (response.status().equals(RestStatus.OK)) {

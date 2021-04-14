@@ -1985,8 +1985,8 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
             String fullIndexName = getFullIndexName(type);
 
             IndexRequest indexRequest = new IndexRequest(fullIndexName).id(id).source(json, XContentType.JSON);
-            // WAIT_UNTIL same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
-            indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+            // Force an immediate reindex to avoid horrible slowness
+            indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
 
             IndexResponse indexResponse = getClient().index(indexRequest, RequestOptions.DEFAULT);
 
@@ -2052,8 +2052,8 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     private void deleteEntity(String type, String id) throws StorageException {
         try {
             final DeleteRequest deleteRequest = new DeleteRequest(getFullIndexName(type), id);
-            // WAIT_UNTIL same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
-            deleteRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+            // IMMEDIATE same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
+            deleteRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
 
             DeleteResponse response = getClient().delete(deleteRequest, RequestOptions.DEFAULT);
             if (!response.status().equals(RestStatus.OK)) {
@@ -2078,8 +2078,8 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
             String doc = Strings.toString(source);
             String fullIndexName = getFullIndexName(type);
             IndexRequest indexRequest = new IndexRequest(fullIndexName).id(id).source(doc, XContentType.JSON);
-            // WAIT_UNTIL same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
-            indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+            // IMMEDIATE same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
+            indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
             getClient().index(indexRequest, RequestOptions.DEFAULT);
         } catch (Exception e) {
             throw new StorageException(e);
