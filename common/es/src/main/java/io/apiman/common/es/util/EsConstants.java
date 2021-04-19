@@ -244,30 +244,24 @@ public class EsConstants {
     public static final String ES_MAPPING_TYPE_OBJECT = "object";
     public static final String ES_MAPPING_TYPE_TEXT = "text";
     // caches the es version read from the property file
-    private static String esVersion;
+    private static java.util.Properties esVersions;
 
     /**
      * Reads the elasticsearch version from the maven-generated properties file
      *
      * @return version the elasticsearch version
      */
-    public static String getEsVersion() {
-        if (esVersion != null) {
-            return esVersion;
-        } else {
+    public static java.util.Properties getEsVersion() {
+        if (esVersions == null) {
             java.io.InputStream is = EsConstants.class.getResourceAsStream("apiman-es.properties");
-            java.util.Properties p = new Properties();
-            String version;
+            Properties p = new Properties();
             try {
                 p.load(is);
             } catch (IOException e) {
+                e.printStackTrace();
             }
-            version = p.getProperty("apiman.elasticsearch-version");
-            if (version == null || version.isEmpty()) {
-                version = "latest";
-            }
-            esVersion = version;
-            return version;
+            esVersions = p;
         }
+        return esVersions;
     }
 }
