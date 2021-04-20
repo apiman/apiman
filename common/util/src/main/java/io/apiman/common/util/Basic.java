@@ -15,24 +15,30 @@
  */
 package io.apiman.common.util;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import org.apache.commons.lang3.StringUtils;
 
-@SuppressWarnings("nls")
+/**
+ * Basic BASIC utilities
+ */
 public class Basic {
 
     private Basic() {
     }
 
+    /**
+     * Encode username and password in BASIC format
+     */
     public static String encode(String username, String password) {
         String up = username + ':' + password;
-        StringBuilder builder = new StringBuilder();
-        builder.append("Basic ");
-        builder.append(Base64.getEncoder().encodeToString(up.getBytes()));
-        return builder.toString();
+        return "Basic " + Base64.getEncoder().encodeToString(up.getBytes(StandardCharsets.ISO_8859_1));
     }
 
+    /**
+     * Decode BASIC value that includes the {@code Basic } scheme segment.
+     */
     public static String[] decodeWithScheme(String input) {
         String[] split = StringUtils.split(input, null);
         if ("Basic".equalsIgnoreCase(split[0])) {
@@ -46,6 +52,9 @@ public class Basic {
         }
     }
 
+    /**
+     * Decode BASIC value (without scheme segment).
+     */
     public static String[] decode(String input) {
         String decoded = new String(Base64.getDecoder().decode(input));
         return StringUtils.split(decoded, ":");

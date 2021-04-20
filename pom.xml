@@ -1137,6 +1137,11 @@
       <!-- Vert.x -->
       <dependency>
         <groupId>io.vertx</groupId>
+        <artifactId>vertx-circuit-breaker</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
         <artifactId>vertx-core</artifactId>
         <version>${version.io.vertx}</version>
       </dependency>

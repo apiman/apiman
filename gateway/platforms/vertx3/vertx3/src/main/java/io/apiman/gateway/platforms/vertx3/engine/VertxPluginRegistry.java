@@ -15,23 +15,25 @@
  */
 package io.apiman.gateway.platforms.vertx3.engine;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.plugin.PluginUtils;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
+import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpClientOptions;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
+import io.apiman.gateway.platforms.vertx3.engine.proxy.HttpProxy;
+import io.apiman.gateway.platforms.vertx3.engine.proxy.JavaSystemPropertiesProxySettings;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.Map;
+
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -39,7 +41,7 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
-import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
 
@@ -50,193 +52,154 @@ import io.vertx.core.net.ProxyType;
  * @author eric.wittmann@redhat.com
  */
 public class VertxPluginRegistry extends DefaultPluginRegistry {
+    private final IApimanLogger LOG = ApimanLoggerFactory.getLogger(VertxPluginRegistry.class);
+    private final Vertx vertx;
 
-    private Vertx vertx;
-    private ProxyOptions sslProxy;
-    private String sslNoProxy;
-    private ProxyOptions proxy;
-    private String noProxy;
+    private final JavaSystemPropertiesProxySettings httpProxySettings;
+    private final JavaSystemPropertiesProxySettings httpsProxySettings;
 
+    private final InheritingHttpClientOptions defaultHttpClientOptions;
+
+    //private final InheritingHttpClientOptions defaultHttpsClientOptions;
+
+    // Maps host to HttpClient
+//    private final LRUMap<String, HttpClient> hostToClientCache = new LRUMap<String, HttpClient>(20) {
+//        @Override
+//        protected void handleRemovedElem(Entry<String, HttpClient> eldest) {
+//            eldest.getValue().close();
+//        }
+//    };
 
     /**
      * Constructor.
      *
-     * @param vertx          the vertx
+     * @param vertx the vertx
      * @param vxEngineConfig the engine config
-     * @param config         the plugin config
+     * @param config the plugin config
      */
     public VertxPluginRegistry(Vertx vertx, VertxEngineConfig vxEngineConfig, Map<String, String> config) {
-
-        super(config);
-
+        super(getTempPluginsDir(), PluginUtils.getDefaultMavenRepositories());
         this.vertx = vertx;
-
         //Get HTTPS Proxy settings (useful for local dev tests and corporate CI)
-        String sslProxyHost = System.getProperty("https.proxyHost", "none");
-        Integer sslProxyPort = Integer.valueOf(System.getProperty("https.proxyPort", "443"));
-        sslNoProxy = System.getProperty("https.nonProxyHosts", "none");
+        this.httpProxySettings = new JavaSystemPropertiesProxySettings("http", 80);
+        this.httpsProxySettings = new JavaSystemPropertiesProxySettings("https", 443);
 
-        //Set HTTPS proxy if defined
-        if (!"none".equalsIgnoreCase(sslProxyHost)) {
-            sslProxy = new ProxyOptions();
-            sslProxy.setHost(sslProxyHost);
-            sslProxy.setPort(sslProxyPort);
-            sslProxy.setType(ProxyType.HTTP);
-        }
+        defaultHttpClientOptions = new InheritingHttpClientOptions();
+        //defaultHttpsClientOptions = new InheritingHttpClientOptions();
 
-        //Get HTTP Proxy settings (useful for local dev tests and corporate CI)
-        String proxyHost = System.getProperty("http.proxyHost", "none");
-        Integer proxyPort = Integer.valueOf(System.getProperty("http.proxyPort", "80"));
-        noProxy = System.getProperty("http.nonProxyHosts", "none");
+        // TODO should we split up HTTP and HTTPS?
+        JsonObject httpServerOptionsJson = vxEngineConfig.getPluginRegistryConfigJson()
+            .getJsonObject("httpClientOptions", new JsonObject());
 
-        //Set HTTPS proxy if defined
-        if (!"none".equalsIgnoreCase(proxyHost)) {
-            proxy = new ProxyOptions();
-            proxy.setHost(proxyHost);
-            proxy.setPort(proxyPort);
-            proxy.setType(ProxyType.HTTP);
+        // needs generating
+        //InheritingHttpClientOptionsConverter.fromJson(httpServerOptionsJson, defaultHttpClientOptions);
+        //InheritingHttpClientOptionsConverter.fromJson(httpServerOptionsJson, defaultHttpsClientOptions);
+
+    }
+
+    @SuppressWarnings("nls")
+    private static File getTempPluginsDir() {
+        try {
+            return Files.createTempDirectory("apiman-gateway-plugins-tmp").toFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     /**
      * @see io.apiman.gateway.engine.impl.DefaultPluginRegistry#downloadArtifactTo(java.net.URL, java.io.File,
-     * io.apiman.gateway.engine.async.IAsyncResultHandler)
+     *      io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     protected void downloadArtifactTo(final URL artifactUrl, final File pluginFile,
-                                      final IAsyncResultHandler<File> handler) {
-
-        HttpClient client;
-
+            final IAsyncResultHandler<File> handler) {
         int port = artifactUrl.getPort();
+        boolean isTls = false;
 
-        //Configure http client options following artifact url
-        if (artifactUrl.getProtocol().equals("https")) {
-            //If port is not defined, set to https default port 443
+        // Configure http client options following artifact url
+        if (artifactUrl.getProtocol().equalsIgnoreCase("https")) {
+            // If port is not defined, set to https default port 443
             if (port == -1) port = 443;
+            isTls = true;
         } else {
-            //If port is not defined, set to http default port 80
+            // If port is not defined, set to http default port 80
             if (port == -1) port = 80;
         }
 
-        //Create HTTP client with suitable options
-        client = vertx.createHttpClient(configureHttpClientOptions(artifactUrl));
+        HttpClientOptions options = createVertxClientOptions(artifactUrl, isTls, port);
 
-        //Try download plugin from repo [y]
-        System.out.println(Messages.format("VertxPluginRegistry.TryDownloadFromRepo", artifactUrl.getHost()));
+        LOG.trace("Will attempt to download artifact {0} using options {1} to {2}",
+            artifactUrl, options, pluginFile);
 
+        HttpClient client = vertx.createHttpClient(options);
+
+        tryDownloadingArtifact(client, port, artifactUrl);
+    }
+    
+    public void tryDownloadingArtifact(HttpClient client, int port, URL artifactUrl) {
         final HttpClientRequest request = client.get(port, artifactUrl.getHost(), artifactUrl.getPath(),
-                (Handler<HttpClientResponse>) response -> {
+            (Handler<HttpClientResponse>) response -> {
 
-                    response.exceptionHandler((Handler<Throwable>) error -> {
-                        handler.handle(AsyncResultImpl.create(error, File.class));
-                    });
-
-                    // Body Handler
-                    response.bodyHandler((Handler<Buffer>) buffer -> {
-                        try {
-                            //Response status code for request [x] : y
-                            System.out.println(Messages.format("VertxPluginRegistry.ResponseStatusCode", response.request().absoluteURI(), response.statusCode()));
-
-                            // If status code is bad, do not handle the buffer.
-                            if (response.statusCode() != 200) {
-                                handler.handle(AsyncResultImpl.create(null));
-                                return;
-                            }
-
-                            Files.write(pluginFile.toPath(), buffer.getBytes(), StandardOpenOption.APPEND,
-                                    StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-                            handler.handle(AsyncResultImpl.create(pluginFile));
-                        } catch (IOException e) {
-                            handler.handle(AsyncResultImpl.create(e, File.class));
-                        }
-                    });
+                response.exceptionHandler((Handler<Throwable>) error -> {
+                    handler.handle(AsyncResultImpl.create(error, File.class));
                 });
+
+                // Body Handler
+                response.bodyHandler((Handler<Buffer>) buffer -> {
+                    try {
+                        //Response status code for request [x] : y
+                        LOG.debug(Messages.format("VertxPluginRegistry.ResponseStatusCode",
+                            response.request().absoluteURI(),
+                            response.statusCode()));
+
+                        // If status code is bad, do not handle the buffer.
+                        if (!(response.statusCode() / 100 == 2)) {
+                            LOG.warn("Received a bad status code from remote server");
+                            handler.handle(AsyncResultImpl.create(null));
+                            return;
+                        }
+
+                        Files.write(pluginFile.toPath(), buffer.getBytes(), StandardOpenOption.APPEND,
+                            StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+
+                        handler.handle(AsyncResultImpl.create(pluginFile));
+                    } catch (IOException e) {
+                        handler.handle(AsyncResultImpl.create(e, File.class));
+                    }
+                });
+            });
 
         request.exceptionHandler((Handler<Throwable>) error -> {
             handler.handle(AsyncResultImpl.create(error, File.class));
         });
-        
-        // add the basic authentification contains in the Url
-        if (artifactUrl.getUserInfo() != null) {
-            String authStr = java.util.Base64.getEncoder().encodeToString(artifactUrl.getUserInfo().getBytes(StandardCharsets.UTF_8));           
-            request.putHeader(HttpHeaders.AUTHORIZATION, "Basic " + authStr);
-        }
-        
-        
+
         request.end();
     }
 
-    private HttpClientOptions configureHttpClientOptions(final URL artifactUrl) {
-        HttpClientOptions clientOpts = new HttpClientOptions();
-        ArrayList<InetAddress> noProxyAddresses = new ArrayList<>();
+    private HttpClientOptions createVertxClientOptions(URL artifactUrl, boolean isTls, int port) {
+        JavaSystemPropertiesProxySettings propertyProxySettings;
+        HttpClientOptions httpClientOptions = new HttpClientOptions(defaultHttpClientOptions);
 
-        //List all local ip addresses
-        try {
-            noProxyAddresses.addAll(Arrays.asList(InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())));
-        } catch (UnknownHostException e) {
-            //Non blocking error while trying to get all local network addresses. Proxy will be always applied if exist.
-            e.printStackTrace();
-        }
-
-        //Add no proxy hosts from proxy settings
-        try {
-            if (!"none".equalsIgnoreCase(sslNoProxy)) noProxyAddresses.add(InetAddress.getByName(sslNoProxy));
-            if (!"none".equalsIgnoreCase(noProxy)) noProxyAddresses.add(InetAddress.getByName(noProxy));
-        } catch (UnknownHostException e) {
-            //Non blocking error while trying to get no proxy addresses. Proxy will be always applied if configured.
-            e.printStackTrace();
-        }
-
-        //Configure http client options following artifact url
-        if (artifactUrl.getProtocol().equals("https")) {
-            //Enable SSL
-            clientOpts.setSsl(true);
-
-            //If artifact host is Loopback address or local ip address
-            InetAddress artifactHost = null;
-            try {
-                artifactHost = InetAddress.getByName(artifactUrl.getHost());
-
-                if (artifactHost.isLoopbackAddress() || noProxyAddresses.contains(artifactHost)) {
-                    //Reset proxy options (otherwise Vert.X try to use proxy for local connection)
-                    clientOpts.setProxyOptions(null);
-                } else {
-                    //Set SSL proxy options (if exists)
-                    if (sslProxy != null) clientOpts.setProxyOptions(sslProxy);
-                }
-            } catch (UnknownHostException e) {
-                //Non blocking error while trying to check artifact host address. Proxy will be applied if exist.
-                e.printStackTrace();
-
-                //Set SSL proxy options (if exists)
-                if (sslProxy != null) clientOpts.setProxyOptions(sslProxy);
-            }
+        if (isTls) {
+            propertyProxySettings = httpsProxySettings;
         } else {
-            //Disable SSL
-            clientOpts.setSsl(false);
-
-            //If artifact host is Loopback address or local ip address
-            InetAddress artifactHost = null;
-            try {
-                artifactHost = InetAddress.getByName(artifactUrl.getHost());
-
-                if (artifactHost.isLoopbackAddress() || noProxyAddresses.contains(artifactHost)) {
-                    //Reset proxy options (otherwise Vert.X try to use proxy for local connection)
-                    clientOpts.setProxyOptions(null);
-                } else {
-                    //Set proxy options (if exists)
-                    if (proxy != null) clientOpts.setProxyOptions(proxy);
-                }
-            } catch (UnknownHostException e) {
-                //Non blocking error while trying to check artifact host address. Proxy will be applied if exist.
-                e.printStackTrace();
-
-                //Set proxy options (if exists)
-                if (proxy != null) clientOpts.setProxyOptions(proxy);
-            }
+            propertyProxySettings = httpProxySettings;
         }
 
-        return clientOpts;
+        if (!propertyProxySettings.isNonProxyHost(artifactUrl.getHost())) {
+            HttpProxy proxy = propertyProxySettings.getProxy();
+
+            ProxyOptions proxyOptions = new ProxyOptions();
+            proxyOptions.setHost(proxy.getHost());
+            proxyOptions.setPort(proxy.getPort());
+            proxyOptions.setType(ProxyType.HTTP);
+
+            proxy.getCredentials().ifPresent((credentials) -> {
+                proxyOptions.setUsername(credentials.getPrinciple());
+                proxyOptions.setPassword(credentials.getPasswordAsString());
+            });
+        }
+
+        return httpClientOptions;
     }
 }
