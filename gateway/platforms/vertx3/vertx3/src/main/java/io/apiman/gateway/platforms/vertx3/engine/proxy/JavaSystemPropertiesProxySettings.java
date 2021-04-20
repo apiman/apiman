@@ -31,7 +31,7 @@ public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
     public JavaSystemPropertiesProxySettings(String propertyPrefix, int defaultPort) {
         this(
             propertyPrefix,
-            SystemPropertyUtil.get(propertyPrefix + ".proxyHost"),
+            System.getProperty(propertyPrefix + ".proxyHost"),
             SystemPropertyUtil.getInt(propertyPrefix + ".proxyPort", defaultPort),
             SystemPropertyUtil.get(propertyPrefix + ".proxyUser"),
             SystemPropertyUtil.get(propertyPrefix + ".proxyPassword")
@@ -49,6 +49,12 @@ public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
      * @param proxyPassword the proxy password
      */
     public JavaSystemPropertiesProxySettings(String propertyPrefix, String host, int port, String proxyUser, String proxyPassword) {
+        // If property prefix is null or host is null, then no useful proxy information has been provided, so we just assume empty.
+        if (propertyPrefix == null || host == null) {
+            this.propertyPrefix = null;
+            this.proxy = null;
+            return;
+        }
         this.propertyPrefix = propertyPrefix;
         parseProxyHosts(SystemPropertyUtil.get(propertyPrefix + ".nonProxyHosts"));
         this.proxy = new HttpProxy(host, port, proxyUser, proxyPassword);
@@ -95,7 +101,7 @@ public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
      * @return true if is a `non proxy` host
      */
     public boolean isNonProxyHost(String host) {
-        return noProxyRegex.matcher(host).matches();
+        return proxy != null && noProxyRegex.matcher(host).matches();
     }
 
     /**
@@ -112,6 +118,6 @@ public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
 
     @Override
     public Optional<HttpProxy> getProxy(String host) {
-        return isNonProxyHost(host) ? Optional.empty() : Optional.of(proxy);
+        return proxy == null || isNonProxyHost(host) ? Optional.empty() : Optional.of(proxy);
     }
 }
