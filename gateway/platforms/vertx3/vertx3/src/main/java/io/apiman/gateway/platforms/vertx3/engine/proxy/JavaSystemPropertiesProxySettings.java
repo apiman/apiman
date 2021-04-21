@@ -56,7 +56,7 @@ public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
             return;
         }
         this.propertyPrefix = propertyPrefix;
-        parseProxyHosts(SystemPropertyUtil.get(propertyPrefix + ".nonProxyHosts"));
+        parseProxyHosts(SystemPropertyUtil.get(type + ".nonProxyHosts"));
         this.proxy = new HttpProxy(host, port, proxyUser, proxyPassword);
         LOGGER.info("Proxy configuration found in System properties prefixed {0}:"
                 + "Proxy host: {1}"
@@ -77,8 +77,14 @@ public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
         String[] split = noProxyList.split("\\|");
         nonProxyHosts.addAll(Arrays.asList(split));
         for (String noProxyElement : split) {
-            // To match Java regex style we need to add any/`.` to `*` (i.e. .*)
-            if (noProxyElement.endsWith("*")) {
+            /*
+             * To match with Java-style regex we need to add any/`.` to `*` (i.e. .*)
+             */
+            if (noProxyElement.startsWith("*") && noProxyElement.endsWith("*")) {
+                String toQuote = noProxyElement.substring(1, noProxyElement.length() - 1);
+                pattern.add(".*" + Pattern.quote(toQuote) + ".*");
+            }
+            else if (noProxyElement.endsWith("*")) {
                 // Snip off * at end, replace with .*
                 String toQuote = noProxyElement.substring(0, noProxyElement.length() - 1);
                 pattern.add(Pattern.quote(toQuote) + ".*");

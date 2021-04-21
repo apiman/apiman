@@ -42,8 +42,6 @@ import java.util.Map;
 
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -104,6 +102,10 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
 
     private void setSysPropProxySettings(String protocol, int defaultPort) {
         proxySettingsMap.put(protocol, new JavaSystemPropertiesProxySettings(protocol, defaultPort));
+        proxySettingsMap.put(protocol, new JavaSystemPropertiesProxySettings(protocol, defaultPort));
+        proxySettingsMap.put(protocol, new JavaSystemPropertiesProxySettings(protocol, defaultPort));
+        proxySettingsMap.put(protocol, new JavaSystemPropertiesProxySettings(protocol, defaultPort));
+
     }
 
     @SuppressWarnings("nls")
