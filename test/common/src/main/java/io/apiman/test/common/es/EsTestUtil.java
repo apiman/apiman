@@ -23,7 +23,6 @@ import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public final class EsTestUtil {
 
