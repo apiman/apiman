@@ -16,6 +16,7 @@
 package io.apiman.common.es.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -244,16 +245,16 @@ public class EsConstants {
     public static final String ES_MAPPING_TYPE_OBJECT = "object";
     public static final String ES_MAPPING_TYPE_TEXT = "text";
     // caches the es version read from the property file
-    private static java.util.Properties esVersions;
+    private static Properties esVersions;
 
     /**
      * Reads the elasticsearch version from the maven-generated properties file
      *
      * @return version the elasticsearch version
      */
-    public static java.util.Properties getEsVersion() {
+    public static Properties getEsVersion() {
         if (esVersions == null) {
-            java.io.InputStream is = EsConstants.class.getResourceAsStream("apiman-es.properties");
+            InputStream is = EsConstants.class.getResourceAsStream("apiman-es.properties");
             Properties p = new Properties();
             try {
                 p.load(is);

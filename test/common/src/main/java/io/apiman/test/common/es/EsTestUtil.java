@@ -22,23 +22,24 @@ import io.apiman.common.es.util.EsConstants;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 public final class EsTestUtil {
 
     private EsTestUtil() {}
 
     /**
      * Provide a testcontainer for elasticsearch based on a system property or environment variable.
-     * Use APIMAN_ES_PROVIDER=opendistro or apiman.es.provider=opendistro
+     * Use apiman.es.provider=opendistro or APIMAN_ES_PROVIDER=opendistro
      *
      * @return a testcontainer for elasticsearch tests
      */
     public static ElasticsearchContainer provideElasticsearchContainer() {
         String esImageType = "docker.elastic.co/elasticsearch/elasticsearch";
+        String esProvider = Optional.of(System.getenv("APIMAN_ES_PROVIDER")).orElseGet(() -> System.getProperty("apiman.es.provider"));
 
-        String esProvider = System.getenv("APIMAN_ES_PROVIDER");
-        esProvider = esProvider != null ? esProvider : System.getProperty("apiman.es.provider");
-
-        if ("opendistro".equals(esProvider)) {
+        if ("opendistro".equalsIgnoreCase(esProvider)) {
             return new ElasticsearchContainer(DockerImageName.parse("amazon/opendistro-for-elasticsearch")
                 .withTag(EsConstants.getEsVersion().getProperty("apiman.opendistro-version"))
                 .asCompatibleSubstituteFor(esImageType))
