@@ -36,7 +36,8 @@ public final class EsTestUtil {
      */
     public static ElasticsearchContainer provideElasticsearchContainer() {
         String esImageType = "docker.elastic.co/elasticsearch/elasticsearch";
-        String esProvider = Optional.of(System.getenv("APIMAN_ES_PROVIDER")).orElseGet(() -> System.getProperty("apiman.es.provider"));
+        String esProvider = Optional.ofNullable(System.getenv("APIMAN_ES_PROVIDER"))
+            .orElseGet(() -> System.getProperty("apiman.es.provider"));
 
         if ("opendistro".equalsIgnoreCase(esProvider)) {
             return new ElasticsearchContainer(DockerImageName.parse("amazon/opendistro-for-elasticsearch")
