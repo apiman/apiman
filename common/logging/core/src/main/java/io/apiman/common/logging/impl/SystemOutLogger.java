@@ -55,7 +55,7 @@ public class SystemOutLogger implements IApimanLogger {
 
     @Override
     public void warn(String message, Object... args) {
-        System.out.println("WARN: " + MessageFormat.format(message, ((Object[])args)));
+        System.out.println("WARN: " + MessageFormat.format(message, args));
     }
 
     /**
@@ -81,9 +81,7 @@ public class SystemOutLogger implements IApimanLogger {
 
     @Override
     public void trace(String message, Object... args) {
-        String intermediate = MessageFormat.format(message, args);
-
-        System.out.println("TRACE: " + intermediate);
+        System.out.println("TRACE: " + MessageFormat.format(message, args));
     }
 
     /**
