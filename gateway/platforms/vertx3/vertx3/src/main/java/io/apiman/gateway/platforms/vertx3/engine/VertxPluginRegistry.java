@@ -17,8 +17,6 @@ package io.apiman.gateway.platforms.vertx3.engine;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.plugin.PluginUtils;
-import io.apiman.common.util.Basic;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
@@ -27,17 +25,18 @@ import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpClientOpti
 import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpClientOptionsConverter;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.engine.proxy.HttpProxy;
-import io.apiman.gateway.platforms.vertx3.engine.proxy.JavaSystemPropertiesProxySettings;
+import io.apiman.gateway.platforms.vertx3.engine.proxy.SysPropsProxySelector;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 
 import io.vertx.circuitbreaker.CircuitBreaker;
@@ -65,13 +64,8 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
     private final IApimanLogger LOG = ApimanLoggerFactory.getLogger(VertxPluginRegistry.class);
     private final Vertx vertx;
 
-    private final Map<String, JavaSystemPropertiesProxySettings> proxySettingsMap = new HashMap<>();
-
-    //private final JavaSystemPropertiesProxySettings httpProxySysPropSettings;
-    //private final JavaSystemPropertiesProxySettings httpsProxySysPropSettings;
-
     private final InheritingHttpClientOptions defaultHttpClientOptions = new InheritingHttpClientOptions();
-
+    private final SysPropsProxySelector proxySelector = new SysPropsProxySelector();
     // TODO(msavy): We could add an LRU cache here that's a combination of URL + proxy info to HttpClient?
 
     /**
@@ -85,36 +79,12 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
         super(config);
         this.vertx = vertx;
 
-        // Get HTTPS Proxy settings (useful for local dev tests and corporate CI)
-        setSysPropProxySettings("http", 80);
-        setSysPropProxySettings("https", 443);
-
-        // TODO(msavy): should we split up HTTP and HTTPS so they can be configured differently?
-        // TODO(msavy): we could add a proxy ignore section into the JSON configuration also if that's
-        //  desired rather than using the system property alone.
         JsonObject httpServerOptionsJson = vxEngineConfig.getPluginRegistryConfigJson()
             .getJsonObject("httpClientOptions", new JsonObject());
 
         // Initialise empty HttpClient options, then we populate it with the converter.
         // This will let users provide custom overrides in the JSON configuration.
         InheritingHttpClientOptionsConverter.fromJson(httpServerOptionsJson, defaultHttpClientOptions);
-    }
-
-    private void setSysPropProxySettings(String protocol, int defaultPort) {
-        proxySettingsMap.put(protocol, new JavaSystemPropertiesProxySettings(protocol, defaultPort));
-        proxySettingsMap.put(protocol, new JavaSystemPropertiesProxySettings(protocol, defaultPort));
-        proxySettingsMap.put(protocol, new JavaSystemPropertiesProxySettings(protocol, defaultPort));
-        proxySettingsMap.put(protocol, new JavaSystemPropertiesProxySettings(protocol, defaultPort));
-
-    }
-
-    @SuppressWarnings("nls")
-    private static File getTempPluginsDir() {
-        try {
-            return Files.createTempDirectory("apiman-gateway-plugins-tmp").toFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -125,6 +95,12 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
     protected void downloadArtifactTo(final URL artifactUrl, final File pluginFile,
         final IAsyncResultHandler<File> handler) {
 
+        URI artifactUri;
+        try {
+            artifactUri = artifactUrl.toURI();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
         int port = artifactUrl.getPort();
         boolean isTls = false;
 
@@ -138,7 +114,7 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
             if (port == -1) port = 80;
         }
 
-        HttpClientOptions options = createVertxClientOptions(artifactUrl, isTls);
+        HttpClientOptions options = createVertxClientOptions(artifactUri, isTls);
 
         LOG.trace("Will attempt to download artifact {0} using options {1} to {2}",
             artifactUrl, options, pluginFile);
@@ -173,16 +149,11 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
         final HttpClientRequest request = client.get(port, artifactUrl.getHost(), artifactUrl.getPath(),
             (Handler<HttpClientResponse>) response -> {
 
-                response.exceptionHandler((Handler<Throwable>) throwable -> {
-                    System.out.println("there was an exception, hmm");
-                    promise.fail(throwable);
-                });
+                response.exceptionHandler((Handler<Throwable>) promise::fail);
 
                 // Body Handler. If RAM usage is too high we can change this to write chunks to disk.
                 response.bodyHandler((Handler<Buffer>) buffer -> {
                     try {
-                        System.out.println("hello");
-
                         // Response status code for request [x] : y
                         LOG.debug(Messages.format("VertxPluginRegistry.ResponseStatusCode",
                             response.request().absoluteURI(),
@@ -203,8 +174,7 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
 
                         promise.complete(pluginFile);
                     } catch (IOException ioe) {
-                        System.out.println("There was an IO Exception " + ioe);
-                        ioe.printStackTrace();
+                        LOG.error(ioe);
                         promise.fail(ioe);
                     }
                 });
@@ -224,32 +194,39 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
         request.end();
     }
 
-    private HttpClientOptions createVertxClientOptions(URL artifactUrl, boolean isTls) {
-        JavaSystemPropertiesProxySettings propertyProxySettings;
+    private HttpClientOptions createVertxClientOptions(URI artifactUrl, boolean isTls) {
         HttpClientOptions httpClientOptions = new HttpClientOptions(defaultHttpClientOptions);
 
         if (isTls) {
-            propertyProxySettings = proxySettingsMap.get("https");
             httpClientOptions.setSsl(true);
-            System.out.println("Using ssl");
-        } else {
-            propertyProxySettings = proxySettingsMap.get("http");
         }
 
-        if (propertyProxySettings.getProxy() != null && !propertyProxySettings.isNonProxyHost(artifactUrl.getHost())) {
-            HttpProxy proxy = propertyProxySettings.getProxy();
-
+        // If there's a proxy that should be used, it will be resolved and set here.
+        proxySelector.resolveProxy(artifactUrl).ifPresent(proxy -> {
             ProxyOptions proxyOptions = new ProxyOptions();
             proxyOptions.setHost(proxy.getHost());
             proxyOptions.setPort(proxy.getPort());
-            proxyOptions.setType(ProxyType.HTTP);
+            proxyOptions.setType(translateProxyType(proxy));
 
             proxy.getCredentials().ifPresent((credentials) -> {
                 proxyOptions.setUsername(credentials.getPrinciple());
                 proxyOptions.setPassword(credentials.getPasswordAsString());
             });
-        }
+        });
 
         return httpClientOptions;
+    }
+
+    private ProxyType translateProxyType(HttpProxy proxy) {
+        switch(proxy.getProxyType()) {
+            case HTTP:
+                return ProxyType.HTTP;
+            case SOCKS4:
+                return ProxyType.SOCKS4;
+            case SOCKS5:
+                return ProxyType.SOCKS5;
+            default:
+                throw new IllegalStateException("Unexpected value: " + proxy.getProxyType());
+        }
     }
 }

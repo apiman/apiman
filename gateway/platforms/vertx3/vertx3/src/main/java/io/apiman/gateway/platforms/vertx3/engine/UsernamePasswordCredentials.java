@@ -2,6 +2,7 @@ package io.apiman.gateway.platforms.vertx3.engine;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class UsernamePasswordCredentials extends AbstractCredentials {
 
@@ -42,5 +43,25 @@ public class UsernamePasswordCredentials extends AbstractCredentials {
             "password=***" +
             ", principle='" + principle + '\'' +
             '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UsernamePasswordCredentials that = (UsernamePasswordCredentials) o;
+        return Arrays.equals(password, that.password) && Objects
+            .equals(principle, that.principle);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(principle);
+        result = 31 * result + Arrays.hashCode(password);
+        return result;
     }
 }

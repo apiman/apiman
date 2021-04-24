@@ -4,6 +4,7 @@ import io.apiman.gateway.platforms.vertx3.engine.AbstractCredentials;
 import io.apiman.gateway.platforms.vertx3.engine.UsernamePasswordCredentials;
 import io.apiman.gateway.platforms.vertx3.engine.proxy.HttpProxySettings.ProxyType;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 
@@ -53,5 +54,23 @@ public class HttpProxy {
             .add("port=" + port)
             .add("credentials=" + credentials)
             .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        HttpProxy httpProxy = (HttpProxy) o;
+        return port == httpProxy.port && proxyType == httpProxy.proxyType && Objects
+            .equals(host, httpProxy.host) && Objects.equals(credentials, httpProxy.credentials);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(proxyType, host, port, credentials);
     }
 }
