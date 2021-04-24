@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Scheer PAS Schweiz AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.apiman.gateway.platforms.vertx3.engine.proxy;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
@@ -6,6 +21,7 @@ import io.apiman.common.logging.IApimanLogger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
@@ -25,10 +41,12 @@ import org.apache.commons.lang3.StringUtils;
  * See: https://bugs.openjdk.java.net/browse/JDK-8023648
  * <p>
  * Some of this was also inspired Gradle's system property proxy handling code.
+ *
+ * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
+public class JavaSysPropsProxySettings implements HttpProxySettings {
     private static final String DEFAULT_NON_PROXY_HOSTS = "localhost|127.*|[::1]|0.0.0.0|[::0]";
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JavaSystemPropertiesProxySettings.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JavaSysPropsProxySettings.class);
     private final List<String> nonProxyHosts = new ArrayList<>();
     private final HttpProxy proxy;
     private Pattern noProxyRegex;
@@ -36,8 +54,8 @@ public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
     /**
      * Initialise SOCKS proxy from Java System Properties
      */
-    public static JavaSystemPropertiesProxySettings createSocksProxy(int defaultPort) {
-        return new JavaSystemPropertiesProxySettings(
+    public static JavaSysPropsProxySettings createSocksProxy(int defaultPort) {
+        return new JavaSysPropsProxySettings(
             ProxyType.toSocksVersion(System.getProperty("socksProxyVersion")),
             "socksNonProxyHosts",
             System.getProperty("socksProxyHost"),
@@ -54,8 +72,8 @@ public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
      *                       Likely should be `http` or `https` unless you are doing something esoteric.
      * @param defaultPort the default proxy port (should one not be found in the system properties)
      */
-    public static JavaSystemPropertiesProxySettings createHttpProxy(String propertyPrefix, int defaultPort) {
-        return new JavaSystemPropertiesProxySettings(
+    public static JavaSysPropsProxySettings createHttpProxy(String propertyPrefix, int defaultPort) {
+        return new JavaSysPropsProxySettings(
             ProxyType.HTTP,
             "http.nonProxyHosts",
             System.getProperty(propertyPrefix + ".proxyHost"),
@@ -73,7 +91,7 @@ public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
      * @param proxyUser the proxy username
      * @param proxyPassword the proxy password
      */
-    public JavaSystemPropertiesProxySettings(ProxyType proxyType, String nonProxyProperty, String host, int port, String proxyUser, String proxyPassword) {
+    public JavaSysPropsProxySettings(ProxyType proxyType, String nonProxyProperty, String host, int port, String proxyUser, String proxyPassword) {
         // If property prefix is null or host is null, then no useful proxy information has been provided, so we just assume empty.
         if (host == null) {
             this.proxy = null;
@@ -183,5 +201,32 @@ public class JavaSystemPropertiesProxySettings implements HttpProxySettings {
      */
     public boolean isProxyDefined() {
         return proxy != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        JavaSysPropsProxySettings that = (JavaSysPropsProxySettings) o;
+        return Objects.equals(nonProxyHosts, that.nonProxyHosts) && Objects
+            .equals(proxy, that.proxy) && Objects.equals(noProxyRegex, that.noProxyRegex);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nonProxyHosts, proxy, noProxyRegex);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", JavaSysPropsProxySettings.class.getSimpleName() + "[", "]")
+            .add("nonProxyHosts=" + nonProxyHosts)
+            .add("proxy=" + proxy)
+            .add("noProxyRegex=" + noProxyRegex)
+            .toString();
     }
 }

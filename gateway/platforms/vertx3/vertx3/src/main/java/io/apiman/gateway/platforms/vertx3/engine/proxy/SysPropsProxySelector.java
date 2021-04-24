@@ -1,12 +1,37 @@
+/*
+ * Copyright 2021 Scheer PAS Schweiz AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.apiman.gateway.platforms.vertx3.engine.proxy;
 
 import java.net.URI;
 import java.util.Optional;
+import java.util.StringJoiner;
 
+/**
+ * Get proxy settings from various system properties.
+ *
+ * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
+ */
 public class SysPropsProxySelector {
-    JavaSystemPropertiesProxySettings httpProxy = JavaSystemPropertiesProxySettings.createHttpProxy("http", 80);
-    JavaSystemPropertiesProxySettings httpsProxy = JavaSystemPropertiesProxySettings.createHttpProxy("https", 443);
-    JavaSystemPropertiesProxySettings socksProxy = JavaSystemPropertiesProxySettings.createSocksProxy(1080);
+    private final JavaSysPropsProxySettings httpProxy =
+        JavaSysPropsProxySettings.createHttpProxy("http", 80);
+
+    private final JavaSysPropsProxySettings httpsProxy =
+        JavaSysPropsProxySettings.createHttpProxy("https", 443);
+
+    private final JavaSysPropsProxySettings socksProxy = JavaSysPropsProxySettings.createSocksProxy(1080);
 
     public SysPropsProxySelector() {
     }
@@ -30,5 +55,14 @@ public class SysPropsProxySelector {
             return socksProxy.getProxy(resourceUri.getHost());
         }
         return Optional.empty();
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", SysPropsProxySelector.class.getSimpleName() + "[", "]")
+            .add("httpProxy=" + httpProxy)
+            .add("httpsProxy=" + httpsProxy)
+            .add("socksProxy=" + socksProxy)
+            .toString();
     }
 }
