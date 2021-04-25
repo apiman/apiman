@@ -30,15 +30,15 @@ public class JavaSysPropsProxySettingsTest {
         setSysProp("http.nonProxyHosts", "localhost");
 
         HttpProxy expectedProxy = new HttpProxy(
-          "proxy.local",
-                1234,
+            "proxy.local",
+            1234,
             "secret",
             "password!"
         );
 
-        JavaSysPropsProxySettings settings =  JavaSysPropsProxySettings.createHttpProxy(
-          "http",
-          80
+        JavaSysPropsProxySettings settings = JavaSysPropsProxySettings.createHttpProxy(
+            "http",
+            80
         );
 
         assertThat(settings.getProxy())
@@ -57,7 +57,7 @@ public class JavaSysPropsProxySettingsTest {
         setSysProp("http.proxyPassword", "password!");
         setSysProp("http.nonProxyHosts", "169.254/16");
 
-        JavaSysPropsProxySettings settings =  JavaSysPropsProxySettings.createHttpProxy(
+        JavaSysPropsProxySettings settings = JavaSysPropsProxySettings.createHttpProxy(
             "http",
             80
         );
@@ -74,12 +74,11 @@ public class JavaSysPropsProxySettingsTest {
         setSysProp("http.proxyPassword", "password!");
         setSysProp("http.nonProxyHosts", "169.168.1.*");
 
-        JavaSysPropsProxySettings settings =  JavaSysPropsProxySettings.createHttpProxy(
+        JavaSysPropsProxySettings settings = JavaSysPropsProxySettings.createHttpProxy(
             "http",
             80
         );
 
-        // Following address falls under the nonProxyHosts mask 169.254/16
         assertThat(settings.isNonProxyHost("169.168.1.1")).isTrue();
     }
 
@@ -91,13 +90,49 @@ public class JavaSysPropsProxySettingsTest {
         setSysProp("http.proxyPassword", "password!");
         setSysProp("http.nonProxyHosts", "169.168.1.1");
 
-        JavaSysPropsProxySettings settings =  JavaSysPropsProxySettings.createHttpProxy(
+        JavaSysPropsProxySettings settings = JavaSysPropsProxySettings.createHttpProxy(
             "http",
             80
         );
 
-        // Following address falls under the nonProxyHosts mask 169.254/16
         assertThat(settings.isNonProxyHost("169.168.1.1")).isTrue();
+    }
+
+    @Test
+    public void httpProxy_withNonProxyHostnameList_shouldRecogniseHostname() {
+        setSysProp("http.proxyHost", "proxy.local");
+        setSysProp("http.proxyPort", "1234");
+        setSysProp("http.proxyUser", "secret");
+        setSysProp("http.proxyPassword", "password!");
+        setSysProp("http.nonProxyHosts", "local|*.local|169.254/16|*.169.254/16");
+
+        JavaSysPropsProxySettings settings = JavaSysPropsProxySettings.createHttpProxy(
+            "http",
+            80
+        );
+
+        assertThat(settings.isNonProxyHost("foo.local")).isTrue();
+        assertThat(settings.isNonProxyHost("nonmatch.loca")).isFalse();
+    }
+
+    @Test
+    public void httpProxy_withIpv6Localhost_shouldMatchByDefault() {
+        setSysProp("http.proxyHost", "proxy.local");
+        setSysProp("http.proxyPort", "1234");
+        setSysProp("http.proxyUser", "secret");
+        setSysProp("http.proxyPassword", "password!");
+        setSysProp("http.nonProxyHosts", "[::2]");
+
+        JavaSysPropsProxySettings settings = JavaSysPropsProxySettings.createHttpProxy(
+            "http",
+            80
+        );
+
+        // In default list
+        assertThat(settings.isNonProxyHost("[::0]")).isTrue();
+        // In user-provided list
+        assertThat(settings.isNonProxyHost("[::2]")).isTrue();
+        assertThat(settings.isNonProxyHost("nonmatch.loca")).isFalse();
     }
 
     private void setSysProp(String key, String value) {
