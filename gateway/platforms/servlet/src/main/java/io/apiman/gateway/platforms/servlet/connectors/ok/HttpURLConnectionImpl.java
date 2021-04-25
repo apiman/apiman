@@ -117,7 +117,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
   }
 
   @Override public final void disconnect() {
-    // Calling disconnect() before a connection exists should have no effect.
+    // Calling cancel() before a connection exists should have no effect.
     if (httpEngine == null) return;
 
     httpEngine.cancel();
