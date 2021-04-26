@@ -354,7 +354,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             @Override
             public void handle(IAsyncResult<File> result) {
                 // If result is bad : No success or result empty And other repo exist
-                if (!result.isSuccess() || result.getResult() == null && iterator.hasNext()) {
+                if ((!result.isSuccess() || result.getResult() == null) && iterator.hasNext()) {
                     downloadFromMavenRepo(coordinates, iterator.next(), this);
                 } else {
                     //If result is Good or all repo tried
@@ -388,7 +388,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         OutputStream ostream = null;
         try {
             URLConnection connection = artifactUrl.openConnection();
-            // add the basic authentification contains in the Url
+            // add the basic authentication contained in the Url
             if (artifactUrl.getUserInfo() != null) {
                 String authStr = java.util.Base64.getEncoder().encodeToString(artifactUrl.getUserInfo().getBytes(StandardCharsets.UTF_8));
                 connection.addRequestProperty("Authorization", "Basic " + authStr);
