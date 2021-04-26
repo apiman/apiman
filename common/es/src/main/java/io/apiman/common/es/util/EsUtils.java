@@ -114,5 +114,4 @@ public class EsUtils {
       }
       return sb.toString();
     }
-
 }

@@ -395,15 +395,8 @@ public class VertxPluginRegistryTest {
         //Minimal configuration to create a fake engine. Include "plugin-registry" to test.
         String jsonStr = "{\n" +
                 "   \"registry\":{\n" +
-                "      \"class\":\"io.apiman.gateway.engine.es.EsRegistry\",\n" +
+                "      \"class\":\"io.apiman.gateway.engine.impl.InMemoryRegistry\",\n" +
                 "      \"config\":{\n" +
-                "         \"client\":{\n" +
-                "            \"type\":\"${test.foo.es.type}\",\n" +
-                "            \"cluster-name\":\"elasticsearch\",\n" +
-                "            \"host\":\"localhost\",\n" +
-                "            \"port\":19250,\n" +
-                "            \"initialize\":true\n" +
-                "         }\n" +
                 "      }\n" +
                 "   },\n" +
                 "   \"plugin-registry\":{\n" +
@@ -419,18 +412,8 @@ public class VertxPluginRegistryTest {
                 "      }\n" +
                 "   },\n" +
                 "   \"metrics\":{\n" +
-                "      \"class\":\"io.apiman.gateway.engine.es.EsMetrics\",\n" +
+                "      \"class\":\"io.apiman.gateway.engine.impl.InMemoryMetrics\",\n" +
                 "      \"config\":{\n" +
-                "         \"client\":{\n" +
-                "            \"type\":\"es\",\n" +
-                "            \"protocol\":\"${apiman.es.protocol}\",\n" +
-                "            \"host\":\"${apiman.es.host}\",\n" +
-                "            \"port\":\"${apiman.es.port}\",\n" +
-                "            \"initialize\":true,\n" +
-                "            \"username\":\"${apiman.es.username}\",\n" +
-                "            \"password\":\"${apiman.es.password}\",\n" +
-                "            \"timeout\":\"${apiman.es.timeout}\"\n" +
-                "         }\n" +
                 "      }\n" +
                 "   }\n" +
                 "}";
