@@ -59,7 +59,7 @@
     "swagger-client": "3.8.8",
     "swagger-ui-dist": "3.24.0",
     "through2": "0.6.3",
-    "typescript": "1.6.2",
+    "typescript": "1.8.10",
     "typings": "0.6.8",
     "ui-select": "0.14.2",
     "underscore.string": "2.4.0",
