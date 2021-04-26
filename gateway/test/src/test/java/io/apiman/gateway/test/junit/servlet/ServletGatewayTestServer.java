@@ -17,7 +17,6 @@ package io.apiman.gateway.test.junit.servlet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.apiman.common.es.util.DefaultEsClientFactory;
-import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.util.ddl.DdlParser;
 import io.apiman.gateway.engine.GatewayConfigProperties;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
@@ -32,6 +31,7 @@ import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.test.server.GatewayServer;
 import io.apiman.gateway.test.server.TestMetrics;
 import io.apiman.test.common.echo.EchoServer;
+import io.apiman.test.common.es.EsTestUtil;
 import io.apiman.test.common.resttest.IGatewayTestServer;
 import io.apiman.test.common.util.TestUtil;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -256,7 +256,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     private void preStart() throws IOException {
         if (withES) {
             if (node == null) {
-                node = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:" + EsConstants.getEsVersion());
+                node = EsTestUtil.provideElasticsearchContainer();
             }
             if (!node.isRunning()) {
                 // We have to start the test container here manually but it is stopped automatically from the test container library

@@ -79,7 +79,7 @@ public class QueryTest {
                         "    BYTEARRAY varbinary(100) NOT NULL,\n" +
                         "    PRIMARY KEY (ID));";
                 String insertSql = "insert into APIMAN (ID, STRING, SHORT, INTEGER, LONG, DOUBLE, BOOLEAN, DATETIME, BYTEARRAY)\n" +
-                        "     VALUES  (1, 'Voltigeur', 11, 9001009, 101010101, 3.14159, true, '1976-06-29 00:00:00', 31), ";
+                        "     VALUES  (1, 'Voltigeur', 11, 9001009, 101010101, 3.14159, TRUE, '1976-06-29 00:00:00', 31); ";
                 connection.execute(
                         explodeOnFailure(context, async, onSuccess1 -> {
                             connection.execute(
