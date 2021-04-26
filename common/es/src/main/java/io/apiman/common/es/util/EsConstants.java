@@ -17,6 +17,7 @@ package io.apiman.common.es.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Properties;
 
 /**
@@ -259,7 +260,7 @@ public class EsConstants {
             try {
                 p.load(is);
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new UncheckedIOException(e);
             }
             esVersions = p;
         }
