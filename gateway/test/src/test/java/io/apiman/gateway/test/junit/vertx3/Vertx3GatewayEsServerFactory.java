@@ -1,7 +1,7 @@
 package io.apiman.gateway.test.junit.vertx3;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.apiman.common.es.util.EsConstants;
+import io.apiman.test.common.es.EsTestUtil;
 import io.apiman.test.common.resttest.IGatewayTestServer;
 import io.apiman.test.common.resttest.IGatewayTestServerFactory;
 import org.slf4j.Logger;
@@ -21,9 +21,7 @@ public class Vertx3GatewayEsServerFactory implements IGatewayTestServerFactory {
     }
 
     private static final class Vertx3EsServer extends Vertx3GatewayTestServer {
-        private final ElasticsearchContainer testContainer = new ElasticsearchContainer(
-            "docker.elastic.co/elasticsearch/elasticsearch-oss:" + EsConstants.getEsVersion()
-        );
+        private final ElasticsearchContainer testContainer = EsTestUtil.provideElasticsearchContainer();
 
         static final String TEST_CONTAINERS_PORT_ENV_VAR = "test.TEST_CONTAINERS_ES_PORT";
         static final String TEST_CONTAINERS_HOST_ENV_VAR = "test.TEST_CONTAINERS_ES_HOST";

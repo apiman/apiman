@@ -18,11 +18,11 @@ package io.apiman.manager.test.es;
 
 import io.apiman.common.es.util.AbstractClientFactory;
 import io.apiman.common.es.util.DefaultEsClientFactory;
-import io.apiman.common.es.util.EsConstants;
 import io.apiman.gateway.engine.es.EsMetrics;
 import io.apiman.manager.api.beans.metrics.*;
 import io.apiman.manager.api.core.metrics.MetricsAccessorHelper;
 import io.apiman.manager.api.es.EsMetricsAccessor;
+import io.apiman.test.common.es.EsTestUtil;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
@@ -55,7 +55,7 @@ public class EsMetricsAccessorTest {
 
     public static final String APIMAN_METRICS_INDEX_NAME = "apiman_metrics";
     @Container
-    private static ElasticsearchContainer node = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:" + EsConstants.getEsVersion());
+    private static ElasticsearchContainer node = EsTestUtil.provideElasticsearchContainer();
 
     private static RestHighLevelClient client;
     private static Locale locale;
