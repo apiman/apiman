@@ -97,7 +97,7 @@
     <version.git-commit-id.plugin>2.2.1</version.git-commit-id.plugin>
 
     <!-- Dependency Versions -->
-    <version.com.fasterxml.jackson>2.10.0</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
     <version.com.h2database>1.4.200</version.com.h2database>
     <version.com.lmax>3.4.2</version.com.lmax>
     <version.com.github.seancfoley.ipaddress>5.3.3</version.com.github.seancfoley.ipaddress>
@@ -152,7 +152,7 @@
     <version.org.slf4j>1.7.30</version.org.slf4j>
     <version.org.testcontainers>1.15.3</version.org.testcontainers>
     <version.io.netty>4.1.59.Final</version.io.netty>
-    <version.io.swagger>1.6.0</version.io.swagger>
+    <version.io.swagger>1.6.2</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.7</version.io.vertx>
     <version.net.openhft>0.12</version.net.openhft>
