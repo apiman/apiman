@@ -7,7 +7,6 @@
     <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-api-security</artifactId>
-  <packaging>bundle</packaging>
   <name>apiman-manager-api-security</name>
 
   <dependencies>
@@ -53,20 +52,4 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package>io.apiman.manager.api.security.*</Export-Package>
-            <Import-Package>!javax.enterprise.context,!javax.inject,*</Import-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

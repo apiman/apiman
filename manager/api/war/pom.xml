@@ -63,12 +63,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-rest-impl</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>org.apache.felix.scr.annotations</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>

@@ -7,7 +7,6 @@
     <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-gateway-engine-core</artifactId>
-  <packaging>bundle</packaging>
   <name>apiman-gateway-engine-core</name>
 
   <dependencies>
@@ -84,29 +83,5 @@
         <filtering>true</filtering>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package>
-              io.apiman.gateway.engine,
-              io.apiman.gateway.engine.i18n,
-              io.apiman.gateway.engine.async,
-              io.apiman.gateway.engine.components,
-              io.apiman.gateway.engine.impl,
-              io.apiman.gateway.engine.policy,
-              io.apiman.gateway.engine.metrics,
-              io.apiman.gateway.engine.io,
-              io.apiman.gateway.engine.auth,
-              io.apiman.gateway.engine.rates,
-              io.apiman.gateway.engine.components.*
-            </Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 </project>
