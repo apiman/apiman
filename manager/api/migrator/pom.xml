@@ -8,7 +8,6 @@
     <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-api-migrator</artifactId>
-  <packaging>bundle</packaging>
   <name>apiman-manager-api-migrator</name>
   <dependencies>
     <!-- Project Dependencies -->

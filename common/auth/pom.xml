@@ -8,7 +8,6 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-common-auth</artifactId>
-  <packaging>bundle</packaging>
   <name>apiman-common-auth</name>
 
   <dependencies>

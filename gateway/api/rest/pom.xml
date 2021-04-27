@@ -7,7 +7,6 @@
     <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-gateway-api-rest</artifactId>
-  <packaging>bundle</packaging>
   <name>apiman-gateway-api-rest</name>
 
   <dependencies>

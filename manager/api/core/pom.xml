@@ -7,7 +7,6 @@
     <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-api-core</artifactId>
-  <packaging>bundle</packaging>
   <name>apiman-manager-api-core</name>
 
   <dependencies>

@@ -7,7 +7,6 @@
     <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-gateway-engine-jdbc</artifactId>
-  <packaging>bundle</packaging>
   <name>apiman-gateway-engine-jdbc</name>
 
   <dependencies>

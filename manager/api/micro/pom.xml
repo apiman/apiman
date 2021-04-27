@@ -7,7 +7,6 @@
     <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-api-micro</artifactId>
-  <packaging>bundle</packaging>
   <name>apiman-manager-api-micro</name>
 
   <properties>
@@ -253,6 +252,5 @@
         <filtering>true</filtering>
       </resource>
     </resources>
-    </plugins>
   </build>
 </project>

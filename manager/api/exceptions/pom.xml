@@ -9,7 +9,6 @@
     <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-api-rest-exceptions</artifactId>
-  <packaging>bundle</packaging>
   <name>apiman-manager-api-rest-exceptions</name>
 
   <dependencies>
