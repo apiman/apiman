@@ -45,13 +45,6 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
   </build>
 
   <profiles>

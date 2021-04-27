@@ -89,20 +89,4 @@
       <artifactId>apiman-gateway-engine-es</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Import-Package>!javax.inject,*</Import-Package>
-            <Export-Package>io.apiman.manager.api.core, io.apiman.manager.api.core.exceptions.*, io.apiman.manager.api.core.metrics.*</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>
