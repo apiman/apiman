@@ -153,7 +153,7 @@ public class EchoServlet extends HttpServlet {
         String acceptHeader = req.getHeader("Accept");
         String errorCode = req.getHeader("X-Echo-ErrorCode");
         if (errorCode != null) {
-            int ec = new Integer(errorCode);
+            int ec = Integer.parseInt(errorCode);
             String errorMsg = req.getHeader("X-Echo-ErrorMessage");
             resp.sendError(ec, errorMsg);
             return;

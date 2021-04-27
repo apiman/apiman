@@ -286,14 +286,13 @@ public class TransferQuotaPolicyTest extends ApimanPolicyTest {
             int payloadSize = 20;
             String payloadSizeHeader = request.getHeaders().get("X-Payload-Size");
             if (payloadSizeHeader != null) {
-                payloadSize = new Integer(payloadSizeHeader);
+                payloadSize = Integer.parseInt(payloadSizeHeader);
             }
 
             byte [] payloadData = new byte[payloadSize];
             Arrays.fill(payloadData, (byte) 80);
             String payload = new String(payloadData);
-            PolicyTestBackEndApiResponse response = new PolicyTestBackEndApiResponse(apiResponse, payload);
-            return response;
+            return new PolicyTestBackEndApiResponse(apiResponse, payload);
         }
 
     }

@@ -61,7 +61,7 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
         int queueSize = DEFAULT_QUEUE_SIZE;
         String queueSizeConfig = config.get("queue.size"); //$NON-NLS-1$
         if (queueSizeConfig != null) {
-            queueSize = Integer.valueOf(queueSizeConfig);
+            queueSize = Integer.parseInt(queueSizeConfig);
         }
         queue = new LinkedBlockingDeque<>(queueSize);
         startConsumerThread();

@@ -162,7 +162,7 @@ public class TestUtil {
             // Response
             // Expected Status Code
             line = reader.readLine();
-            rval.setExpectedStatusCode(new Integer(line.trim()));
+            rval.setExpectedStatusCode(Integer.parseInt(line.trim()));
 
             // Expected Response Headers
             line = reader.readLine();

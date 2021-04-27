@@ -360,7 +360,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
                     } else {
                         String fileName = split[0];
                         String lineNum = split[1];
-                        elements.add(new StackTraceElement(className, methodName, fileName, new Integer(lineNum)));
+                        elements.add(new StackTraceElement(className, methodName, fileName, Integer.parseInt(lineNum)));
                     }
                 }
             }

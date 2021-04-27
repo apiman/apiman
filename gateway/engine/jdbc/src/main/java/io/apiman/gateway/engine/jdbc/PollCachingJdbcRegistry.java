@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.jdbc;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
@@ -41,6 +43,8 @@ import org.apache.commons.dbutils.ResultSetHandler;
  */
 public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
 
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(PollCachingJdbcRegistry.class);
+
     private static final int DEFAULT_POLLING_INTERVAL = 10;
     private static final int DEFAULT_STARTUP_DELAY = 30;
 
@@ -49,6 +53,7 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
 
     private boolean polling = false;
     private long dataVersion = -1;
+
 
     /**
      * Constructor.
@@ -60,13 +65,13 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
         String startupVal = config.get("cache-polling-startup-delay"); //$NON-NLS-1$
 
         if (intervalVal != null) {
-            pollIntervalMillis = new Integer(intervalVal) * 1000;
+            pollIntervalMillis = Integer.parseInt(intervalVal) * 1000;
         } else {
             pollIntervalMillis = DEFAULT_POLLING_INTERVAL * 1000;
         }
 
         if (startupVal != null) {
-            startupDelayMillis = new Integer(startupVal) * 1000;
+            startupDelayMillis = Integer.parseInt(startupVal) * 1000;
         } else {
             startupDelayMillis = DEFAULT_STARTUP_DELAY * 1000;
         }
@@ -74,9 +79,6 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
         startCacheInvalidator();
     }
 
-    /**
-     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingEsRegistry#publishApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
     @Override
     public void publishApi(Api api, final IAsyncResultHandler<Void> handler) {
         super.publishApi(api, new IAsyncResultHandler<Void>() {
@@ -90,9 +92,6 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
         });
     }
 
-    /**
-     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingEsRegistry#retireApi(io.apiman.gateway.engine.beans.Api, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
     @Override
     public void retireApi(Api api, final IAsyncResultHandler<Void> handler) {
         super.retireApi(api, new IAsyncResultHandler<Void>() {
@@ -106,9 +105,6 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
         });
     }
 
-    /**
-     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingEsRegistry#registerClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
     @Override
     public void registerClient(Client client, final IAsyncResultHandler<Void> handler) {
         super.registerClient(client, new IAsyncResultHandler<Void>() {
@@ -125,9 +121,6 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
         });
     }
 
-    /**
-     * @see io.apiman.gateway.engine.CachingJdbcRegistry.CachingEsRegistry#unregisterClient(io.apiman.gateway.engine.beans.Client, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
     @Override
     public void unregisterClient(Client client, final IAsyncResultHandler<Void> handler) {
         super.unregisterClient(client, new IAsyncResultHandler<Void>() {
@@ -210,8 +203,7 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
                 dataVersion = latestVersion;
             }
         } catch (SQLException e) {
-            // TODO need to use the gateway logger to log this!
-            e.printStackTrace();
+            LOGGER.error("SQL problem encountered while running latest version query: " + e.getMessage(), e);
         }
         if (invalidate) {
             invalidateCache();

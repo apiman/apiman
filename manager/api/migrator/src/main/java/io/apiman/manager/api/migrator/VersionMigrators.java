@@ -90,9 +90,9 @@ public class VersionMigrators {
         public VersionComponents(String version) {
             @SuppressWarnings("nls")
             String[] split = version.replace("-SNAPSHOT", "").split("\\.");
-            major = new Integer(split[0]);
-            minor = new Integer(split[1]);
-            patch = new Integer(split[2]);
+            major = Integer.parseInt(split[0]);
+            minor = Integer.parseInt(split[1]);
+            patch = Integer.parseInt(split[2]);
         }
 
         /**
