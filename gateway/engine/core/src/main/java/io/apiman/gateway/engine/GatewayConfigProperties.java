@@ -18,7 +18,7 @@ package io.apiman.gateway.engine;
 
 /**
  * Global list of all apiman gateway related properties.  Property names
- * reflect what would appear in apiman.properites.
+ * reflect what would appear in apiman.properties.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -34,6 +34,7 @@ public class GatewayConfigProperties {
     public static final String CONNECTOR_FACTORY_FOLLOW_REDIRECTS = "apiman-gateway.connector-factory.http.followRedirects";
     public static final String POLICY_FACTORY_CLASS = "apiman-gateway.policy-factory";
     public static final String METRICS_CLASS = "apiman-gateway.metrics";
+    @Deprecated
     public static final String LOGGER_FACTORY_CLASS = "apiman-gateway.logger-factory";
     public static final String DATA_ENCRYPTER_TYPE = "apiman.encrypter.type";
     public static final String COMPONENT_PREFIX = "apiman-gateway.components.";
@@ -41,5 +42,4 @@ public class GatewayConfigProperties {
     public static final String ERROR_WRITER_CLASS = "apiman-gateway.writers.error";
     public static final String INITIALIZERS = "apiman-gateway.initializers";
     public static final String REQUEST_PARSER_CLASS = "apiman-gateway.request-parser";
-
 }

@@ -64,7 +64,7 @@ public class JdbcTestSuite {
      */
     @BeforeClass
     public static void setupH2() throws SQLException {
-        h2Server = Server.createTcpServer().start();
+        h2Server = Server.createTcpServer("-ifNotExists").start();
     }
 
     @AfterClass

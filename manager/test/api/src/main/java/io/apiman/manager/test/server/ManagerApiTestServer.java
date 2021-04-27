@@ -26,6 +26,7 @@ import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.api.war.TransactionWatchdogFilter;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
+import io.apiman.test.common.es.EsTestUtil;
 import io.apiman.test.common.util.TestUtil;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
@@ -168,7 +169,7 @@ public class ManagerApiTestServer {
         }
         if (ManagerTestUtils.getTestType() == TestType.es) {
             if (node == null) {
-                node = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:" + EsConstants.getEsVersion());
+                node = EsTestUtil.provideElasticsearchContainer();
             }
             if (!node.isRunning()) {
                 // We have to start the test container here manually but it is stopped automatically from the test container library

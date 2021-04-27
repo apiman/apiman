@@ -15,11 +15,14 @@
  */
 package io.apiman.gateway.test.policies;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.ApimanLoggerFactoryRegistry;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.test.logging.LogTestDelegateFactory;
 import io.apiman.gateway.test.logging.TestLogger;
 
 /**
@@ -54,8 +57,13 @@ public class LoggingPolicy implements IPolicy {
     public void apply(final ApiRequest request, final IPolicyContext context, final Object config,
             final IPolicyChain<ApiRequest> chain) {
         // This is just for testing, don't do this at home, kids.
+        // Depending how you run the tests, the logger may already have been resolved so it will fail.
+        // To combat this, we set the delegate manually here.
+        ApimanLoggerFactory.setDelegate(new LogTestDelegateFactory());
         TestLogger logger = (TestLogger) context.getLogger(getClass());
         logger.setHeaders(request.getHeaders());
+        // These messages are written as headers into request.getHeaders(), so we can assert against them
+        // via the REST test suite. 
         logger.info("Hello, I am an info message");
         logger.debug("Hello, I am a debug message");
         logger.warn("Hello, I am a warn message");

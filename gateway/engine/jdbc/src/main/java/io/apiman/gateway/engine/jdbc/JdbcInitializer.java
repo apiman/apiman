@@ -48,7 +48,7 @@ public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayIn
         super(config);
         dbType = config.get("datasource.type"); //$NON-NLS-1$
         if (dbType == null) {
-            throw new RuntimeException("Missing configuration paramter for JDBC Initializer: 'datasource.type',  Sample values: h2, mysql5, postgresql9, oracle12"); //$NON-NLS-1$
+            throw new IllegalArgumentException("Missing configuration parameter for JDBC Initializer: 'datasource.type',  Sample values: h2, mysql5, postgresql9, oracle12"); //$NON-NLS-1$
         }
     }
 
@@ -75,12 +75,7 @@ public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayIn
         Boolean isInitialized;
         
         try {
-            isInitialized = run.query("SELECT * FROM gw_apis", new ResultSetHandler<Boolean>() {
-                @Override
-                public Boolean handle(ResultSet rs) throws SQLException {
-                    return true;
-                }
-            });
+            isInitialized = run.query("SELECT * FROM gw_apis", rs -> true);
         } catch (SQLException e) {
             isInitialized = false;
         }

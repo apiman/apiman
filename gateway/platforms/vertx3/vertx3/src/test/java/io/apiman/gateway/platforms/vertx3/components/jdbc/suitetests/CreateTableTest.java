@@ -66,7 +66,7 @@ public class CreateTableTest {
         client.connect(explodeOnFailure(context, async, connectionResult -> {
                 System.out.println("Successfully connected!");
                 IJdbcConnection connection = connectionResult;
-                String createTableSql = "create table APIMAN\n" +
+                String createTableSql = "create table APIMAN_FOO_BAR\n" +
                         "    (PLACE_ID integer NOT NULL,\n" +
                         "    COUNTRY varchar(40) NOT NULL,\n" +
                         "    CITY varchar(20) NOT NULL,\n" +

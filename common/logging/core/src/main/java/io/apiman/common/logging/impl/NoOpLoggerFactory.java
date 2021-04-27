@@ -18,6 +18,7 @@ package io.apiman.common.logging.impl;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
+import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import java.util.Map;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@ApimanLoggerFactory("noop")
 public class NoOpLoggerFactory implements IApimanLogger, IDelegateFactory {
     public static NoOpLoggerFactory INSTANCE = new NoOpLoggerFactory();
 
