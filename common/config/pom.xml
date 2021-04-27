@@ -32,10 +32,6 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.picketbox</groupId>
       <artifactId>jboss-security-spi</artifactId>
       <scope>provided</scope>

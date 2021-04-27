@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.configuration.AbstractConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.SystemConfiguration;
 
 /**
