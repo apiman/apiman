@@ -14,10 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>io.apiman</groupId>
-            <artifactId>apiman-gateway-engine-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.apiman</groupId>
             <artifactId>apiman-common-logging-core</artifactId>
         </dependency>
         <dependency>
