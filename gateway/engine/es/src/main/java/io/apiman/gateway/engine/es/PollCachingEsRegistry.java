@@ -18,20 +18,21 @@ package io.apiman.gateway.engine.es;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.es.util.builder.index.EsIndexUtils;
-import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
+
+import java.io.IOException;
+import java.util.Map;
+
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
-
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * Extends the {@link EsRegistry} to provide multi-node caching.  This caching solution
@@ -54,7 +55,7 @@ public class PollCachingEsRegistry extends CachingEsRegistry {
     private boolean polling = false;
     private String dataVersion = null;
 
-    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(PollCachingEsRegistry.class);
+    private IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(PollCachingEsRegistry.class);
 
     /**
      * Constructor.
@@ -188,7 +189,7 @@ public class PollCachingEsRegistry extends CachingEsRegistry {
                         Thread.sleep(pollIntervalMillis);
                         checkCacheVersion();
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        LOGGER.error(e.getMessage(), e);
                     }
 
                 }

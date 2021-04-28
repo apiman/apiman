@@ -15,7 +15,7 @@
  */
 package io.apiman.gateway.engine.impl;
 
-import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IApiClientResponse;
 import io.apiman.gateway.engine.IPolicyErrorWriter;
@@ -24,7 +24,6 @@ import io.apiman.gateway.engine.beans.EngineErrorResponse;
 import io.apiman.gateway.engine.beans.exceptions.IStatusCode;
 
 import java.io.StringWriter;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -38,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
 
-    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(DefaultPolicyErrorWriter.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DefaultPolicyErrorWriter.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private static JAXBContext jaxbContext;
@@ -67,7 +66,7 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
             isXml = true;
         }
         String message = createErrorMessage(request, error);
-        logger.error(message, error);
+        LOGGER.error(message, error);
         response.setHeader("X-Gateway-Error", message);
 
         int statusCode = 500;
@@ -86,7 +85,7 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
                 jaxbMarshaller.marshal(eer, sw);
                 response.write(sw.getBuffer());
             } catch (Exception e) {
-                logger.error(e);
+                LOGGER.error(e);
             }
         } else {
             response.setHeader("Content-Type", "application/json");
@@ -95,7 +94,7 @@ public class DefaultPolicyErrorWriter implements IPolicyErrorWriter {
                 mapper.writer().writeValue(sw, eer);
                 response.write(sw.getBuffer());
             } catch (Exception e) {
-                logger.error(e);
+                LOGGER.error(e);
             }
         }
     }
