@@ -56,7 +56,7 @@ import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER
  */
 public class EsMetrics extends AbstractEsComponent implements IMetrics {
 
-    private static final IApimanLogger logger = ApimanLoggerFactory.getLogger(EsMetrics.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(EsMetrics.class);
     private static final int DEFAULT_QUEUE_SIZE = 10000;
     private static final int DEFAULT_BATCH_SIZE = 1000;
 
@@ -147,12 +147,12 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
 
                 @Override
                 public void onFailure(Exception e) {
-                    logger.error("Failed to add metric(s) to ES", e); //$NON-NLS-1$
+                    LOGGER.error("Failed to add metric(s) to ES", e); //$NON-NLS-1$
                 }
             };
             client.bulkAsync(request, RequestOptions.DEFAULT, listener);
         } catch (InterruptedException | JsonProcessingException e) {
-            logger.error("Failed to add metric(s) to ES", e); //$NON-NLS-1$
+            LOGGER.error("Failed to add metric(s) to ES", e); //$NON-NLS-1$
         }
     }
 

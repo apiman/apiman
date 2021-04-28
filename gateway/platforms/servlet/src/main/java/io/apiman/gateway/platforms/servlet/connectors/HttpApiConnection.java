@@ -16,7 +16,7 @@
 package io.apiman.gateway.platforms.servlet.connectors;
 
 import io.apiman.common.config.options.BasicAuthOptions;
-import io.apiman.common.logging.DefaultDelegateFactory;
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.gateway.engine.IApiConnection;
@@ -40,26 +40,19 @@ import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InterruptedIOException;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
-import java.net.NoRouteToHostException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import com.squareup.okhttp.OkHttpClient;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-
-import com.squareup.okhttp.OkHttpClient;
 
 /**
  * Models a live connection to a back end API.
@@ -67,11 +60,14 @@ import com.squareup.okhttp.OkHttpClient;
  * @author eric.wittmann@redhat.com
  */
 public class HttpApiConnection implements IApiConnection, IApiConnectionResponse {
-    private ApiRequest request;
-    private Api api;
-    private RequiredAuthType requiredAuthType;
-    private SSLSessionStrategy sslStrategy;
-    private IAsyncResultHandler<IApiConnectionResponse> responseHandler;
+
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DefaultPolicyErrorWriter.class);
+
+    private final ApiRequest request;
+    private final Api api;
+    private final RequiredAuthType requiredAuthType;
+    private final SSLSessionStrategy sslStrategy;
+    private final IAsyncResultHandler<IApiConnectionResponse> responseHandler;
 
     private boolean connected;
     private HttpURLConnection connection;
@@ -81,14 +77,12 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
     private IAsyncHandler<Void> endHandler;
 
     private ApiResponse response;
-    final private OkHttpClient client;
 
-    private boolean hasDataPolicy;
+    private final OkHttpClient client;
+    private final boolean hasDataPolicy;
     private boolean isError = false;
 
-    private IConnectorConfig connectorConfig;
-
-    private IApimanLogger logger = new DefaultDelegateFactory().createLogger(DefaultPolicyErrorWriter.class);
+    private final IConnectorConfig connectorConfig;
 
     /**
      * Constructor.
@@ -405,7 +399,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
 
     private void handleConnectionError(Exception error) {
         ConnectorException ce = ErrorHandler.handleConnectionError(error);
-        logger.error(error.getMessage(), error);
+        LOGGER.error(error.getMessage(), error);
         throw ce;
     }
 }
