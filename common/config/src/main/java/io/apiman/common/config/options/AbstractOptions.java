@@ -72,7 +72,7 @@ public abstract class AbstractOptions {
 
     protected static int parseInt(Map<String, String> optionsMap, String key, int defaultValue) {
         if (optionsMap.containsKey(key)) {
-            return Integer.valueOf(optionsMap.get(key));
+            return Integer.parseInt(optionsMap.get(key));
         }
         return defaultValue;
     }

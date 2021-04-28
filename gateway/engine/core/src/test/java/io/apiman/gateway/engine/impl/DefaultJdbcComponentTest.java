@@ -203,7 +203,7 @@ public class DefaultJdbcComponentTest {
         result.next();
         Assert.assertEquals("ewittman", result.getString(1));
         Assert.assertEquals("Eric Wittmann", result.getString(2));
-        Assert.assertEquals(new Integer(17), result.getInteger(3));
+        Assert.assertEquals(Integer.valueOf(17), result.getInteger(3));
         Assert.assertEquals(Boolean.TRUE, result.getBoolean(4));
         Assert.assertFalse(result.hasNext());
     }

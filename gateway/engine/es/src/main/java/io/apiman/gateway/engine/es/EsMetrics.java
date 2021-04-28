@@ -73,14 +73,14 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
         int queueSize = DEFAULT_QUEUE_SIZE;
         String queueSizeConfig = config.get("queue.size"); //$NON-NLS-1$
         if (queueSizeConfig != null) {
-            queueSize = new Integer(queueSizeConfig);
+            queueSize = Integer.parseInt(queueSizeConfig);
         }
         queue = new LinkedBlockingDeque<>(queueSize);
 
         int batchSize = DEFAULT_BATCH_SIZE;
         String batchSizeConfig = config.get("batch.size"); //$NON-NLS-1$
         if (batchSizeConfig != null) {
-            batchSize = new Integer(batchSizeConfig);
+            batchSize = Integer.parseInt(batchSizeConfig);
         }
         this.batchSize = batchSize;
 

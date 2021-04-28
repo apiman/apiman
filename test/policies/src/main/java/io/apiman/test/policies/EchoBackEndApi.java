@@ -59,7 +59,7 @@ public class EchoBackEndApi implements IPolicyTestBackEndApi {
 
             String errorCode = request.getHeaders().get("X-Echo-ErrorCode");
             if (errorCode != null) {
-                int ec = new Integer(errorCode);
+                int ec = Integer.parseInt(errorCode);
                 String errorMsg = request.getHeaders().get("X-Echo-ErrorMessage");
                 apiResponse.setCode(ec);
                 apiResponse.setMessage(errorMsg);

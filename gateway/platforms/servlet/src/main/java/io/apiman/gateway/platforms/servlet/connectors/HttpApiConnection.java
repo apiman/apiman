@@ -219,7 +219,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
         try {
             Map<String, String> endpointProperties = this.api.getEndpointProperties();
             if (endpointProperties.containsKey("timeouts.connect")) { //$NON-NLS-1$
-                int connectTimeoutMs = new Integer(endpointProperties.get("timeouts.connect")); //$NON-NLS-1$
+                int connectTimeoutMs = Integer.parseInt(endpointProperties.get("timeouts.connect")); //$NON-NLS-1$
                 connection.setConnectTimeout(connectTimeoutMs);
             }
         } catch (Throwable t) {
@@ -235,7 +235,7 @@ public class HttpApiConnection implements IApiConnection, IApiConnectionResponse
         try {
             Map<String, String> endpointProperties = this.api.getEndpointProperties();
             if (endpointProperties.containsKey("timeouts.read")) { //$NON-NLS-1$
-                int connectTimeoutMs = new Integer(endpointProperties.get("timeouts.read")); //$NON-NLS-1$
+                int connectTimeoutMs = Integer.parseInt(endpointProperties.get("timeouts.read")); //$NON-NLS-1$
                 connection.setReadTimeout(connectTimeoutMs);
             }
         } catch (Throwable t) {

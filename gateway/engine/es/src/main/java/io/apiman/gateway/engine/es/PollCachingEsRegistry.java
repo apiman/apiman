@@ -48,8 +48,8 @@ public class PollCachingEsRegistry extends CachingEsRegistry {
     private static final int DEFAULT_POLLING_INTERVAL = 10;
     private static final int DEFAULT_STARTUP_DELAY = 30;
 
-    private int pollIntervalMillis;
-    private int startupDelayMillis;
+    private final int pollIntervalMillis;
+    private final int startupDelayMillis;
 
     private boolean polling = false;
     private String dataVersion = null;
@@ -67,13 +67,13 @@ public class PollCachingEsRegistry extends CachingEsRegistry {
         String startupVal = config.get("cache-polling-startup-delay"); //$NON-NLS-1$
 
         if (intervalVal != null) {
-            pollIntervalMillis = new Integer(intervalVal) * 1000;
+            pollIntervalMillis = Integer.parseInt(intervalVal) * 1000;
         } else {
             pollIntervalMillis = DEFAULT_POLLING_INTERVAL * 1000;
         }
 
         if (startupVal != null) {
-            startupDelayMillis = new Integer(startupVal) * 1000;
+            startupDelayMillis = Integer.parseInt(startupVal) * 1000;
         } else {
             startupDelayMillis = DEFAULT_STARTUP_DELAY * 1000;
         }
