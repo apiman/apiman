@@ -1985,7 +1985,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
             String fullIndexName = getFullIndexName(type);
 
             IndexRequest indexRequest = new IndexRequest(fullIndexName).id(id).source(json, XContentType.JSON);
-            // Force an immediate reindex to avoid horrible slowness
+            // Force an immediate reindex to avoid slowness waiting for ES to refresh.
             indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
 
             IndexResponse indexResponse = getClient().index(indexRequest, RequestOptions.DEFAULT);
@@ -2052,7 +2052,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     private void deleteEntity(String type, String id) throws StorageException {
         try {
             final DeleteRequest deleteRequest = new DeleteRequest(getFullIndexName(type), id);
-            // IMMEDIATE same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
+            // Force an immediate reindex to avoid slowness waiting for ES to refresh.
             deleteRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
 
             DeleteResponse response = getClient().delete(deleteRequest, RequestOptions.DEFAULT);
@@ -2078,7 +2078,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
             String doc = Strings.toString(source);
             String fullIndexName = getFullIndexName(type);
             IndexRequest indexRequest = new IndexRequest(fullIndexName).id(id).source(doc, XContentType.JSON);
-            // IMMEDIATE same as "wait_for" => Leave this request open until a refresh has made the contents of this request visible to search
+            // Force an immediate reindex to avoid slowness waiting for ES to refresh.
             indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
             getClient().index(indexRequest, RequestOptions.DEFAULT);
         } catch (Exception e) {
