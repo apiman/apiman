@@ -164,7 +164,7 @@
     <version.com.sun.xml.ws>2.3.4</version.com.sun.xml.ws>
     <version.javax.json.javax.json-api>1.0</version.javax.json.javax.json-api>
     <version.javax.xml.bind>2.3.3</version.javax.xml.bind>
-    <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
+    <version.jakarta.servlet>5.0.0</version.jakarta.servlet>
   </properties>
 
   <dependencyManagement>
