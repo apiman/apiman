@@ -114,7 +114,7 @@
     <version.commons-pool>1.6</version.commons-pool>
     <version.com.amazon.opendistroforelasticsearch>1.13.1</version.com.amazon.opendistroforelasticsearch>
     <version.com.zaxxer>2.7.9</version.com.zaxxer>
-    <version.com.google.guava>30.1-jre</version.com.google.guava>
+    <version.com.google.guava>30.1.1-jre</version.com.google.guava>
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.javax.enterprise>1.2</version.javax.enterprise>
     <version.joda-time>2.10.10</version.joda-time>
