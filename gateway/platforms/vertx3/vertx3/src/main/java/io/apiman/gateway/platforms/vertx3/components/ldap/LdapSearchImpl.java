@@ -16,6 +16,8 @@
 
 package io.apiman.gateway.platforms.vertx3.components.ldap;
 
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ldap.ILdapSearchEntry;
 import io.apiman.gateway.engine.components.ldap.LdapSearchScope;
@@ -25,12 +27,15 @@ import io.vertx.core.Vertx;
 import java.util.List;
 
 import com.unboundid.ldap.sdk.LDAPConnection;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class LdapSearchImpl extends DefaultLdapSearchImpl {
-    private Vertx vertx;
+    private static final Logger LOGGER = LoggerFactory.getLogger(LdapSearchImpl.class);
+    private final Vertx vertx;
 
     public LdapSearchImpl(Vertx vertx, String searchDn, String filter, LdapSearchScope scope, LDAPConnection connection) {
         super(searchDn, filter, scope, connection);
@@ -39,12 +44,29 @@ public class LdapSearchImpl extends DefaultLdapSearchImpl {
 
     @Override
     public void search(IAsyncResultHandler<List<ILdapSearchEntry>> result) {
-        vertx.executeBlocking(blocking -> {
-            System.out.println("Blocking request starting");
-            super.search(result);
-            System.out.println("Blocking request completed");
-            blocking.complete();
-        }, res -> {});
+        vertx.<List<ILdapSearchEntry>>executeBlocking(blocking -> {
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Blocking search request starting");
+            }
+            // Send the result through into the result section.
+            super.search(superResult -> {
+                if (superResult.isSuccess()) {
+                    blocking.complete(superResult.getResult());
+                } else {
+                    LOGGER.error(superResult.getError(), "There was an error while searching LDAP: {}", superResult);
+                    blocking.fail(superResult.getError());
+                }
+            });
+        }, blockingResult -> {
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Blocking search request completed: {}", blockingResult);
+            }
+            if (blockingResult.succeeded()) {
+                result.handle(AsyncResultImpl.create(blockingResult.result()));
+            } else {
+                result.handle(AsyncResultImpl.create(blockingResult.cause()));
+            }
+        });
     }
 
 }
