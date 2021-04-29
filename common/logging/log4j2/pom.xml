@@ -13,10 +13,6 @@
     <name>apiman-common-logging-log4j2</name>
     <dependencies>
         <dependency>
-          <groupId>io.apiman</groupId>
-          <artifactId>apiman-gateway-engine-core</artifactId>
-        </dependency>
-        <dependency>
           <groupId>${project.groupId}</groupId>
           <artifactId>apiman-common-logging-core</artifactId>
         </dependency>

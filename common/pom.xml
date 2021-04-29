@@ -15,7 +15,6 @@
     <module>auth</module>
     <module>config</module>
     <module>es</module>
-    <module>net</module>
     <module>plugin</module>
     <module>servlet</module>
     <module>util</module>
