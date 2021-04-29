@@ -16,6 +16,8 @@
 
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
@@ -38,11 +40,13 @@ import com.unboundid.ldap.sdk.SearchScope;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class DefaultLdapSearchImpl implements ILdapSearch {
-    private LDAPConnection connection;
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DefaultLdapSearchImpl.class);
+
+    private final LDAPConnection connection;
     private IAsyncHandler<LdapException> ldapErrorHandler;
-    private String searchDn;
-    private String filter;
-    private LdapSearchScope scope;
+    private final String searchDn;
+    private final String filter;
+    private final LdapSearchScope scope;
 
     public DefaultLdapSearchImpl(String searchDn, String filter, LdapSearchScope scope, LDAPConnection connection) {
         this.searchDn = searchDn;
@@ -59,8 +63,8 @@ public class DefaultLdapSearchImpl implements ILdapSearch {
             result.handle(AsyncResultImpl.create(searchResults));
         } catch (LDAPException e) {
             if (ldapErrorHandler == null) {
-                // TODO wire in logger
-                System.err.println("LDAP Error Handler not set. Error may be swallowed; this is probably not what you intended.");
+                LOGGER.error("LDAP Error Handler not set. Error may be swallowed; "
+                    + "this is probably not what you intended.", e);
             }
             ldapErrorHandler.handle(DefaultExceptionFactory.create(e));
         } catch (Exception e) {

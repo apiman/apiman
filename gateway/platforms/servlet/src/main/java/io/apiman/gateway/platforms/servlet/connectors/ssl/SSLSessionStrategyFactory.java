@@ -16,6 +16,8 @@
 package io.apiman.gateway.platforms.servlet.connectors.ssl;
 
 import io.apiman.common.config.options.TLSOptions;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,6 +33,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -57,10 +60,12 @@ import org.apache.http.util.Args;
  * @author Marc Savy
  */
 public class SSLSessionStrategyFactory {
-    private SSLSessionStrategyFactory() {}
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SSLSessionStrategyFactory.class);
     private static final HostnameVerifier ALLOW_ANY = new AllowAnyVerifier();
     private static final TrustStrategy SELF_SIGNED = new TrustSelfSignedStrategy();
-    private static String[] EMPTY = new String[]{};
+    private static final String[] EMPTY = new String[]{};
+
+    private SSLSessionStrategyFactory() {}
 
     /**
      * Convenience function parses map of options to generate {@link SSLSessionStrategy}.
@@ -208,7 +213,7 @@ public class SSLSessionStrategyFactory {
         HostnameVerifier hostnameVerifier = allowAnyHostname ? ALLOW_ANY :
             SSLConnectionSocketFactory.getDefaultHostnameVerifier();
         PrivateKeyStrategy privateKeyStrategy = keyAliases == null ? null : new SelectByAlias(keyAliases);
-        boolean clientAuth = keyStore == null ? false : true;
+        boolean clientAuth = keyStore != null;
 
         SSLContextBuilder builder = SSLContexts.custom();
 
@@ -241,7 +246,7 @@ public class SSLSessionStrategyFactory {
      * @return the ssl strategy
      */
     public static SSLSessionStrategy buildUnsafe() {
-        System.err.println("ATTENTION: SSLSessionStrategy will trust *any* certificate." //$NON-NLS-1$
+        LOGGER.warn("ATTENTION: SSLSessionStrategy will trust *any* certificate." //$NON-NLS-1$
                 + " This is extremely unsafe for production. Caveat utilitor!"); //$NON-NLS-1$
 
         try {
@@ -322,12 +327,10 @@ public class SSLSessionStrategyFactory {
     }
 
     private static final class SelectByAlias implements PrivateKeyStrategy {
-        private Set<String> keyAliases = new HashSet<>();
+        private final Set<String> keyAliases = new HashSet<>();
 
         public SelectByAlias(String[] keyAliases) {
-            for (String k : keyAliases) {
-                this.keyAliases.add(k);
-            }
+            Collections.addAll(this.keyAliases, keyAliases);
         }
 
         @Override
@@ -349,11 +352,8 @@ public class SSLSessionStrategyFactory {
                     throws NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
         Args.notNull(file, "Truststore file"); //$NON-NLS-1$
         final KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        final FileInputStream instream = new FileInputStream(file);
-        try {
+        try (FileInputStream instream = new FileInputStream(file)) {
             trustStore.load(instream, tsp);
-        } finally {
-            instream.close();
         }
         return builder.loadTrustMaterial(trustStore, trustStrategy);
     }
@@ -366,11 +366,8 @@ public class SSLSessionStrategyFactory {
                     KeyStoreException, UnrecoverableKeyException, CertificateException, IOException {
         Args.notNull(file, "Keystore file"); //$NON-NLS-1$
         final KeyStore identityStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        final FileInputStream instream = new FileInputStream(file);
-        try {
+        try (FileInputStream instream = new FileInputStream(file)) {
             identityStore.load(instream, ksp);
-        } finally {
-            instream.close();
         }
         return builder.loadKeyMaterial(identityStore, kp, privateKeyStrategy);
     }

@@ -1,21 +1,26 @@
 package io.apiman.gateway.engine.filesystem;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.filesystem.model.RegistryWrapper;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -28,7 +33,7 @@ import static java.util.stream.Collectors.toSet;
  */
 public class LocalFileRegistry extends InMemoryRegistry {
     static final String CONFIG_REGISTRY_PATH = "registry-path";
-
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(LocalFileRegistry.class);
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final Object mutex = new Object();
     private final File registryFile;
@@ -67,12 +72,13 @@ public class LocalFileRegistry extends InMemoryRegistry {
                                     .collect(toMap(this::getApiIndex, identity())));
                             registryMap.putAll(wrapper.getClients().stream()
                                     .collect(toMap(this::getClientIndex, identity())));
-
-                        } catch (Exception e) {
-                            throw new RuntimeException("Error reading registry from file: " + registryFile, e);
+                        } catch (IOException ioe) {
+                            throw new UncheckedIOException("Error reading registry from file: " + registryFile, ioe);
                         }
                     } else {
-                        System.err.println("Local registry file does not exists under path " + registryFile.getAbsolutePath());
+                        LOGGER.warn("Local registry file does not exist under path {0}. "
+                                + "It will be created when the first save operation occurs",
+                            registryFile.getAbsolutePath());
                     }
                     map = registryMap;
                 }

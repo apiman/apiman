@@ -16,6 +16,8 @@
 
 package io.apiman.gateway.engine.jdbc;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.metrics.RequestMetric;
@@ -43,6 +45,7 @@ import org.apache.commons.dbutils.QueryRunner;
  */
 public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
 
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JdbcMetrics.class);
     private static final int DEFAULT_QUEUE_SIZE = 10000;
 
     protected IComponentRegistry componentRegistry;
@@ -143,11 +146,10 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
                     );
         } catch (InterruptedException ie) {
             // This means that the thread was stopped.
+            LOGGER.trace("Metrics was stopped {0}", ie.getMessage());
         } catch (Exception e) {
-            // TODO better logging of this unlikely error
-            System.err.println("Error adding metric to database:"); //$NON-NLS-1$
-            e.printStackTrace();
-            return;
+            LOGGER.error(e, "An unexpected error occurred when attempting to add a metric "
+                + "to the database. {0}", e.getMessage());
         }
     }
 
@@ -159,7 +161,8 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
         try {
             queue.put(metric);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e, "An unexpected error occurred when attempting to enqueue a metric that "
+                + "was awaiting storage. The record may be lost {0}", e.getMessage());
         }
     }
 
