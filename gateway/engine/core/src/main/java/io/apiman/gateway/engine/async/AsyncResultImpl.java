@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.async;
 
+import java.util.StringJoiner;
+
 /**
  * A simple implementation of the async result interface.  Offers convenient
  * creation of result instances.
@@ -112,4 +114,11 @@ public class AsyncResultImpl<T> implements IAsyncResult<T> {
         return error;
     }
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", AsyncResultImpl.class.getSimpleName() + "[", "]")
+            .add("result=" + result)
+            .add("error=" + error)
+            .toString();
+    }
 }

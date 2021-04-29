@@ -16,6 +16,8 @@
 
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.IJdbcComponent;
@@ -26,7 +28,6 @@ import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.sql.DataSource;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -39,7 +40,8 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 public class DefaultJdbcComponent implements IJdbcComponent {
 
-    private Map<String, IJdbcClient> clients = new HashMap<>();
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DefaultJdbcComponent.class);
+    private final Map<String, IJdbcClient> clients = new HashMap<>();
 
     /**
      * Constructor.
@@ -166,7 +168,7 @@ public class DefaultJdbcComponent implements IJdbcComponent {
                     // If not closed by now (since this is a synchronous implementation of the client
                     // interface) then the consumer messed up.  We'll be nice and close it for them here.
                     if (jdbcConnection != null && !jdbcConnection.isClosed()) {
-                        System.err.print("NOTE: closing a JDBC connection that should have already been closed!"); //$NON-NLS-1$
+                        LOGGER.warn("NOTE: closing a JDBC connection that should have already been closed! {0}", jdbcConnection); //$NON-NLS-1$
                         jdbcConnection.close();
                     }
                 } catch (Exception e) {

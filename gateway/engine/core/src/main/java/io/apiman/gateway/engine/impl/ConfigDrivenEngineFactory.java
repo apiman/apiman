@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.EngineConfigTuple;
@@ -44,10 +46,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
 
-    private IEngineConfig engineConfig;
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ConfigDrivenEngineFactory.class);
+
+    private final IEngineConfig engineConfig;
     private IAsyncResultHandler<Void> handler;
     private boolean failed = false;
-    private AtomicInteger asyncInitializeAwaiting = new AtomicInteger(0);
+    private final AtomicInteger asyncInitializeAwaiting = new AtomicInteger(0);
     private boolean finishedLoading = false;
 
     /**
@@ -81,7 +85,7 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
             return encrypter;
         } catch (RuntimeException e) {
             if ("No IDataEncrypter class configured.".equals(e.getMessage())) { //$NON-NLS-1$
-                System.out.println("NOTE: No explicit Data Encrypter found.  Falling back to the Default. [" + e.getMessage() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+                LOGGER.info("NOTE: No explicit Data Encrypter found.  Falling back to the Default. [" + e.getMessage() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
                 return new DefaultDataEncrypter();
             } else {
                 throw e;
@@ -190,7 +194,7 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
                         if (handler != null)
                             handler.handle(initResult);
                     } else {
-                        System.err.println("Failure occurred, but error handler was already invoked: " + initResult.getError().getCause()); //$NON-NLS-1$
+                        LOGGER.error("Failure occurred, but error handler was already invoked", initResult.getError().getCause()); //$NON-NLS-1$
                     }
                 } else {
                     checkLoadingStatus();

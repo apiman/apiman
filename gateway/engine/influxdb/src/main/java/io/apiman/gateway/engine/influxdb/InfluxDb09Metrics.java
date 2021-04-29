@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.influxdb;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IRequiresInitialization;
@@ -40,6 +42,7 @@ import java.util.concurrent.CountDownLatch;
  */
 @SuppressWarnings("nls")
 public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(InfluxDb09Metrics.class);
     private static final String USER = "username";
     private static final String PWORD = "password";
     private static final String INFLUX_ENDPOINT = "endpoint";
@@ -54,15 +57,15 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
         DEFAULT_TAGS.put("generator", "apiman-gateway");  //$NON-NLS-2$
     }
 
-    private String dbName;
-    private String retentionPolicy;
-    private String seriesName;
-    private String influxEndpoint;
+    private final String dbName;
+    private final String retentionPolicy;
+    private final String seriesName;
+    private final String influxEndpoint;
     private IHttpClientComponent httpClient;
 
     private InfluxDb09Driver driver;
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
 
     /**
      * Constructor.
@@ -109,11 +112,12 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
                 (InfluxException result) -> {
                     if (result.isBadResponse()) {
                         IHttpClientResponse response = result.getResponse();
-                        System.err.println(String.format("Influx stats error. Code: %s with message: '%s'",
-                                response.getResponseCode(),
-                                response.getResponseMessage()));
+                        LOGGER.error(result,
+                            "Influx stats error. Code: {0} with message: {1}",
+                            response.getResponseCode(),
+                            response.getResponseMessage());
                     } else {
-                        System.err.println(result.getMessage());
+                        LOGGER.error(result.getMessage(), result);
                     }
                 });
     }
@@ -195,7 +199,7 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
     }
 
     private String getOptionalString(Map<String, String> config, String key, String dValue) {
-        return config.containsKey(key) ? config.get(key) : dValue;
+        return config.getOrDefault(key, dValue);
     }
 
     private List<String> listDatabases() {

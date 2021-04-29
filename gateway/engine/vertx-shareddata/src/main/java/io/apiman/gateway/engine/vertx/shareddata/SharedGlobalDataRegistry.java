@@ -29,33 +29,30 @@ import io.apiman.gateway.engine.beans.exceptions.ApiRetiredException;
 import io.apiman.gateway.engine.beans.exceptions.ClientNotFoundException;
 import io.apiman.gateway.engine.beans.exceptions.NoContractFoundException;
 import io.apiman.gateway.engine.i18n.Messages;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
-import io.vertx.core.shareddata.AsyncMap;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.shareddata.AsyncMap;
+
 /**
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
 */
 @SuppressWarnings("nls")
 public class SharedGlobalDataRegistry implements IRegistry {
-    Vertx vertx;
-    IEngineConfig vxConfig;
-    Map<String, String> options;
-    AsyncMap<String, Object> objectMap;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SharedGlobalDataRegistry.class);
+    private AsyncMap<String, Object> objectMap;
 
     public SharedGlobalDataRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
-        this.vertx = vertx;
-        this.vxConfig = vxConfig;
-        this.options = options;
-
         if (!vertx.isClustered()) {
             throw new IllegalStateException(SharedGlobalDataRegistry.class.getCanonicalName() + " only works when operating in clustered mode!");
         }
@@ -64,6 +61,9 @@ public class SharedGlobalDataRegistry implements IRegistry {
             if (async.succeeded()) {
                 objectMap = async.result();
             } else {
+                LOGGER.error("Problem getting cluster-wide Vert.x map: {}", async.cause(),
+                    async.cause().getMessage());
+
                 throw new IllegalStateException(async.cause());
             }
         });
