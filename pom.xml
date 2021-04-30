@@ -217,6 +217,11 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>io.apiman</groupId>
+        <artifactId>apiman-common-logging-jboss</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-common-logging-log4j2</artifactId>
         <version>${project.version}</version>

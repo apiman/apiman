@@ -14,12 +14,12 @@
   <dependencies>
     <!-- The base WAR being extended -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-api-war</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-api-war</artifactId>
       <classifier>classes</classifier>
       <scope>provided</scope>
@@ -27,13 +27,17 @@
 
     <!-- Project dependencies not included in the base WAR -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-api-ispn</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-logging-jboss</artifactId>
     </dependency>
 
     <!-- Project dependencies in the base WAR but that are also directly used -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-api-core</artifactId>
       <scope>provided</scope>
     </dependency>

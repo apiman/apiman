@@ -41,6 +41,11 @@
         <extension module="org.keycloak.keycloak-server-subsystem"/>
         <extension module="org.keycloak.keycloak-adapter-subsystem"/>
     </extensions>
+    <system-properties>
+        <!-- This property tells Apiman log via jboss logging. Apiman-specific logging config can
+        be set via the logging subsystem in this standalone.xml file. -->
+        <property name="apiman.logger-delegate" value="jboss-logging"/>
+    </system-properties>
     <management>
         <security-realms>
             <security-realm name="UndertowRealm">
@@ -109,11 +114,15 @@
             <console-handler name="CONSOLE">
                 <level name="INFO"/>
                 <formatter>
+                    <!-- Uncomment to log as JSON. See formatter section below. -->
+<!--                    <named-formatter name="JSON"/> -->
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
             </console-handler>
             <periodic-rotating-file-handler name="FILE" autoflush="true">
                 <formatter>
+                <!-- Uncomment to log as JSON. See formatter section below. -->
+<!--                    <named-formatter name="JSON"/> -->
                     <named-formatter name="PATTERN"/>
                 </formatter>
                 <file relative-to="jboss.server.log.dir" path="server.log"/>
@@ -132,6 +141,9 @@
             <logger category="sun.rmi">
                 <level name="WARN"/>
             </logger>
+            <logger category="io.apiman">
+                <level name="INFO"/>
+            </logger>
             <root-logger>
                 <level name="INFO"/>
                 <handlers>
@@ -145,6 +157,10 @@
             <formatter name="COLOR-PATTERN">
                 <pattern-formatter pattern="%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"/>
             </formatter>
+<!--            Default JSON format. More advanced customisations available. Refer to WildFly/EAP docs. -->
+<!--            <formatter name="JSON">-->
+<!--                <json-formatter/>-->
+<!--            </formatter>-->
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:batch-jberet:2.0">
             <default-job-repository name="in-memory"/>
