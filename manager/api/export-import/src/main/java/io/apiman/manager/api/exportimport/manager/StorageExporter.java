@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.exportimport.manager;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
@@ -39,19 +40,18 @@ import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.Date;
 import java.util.Iterator;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class StorageExporter {
-    @Inject @ApimanLogger(StorageExporter.class)
-    private IApimanLogger logger;
+    private final IApimanLogger logger = ApimanLoggerFactory.getLogger(StorageExporter.class);
+
     @Inject
     private Version version;
     @Inject

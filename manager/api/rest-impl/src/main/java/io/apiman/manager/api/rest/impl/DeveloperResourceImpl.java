@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
@@ -26,24 +27,29 @@ import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.IDeveloperResource;
-import io.apiman.manager.api.rest.exceptions.*;
+import io.apiman.manager.api.rest.exceptions.DeveloperAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.DeveloperNotFoundException;
+import io.apiman.manager.api.rest.exceptions.InvalidNameException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
-import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 /**
  * Implementation of the Developer Portal API
  */
 public class DeveloperResourceImpl implements IDeveloperResource {
+
+    private final IApimanLogger log = ApimanLoggerFactory.getLogger(DeveloperResourceImpl.class);
 
     @Inject
     IStorage storage;
@@ -51,9 +57,6 @@ public class DeveloperResourceImpl implements IDeveloperResource {
     IStorageQuery query;
     @Inject
     ISecurityContext securityContext;
-    @Inject
-    @ApimanLogger(DeveloperResourceImpl.class)
-    IApimanLogger log;
     @Inject
     IGatewayLinkFactory gatewayLinkFactory;
 
@@ -364,16 +367,12 @@ public class DeveloperResourceImpl implements IDeveloperResource {
         return null;
     }
 
-    /**
-     * @see ActionResourceImpl#instantiateOrganizationResource()
-     */
     private void instantiateOrganizationResource() {
         if (organizationResource == null) {
             organizationResource = new OrganizationResourceImpl();
             organizationResource.securityContext = securityContext;
             organizationResource.storage = storage;
             organizationResource.query = query;
-            organizationResource.log = log;
             organizationResource.gatewayLinkFactory = gatewayLinkFactory;
         }
     }

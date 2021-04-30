@@ -24,7 +24,7 @@
       <artifactId>apiman-common-logging-slf4j</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-logging-jboss</artifactId>
     </dependency>
     <dependency>

@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.exportimport.manager;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
@@ -47,16 +48,24 @@ import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.exportimport.exceptions.ImportNotNeededException;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import java.util.*;
 
 /**
  * Used to store imported entities into the {@link IStorage}.
@@ -68,8 +77,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
 
     @Inject
     private IStorage storage;
-    @Inject @ApimanLogger(StorageImportDispatcher.class)
-    private IApimanLogger logger;
+    private final IApimanLogger logger = ApimanLoggerFactory.getLogger(StorageImportDispatcher.class);
+
     @Inject
     private Version version;
     @Inject
@@ -98,14 +107,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     public StorageImportDispatcher() {
     }
-
-    /**
-     * @param logger
-     */
-    public void setLogger(IApimanLogger logger) {
-        this.logger = logger;
-    }
-
+    
     /**
      * Starts the import.
      */

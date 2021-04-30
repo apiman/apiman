@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.api.exportimport.manager;
 
-import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.json.IExportImportFactory;
 import io.apiman.manager.api.exportimport.json.JsonFileExportImportFactory;
@@ -36,10 +36,8 @@ public class ExportImportManager {
     
     @Inject
     private ExportImportConfigParser config;
-    @Inject @ApimanLogger(IImportReader.class)
-    private IApimanLogger importLogger;
-    @Inject @ApimanLogger(IExportWriter.class)
-    private IApimanLogger exportLogger;
+    private IApimanLogger importLogger = ApimanLoggerFactory.getLogger(IImportReader.class);
+    private IApimanLogger exportLogger = ApimanLoggerFactory.getLogger(IExportWriter.class);
     @Inject
     private StorageImportDispatcher importDispatcher;
     @Inject

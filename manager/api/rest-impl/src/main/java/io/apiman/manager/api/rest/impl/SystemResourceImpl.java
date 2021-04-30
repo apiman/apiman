@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.MediaType;
 import io.apiman.manager.api.beans.download.DownloadBean;
@@ -25,7 +26,6 @@ import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IDownloadManager;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.exportimport.json.JsonExportWriter;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageExporter;
@@ -36,7 +36,6 @@ import io.apiman.manager.api.migrator.DataMigrator;
 import io.apiman.manager.api.rest.ISystemResource;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
-import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.io.File;
@@ -46,7 +45,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -66,17 +64,12 @@ import org.apache.commons.lang3.BooleanUtils;
  */
 @ApplicationScoped
 public class SystemResourceImpl implements ISystemResource {
-
     @Inject
     private IStorage storage;
     @Inject
     private ISecurityContext securityContext;
     @Inject
     private Version version;
-    @Inject @ApimanLogger(IImportReader.class)
-    private IApimanLogger importLogger;
-    @Inject @ApimanLogger(IExportWriter.class)
-    private IApimanLogger exportLogger;
     @Inject
     private StorageExporter exporter;
     @Inject
@@ -137,6 +130,7 @@ public class SystemResourceImpl implements ISystemResource {
      */
     @Override
     public Response exportData() {
+        final IApimanLogger exportLogger = ApimanLoggerFactory.getLogger(IExportWriter.class);
         StreamingOutput stream = new StreamingOutput() {
             @Override
             public void write(OutputStream os) throws IOException, WebApplicationException {
@@ -252,7 +246,6 @@ public class SystemResourceImpl implements ISystemResource {
                 migratedImportFile.deleteOnExit();
 
                 // Migrate the data (if necessary)
-                migrator.setLogger(logger);
                 migrator.migrate(importFile, migratedImportFile);
 
                 // Now import the migrated data
@@ -267,7 +260,6 @@ public class SystemResourceImpl implements ISystemResource {
                 }
 
                 try {
-                    importer.setLogger(logger);
                     importer.start(migratedImportFile.getAbsolutePath());
                     reader.setDispatcher(importer);
                     reader.read();

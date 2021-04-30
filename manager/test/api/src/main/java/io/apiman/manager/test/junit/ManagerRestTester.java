@@ -17,6 +17,8 @@ package io.apiman.manager.test.junit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.test.junit.ManagerRestTester.TestInfo;
 import io.apiman.manager.test.server.ManagerApiTestServer;
@@ -54,7 +56,13 @@ import java.util.*;
 @SuppressWarnings("nls")
 public class ManagerRestTester extends ParentRunner<TestInfo> {
 
-    private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
+    private static final Logger LOGGER;
+
+    static {
+        System.setProperty(ApimanLoggerFactory.APIMAN_LOGGER, "sout");
+//        System.setProperty("org.jboss.logging.provider", "log4j2");
+        LOGGER = LoggerFactory.getLogger(TestPlanRunner.class);
+    }
 
     private static ManagerApiTestServer testServer = new ManagerApiTestServer();
     private static final boolean USE_PROXY = false;
@@ -407,7 +415,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
      */
     public void log(String message, Object... params) {
         String outmsg = MessageFormat.format(message, params);
-        logger.info("    >> " + outmsg);
+        LOGGER.info("    >> " + outmsg);
     }
 
     public static class TestPlanInfo {

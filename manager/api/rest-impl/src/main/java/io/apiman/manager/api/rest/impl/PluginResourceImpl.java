@@ -37,6 +37,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
@@ -56,7 +57,7 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.exceptions.InvalidPluginException;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.rest.IPluginResource;
 import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
@@ -77,6 +78,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 @ApplicationScoped
 public class PluginResourceImpl implements IPluginResource {
 
+    private final IApimanLogger log = ApimanLoggerFactory.getLogger(PluginResourceImpl.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Inject IStorage storage;
@@ -87,8 +89,6 @@ public class PluginResourceImpl implements IPluginResource {
 
     private Map<URI, PluginRegistryBean> registryCache = new HashMap<>();
 
-    @Inject @ApimanLogger(PluginResourceImpl.class)
-    IApimanLogger log;
 
     /**
      * Constructor.

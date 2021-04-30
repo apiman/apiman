@@ -17,10 +17,11 @@
 package io.apiman.manager.api.migrator;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.impl.SystemOutLogger;
 import io.apiman.manager.api.config.Version;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.migrator.i18n.Messages;
 
 import javax.enterprise.context.Dependent;
@@ -39,10 +40,10 @@ import java.io.OutputStream;
 @Dependent
 public class DataMigrator implements IReaderHandler {
 
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DataMigrator.class);
+
     @Inject
     private Version version;
-    @Inject @ApimanLogger(DataMigrator.class)
-    private IApimanLogger logger;
 
     private IDataMigratorWriter writer;
     private VersionMigratorChain chain;
@@ -116,7 +117,6 @@ public class DataMigrator implements IReaderHandler {
         System.out.println("  From: " + from); //$NON-NLS-1$
         System.out.println("  To:   " + to); //$NON-NLS-1$
         DataMigrator migrator = new DataMigrator();
-        migrator.setLogger(new SystemOutLogger());
         Version version = new Version();
         migrator.setVersion(version);
         migrator.migrate(from, to);
@@ -133,7 +133,7 @@ public class DataMigrator implements IReaderHandler {
         chain = VersionMigrators.chain(fromVersion, toVersion);
         
         if (chain.hasMigrators()) {
-            logger.info(Messages.i18n.format("DataMigrator.MigratingNow", fromVersion)); //$NON-NLS-1$
+            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingNow", fromVersion)); //$NON-NLS-1$
             chain.migrateMetaData(node);
             node.put("apimanVersion", toVersion); //$NON-NLS-1$
         }
@@ -146,7 +146,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onUser(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            logger.info(Messages.i18n.format("DataMigrator.MigratingUser", node.get("username"))); //$NON-NLS-1$ //$NON-NLS-2$
+            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingUser", node.get("username"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migrateUser(node);
         }
         writer.writeUser(node);
@@ -158,7 +158,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onGateway(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            logger.info(Messages.i18n.format("DataMigrator.MigratingGateway", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingGateway", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migrateGateway(node);
         }
         writer.writeGateway(node);
@@ -170,7 +170,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onPlugin(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            logger.info(Messages.i18n.format("DataMigrator.MigratingPlugin", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingPlugin", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migratePlugin(node);
         }
         writer.writePlugin(node);
@@ -182,7 +182,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onRole(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            logger.info(Messages.i18n.format("DataMigrator.MigratingRole", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingRole", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migrateRole(node);
         }
         writer.writeRole(node);
@@ -194,7 +194,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onPolicyDefinition(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            logger.info(Messages.i18n.format("DataMigrator.MigratingPolicyDef", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingPolicyDef", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migratePolicyDefinition(node);
         }
         writer.writePolicyDefinition(node);
@@ -206,7 +206,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onOrg(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            logger.info(Messages.i18n.format("DataMigrator.MigratingOrg", node.get("OrganizationBean").get("name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingOrg", node.get("OrganizationBean").get("name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             chain.migrateOrg(node);
         }
         writer.writeOrg(node);
@@ -218,7 +218,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onDeveloper(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            logger.info(Messages.i18n.format("DataMigrator.MigratingDeveloper", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingDeveloper", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migrateDeveloper(node);
         }
         writer.writeDeveloper(node);
@@ -237,19 +237,4 @@ public class DataMigrator implements IReaderHandler {
     public void setVersion(Version version) {
         this.version = version;
     }
-
-    /**
-     * @return the logger
-     */
-    public IApimanLogger getLogger() {
-        return logger;
-    }
-
-    /**
-     * @param logger the logger to set
-     */
-    public void setLogger(IApimanLogger logger) {
-        this.logger = logger;
-    }
-
 }

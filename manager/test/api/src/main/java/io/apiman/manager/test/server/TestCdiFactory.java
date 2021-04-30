@@ -16,18 +16,22 @@
 package io.apiman.manager.test.server;
 
 import io.apiman.common.config.SystemPropertiesConfiguration;
-import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.EndpointType;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
 import io.apiman.manager.api.beans.summary.AvailableApiBean;
-import io.apiman.manager.api.core.*;
+import io.apiman.manager.api.core.IApiCatalog;
+import io.apiman.manager.api.core.IApiKeyGenerator;
+import io.apiman.manager.api.core.IMetricsAccessor;
+import io.apiman.manager.api.core.INewUserBootstrapper;
+import io.apiman.manager.api.core.IPluginRegistry;
+import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.IStorageQuery;
+import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.es.EsMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.IJpaProperties;
@@ -37,12 +41,15 @@ import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
-import java.util.*;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -59,13 +66,6 @@ public class TestCdiFactory {
     @Produces @ApplicationScoped
     public static ISecurityContext provideSecurityContext(@New DefaultSecurityContext defaultSC) {
         return defaultSC;
-    }
-
-    @Produces @ApimanLogger
-    public static IApimanLogger provideLogger(InjectionPoint injectionPoint) {
-        ApimanLogger logger = injectionPoint.getAnnotated().getAnnotation(ApimanLogger.class);
-        Class<?> klazz = logger.value();
-        return new StandardLoggerImpl().createLogger(klazz);
     }
 
     @Produces @ApplicationScoped

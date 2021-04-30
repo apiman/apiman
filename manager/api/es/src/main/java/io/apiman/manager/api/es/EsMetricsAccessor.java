@@ -15,15 +15,33 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.es.util.AbstractEsComponent;
-import io.apiman.manager.api.beans.metrics.*;
+import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
+import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
+import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
+import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerClientBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
+import io.apiman.manager.api.beans.metrics.UsageDataPoint;
+import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
+import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
+import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.core.IMetricsAccessor;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.metrics.MetricsAccessorHelper;
+
+import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -36,14 +54,6 @@ import org.elasticsearch.search.aggregations.bucket.histogram.ParsedDateHistogra
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.joda.time.DateTime;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * An elasticsearch implementation of the {@link IMetricsAccessor} interface.  This
  * implementation knows how to get metrics/analytics information out of an
@@ -55,9 +65,8 @@ import java.util.Map;
 public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAccessor {
 
     private static final String INDEX_NAME = "apiman_metrics"; //$NON-NLS-1$
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(EsMetricsAccessor.class);
 
-    @Inject @ApimanLogger(EsMetricsAccessor.class)
-    IApimanLogger log;
 
     /**
      * Constructor.
@@ -150,7 +159,7 @@ public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAc
             }
 
         } catch (IOException e) {
-            log.error(e);
+            LOGGER.error(e);
         }
 
         return rval;
@@ -222,7 +231,7 @@ public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAc
             }
 
         } catch (IOException e) {
-            log.error(e);
+            LOGGER.error(e);
         }
 
         return rval;
@@ -295,7 +304,7 @@ public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAc
                 }
             }
         } catch (IOException e) {
-            log.error(e);
+            LOGGER.error(e);
         }
         return rval;
     }
@@ -393,7 +402,7 @@ public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAc
                 }
             }
         } catch (IOException e) {
-            log.error(e);
+            LOGGER.error(e);
         }
         return rval;
     }
@@ -468,7 +477,7 @@ public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAc
             rval.setErrors(((ParsedFilter) aggregations.get("total_errors")).getDocCount());
 
         } catch (IOException e) {
-            log.error(e);
+            LOGGER.error(e);
         }
         return rval;
     }
@@ -555,7 +564,7 @@ public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAc
                 }
             }
         } catch (IOException e) {
-            log.error(e);
+            LOGGER.error(e);
         }
         return rval;
     }
@@ -646,7 +655,7 @@ public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAc
                 }
             }
         } catch (IOException e) {
-            log.error(e);
+            LOGGER.error(e);
         }
         return rval;
     }
@@ -718,7 +727,7 @@ public class EsMetricsAccessor extends AbstractEsComponent implements IMetricsAc
                 }
             }
         } catch (IOException e) {
-            log.error(e);
+            LOGGER.error(e);
         }
         return rval;
     }

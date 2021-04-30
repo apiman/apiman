@@ -16,7 +16,7 @@
 package io.apiman.manager.api.war;
 
 import io.apiman.common.config.ConfigFactory;
-import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.TreeSet;
-
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -45,9 +44,7 @@ import org.apache.commons.io.IOUtils;
 public class WarApiManagerBootstrapperServlet extends HttpServlet {
 
     private static final long serialVersionUID = -362982634664023862L;
-
-    @Inject @ApimanLogger(WarApiManagerBootstrapperServlet.class)
-    private IApimanLogger logger;
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(WarApiManagerBootstrapperServlet.class);
 
     @Inject
     private StorageImportDispatcher importer;
@@ -66,7 +63,7 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
             if (isImportEnabled()){
                 File dataDir = getDataDir();
                 if (dataDir != null && dataDir.isDirectory()) {
-                    logger.info("Checking for bootstrap files in " + dataDir); //$NON-NLS-1$
+                    LOGGER.info("Checking for bootstrap files in " + dataDir); //$NON-NLS-1$
                     Collection<File> files = FileUtils.listFiles(dataDir, new String[] { "json" }, false); //$NON-NLS-1$
                     TreeSet<File> sortedFiles = new TreeSet<>(files);
                     for (File file : sortedFiles) {
@@ -75,7 +72,7 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
                             doImport(file);
                             // Do not create the *.imported file anymore, because it is not docker save
                         } else {
-                            logger.debug("Skipping (already processed) file: " + file); //$NON-NLS-1$
+                            LOGGER.debug("Skipping (already processed) file: " + file); //$NON-NLS-1$
                         }
                     }
                 }
@@ -93,15 +90,14 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
         IImportReader reader;
         try {
             importData = new FileInputStream(file);
-            reader = new JsonImportReader(logger, importData);
+            reader = new JsonImportReader(LOGGER, importData);
         } catch (IOException e) {
             IOUtils.closeQuietly(importData);
-            logger.error(e);
+            LOGGER.error(e);
             return;
         }
 
         try {
-            importer.setLogger(logger);
             importer.start(file.getAbsolutePath());
             reader.setDispatcher(importer);
             reader.read();
