@@ -1,12 +1,44 @@
-package io.apiman.common.logging;
+/*
+ * Copyright 2021 Scheer PAS Schweiz AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.apiman.common.logging.impl;
+
+import io.apiman.common.logging.IApimanLogger;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Combine any number of loggers together. Order of logging is defined by the list provided.
+ *
+ * If you only need 2 loggers, {@link DoubleLogger} will likely perform better.
+ *
+ * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
+ */
 public class MultiLogger implements IApimanLogger {
 
     private final List<IApimanLogger> delegates;
 
+    /**
+     * Constructor
+     * <p>
+     * Combine any number of loggers together. Order of logger invocation is defined by the list provided.
+     *
+     * @param delegates the logger delegates for this multi-logger to invoke in order
+     */
     public MultiLogger(List<IApimanLogger> delegates) {
         this.delegates = delegates;
     }

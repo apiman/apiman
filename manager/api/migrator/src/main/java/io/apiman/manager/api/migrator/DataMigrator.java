@@ -17,7 +17,7 @@
 package io.apiman.manager.api.migrator;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
-import io.apiman.common.logging.DoubleLogger;
+import io.apiman.common.logging.impl.DoubleLogger;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.migrator.i18n.Messages;

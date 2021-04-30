@@ -17,9 +17,9 @@
 package io.apiman.manager.api.exportimport.manager;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
-import io.apiman.common.logging.DoubleLogger;
+import io.apiman.common.logging.impl.DoubleLogger;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.logging.MultiLogger;
+import io.apiman.common.logging.impl.MultiLogger;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;

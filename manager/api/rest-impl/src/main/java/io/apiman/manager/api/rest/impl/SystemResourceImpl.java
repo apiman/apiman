@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UncheckedIOException;
 import java.text.MessageFormat;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -256,7 +257,7 @@ public class SystemResourceImpl implements ISystemResource {
                     reader = new JsonImportReader(logger, importData);
                 } catch (IOException e) {
                     IOUtils.closeQuietly(importData);
-                    throw new SystemErrorException(e);
+                    throw new UncheckedIOException(e);
                 }
 
                 try {
