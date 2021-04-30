@@ -260,7 +260,7 @@ public class SystemResourceImpl implements ISystemResource {
                 }
 
                 try {
-                    importer.start(migratedImportFile.getAbsolutePath());
+                    importer.start(migratedImportFile.getAbsolutePath(), logger);
                     reader.setDispatcher(importer);
                     reader.read();
                 } catch (Exception e) {
