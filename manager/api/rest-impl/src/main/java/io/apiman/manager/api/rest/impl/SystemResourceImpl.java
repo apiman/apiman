@@ -246,7 +246,7 @@ public class SystemResourceImpl implements ISystemResource {
                 migratedImportFile.deleteOnExit();
 
                 // Migrate the data (if necessary)
-                migrator.migrate(importFile, migratedImportFile);
+                migrator.migrate(importFile, migratedImportFile, logger);
 
                 // Now import the migrated data
                 InputStream importData = null;

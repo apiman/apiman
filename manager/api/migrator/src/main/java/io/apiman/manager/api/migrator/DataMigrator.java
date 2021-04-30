@@ -16,20 +16,20 @@
 
 package io.apiman.manager.api.migrator;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.DoubleLogger;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.logging.impl.SystemOutLogger;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.migrator.i18n.Messages;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Used to migrate exported data from an older version of apiman to the 
@@ -40,7 +40,7 @@ import java.io.OutputStream;
 @Dependent
 public class DataMigrator implements IReaderHandler {
 
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DataMigrator.class);
+    private IApimanLogger logger = ApimanLoggerFactory.getLogger(DataMigrator.class);
 
     @Inject
     private Version version;
@@ -53,13 +53,18 @@ public class DataMigrator implements IReaderHandler {
      */
     public DataMigrator() {
     }
+
+    public void migrate(File fromSource, File toDest, IApimanLogger extraLogger) {
+        this.logger = new DoubleLogger(logger, extraLogger);
+        migrate(fromSource, toDest);
+    }
     
     /**
      * Migrate the data export file (fromSource) from whatever version it
      * is to the latest apiman version format and write the result to a
      * file (toDest).
-     * @param fromSource
-     * @param toDest
+     * @param fromSource migration source
+     * @param toDest migration destination
      */
     public void migrate(File fromSource, File toDest) {
         IReaderHandler readerHandler = this;
@@ -72,6 +77,11 @@ public class DataMigrator implements IReaderHandler {
         }
     }
 
+    public void migrate(InputStream fromSource, OutputStream toDest, IApimanLogger extraLogger) {
+        this.logger = new DoubleLogger(logger, extraLogger);
+        migrate(fromSource, toDest);
+    }
+
     /**
      * Migrate the data export file (fromSource) from whatever version it
      * is to the latest apiman version format and write the result to a
@@ -79,8 +89,8 @@ public class DataMigrator implements IReaderHandler {
      * 
      * Note: this method will automatically close the streams - the caller
      * does not need to do this.
-     * @param fromSource
-     * @param toDest
+     * @param fromSource migration source
+     * @param toDest migration destination
      */
     public void migrate(InputStream fromSource, OutputStream toDest) {
         IReaderHandler readerHandler = this;
@@ -96,7 +106,7 @@ public class DataMigrator implements IReaderHandler {
     /**
      * Main method - used when running the data migrator in standalone
      * mode.
-     * @param args
+     * @param args program args, pathToSourceFile and pathToDestFile
      */
     public static void main(String[] args) {
         File from;
@@ -133,7 +143,7 @@ public class DataMigrator implements IReaderHandler {
         chain = VersionMigrators.chain(fromVersion, toVersion);
         
         if (chain.hasMigrators()) {
-            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingNow", fromVersion)); //$NON-NLS-1$
+            logger.info(Messages.i18n.format("DataMigrator.MigratingNow", fromVersion)); //$NON-NLS-1$
             chain.migrateMetaData(node);
             node.put("apimanVersion", toVersion); //$NON-NLS-1$
         }
@@ -146,7 +156,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onUser(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingUser", node.get("username"))); //$NON-NLS-1$ //$NON-NLS-2$
+            logger.info(Messages.i18n.format("DataMigrator.MigratingUser", node.get("username"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migrateUser(node);
         }
         writer.writeUser(node);
@@ -158,7 +168,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onGateway(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingGateway", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            logger.info(Messages.i18n.format("DataMigrator.MigratingGateway", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migrateGateway(node);
         }
         writer.writeGateway(node);
@@ -170,7 +180,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onPlugin(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingPlugin", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            logger.info(Messages.i18n.format("DataMigrator.MigratingPlugin", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migratePlugin(node);
         }
         writer.writePlugin(node);
@@ -182,7 +192,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onRole(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingRole", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            logger.info(Messages.i18n.format("DataMigrator.MigratingRole", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migrateRole(node);
         }
         writer.writeRole(node);
@@ -194,7 +204,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onPolicyDefinition(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingPolicyDef", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            logger.info(Messages.i18n.format("DataMigrator.MigratingPolicyDef", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migratePolicyDefinition(node);
         }
         writer.writePolicyDefinition(node);
@@ -206,7 +216,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onOrg(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingOrg", node.get("OrganizationBean").get("name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            logger.info(Messages.i18n.format("DataMigrator.MigratingOrg", node.get("OrganizationBean").get("name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             chain.migrateOrg(node);
         }
         writer.writeOrg(node);
@@ -218,7 +228,7 @@ public class DataMigrator implements IReaderHandler {
     @Override
     public void onDeveloper(ObjectNode node) throws IOException {
         if (chain.hasMigrators()) {
-            LOGGER.info(Messages.i18n.format("DataMigrator.MigratingDeveloper", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+            logger.info(Messages.i18n.format("DataMigrator.MigratingDeveloper", node.get("name"))); //$NON-NLS-1$ //$NON-NLS-2$
             chain.migrateDeveloper(node);
         }
         writer.writeDeveloper(node);
