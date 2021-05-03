@@ -72,7 +72,7 @@
           <dependency>
             <groupId>org.liquibase.ext</groupId>
             <artifactId>liquibase-hibernate4</artifactId>
-            <version>3.5</version>
+            <version>3.6</version>
           </dependency>
           <!-- Note: the dependency versions below are specific to the liquibase-hibernate4 version being used 
             above. -->
