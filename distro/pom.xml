@@ -27,6 +27,7 @@
       <modules>
         <module>wildfly</module>
         <module>vertx</module>
+        <module>tomcat</module>
       </modules>
     </profile>
   </profiles>

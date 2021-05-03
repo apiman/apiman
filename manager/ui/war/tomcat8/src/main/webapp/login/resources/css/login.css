@@ -1,3 +1,8 @@
+/*Disable patternfly default background*/
+.login-pf {
+    background: none;
+}
+
 .login-pf .container {
     padding-top: 40px;
     background-color: rgb(36, 52, 70);
