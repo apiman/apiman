@@ -23,8 +23,9 @@ var ngAnimate = require('angular-animate');
 global.Logger = require('js-logger');
 global._ = require('lodash');
 var ngRoute = require('angular-route');
-var URI = require('urijs');
+global.URI = require('urijs');
 var ngSchemaForm = require('angular-schema-form');
+var angularScrollableTable = require('angular-scrollable-table/angular-scrollable-table.js');
 global.SwaggerUIBundle = require('swagger-ui-dist/swagger-ui-bundle.js');
 global.SwaggerClient = require('swagger-client');
 

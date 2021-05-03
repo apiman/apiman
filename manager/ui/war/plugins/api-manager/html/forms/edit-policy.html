@@ -11,7 +11,7 @@
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.EditPolicyController"
          id="form-page"
-         class="container apiman-edit-policy apiman-entity-new page"
+         class="container-pf-nav-pf-vertical container-fluid apiman-edit-policy apiman-entity-new page"
          data-field="page"
          ng-cloak=""
          ng-show="pageState == 'loaded'">
@@ -37,7 +37,7 @@
       <div class="row"
            ng-show="include">
         <h3 data-field="policyHeading">{{ policy.definition.name }} Configuration</h3>
-        <div class="apiman-box col-md-9 container">
+        <div class="apiman-box col-md-9 container-pf-nav-pf-vertical container-fluid">
           <div ng-include="include"></div>
         </div>
       </div>
@@ -47,7 +47,7 @@
         <hr/>
       </div>
       <!-- Update Button -->
-      <div class="row">
+      <div class="row policy-buttons">
         <button id="update-policy"
                 ng-show="hasPermission && !isEntityDisabled()"
                 apiman-action-btn=""
@@ -65,6 +65,6 @@
            data-field="cancelButton"
            apiman-i18n-key="cancel">Cancel</a>
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </body>
 </html>

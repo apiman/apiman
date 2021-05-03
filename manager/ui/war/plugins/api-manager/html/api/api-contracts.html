@@ -10,7 +10,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.ApiContractsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ApiContractsController" class="page container-pf-nav-pf-vertical container-fluid" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/api/api_entity.include'"></div>
@@ -25,29 +25,30 @@
         <div class="col-md-10 apiman-entity-content">
           <div class="col-md-9">
             <div class="title" apiman-i18n-key="api-contracts">API Contracts</div>
-            <div class="description" apiman-i18n-key="api-contracts-help">Here is a list of all contracts between all Client Apps and this API.  This provides a list of all Client Apps that may potentially consume this API.</div>
+            <div class="description" apiman-i18n-key="api-contracts-help">Here is a list of all contracts between all Client Apps and this API. This provides a list of all Client Apps that may potentially consume this API.</div>
           </div>
           <div class="col-md-12" ng-show="isPublicOnly">
-            <div aria-hidden="false" style="background-color: rgb(255, 213, 185);" apiman-i18n-key="warning-public-only" data-field="onlyPublicWarning" class="alert alert-warning no-icon">Warning: this API is exclusively public, which means that it is impossible for Client Apps to create API Contracts with it.</div>
+            <div aria-hidden="false" style="background-color: rgb(255, 213, 185);" apiman-i18n-key="warning-public-only" data-field="onlyPublicWarning" class="alert alert-warning no-icon">Warning: this API is exclusively public, which means that it is impossible for Client Apps to create API contracts with it.</div>
           </div>
           <div class="col-md-12">
             <div class="table-responsive">
-              <table class="table table-striped table-bordered table-hover" data-field="contracts">
-                <thead>
+              <scrollable-table style="height: 150px">
+                <table class="table table-striped table-bordered table-hover" data-field="contracts">
+                  <thead>
                   <tr>
-                    <th width="70%" apiman-i18n-key="client-client" nowrap="nowrap">Client App</th>
+                    <th style="width: 70%" apiman-i18n-key="client-client" nowrap="nowrap">Client</th>
                     <th apiman-i18n-key="plan" nowrap="nowrap">Plan</th>
                     <th apiman-i18n-key="created-on_capitalized" nowrap="nowrap">Created On</th>
                   </tr>
-                </thead>
-                <tbody>
+                  </thead>
+                  <tbody>
 
                   <tr ng-hide="contracts.length > 0">
-                    <td colspan="4">
+                    <td colspan="3">
                       <div class="apiman-no-content container-fluid">
                         <div class="row">
                           <div class="col-md-12">
-                            <p class="apiman-no-entities-description" apiman-i18n-key="no-api-contracts">This API doesn't appear to have any contracts. This means that there aren't any client apps consuming this API.  Note: if this is a public API, then no contracts are necessary to invoke the API!</p>
+                            <p class="apiman-no-entities-description" apiman-i18n-key="no-api-contracts">This API doesn't appear to have any contracts. This means that there aren't any Client Apps consuming this API.  Note: if this is a public API, then no contracts are necessary to invoke the API!</p>
                           </div>
                         </div>
                       </div>
@@ -67,8 +68,10 @@
                     <td><span>{{ contract.planName }}</span></td>
                     <td><span>{{ contract.createdOn | date:'yyyy-MM-dd' }}</span></td>
                   </tr>
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </scrollable-table>
+
             </div>
             <div style="text-align: center" ng-hide="contracts.length == 0">
               <button ng-show="hasMore" ng-click="getNextPage()" class="btn btn-default" data-field="moreButton" apiman-i18n-key="show-more-contracts" placeholder="Loading..." data-icon="fa-cog">Show More Contracts</button>
@@ -77,7 +80,7 @@
         </div>
         <!-- /Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

@@ -9,7 +9,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.ClientApisController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ClientApisController" class="container-pf-nav-pf-vertical container-fluid page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/client/client_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/client/client_entity.include'"></div>
@@ -25,7 +25,10 @@
           <div class="col-md-11">
             <!-- Title and help text -->
             <div class="title" apiman-i18n-key="client-client-apis">Client App APIs</div>
-            <div class="description" apiman-i18n-key="apis-help">Below is a list of all the APIs this Client App consumes.  This information is derived from the set of API Contracts the Client App has entered into.  Manage these Contracts by switching to the "Contracts" tab.</div>
+            <div class="description" apiman-i18n-key="apis-help">Below is a list of all APIs this Client App consumes. This
+              information is derived from the set of API contracts the Client App has entered into. Manage these contracts
+              by switching to the Contracts tab.
+            </div>
             <hr />
             <!-- The list of apis (filterable) -->
             <div>
@@ -37,16 +40,18 @@
               <div class="clearfix"></div>
               <!-- The list of apis -->
               <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover table-with-details" data-field="apis">
-                  <thead>
+                <scrollable-table style="height: 150px">
+                  <table class="table table-striped table-bordered table-hover table-with-details client-apps-api-table" data-field="apis">
+                    <thead>
                     <tr>
-                      <th apiman-i18n-key="api" nowrap="nowrap">API</th>
-                      <th apiman-i18n-key="version" width="1%" nowrap="nowrap">Version</th>
-                      <th apiman-i18n-key="plan" nowrap="nowrap">Plan</th>
-                      <th nowrap="nowrap" width="1%"></th>
+                      <th style="width: 30%" apiman-i18n-key="api">API</th>
+                      <th style="width: 20%" apiman-i18n-key="version">Version</th>
+                      <th style="width: 30%" apiman-i18n-key="plan">Plan</th>
+                      <th style="width: 10%; text-align: center" apiman-i18n-key="endpoint">Endpoint</th>
+                      <th style="width: 10%; text-align: center" apiman-i18n-key="test">Test</th>
                     </tr>
-                  </thead>
-                  <tbody>
+                    </thead>
+                    <tbody>
                     <tr ng-repeat-start="api in apiRegistry.apis">
                       <td>
                         <span><a href="{{ pluginName }}/browse/orgs/{{ api.apiOrgId }}">{{ api.apiOrgName }}</a>
@@ -55,10 +60,13 @@
                       </td>
                       <td><span>{{ api.apiVersion }}</span></td>
                       <td>{{ api.planName }}</td>
-                      <td><a title="How do I invoke this API?" apiman-i18n-key="client-apis.howtoinvoke" ng-click="howToInvoke(apiRegistry.apiKey, api)" href="javascript:;"><span class="pficon pficon-info"></span></a></td>
+                      <td style="text-align: center"><a title="How do I invoke this API?" apiman-i18n-key="client-apis.howtoinvoke" ng-click="howToInvoke(apiRegistry.apiKey, api)" href="javascript:;"><span class="pficon pficon-info"></span></a></td>
+                      <td>
+                        <a href="{{ pluginName }}/browse/orgs/{{ api.apiOrgId }}/{{ api.apiId }}/{{ api.apiVersion }}/def" ng-click="showSwaggerUI(apiRegistry.apiKey)">Try-It-Out</a>
+                      </td>
                     </tr>
                     <tr ng-repeat-end ng-show="api.expanded">
-                      <td colspan="4">
+                      <td colspan="5">
                         <form role="form">
                           <div class="form-group">
                             <div>
@@ -78,7 +86,7 @@
                                 <div class="modal-body">
                                   <p class="explanation"
                                      apiman-i18n-key="api-dialog-explanation">
-                                    To successfully invoke the managed API for this API contract, you must provide the appropriate API Key with each request. The API Key can be provided either by sending it as an HTTP Request Header named X-API-Key, or you can send it as a URL query parameter.
+                                    You have to provide the appropriate API Key with each request to invoke the managed API for this API contract successfully. The API Key can be provided by sending it as an HTTP Request Header named X-API-Key. You can also send it as a URL query parameter.
                                   </p>
                                   <hr style="margin-left: -25px; margin-right: -25px">
                                   <div class="apiman-form-label"
@@ -115,7 +123,7 @@
                                            class="apiman-form-control form-control readonly apiman-readonly"
                                            style="background-color: white; color: black;"
                                            value="{{ asRequestHeader }}">
-                                      <span class="input-group-btn">
+                                    <span class="input-group-btn">
                                         <button clipboard
                                                 class="btn btn-default clipboard"
                                                 type="button"
@@ -143,15 +151,17 @@
                         </form>
                       </td>
                     </tr>
-                  </tbody>
-                </table>
+                    </tbody>
+                  </table>
+                </scrollable-table>
+
               </div>
             </div>
             <!-- /Contract List -->
         </div>
         <!-- /Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </div>
   </body>

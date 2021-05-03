@@ -45,7 +45,7 @@ module Apiman {
 
             function loadFirstPage() {
                 if ($scope.apis.length == 0) {
-                    $scope.searchSvcs('*', 1, 10);
+                    $scope.searchSvcs('*', 1, 12);
                 }
             }
 

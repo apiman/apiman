@@ -9,7 +9,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.PlanActivityController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.PlanActivityController" class="container-pf-nav-pf-vertical container-fluid page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/plan/plan_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/plan/plan_entity.include'"></div>
@@ -24,13 +24,15 @@
         <div class="col-md-10 apiman-entity-content apiman-entity-overview" >
           <!-- Title and help text -->
           <div class="title" apiman-i18n-key="plan-activity">Plan Activity</div>
-          <div class="description" apiman-i18n-key="plan-activity-help">The list below is all of the configuration changes (made by apiman users) associated with this Plan.</div>
+          <div class="description" apiman-i18n-key="plan-activity-help">The list below shows all configuration changes
+            made by apiman users associated with this plan.
+          </div>
           <hr />
           <apiman-activity model="auditEntries" next="getNextPage"/>
         </div>
         <!-- /Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

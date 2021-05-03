@@ -160,6 +160,41 @@ module Apiman {
                   }
                 };
 
+                $scope.userReloadAPICatalog = function(){
+                    $rootScope.pageState = 'loading';
+                    $scope.apis = null;
+
+                    let resyncBody:any = {};
+                    resyncBody.filters = [];
+
+                    // Fix string that will evaluated by the e2e-catalog-plugin
+                    resyncBody.filters.push({"name": "name", "value": "__resyncAPICatalogByUser__", "operator": "like"});
+                    resyncBody.filters.push({"name": "namespace", "value": "__resyncAPICatalogByUser__", "operator": "eq"});
+
+                    let resyncSearchString = angular.toJson(resyncBody);
+
+                    let target = $q(function (resolve, reject) {
+                        $scope.hasInternalApis = false;
+                        ApiCatalogSvcs.search(resyncSearchString, function (reply) {
+                            angular.forEach(reply.beans, function (entry) {
+                                if (entry.internal) {
+                                    $scope.hasInternalApis = true;
+                                }
+                            });
+                            resolve(reply.beans);
+                        }, reject);
+                    });
+
+                    target.then(data => {
+                        $scope.apis = data;
+                        angular.forEach($scope.apis, function (api) {
+                            apiAdjustments(api)
+                        });
+                        $scope.tags = _.uniq(_.flatten(_.map($scope.apis, 'tags')));
+                        $rootScope.pageState = 'loaded';
+                    })
+                };
+
 
                 PageLifecycle.loadPage('ApiCatalog', undefined, pageData, $scope, function () {
                     angular.forEach($scope.apis, function (api) {
@@ -196,7 +231,7 @@ module Apiman {
                         'description': $scope.api.description,
                         'initialVersion': $scope.api.initialVersion,
                         'endpoint': $scope.api.endpoint,
-                        'endpointType': $scope.api.endpointType,
+                        'endpointType': ($scope.api.endpointType === 'ui') ? 'rest' : $scope.api.endpointType,
                         'definitionUrl': $scope.api.definitionUrl,
                         'definitionType': $scope.api.definitionType
 
@@ -244,77 +279,11 @@ module Apiman {
                     })
                 };
 
-                const DisableTryItOutPlugin = function() {
-                  return {
-                      statePlugins: {
-                          spec: {
-                              wrapSelectors: {
-                                  allowTryItOutFor: () => () => false
-                              }
-                          }
-                      }
-                  }
-                };
-
-                // SwaggerUI Plugins
-                const DisableAuthorizePlugin = function() {
-                  return {
-                      wrapComponents: {
-                          authorizeBtn: () => () => null
-                      }
-                  }
-                };
-
                 PageLifecycle.loadPage('ApiCatalogDef', undefined, pageData, $scope, function () {
 
                     $scope.hasError = false;
 
                     PageLifecycle.setPageTitle('api-catalog-def', [$scope.params.name]);
-
-                    var definitionUrl = $scope.api.definitionUrl;
-                    if ($scope.api.routeDefinitionUrl != null) definitionUrl = $scope.api.routeDefinitionUrl;
-                    var definitionType = $scope.api.definitionType;
-
-                    if ((definitionType == 'SwaggerJSON' || definitionType == 'SwaggerYAML') && SwaggerUIBundle) {
-
-                        $scope.definitionStatus = 'loading';
-                        let ui;
-                        let swaggerOptions = <any>{
-                            url: definitionUrl,
-                            dom_id: "#swagger-ui-container",
-                            validatorUrl: "https://online.swagger.io/validator",
-                            presets: [
-                                SwaggerUIBundle.presets.apis
-                            ],
-                            layout: "BaseLayout",
-                            sorter : "alpha",
-
-                            onComplete: function() {
-                                $scope.$apply(function() {
-                                    $scope.definitionStatus = 'complete';
-                                });
-                            },
-                            // do error handling in the responseInterceptor
-                            responseInterceptor: function (response) {
-                                if (response.status == 500 && response.ok === false) {
-                                    $scope.$apply(function() {
-                                        $scope.definitionStatus = 'error';
-                                        $scope.hasError = true;
-                                    });
-                                }
-                                return response;
-                            }
-                        };
-
-                        swaggerOptions.plugins = [];
-                        swaggerOptions.plugins.push(DisableTryItOutPlugin, DisableAuthorizePlugin);
-
-                        ui = SwaggerUIBundle(swaggerOptions);
-                        $scope.hasDefinition = true;
-                    } else {
-                        $scope.hasDefinition = false;
-                    }
-
                 });
             }
         ]);

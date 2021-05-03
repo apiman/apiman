@@ -17,7 +17,7 @@ module Apiman {
                 fullName: undefined,
                 email: undefined
             };
-            
+
             $scope.$watch('updatedUser', function(newValue) {
                 var dirty = false;
                 var valid = true;
@@ -41,7 +41,7 @@ module Apiman {
                     && newValue.email != $scope.user.email) {
                     dirty = true;
                 }
-                
+
                 $rootScope.isDirty = dirty;
                 $scope.isValid = valid;
             }, true);

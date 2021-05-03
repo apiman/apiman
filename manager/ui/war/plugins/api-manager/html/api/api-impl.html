@@ -11,7 +11,7 @@
 
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ApiImplController"
-         class="page container"
+         class="page container-pf-nav-pf-vertical container-fluid"
          data-field="page"
          ng-cloak=""
          ng-show="pageState == 'loaded'">
@@ -33,10 +33,8 @@
                  apiman-i18n-key="api-impl">API Implementation</div>
             <div class="apiman-label-faded">
               <p apiman-i18n-key="api-impl-explanation">
-                Please provide us with details about the back-end API implementation
-                so that the API Gateway can successfully proxy API requests.  Please
-                include any security you wish to enable between the API Gateway and the
-                back-end API.
+                Provide details about the backend API implementation so that the API gateway can successfully proxy API
+                requests. Please include any security you wish to enable between the API gateway and the backend API.
               </p>
             </div>
             <div class="bottom-spacer">
@@ -51,7 +49,6 @@
             <div style="color: #ff0000" ng-show="invalidEndpoint === true">
               <p apiman-i18n-key="invalid-endpiont-msg">Please enter a valid endpoint that begins with http:// or https://.</p>
             </div>
-            <div style="margin-top: 10px">
               <span class="clearfix"
                     apiman-i18n-key="api-type-label">API Type:</span>
               <ui-select ng-model="updatedApi.endpointType"
@@ -65,7 +62,6 @@
                   <span ng-bind="type.toUpperCase()"></span>
                 </ui-select-choices>
               </ui-select>
-            </div>
             <div style="margin-top: 10px">
               <span class="clearfix"
                     apiman-i18n-key="api-content-type-label">API Content Type:</span>
@@ -91,7 +87,9 @@
               <label for="parse-payload"
                      apiman-i18n-key="parse-payload-msg"
                      style="padding-left: 3px">Enable stateful request payload inspection</label>
-              <a apiman-i18n-key="parse-payload-tooltip" type="button" href="javascript:void(0)" class="" data-toggle="popover" title="Stateful Payload Inspection" data-close="true" data-content="If this feature is enabled, the Gateway will parse the request body into an object prior to applying the policies.  This allows policies to make decisions based on the content of the request payload, but slows down the Gateway a bit.">
+              <a apiman-i18n-key="parse-payload-tooltip" type="button" href="javascript:void(0)" class=""
+                 data-toggle="popover" title="Stateful Payload Inspection" data-close="true"
+                 data-content="If this feature is enabled, the gateway will parse the request body into an object prior to applying the policies. This allows policies to make decisions based on the content of the request payload, but slightly slows down the gateway.">
                 <span class="pficon pficon-info"></span>
               </a>
             </div>
@@ -137,7 +135,7 @@
                  ng-show="apiSecurity.type == 'mtls'">
               <div class="alert alert-info">
                  <span class="pficon pficon-info"></span>
-                 <span apiman-i18n-key="api-impl.mtsl-info">When using MTLS/Two-Way-SSL you must configure the relevant settings globally in the apiman.properties file.  Please refer to the apiman Installation Guide for details.</span>
+                 <span apiman-i18n-key="api-impl.mtsl-info">When using MTLS/Two-Way-SSL you must configure the relevant settings globally in the apiman.properties file.  Please refer to the Installation Guide for details.</span>
               </div>
             </div>
 
@@ -205,7 +203,7 @@
                              ng-disabled="isEntityDisabled()">
                       <label for="require-ssl"
                              apiman-i18n-key="endpoint-security.require-ssl"
-                             style="padding-left: 3px">Require transport security (SSL)</label>
+                             style="padding-left: 3px">Require Transport Security (SSL)</label>
                     </td>
                   </tr>
                 </table>
@@ -219,7 +217,7 @@
                    apiman-i18n-key="gateway">Gateway</div>
               <div class="apiman-label-faded">
                 <p apiman-i18n-key="api-impl-gateway-explanation">
-                  There are multiple API Gateways configured - you'll need to tell us which one you
+                  There are multiple API gateways configured - you'll need to tell us which one you
                   want to use for this API.
                 </p>
               </div>
@@ -243,9 +241,9 @@
                    apiman-i18n-key="gateway">Gateway</div>
               <div class="alert alert-warning"
                    apiman-i18n-key="api-impl-no-gateways-explanation">
-                  There are no API Gateways configured in apiman.  For this reason you will not
+                  There are no API gateways configured. For this reason you will not
                   be able to complete the configuration of your API.  Please contact your
-                  apiman administrator - at least one API Gateway must be configured!
+                  administrator - at least one API gateway must be configured!
               </div>
             </div>
 
@@ -256,8 +254,8 @@
                    apiman-i18n-key="gateway">Gateway</div>
               <div class="alert alert-success"
                    apiman-i18n-key="api-impl-new-gateway-explanation">
-                  An API Gateway has been added since this API was created.  The new
-                  Gateway has been selected for you - all you need to do is click Save below
+                  An API gateway has been added since this API was created.  The new
+                  gateway has been selected for you - all you need to do is click Save below
                   to make it stick.
               </div>
             </div>
@@ -285,7 +283,7 @@
         </div>
         <!-- /Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

@@ -1,46 +1,188 @@
-      <div id="apiman-progress-indicator" ng-class="pageState"></div>
-      <div id="apiman-header">
-        <div class="main-header" ng-controller="Apiman.NavbarController">
-          <div class="row">
-            <div class="col-md-12">
-              <a href="{{ pluginName }}/">
-                <div class="logo"></div>
-              </a>
-              <ul class="user-menu pull-right">
-                <li class="dropdown">
-                  <a id="navbar-dropdown" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="pficon pficon-user"></span>
-                    <span>{{ username }}</span>
-                    <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <a id="navbar-home" href="{{ pluginName }}/" apiman-i18n-key="home">Home</a>
-                    </li>
-                    <li>
-                      <a id="navbar-my-stuff" href="{{ pluginName }}/users/{{ username }}/orgs" apiman-i18n-key="my-stuff">My Stuff</a>
-                    </li>
-                    <li>
-                      <a id="navbar-profile" href="{{ pluginName }}/profile" apiman-i18n-key="profile">Profile</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                      <a id="navbar-about" href="{{ pluginName }}/about" apiman-i18n-key="about-apiman">About apiman</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                      <a id="navbar-rest" href="{{ pluginName }}/def" target="_self" apiman-i18n-key="rest-api-docs">REST API</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                      <a id="navbar-logout" href="{{ logoutUrl }}" target="_self" apiman-i18n-key="logout">Logout</a>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </div>
+<div ng-controller="Apiman.NavbarController">
+    <nav class="navbar navbar-pf-vertical" id="apiman-progress-indicator" ng-class="pageState">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" ng-init="toggleNavBar()" ng-click="userToggle()">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="{{ pluginName }}" class="navbar-brand">
+                <div id="logo"></div>
+            </a>
         </div>
-      </div>
-      <div ng-include="'plugins/api-manager/html/sidebar/sidebar.include'"></div>
+        <nav class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right navbar-iconic navbar-utility">
+                <li class="dropdown">
+                    <a href="#0" class="dropdown-toggle nav-item-iconic" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span title="Username" class="fa fa-user"></span>&nbsp;{{ username }}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li>
+                            <a id="navbar-profile" href="{{ pluginName }}/profile" apiman-i18n-key="profile">Profile</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a id="navbar-about" href="{{ pluginName }}/about" apiman-i18n-key="about-apiman">About apiman</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a id="navbar-rest" href="{{ pluginName }}/def" target="_self" apiman-i18n-key="logout">REST API</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a id="navbar-logout" href="{{ logoutUrl }}" target="_self" apiman-i18n-key="rest-api">Logout</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </nav>
+    <!--/.navbar-->
+    <div class="nav-pf-vertical nav-pf-vertical-with-sub-menus">
+        <ul class="list-group">
+
+            <!--APIs-->
+            <li class="list-group-item secondary-nav-item-pf" data-target="#apis-secondary" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
+                <a>
+                    <span class="fa fa-puzzle-piece" data-toggle="tooltip" title="APIs"></span>
+                    <span class="list-group-item-value" apiman-i18n-key="apis">APIs</span>
+                </a>
+                <div class="nav-pf-secondary-nav">
+                    <div class="nav-item-pf-header">
+                        <a class="secondary-collapse-toggle-pf" data-toggle="collapse-secondary-nav"></a>
+                        <span apiman-i18n-key="apis">APIs</span>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item" data-target="#apis-my_apis-tertiary">
+                            <a href="{{ pluginName }}/users/{{ username }}/apis">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.my-apis">My APIs</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#apis-all_apis-tertiary">
+                            <a href="{{ pluginName }}/browse/apis">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.find-api">All APIs</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#apis-catalog-tertiary">
+                            <a href="{{ pluginName }}/catalog/api-catalog">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.browse-importable-apis">API Catalog</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#apis-new_api-tertiary">
+                            <a href="{{ pluginName }}/new-api">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.create-api">New API</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!--Clients-->
+            <li class="list-group-item secondary-nav-item-pf" data-target="#clients-secondary" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
+                <a>
+                    <span class="fa fa-gears" data-toggle="tooltip" title="Clients"></span>
+                    <span class="list-group-item-value" apiman-i18n-key="client-apps">Clients</span>
+                </a>
+                <div class="nav-pf-secondary-nav">
+                    <div class="nav-item-pf-header">
+                        <a class="secondary-collapse-toggle-pf" data-toggle="collapse-secondary-nav"></a>
+                        <span apiman-i18n-key="client-apps">Clients</span>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item" data-target="#clients-my_clients-tertiary">
+                            <a href="{{ pluginName }}/users/{{ username }}/clients">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.my-clients">My Clients</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#apis-new_contract-tertiary">
+                            <a href="{{ pluginName }}/new-contract">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.new-contract">New Contract</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#apis-new_client-tertiary">
+                            <a href="{{ pluginName }}/new-client">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.new-client">New Client</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!--Organizations-->
+            <li class="list-group-item secondary-nav-item-pf" data-target="#orgs-secondary" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
+                <a>
+                    <span class="fa fa-shield" data-toggle="tooltip" title="Organizations"></span>
+                    <span class="list-group-item-value" apiman-i18n-key="organizations">Organizations</span>
+                </a>
+                <div class="nav-pf-secondary-nav">
+                    <div class="nav-item-pf-header">
+                        <a class="secondary-collapse-toggle-pf" data-toggle="collapse-secondary-nav"></a>
+                        <span apiman-i18n-key="organizations">Organizations</span>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item" data-target="#clients-my_clients-tertiary">
+                            <a href="{{ pluginName }}/users/{{ username }}/orgs">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.my-orgs">My Organizations</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#apis-new_contract-tertiary">
+                            <a href="{{ pluginName }}/browse/orgs">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.browse-orgs">All Organizations</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#apis-new_client-tertiary">
+                            <a href="{{ pluginName }}/new-org" ng-hide="noCreateOrg || !isAdmin">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.create-new-org">New Organization</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!--Administration-->
+            <li class="list-group-item secondary-nav-item-pf" data-target="#admin-secondary" ng-show="isAdmin" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
+                <a>
+                    <span class="fa fa-gavel" data-toggle="tooltip" title="Administration"></span>
+                    <span class="list-group-item-value" apiman-i18n-key="system-administration">Administration</span>
+                </a>
+
+                <div id="browse-secondary" class="nav-pf-secondary-nav">
+                    <div class="nav-item-pf-header">
+                        <a class="secondary-collapse-toggle-pf" data-toggle="collapse-secondary-nav"></a>
+                        <span apiman-i18n-key="system-administration">Administration</span>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item" data-target="#admin-manage_roles-tertiary">
+                            <a href="{{ pluginName }}/admin/roles">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.manage-roles">Manage Roles</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#admin-manage_policies-tertiary">
+                            <a href="{{ pluginName }}/admin/policyDefs">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.manage-policyDefs">Manage Policiy Definitions</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#admin-manage_gateway-tertiary">
+                            <a href="{{ pluginName }}/admin/gateways">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.manage-gateways">Manage Gateways</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#admin-manage_plugins-tertiary">
+                            <a href="{{ pluginName }}/admin/plugins">
+                                <span class="list-group-item-value" apiman-i18n-key="actions.manage-plugins">Manage Plugins</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item" data-target="#admin-manage_export-tertiary">
+                            <a href="{{ pluginName }}/admin/export">
+                                <span class="list-group-item-value" apiman-i18n-key="export-import-data">Export&sol;Import Data</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
       

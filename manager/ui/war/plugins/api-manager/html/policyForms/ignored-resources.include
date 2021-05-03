@@ -10,13 +10,13 @@
           <label for="path" apiman-i18n-key="ignored-uri">Ignored URI</label>
         </div>
         <div class="col-md-2">
-          <label apiman-i18n-key="http-method">HTTP method</label>
+          <label apiman-i18n-key="http-method">HTTP Method</label>
         </div>
         <div class="col-md-2"></div>
       </div>
       <div class="row">
         <div class="col-md-8">
-          <input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" type="text" apiman-i18n-key="ignored-resources.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
+          <input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" type="text" apiman-i18n-key="ignored-resources.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()">
         </div>
         <div class="col-md-2">
           <http-verbs-select></http-verbs-select>
@@ -53,7 +53,8 @@
       <tr>
         <td colspan="4" ng-show="!config.rules.length">
           <div class="apiman-no-content">
-            <p class="apiman-no-entities-description" apiman-i18n-key="ignored-resources.no-rules-table">No resources excluded.</p>
+            <p class="apiman-no-entities-description" apiman-i18n-key="ignored-resources.no-rules-table">No resources
+              excluded yet.</p>
           </div>
         </td>
       </tr>

@@ -9,7 +9,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.OrgApisController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.OrgApisController" class="page container-pf-nav-pf-vertical container-fluid" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/org/org_bc.include'"></div>
       <div class="row">
         <div ng-include="'plugins/api-manager/html/org/org_entity.include'"></div>
@@ -27,13 +27,7 @@
                   </div>
                   <div apiman-permission="apiEdit" class="btn-group pull-right">
                     <a href="{{ pluginName }}/new-api" class="btn btn-primary" apiman-i18n-key="new-api">New API</a>
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                      <span class="caret"></span>
-                      <span class="sr-only" apiman-i18n-key="toggle-dropdown">Toggle Dropdown</span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                      <li><a href="{{ pluginName }}/orgs/{{ org.id }}/import/apis" apiman-i18n-key="import-apis_">Import API(s)</a></li>
-                    </ul>
+                    <a style="margin-left: 8px" href="{{ pluginName }}/orgs/{{ org.id }}/import/apis" class="btn btn-primary" apiman-i18n-key="import-apis_">Import from API Catalog</a>
                   </div>
                 </div>
                 <div class="clearfix"></div>
@@ -43,7 +37,7 @@
                   <div class="apiman-no-content container-fluid" ng-hide="apis.length > 0">
                     <div class="row">
                       <div class="col-md-9">
-                        <p class="apiman-no-entities-description" apiman-i18n-key="no-apis-found-for-org">We couldn't find any APIs in this organization. Probably because none exist. We hope. Try creating one using the New API button.</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-apis-found-for-org">No APIs have been created in this organization yet. Create or import an API using the corresponding button.</p>
                       </div>
                       <div class="col-md-3">
                         <div class="apiman-no-entities-arrow"></div>
@@ -83,7 +77,7 @@
         </div>
         <!-- /Center Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

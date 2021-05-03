@@ -10,7 +10,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.OrgClientsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.OrgClientsController" class="page container-pf-nav-pf-vertical container-fluid" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/org/org_bc.include'"></div>
       <div class="row">
         <div ng-include="'plugins/api-manager/html/org/org_entity.include'"></div>
@@ -20,7 +20,7 @@
             <div ng-include="'plugins/api-manager/html/org/org_tabs.include'"></div>
             <div id="entitytabsContent" class="tab-content">
 
-              <!-- Client Apps Tab Content -->
+              <!-- Client Tab Content -->
               <div class="tab-pane active" id="tab-clients">
                 <div class="apiman-filters apiman-clients-filters">
                   <div>
@@ -35,7 +35,7 @@
                   <div class="apiman-no-content container-fluid" ng-hide="clients.length > 0">
                     <div class="row">
                       <div class="col-md-9">
-                        <p class="apiman-no-entities-description" apiman-i18n-key="no-clients-found-for-org">It looks like there aren't (yet) any client apps in this organization! Now might be a good time to click the New App button up above...</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-clients-found-for-org">No client apps have been created in this organization yet. Create a client app using the <b>New Client</b> button.</p>
                       </div>
                       <div class="col-md-3">
                         <div class="apiman-no-entities-arrow"></div>
@@ -63,14 +63,14 @@
                   </div>
                 </div>
               </div>
-              <!-- End Client Apps Tab Content -->
+              <!-- End Clients Tab Content -->
               
             </div>
           </div>
         </div>
         <!-- /Center Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

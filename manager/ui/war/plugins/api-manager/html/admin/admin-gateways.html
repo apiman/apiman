@@ -8,7 +8,7 @@
 
   <body>
     <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.AdminGatewaysController" class="page container admin-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.AdminGatewaysController" class="page container-pf-nav-pf-vertical container-fluid admin-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <div ng-include="'plugins/api-manager/html/admin/admin_bc.include'"></div>
@@ -16,14 +16,16 @@
       </div>
       <div class="row">
         <!-- Admin Content -->
-        <div class="col-md-9 admin-content">
+        <div class="col-md-12 admin-content">
           <div class="container-fluid">
             <div class="row">
               <h2 class="title" data-field="heading" apiman-i18n-key="gateways">Gateways</h2>
             </div>
             <!-- Helpful hint -->
             <div class="row">
-              <p class="col-md-10 apiman-label-faded" apiman-i18n-key="gateways-help-text" class="apiman-label-faded">Configure the gateways on which the APIs may be published.  If no gateways are configured, then users will not be able to publish their APIs!</p>
+              <p class="col-md-10 apiman-label-faded" apiman-i18n-key="gateways-help-text" class="apiman-label-faded">
+                Configure the gateways on which the APIs may be published. If no gateways are configured, users will not
+                be able to publish their APIs.</p>
             </div>
             <!-- HR -->
             <div class="row hr-row">
@@ -49,7 +51,7 @@
                     <tr ng-hide="gateways.length > 0">
                       <td colspan="2">
                         <div class="apiman-no-content">
-                          <p class="apiman-no-entities-description" apiman-i18n-key="no-gateways-found">No gateways have been added! Try adding a Gateway by clicking 'New Gateway' above - you'll need at least one, otherwise users will not be able to publish their APIs.</p>
+                          <p class="apiman-no-entities-description" apiman-i18n-key="no-gateways-found">No gateways have been added! Try adding a gateway by clicking <b>New Gateway</b> above - you'll need at least one, otherwise users will not be able to publish their APIs.</p>
                         </div>
                       </td>
                     </tr>

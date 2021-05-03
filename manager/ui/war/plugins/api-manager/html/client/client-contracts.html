@@ -8,7 +8,7 @@
   <body>
   <div>
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.ClientContractsController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ClientContractsController" class="container-pf-nav-pf-vertical container-fluid page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/client/client_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/client/client_entity.include'"></div>
@@ -24,7 +24,9 @@
           <div class="col-md-9">
             <!-- Title and help text -->
             <div class="title" apiman-i18n-key="api-contracts">API Contracts</div>
-            <div class="description" apiman-i18n-key="contracts-help">Here is a list of all APIs that this Client App is currently contracted to utilize.  This provides a list of all APIs that Client App can potentially invoke.</div>
+            <div class="description" apiman-i18n-key="contracts-help">Here is a list of all APIs that this Client App is
+              currently contracted to utilize. This provides a list of all APIs that Client App can potentially invoke.
+            </div>
             <hr />
             <!-- The list of contracts (filterable) -->
             <div>
@@ -64,7 +66,7 @@
               </div>
               
               <div class="apiman-no-content container-fluid" ng-show="filteredContracts.length == 0">
-                <p class="apiman-no-entities-description" apiman-i18n-key="no-client-api-contracts.message">This Client App doesn't appear to have any API contracts (or perhaps none that match your filter above).  Try creating a new Contract to an API - if you do it will get listed here!</p>
+                <p class="apiman-no-entities-description" apiman-i18n-key="no-client-api-contracts.message">No API contracts have been created for this Client App yet or your filter does not match any contracts. If you create a new contract, it will be displayed here.</p>
               </div>              
               
             </div>
@@ -73,7 +75,7 @@
         <!-- /Content -->
       </div>
 
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

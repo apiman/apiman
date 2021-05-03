@@ -3,7 +3,7 @@
   <body>
   <div>
     <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.AdminExportImportController" class="page container admin-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.AdminExportImportController" class="page container-pf-nav-pf-vertical container-fluid admin-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <div ng-include="'plugins/api-manager/html/admin/admin_bc.include'"></div>
@@ -11,7 +11,7 @@
       </div>
       <div class="row">
         <!-- Admin Content -->
-        <div class="col-md-9 admin-content">
+        <div class="col-md-12 admin-content">
           <div class="container-fluid">
             <div class="row">
               <h2 class="title" data-field="heading" apiman-i18n-key="export-import-data">Export/Import Data</h2>
@@ -19,12 +19,14 @@
             <!-- Helpful hint -->
             <div class="row">
               <div class="col-md-12">
-                <p class="apiman-label-faded" apiman-i18n-key="export-import-data-help-text" class="apiman-label-faded">Export all data from the API Manager into an output file, or else use such a file to import data into this installation of the apiman API Manager.</p>
+                <p class="apiman-label-faded" apiman-i18n-key="export-import-data-help-text" class="apiman-label-faded">
+                  Export all data from the API Management into an output file or use such a file to import data into
+                  this installation.</p>
               </div>
               <div class="col-md-12">
                 <div class="alert alert-info">
                   <span class="pficon pficon-info"></span>
-                  <span apiman-i18n-key="admin-export.warning">Note: when exporting or importing data, it is important that no other changes are made in the API Manager.  If possible, disable user access to the API Manager during this process.</span>
+                  <span apiman-i18n-key="admin-export.warning">It is important that no other changes are made in the API Management during an import/export process. Therefore it is recommended to disable user access to the API Management during an import/export.</span>
                 </div>
               </div>
             </div>
@@ -43,7 +45,7 @@
                   <div ng-show="exportButton.state == 'in-progress'" style="margin-top: 20px" ng-show="exportStatus == 'downloading'">
                     <div class="alert alert-info">
                       <span class="pficon pficon-info"></span>
-                      <span apiman-i18n-key="admin-export.exporting-info">Once the export has begun, your browser should prompt you to download the exported data file.  Once complete, you will need to refresh this page if you wish to export again.</span>
+                      <span apiman-i18n-key="admin-export.exporting-info">Once the export has started, your browser should prompt you to download the exported data file. If the export is completed, you will have to refresh this page before starting another export.</span>
                     </div>
                   </div>
                 </div>

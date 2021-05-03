@@ -9,7 +9,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.ApiEndpointController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ApiEndpointController" class="page container-pf-nav-pf-vertical container-fluid" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/api/api_entity.include'"></div>
@@ -26,15 +26,15 @@
           <div class="col-md-12">
             <div class="title" apiman-i18n-key="managed-endpoint-impl">Managed Endpoint Information</div>
             <p class="explanation" apiman-i18n-key="managed-endpoint-explanation">
-                To successfully invoke this managed API, a client must send the request 
-                to the appropriate API Gateway endpoint.  When invoking the API through
-                an API Contract, a valid API Key must be included in each request.  If 
-                the API is public, it can be invoked directly (without an API Key) through
-                the endpoint below.
+                To successfully invoke this managed API, a client must send the request to the appropriate API gateway
+                endpoint. When invoking the API through an API contract, a valid API Key must be included in each
+                request. If the API is Public, it can be invoked without an API Key directly through the endpoint below.
             </p>
             <div ng-show="!version.publicAPI">
               <div class="apiman-divider-40"></div>
-              <div apiman-i18n-key="warning-not-public" class="alert alert-warning no-icon">Warning: this API is not public - this endpoint will only work if a valid API Key is included in requests made to it.</div>
+                <div apiman-i18n-key="warning-not-public" class="alert alert-warning no-icon">Warning: This API is not
+                    Public. This endpoint will only work if a valid API Key is included in requests made to it.
+                </div>
             </div>
             <hr />
             <div class="apiman-form-label">
@@ -68,7 +68,7 @@
         </div>
         <!-- /Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

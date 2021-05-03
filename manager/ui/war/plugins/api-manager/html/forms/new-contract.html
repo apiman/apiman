@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
 
 <div ng-include="headerInclude"></div>
-<div ng-controller="Apiman.NewContractController" id="form-page" class="container apiman-new-contract apiman-entity-new page" data-field="page">
+<div ng-controller="Apiman.NewContractController" id="form-page" class="container-pf-nav-pf-vertical container-fluid apiman-new-contract apiman-entity-new page" data-field="page">
     <div class="row">
         <h2 class="title" apiman-i18n-key="new-contract">New Contract</h2>
     </div>
     <!-- Helpful hint -->
     <div class="row">
-        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-contract-help-text" class="apiman-label-faded">Creating a Contract allows you to connect a Client App to an API via a particular Plan offered by the API. You would want to do this so that your Client App can invoke the API successfully. Note that this is not necessary if the API is public.</p>
+        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-contract-help-text" class="apiman-label-faded">
+            Creating a contract allows you to connect a Client App to an API using a particular plan offered by the API.
+            Create a contract to enable your Client App to invoke the API successfully. This is not necessary for public
+            APIs.</p>
     </div>
     <!-- HR -->
     <div class="row hr-row">
@@ -27,8 +30,7 @@
                 <div class="title"><i class="fa fa-gears fa-fw"></i> <span apiman-i18n-key="from-client">From Client App</span></div>
                 <div class="body">
                     <p apiman-i18n-key="new-contract.client-description">
-                        The Client App that will be used as the source of the new API Contract.  Choose one 
-                        of your available Client Apps below, and then choose a Client App version.
+                        The Client App in the version that will be used as the source of the new API contract.
                     </p>
                     <div class="center-content" ng-show="clients.length > 0">
                         <ui-select ng-model="selectedClient"
@@ -57,14 +59,13 @@
                         <span class="pficon pficon-info"></span>
                  <span apiman-i18n-key="new-contract.no-client-versions">
                    There are no versions of the selected Client App that can be registered.  For example, if a
-                   Client App is Retired you will not be able to create a Contract for it.
+                   Client App is Retired you will not be able to create a contract for it.
                  </span>
                     </div>
                     <div class="alert alert-warning" ng-show="clients.length == 0">
                         <span class="pficon pficon-info"></span>
                  <span apiman-i18n-key="new-contract.no-clients-found">
-                   We couldn't find any Client Apps for you - you must manage at least one
-                   Client App in order to create a Contract.
+                   No Client Apps found. You have to manage at least one Client App in order to create a contact.
                  </span>
                     </div>
                 </div>
@@ -84,12 +85,11 @@
                 <div class="title"><i class="fa fa-bar-chart-o fa-fw"></i> <span apiman-i18n-key="using-plan">Using Plan</span></div>
                 <div class="body">
                     <p ng-show="!plans" apiman-i18n-key="new-contract.choose-valid-api-msg">
-                      Please choose a valid API below before selecting the Plan you wish to use for
-                      this Contract (either you have not selected an API or the API has no 
-                      available plans).
+                        You have to choose a valid API below before the available plans can be displayed. Either you
+                        have not selected an API or the API has no available plans.
                     </p>
                     <p apiman-i18n-key="new-contract.plan-description" ng-show="plans" apiman-i18n-key="new-contract.choose-plan-msg">
-                        Use the drop-down below to choose one of the Plans made available by the selected API.
+                        Use the drop-down below to choose one of the plans made available by the selected API.
                     </p>
                     <div class="center-content" ng-show="plans">
                         <ui-select ng-model="selectedPlan"
@@ -120,8 +120,7 @@
                 <div class="title"><i class="fa fa-puzzle-piece fa-fw"></i> <span apiman-i18n-key="to-api">To API</span></div>
                 <div class="body">
                     <p apiman-i18n-key="new-contract.api-description">
-                      Use this section to choose what API the Client App will be consuming (aka the
-                      "target" of this API Contract).
+                        Select the target of this API contract. The target is the API the Client App will be consuming.
                     </p>
                     <div class="center-content">
                         <button ng-click="selectApi()" class="btn btn-default btn-api" ng-show="selectedApi">
@@ -150,11 +149,11 @@
 
     <div class="row">
         <button id="create-contract" ng-click="createContract()" apiman-action-btn="" ng-disabled="isDisabled()" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
-        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+        <a id="cancel" href="{{ pluginName }}" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
     </div>
 
     <div ng-include="'plugins/api-manager/html/modals/selectApiModal.html'"></div>
 
-</div> <!-- /container -->
+</div> <!-- /container-pf-nav-pf-vertical container-fluid -->
 </body>
 </html>

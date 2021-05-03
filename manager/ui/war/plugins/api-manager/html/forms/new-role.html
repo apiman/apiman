@@ -6,15 +6,16 @@
   </head>
 
   <body>
-    
+
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.NewRoleController" id="form-page" class="container apiman-entity-new page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.NewRoleController" id="form-page" class="container-pf-nav-pf-vertical container-fluid apiman-entity-new page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" apiman-i18n-key="new-role">New Role</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p apiman-i18n-key="new-role-help-text" class="col-md-6 apiman-label-faded">Create a new Role Definition that may be used to grant specific sets of permissions to users within Organizations.</p>
+        <p apiman-i18n-key="new-role-help-text" class="col-md-6 apiman-label-faded">Create a new role definition that
+          may be used to grant specific sets of permissions to users within organizations.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -25,7 +26,7 @@
         <dl>
           <dt apiman-i18n-key="role-name">Role Name</dt>
           <dd>
-            <input id="apiman-entityname" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-role-name" placeholder="Enter role name..."></input>
+            <input id="apiman-entityname" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-role-name" placeholder="Enter role name...">
           </dd>
         </dl>
       </div>
@@ -34,7 +35,7 @@
         <dl>
           <dt apiman-i18n-key="description">Description</dt>
           <dd>
-            <input data-field="description" ng-model="role.description" type="text" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-role-description" placeholder="Enter role description (optional)..."></input>
+            <input data-field="description" ng-model="role.description" type="text" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-role-description" placeholder="Enter role description (optional)...">
           </dd>
         </dl>
       </div>
@@ -45,8 +46,8 @@
           <dd>
              <div class="checkbox">
                <label>
-                 <input id="auto-grant" ng-model="role.autoGrant" data-field="autoGrant" type="checkbox"></input> 
-                 <span apiman-i18n-key="grant-role-automatically">Grant this role automatically when creating a new Organization</span>
+                 <input id="auto-grant" ng-model="role.autoGrant" data-field="autoGrant" type="checkbox">
+                 <span apiman-i18n-key="grant-role-automatically">Grant this role automatically when user creates a new organization.</span>
                </label>
              </div>
           </dd>
@@ -141,6 +142,6 @@
         <button id="create-role" ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-role" placeholder="Creating..." data-icon="fa-cog" ng-click="addRole()">Create Role</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </body>
 </html>

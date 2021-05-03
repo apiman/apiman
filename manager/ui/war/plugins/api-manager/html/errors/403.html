@@ -8,14 +8,15 @@
   <body>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.Error403Controller" class="container error-page" data-field="error-page">
+    <div ng-controller="Apiman.Error403Controller" class="container-pf-nav-pf-vertical container-fluid error-page" data-field="error-page">
       <div class="row">
         <div class="col-md-3">
           <div class="error-icon error-403 pull-right"></div>
         </div>
         <div class="col-md-8">
           <div class="title" apiman-i18n-key="error-403-title">Not Allowed!</div>
-          <div class="description" apiman-i18n-key="error-403-description">Uh oh, it looks like you tried to access something you aren't allowed to see.  Since you aren't that kind of person it was probably our fault. Maybe you should let someone know?</div>
+          <div class="description" apiman-i18n-key="error-403-description">You have no permission to see this page.
+          </div>
         </div>
       </div>
     </div>

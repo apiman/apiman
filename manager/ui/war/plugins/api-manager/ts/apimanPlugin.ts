@@ -12,6 +12,7 @@ module Apiman {
         'xeditable',
         'ngFileUpload',
         'ngAnimate',
+        'scrollable-table',
 
         'ApimanRPC',
         'ApimanFilters',

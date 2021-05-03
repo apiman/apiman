@@ -68,7 +68,7 @@
           </div>
           <div class="col-md-5" apiman-permission="planAdmin">
             <div>
-              <div><a apiman-i18n-key="ttdo-new-plan-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{version.version}}/new-version">Create a new version of this Plan (New Version)</a></div>
+              <div><a apiman-i18n-key="ttdo-new-plan-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{version.version}}/new-version">Create a new version of this plan (New Version)</a></div>
             </div>
             <!-- The Lock Action -->
             <div class="apiman-divider-40"></div>
@@ -94,15 +94,17 @@
             <p class="bg-warning"
                style="padding: 15px 25px; margin: -18px -25px 10px -25px;"
                apiman-i18n-key="plan-delete-modal-confirmation-warning">
-              Unexpected bad things will happen if you don't read this!
+              Important Note!
             </p>
             <p class="explanation"
                apiman-i18n-key="plan-delete-modal-confirmation-description">
-              This action <b>CANNOT</b> be undone. This will permanently delete the plan, including all of its versions, their policies, and change logs. Please back up the project if you think you may want to roll back the changes, as this
-              action is irrevocable.
+              This action <b>CANNOT</b> be undone. This will permanently delete the plan, including all of its versions,
+              their policies and change logs. Please back up the project if you may want to roll back the changes, as
+              this action is irrevocable.
             </p>
             <p class="explanation">
-              <b apiman-i18n-key="plan-delete-modal-confirmation-instructions">Please type in the name of the plan to confirm.</b>
+              <b apiman-i18n-key="plan-delete-modal-confirmation-instructions">Please type in the name of the plan to
+                confirm:</b>
             </p>
             <input type="text"
                    class="apiman-form-control form-control"

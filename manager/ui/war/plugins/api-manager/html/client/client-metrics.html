@@ -10,7 +10,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.ClientMetricsController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ClientMetricsController" class="container-pf-nav-pf-vertical container-fluid page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/client/client_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/client/client_entity.include'"></div>
@@ -28,7 +28,7 @@
             <div class="title" apiman-i18n-key="client-metrics">Client App Metrics</div>
             <p class="explanation" apiman-i18n-key="client-metrics-explanation">
                 Now that this Client App is registered with the gateway, it may be consuming
-                one or more APIs.  When this happens, you can use the Metrics
+              one or more APIs. When this happens, you can use the <b>Metrics</b>
                 tab to view basic metrics/analytics information.
             </p>
             <div id="apiman-client-metrics-selector" style="margin-top: 15px; padding-top: 8px; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd">
@@ -67,7 +67,7 @@
         </div>
         <!-- /Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

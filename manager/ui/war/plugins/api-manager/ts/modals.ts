@@ -176,6 +176,7 @@ module ApimanModals {
                 $scope.selectedApi = undefined;
                 $scope.selectedApiVersion = undefined;
                 $scope.title = options.title;
+                $scope.searchText = '*';
 
                 $scope.search = function () {
                     $scope.selectedApi = undefined;
@@ -194,6 +195,8 @@ module ApimanModals {
                             'value': '%' + $scope.searchText + '%',
                             'operator': 'like'
                         });
+                        body.page = 1;
+                        body.pageSize = 10000; // ES index.max_result_window
 
                         var searchStr = angular.toJson(body);
 
@@ -279,6 +282,11 @@ module ApimanModals {
                 $scope.cancel = function () {
                     $uibModalInstance.dismiss('cancel');
                 };
+
+                angular.element(document).ready(() => {
+                    $('.form-control').val('');
+                    $scope.search()
+                })
             }]);
 
 

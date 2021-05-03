@@ -8,7 +8,7 @@
   <body>
     
     <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.EditPluginController" id="form-page" class="container apiman-edit-plugin apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.EditPluginController" id="form-page" class="container-pf-nav-pf-vertical container-fluid apiman-edit-plugin apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" apiman-i18n-key="plugin-details">Plugin Details</h2>
       </div>
@@ -99,6 +99,6 @@
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default" apiman-i18n-key="ok">OK</a>
         <button style="margin-left: 15px" id="reload" ng-show="plugin.isSnapshot" apiman-action-btn="" class="btn btn-primary" data-field="reloadButton" apiman-i18n-key="reload" placeholder="Reloading..." data-icon="fa-cog" ng-click="reload()">Reload</button>
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </body>
 </html>

@@ -6,16 +6,18 @@
   </head>
 
   <body>
-    
-    <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.NewGatewayController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+
+    <div ng-include="headerInclude"></div>
+    <div ng-controller="Apiman.NewGatewayController" id="form-page" class="container-pf-nav-pf-vertical container-fluid apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <fieldset>
       <div class="row">
         <h2 class="title" apiman-i18n-key="new-gateway">New Gateway</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p apiman-i18n-key="new-gateway-help-text" class="col-md-6 apiman-label-faded">Create a new API Gateway for use by APIs.  When publishing an API, at least one Gateway must be specified so that API configuration details can be published to the appropriate place.</p>
+        <p apiman-i18n-key="new-gateway-help-text" class="col-md-6 apiman-label-faded">Create a new API gateway for use
+          by APIs. When publishing an API, at least one gateway must be specified so that API configuration details can
+          be published to the appropriate place.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -26,7 +28,7 @@
         <dl>
           <dt apiman-i18n-key="gateway-name">Gateway Name</dt>
           <dd>
-            <input id="apiman-gateway-name" ng-model="gateway.name" name="name" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-name" placeholder="Enter gateway name..."></input>
+            <input id="apiman-gateway-name" ng-model="gateway.name" name="name" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-name" placeholder="Enter gateway name...">
           </dd>
         </dl>
       </div>
@@ -44,7 +46,7 @@
         <dl>
           <dt apiman-i18n-key="config-endpoint">Configuration Endpoint</dt>
           <dd>
-            <input ng-model="configuration.endpoint" type="url" name="configEndpoint" type="text" class="apiman-form-control form-control description" id="config-endpoint" apiman-i18n-key="enter-gateway-config-endpoint" placeholder="Enter configuration endpoint..."></input>
+            <input ng-model="configuration.endpoint" type="url" name="configEndpoint" type="text" class="apiman-form-control form-control description" id="config-endpoint" apiman-i18n-key="enter-gateway-config-endpoint" placeholder="Enter configuration endpoint...">
           </dd>
         </dl>
       </div>
@@ -59,7 +61,7 @@
                   <span apiman-i18n-key="username">Username:</span>
                 </td>
                 <td>
-                  <input id="endpoint-username" ng-model="configuration.username" name="username" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-username" placeholder="Username..."></input>
+                  <input id="endpoint-username" ng-model="configuration.username" name="username" type="text" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-username" placeholder="Username...">
                 </td>
               </tr>
               <tr>
@@ -67,13 +69,13 @@
                   <span apiman-i18n-key="password">Password:</span>
                 </td>
                 <td>
-                  <input id="endpoint-password" ng-model="configuration.password" data-field="password" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-password" placeholder="Password..."></input>
+                  <input id="endpoint-password" ng-model="configuration.password" data-field="password" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-password" placeholder="Password...">
                 </td>
               </tr>
               <tr>
                 <td></td>
                 <td>
-                  <input id="endpoint-password-confirm" ng-model="passwordConfirm" data-field="passwordConfirm" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-password-confirm" placeholder="Confirm Password..."></input>
+                  <input id="endpoint-password-confirm" ng-model="passwordConfirm" data-field="passwordConfirm" type="password" class="apiman-form-control form-control name entityname" apiman-i18n-key="enter-gateway-password-confirm" placeholder="Confirm Password...">
                 </td>
               </tr>
             </table>
@@ -86,8 +88,8 @@
       <div class="row" ng-show="testResult == 'success'">
         <div class="alert alert-success description" style="margin-top: 10px">
           <span class="pficon pficon-ok"></span>
-          <strong apiman-i18n-key="gateway-config-valid.title">Gateway Configuration Valid</strong> 
-          <div apiman-i18n-key="gateway-config-valid.msg">Your Gateway configuration is correct.  Great job!</div>
+          <strong apiman-i18n-key="gateway-config-valid.title">Gateway Configuration Valid</strong>
+          <div apiman-i18n-key="gateway-config-valid.msg">Your gateway configuration is correct.</div>
         </div>
       </div>
       <div class="row" ng-show="testResult == 'error'">
@@ -97,7 +99,9 @@
             <span class="pficon pficon-error-exclamation"></span>
           </span>
           <strong apiman-i18n-key="gateway-config-invalid.title">Gateway Configuration Invalid</strong>
-          <div apiman-i18n-key="gateway-config-invalid.msg">Something has gone wrong when testing the Gateway.  Hopefully the details (below) will help you figure out what.</div>
+          <div apiman-i18n-key="gateway-config-invalid.msg">The test has not been successful. See details below for
+            further information.
+          </div>
           <div style="margin-top: 8px">
             <pre>{{ testErrorMessage }}</pre>
           </div>
@@ -113,6 +117,6 @@
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
       </div>
       </fieldset>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </body>
 </html>

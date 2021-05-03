@@ -10,7 +10,7 @@
     
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ClientPoliciesController"
-         class="container page"
+         class="container-pf-nav-pf-vertical container-fluid page"
          data-field="page"
          ng-cloak=""
          ng-show="pageState == 'loaded'">
@@ -31,7 +31,10 @@
             <div class="title"
                  apiman-i18n-key="client-client-policies">Client App Policies</div>
             <div class="description"
-                 apiman-i18n-key="client-policies-help">Here is a list of all Policies defined for this Client App.  These Policies will be applied to all API invocations made by the Client App, in addition to whatever Policies are defined by the API itself.</div>
+                 apiman-i18n-key="client-policies-help">Here is a list of all policies defined for this Client App. These
+              policies will be applied to all API invocations made by the Client App, in addition to whatever policies are
+              defined by the API itself.
+            </div>
             <hr />
             <!-- The list of policies -->
             <div apiman-permission="clientEdit"
@@ -50,7 +53,8 @@
                 <div class="row">
                   <div class="col-md-9">
                     <p class="apiman-no-entities-description"
-                       apiman-i18n-key="no-policies-for-client">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
+                       apiman-i18n-key="no-policies-for-client">No policies are defined yet. Use the <b>Add Policy</b> button
+                      above to define a new policy.</p>
                   </div>
                   <div apiman-permission="apiEdit"
                        apiman-status="Created,Ready,Registered"
@@ -66,14 +70,14 @@
                                   type="clients"
                                   org-id="{{ org.id }}"
                                   page-id="{{ client.id }}"
-                                  version="{{ version.version }}"></policy-list>
+                                  version="{{ version.version }}"></apiman-policy-list>
             </div>
           </div>
         </div>
         <!-- /Content -->
       </div>
       
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

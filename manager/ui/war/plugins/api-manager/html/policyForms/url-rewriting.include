@@ -1,7 +1,6 @@
 <div class="form policy-config urlrewriting" data-field="form" ng-controller="Apiman.URLRewritingFormController" style="margin-top: 10px">
   <style>
     div.urlrewriting dl dt {
-        text-decoration: underline;
         margin-bottom: 5px;
     }
   </style>
@@ -10,27 +9,33 @@
       <dt apiman-i18n-key="urlrewriting.how-to-rewrite">How to Rewrite URLs</dt>
       <dd>
         <div apiman-i18n-key="urlrewriting.find-all-1">Find all URLs matching regular expression</div>
-        <input id="fromRegexp" ng-model="config.fromRegex" class="apiman-form-control form-control" type="text" apiman-i18n-key="urlrewriting.enter-from-rgexp" placeholder="Example: https?:\/\/host\.org\/api-endpoint" ng-disabled="isEntityDisabled()"></input>
+        <input id="fromRegexp" ng-model="config.fromRegex" class="apiman-form-control form-control" type="text" apiman-i18n-key="urlrewriting.enter-from-rgexp" placeholder="Example: https?:\/\/host\.org\/api-endpoint" ng-disabled="isEntityDisabled()">
         <div apiman-i18n-key="urlrewriting.find-all-2">with this replacement</div>
-        <input id="toReplacement" ng-model="config.toReplacement" class="apiman-form-control form-control" type="text" apiman-i18n-key="urlrewriting.enter-to-replacement" placeholder="Example: https:\/\/apiman\.org\/orgId/apiId/version" ng-disabled="isEntityDisabled()"></input>
+        <input id="toReplacement" ng-model="config.toReplacement" class="apiman-form-control form-control" type="text" apiman-i18n-key="urlrewriting.enter-to-replacement" placeholder="Example: https:\/\/apiman\.org\/orgId/apiId/version" ng-disabled="isEntityDisabled()">
       </dd>
       <dt style="margin-top: 25px" apiman-i18n-key="urlrewriting.where-to-find">Where to Find Them</dt>
       <dd>
         <div>
-          <input id="processRequestUrl" type="checkbox" ng-model="config.processRequestUrl" ng-disabled="isEntityDisabled()"></input>
+          <input id="processRequestUrl" type="checkbox" ng-model="config.processRequestUrl" ng-disabled="isEntityDisabled()">
           <label for="processRequestUrl" apiman-i18n-key="urlrewriting.process-request-url" title="When enabled, apiman will rewrite the API request URL.">Request URL</label>
         </div>
         <div>
-          <input id="processRequestHeaders" type="checkbox" ng-model="config.processRequestHeaders" ng-disabled="isEntityDisabled()"></input>
-          <label for="processRequestHeaders" apiman-i18n-key="urlrewriting.process-request-headers" title="When enabled, apiman will rewrite URLs found in the API request headers.">Request HTTP headers</label>
+          <input id="processRequestHeaders" type="checkbox" ng-model="config.processRequestHeaders" ng-disabled="isEntityDisabled()">
+          <label for="processRequestHeaders" apiman-i18n-key="urlrewriting.process-request-headers"
+                 title="When enabled, apiman will rewrite URLs found in the API request headers.">Request HTTP
+            Headers</label>
         </div>
         <div>
-          <input id="processResponseHeaders" type="checkbox" ng-model="config.processResponseHeaders" ng-disabled="isEntityDisabled()"></input>
-          <label for="processResponseHeaders" apiman-i18n-key="urlrewriting.process-response-headers" title="When enabled, apiman will rewrite URLs found in the API response headers.">Response HTTP headers</label>
+          <input id="processResponseHeaders" type="checkbox" ng-model="config.processResponseHeaders" ng-disabled="isEntityDisabled()">
+          <label for="processResponseHeaders" apiman-i18n-key="urlrewriting.process-response-headers"
+                 title="When enabled, apiman will rewrite URLs found in the API response headers.">Response HTTP
+            Headers</label>
         </div>
         <div>
-          <input id="processResponseBody" type="checkbox" ng-model="config.processResponseBody" ng-disabled="isEntityDisabled()"></input>
-          <label for="processResponseBody" apiman-i18n-key="urlrewriting.process-response-body" title="When enabled, apiman will rewrite URLs found in the API response body.">Response HTTP body</label>
+          <input id="processResponseBody" type="checkbox" ng-model="config.processResponseBody" ng-disabled="isEntityDisabled()">
+          <label for="processResponseBody" apiman-i18n-key="urlrewriting.process-response-body"
+                 title="When enabled, apiman will rewrite URLs found in the API response body.">Response HTTP
+            Body</label>
         </div>
       </dd>
     </dl>

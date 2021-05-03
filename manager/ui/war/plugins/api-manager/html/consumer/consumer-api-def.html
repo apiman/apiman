@@ -4,40 +4,44 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  </head>
+</head>
 
-  <body>
-  <div>
+<body>
+<div ng-include="headerInclude"></div>
+<div ng-controller="Apiman.ConsumerApiDefController" class="page" ng-cloak="" ng-show="pageState == 'loaded'">
 
-    <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.ConsumerApiDefController" class="page" ng-cloak="" ng-show="pageState == 'loaded'">
-
-      <div class="container">
+    <div class="container-pf-nav-pf-vertical container-fluid">
         <div class="row">
-          <div class="col-md-12">
-            <ol class="breadcrumb" data-field="breadcrumb">
-              <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
-              <li><a id="bc-orgs" href="{{ pluginName }}/browse/orgs"><i class="fa fa-search fa-fw"></i><span apiman-i18n-key="organizations">Organizations</span></a></li>
-              <li><a id="bc-org" href="{{ pluginName }}/browse/orgs/{{params.org}}"><i class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></a></li>
-              <li><a id="bc-api" href="{{ pluginName }}/browse/orgs/{{params.org}}/{{params.api}}/{{params.version}}"><i class="fa fa-puzzle-piece fa-fw"></i><span>{{ api.name }}</span></a></li>
-              <li class="active"><i class="fa fa-sitemap fa-fw"></i><span apiman-i18n-key="definition">Definition</span></li>
-            </ol>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <h1 class="consumer-top-header" apiman-i18n-key="api-definition">API Definition</h1>
-            <hr />
-          </div>
-        </div>
-
-        <div class="row" ng-hide="hasDefinition">
-          <div class="col-md-12">
-            <div class="alert alert-warning" style="margin-top: 15px">
-               <span class="pficon pficon-info"></span>
-               <span apiman-i18n-key="consumer-api-def.no-api-definition">This API does not have an API definition file.  Contact the API provider and ask them to supply a valid API definition!</span>
+            <div class="col-md-12">
+                <ol class="breadcrumb" data-field="breadcrumb">
+                    <li><a id="bc-home" href="{{ pluginName }}/"><i class="fa fa-home fa-fw"></i><span
+                            apiman-i18n-key="home">Home</span></a></li>
+                    <li><a id="bc-orgs" href="{{ pluginName }}/browse/orgs"><i class="fa fa-search fa-fw"></i><span
+                            apiman-i18n-key="organizations">Organizations</span></a></li>
+                    <li><a id="bc-org" href="{{ pluginName }}/browse/orgs/{{params.org}}"><i
+                            class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></a></li>
+                    <li><a id="bc-api"
+                           href="{{ pluginName }}/browse/orgs/{{params.org}}/{{params.api}}/{{params.version}}"><i
+                            class="fa fa-puzzle-piece fa-fw"></i><span>{{ api.name }}</span></a></li>
+                    <li class="active"><i class="fa fa-sitemap fa-fw"></i><span
+                            apiman-i18n-key="definition">Definition</span>
+                    </li>
+                </ol>
             </div>
-          </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="consumer-top-header" apiman-i18n-key="api-definition">API Definition</h1>
+                <hr/>
+            </div>
+        </div>
+        <div class="row" ng-hide="hasDefinition">
+            <div class="col-md-12">
+                <div class="alert alert-warning" style="margin-top: 15px">
+                    <span class="pficon pficon-info"></span>
+                    <span apiman-i18n-key="consumer-api-def.no-api-definition">This API does not have an API definition file.  Contact the API provider and ask them to supply a valid API definition!</span>
+                </div>
+            </div>
         </div>
 
         <div class="row" ng-show="definitionStatus == 'loading' && !hasError">

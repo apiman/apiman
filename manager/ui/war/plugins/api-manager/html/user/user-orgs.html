@@ -1,78 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
+</head>
 
-  <body>
-  <div>
-    
+<body>
+<div>
+
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.UserOrgsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
-      <div ng-include="'plugins/api-manager/html/user/user_bc.include'"></div>
-      <div class="row">
-        <!-- Left Hand Side -->
-        <div ng-include="'plugins/api-manager/html/user/user_entity.include'"></div>
-        <!-- /Left Hand Side -->
+    <div ng-controller="Apiman.UserOrgsController" class="page container-pf-nav-pf-vertical container-fluid" data-field="page" ng-cloak=""
+         ng-show="pageState == 'loaded'">
+        <div ng-include="'plugins/api-manager/html/user/user_bc.include'"></div>
+        <div class="col-md-12">
+            <div class="row">
+                <!-- Left Hand Side -->
+                <div ng-include="'plugins/api-manager/html/user/user_entity.include'"></div>
+                <!-- /Left Hand Side -->
 
-        <!-- Center Content -->
-        <div class="col-md-8">
-          <div class="apiman-entitytabs">
-            <div ng-include="'plugins/api-manager/html/user/user_tabs.include'"></div>
-            <div id="entitytabsContent" class="tab-content">
-              
-              <!-- Organizations Tab Content -->
-              <div class="tab-pane active" id="tab-orgs">
-                <div class="apiman-filters apiman-organizations-filters">
-                  <div>
-                    <apiman-search-box filter="orgs-filter" apiman-i18n-key="filter-user-orgs" function="filterOrgs" placeholder="Filter by organization name..." />
-                  </div>
-                  <a ng-hide="noCreateOrg" id="new-org" data-field="toNewOrg" href="{{ pluginName }}/new-org" class="btn btn-primary pull-right" apiman-i18n-key="new-org">New Org</a>
+                <!-- Center Content -->
+                <div class="col-md-8">
+                    <div class="apiman-entitytabs">
+                        <div ng-include="'plugins/api-manager/html/user/user_tabs.include'"></div>
+                        <div id="entitytabsContent" class="tab-content">
+
+                            <!-- Organizations Tab Content -->
+                            <div class="tab-pane active" id="tab-orgs">
+                                <div class="apiman-filters apiman-organizations-filters">
+                                    <div>
+                                        <apiman-search-box filter="orgs-filter" apiman-i18n-key="filter-user-orgs"
+                                                           function="filterOrgs"
+                                                           placeholder="Filter by organization name..."/>
+                                    </div>
+                                    <a ng-hide="noCreateOrg || !isAdmin" id="new-org" data-field="toNewOrg"
+                                       href="{{ pluginName }}/new-org" class="btn btn-primary pull-right"
+                                       apiman-i18n-key="new-organization">New Organization</a>
+                                </div>
+                                <div class="clearfix"></div>
+                                <!-- The list of organizations the user belongs to -->
+                                <div class="apiman-organizations">
+
+                                    <div class="apiman-no-content container-fluid" ng-hide="organizations.length > 0">
+                                        <div class="row">
+                                            <div class="col-md-9">
+                                                <p class="apiman-no-entities-description"
+                                                   apiman-i18n-key="no-orgs-found-for-user">No organizations found. You
+                                                    should be granted membership in an organization or you can create a
+                                                    new one using the <b>New Organization</b> button.</p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="apiman-no-entities-arrow"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="apiman-no-content container-fluid"
+                                         ng-show="organizations.length > 0 && filteredOrgs.length == 0">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <p class="apiman-no-entities-description"
+                                                   apiman-i18n-key="no-orgs-found-for-filter">No organizations found
+                                                    matching your filter criteria - please try searching for something
+                                                    different.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="container-fluid apiman-summaryrow" ng-repeat="org in filteredOrgs">
+                                        <div class="row">
+                                        <span class="title"><a
+                                                href="{{ pluginName }}/orgs/{{ org.id }}">{{ org.name }}</a></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="description">{{ org.description }}</span>
+                                        </div>
+                                        <hr/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Organizations Tab Content -->
+
+                        </div>
+                    </div>
                 </div>
-                <div class="clearfix"></div>
-                <!-- The list of organizations the user belongs to -->
-                <div class="apiman-organizations">
-
-                  <div class="apiman-no-content container-fluid" ng-hide="organizations.length > 0">
-                    <div class="row">
-                      <div class="col-md-9">
-                        <p class="apiman-no-entities-description" apiman-i18n-key="no-orgs-found-for-user">No organizations found. This user should be granted membership in an organization or perhaps she can create a new one with the button above.</p>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="apiman-no-entities-arrow"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="apiman-no-content container-fluid" ng-show="organizations.length > 0 && filteredOrgs.length == 0">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <p class="apiman-no-entities-description" apiman-i18n-key="no-orgs-found-for-filter">No organizations found matching your filter criteria - please try searching for something different.</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="container-fluid apiman-summaryrow" ng-repeat="org in filteredOrgs">
-                    <div class="row">
-                      <span class="title"><a href="{{ pluginName }}/orgs/{{ org.id }}">{{ org.name }}</a></span>
-                    </div>
-                    <div class="row">
-                      <span class="description">{{ org.description }}</span>
-                    </div>
-                    <hr/>
-                  </div>
-                </div>
-              </div>
-              <!-- End Organizations Tab Content -->
-              
+                <!-- /Center Content -->
             </div>
-          </div>
         </div>
-        <!-- /Center Content -->
-        
-      </div>
-    </div> <!-- /container -->
-  </div>
-  </body>
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
+</div>
+</body>
 </html>

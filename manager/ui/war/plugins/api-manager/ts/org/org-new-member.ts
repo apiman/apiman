@@ -44,6 +44,7 @@ module Apiman {
                     return;
                 }
 
+                let pageSize = 10000; // ES index.max_result_window
                 var queryBean = {
                     filters: [{
                         name: 'username',
@@ -56,9 +57,9 @@ module Apiman {
                     },
                     paging: {
                         page: 1,
-                        pageSize: 50
+                        pageSize: pageSize
                     }
-                }
+                };
 
                 $log.debug('Query: {0}', queryBean);
 
@@ -98,6 +99,7 @@ module Apiman {
 
             PageLifecycle.loadPage('OrgNewMember', 'orgAdmin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('new-member');
+                $scope.findUsers('*');
             });
         }])
 

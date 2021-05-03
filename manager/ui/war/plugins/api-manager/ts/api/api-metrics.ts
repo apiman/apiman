@@ -1,7 +1,7 @@
 /// <reference path="../apimanPlugin.ts"/>
 /// <reference path="../rpc.ts"/>
 module Apiman {
-    
+
     export var NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
     export var THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
     export var SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
@@ -25,6 +25,8 @@ module Apiman {
             var getTimeSeriesFormat = function() {
                 var format = '%Y-%m-%d';
                 if ($scope.metricsRange == '7days' || $scope.metricsRange == '24hours' || $scope.metricsRange == 'hour') {
+                    format = '%Y-%m-%d %H:%M';
+                } else if ($scope.metricsRange == '24hours' || $scope.metricsRange == 'hour') {
                     format = '%H:%M';
                 }
                 return format;

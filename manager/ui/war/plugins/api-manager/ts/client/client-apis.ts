@@ -1,10 +1,9 @@
 /// <reference path="../apimanPlugin.ts"/>
 /// <reference path="../rpc.ts"/>
 module Apiman {
-
     export var ClientApisController = _module.controller('Apiman.ClientApisController',
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ClientEntityLoader', 'Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout', '$routeParams', 'Configuration', 'ApiRegistrySvcs', 'DownloadSvcs', '$window', '$uibModal', '$log',
-        ($q, $scope, $location, PageLifecycle, ClientEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration, ApiRegistrySvcs, DownloadSvcs, $window, $uibModal, $log) => {
+        ['$q', '$scope', '$location', 'PageLifecycle','ClientEntityLoader','Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout', '$routeParams', 'Configuration', 'ApiRegistrySvcs', 'DownloadSvcs', '$window', '$uibModal', '$log', 'SwaggerUIContractService',
+        ($q, $scope, $location, PageLifecycle, ClientEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration, ApiRegistrySvcs, DownloadSvcs, $window, $uibModal, $log, SwaggerUIContractService) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -17,6 +16,10 @@ module Apiman {
             };
 
             $scope.animationsEnabled = true;
+
+            $scope.showSwaggerUI = function(XAPIKey){
+                SwaggerUIContractService.setXAPIKey(XAPIKey);
+            };
 
             $scope.howToInvoke = function (apiKey, api) {
                 var modalInstance = $uibModal.open({

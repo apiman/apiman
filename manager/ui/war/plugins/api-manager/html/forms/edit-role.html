@@ -6,8 +6,8 @@
   </head>
 
   <body>
-    <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.EditRoleController" id="form-page" class="container apiman-edit-role apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-include="headerInclude"></div>
+    <div ng-controller="Apiman.EditRoleController" id="form-page" class="container-pf-nav-pf-vertical container-fluid apiman-edit-role apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title"><span apiman-i18n-key="edit-role">Edit Role</span></h2>
       </div>
@@ -24,7 +24,7 @@
         <dl>
           <dt apiman-i18n-key="role">Role</dt>
           <dd>
-            <input id="apiman-role-name" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" disabled="disabled"></input>
+            <input id="apiman-role-name" ng-model="role.name" type="text" class="apiman-form-control form-control name entityname" disabled="disabled">
           </dd>
         </dl>
       </div>
@@ -44,8 +44,8 @@
           <dd>
              <div class="checkbox">
                <label>
-                 <input id="auto-grant" ng-model="role.autoGrant" data-field="autoGrant" type="checkbox"></input> 
-                 <span apiman-i18n-key="grant-role-automatically">Grant this role automatically when creating a new Organization</span>
+                 <input id="auto-grant" ng-model="role.autoGrant" data-field="autoGrant" type="checkbox">
+                 <span apiman-i18n-key="grant-role-automatically">Grant this role automatically when user creates a new organization.</span>
                </label>
              </div>
           </dd>
@@ -56,7 +56,7 @@
         <dl>
           <dt apiman-i18n-key="permissions">Permissions</dt>
           <dd>
-            <div class="container">
+            <div class="container-pf-nav-pf-vertical container-fluid">
               <div class="row" data-field="permissions">
                 <div class="col-md-3">
                   <div class="checkbox">
@@ -144,6 +144,6 @@
 
       <div ng-include="'plugins/api-manager/html/modals/confirmModal.html'"></div>
 
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </body>
 </html>

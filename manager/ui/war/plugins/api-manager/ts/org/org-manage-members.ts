@@ -134,11 +134,11 @@ module Apiman {
           _reassignRoles(selectedRoles);
         };
 
-        // Revoke all permissions with warning
+        // Revoke all permissions with warning, this removes the user from the current organization
         $scope.revokeAll = function(size) {
           var options = {
-            message: 'This will remove ' + $scope.member.userName + ' from all roles in the Organization. Really do this?',
-            title: 'Confirm Revoke All'
+            message: 'This will remove ' + $scope.member.userName + ' from the Organization. Really do this?',
+            title: 'Confirm Remove'
           };
 
           $scope.animationsEnabled = true;
