@@ -9,7 +9,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.AboutController" class="page container apiman-about-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.AboutController" class="page container-pf-nav-pf-vertical container-fluid apiman-about-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <h2 apiman-i18n-key="about.page-heading">About apiman</h2>
@@ -21,22 +21,22 @@
         <div class="col-md-9">
           <h1 class="about-title" apiman-i18n-key="about.page-title">Open Source API Management</h1>
           <span class="about-description" apiman-i18n-key="about.page-description">
-            The apiman project brings an open source development methodology to API Management, 
+            The apiman project brings an open source development methodology to API Management,
             coupling a rich API design & configuration layer with a blazingly fast runtime.
           </span>
           <hr />
           <table class="table table-bordered">
             <tbody>
               <tr>
-                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.version">Version:</span></td>
+                <td style="width:15%; white-space: nowrap"><span class="about-label" apiman-i18n-key="about.version">Version:</span></td>
                 <td>{{ version }}</td>
               </tr>
               <tr>
-                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.built-on">Built On:</span></td>
+                <td style="width:15%; white-space: nowrap"><span class="about-label" apiman-i18n-key="about.built-on">Built On:</span></td>
                 <td>{{ builtOn }}</td>
               </tr>
               <tr>
-                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.api-endpoint">API Endpoint:</span></td>
+                <td style="width:15%; white-space: nowrap"><span class="about-label" apiman-i18n-key="about.api-endpoint">API Endpoint:</span></td>
                 <td><a href="{{ apiEndpoint }}">{{ apiEndpoint }}</a></td>
               </tr>
             </tbody>
@@ -44,15 +44,15 @@
           <table class="table table-bordered">
             <tbody>
               <tr>
-                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.project-site">Project Site:</span></td>
+                <td style="width:15%; white-space: nowrap"><span class="about-label" apiman-i18n-key="about.project-site">Project Site:</span></td>
                 <td><a href="{{ site }}">{{ site }}</a></td>
               </tr>
               <tr>
-                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.source-code">Source Code:</span></td>
+                <td style="width:15%; white-space: nowrap"><span class="about-label" apiman-i18n-key="about.source-code">Source Code:</span></td>
                 <td><a href="{{ github }}">{{ github }}</a></td>
               </tr>
               <tr>
-                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.user-guide">User Guide:</span></td>
+                <td style="width:15%; white-space: nowrap"><span class="about-label" apiman-i18n-key="about.user-guide">User Guide:</span></td>
                 <td><a href="{{ userGuide }}">{{ userGuide }}</a></td>
               </tr>
 <!--               <tr> -->
@@ -63,7 +63,7 @@
           </table>
         </div>
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

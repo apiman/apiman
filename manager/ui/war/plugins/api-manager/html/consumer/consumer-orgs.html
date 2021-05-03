@@ -7,9 +7,10 @@
 
 <body>
 <div>
+
     <div ng-include="headerInclude"></div>
-    <div class="page container" data-field="page" ng-cloak="" ng-controller="Apiman.ConsumerOrgsController"
-         ng-show="pageState == 'loaded'">
+    <div class="page container-pf-nav-pf-vertical container-fluid" data-field="page"
+         ng-cloak="" ng-controller="Apiman.ConsumerOrgsController" ng-show="pageState == 'loaded'">
         <div class="row">
             <div class="col-md-12">
                 <ol class="breadcrumb" data-field="breadcrumb">
@@ -26,16 +27,18 @@
                 </ol>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-12">
-                <h1 apiman-i18n-key="find-org" class="consumer-top-header">Find an Organization</h1>
+                <h1 apiman-i18n-key="find-org" class="consumer-top-header">All Organizations</h1>
             </div>
             <div class="col-md-6 no-phone">
-                <p apiman-i18n-key="find-org-description" class="description">Use this page to find Organizations you
-                    may wish to join.</p>
+                <p apiman-i18n-key="find-org-description" class="description">Use the search to filter the displayed
+                    list of
+                    all organizations.</p>
             </div>
             <div class="col-md-6">
-                <form ng-submit="searchOrg(orgName, currentPage, pageSize)">
+                <form class="text-right pull-right" ng-submit="searchOrg(orgName, currentPage, pageSize)">
                     <input apiman-i18n-key="searchfor-orgs" class="apiman-form-control form-control input-search"
                            id="apiman-search"
                            ng-model="orgName" placeholder="Enter a word or phrase to search by..."
@@ -57,46 +60,53 @@
 
                 <div class="apiman-no-content container-fluid" ng-hide="orgs.length > 0">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-9">
                             <p apiman-i18n-key="consumer-no-orgs-found" class="apiman-no-entities-description">No
                                 organizations found. Either no organizations matched the query or you haven't queried
                                 yet!</p>
                         </div>
                     </div>
                 </div>
-                <div ng-show="orgs.length > 0">
-                    <div class="row">
-                        <div class="count col-md-8">
+
+                <div class="row">
+                    <div ng-show="orgs.length > 0">
+                        <div class="count col-md-6">
                             Found {{resultCount}} matching organizations.
                         </div>
-                        <div class="col-md-3 left-spacer-30" ng-show="resultCount > 10">
-                            <span apiman-i18n-key="select-page-size">Select page size </span>
-                            <select ng-change="searchOrg(orgName, currentPage, pageSize)" ng-init="pageSize = '10'"
-                                    ng-model="pageSize">
-                                <option ng-selected="true" value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                            </select>
-                        </div>
-
                     </div>
-                    <div class="item" ng-repeat="org in orgs">
-                        <div class="title">
-                            <i class="fa fa-shield icon"></i>
-                            <a href="{{ pluginName }}/browse/orgs/{{ org.id }}">{{ org.name }}</a>
+
+                    <div class="col-md-6 text-right" ng-show="resultCount > 10">
+                        <span apiman-i18n-key="select-page-size">Select page size </span>
+                        <select ng-change="searchOrg(orgName, currentPage, pageSize)" ng-init="pageSize = '10'"
+                                ng-model="pageSize">
+                            <option ng-selected="true" value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4" ng-repeat="org in orgs">
+                        <div class="item">
+                            <div class="title">
+                                <i class="fa fa-shield icon"></i>
+                                <a href="{{ pluginName }}/browse/orgs/{{ org.id }}">{{ org.name }}</a>
+                            </div>
+                            <div class="description" title="{{ org.description }}">
+                                {{ org.description | limitTo: 60 }}
+                                <span ng-show="org.description.length > 60">...</span>
+                            </div>
+                            <a apiman-i18n-key="is-member-badge" class="ismember"
+                               href="{{ pluginName }}/orgs/{{ org.id }}" ng-show="org.isMember"
+                               title="You are already a member of this Organization.">
+                            </a>
                         </div>
-                        <div class="description" title="{{ org.description }}">{{ org.description | limitTo: 60 }}
-                            <span ng-show="org.description.length > 60">...</span>
-                        </div>
-                        <a apiman-i18n-key="is-member-badge" class="ismember"
-                           href="{{ pluginName }}/orgs/{{ org.id }}" ng-show="org.isMember"
-                           title="You are already a member of this Organization.">
-                        </a>
                     </div>
                 </div>
             </div>
-        </div>
 
+        </div>
         <div class="row">
             <div class="col-md-6" ng-show="orgs.length > 0 && resultCount > pageSize">
                 <uib-pagination boundary-link-numbers="true" direction-links="true" force-ellipses="true"
@@ -106,7 +116,7 @@
                                 total-items="resultCount"/>
             </div>
         </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
 </div>
 </body>
 </html>

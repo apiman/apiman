@@ -8,7 +8,7 @@
   <body>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.Error409Controller" class="container error-page" data-field="error-page">
+    <div ng-controller="Apiman.Error409Controller" class="container-pf-nav-pf-vertical container-fluid error-page" data-field="error-page">
       <div class="row">
         <div class="col-md-3">
           <div class="error-icon error-409 pull-right"></div>
@@ -16,9 +16,8 @@
         <div class="col-md-8">
           <div class="title" apiman-i18n-key="error-409-8002-title">Entity Still Active</div>
           <div class="description" apiman-i18n-key="error-409-8002-description">
-            You tried to delete something that could not be deleted in its current
-            state.  See the information below to possibly get an idea of what went
-            wrong, based on what you were attempting to delete.
+            You tried to delete something that could not be deleted in its current state. Further information about the
+            error is displayed below:
           </div>
         </div>
       </div>
@@ -30,7 +29,7 @@
           <h1 apiman-i18n-key="organizations">Organizations</h1>
           <ul>
             <li apiman-i18n-key="error-409-8002.rules.orgs.no-published-apis">Must have zero published APIs</li>
-            <li apiman-i18n-key="error-409-8002.rules.orgs.no-registered-client-apps">Must have zero registered Client Apps</li>
+            <li apiman-i18n-key="error-409-8002.rules.orgs.no-registered-client-apps">Must have zero registered clients</li>
           </ul>
         </div>
       </div>
@@ -48,7 +47,7 @@
         <div class="col-md-3">
         </div>
         <div class="col-md-8">
-          <h1 apiman-i18n-key="client-apps">Client Apps</h1>
+          <h1 apiman-i18n-key="client-apps">Clients</h1>
           <ul>
             <li apiman-i18n-key="error-409-8002.rules.client-apps.all-versions-retired">All versions must be retired (or not yet registered)</li>
           </ul>

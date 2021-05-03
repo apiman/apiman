@@ -6,15 +6,15 @@
   </head>
 
   <body>
-    
+
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.NewPlanVersionController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.NewPlanVersionController" id="form-page" class="container-pf-nav-pf-vertical container-fluid apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" apiman-i18n-key="new-plan-version">New Plan Version</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p apiman-i18n-key="new-planversion-help-text" class="col-md-6 apiman-label-faded">Create a new version of this Plan, allowing multiple different versions of the Plan to be managed at the same time.</p>
+        <p apiman-i18n-key="new-planversion-help-text" class="col-md-6 apiman-label-faded">Create a new version of this plan, allowing multiple different versions of the Plan to be managed at the same time.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -25,7 +25,7 @@
         <dl>
           <dt apiman-i18n-key="version">Version</dt>
           <dd>
-            <input ng-model="planversion.version" type="text" class="apiman-form-control form-control version" id="apiman-version" apiman-i18n-key="enter-plan-version" placeholder="Enter version..."></input>
+            <input ng-model="planversion.version" type="text" class="apiman-form-control form-control version" id="apiman-version" apiman-i18n-key="enter-plan-version" placeholder="Enter version...">
           </dd>
         </dl>
       </div>
@@ -50,6 +50,6 @@
         <button id="create-version" ng-disabled="!planversion.version" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-version" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewPlanVersion()">Create Version</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </body>
 </html>

@@ -43,7 +43,7 @@ module Apiman {
                 $('[data-toggle="tooltip"]').attr('data-original-title', 'Copied!');
 
                 // This is a workaround for jQuery + TS not playing well together
-                (<any>$('[data-toggle="tooltip"]')).tooltip('show');
+                (<any>$('[data-toggle="tooltip"]')).closest("Button").tooltip('show');
             };
 
             // Call when the mouse leaves the button the tooltip is attached to

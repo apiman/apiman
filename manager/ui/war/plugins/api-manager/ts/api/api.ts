@@ -207,7 +207,7 @@ module Apiman {
                 $scope.retireButton.state = 'in-progress';
 
                 var options = {
-                    message: 'Do you really want to retire this API?  This action cannot be undone.',
+                    message: 'Do you really want to retire this API?  This action CANNOT be undone.',
                     title: 'Confirm Retire API'
                 };
 

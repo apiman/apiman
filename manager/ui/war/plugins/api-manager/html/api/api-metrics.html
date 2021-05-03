@@ -10,7 +10,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div id="form-page" ng-controller="Apiman.ApiMetricsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div id="form-page" ng-controller="Apiman.ApiMetricsController" class="page container-pf-nav-pf-vertical container-fluid" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/api/api_entity.include'"></div>
@@ -27,8 +27,8 @@
           <div class="col-md-12">
             <div class="title" apiman-i18n-key="api-metrics">API Metrics</div>
             <p class="explanation" apiman-i18n-key="api-metrics-explanation">
-                Now that this API is published to the gateway, it *may* be consumed by
-                API clients.  Use this tab to view basic metrics/analytics for the API.
+                Now that this API is published to the gateway, it may be consumed by
+                API clients. Use this tab to view basic metrics/analytics for the API.
             </p>
             <div id="apiman-api-metrics-selector" style="margin-top: 15px; padding-top: 8px; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd">
               <span style="margin-right: 5px" apiman-i18n-key="api-metrics.show">Show</span>
@@ -131,7 +131,7 @@
         </div>
         <!-- /Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

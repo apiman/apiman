@@ -7,15 +7,15 @@
 
   <body>
   <div>
-    
+
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.NewPolicyController" id="form-page" class="container apiman-new-policy apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.NewPolicyController" id="form-page" class="container-pf-nav-pf-vertical container-fluid apiman-new-policy apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" data-field="heading" apiman-i18n-key="add-policy">Add Policy</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-policy-help-text" class="apiman-label-faded">Adding a policy will allow its specific functionality to be applied to the API invocation as part of the overall Policy Chain.</p>
+        <p class="col-md-6 apiman-label-faded" apiman-i18n-key="new-policy-help-text" class="apiman-label-faded">Adding a policy will allow its specific functionality to be applied to the API invocation as part of the overall policy chain.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -55,11 +55,11 @@
       </div>
 
       <!-- Create Button -->
-      <div class="row">
+      <div class="row policy-buttons">
         <button id="add-policy" ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-policy" placeholder="Adding..." data-icon="fa-cog" ng-click="addPolicy()">Add Policy</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
     </div>
   </body>
 </html>

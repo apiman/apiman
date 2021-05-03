@@ -12,7 +12,7 @@
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ApiPlansController"
          id="page-content"
-         class="page container"
+         class="page container-pf-nav-pf-vertical container-fluid"
          data-field="page"
          ng-cloak=""
          ng-show="pageState == 'loaded'">
@@ -32,7 +32,7 @@
             <div class="title"
                  apiman-i18n-key="public-api">Public API</div>
             <div>
-              <span apiman-i18n-key="public-api-help">Select this option if you wish this API to be accessible directly, without an API Contract.  Typically (but not always) this option is used instead of selecting plan(s).</span>
+              <span apiman-i18n-key="public-api-help">Select this option if this API should be accessible directly, without an API contract. Typically this option is used instead of selecting plan(s).</span>
             </div>
             <div style="padding: 8px; margin-bottom: 10px">
               <input ng-model="updatedApi.publicAPI"
@@ -46,14 +46,14 @@
             <div class="title"
                  apiman-i18n-key="available-plans">Available Plans</div>
             <div>
-              <span apiman-i18n-key="available-plans-help">Choose which plans should be presented when Client Apps create a link (Contract) to this API. Note that only plans in a 'Locked' state show up in this list.</span>
+              <span apiman-i18n-key="available-plans-help">Choose which plans should be presented when Client Apps create a contract to this API. Only plans in a Locked state show up in this list..</span>
             </div>
             <div class="apiman-divider-40"
                  ng-show="plans.length == 0">
               <div class="alert alert-warning">
                 <span class="pficon pficon-info"></span>
-                <span apiman-i18n-key="api-plans.no-locked-plans-found">No locked plans were found in the Organization.  Please create and lock at least one plan before attempting to configure them here.  Or simply make your APIs "public" using the checkbox above!</span>
-              </div>            
+                <span apiman-i18n-key="api-plans.no-locked-plans-found">No locked plans were found in the organization. Please create and lock at least one plan before attempting to configure them here. Or make your APIs Public using the checkbox above.</span>
+              </div>
             </div>
             <!-- The plans to choose from -->
             <div class="apiman-plan-selector apiman-divider-40">
@@ -112,7 +112,7 @@
         </div>
         <!-- /Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

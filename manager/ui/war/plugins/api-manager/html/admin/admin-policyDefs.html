@@ -9,7 +9,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.AdminPolicyDefsController" class="page container admin-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.AdminPolicyDefsController" class="page container-pf-nav-pf-vertical container-fluid admin-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <div ng-include="'plugins/api-manager/html/admin/admin_bc.include'"></div>
@@ -17,7 +17,7 @@
       </div>
       <div class="row">
         <!-- Admin Content -->
-        <div class="col-md-9 admin-content">
+        <div class="col-md-12 admin-content">
           <div class="container-fluid">
             <div class="row">
               <h2 class="title" data-field="heading" apiman-i18n-key="policy-definitions">Policy Definitions</h2>

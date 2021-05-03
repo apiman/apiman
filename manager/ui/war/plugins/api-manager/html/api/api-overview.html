@@ -10,7 +10,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.ApiOverviewController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.ApiOverviewController" class="page container-pf-nav-pf-vertical container-fluid" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/api/api_entity.include'"></div>
@@ -27,61 +27,60 @@
           <div class="col-md-12">
             <h1 apiman-i18n-key="api-details">API Details</h1>
             <p apiman-i18n-key="api-overview.api-description">
-              This is the API details page.  Use this page to modify the meta-data, plans, and 
-              policies for the API.  There is no need to follow the tabs in order, but note that
-              you will need to fill out a minimum amount of data before the API can be published
-              to the Gateway.  In particular, the Implementation and Plans tabs are important (more
-              information below).
+              Use the API details to modify the metadata, plans and policies for the API. There is no need to follow the
+              tabs in order, but you will need to fill out a minimum amount of data before the API can be published to
+              the gateway. In particular, the <b>Implementation</b> and <b>Plans</b> tabs are important.
             </p>
-            
-            <h2 apiman-i18n-key="impl">Implementation</h2>
+
+            <h2><a href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/impl" apiman-i18n-key="impl">Implementation</a></h2>
             <p apiman-i18n-key="api-overview.impl-description">
-              The 'Implementation' tab is where you go to configure the details of the real API
-              being managed.  This is where you tell apiman where the API is, so that we can 
-              actually invoke it at runtime.
+              The <b>Implementation</b> tab is where you go to configure the details of the real API being managed. This is
+              where you tell the gateway where the API is, so that we can actually invoke it at runtime.
             </p>
-            
-            <h2 apiman-i18n-key="definition">Definition</h2>
+
+            <h2><a href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/def" apiman-i18n-key="definition">Definition</a></h2>
             <p apiman-i18n-key="api-overview.definition-description">
-              The 'Definition' tab allows you to configure an optional API Definition document
-              for your API.  A API Definition is a detailed description of the capabilities
-              of your API (operation names, http verbs, data models).  For example, you might
-              add a Swagger spec document as your API Definition.
+              The <b>Definition</b> tab allows you to configure an optional API definition document for your API. An API
+              definition is a detailed description of the capabilities of your API (operation names, http verbs, data
+              models). You can add a Swagger spec document as your API definition.
             </p>
 
-            <h2 apiman-i18n-key="plans">Plans</h2>
+            <h2><a href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/plans" apiman-i18n-key="plans">Plans</a></h2>
             <p apiman-i18n-key="api-overview.plans-description">
-              The 'Plans' tab is used to configure which Plans (already defined in the Organization)
-              are available when a Client App wishes to create an API Contract with this 
-              API.  Optionally, an API can also be marked as "Public", which means that no
-              API Contract is required (the API can be invoked without sending an API Key).
+              The <b>Plans</b> tab is used to configure which plans (defined in the organization) are available when a client
+              wishes to create an API contract with this API. Optionally, an API can also be marked as Public. In that
+              case, no API contract is required and the API can be invoked without sending an API Key.
             </p>
-            
-            <h2 apiman-i18n-key="policies">Policies</h2>
+
+            <h2><a href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/policies" apiman-i18n-key="policies">Policies</a></h2>
             <p apiman-i18n-key="api-overview.policies-description">
-              The 'Policies' tab is where you go if you wish to configure any policies that should
-              be enforced for *all* requests to the API, regardless of which user, Client App,
-              or Plan is being used.  In other words, API-level policies.
+              The <b>Policies</b> tab is where API-level policies can be configured. These policies should be enforced for all
+              requests to the API, regardless of which user, Client App, or plan is being used.
             </p>
-            
-            <h2 apiman-i18n-key="contracts">Contracts</h2>
+
+            <h2 apiman-status="Ready,Created,Retired" apiman-i18n-key="contracts">Contracts</h2>
+            <h2 apiman-status="Published"><a href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/contracts" apiman-i18n-key="contracts">Contracts</a></h2>
             <p apiman-i18n-key="api-overview.contracts-description">
-              The 'Contracts' tab will show a table of all Client Apps that have created API
-              Contracts to this API.  In other words, it shows all of the registered 
-              consumers of the API.  Note that if the API is marked as "Public", this tab
-              will likely be empty.
+              The <b>Contracts</b> tab shows all of the registered consumers of the API. If the API is marked as Public, this
+              tab will likely be empty.
             </p>
 
-            <h2 apiman-i18n-key="endpoint">Endpoint</h2>
+            <h2 apiman-status="Ready,Created,Retired" apiman-i18n-key="endpoint">Endpoint</h2>
+            <h2 apiman-status="Published"><a href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/endpoint" apiman-i18n-key="endpoint">Endpoint</a></h2>
             <p apiman-i18n-key="api-overview.endpoint-description">
-              The 'Endpoint' tab will show you information about how to invoke the API once
-              it is published to the API Gateway.
+              The <b>Endpoint</b> tab will show you information about how to invoke the API once it is published to the API
+              gateway.
             </p>
 
-            <h2 apiman-i18n-key="activity">Change Log</h2>
+            <h2 ng-show="showMetrics" apiman-status="Ready,Created,Retired" apiman-i18n-key="metrics">Metrics</h2>
+            <h2 ng-show="showMetrics" apiman-status="Published"><a href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/metrics" apiman-i18n-key="metrics">Metrics</a></h2>
+            <p apiman-i18n-key="api-overview.metrics-description">
+              The <b>Metrics</b> tab contains basic analytic information for the API. Use this tab to monitor the usage of the API.
+            </p>
+
+            <h2><a href="{{ pluginName }}/orgs/{{ api.organization.id }}/apis/{{ api.id }}/{{ version.version }}/activity" apiman-i18n-key="activity">Change Log</a></h2>
             <p apiman-i18n-key="api-overview.activity-description">
-              The 'Change Log' tab shows a history of all the changes made to the API.  Essentially
-              it is an audit log.
+              The <b>Change Log</b> tab shows a history of all the changes made to the API. Essentially this is an audit log.
             </p>
             
           </div>
@@ -90,7 +89,7 @@
         </div>
         <!-- /Content -->
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

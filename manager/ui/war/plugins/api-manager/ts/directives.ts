@@ -203,11 +203,7 @@ module Apiman {
                         if (entityType == 'client' || entityType == 'clients') {
                             return entity.status == 'Retired';
                         } else if (entityType == 'api' || entityType == 'apis') {
-                            if (entity.publicAPI) {
-                                return entity.status == 'Retired';
-                            } else {
-                                return (entity.status !== 'Created' && entity.status !== 'Ready');
-                            }
+                            return entity.status == 'Retired';
                         } else {
                             return (entity.status !== 'Created' && entity.status !== 'Ready');
                         }

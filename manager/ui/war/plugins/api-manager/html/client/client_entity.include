@@ -71,7 +71,7 @@
           <div class="col-md-5" apiman-permission="clientAdmin">
             <div>
               <div apiman-status="Created,Ready,Registered"><a apiman-i18n-key="ttdo-consume-apis" data-field="ttd_toConsumeApis" href="{{ pluginName }}/browse/apis">Search for APIs to consume</a></div>
-              <div apiman-status="Created,Ready,Registered"><a apiman-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract">Create a new API Contract for this Client App</a></div>
+              <div apiman-status="Created,Ready,Registered"><a apiman-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract">Create a new API contract for this Client App</a></div>
               <div><a apiman-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id}}/{{ version.version }}/new-version">Create a new version of this Client App (New Version)</a></div>
             </div>
             <!-- The Register Action -->
@@ -84,7 +84,7 @@
           </div>
         </div>
 
-        <!-- Delete Client App Modal Template -->
+        <!-- Delete Client Modal Template -->
         <script type="text/ng-template"
                 id="deleteModal.html">
           <div class="modal-header">
@@ -101,15 +101,17 @@
             <p class="bg-warning"
                style="padding: 15px 25px; margin: -18px -25px 10px -25px;"
                apiman-i18n-key="client-delete-modal-confirmation-warning">
-              Unexpected bad things will happen if you don't read this!
+              Important Note!
             </p>
             <p class="explanation"
                apiman-i18n-key="client-delete-modal-confirmation-description">
               This action <b>CANNOT</b> be undone. This will permanently delete the client app, including all of its
-              versions, their policies, contracts, endpoint properties and change logs. Please back up the project if you think you may want to roll back the changes, as this action is irrevocable.
+              versions, their policies, contracts, endpoint properties and change logs. Please back up the project if
+              you may want to roll back the changes, as this action is irrevocable.
             </p>
             <p class="explanation">
-              <b apiman-i18n-key="client-delete-modal-confirmation-instructions">Please type in the name of the client app to confirm.</b>
+              <b apiman-i18n-key="client-delete-modal-confirmation-instructions">Please type in the name of the client app
+                to confirm:</b>
             </p>
             <input type="text"
                    class="apiman-form-control form-control"

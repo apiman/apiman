@@ -45,7 +45,7 @@ module Apiman {
 
             function loadFirstPage() {
                 if ($scope.orgs.length == 0) {
-                    $scope.searchOrg('*', 1, 10);
+                    $scope.searchOrg('*', 1, 12);
                 }
             }
 

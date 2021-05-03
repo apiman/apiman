@@ -9,7 +9,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.AdminRolesController" class="page container admin-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.AdminRolesController" class="page container-pf-nav-pf-vertical container-fluid admin-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <div ng-include="'plugins/api-manager/html/admin/admin_bc.include'"></div>
@@ -17,14 +17,16 @@
       </div>
       <div class="row">
         <!-- Admin Content -->
-        <div class="col-md-9 admin-content">
+        <div class="col-md-12 admin-content">
           <div class="container-fluid">
             <div class="row">
               <h2 class="title" apiman-i18n-key="role-management" apiman-i18n-key="role-management">Role Management</h2>
             </div>
             <!-- Helpful hint -->
             <div class="row">
-              <p class="col-md-10 apiman-label-faded" apiman-i18n-key="role-management-help-text" class="apiman-label-faded">Create and modify roles that users can be granted membership in for any organization.  Each role grants the user a set of permissions, allowing her to do specific things within the organization.</p>
+              <p class="col-md-10 apiman-label-faded" apiman-i18n-key="role-management-help-text"
+                 class="apiman-label-faded">Create and modify roles for apiman users. Each role grants the user
+                a set of permissions, allowing to do specific things within an organization.</p>
             </div>
             <!-- HR -->
             <div class="row hr-row">

@@ -7,7 +7,7 @@
 
   <body>
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.PlanPoliciesController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.PlanPoliciesController" class="container-pf-nav-pf-vertical container-fluid page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/plan/plan_bc.include'"></div>
       <!-- Entity Summary Row -->
       <div ng-include="'plugins/api-manager/html/plan/plan_entity.include'"></div>
@@ -23,7 +23,10 @@
           <div class="col-md-9">
             <!-- Title and help text -->
             <div class="title" apiman-i18n-key="plan-policies">Plan Policies</div>
-            <div class="description" apiman-i18n-key="plan-policies-help">Here is a list of all Policies defined for this Plan.  These Policies will be applied to all API invocations made by Client Apps using this Plan in a Contract (in addition to whatever Policies are defined individually by the Client App and/or API).</div>
+            <div class="description" apiman-i18n-key="plan-policies-help">Here is a list of all policies defined for
+              this plan. These policies will be applied to all API invocations made by Client Apps that use this plan in a
+              contract, in addition to whatever policies are defined individually by the Client App and/or API.
+            </div>
             <hr />
             <!-- The list of policies -->
             <div apiman-permission="planEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
@@ -35,7 +38,8 @@
               <div class="apiman-no-content container-fluid" ng-hide="policies.length > 0">
                 <div class="row">
                   <div class="col-md-9">
-                    <p class="apiman-no-entities-description" apiman-i18n-key="no-policies-for-plan">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
+                    <p class="apiman-no-entities-description" apiman-i18n-key="no-policies-for-plan">No policies are
+                      defined yet. Use the <b>Add Policy</b> button above to define a new policy.</p>
                   </div>
                   <div apiman-permission="planEdit" apiman-status="Created,Ready" class="col-md-3">
                     <div class="apiman-no-entities-arrow"></div>
@@ -43,13 +47,13 @@
                 </div>
               </div>
               <div class="clearfix"></div>
-              <apiman-policy-list ng-model="policies" remove-function="removePolicy" reorder-function="reorderPolicies" type="plans" org-id="{{ org.id }}" page-id="{{ plan.id }}" version="{{ version.version }}"></policy-list>
+              <apiman-policy-list ng-model="policies" remove-function="removePolicy" reorder-function="reorderPolicies" type="plans" org-id="{{ org.id }}" page-id="{{ plan.id }}" version="{{ version.version }}"></apiman-policy-list>
             </div>
           </div>
         </div>
         <!-- /Content -->
       </div>
 
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </body>
 </html>

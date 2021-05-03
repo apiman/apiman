@@ -10,78 +10,93 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.UserApisController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
-      <div ng-include="'plugins/api-manager/html/user/user_bc.include'"></div>
-      <div class="row">
-        <!-- Left Hand Side -->
-        <div ng-include="'plugins/api-manager/html/user/user_entity.include'"></div>
-        <!-- /Left Hand Side -->
+    <div ng-controller="Apiman.UserApisController" class="page container-pf-nav-pf-vertical container-fluid" data-field="page" ng-cloak=""
+         ng-show="pageState == 'loaded'">
+        <div ng-include="'plugins/api-manager/html/user/user_bc.include'"></div>
+        <div class="col-md-12">
+            <div class="row">
+                <!-- Left Hand Side -->
+                <div ng-include="'plugins/api-manager/html/user/user_entity.include'"></div>
+                <!-- /Left Hand Side -->
 
-        <!-- Center Content -->
-        <div class="col-md-8">
-          <div class="apiman-entitytabs">
-            <div ng-include="'plugins/api-manager/html/user/user_tabs.include'"></div>
-            <div id="entitytabsContent" class="tab-content">
+                <!-- Center Content -->
+                <div class="col-md-8">
+                    <div class="apiman-entitytabs">
+                        <div ng-include="'plugins/api-manager/html/user/user_tabs.include'"></div>
+                        <div id="entitytabsContent" class="tab-content">
 
-              <!-- Apis Tab Content -->
-              <div class="tab-pane active" id="tab-apis">
-                <div class="apiman-filters apiman-apis-filters">
-                  <div>
-                    <apiman-search-box id="apis-filter" apiman-i18n-key="filter-user-apis" function="filterApis" placeholder="Filter by org or API name..." />
-                  </div>
-                  <a id="new-api" apiman-i18n-key="new-api" data-field="toNewApi" apiman-i18n-key="new-api" href="{{ pluginName}}/new-api" class="btn btn-primary pull-right">New API</a>
-                </div>
-                <div class="clearfix"></div>
-                <!-- The list of apis the user has access to -->
-                <div class="apiman-apis">
-                  
-                  <div class="apiman-no-content container-fluid" ng-hide="apis.length > 0">
-                    <div class="row">
-                      <div class="col-md-9">
-                        <p class="apiman-no-entities-description" apiman-i18n-key="no-apis-found-for-user">It looks like this user isn't responsible for any APIs. Maybe she's just all about the Client Apps? If not, maybe she could log in and try creating a New API.</p>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="apiman-no-entities-arrow"></div>
-                      </div>
-                    </div>
-                  </div>
+                            <!-- Apis Tab Content -->
+                            <div class="tab-pane active" id="tab-apis">
+                                <div class="apiman-filters apiman-apis-filters">
+                                    <div>
+                                        <apiman-search-box id="apis-filter" apiman-i18n-key="filter-user-apis"
+                                                           function="filterApis"
+                                                           placeholder="Filter by org or API name..."/>
+                                    </div>
+                                    <a id="new-api" apiman-i18n-key="new-api" data-field="toNewApi"
+                                       apiman-i18n-key="new-api" href="{{ pluginName}}/new-api"
+                                       class="btn btn-primary pull-right">New API</a>
+                                </div>
+                                <div class="clearfix"></div>
+                                <!-- The list of apis the user has access to -->
+                                <div class="apiman-apis">
 
-                  <div class="apiman-no-content container-fluid" ng-show="apis.length > 0 && filteredApis.length == 0">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <p class="apiman-no-entities-description" apiman-i18n-key="no-apis-found-for-filter">No APIs found matching your filter criteria - please try searching for something different.</p>
-                      </div>
-                    </div>
-                  </div>
+                                    <div class="apiman-no-content container-fluid" ng-hide="apis.length > 0">
+                                        <div class="row">
+                                            <div class="col-md-9">
+                                                <p class="apiman-no-entities-description"
+                                                   apiman-i18n-key="no-apis-found-for-user">You are not responsible for
+                                                    any APIs yet. Use the <b>New API</b> button to create one.</p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="apiman-no-entities-arrow"></div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                  <div class="container-fluid apiman-summaryrow" ng-repeat="api in filteredApis">
-                    <div class="row">
-                      <a href="{{ pluginName }}/orgs/{{ api.organizationId }}/apis">{{ api.organizationName }}</a>
-                      <span apiman-i18n-skip>/</span>
-                      <span class="title"><a href="{{ pluginName }}/orgs/{{ api.organizationId }}/apis/{{ api.id }}">{{ api.name }}</a></span>
-                      <a class="apiman-summaryrow-icon">
-                        <i class="fa fa-clock-o fa-fw"></i>
-                        <span class="title-summary-item" apiman-i18n-key="created-on">Created on</span>
-                        <span class="title-summary-item">{{ api.createdOn | date:'yyyy-MM-dd' }}</span>
-                      </a>
-                    </div>
-                    <div class="row">
+                                    <div class="apiman-no-content container-fluid"
+                                         ng-show="apis.length > 0 && filteredApis.length == 0">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <p class="apiman-no-entities-description"
+                                                   apiman-i18n-key="no-apis-found-for-filter">No APIs found matching your
+                                                    filter criteria - please try searching for something different.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="container-fluid apiman-summaryrow" ng-repeat="api in filteredApis">
+                                        <div class="row">
+                                            <a href="{{ pluginName }}/orgs/{{ api.organizationId }}/apis">{{
+                                                api.organizationName }}</a>
+                                            <span apiman-i18n-skip>/</span>
+                                            <span class="title"><a
+                                                    href="{{ pluginName }}/orgs/{{ api.organizationId }}/apis/{{ api.id }}">{{ api.name }}</a></span>
+                                            <a class="apiman-summaryrow-icon">
+                                                <i class="fa fa-clock-o fa-fw"></i>
+                                                <span class="title-summary-item"
+                                                      apiman-i18n-key="created-on">Created on</span>
+                                                <span class="title-summary-item">{{ api.createdOn | date:'yyyy-MM-dd' }}</span>
+                                            </a>
+                                        </div>
+                                        <div class="row">
                       <span class="description">
                         {{ api.description }}
                       </span>
+                                        </div>
+                                        <hr/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Apis Tab Content -->
+
+                        </div>
                     </div>
-                    <hr/>
-                  </div>
                 </div>
-              </div>
-              <!-- End Apis Tab Content -->
-              
+                <!-- /Center Content -->
             </div>
-          </div>
         </div>
-        <!-- /Center Content -->
-        
-      </div>
-    </div> <!-- /container -->
-  </body>
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
+</div>
+</body>
 </html>

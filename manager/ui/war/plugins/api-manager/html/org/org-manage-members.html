@@ -10,7 +10,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.OrgManageMembersController as membersCtrl" class="container page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.OrgManageMembersController as membersCtrl" class="container-pf-nav-pf-vertical container-fluid page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/org/org-manage-members_bc.include'"></div>
       <div class="row">
         <div class="col-md-12">
@@ -30,7 +30,7 @@
         <div class="col-md-12 apiman-manage-members">
           <div class="container-fluid apiman-cards" data-field="cards">
             <div ng-repeat="member in filteredMembers">
-              <apiman-user-card member="member" roles="roles" org-id="{{ organizationId }}"></api-manager-user-card>
+              <apiman-user-card member="member" roles="roles" org-id="{{ organizationId }}"></apiman-user-card>
             </div>
           </div>
         </div>

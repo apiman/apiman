@@ -2,20 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
   <div>
-    
+
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.NewOrgController" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.NewOrgController" class="container-pf-nav-pf-vertical container-fluid apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" apiman-i18n-key="new-organization">New Organization</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p apiman-i18n-key="new-org-help-text" class="col-md-6 apiman-label-faded">Create a new Organization within which to manage your APIs and Client Apps.</p>
+        <p apiman-i18n-key="new-org-help-text" class="col-md-6 apiman-label-faded">Create a new organization in which
+          you can manage APIs, client apps, plans and users.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -26,7 +27,7 @@
         <dl class="name">
           <dt apiman-i18n-key="organization-name">Organization Name</dt>
           <dd>
-            <input ng-model="org.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-org-name" placeholder="Enter organization name..."></input>
+            <input ng-model="org.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-org-name" placeholder="Enter organization name...">
           </dd>
         </dl>
       </div>
@@ -35,7 +36,7 @@
         <dl>
           <dt apiman-i18n-key="description">Description</dt>
           <dd>
-            <input ng-model="org.description" data-field="description" type="text" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-org-description" placeholder="Enter description (optional)..."></input>
+            <input ng-model="org.description" data-field="description" type="text" class="apiman-form-control form-control description" id="apiman-description" apiman-i18n-key="enter-org-description" placeholder="Enter description (optional)...">
           </dd>
         </dl>
       </div>
@@ -48,7 +49,7 @@
         <button ng-disabled="!org.name" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-organization" placeholder="Creating..." data-icon="fa-cog"  ng-click="saveNewOrg()">Create Organization</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

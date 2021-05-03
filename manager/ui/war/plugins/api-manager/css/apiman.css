@@ -1,8 +1,6 @@
-
 html {
- overflow: overlay;
+  overflow: auto;
 }
-
 body {
   line-height: normal;
   font-size: 13px;
@@ -195,7 +193,7 @@ textarea.apiman-form-data {
   }
 }
 #apiman-progress-indicator {
-  border-bottom: 2px solid rgb(25, 157, 222);
+  border-bottom: 1px solid black;
   position: fixed;
   top: 0px;
   width: 100%;
@@ -369,8 +367,11 @@ textarea.apiman-form-data {
 }
 
 div.page {
-  margin-top: 51px;
-  margin-left: 210px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  overflow: auto;
+  /*full height - header*/
+  height: calc(100vh - 60px);
 }
 
 .dash-group {
@@ -434,7 +435,6 @@ div.page {
 .browse-items .item {
   position: relative;
   padding: 10px;
-  width: 20%;
   border: 1px solid rgb(218, 218, 218);
   float: left;
   margin-right: 15px;
@@ -2002,32 +2002,11 @@ html, body {height: 100%;}
   margin-left: 30px;
 }
 
-.sidebar {
-  height: 100%;
-  width: 200px;
-  position: fixed;
-  top:52px;
-  padding: 5px;
-  background: whitesmoke url('../img/sidebar-bg.png') repeat-x;
-  white-space: nowrap;
-  z-index: 1;
-}
-
-.sidebar a {
-  padding: 20px 10px 20px 10px;
-  text-decoration: none;
-  font-size: 14px;
-  color: black;
-  display: block;
-}
-
-.sidebar a:hover {
-  font-weight: bold;
-}
-
-.sidebar-category {
-  color: black;
-  padding: 2px;
+.icon-text {
+  vertical-align: middle;
+  text-align: center;
+  margin-right:15px;
+  width: 20px;
 }
 
 .icon-text {
@@ -2035,4 +2014,140 @@ html, body {height: 100%;}
   text-align: center;
   margin-right:15px;
   width: 20px;
+}
+
+
+/*Vertical Styling*/
+.navbar-pf-vertical {
+  border-bottom: 1px #FFFFFF;
+  background-color: rgb(36, 52, 70);
+}
+
+.nav-pf-vertical {
+  background: whitesmoke url('../img/sidebar-bg.png') repeat-x;
+  max-width: 200px;
+  /*force 1px border with top*/
+  top: 61px;
+  border-right: none;
+
+}
+.nav-pf-secondary-nav {
+  /*force 1px border with top*/
+  top: 61px;
+  border: none;
+  background: whitesmoke url('../img/sidebar-bg.png') repeat-x;
+  box-shadow: inset 10px 0 10px -5px rgb(109, 109, 109);
+}
+
+.nav-pf-vertical.collapsed {
+  max-width: 75px;
+}
+
+.list-group-item {
+  max-width: 200px;
+}
+
+.nav-item-pf-header {
+  color: black;
+  font-size: 16px;
+  margin: 18px 20px 10px 20px;
+}
+
+.nav-pf-vertical .list-group-item  a, .nav-pf-vertical .list-group-item a .fa, .nav-pf-vertical .list-group-item.active a .fa {
+  color: black;
+}
+
+.nav-pf-vertical .list-group-item.active  a, .nav-pf-vertical .list-group-item:hover a, .nav-pf-vertical .list-group-item:hover a .fa {
+  background-color: transparent;
+  color: black;
+}
+
+.nav-pf-vertical .nav-pf-secondary-nav .list-group-item:hover a {
+  background-color: transparent;
+  color: black;
+}
+
+.nav-pf-vertical .nav-pf-secondary-nav .list-group-item a {
+  background-color: transparent;
+  color: black;
+}
+
+.nav-pf-vertical .list-group-item.active a:before {
+  background-color: #39a5dc;
+}
+
+/*The follwing section is for the icons on right side in the navbar*/
+/*Section start*/
+.navbar-pf-vertical .nav .nav-item-iconic,
+.navbar-pf-vertical .nav .nav-item-iconic .caret,
+.navbar-pf-vertical .nav .nav-item-iconic .fa,
+.navbar-pf-vertical .nav .nav-item-iconic .pficon {
+  color: white;
+  font-size: 16px;
+  padding-right: 5px;
+}
+
+.navbar-pf-vertical .nav .nav-item-iconic:hover,
+.navbar-pf-vertical .nav .nav-item-iconic:hover .caret,
+.navbar-pf-vertical .nav .nav-item-iconic:focus,
+.navbar-pf-vertical .nav .nav-item-iconic:focus .caret,
+.navbar-pf-vertical .nav .nav-item-iconic:active,
+.navbar-pf-vertical .nav .nav-item-iconic:active .caret,
+.navbar-pf-vertical .nav .nav-item-iconic:hover .fa,
+.navbar-pf-vertical .nav .nav-item-iconic:focus .fa,
+.navbar-pf-vertical .nav .nav-item-iconic:active .fa {
+  text-decoration: underline;
+  background: transparent;
+}
+
+.navbar-pf-vertical .nav .open > .nav-item-iconic .fa,
+.navbar-pf-vertical .nav .open > .nav-item-iconic .caret,
+.navbar-pf-vertical .nav .open > .nav-item-iconic:hover .fa,
+.navbar-pf-vertical .nav .open > .nav-item-iconic:hover .caret,
+.navbar-pf-vertical .nav .open > .nav-item-iconic:focus .fa,
+.navbar-pf-vertical .nav .open > .nav-item-iconic:focus .caret{
+  text-decoration: underline;
+  background: transparent;
+}
+/*Section ende*/
+
+.secondary-nav-item-pf a:after {
+  color: black;
+}
+
+.navbar-pf-vertical .navbar-toggle .icon-bar {
+  /*grey hamburger menu icon*/
+  background: white;
+}
+
+.navbar-pf-vertical .navbar-toggle:hover .icon-bar,
+.navbar-pf-vertical .navbar-toggle:focus .icon-bar {
+  /*grey hamburger menu icon*/
+  background: whitesmoke url('../img/sidebar-bg.png') repeat-x;
+}
+
+/*.navbar-pf-vertical .navbar-brand {
+    padding: 19px 0;
+}*/
+
+/*angulr-scrollable-table*/
+.scrollableContainer .headerSpacer {
+  background-clip: padding-box;
+  background-color: #f5f5f5;
+  background-image: linear-gradient(to bottom, #fafafa 0%, #ededed 100%);
+  background-repeat: repeat-x;
+}
+
+
+#logo {
+  background-image: url(../img/logo-header.png);
+  margin-top: 3px;
+  margin-left: 5px;
+  width: 120px;
+  height: 30px;
+  float: left;
+}
+.container-pf-nav-pf-vertical {
+  padding-left: 5vw;
+  padding-right: 5vw;
 }

@@ -3,7 +3,7 @@
 module Apiman {
     
     var pages = [
-      'overview', 'find-apis', 'choose-plans', 'import-apis'
+        'find-apis', 'choose-plans', 'import-apis'
     ];
 
     export var ApiRedirectController = _module.controller("Apiman.ImportApisController",
@@ -35,6 +35,12 @@ module Apiman {
             };
             
             var pageData = {
+                // orgApis = Already existing apis of an organization
+                orgApis: $q(function(resolve, reject) {
+                    OrgSvcs.query({ organizationId: params.org, entityType: 'apis' }, function(apis) {
+                        resolve(apis);
+                    }, reject);
+                }),
                 org: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org, entityType: '' }, resolve, reject);
                 }),
@@ -102,53 +108,35 @@ module Apiman {
             $scope.$watch('importInfo', validatePage, true);
             $scope.$watch('currentPage', validatePage);
             
-            $scope.currentPage = 'overview';
+            $scope.currentPage = 'find-apis';
             $scope.currentPageIdx = 0;
             $scope.currentPageValid = true;
             $scope.apis = [];
-            
-            $scope.importSources = [
-                {
-                    id: 'api-catalog',
-                    icon: 'search-plus',
-                    name: "API Catalog",
-                    disabled: false
-                },
-                {
-                    id: 'wadl',
-                    icon: 'file-text-o',
-                    name: "WADL File",
-                    disabled: true
-                },
-                {
-                    id: 'swagger',
-                    icon: 'ellipsis-h',
-                    name: "Swagger File",
-                    disabled: true
-                }
-            ];
             $scope.importFrom = 'api-catalog';
             
             $scope.searchApiCatalog = function(searchText) {
-                $scope.searchButton.state = 'in-progress';
-                $scope.searchDisabled = true;
-                var body:any = {};
-                body.filters = [];
-                body.filters.push({ "name" : "name", "value" : searchText, "operator" : "like" });
-                var criteria = angular.toJson(body);
-                Logger.log("Searching API catalogs: {0}", criteria);
-                ApiCatalogSvcs.search(criteria, function(reply) {
-                    $scope.apis = reply.beans;
-                    Logger.log("Found {0} apis.", reply.beans.length);
-                    $scope.searchButton.state = 'complete';
-                    $scope.searchDisabled = false;
-                }, function(error) {
-                    Logger.error(error);
-                    // TODO do something interesting with the error
-                    $scope.searchButton.state = 'complete';
-                    $scope.searchDisabled = false;
-                });
-            }
+                // only do something if string is not empty, this avoids unnecessary exceptions in the backend
+                if (searchText) {
+                    $scope.searchButton.state = 'in-progress';
+                    $scope.searchDisabled = true;
+                    var body:any = {};
+                    body.filters = [];
+                    body.filters.push({ "name" : "name", "value" : searchText, "operator" : "like" });
+                    var criteria = angular.toJson(body);
+                    Logger.log("Searching API catalogs: {0}", criteria);
+                    ApiCatalogSvcs.search(criteria, function(reply) {
+                        $scope.apis = reply.beans;
+                        Logger.log("Found {0} apis.", reply.beans.length);
+                        $scope.searchButton.state = 'complete';
+                        $scope.searchDisabled = false;
+                    }, function(error) {
+                        Logger.error(error);
+                        // TODO do something interesting with the error
+                        $scope.searchButton.state = 'complete';
+                        $scope.searchDisabled = false;
+                    });
+                }
+            };
             
             var importApis = function(apis) {
                 if (apis.length == 0) {
@@ -170,7 +158,7 @@ module Apiman {
                     description: api.description,
                     initialVersion: '1.0',
                     endpoint: api.endpoint,
-                    endpointType: api.endpointType,
+                    endpointType: (api.endpointType === 'ui') ? 'rest' : api.endpointType,
                     publicAPI: $scope.importInfo.isPublic,
                     plans: $scope.importInfo.plans,
                     definitionUrl: api.definitionUrl,
@@ -233,8 +221,19 @@ module Apiman {
                     }
                 });
             }
+
+            // check if API is already existing in organization by name
+            $scope.isAlreadyExisting = function(api) {
+                for (let i = 0; i < $scope.orgApis.length; i++){
+                    if ($scope.orgApis[i].name == api.name){
+                        return true;
+                    }
+                }
+            };
             
             PageLifecycle.loadPage('ImportApis', 'apiEdit', pageData, $scope, function() {
+                // Load all apis from catalog on pageload
+                $scope.searchApiCatalog("*");
                 PageLifecycle.setPageTitle('import-apis');
             });
         }]);

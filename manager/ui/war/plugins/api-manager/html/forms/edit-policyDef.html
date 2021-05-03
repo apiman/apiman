@@ -9,7 +9,7 @@
   <div>
     
     <div ng-include="headerInclude"></div>   
-    <div ng-controller="Apiman.EditPolicyDefController" id="form-page" class="container apiman-edit-policy apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.EditPolicyDefController" id="form-page" class="container-pf-nav-pf-vertical container-fluid apiman-edit-policy apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
 
       <div class="row">
         <h2 class="title" data-field="heading" apiman-i18n-key="edit-policy-def">Edit Policy Definition</h2>
@@ -25,7 +25,7 @@
       <!-- Policy Type-specific config -->
       <div class="row">
         <h3 data-field="policyHeading">Policy Configuration<i> </i></h3>
-        <div class="apiman-box col-md-9 container" data-field="policyFormWrapper">
+        <div class="apiman-box col-md-9 container-pf-nav-pf-vertical container-fluid" data-field="policyFormWrapper">
           <div class="form policy-config default">
             <span apiman-i18n-key="manually-configure-policy-json">Please manually configure your policy's JSON configuration below.</span>
             <textarea id="json" ng-model="policyDefJSON">{{ policyDefJSON }}</textarea>
@@ -42,7 +42,7 @@
         <button id="update-policy" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-policy" placeholder="Updating..." data-icon="fa-cog" ng-click="updatePolicyDef()">Update Policy</button>
         <a id="cancel" data-field="cancelButton" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

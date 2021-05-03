@@ -12,7 +12,7 @@
     <div ng-include="headerInclude"></div>   
     <div ng-controller="Apiman.ApiCatalogDefController" class="page" ng-cloak="" ng-show="pageState == 'loaded'">
     
-      <div class="container">
+      <div class="container-pf-nav-pf-vertical container-fluid">
         <div class="row">
           <div class="col-md-12">
             <ol class="breadcrumb" data-field="breadcrumb">
@@ -61,11 +61,11 @@
         
         <div id="apiman-swagger" class="row swagger-section" ng-show="hasDefinition">
           <div class="col-md-12">
-            <div id="swagger-ui-container" class="swagger-ui-wrap" />
+            <div id="swagger-ui-container"/>
           </div>
         </div>
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>

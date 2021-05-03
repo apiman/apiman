@@ -4,18 +4,18 @@
   </div>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title" apiman-i18n-key="time-restricted-access-rule">Add new restriction</h3>
+      <h3 class="panel-title" apiman-i18n-key="time-restricted-access-rule">Add New Restriction</h3>
     </div>
     <div class="panel-body container-fluid">
       <div class="row">
         <div class="col-md-8">
-          <label for="path" apiman-i18n-key="time-restricted-access-uri">Allow all requests matching URI</label>
+          <label for="path" apiman-i18n-key="time-restricted-access-uri">Allow All Requests Matching URI</label>
         </div>
       </div>
       <div class="row">
         <div class="col-md-8">
           	<input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" 
-          		type="text" apiman-i18n-key="time-restricted-access.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()"></input>
+          		type="text" apiman-i18n-key="time-restricted-access.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()">
         </div>
       </div>
       <div class="row" style="margin-top:10px;">
@@ -59,7 +59,7 @@
 
   <div>
     <dl>
-      <dt apiman-i18n-key="configured-time-restricted-access-rules">Time restrictions</dt>
+      <dt apiman-i18n-key="configured-time-restricted-access-rules">Time Restrictions</dt>
     </dl>
   </div>
   <table class="table table-striped table-bordered">
@@ -85,7 +85,8 @@
       <tr>
         <td colspan="4" ng-show="!config.rules.length">
           <div class="apiman-no-content">
-            <p class="apiman-no-entities-description" apiman-i18n-key="time-access.no-rules-table">No restrictions added.</p>
+            <p class="apiman-no-entities-description" apiman-i18n-key="time-access.no-rules-table">No restrictions added
+              yet.</p>
           </div>
         </td>
       </tr>

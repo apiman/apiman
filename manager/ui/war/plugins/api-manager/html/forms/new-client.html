@@ -2,21 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   </head>
 
   <body>
   <div>
-    
+
     <div ng-include="headerInclude"></div>
-    <div ng-controller="Apiman.NewClientController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div ng-controller="Apiman.NewClientController" id="form-page" class="container-pf-nav-pf-vertical container-fluid apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" apiman-i18n-key="new-client-client">New Client App</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p apiman-i18n-key="new-client-help-text" class="col-md-6 apiman-label-faded">Create a new Client App within the specified Organization, allowing you to begin connecting provided APIs with your Client App.</p>
+        <p apiman-i18n-key="new-client-help-text" class="col-md-6 apiman-label-faded">Create a new Client App within the
+          specified organization, allowing you to begin connecting provided APIs with your Client App.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -47,16 +48,16 @@
           <dl class="name">
             <dt apiman-i18n-key="client-client-name">Client App Name</dt>
             <dd>
-              <input ng-model="client.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-client-name" placeholder="Enter client app name..."></input>
+              <input ng-model="client.name" data-field="name" type="text" class="apiman-form-control form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-client-name" placeholder="Enter client app name...">
             </dd>
           </dl>
         </div>
-        <!-- Initial Client App Version -->
+        <!-- Initial Client Version -->
         <div class="row">
           <dl>
             <dt apiman-i18n-key="initial-version">Initial Version</dt>
             <dd>
-              <input ng-model="client.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version"></input>
+              <input ng-model="client.initialVersion" data-field="version" type="text" class="apiman-form-control form-control version" id="apiman-version">
             </dd>
           </dl>
         </div>
@@ -73,7 +74,7 @@
       <div ng-hide="organizations.length > 0" class="apiman-no-content container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-client-permission">You don't have permission to create a Client App in any of your Organizations (or you aren't in any orgs)!  Please become a member of an existing Organization or create a new one before trying to create a Client App.</p>
+            <p class="apiman-no-entities-description" apiman-i18n-key="missing-create-client-permission">You are not member of an organization or you do not have the permission to create a Client App in any of your organizations. Please become a member of an organization or create a new one before trying to create a Client App.</p>
           </div>
         </div>
       </div>
@@ -86,7 +87,7 @@
         <button id="create-client" ng-disabled="!client.name || !client.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-client-client" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewClient()">Create Client App</button>
         <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
-    </div> <!-- /container -->
+    </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
   </body>
 </html>
