@@ -16,7 +16,10 @@
 
 package io.apiman.manager.api.exportimport.manager;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.impl.DoubleLogger;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.impl.MultiLogger;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.beans.Contract;
@@ -47,16 +50,24 @@ import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.exportimport.exceptions.ImportNotNeededException;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import java.util.*;
 
 /**
  * Used to store imported entities into the {@link IStorage}.
@@ -68,8 +79,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
 
     @Inject
     private IStorage storage;
-    @Inject @ApimanLogger(StorageImportDispatcher.class)
-    private IApimanLogger logger;
+    private IApimanLogger logger = ApimanLoggerFactory.getLogger(StorageImportDispatcher.class);
+
     @Inject
     private Version version;
     @Inject
@@ -100,10 +111,25 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * @param logger
+     * Set an additional logger implementation. This could be useful if you are intending to redirect the
+     * logging output somewhere atypical (e.g. into the response body).
      */
-    public void setLogger(IApimanLogger logger) {
-        this.logger = logger;
+    public void start(String fileName, IApimanLogger extraLogger) {
+        this.logger = new DoubleLogger(this.logger, extraLogger);
+        start(fileName);
+    }
+
+    /**
+     * Set an additional logger implementations. 
+     * 
+     * @see #start(String, IApimanLogger)
+     */
+    public void start(String fileName, List<IApimanLogger> extraLoggers) {
+        ArrayList<IApimanLogger> delegates = new ArrayList<>(extraLoggers.size()+1);
+        delegates.addAll(extraLoggers);
+        delegates.add(logger);
+        this.logger = new MultiLogger(delegates);
+        start(fileName);
     }
 
     /**
@@ -805,6 +831,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         logger.error("Failed while importing data: ", error);
         throw new RuntimeException(error);
     }
+
+
 
     private static class EntityInfo {
         private String organizationId;

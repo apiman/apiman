@@ -15,8 +15,8 @@
  */
 package io.apiman.manager.test.junit;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.test.junit.ManagerRestTester.TestInfo;
 import io.apiman.manager.test.server.ManagerApiTestServer;
@@ -29,6 +29,19 @@ import io.apiman.test.common.plan.TestType;
 import io.apiman.test.common.resttest.RestTest;
 import io.apiman.test.common.util.TestPlanRunner;
 import io.apiman.test.common.util.TestUtil;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.runner.Description;
@@ -36,13 +49,6 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.lang.reflect.Method;
-import java.text.MessageFormat;
-import java.util.*;
 
 /**
  * A junit test runner that fires up apiman and makes it ready for
@@ -54,7 +60,7 @@ import java.util.*;
 @SuppressWarnings("nls")
 public class ManagerRestTester extends ParentRunner<TestInfo> {
 
-    private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ManagerRestTester.class);
 
     private static ManagerApiTestServer testServer = new ManagerApiTestServer();
     private static final boolean USE_PROXY = false;
@@ -407,7 +413,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
      */
     public void log(String message, Object... params) {
         String outmsg = MessageFormat.format(message, params);
-        logger.info("    >> " + outmsg);
+        LOGGER.info("    >> " + outmsg);
     }
 
     public static class TestPlanInfo {

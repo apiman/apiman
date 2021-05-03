@@ -18,8 +18,6 @@ package io.apiman.manager.api.war;
 import io.apiman.common.es.util.DefaultEsClientFactory;
 import io.apiman.common.es.util.EsUtils;
 import io.apiman.common.es.util.IEsClientFactory;
-import io.apiman.common.logging.IApimanDelegateLogger;
-import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -38,10 +36,6 @@ import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.i18n.Messages;
-import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.JsonLoggerImpl;
-import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
 import io.apiman.manager.api.es.EsMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
@@ -50,14 +44,13 @@ import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
+
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -69,18 +62,6 @@ public class WarCdiFactory {
 
     private static IEsClientFactory sStorageEsClientFactory;
     private static JpaStorage sJpaStorage;
-
-    @Produces @ApimanLogger
-    public static IApimanLogger provideLogger(WarApiManagerConfig config, InjectionPoint injectionPoint) {
-        try {
-            ApimanLogger logger = injectionPoint.getAnnotated().getAnnotation(ApimanLogger.class);
-            Class<?> klazz = logger.value();
-            return getDelegate(config).newInstance().createLogger(klazz);
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(String.format(
-                    Messages.i18n.format("LoggerFactory.InstantiationFailed")), e); //$NON-NLS-1$
-        }
-    }
 
     @Produces @ApplicationScoped
     public static INewUserBootstrapper provideNewUserBootstrapper(WarApiManagerConfig config, IPluginRegistry pluginRegistry) {
@@ -323,31 +304,4 @@ public class WarCdiFactory {
         return (T) componentClass.getConstructor().newInstance();
     }
 
-    private static Class<? extends IApimanDelegateLogger> getDelegate(WarApiManagerConfig config) {
-        if(config.getLoggerName() == null || StringUtils.isEmpty(config.getLoggerName())) {
-            System.err.println(Messages.i18n.format("LoggerFactory.NoLoggerSpecified")); //$NON-NLS-1$
-            return StandardLoggerImpl.class;
-        }
-
-        switch(config.getLoggerName().toLowerCase()) {
-            case "json": //$NON-NLS-1$
-                return JsonLoggerImpl.class;
-            case "standard": //$NON-NLS-1$
-                return StandardLoggerImpl.class;
-            default:
-                return loadByFQDN(config.getLoggerName());
-        }
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Class<? extends IApimanDelegateLogger> loadByFQDN(String fqdn) {
-        try {
-            return (Class<? extends IApimanDelegateLogger>) Class.forName(fqdn);
-        } catch (ClassNotFoundException e) {
-            System.err.println(String.format(Messages.i18n.format("LoggerFactory.LoggerNotFoundOnClasspath"), //$NON-NLS-1$
-                    fqdn));
-            return StandardLoggerImpl.class;
-        }
-    }
 }

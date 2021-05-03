@@ -19,39 +19,39 @@
   </properties>
 
   <dependencies>
-    <!-- The WildFly 8 version of APIMan -->
+    <!-- Apiman WildFly WAR deps -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-api-war-wildfly8</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-platforms-war-wildfly8-api</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-platforms-war-wildfly8-gateway</artifactId>
       <type>war</type>
     </dependency>
 
     <!-- Other apiman modules -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-beans</artifactId>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-distro-data</artifactId>
     </dependency>
 
-    <!-- KeyCloak -->
+    <!-- Keycloak -->
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-server-overlay</artifactId>

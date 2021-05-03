@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
@@ -42,20 +43,31 @@ import io.apiman.manager.api.core.IClientValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.IActionResource;
 import io.apiman.manager.api.rest.IOrganizationResource;
-import io.apiman.manager.api.rest.exceptions.*;
-import io.apiman.manager.api.rest.impl.audit.AuditUtils;
+import io.apiman.manager.api.rest.exceptions.ActionException;
+import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ClientVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.i18n.Messages;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
+import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.*;
 
 /**
  * Implementation of the Action API.
@@ -64,6 +76,8 @@ import java.util.*;
  */
 @ApplicationScoped
 public class ActionResourceImpl implements IActionResource {
+
+    private final IApimanLogger log = ApimanLoggerFactory.getLogger(ActionResourceImpl.class);
 
     @Inject IStorage storage;
     @Inject IStorageQuery query;
@@ -74,8 +88,6 @@ public class ActionResourceImpl implements IActionResource {
     @Inject IClientValidator clientValidator;
 
     @Inject ISecurityContext securityContext;
-
-    @Inject @ApimanLogger(ActionResourceImpl.class) IApimanLogger log;
 
     /**
      * Constructor.

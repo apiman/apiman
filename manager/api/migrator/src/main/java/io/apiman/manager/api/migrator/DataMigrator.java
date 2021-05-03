@@ -16,19 +16,20 @@
 
 package io.apiman.manager.api.migrator;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.impl.DoubleLogger;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.logging.impl.SystemOutLogger;
 import io.apiman.manager.api.config.Version;
-import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.migrator.i18n.Messages;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Used to migrate exported data from an older version of apiman to the 
@@ -39,10 +40,10 @@ import java.io.OutputStream;
 @Dependent
 public class DataMigrator implements IReaderHandler {
 
+    private IApimanLogger logger = ApimanLoggerFactory.getLogger(DataMigrator.class);
+
     @Inject
     private Version version;
-    @Inject @ApimanLogger(DataMigrator.class)
-    private IApimanLogger logger;
 
     private IDataMigratorWriter writer;
     private VersionMigratorChain chain;
@@ -52,13 +53,18 @@ public class DataMigrator implements IReaderHandler {
      */
     public DataMigrator() {
     }
+
+    public void migrate(File fromSource, File toDest, IApimanLogger extraLogger) {
+        this.logger = new DoubleLogger(logger, extraLogger);
+        migrate(fromSource, toDest);
+    }
     
     /**
      * Migrate the data export file (fromSource) from whatever version it
      * is to the latest apiman version format and write the result to a
      * file (toDest).
-     * @param fromSource
-     * @param toDest
+     * @param fromSource migration source
+     * @param toDest migration destination
      */
     public void migrate(File fromSource, File toDest) {
         IReaderHandler readerHandler = this;
@@ -71,6 +77,11 @@ public class DataMigrator implements IReaderHandler {
         }
     }
 
+    public void migrate(InputStream fromSource, OutputStream toDest, IApimanLogger extraLogger) {
+        this.logger = new DoubleLogger(logger, extraLogger);
+        migrate(fromSource, toDest);
+    }
+
     /**
      * Migrate the data export file (fromSource) from whatever version it
      * is to the latest apiman version format and write the result to a
@@ -78,8 +89,8 @@ public class DataMigrator implements IReaderHandler {
      * 
      * Note: this method will automatically close the streams - the caller
      * does not need to do this.
-     * @param fromSource
-     * @param toDest
+     * @param fromSource migration source
+     * @param toDest migration destination
      */
     public void migrate(InputStream fromSource, OutputStream toDest) {
         IReaderHandler readerHandler = this;
@@ -95,7 +106,7 @@ public class DataMigrator implements IReaderHandler {
     /**
      * Main method - used when running the data migrator in standalone
      * mode.
-     * @param args
+     * @param args program args, pathToSourceFile and pathToDestFile
      */
     public static void main(String[] args) {
         File from;
@@ -116,7 +127,6 @@ public class DataMigrator implements IReaderHandler {
         System.out.println("  From: " + from); //$NON-NLS-1$
         System.out.println("  To:   " + to); //$NON-NLS-1$
         DataMigrator migrator = new DataMigrator();
-        migrator.setLogger(new SystemOutLogger());
         Version version = new Version();
         migrator.setVersion(version);
         migrator.migrate(from, to);
@@ -237,19 +247,4 @@ public class DataMigrator implements IReaderHandler {
     public void setVersion(Version version) {
         this.version = version;
     }
-
-    /**
-     * @return the logger
-     */
-    public IApimanLogger getLogger() {
-        return logger;
-    }
-
-    /**
-     * @param logger the logger to set
-     */
-    public void setLogger(IApimanLogger logger) {
-        this.logger = logger;
-    }
-
 }

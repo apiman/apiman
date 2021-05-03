@@ -16,8 +16,8 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.gateway.engine.beans.GatewayEndpoint;
@@ -34,8 +34,6 @@ import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
@@ -51,9 +49,10 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Implementation of the Gateway API.
@@ -63,11 +62,12 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class GatewayResourceImpl implements IGatewayResource {
 
+    private final IApimanLogger log = ApimanLoggerFactory.getLogger(GatewayResourceImpl.class);
+
     @Inject IStorage storage;
     @Inject IStorageQuery query;
     @Inject ISecurityContext securityContext;
     @Inject IGatewayLinkFactory gatewayLinkFactory;
-    @Inject @ApimanLogger(GatewayResourceImpl.class) IApimanLogger log;
     @Inject IDataEncrypter encrypter;
 
     private static final ObjectMapper mapper = new ObjectMapper();

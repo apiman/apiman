@@ -69,7 +69,6 @@ public class DataMigratorTest {
 
         try {
             DataMigrator migrator = new DataMigrator();
-            migrator.setLogger(logger);
             migrator.setVersion(version);
             
             InputStream input = getClass().getClassLoader().getResourceAsStream(fileToMigrate);
