@@ -62,7 +62,7 @@ jobs:
             ${{ runner.os }}-maven-
       
       - name: Build Project
-        run: ./mvnw clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B
+        run: ./mvnw clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B -Dmaven.wagon.http.retryHandler.count=3
 
       - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
         run: ./mvnw test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
