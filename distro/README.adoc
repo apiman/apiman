@@ -1,0 +1,30 @@
+# Apiman Distros
+
+Apiman distros are overlays for different application servers, standalone bundles (Vert.x), and a collection of example configs.
+
+## wildfly
+
+* The WildFly distro is preconfigured with a Keycloak auth server and a local database.
+* Use this distro for the simplest quickstart experience
+
+## tomcat
+
+* For Tomcat version 9 and above. If you want to use Tomcat 8 please use the https://github.com/apiman/apiman-community-quickstarts/tree/master/tomcat8[community quickstarts].
+* The Tomcat overlay is configured to use Elasticsearch by default.
+* You can start Elasticsearch before with this command:
+
+```bash
+docker run -p 19250:9200 e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+``` 
+
+## vertx
+
+* Please have a look at the README.adoc in the vertx folder
+
+## data
+
+* Contains initial configurations for all the distros
+
+## ddl
+
+* Contains ddl files to create database schemas
