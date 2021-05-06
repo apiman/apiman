@@ -7,6 +7,22 @@
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
+    <!-- log4j2 logging -->
+    <dependencySet>
+      <outputDirectory>log4j2/lib</outputDirectory>
+      <includes>
+        <include>org.apache.logging.log4j:log4j-api</include>
+        <include>org.apache.logging.log4j:log4j-core</include>
+        <include>org.apache.logging.log4j:log4j-appserver</include>
+        <include>com.lmax:disruptor</include>
+        <include>com.fasterxml.jackson.core:jackson-databind</include>
+        <include>com.fasterxml.jackson.core:jackson-core</include>
+        <include>com.fasterxml.jackson.core:jackson-annotations</include>
+      </includes>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+
     <!-- apiman-manager -->
     <dependencySet>
       <outputDirectory>webapps</outputDirectory>
