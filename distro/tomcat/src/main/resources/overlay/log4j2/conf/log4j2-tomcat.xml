@@ -10,13 +10,20 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
   <Appenders>
     <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
     <RandomAccessFile name="RandomAccessFile" fileName="apiman-gateway.log" immediateFlush="false" append="false">
-<!--      <PatternLayout>-->
-<!--        <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>-->
-<!--      </PatternLayout>-->
-      <JSONLayout/>
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
+      </PatternLayout>
+      <!-- JSON logging can be enabled by changing to JSONLayout. See https://logging.apache.org/log4j/log4j-2.2/manual/layouts.html#JSONLayout -->
+      <!-- <JSONLayout /> -->
     </RandomAccessFile>
     <Console name="Console-Appender" target="SYSTEM_OUT" immediateFlush="false">
-      <JSONLayout/>
+      <PatternLayout>
+        <pattern>
+          [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+        </pattern>
+      </PatternLayout>
+      <!-- JSON logging can be enabled by changing to JSONLayout. See https://logging.apache.org/log4j/log4j-2.2/manual/layouts.html#JSONLayout -->
+      <!-- <JSONLayout /> -->
     </Console>
   </Appenders>
   <Loggers>
