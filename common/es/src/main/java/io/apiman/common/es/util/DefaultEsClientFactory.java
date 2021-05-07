@@ -19,8 +19,6 @@ import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.Holder;
-import io.apiman.common.util.ssl.KeyStoreUtil;
-import io.apiman.common.util.ssl.KeyStoreUtil.Info;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
-import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -40,6 +37,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.HttpHost;
@@ -50,9 +49,11 @@ import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.nio.conn.SchemeIOSessionStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -132,27 +133,23 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                 client = clients.get(clientKey);
                 logger.info("Use cached elasticsearch-client with client key " + clientKey);
             } else {
-                CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-                if(username != null && password != null) {
-                    credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
-                }
-
-                RestClientBuilder clientBuilder = RestClient.builder(
-                        new HttpHost(host, port, protocol)
-                );
-
+                RestClientBuilder clientBuilder = RestClient.builder(new HttpHost(host, port, protocol));
                 clientBuilder.setRequestConfigCallback(builder -> builder.setConnectTimeout(timeout)
                         .setSocketTimeout(timeout));
 
+                HttpAsyncClientBuilder asyncClientBuilder = HttpAsyncClientBuilder.create();
+
                 if(username != null && password != null) {
-                    clientBuilder.setHttpClientConfigCallback(httpAsyncClientBuilder ->
-                            httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
+                    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                    credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+                    asyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
                 }
 
                 if ("https".equals(protocol)) { //$NON-NLS-1$ //$NON-NLS-2$
-                    updateSslConfig(clientBuilder, config);
+                    updateSslConfig(asyncClientBuilder, config);
                 }
 
+                clientBuilder.setHttpClientConfigCallback(httpAsyncClientBuilder -> asyncClientBuilder);
                 client = new RestHighLevelClient(clientBuilder);
 
                 try {
@@ -198,14 +195,16 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                             // measure time if health request is successful
                             final Date endTime = new Date();
                             long pollingTimeMeasure = endTime.getTime() - startTime.getTime();
-                            logger.info("Took "+ pollingTimeMeasure + " milliseconds for polling Elasticsearch");
-
+                            logger.info("Took " + pollingTimeMeasure + " milliseconds for polling Elasticsearch");
                             // wake up the waiting thread
                             cdl.countDown();
                         }
-
+                    } catch (ElasticsearchException | SSLException e) {
+                        logger.error("Error connecting to Elasticsearch: ", e);
+                        Thread.currentThread().interrupt();
+                        exception.setValue(e);
                     } catch (IOException e) {
-                        logger.info("Unable to reach Elasticsearch. Will continue polling.");
+                        logger.info("Unable to reach Elasticsearch with error ({0}). Will continue polling.", e.getMessage());
                         exception.setValue(e);
                     }
                 },
@@ -230,11 +229,15 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
 
     /**
      * Configures the SSL connection to use certificates by setting the keystores
-     * @param clientBuilder the client builder
+     * @param asyncClientBuilder the client builder
      * @param config the configuration
+     * @see <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/_encrypted_communication.html">Elasticsearch-Docs</>
      */
     @SuppressWarnings("nls")
-    private void updateSslConfig(RestClientBuilder clientBuilder, Map<String, String> config) {
+    private void updateSslConfig(HttpAsyncClientBuilder asyncClientBuilder, Map<String, String> config) {
+        boolean allowSelfSigned = Boolean.parseBoolean(config.get("client.allowSelfSigned"));
+        boolean allowAnyHost = Boolean.parseBoolean(config.get("client.allowAnyHost"));
+
         try {
             String clientKeystorePath = config.get("client.keystore");
             String clientKeystorePassword = config.get("client.keystore.password");
@@ -242,35 +245,30 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             String trustStorePassword = config.get("client.truststore.password");
 
             Path trustStorePathObject = Paths.get(trustStorePath);
+            Path keyStorePathObject = Paths.get(clientKeystorePath);
             KeyStore truststore = KeyStore.getInstance("pkcs12");
+            KeyStore keyStore = KeyStore.getInstance("pkcs12");
+
             try (InputStream is = Files.newInputStream(trustStorePathObject)) {
                 truststore.load(is, trustStorePassword.toCharArray());
             }
-
-            SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
-
-            String trustCertificate = config.get("client.trust.certificate");
-            if (!StringUtils.isBlank(trustCertificate) && trustCertificate.equals("true")) {
-                sslContextBuilder = sslContextBuilder.loadTrustMaterial(new TrustSelfSignedStrategy());
+            try (InputStream is = Files.newInputStream(keyStorePathObject)) {
+                keyStore.load(is, clientKeystorePassword.toCharArray());
             }
 
+            SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
+            if (allowSelfSigned) {
+                sslContextBuilder.loadTrustMaterial(new TrustSelfSignedStrategy());
+            } else {
+                sslContextBuilder.loadTrustMaterial(truststore, null);
+                sslContextBuilder.loadKeyMaterial(keyStore, clientKeystorePassword.toCharArray());
+            }
             SSLContext sslContext = sslContextBuilder.build();
-            Info kPathInfo = new Info(clientKeystorePath, clientKeystorePassword);
-            Info tPathInfo = new Info(trustStorePath, trustStorePassword);
-            sslContext.init(KeyStoreUtil.getKeyManagers(kPathInfo), KeyStoreUtil.getTrustManagers(tPathInfo), new SecureRandom());
 
-            String trustHost = config.get("client.trust.host");
-            HostnameVerifier hostnameVerifier = !StringUtils.isBlank(trustHost) && trustHost.equals("true") ? NoopHostnameVerifier.INSTANCE : new DefaultHostnameVerifier();
+            HostnameVerifier hostnameVerifier = allowAnyHost ? NoopHostnameVerifier.INSTANCE : new DefaultHostnameVerifier();
 
             SchemeIOSessionStrategy httpsIOSessionStrategy = new SSLIOSessionStrategy(sslContext, hostnameVerifier);
-
-            //set the ssl context
-            clientBuilder.setHttpClientConfigCallback(httpClientBuilder -> {
-                return httpClientBuilder.setSSLContext(sslContext)
-                        .setSSLHostnameVerifier(hostnameVerifier)
-                        .setSSLStrategy(httpsIOSessionStrategy);
-            });
-
+            asyncClientBuilder.setSSLStrategy(httpsIOSessionStrategy);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
