@@ -19,7 +19,10 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
+import java.io.File;
+
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.FormattedMessageFactory;
 
 /**
@@ -31,14 +34,24 @@ import org.apache.logging.log4j.message.FormattedMessageFactory;
 public class Log4j2LoggerFactory implements IDelegateFactory {
 
     private final FormattedMessageFactory formattedMessageFactory =  new FormattedMessageFactory();
+    private final LoggerContext context = (LoggerContext) LogManager.getContext(false);
 
     @Override
     public IApimanLogger createLogger(String name) {
-        return new Log4j2LoggerImpl(LogManager.getLogger(name, formattedMessageFactory));
+        return new Log4j2LoggerImpl(context.getLogger(name, formattedMessageFactory));
     }
 
     @Override
     public IApimanLogger createLogger(Class<?> klazz) {
-        return new Log4j2LoggerImpl(LogManager.getLogger(klazz, formattedMessageFactory));
+        return new Log4j2LoggerImpl(context.getLogger(klazz, formattedMessageFactory));
+    }
+
+    @Override
+    public IDelegateFactory overrideLoggerConfig(File newLoggerConfig) {
+        //LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        // As per docs, this will force the new configuration to take effect.
+        context.setConfigLocation(newLoggerConfig.toURI());
+        context.updateLoggers();
+        return this;
     }
 }

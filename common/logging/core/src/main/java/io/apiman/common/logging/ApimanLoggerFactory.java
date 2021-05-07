@@ -15,6 +15,8 @@
  */
 package io.apiman.common.logging;
 
+import java.io.File;
+
 /**
  * Factory for creating Apiman loggers.
  *
@@ -98,8 +100,18 @@ public class ApimanLoggerFactory {
      * Set an alternative delegate at runtime. This is very useful for testing, but could have odd behaviour
      * if used at runtime; caveat utilitor.
      */
-    public synchronized static void setDelegate(IDelegateFactory delegate) {
+    public static synchronized void setDelegate(IDelegateFactory delegate) {
         LOGGER_FACTORY = delegate;
         LOGGER_RESOLVED = true;
+    }
+
+//    public static synchronized void overrideLoggerLevel(Map<String, LoggerLevel> )  {
+//
+//    }
+
+    public static synchronized void overrideLoggerConfig(File newLoggerConfig) {
+        // Make sure that this has been resolved
+        IDelegateFactory factory = getLoggerFactory();
+        factory.overrideLoggerConfig(newLoggerConfig);
     }
 }

@@ -16,14 +16,28 @@
 
 package io.apiman.gateway.api.rest;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.gateway.engine.beans.GatewayEndpoint;
+import io.apiman.gateway.engine.beans.LoggingChangeRequest;
 import io.apiman.gateway.engine.beans.SystemStatus;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+
 import io.swagger.annotations.Api;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * The System API.
@@ -37,11 +51,26 @@ public interface ISystemResource {
     @GET
     @Path("status")
     @Produces(MediaType.APPLICATION_JSON)
-    public SystemStatus getStatus();
+    SystemStatus getStatus();
 
     @GET
     @Path("endpoint")
     @Produces(MediaType.APPLICATION_JSON)
-    public GatewayEndpoint getEndpoint();
+    GatewayEndpoint getEndpoint();
 
+    @POST
+    @Path("logging")
+    default Response setLoggingDynamically(LoggingChangeRequest request) {
+        if (request.getLoggerConfig() != null) {
+            try {
+                File loggerConfigTmp = File.createTempFile("ApimanLoggerConfig", "temp");
+                loggerConfigTmp.deleteOnExit();
+                Files.write(loggerConfigTmp.toPath(), request.getLoggerConfig());
+                ApimanLoggerFactory.overrideLoggerConfig(loggerConfigTmp);
+            } catch (IOException ioe) {
+                throw new UncheckedIOException(ioe);
+            }
+        }
+        return Response.ok().build();
+    }
 }
