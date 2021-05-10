@@ -227,7 +227,7 @@
             </p>
             <p class="explanation"
                apiman-i18n-key="api-delete-modal-confirmation-description">
-              This action <b>CANNOT</b> be undone. This will permanently delete the API, including all of its versions,
+              This action <strong>CANNOT</strong> be undone. This will permanently delete the API, including all of its versions,
               their
               policies, contracts, and change logs. Please back up the project if you think you may want to roll back
               the changes, as this action is irrevocable.

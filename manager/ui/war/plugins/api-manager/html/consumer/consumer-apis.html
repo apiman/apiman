@@ -94,11 +94,11 @@
                                     {{ api.organizationName }}
                                 </a>
                                 <span apiman-i18n-skip> / </span>
-                                <b>
+                                <strong>
                                     <a href="{{ pluginName }}/browse/orgs/{{api.organizationId}}/{{api.id}}">
                                         {{ api.name }}
                                     </a>
-                                </b>
+                                </strong>
                             </div>
                             <div class="description" title="{{ api.description }}">{{ api.description | limitTo: 60 }}
                                 <span ng-show="api.description.length > 60">...</span>

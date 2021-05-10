@@ -1,5 +1,5 @@
 <div class="alert alert-warning">
-  This Policy is deprecated. Please use the <b>Caching Resources Policy</b> in future.
+  This Policy is deprecated. Please use the <strong>Caching Resources Policy</strong> in future.
 </div>
 <div class="form policy-config caching" data-field="form" ng-controller="Apiman.CachingFormController" style="margin-top: 10px">
   <div>
