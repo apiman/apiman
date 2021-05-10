@@ -116,7 +116,7 @@ public final class SwaggerWsdlHelper {
         String endpointPath = managedEndpoint.getPath();
 
         // replace values if swagger definition has version 2.0+
-        Boolean updateStorage = false;
+        boolean updateStorage = false;
         if (swaggerJsonNode.findValue(SWAGGER) != null && (!host.equals(endpointHost + endpointPort) || !path.equals(endpointPath))) {
             swaggerObjectNode.put(BASE_PATH, endpointPath);
             swaggerObjectNode.put(HOST, endpointHost + endpointPort);
