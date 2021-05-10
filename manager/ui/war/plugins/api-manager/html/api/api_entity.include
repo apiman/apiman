@@ -223,7 +223,7 @@
             <p class="bg-warning"
                style="padding: 15px 25px; margin: -18px -25px 10px -25px;"
                apiman-i18n-key="api-delete-modal-confirmation-warning">
-              Important Note!
+              Warning!
             </p>
             <p class="explanation"
                apiman-i18n-key="api-delete-modal-confirmation-description">

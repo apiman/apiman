@@ -28,12 +28,12 @@
             <p class="explanation" apiman-i18n-key="managed-endpoint-explanation">
                 To successfully invoke this managed API, a client must send the request to the appropriate API gateway
                 endpoint. When invoking the API through an API contract, a valid API Key must be included in each
-                request. If the API is Public, it can be invoked without an API Key directly through the endpoint below.
+                request. If the API is public, it can be invoked without an API Key directly through the endpoint below.
             </p>
             <div ng-show="!version.publicAPI">
               <div class="apiman-divider-40"></div>
                 <div apiman-i18n-key="warning-not-public" class="alert alert-warning no-icon">Warning: This API is not
-                    Public. This endpoint will only work if a valid API Key is included in requests made to it.
+                    <strong>public</strong>. This endpoint will only work if a valid API Key is included in requests made to it.
                 </div>
             </div>
             <hr />
