@@ -30,25 +30,25 @@
               Use the Client App details to modify the Client App's metadata, policies and contracts. There is no need to follow
               the tabs in order, but you will need to fill out a minimum amount of data before the Client App can be
               registered with the gateway. In particular, the Client App must have at least one API contract (see tab
-              <b>Contracts</b>).
+              <strong>Contracts</strong>).
             </p>
 
             <h2><a href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/contracts" apiman-i18n-key="contracts">Contracts</a></h2>
             <p apiman-i18n-key="client-overview.contracts-description">
-              In the <b>Contracts</b> tab you can manage all API contracts for this Client App. An API contract is a link between
+              In the <strong>Contracts</strong> tab you can manage all API contracts for this Client App. An API contract is a link between
               this Client App and a provided API the Client App consumes.
             </p>
 
             <h2><a href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/policies" apiman-i18n-key="policies">Policies</a></h2>
             <p apiman-i18n-key="client-overview.policies-description">
-              The <b>Policies</b> tab allows you to manage the client-level policies that should be applied whenever a request
+              The <strong>Policies</strong> tab allows you to manage the client-level policies that should be applied whenever a request
               is made to any API consumed by this Client App.
             </p>
 
             <h2 apiman-status="Ready,Created,Retired" apiman-i18n-key="apis">APIs</h2>
             <h2 apiman-status="Registered"><a href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/apis" apiman-i18n-key="apis">APIs</a></h2>
             <p apiman-i18n-key="client-overview.apis-description">
-              The <b>APIs</b> tab lists all APIs consumed by this Client App. Use the list to display also the API Key and live
+              The <strong>APIs</strong> tab lists all APIs consumed by this Client App. Use the list to display also the API Key and live
               endpoint for each API. Use this tab to figure out how to invoke an API once you have created a contract
               for it.
             </p>
@@ -56,12 +56,12 @@
             <h2 ng-show="showMetrics" apiman-status="Ready,Created,Retired" apiman-i18n-key="metrics">Metrics</h2>
             <h2 ng-show="showMetrics" apiman-status="Registered"><a href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/metrics" apiman-i18n-key="metrics">Metrics</a></h2>
             <p apiman-i18n-key="client-overview.metrics-description">
-              The <b>Metrics</b> tab contains basic analytic information for the Client App. Use this tab to monitor the Client App's activity.
+              The <strong>Metrics</strong> tab contains basic analytic information for the Client App. Use this tab to monitor the Client App's activity.
             </p>
 
             <h2><a href="{{ pluginName }}/orgs/{{ org.id }}/clients/{{ client.id }}/{{version.version}}/activity" apiman-i18n-key="activity">Change Log</a></h2>
             <p apiman-i18n-key="client-overview.activity-description">
-              The <b>Change Log</b> tab shows a history of all the changes made to the Client App. Essentially this is an audit
+              The <strong>Change Log</strong> tab shows a history of all the changes made to the Client App. Essentially this is an audit
               log.
             </p>
           </div>
