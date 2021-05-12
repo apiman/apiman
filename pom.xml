@@ -1,5 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>io.apiman</groupId>
+    <artifactId>apiman-parent</artifactId>
+    <version>2.0.1-SNAPSHOT</version>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.apiman.plugins</groupId>
@@ -9,7 +15,7 @@
   <packaging>pom</packaging>
 
   <description>This project contains plugins for apiman.</description>
-  <url>http://apiman.io/</url>
+  <url>https://apiman.io/</url>
   <inceptionYear>2014</inceptionYear>
 
   <organization>
@@ -51,54 +57,16 @@
     <developer>
       <name>Marc Savy</name>
       <id>msavy</id>
+      <email>marc@blackparrotlabs.io</email>
       <roles>
         <role>Tech Lead</role>
         <role>Developer</role>
       </roles>
     </developer>
   </developers>
-
-  <properties>
-    <!-- Instruct the build to use only UTF-8 encoding for source code -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-
-    <version.apiman>2.0.1-SNAPSHOT</version.apiman>
-    <version.javadoc.plugin>3.2.0</version.javadoc.plugin>
-    <version.compiler.plugin>3.2</version.compiler.plugin>
-    <version.deploy.plugin>2.8.2</version.deploy.plugin>
-    <version.enforcer.plugin>1.4</version.enforcer.plugin>
-    <version.maven-gpg-plugin.plugin>1.5</version.maven-gpg-plugin.plugin>
-    <version.nexus-staging-maven-plugin.plugin>1.6.3</version.nexus-staging-maven-plugin.plugin>
-    <version.source.plugin>2.4</version.source.plugin>
-    <version.resources.plugin>3.1.0</version.resources.plugin>
-    <version.war.plugin>2.5</version.war.plugin>
-    <version.assembly.plugin>3.2.0</version.assembly.plugin>
-
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
-
-    <version.org.mockito>1.9.5</version.org.mockito>
-    <version.junit>4.13.1</version.junit>
-
-    <version.commons-lang>2.6</version.commons-lang>
-    <version.commons-validator>1.6</version.commons-validator>
-    <version.com.google.guava>21.0</version.com.google.guava>
-    <version.com.fasterxml.jackson>2.10.0</version.com.fasterxml.jackson>
-    <version.org.apache.httpcomponents>4.5.13</version.org.apache.httpcomponents>
-    <version.org.jboss.logging>3.4.1.Final</version.org.jboss.logging>
-    <version.org.keycloak>12.0.4</version.org.keycloak>
-    <version.org.bouncycastle>1.60</version.org.bouncycastle>
-    <version.org.json>20140107</version.org.json>
-    <version.org.mock-server>5.6.0</version.org.mock-server>
-    <version.io.jsonwebtoken.jjwt>0.9.1</version.io.jsonwebtoken.jjwt>
-    <version.com.auth0.jwks-rsa>0.8.2</version.com.auth0.jwks-rsa>
-    <version.jakarta.annotation>1.3.5</version.jakarta.annotation>
-    <version.javax.xml.bind>2.3.1</version.javax.xml.bind>
-  </properties>
-
+  
+  <!-- Keep this for SNAPSHOT versions so we can still resolve the parent. Arguably should use `settings.xml` instead -->
   <repositories>
-    <!-- Prefer Maven Central to jboss.org. POM has top-to-bottom precedence. -->
     <repository>
       <id>central</id>
       <name>Central Repository</name>
@@ -112,40 +80,26 @@
     </repository>
     <repository>
       <id>snapshots-repo</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </repository>
   </repositories>
 
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
+  <properties>
+    <version.apiman>2.0.1-SNAPSHOT</version.apiman>
+
+    <version.org.bouncycastle>1.60</version.org.bouncycastle>
+    <version.org.json>20140107</version.org.json>
+    <version.org.mock-server>5.11.2</version.org.mock-server>
+    <version.io.jsonwebtoken.jjwt>0.9.1</version.io.jsonwebtoken.jjwt>
+    <version.com.auth0.jwks-rsa>0.8.2</version.com.auth0.jwks-rsa>
+    <version.commons-lang>2.6</version.commons-lang>
+    <version.commons-validator>1.7</version.commons-validator>
+  </properties>
 
   <dependencyManagement>
+    <!-- Please refer to the parent for managed versions of shared dependencies -->
     <dependencies>
-      <!-- apiman Projects -->
+      <!-- Apiman Projects -->
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-common-plugin</artifactId>
@@ -183,38 +137,22 @@
       </dependency>
       <!-- testing -->
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${version.junit}</version>
-      </dependency>
-      <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-test-policies</artifactId>
         <version>${version.apiman}</version>
       </dependency>
       <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
-        <version>${version.org.mockito}</version>
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver-netty</artifactId>
+        <version>${version.org.mock-server}</version>
       </dependency>
-        <!-- mockserver -->
-        <dependency>
-            <groupId>org.mock-server</groupId>
-            <artifactId>mockserver-netty</artifactId>
-            <version>${version.org.mock-server}</version>
-        </dependency>
+      <dependency>
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver-junit-rule</artifactId>
+        <version>${version.org.mock-server}</version>
+      </dependency>
       <!-- others -->
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${version.org.apache.httpcomponents}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.logging</groupId>
-        <artifactId>jboss-logging</artifactId>
-        <version>${version.org.jboss.logging}</version>
-      </dependency>
-      <dependency>
+      <dependency> <!-- Look to replace this with lang3? beware breaking compat! -->
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>${version.commons-lang}</version>
@@ -223,41 +161,6 @@
         <groupId>commons-validator</groupId>
         <artifactId>commons-validator</artifactId>
         <version>${version.commons-validator}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-annotations</artifactId>
-        <version>${version.com.fasterxml.jackson}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>${version.com.fasterxml.jackson}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${version.com.fasterxml.jackson}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>${version.com.google.guava}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-adapter-core</artifactId>
-        <version>${version.org.keycloak}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-common</artifactId>
-        <version>${version.org.keycloak}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-core</artifactId>
-        <version>${version.org.keycloak}</version>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
@@ -278,16 +181,6 @@
         <groupId>com.auth0</groupId>
         <artifactId>jwks-rsa</artifactId>
         <version>${version.com.auth0.jwks-rsa}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.annotation</groupId>
-        <artifactId>jakarta.annotation-api</artifactId>
-        <version>${version.jakarta.annotation}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.xml.bind</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>${version.javax.xml.bind}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -313,26 +206,6 @@
   </modules>
 
   <profiles>
-    <profile>
-      <id>java8</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <!-- Skip Javadoc errors that are fatal on Java 8+ -->
-              <doclint>none</doclint>
-              <!-- https://bugs.openjdk.java.net/browse/JDK-8212233 -->
-              <source>8</source>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     <profile>
       <id>standard</id>
       <activation>
@@ -380,95 +253,7 @@
   </profiles>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>${version.compiler.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${version.javadoc.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>${version.resources.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>${version.source.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <version>${version.war.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.sonatype.plugins</groupId>
-          <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>${version.nexus-staging-maven-plugin.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <version>${version.maven-gpg-plugin.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>${version.assembly.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>${version.deploy.plugin}</version>
-        </plugin>
-      <!--   <plugin> -->
-      <!--     <groupId>org.apache.maven.plugins</groupId> -->
-      <!--     <artifactId>maven-enforcer-plugin</artifactId> -->
-      <!--     <version>${version.enforcer.plugin}</version> -->
-      <!--     <dependencies> -->
-      <!--       <dependency> -->
-      <!--         <groupId>de.is24.maven.enforcer.rules</groupId> -->
-      <!--         <artifactId>illegal-transitive-dependency-check</artifactId> -->
-      <!--         <version>1.7.4</version> -->
-      <!--       </dependency> -->
-      <!--     </dependencies> -->
-      <!--     <executions> -->
-      <!--       <execution> -->
-      <!--         <id>enforcer-transitives-check</id> -->
-      <!--         <goals> -->
-      <!--           <goal>enforce</goal> -->
-      <!--         </goals> -->
-      <!--         <phase>process-classes</phase> -->
-      <!--         <configuration> -->
-      <!--           <fail>true</fail> -->
-      <!--           <rules> -->
-      <!--             <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck"> -->
-      <!--               <reportOnly>false</reportOnly> -->
-      <!--               <regexIgnoredClasses> -->
-      <!--                 <regexIgnoredClass>javax\..+</regexIgnoredClass> -->
-      <!--                 <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass> -->
-      <!--               </regexIgnoredClasses> -->
-      <!--               <useClassesFromLastBuild>true</useClassesFromLastBuild> -->
-      <!--             </illegalTransitiveDependencyCheck> -->
-      <!--           </rules> -->
-      <!--         </configuration> -->
-      <!--       </execution> -->
-      <!--     </executions> -->
-      <!--   </plugin> -->
-      </plugins>
-    </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M1</version>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

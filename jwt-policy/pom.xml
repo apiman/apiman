@@ -39,10 +39,6 @@
       <groupId>com.auth0</groupId>
       <artifactId>jwks-rsa</artifactId>
     </dependency>
-    <dependency>
-      <groupId>jakarta.annotation</groupId>
-      <artifactId>jakarta.annotation-api</artifactId>
-    </dependency>
     <!-- apiman -->
     <dependency>
       <groupId>io.apiman</groupId>
@@ -67,7 +63,7 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -75,10 +71,14 @@
       <artifactId>apiman-test-policies</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- mockserver -->
     <dependency>
       <groupId>org.mock-server</groupId>
       <artifactId>mockserver-netty</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-junit-rule</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
