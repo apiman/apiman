@@ -62,7 +62,9 @@ jobs:
             ${{ runner.os }}-maven-
       
       - name: Build Project
-        run: ./mvnw clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B -Dmaven.wagon.http.retryHandler.count=3
+        run: |
+          cd parent && sh ../mvnw -B clean install && cd ..
+          ./mvnw clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B -Dmaven.wagon.http.retryHandler.count=3
 
       - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
         run: ./mvnw test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
@@ -100,6 +102,12 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+
+      - name: Build and deploy Apiman Parent POM/BOM & Deploy to OSSRH
+        run: |
+          cd parent
+          sh ../mvnw -B clean install
+          sh ../mvnw -B deploy
       
       - name: Build and Publish Docker Images & Deploy OSSRH Snapshots
         run: |
