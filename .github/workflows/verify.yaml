@@ -108,6 +108,9 @@ jobs:
           cd parent
           sh ../mvnw -B clean install
           sh ../mvnw -B deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
       
       - name: Build and Publish Docker Images & Deploy OSSRH Snapshots
         run: |
