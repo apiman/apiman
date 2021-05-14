@@ -6,6 +6,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchEvent.Kind;
@@ -21,23 +22,23 @@ public class LogFileConfigManager {
     private final Path fileParent;
     private final SimpleChangeRequestHandler changeHandler;
     private final ObjectMapper om = new ObjectMapper();
+    private boolean running = true;
 
 
     public LogFileConfigManager(SimpleChangeRequestHandler changeHandler) throws IOException {
-        this.fileToWatch = getOrCreate();
+        this.fileToWatch = Paths.get(System.getProperty("java.io.tmpdir"), "local-deployment-logger-config");
         this.fileParent = fileToWatch.getParent();
         this.changeHandler = changeHandler;
         this.watchService = FileSystems.getDefault().newWatchService();
-    }
-
-    private Path getOrCreate() {
-        return Paths.get(System.getProperty("java.io.tmpdir"), "local-deployment-logger-config");
     }
 
     public void write(LoggingChangeRequest loggingChangeRequest) throws IOException {
         Files.write(fileToWatch, om.writeValueAsBytes(loggingChangeRequest));
     }
 
+    /**
+     * Watch the log file.
+     */
     public void watch() {
         Runnable runnable = () -> {
             try {
@@ -47,6 +48,8 @@ public class LogFileConfigManager {
                 throw new UncheckedIOException(ioe);
             } catch (InterruptedException e) {
                 // LOGGER.error(e, "Log file watcher was interrupted: {0}", e.getMessage());
+            } finally {
+                running = false;
             }
         };
         final Thread watchThread = new Thread(runnable);
@@ -63,29 +66,31 @@ public class LogFileConfigManager {
             StandardWatchEventKinds.OVERFLOW
         );
 
-        WatchKey keys = watchService.take();
+        while (running) {
+            WatchKey keys = watchService.take();
 
-        for (WatchEvent<?> event : keys.pollEvents()) {
-            Kind<?> kind = event.kind();
+            for (WatchEvent<?> event : keys.pollEvents()) {
+                Kind<?> kind = event.kind();
 
-            if (kind.equals(StandardWatchEventKinds.ENTRY_CREATE)
-                || kind.equals(StandardWatchEventKinds.ENTRY_MODIFY)) {
-                // Sometimes the file will just be an empty file when someone replaces it,
-                // so let's ignore zero-length.
-                final Path changed = fileParent.resolve((Path) event.context());
+                if (kind.equals(StandardWatchEventKinds.ENTRY_CREATE)
+                    || kind.equals(StandardWatchEventKinds.ENTRY_MODIFY)) {
+                    // Sometimes the file will just be an empty file when someone replaces it,
+                    // so let's ignore zero-length.
+                    final Path changed = fileParent.resolve((Path) event.context());
 
-                // If it's our special file and size is >0
-                if (changed.getFileName().equals(fileToWatch.getFileName())
-                    && Files.exists(changed) && Files.size(changed) > 0) {
-                    // LOGGER.info("Log file config was changed, will reload log config: {0}", fileToWatch);
+                    // If it's our special file and size is >0
+                    if (changed.getFileName().equals(fileToWatch.getFileName())
+                        && Files.exists(changed) && Files.size(changed) > 0) {
+                        // LOGGER.info("Log file config was changed, will reload log config: {0}", fileToWatch);
+                        trigger();
+                    }
+                } else if (kind.equals(StandardWatchEventKinds.OVERFLOW)) {
+                    // LOGGER.warn("Filesystem overflow occurred when attempting to get logging file "
+                    //    + "changes, will speculatively trigger change handler: {0}" + event);
                     trigger();
+                } else if (kind.equals(StandardWatchEventKinds.ENTRY_DELETE)) {
+                    // LOGGER.info("Hmm!");
                 }
-            } else if (kind.equals(StandardWatchEventKinds.OVERFLOW)) {
-                // LOGGER.warn("Filesystem overflow occurred when attempting to get logging file "
-                //    + "changes, will speculatively trigger change handler: {0}" + event);
-                trigger();
-            } else if (kind.equals(StandardWatchEventKinds.ENTRY_DELETE)) {
-                // LOGGER.info("Hmm!");
             }
         }
     }
