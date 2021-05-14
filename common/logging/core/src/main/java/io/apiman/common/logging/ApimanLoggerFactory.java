@@ -53,9 +53,21 @@ import org.apache.commons.collections.MapUtils;
 public class ApimanLoggerFactory {
 
     public static final String APIMAN_LOGGER = "apiman.logger-delegate";
+    private static final LogFileConfigManager LOG_FILE_CONFIG_MANAGER;
 
     private static volatile boolean LOGGER_RESOLVED = false;
     private static IDelegateFactory LOGGER_FACTORY;
+
+    static {
+        try {
+            LOG_FILE_CONFIG_MANAGER = new LogFileConfigManager(
+                ApimanLoggerFactory::setLocally
+            );
+            LOG_FILE_CONFIG_MANAGER.watch();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     /**
      * Create a logger that delegates onto the configured logging framework
@@ -92,9 +104,9 @@ public class ApimanLoggerFactory {
 
     /**
      * If system property is set, resolve the factory of that name, otherwise use the default logger.
-     * <p>
-     * In future we could use a more intelligent approach that attempts to detect which implementation should
-     * be used, and falls back onto an ordered list of known implementations.
+     *
+     * <p>In future we could use a more intelligent approach that attempts to detect which implementation
+     * should be used, and falls back onto an ordered list of known implementations.
      */
     private static IDelegateFactory resolveLoggerFactory() {
         String sysProp = System.getProperty(APIMAN_LOGGER);
@@ -113,25 +125,14 @@ public class ApimanLoggerFactory {
         LOGGER_RESOLVED = true;
     }
 
+    /**
+     * Override logger configuration at runtime.
+     */
     public static synchronized void overrideLoggerConfig(LoggingChangeRequest newLoggerConfig) {
         try {
             LOG_FILE_CONFIG_MANAGER.write(newLoggerConfig);
         } catch (IOException ioe) {
             throw new UncheckedIOException(ioe);
-        }
-    }
-
-    private static final LogFileConfigManager LOG_FILE_CONFIG_MANAGER;
-
-    static {
-        System.out.println("let me stop here please...");
-        try {
-            LOG_FILE_CONFIG_MANAGER = new LogFileConfigManager(
-                ApimanLoggerFactory::setLocally
-            );
-            LOG_FILE_CONFIG_MANAGER.watch();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 
