@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Scheer PAS Schweiz AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.apiman.common.logging.change;
 
 import java.io.IOException;
@@ -6,7 +22,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchEvent.Kind;
@@ -15,6 +30,17 @@ import java.nio.file.WatchService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Log file config manager.
+ *
+ * <p>Watches a configuration file on the local filesystem.
+ *
+ * <p>If the file is changed, the data inside will be parsed into a {@link LoggingChangeRequest} and the
+ * changeHandler will be invoked.
+ *
+ * <p>This provides a simple way for deployments on the same node (e.g. a container) to synchronise their
+ * logging configuration at runtime, despite being in separate classloaders.
+ */
 public class LogFileConfigManager {
     private final Path fileToWatch;
     private final WatchService watchService;
@@ -24,7 +50,12 @@ public class LogFileConfigManager {
     private final ObjectMapper om = new ObjectMapper();
     private boolean running = true;
 
-
+    /**
+     * Instantiates a new log file config manager.
+     *
+     * @param changeHandler the change handler, called when the logging configuration has been changed
+     * @throws IOException the io exception
+     */
     public LogFileConfigManager(SimpleChangeRequestHandler changeHandler) throws IOException {
         this.fileToWatch = Paths.get(System.getProperty("java.io.tmpdir"), "local-deployment-logger-config");
         this.fileParent = fileToWatch.getParent();
@@ -32,6 +63,12 @@ public class LogFileConfigManager {
         this.watchService = FileSystems.getDefault().newWatchService();
     }
 
+    /**
+     * Write a logging change request.
+     *
+     * @param loggingChangeRequest the logging change request to write
+     * @throws IOException the io exception
+     */
     public void write(LoggingChangeRequest loggingChangeRequest) throws IOException {
         Files.write(fileToWatch, om.writeValueAsBytes(loggingChangeRequest));
     }
@@ -101,11 +138,18 @@ public class LogFileConfigManager {
         this.changeHandler.handle(change);
     }
 
-    // We need to avoid creating a circular dependency back to apiman core.
+    /**
+     * Simple change request handler.
+     *
+     * <p>We need to avoid a cyclical dependency on Apiman Core, so we just create a one-use interface.
+     */
+    @FunctionalInterface
     public interface SimpleChangeRequestHandler {
 
         /**
          * Called when an async result is available.
+         *
+         * @param loggingChangeRequest the logging change request
          */
         void handle(LoggingChangeRequest loggingChangeRequest);
     }
