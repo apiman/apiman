@@ -18,16 +18,9 @@ package io.apiman.gateway.api.rest;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.gateway.engine.beans.GatewayEndpoint;
-import io.apiman.common.logging.LoggingChangeRequest;
+import io.apiman.common.logging.change.LoggingChangeRequest;
 import io.apiman.gateway.engine.beans.SystemStatus;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 
 import javax.ws.rs.GET;

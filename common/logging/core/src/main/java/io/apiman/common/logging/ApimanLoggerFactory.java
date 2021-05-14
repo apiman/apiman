@@ -15,7 +15,16 @@
  */
 package io.apiman.common.logging;
 
+import io.apiman.common.logging.change.LogFileConfigManager;
+import io.apiman.common.logging.change.LoggingChangeRequest;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.util.UUID;
+
+import org.apache.commons.collections.MapUtils;
 
 /**
  * Factory for creating Apiman loggers.
@@ -106,8 +115,47 @@ public class ApimanLoggerFactory {
     }
 
     public static synchronized void overrideLoggerConfig(LoggingChangeRequest newLoggerConfig) {
-        // Make sure that this has been resolved
+        try {
+            LOG_FILE_CONFIG_MANAGER.write(newLoggerConfig);
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
+        }
+    }
+
+    private static final LogFileConfigManager LOG_FILE_CONFIG_MANAGER;
+
+    static {
+        System.out.println("let me stop here please...");
+        try {
+            LOG_FILE_CONFIG_MANAGER = new LogFileConfigManager(
+                ApimanLoggerFactory::setLocally
+            );
+            LOG_FILE_CONFIG_MANAGER.watch();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static void setLocally(LoggingChangeRequest changeRequest) {
+        IApimanLogger log = getLogger(ApimanLoggerFactory.class);
         IDelegateFactory factory = getLoggerFactory();
-        factory.overrideLoggerConfig(newLoggerConfig);
+
+        if (changeRequest.getLoggerConfig() != null
+            && changeRequest.getLoggerConfig().length > 0) {
+            try {
+                File loggerConfigTmp = File.createTempFile("ApimanLoggerConfig", "temp");
+                loggerConfigTmp.deleteOnExit();
+                Files.write(loggerConfigTmp.toPath(), changeRequest.getLoggerConfig()).toFile();
+                factory.overrideLoggerConfig(loggerConfigTmp);
+            } catch (IOException ioe) {
+                log.error(ioe, "Attempt to load a new logger configuration failed. "
+                    + "Was the file in the correct format? "
+                    + "Logger configuration will be unchanged. {0}", ioe.getMessage());
+            }
+        }
+
+        if (MapUtils.isNotEmpty(changeRequest.getLogOverrides())) {
+            factory.overrideLoggerConfig(changeRequest.getLogOverrides());
+        }
     }
 }

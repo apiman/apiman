@@ -17,15 +17,14 @@ package io.apiman.common.logging.log4j2;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
-import io.apiman.common.logging.LogFileWatcher;
-import io.apiman.common.logging.LoggingChangeRequest;
+import io.apiman.common.logging.LogLevel;
+import io.apiman.common.logging.change.LoggingChangeRequest;
 import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
-import java.util.UUID;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -40,24 +39,6 @@ import org.apache.logging.log4j.message.FormattedMessageFactory;
 public class Log4j2LoggerFactory implements IDelegateFactory {
     private final FormattedMessageFactory formattedMessageFactory =  new FormattedMessageFactory();
     private final LoggerContext context = (LoggerContext) LogManager.getContext(false);
-    private final LogFileWatcher logFileWatcher;
-    private final String id = UUID.randomUUID().toString();
-
-    {
-        System.out.println("let me stop here please...");
-        try {
-            logFileWatcher = new LogFileWatcher(
-                this::overrideLoggerConfig
-            );
-            logFileWatcher.watch();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-//    private void reloadLoggingConfig(LoggingChangeRequest newConfig) {
-//
-//    }
 
     private File writeLog4j2ConfigToTemp(byte[] bytes) throws IOException {
         File loggerConfigTmp = File.createTempFile("ApimanLoggerConfig", "temp");
@@ -67,33 +48,45 @@ public class Log4j2LoggerFactory implements IDelegateFactory {
 
     @Override
     public IApimanLogger createLogger(String name) {
-        System.err.println(Log4j2LoggerFactory.class.getName() + "=" + id);
+//        System.err.println(Log4j2LoggerFactory.class.getName() + "=" + id);
         return new Log4j2LoggerImpl(context.getLogger(name, formattedMessageFactory));
     }
 
     @Override
     public IApimanLogger createLogger(Class<?> klazz) {
-        System.err.println(Log4j2LoggerFactory.class.getName() + "=" + id);
+//        System.err.println(Log4j2LoggerFactory.class.getName() + "=" + id);
         return new Log4j2LoggerImpl(context.getLogger(klazz, formattedMessageFactory));
     }
 
     @Override
-    public IDelegateFactory overrideLoggerConfig(LoggingChangeRequest newConfig) {
-        assert newConfig != null;
-        IApimanLogger log = createLogger(Log4j2LoggerFactory.class);
-        log.debug("Trying to load a new logging config: {0}", newConfig);
-        // If present, write the config from byte[] to tmp, then apply it.
-        // Each node on the local machine will separately perform this process
-        // (this allows us to get around CL isolation).
-        if (newConfig.getLoggerConfig() != null) {
-            try {
-                File configInTmp = writeLog4j2ConfigToTemp(newConfig.getLoggerConfig());
-                context.setConfigLocation(configInTmp.toURI());
-            } catch (IOException ioe) {
-                log.error(ioe, "Attempt to load a new logger configuration failed. "
-                    + "Logger configuration will be unchanged. {0}", ioe.getMessage());
-            }
-        }
+    public IDelegateFactory overrideLoggerConfig(Map<String, LogLevel> newLoggerConfig) {
+
         return this;
     }
+
+    @Override
+    public IDelegateFactory overrideLoggerConfig(File newLoggerConfig) {
+        context.setConfigLocation(newLoggerConfig.toURI());
+        return this;
+    }
+
+    //    @Override
+//    public IDelegateFactory overrideLoggerConfig(LoggingChangeRequest newConfig) {
+//        assert newConfig != null;
+//        IApimanLogger log = createLogger(Log4j2LoggerFactory.class);
+//        log.debug("Trying to load a new logging config: {0}", newConfig);
+//        // If present, write the config from byte[] to tmp, then apply it.
+//        // Each node on the local machine will separately perform this process
+//        // (this allows us to get around CL isolation).
+//        if (newConfig.getLoggerConfig() != null) {
+//            try {
+//                File configInTmp = writeLog4j2ConfigToTemp(newConfig.getLoggerConfig());
+//                context.setConfigLocation(configInTmp.toURI());
+//            } catch (IOException ioe) {
+//                log.error(ioe, "Attempt to load a new logger configuration failed. "
+//                    + "Logger configuration will be unchanged. {0}", ioe.getMessage());
+//            }
+//        }
+//        return this;
+//    }
 }

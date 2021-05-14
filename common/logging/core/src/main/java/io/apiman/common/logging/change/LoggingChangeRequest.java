@@ -1,4 +1,6 @@
-package io.apiman.common.logging;
+package io.apiman.common.logging.change;
+
+import io.apiman.common.logging.LogLevel;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -6,16 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-//@JsonTypeInfo(
-//    use = JsonTypeInfo.Id.NAME,
-//    include = JsonTypeInfo.As.PROPERTY,
-//    property = "type",
-//    visible = true
-//)
-//@JsonSubTypes({
-//    @Type(value = .class, name = "FULL_CONFIG_FILE_OVERRIDE"),
-//    @Type(value = LogMappings.class, name = "MAPPINGS")
-//})
 public class LoggingChangeRequest {
 
     private Map<String, LogLevel> logOverrides = new HashMap<>();
@@ -41,18 +33,6 @@ public class LoggingChangeRequest {
         return this;
     }
 
-    enum LogLevel {
-        ERROR, WARN, INFO, DEBUG, TRACE
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", LoggingChangeRequest.class.getSimpleName() + "[", "]")
-            .add("logOverrides=" + logOverrides)
-            .add("loggerConfig=" + Arrays.toString(loggerConfig))
-            .toString();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -62,8 +42,8 @@ public class LoggingChangeRequest {
             return false;
         }
         LoggingChangeRequest that = (LoggingChangeRequest) o;
-        return Objects.equals(logOverrides, that.logOverrides) && Arrays
-            .equals(loggerConfig, that.loggerConfig);
+        return Objects.equals(logOverrides, that.logOverrides)
+            && Arrays.equals(loggerConfig, that.loggerConfig);
     }
 
     @Override
@@ -71,5 +51,13 @@ public class LoggingChangeRequest {
         int result = Objects.hash(logOverrides);
         result = 31 * result + Arrays.hashCode(loggerConfig);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", LoggingChangeRequest.class.getSimpleName() + "[", "]")
+            .add("logOverrides=" + logOverrides)
+            .add("loggerConfig=" + Arrays.toString(loggerConfig))
+            .toString();
     }
 }

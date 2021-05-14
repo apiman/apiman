@@ -1,4 +1,4 @@
-package io.apiman.common.logging;
+package io.apiman.common.logging.change;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -11,11 +11,12 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.UUID;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class LogFileWatcher {
+public class LogFileConfigManager {
+    private static final String NODE_ID = UUID.randomUUID().toString();
     private final Path fileToWatch;
     private final WatchService watchService;
     // WatchService can only watch directories, not individual file(s).
@@ -24,7 +25,7 @@ public class LogFileWatcher {
     private final ObjectMapper om = new ObjectMapper();
 
 
-    public LogFileWatcher(SimpleChangeRequestHandler changeHandler) throws IOException {
+    public LogFileConfigManager(SimpleChangeRequestHandler changeHandler) throws IOException {
         this.fileToWatch = getOrCreate();
         this.fileParent = fileToWatch.getParent();
         this.changeHandler = changeHandler;

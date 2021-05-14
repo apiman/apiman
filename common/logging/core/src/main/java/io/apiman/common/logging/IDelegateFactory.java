@@ -15,6 +15,12 @@
  */
 package io.apiman.common.logging;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.Map;
+import java.util.UUID;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -39,10 +45,8 @@ public interface IDelegateFactory {
      */
     IApimanLogger createLogger(Class<?> klazz);
 
-    ObjectMapper om = new ObjectMapper();
-
     /**
-     * Temporarily override the currently running logger configuration.
+     * Override the currently running logger configuration.
      * <p>
      * If the provided configuration file format is not recognised for example, if a log4j2 file is provided
      * to logback, etc, you will potentially get different (strange) exceptions or unusual behaviour depending
@@ -50,10 +54,22 @@ public interface IDelegateFactory {
      *
      * @param newLoggerConfig the new logger configuration.
      */
-    default IDelegateFactory overrideLoggerConfig(LoggingChangeRequest newLoggerConfig) {
+    default IDelegateFactory overrideLoggerConfig(File newLoggerConfig) {
         IApimanLogger logger = ApimanLoggerFactory.getLogger(IDelegateFactory.class);
         logger.warn("The logger implementation you have selected does not support "
-            + "dynamic logger config changes");
+            + "dynamic logger configuration changes. This operation will be ignored");
+        return this;
+    }
+
+    /**
+     * Override the currently running logger configuration
+     *
+     * @param newLoggerConfig the new logger configuration.
+     */
+    default IDelegateFactory overrideLoggerConfig(Map<String, LogLevel> newLoggerConfig) {
+        IApimanLogger logger = ApimanLoggerFactory.getLogger(IDelegateFactory.class);
+        logger.warn("The logger implementation you have selected does not support "
+            + "dynamic logger configuration changes. This operation will be ignored");
         return this;
     }
 }
