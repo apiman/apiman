@@ -17,13 +17,10 @@ package io.apiman.gateway.platforms.vertx3.api;
 
 import io.apiman.gateway.api.rest.ISystemResource;
 import io.apiman.gateway.engine.IEngine;
-import io.apiman.gateway.engine.beans.LoggingChangeRequest;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.helpers.EndpointHelper;
-
-import javax.ws.rs.core.Response;
 
 /**
  * System Resource route builder

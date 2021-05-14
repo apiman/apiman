@@ -18,21 +18,18 @@ package io.apiman.common.logging.log4j2;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.logging.LogFileWatcher;
+import io.apiman.common.logging.LoggingChangeRequest;
 import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.FormattedMessageFactory;
-
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * Log4j2 logger factory.
@@ -41,25 +38,31 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  */
 @ApimanLoggerFactory("log4j2")
 public class Log4j2LoggerFactory implements IDelegateFactory {
-
     private final FormattedMessageFactory formattedMessageFactory =  new FormattedMessageFactory();
     private final LoggerContext context = (LoggerContext) LogManager.getContext(false);
     private final LogFileWatcher logFileWatcher;
-    private final Path logConfig = Paths.get(System.getProperty("apiman.dynamic-logging"));
+    private final String id = UUID.randomUUID().toString();
 
     {
+        System.out.println("let me stop here please...");
         try {
             logFileWatcher = new LogFileWatcher(
-                logConfig,
-                this::reloadLoggingConfig
+                this::overrideLoggerConfig
             );
+            logFileWatcher.watch();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    private void reloadLoggingConfig() {
-        System.out.println("reloading logging stuff, woo");
+//    private void reloadLoggingConfig(LoggingChangeRequest newConfig) {
+//
+//    }
+
+    private File writeLog4j2ConfigToTemp(byte[] bytes) throws IOException {
+        File loggerConfigTmp = File.createTempFile("ApimanLoggerConfig", "temp");
+        loggerConfigTmp.deleteOnExit();
+        return Files.write(loggerConfigTmp.toPath(), bytes).toFile();
     }
 
     @Override
@@ -75,33 +78,22 @@ public class Log4j2LoggerFactory implements IDelegateFactory {
     }
 
     @Override
-    public IDelegateFactory overrideLoggerConfig(File newLoggerConfig) {
-
-
-
-
-
-
-        //System.setProperty("log4j.configurationFile", newLoggerConfig.getAbsolutePath());
-        //context.setConfigLocation(newLoggerConfig.toURI());
-        //context.updateLoggers();
-
-
-
-
-
-//
-//        String oldPath = System.getProperty("log4j.configurationFile");
-//        try {
-//            Files.copy(Paths.get(oldPath), Paths.get(oldPath + "_old" + UUID.randomUUID()));
-//            Files.copy(newLoggerConfig.toPath(), Paths.get(oldPath), REPLACE_EXISTING);
-//        } catch (IOException e) {
-//            throw new UncheckedIOException(e);
-//        }
+    public IDelegateFactory overrideLoggerConfig(LoggingChangeRequest newConfig) {
+        assert newConfig != null;
+        IApimanLogger log = createLogger(Log4j2LoggerFactory.class);
+        log.debug("Trying to load a new logging config: {0}", newConfig);
+        // If present, write the config from byte[] to tmp, then apply it.
+        // Each node on the local machine will separately perform this process
+        // (this allows us to get around CL isolation).
+        if (newConfig.getLoggerConfig() != null) {
+            try {
+                File configInTmp = writeLog4j2ConfigToTemp(newConfig.getLoggerConfig());
+                context.setConfigLocation(configInTmp.toURI());
+            } catch (IOException ioe) {
+                log.error(ioe, "Attempt to load a new logger configuration failed. "
+                    + "Logger configuration will be unchanged. {0}", ioe.getMessage());
+            }
+        }
         return this;
-    }
-
-    private void watchFile() {
-
     }
 }

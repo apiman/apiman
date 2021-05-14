@@ -9,7 +9,7 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
 <Configuration status="WARN">
   <Appenders>
     <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
-    <RandomAccessFile name="RandomAccessFile" fileName="apiman-gateway.log" immediateFlush="false" append="false">
+    <RandomAccessFile name="RandomAccessFile" fileName="apiman-gateway.log" immediateFlush="false" true="false">
       <PatternLayout>
         <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
       </PatternLayout>

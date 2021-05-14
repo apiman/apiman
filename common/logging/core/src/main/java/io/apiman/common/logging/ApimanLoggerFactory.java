@@ -105,11 +105,7 @@ public class ApimanLoggerFactory {
         LOGGER_RESOLVED = true;
     }
 
-//    public static synchronized void overrideLoggerLevel(Map<String, LoggerLevel> )  {
-//
-//    }
-
-    public static synchronized void overrideLoggerConfig(File newLoggerConfig) {
+    public static synchronized void overrideLoggerConfig(LoggingChangeRequest newLoggerConfig) {
         // Make sure that this has been resolved
         IDelegateFactory factory = getLoggerFactory();
         factory.overrideLoggerConfig(newLoggerConfig);

@@ -1,7 +1,10 @@
-package io.apiman.gateway.engine.beans;
+package io.apiman.common.logging;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.StringJoiner;
 
 //@JsonTypeInfo(
 //    use = JsonTypeInfo.Id.NAME,
@@ -42,4 +45,31 @@ public class LoggingChangeRequest {
         ERROR, WARN, INFO, DEBUG, TRACE
     }
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", LoggingChangeRequest.class.getSimpleName() + "[", "]")
+            .add("logOverrides=" + logOverrides)
+            .add("loggerConfig=" + Arrays.toString(loggerConfig))
+            .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LoggingChangeRequest that = (LoggingChangeRequest) o;
+        return Objects.equals(logOverrides, that.logOverrides) && Arrays
+            .equals(loggerConfig, that.loggerConfig);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(logOverrides);
+        result = 31 * result + Arrays.hashCode(loggerConfig);
+        return result;
+    }
 }

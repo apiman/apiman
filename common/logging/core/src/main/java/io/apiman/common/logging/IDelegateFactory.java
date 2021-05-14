@@ -15,7 +15,7 @@
  */
 package io.apiman.common.logging;
 
-import java.io.File;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Factory to create impl.
@@ -39,6 +39,8 @@ public interface IDelegateFactory {
      */
     IApimanLogger createLogger(Class<?> klazz);
 
+    ObjectMapper om = new ObjectMapper();
+
     /**
      * Temporarily override the currently running logger configuration.
      * <p>
@@ -48,7 +50,7 @@ public interface IDelegateFactory {
      *
      * @param newLoggerConfig the new logger configuration.
      */
-    default IDelegateFactory overrideLoggerConfig(File newLoggerConfig) {
+    default IDelegateFactory overrideLoggerConfig(LoggingChangeRequest newLoggerConfig) {
         IApimanLogger logger = ApimanLoggerFactory.getLogger(IDelegateFactory.class);
         logger.warn("The logger implementation you have selected does not support "
             + "dynamic logger config changes");
