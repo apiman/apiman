@@ -87,5 +87,10 @@
       <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-es</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
