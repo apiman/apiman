@@ -11,12 +11,10 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class LogFileConfigManager {
-    private static final String NODE_ID = UUID.randomUUID().toString();
     private final Path fileToWatch;
     private final WatchService watchService;
     // WatchService can only watch directories, not individual file(s).

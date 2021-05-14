@@ -18,17 +18,19 @@ package io.apiman.common.logging.log4j2;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
 import io.apiman.common.logging.LogLevel;
-import io.apiman.common.logging.change.LoggingChangeRequest;
 import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.FormattedMessageFactory;
+
+;
 
 /**
  * Log4j2 logger factory.
@@ -40,28 +42,14 @@ public class Log4j2LoggerFactory implements IDelegateFactory {
     private final FormattedMessageFactory formattedMessageFactory =  new FormattedMessageFactory();
     private final LoggerContext context = (LoggerContext) LogManager.getContext(false);
 
-    private File writeLog4j2ConfigToTemp(byte[] bytes) throws IOException {
-        File loggerConfigTmp = File.createTempFile("ApimanLoggerConfig", "temp");
-        loggerConfigTmp.deleteOnExit();
-        return Files.write(loggerConfigTmp.toPath(), bytes).toFile();
-    }
-
     @Override
     public IApimanLogger createLogger(String name) {
-//        System.err.println(Log4j2LoggerFactory.class.getName() + "=" + id);
         return new Log4j2LoggerImpl(context.getLogger(name, formattedMessageFactory));
     }
 
     @Override
     public IApimanLogger createLogger(Class<?> klazz) {
-//        System.err.println(Log4j2LoggerFactory.class.getName() + "=" + id);
         return new Log4j2LoggerImpl(context.getLogger(klazz, formattedMessageFactory));
-    }
-
-    @Override
-    public IDelegateFactory overrideLoggerConfig(Map<String, LogLevel> newLoggerConfig) {
-
-        return this;
     }
 
     @Override
@@ -70,23 +58,32 @@ public class Log4j2LoggerFactory implements IDelegateFactory {
         return this;
     }
 
-    //    @Override
-//    public IDelegateFactory overrideLoggerConfig(LoggingChangeRequest newConfig) {
-//        assert newConfig != null;
-//        IApimanLogger log = createLogger(Log4j2LoggerFactory.class);
-//        log.debug("Trying to load a new logging config: {0}", newConfig);
-//        // If present, write the config from byte[] to tmp, then apply it.
-//        // Each node on the local machine will separately perform this process
-//        // (this allows us to get around CL isolation).
-//        if (newConfig.getLoggerConfig() != null) {
-//            try {
-//                File configInTmp = writeLog4j2ConfigToTemp(newConfig.getLoggerConfig());
-//                context.setConfigLocation(configInTmp.toURI());
-//            } catch (IOException ioe) {
-//                log.error(ioe, "Attempt to load a new logger configuration failed. "
-//                    + "Logger configuration will be unchanged. {0}", ioe.getMessage());
-//            }
-//        }
-//        return this;
-//    }
+    @Override
+    public IDelegateFactory overrideLoggerConfig(Map<String, LogLevel> newLoggerConfig) {
+        Map<String, Level> log4j2LevelMap = new HashMap<>(newLoggerConfig.size());
+        for (Entry<String, LogLevel> entry : newLoggerConfig.entrySet()) {
+            String loggerName = entry.getKey();
+            Level level = translateLoggerLevel(entry.getValue());
+            log4j2LevelMap.put(loggerName, level);
+        }
+        org.apache.logging.log4j.core.config.Configurator.setLevel(log4j2LevelMap);
+        return this;
+    }
+
+    private Level translateLoggerLevel(LogLevel value) {
+        switch (value) {
+            case ERROR:
+                return Level.ERROR;
+            case WARN:
+                return Level.WARN;
+            case INFO:
+                return Level.INFO;
+            case DEBUG:
+                return Level.DEBUG;
+            case TRACE:
+                return Level.TRACE;
+            default:
+                throw new IllegalStateException("Unexpected logger level value: " + value);
+        }
+    }
 }

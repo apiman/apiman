@@ -16,12 +16,7 @@
 package io.apiman.common.logging;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.Map;
-import java.util.UUID;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Factory to create impl.
