@@ -181,6 +181,9 @@
                           </fileSets>
                         </inline>
                       </assembly>
+                      <tags>
+                        <tag>wildfly-master</tag>
+                      </tags>
                     </build>
                     <run>
                       <ports>

@@ -18,6 +18,19 @@
     "url": "https://github.com/apiman/apiman/issues"
   },
   "homepage": "https://github.com/apiman/apiman#readme",
+  "scripts": {
+    "apiman:build-docker": "mvn -f ../../../distro/wildfly/pom.xml install -Pdocker",
+    "apiman:rebuild": "mvn -f ../../../parent/pom.xml clean install &&  mvn -f ../../../pom.xml clean install -DskipTests -Dmaven.javadoc.skip -T1C -B -Pdocker",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "start": "yarn run gulp",
+    "ci": "cd ci && bash run-e2e.sh",
+    "test:headless": "yarn cy:run"
+  },
+  "resolutions": {
+    "graceful-fs": "^4.2.4",
+    "http-proxy": "1.18.1"
+  },
   "dependencies": {
     "angular": "1.4.7",
     "angular-animate": "1.4.7",
@@ -39,11 +52,12 @@
     "gulp-clean": "0.3.1",
     "gulp-concat": "2.6.0",
     "gulp-concat-css": "2.2.0",
-    "gulp-connect": "2.2.0",
+    "gulp-connect": "5.7.0",
     "gulp-notify": "2.2.0",
     "gulp-replace": "0.5.4",
     "gulp-typescript": "2.9.1",
     "gulp-watch": "4.3.5",
+    "harmon": "^1.4.4",
     "jquery": "3.3.1",
     "js-logger": "1.2.0",
     "json-editor": "0.7.23",
@@ -71,7 +85,13 @@
     "vinyl-source-stream": "1.1.0",
     "which": "1.0.8"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "cypress": "^7.3.0",
+    "cypress-sql-server": "^1.0.0",
+    "http-proxy": "1.18.1",
+    "http-proxy-middleware": "^2.0.0",
+    "wait-on": "^5.3.0"
+  },
   "optionalDependencies": {
     "fsevents": "*"
   }

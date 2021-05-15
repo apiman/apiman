@@ -1,0 +1,6 @@
+{
+    "projectId": "tpeh3n",
+    "defaultCommandTimeout": 10000,
+    "chromeWebSecurity": false,
+    "baseUrl": "http://localhost:2772/apimanui/"
+}
