@@ -1,29 +1,31 @@
 // Gulp File
 
 // ---------------------- Dependencies ---->>
-var browserify = require('browserify');
-var buffer = require('vinyl-buffer');
-var eventStream = require('event-stream');
-var fs = require('fs');
-var gulp = require('gulp');
-var map = require('vinyl-map');
-var path = require('path');
-var pkg = require('./package.json');
-var s = require('underscore.string');
-var source = require('vinyl-source-stream');
+const browserify = require('browserify');
+const buffer = require('vinyl-buffer');
+const eventStream = require('event-stream');
+const fs = require('fs');
+const gulp = require('gulp');
+const map = require('vinyl-map');
+const path = require('path');
+const pkg = require('./package.json');
+const s = require('underscore.string');
+const source = require('vinyl-source-stream');
 
 
 // ---------------------- Gulp Plugins ---->>
-var angularTemplatecache = require('gulp-angular-templatecache');
-var clean = require('gulp-clean');
-var concat = require('gulp-concat');
-var concatCss = require('gulp-concat-css');
-var connect = require('gulp-connect');
-var notify = require('gulp-notify');
-var replace = require('gulp-replace');
-var runSequence = require('run-sequence');
-var typescript = require('gulp-typescript');
-var watch = require('gulp-watch');
+const angularTemplatecache = require('gulp-angular-templatecache');
+const clean = require('gulp-clean');
+const concat = require('gulp-concat');
+const concatCss = require('gulp-concat-css');
+const connect = require('gulp-connect');
+const notify = require('gulp-notify');
+const replace = require('gulp-replace');
+const runSequence = require('run-sequence');
+const typescript = require('gulp-typescript');
+const watch = require('gulp-watch');
+
+module.exports = { gulp, connect }
 
 
 // ---------------------- Configuration ---->>

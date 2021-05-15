@@ -12,3 +12,5 @@ node_modules/
 /compiled.js
 plugins/api-manager/ts/*.js
 plugins/api-manager/ts/*/*.js
+cypress/screenshots
+cypress/videos

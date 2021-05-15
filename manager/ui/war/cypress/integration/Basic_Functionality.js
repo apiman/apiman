@@ -1,14 +1,18 @@
-describe('My First Test', () => {
+describe('Apiman e2e UI smoke test', () => {
 
     before(() => {
         cy.clearCookies();
-        cy.visit('localhost:8080/apimanui');
+        cy.visit('/');
         cy.typeLogin('admin', 'admin123!')
+    });
+
+    after(() => {
+        //cy.exec('docker rm -f apiman-e2e')
     });
 
     beforeEach(() => {
         Cypress.Cookies.preserveOnce('JSESSIONID', 'OAuth_Token_Request_State');
-        cy.visit('localhost:8080/apimanui');
+        cy.visit('/');
     });
 
     it('Create the Organization via NavBar and edit the description', () => {
@@ -73,7 +77,7 @@ describe('My First Test', () => {
         cy.get('.apiman-form-control').click();
         cy.get('.apiman-form-control').type('TestPlan');
         cy.get('.btn-danger').should('be.enabled').click();
-        cy.get('@deletePlan').should('have.property', 'status', 204)
+        cy.wait('@deletePlan').should('have.property', 'status', 204)
     });
 
     it('Recreate the Plan', () => {
@@ -90,7 +94,7 @@ describe('My First Test', () => {
         cy.get('#tab-policies').click();
         cy.get('.pull-right:nth-child(1)').click();
         cy.get('.select2-chosen:nth-child(1)').click();
-        cy.get('#ui-select-choices-row-0-8 > .select2-result-label').click();
+        cy.contains('Rate Limiting Policy').click();
         cy.get('#add-policy').should('be.disabled');
         cy.get('#num-requests').click();
         cy.get('#num-requests').type('1');
@@ -101,8 +105,6 @@ describe('My First Test', () => {
         cy.get('#add-policy').should('be.enabled').click();
         cy.get('.col-md-5 > :nth-child(3) > .btn').click();
         cy.get('.apiman-label').should('have.text', 'Locked');
-
-
     })
 
     it('Create the API via NavBar and edit the description', () => {
