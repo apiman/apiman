@@ -8,3 +8,7 @@ updates:
     directory: "/parent" # Location of package manifests
     schedule:
       interval: "daily"
+ignore:
+  - dependency-name: org.eclipse.jetty:jetty-*
+    versions:
+    - ">= 9"
