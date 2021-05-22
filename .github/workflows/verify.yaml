@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ 8, 11, 16 ]
+        java: [ 8, 11 ] # 16 -- temporarily exclude
     if: github.repository_owner == 'Apiman'
     steps:
       - name: Checkout Code
