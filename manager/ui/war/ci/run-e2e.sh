@@ -16,6 +16,9 @@ cleanup () {
    docker-compose down -v --remove-orphans
 }
 
+# Just in case we have any weird stuff left hanging around
+killall java || true
+
 trap cleanup ERR EXIT
 
 # The CI gulpfile is run from directory above because it extends the original file and we want to avoid complications with
@@ -28,11 +31,13 @@ GULP_PS=$!
 echo "Gulp process ID is: $GULP_PS"
 
 # Start docker container from latest local docker to give us a backend. Daemon mode, so will need to clean up later.
-docker-compose up -d
+docker-compose up # -d
 
 # We need to figure out when the backend is actually available, so we use this handy 'wait-on' status utility.
 # Check out `waitOnConfig.js` for username and password injection.
 yarn run wait-on -v -d 15000 -t 300000 -c waitOnConfig.js "http://$HOSTNAME:2772/apiman/system/status"
+
+docker-compose logs
 
 # If CI env var set, use record mode and export to Cypress dashboard.
 if [[ -n $CI ]]

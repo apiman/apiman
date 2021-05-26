@@ -6,7 +6,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master]
+    branches: [master, cypress]
   pull_request:
     paths-ignore:
       - '.github/**'
@@ -17,57 +17,57 @@ on:
     branches: [master]
 
 jobs:
-  build-verify:
-    name: Verify Build
-    runs-on: ubuntu-latest
-    if: github.repository_owner == 'Apiman'
-    strategy:
-      matrix:
-        java: [ 8, 11, 16 ]
-        integration-suite:
-          # Default, empty string to avoid setting
-          - name: Default configuration (JPA)
-            command: " "
-          # Servlet elasticsearch
-          - name: Servlet with Elasticsearch registry
-            command: -Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es
-          # Vert.x in-memory gateway
-          - name: Vert.x with in-memory registry
-            command: -Dapiman.gateway-test.config=vertx3-mem
-          # Vert.x elasticsearch
-          - name: Vert.x with Elasticsearch registry
-            command: -Dapiman.gateway-test.config=vertx3-es
-          # Vert.x file/static
-          - name: Vert.x with immutable file registry
-            command: -Dapiman.gateway-test.config=vertx3-file
-          # AMG (API Management Gateway / EAP)
-          - name: AMG 1
-            command: -Dapiman.gateway-test.config=amg-1
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Build Project
-        run: |
-          cd parent && sh ../mvnw -B clean install && cd ..
-          ./mvnw clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B -Dmaven.wagon.http.retryHandler.count=3
-
-      - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
-        run: ./mvnw test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
+#  build-verify:
+#    name: Verify Build
+#    runs-on: ubuntu-latest
+#    if: github.repository_owner == 'Apiman'
+#    strategy:
+#      matrix:
+#        java: [ 8, 11, 16 ]
+#        integration-suite:
+#          # Default, empty string to avoid setting
+#          - name: Default configuration (JPA)
+#            command: " "
+#          # Servlet elasticsearch
+#          - name: Servlet with Elasticsearch registry
+#            command: -Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es
+#          # Vert.x in-memory gateway
+#          - name: Vert.x with in-memory registry
+#            command: -Dapiman.gateway-test.config=vertx3-mem
+#          # Vert.x elasticsearch
+#          - name: Vert.x with Elasticsearch registry
+#            command: -Dapiman.gateway-test.config=vertx3-es
+#          # Vert.x file/static
+#          - name: Vert.x with immutable file registry
+#            command: -Dapiman.gateway-test.config=vertx3-file
+#          # AMG (API Management Gateway / EAP)
+#          - name: AMG 1
+#            command: -Dapiman.gateway-test.config=amg-1
+#
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v2
+#
+#      - name: Set up JDK ${{ matrix.java }}
+#        uses: actions/setup-java@v1
+#        with:
+#          java-version: ${{ matrix.java }}
+#
+#      - name: Cache local Maven repository
+#        uses: actions/cache@v2
+#        with:
+#          path: ~/.m2/repository
+#          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-maven-
+#
+#      - name: Build Project
+#        run: |
+#          cd parent && sh ../mvnw -B clean install && cd ..
+#          ./mvnw clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B -Dmaven.wagon.http.retryHandler.count=3
+#
+#      - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
+#        run: ./mvnw test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
 
 # Temporarily disabled until we get a GH access token with appropriate permissions onto secrets.
 #       - name: Publish Test Report
@@ -110,46 +110,46 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_DASHBOARD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-snapshots:
-    name: Publish master snapshot artifacts
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
-    needs: [ build-verify ]
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Set up JDK 8 (for deploying assets, docker builds, etc)
-        uses: actions/setup-java@v1
-        with:
-          java-version: 8
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-
-      - name: Build and deploy Apiman Parent POM/BOM & Deploy to OSSRH
-        run: |
-          cd parent
-          sh ../mvnw -B clean install
-          sh ../mvnw -B deploy
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-
-      - name: Build and Publish Docker Images & Deploy OSSRH Snapshots
-        run: |
-          ./mvnw -B clean package docker:build -P docker -DskipTests
-          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker push apiman/on-wildfly:latest
-          ./mvnw -B deploy -DskipTests -Dmaven.test.skip=true
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+#  publish-snapshots:
+#    name: Publish master snapshot artifacts
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
+#    needs: [ build-verify ]
+#
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v2
+#
+#      - name: Cache local Maven repository
+#        uses: actions/cache@v2
+#        with:
+#          path: ~/.m2/repository
+#          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-maven-
+#      - name: Set up JDK 8 (for deploying assets, docker builds, etc)
+#        uses: actions/setup-java@v1
+#        with:
+#          java-version: 8
+#          server-id: ossrh
+#          server-username: MAVEN_USERNAME
+#          server-password: MAVEN_PASSWORD
+#
+#      - name: Build and deploy Apiman Parent POM/BOM & Deploy to OSSRH
+#        run: |
+#          cd parent
+#          sh ../mvnw -B clean install
+#          sh ../mvnw -B deploy
+#        env:
+#          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+#          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+#
+#      - name: Build and Publish Docker Images & Deploy OSSRH Snapshots
+#        run: |
+#          ./mvnw -B clean package docker:build -P docker -DskipTests
+#          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+#          docker push apiman/on-wildfly:latest
+#          ./mvnw -B deploy -DskipTests -Dmaven.test.skip=true
+#        env:
+#          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+#          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
