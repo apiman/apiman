@@ -20,7 +20,7 @@
   "homepage": "https://github.com/apiman/apiman#readme",
   "scripts": {
     "apiman:build-docker": "mvn -f ../../../distro/wildfly/pom.xml install -Pdocker",
-    "apiman:rebuild": "mvn -f ../../../pom.xml clean install -DskipTests -Dmaven.javadoc.skip -T1C -B -Pdocker",
+    "apiman:rebuild": "mvn -f ../../../parent/pom.xml clean install &&  mvn -f ../../../pom.xml clean install -DskipTests -Dmaven.javadoc.skip -T1C -B -Pdocker",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "start": "yarn run gulp",
