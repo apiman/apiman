@@ -6,10 +6,6 @@ describe('Apiman e2e UI smoke test', () => {
         cy.typeLogin('admin', 'admin123!')
     });
 
-    after(() => {
-        //cy.exec('docker rm -f apiman-e2e')
-    });
-
     beforeEach(() => {
         Cypress.Cookies.preserveOnce('JSESSIONID', 'OAuth_Token_Request_State');
         cy.visit('/');
