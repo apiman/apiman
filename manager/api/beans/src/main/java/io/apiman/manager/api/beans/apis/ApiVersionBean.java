@@ -106,7 +106,7 @@ public class ApiVersionBean implements Serializable, Cloneable {
     @Column(name = "definition_type")
     @Enumerated(EnumType.STRING)
     private ApiDefinitionType definitionType;
-    @OneToOne(mappedBy="apiVersion", orphanRemoval=true, cascade={CascadeType.REMOVE}, fetch=FetchType.LAZY)
+    @OneToOne(mappedBy="apiVersion", orphanRemoval=true, cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
     private ApiDefinitionBean apiDefinition;
     @Column(name = "parse_payload", updatable=true, nullable=true)
     private boolean parsePayload;
@@ -417,6 +417,21 @@ public class ApiVersionBean implements Serializable, Cloneable {
      */
     public void setDefinitionUrl(String definitionUrl) {
         this.definitionUrl = definitionUrl;
+    }
+
+    /**
+     * @return the API definition, if set
+     */
+    public ApiDefinitionBean getApiDefinition() {
+        return apiDefinition;
+    }
+
+    /**
+     * @return get the API definition.
+     */
+    public ApiVersionBean setApiDefinition(ApiDefinitionBean apiDefinition) {
+        this.apiDefinition = apiDefinition;
+        return this;
     }
 
     /**

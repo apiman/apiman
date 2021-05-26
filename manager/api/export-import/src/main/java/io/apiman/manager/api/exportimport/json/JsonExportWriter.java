@@ -455,6 +455,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartObject();
         try {
             avb = (ApiVersionBean) avb.clone();
+            //avb.getApiDefinition(); 
             avb.setApi(null);
             jg.writeObjectField(ApiVersionBean.class.getSimpleName(), avb);
         } catch (Exception e) {
