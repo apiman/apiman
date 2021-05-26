@@ -30,12 +30,14 @@ yarn run gulp --gulpfile gulpfileCI.js &
 GULP_PS=$!
 echo "Gulp process ID is: $GULP_PS"
 
+export JAVA_OPTS=""
+
 # Start docker container from latest local docker to give us a backend. Daemon mode, so will need to clean up later.
 docker-compose up -d
 
 # We need to figure out when the backend is actually available, so we use this handy 'wait-on' status utility.
 # Check out `waitOnConfig.js` for username and password injection.
-yarn run wait-on -v -d 15000 -t 300000 -c waitOnConfig.js "http://$HOSTNAME:2772/apiman/system/status"
+yarn run wait-on -v -d 15000 -t 300000 -c waitOnConfig.js "http://$HOSTNAME:2772/apiman/system/status" || true
 
 docker-compose logs
 
