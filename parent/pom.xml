@@ -71,7 +71,7 @@
     <version.com.amazon.opendistroforelasticsearch>1.13.1</version.com.amazon.opendistroforelasticsearch>
     <version.com.zaxxer>2.7.9</version.com.zaxxer>
     <version.com.google.guava>30.1.1-jre</version.com.google.guava>
-    <version.io.prometheus>0.0.13</version.io.prometheus>
+    <version.io.prometheus>0.11.0</version.io.prometheus>
     <version.javax.enterprise.cdi-api>2.0.SP1</version.javax.enterprise.cdi-api>
     <version.joda-time>2.10.10</version.joda-time>
     <version.junit>4.13.2</version.junit>
@@ -86,7 +86,7 @@
     <version.org.apache.logging.log4j>2.14.1</version.org.apache.logging.log4j>
     <version.org.eclipse.jetty>9.4.41.v20210516</version.org.eclipse.jetty>
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
-    <version.org.elasticsearch>7.12.1</version.org.elasticsearch>
+    <version.org.elasticsearch>7.13.0</version.org.elasticsearch>
     <version.org.hamcrest>1.3</version.org.hamcrest>
     <version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>1.0.2</version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>
     <version.org.hibernate>5.4.32.Final</version.org.hibernate>
