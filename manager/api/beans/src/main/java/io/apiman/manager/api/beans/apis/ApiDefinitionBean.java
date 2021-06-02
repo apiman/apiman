@@ -26,6 +26,10 @@ import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 /**
  * Bean used to store an API definition.
  *
@@ -33,6 +37,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "api_defs")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ApiDefinitionBean implements Serializable {
 
     private static final long serialVersionUID = 7744514362366320690L;
