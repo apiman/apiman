@@ -39,8 +39,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * Models a single version of an API. Every API in APIMan has basic meta-data
@@ -54,6 +56,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Table(name = "api_versions",
        uniqueConstraints = { @UniqueConstraint(columnNames = { "api_id", "api_org_id", "version" }) })
 @JsonInclude(Include.NON_NULL)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ApiVersionBean implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -2218697175049442690L;
