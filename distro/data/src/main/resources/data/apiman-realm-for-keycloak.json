@@ -41,6 +41,42 @@
     "quickLoginCheckMilliSeconds": 1000,
     "maxDeltaTimeSeconds": 43200,
     "failureFactor": 30,
+    "users" : [
+      {
+        "username" : "admin",
+        "enabled" : true,
+        "email" : "admin@example.org",
+        "firstName" : "apiman",
+        "lastName" : "admin",
+        "credentials" : [
+          {
+            "type" : "password",
+            "value" : "admin123!"
+          }
+        ],
+        "realmRoles" : [ "apiuser", "apiadmin", "devportaluser" ],
+        "applicationRoles" : {
+          "realm-management" : [ "realm-admin" ]
+        },
+        "groups" : [ "/API-Management-Administrators" ]
+      },
+      {
+        "username" : "apimanager",
+        "enabled" : true,
+        "email" : "apimanager@example.org",
+        "firstName" : "api",
+        "lastName" : "manager",
+        "credentials" : [
+          {
+            "type" : "password",
+            "value" : "apiman123!"
+          }
+        ],
+        "realmRoles" : [ "apipublisher" ],
+        "applicationRoles" : {
+        }
+      }
+    ],
     "roles": {
       "realm": [
         {
@@ -421,8 +457,8 @@
     "groups": [
       {
         "id": "f0b863a6-5fed-4ced-b733-b14ed04e35dc",
-        "name": "API-Mgmt-Administrators",
-        "path": "/API-Mgmt-Administrators",
+        "name": "API-Management-Administrators",
+        "path": "/API-Management-Administrators",
         "attributes": {},
         "realmRoles": [
           "apiadmin",
@@ -441,8 +477,8 @@
       },
       {
         "id": "59b1a8aa-ae56-4987-b7ca-59dea3fa5e09",
-        "name": "API-Mgmt-Devportal-Users",
-        "path": "/API-Mgmt-Devportal-Users",
+        "name": "API-Management-Devportal-Users",
+        "path": "/API-Management-Devportal-Users",
         "attributes": {},
         "realmRoles": [
           "devportaluser"
@@ -452,8 +488,8 @@
       },
       {
         "id": "4fd8347e-2cde-4bbf-8cd0-305ff330d09b",
-        "name": "API-Mgmt-Users",
-        "path": "/API-Mgmt-Users",
+        "name": "API-Management-Users",
+        "path": "/API-Management-Users",
         "attributes": {},
         "realmRoles": [
           "apiuser"
@@ -672,7 +708,7 @@
         "enabled": true,
         "alwaysDisplayInConsole": false,
         "clientAuthenticatorType": "client-secret",
-        "secret": "**********",
+        "secret": "password",
         "redirectUris": [
           "http://localhost:8080/apiman/*",
           "https://localhost:8443/apiman/*"
@@ -733,7 +769,7 @@
         "enabled": true,
         "alwaysDisplayInConsole": false,
         "clientAuthenticatorType": "client-secret",
-        "secret": "**********",
+        "secret": "password",
         "redirectUris": [
           "https://localhost:8443/apiman-gateway-api/*"
         ],
@@ -776,7 +812,7 @@
         "enabled": true,
         "alwaysDisplayInConsole": false,
         "clientAuthenticatorType": "client-secret",
-        "secret": "**********",
+        "secret": "password",
         "redirectUris": [
           "http://localhost:8080/apimanui/*",
           "https://localhost:8443/apimanui/*"
@@ -1647,7 +1683,7 @@
           "subComponents": {},
           "config": {
             "privateKey": [
-              "**********"
+              "MIICXAIBAAKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQABAoGAfmO8gVhyBxdqlxmIuglbz8bcjQbhXJLR2EoS8ngTXmN1bo2L90M0mUKSdc7qF10LgETBzqL8jYlQIbt+e6TH8fcEpKCjUlyq0Mf/vVbfZSNaVycY13nTzo27iPyWQHK5NLuJzn1xvxxrUeXI6A2WFpGEBLbHjwpx5WQG9A+2scECQQDvdn9NE75HPTVPxBqsEd2z10TKkl9CZxu10Qby3iQQmWLEJ9LNmy3acvKrE3gMiYNWb6xHPKiIqOR1as7L24aTAkEAtyvQOlCvr5kAjVqrEKXalj0Tzewjweuxc0pskvArTI2Oo070h65GpoIKLc9jf+UA69cRtquwP93aZKtW06U8dQJAF2Y44ks/mK5+eyDqik3koCI08qaC8HYq2wVl7G2QkJ6sbAaILtcvD92ToOvyGyeE0flvmDZxMYlvaZnaQ0lcSQJBAKZU6umJi3/xeEbkJqMfeLclD27XGEFoPeNrmdx0q10Azp4NfJAY+Z8KRyQCR2BEG+oNitBOZ+YXF9KCpH3cdmECQHEigJhYg+ykOvr1aiZUMFT72HU0jnmQe2FVekuG+LJUt2Tm7GtMjTFoGpf0JwrVuZN39fOYAlo+nTixgeW7X8Y="
             ],
             "certificate": [
               "MIIBlTCB/wIGAXT3+Kp2MA0GCSqGSIb3DQEBCwUAMBExDzANBgNVBAMMBmFwaW1hbjAeFw0yMDEwMDUwODUzMjNaFw0zMDEwMDUwODU1MDNaMBExDzANBgNVBAMMBmFwaW1hbjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAq1awrk7QK24Gmcy9Yb4dMbS+ZnO6NDaj1Z2F5C74HMIgtwYyxsNbRhBqCWlw7kmkZZaG5udyQYY8d91Db/uc/1DBuJMrQVsYXjVSpy+hoKpTWmzGhXzyzwhfJAICp7Iu/TTKPp+ip0mPGHlJnnP6dr4ztjY7EgFXFhEDFYSd9S8CAwEAATANBgkqhkiG9w0BAQsFAAOBgQAFnfEkNSRBRQlnzvvDvdbLA9x9RlYPWW8p/Bu8hvgRT/NN4LvOJnmYSvZ3GEVou55KNTMjORJaV+IRF+f4oLBZ6rwjIEpXB0LUGQNe5S6Aa6MzJSFqZ+K7r46g3QLZTPgPtX6VtXoD1eJKCXpxtc3TG7N4lD3IsK49lPRJ3AtAdg=="
