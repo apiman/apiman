@@ -15,6 +15,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-beans</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-logging-core</artifactId>
+    </dependency>
 
     <!-- Third Party Dependencies -->
     <dependency>

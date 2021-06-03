@@ -15,6 +15,16 @@
  */
 package io.apiman.common.logging;
 
+import io.apiman.common.logging.change.LogFileConfigManager;
+import io.apiman.common.logging.change.LoggingChangeRequest;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+
+import org.apache.commons.collections.MapUtils;
+
 /**
  * Factory for creating Apiman loggers.
  *
@@ -43,9 +53,21 @@ package io.apiman.common.logging;
 public class ApimanLoggerFactory {
 
     public static final String APIMAN_LOGGER = "apiman.logger-delegate";
+    private static final LogFileConfigManager LOG_FILE_CONFIG_MANAGER;
 
     private static volatile boolean LOGGER_RESOLVED = false;
     private static IDelegateFactory LOGGER_FACTORY;
+
+    static {
+        try {
+            LOG_FILE_CONFIG_MANAGER = new LogFileConfigManager(
+                ApimanLoggerFactory::setLocally
+            );
+            LOG_FILE_CONFIG_MANAGER.watch();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     /**
      * Create a logger that delegates onto the configured logging framework
@@ -82,9 +104,9 @@ public class ApimanLoggerFactory {
 
     /**
      * If system property is set, resolve the factory of that name, otherwise use the default logger.
-     * <p>
-     * In future we could use a more intelligent approach that attempts to detect which implementation should
-     * be used, and falls back onto an ordered list of known implementations.
+     *
+     * <p>In future we could use a more intelligent approach that attempts to detect which implementation
+     * should be used, and falls back onto an ordered list of known implementations.
      */
     private static IDelegateFactory resolveLoggerFactory() {
         String sysProp = System.getProperty(APIMAN_LOGGER);
@@ -98,8 +120,42 @@ public class ApimanLoggerFactory {
      * Set an alternative delegate at runtime. This is very useful for testing, but could have odd behaviour
      * if used at runtime; caveat utilitor.
      */
-    public synchronized static void setDelegate(IDelegateFactory delegate) {
+    public static synchronized void setDelegate(IDelegateFactory delegate) {
         LOGGER_FACTORY = delegate;
         LOGGER_RESOLVED = true;
+    }
+
+    /**
+     * Override logger configuration at runtime.
+     */
+    public static synchronized void overrideLoggerConfig(LoggingChangeRequest newLoggerConfig) {
+        try {
+            LOG_FILE_CONFIG_MANAGER.write(newLoggerConfig);
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
+        }
+    }
+
+    private static void setLocally(LoggingChangeRequest changeRequest) {
+        IApimanLogger log = getLogger(ApimanLoggerFactory.class);
+        IDelegateFactory factory = getLoggerFactory();
+
+        if (changeRequest.getLoggerConfig() != null
+            && changeRequest.getLoggerConfig().length > 0) {
+            try {
+                File loggerConfigTmp = File.createTempFile("ApimanLoggerConfig", "temp");
+                loggerConfigTmp.deleteOnExit();
+                Files.write(loggerConfigTmp.toPath(), changeRequest.getLoggerConfig()).toFile();
+                factory.overrideLoggerConfig(loggerConfigTmp);
+            } catch (IOException ioe) {
+                log.error(ioe, "Attempt to load a new logger configuration failed. "
+                    + "Was the file in the correct format? "
+                    + "Logger configuration will be unchanged. {0}", ioe.getMessage());
+            }
+        }
+
+        if (MapUtils.isNotEmpty(changeRequest.getLogOverrides())) {
+            factory.overrideLoggerConfig(changeRequest.getLogOverrides());
+        }
     }
 }

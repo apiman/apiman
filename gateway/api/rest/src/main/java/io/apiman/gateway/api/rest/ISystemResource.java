@@ -16,14 +16,19 @@
 
 package io.apiman.gateway.api.rest;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.gateway.engine.beans.GatewayEndpoint;
+import io.apiman.common.logging.change.LoggingChangeRequest;
 import io.apiman.gateway.engine.beans.SystemStatus;
+
 import io.swagger.annotations.Api;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * The System API.
@@ -33,15 +38,20 @@ import javax.ws.rs.core.MediaType;
 @Path("system")
 @Api
 public interface ISystemResource {
-
     @GET
     @Path("status")
     @Produces(MediaType.APPLICATION_JSON)
-    public SystemStatus getStatus();
+    SystemStatus getStatus();
 
     @GET
     @Path("endpoint")
     @Produces(MediaType.APPLICATION_JSON)
-    public GatewayEndpoint getEndpoint();
+    GatewayEndpoint getEndpoint();
 
+    @POST
+    @Path("logging")
+    default Response setLoggingDynamically(LoggingChangeRequest loggingChangeRequest) {
+        ApimanLoggerFactory.overrideLoggerConfig(loggingChangeRequest);
+        return Response.ok().build();
+    }
 }

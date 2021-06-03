@@ -15,15 +15,17 @@
  */
 package io.apiman.common.logging;
 
+import java.io.File;
+import java.util.Map;
+
 /**
- * Factory to create impl
+ * Factory to create impl.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public interface IDelegateFactory {
-
     /**
-     * Create a logger by name
+     * Create a logger by name.
      *
      * @param name the name
      * @return the logger
@@ -31,10 +33,38 @@ public interface IDelegateFactory {
     IApimanLogger createLogger(String name);
 
     /**
-     * Create a logger by class
+     * Create a logger by class.
      *
      * @param klazz the class
      * @return the logger
      */
-    IApimanLogger createLogger(Class <?> klazz);
+    IApimanLogger createLogger(Class<?> klazz);
+
+    /**
+     * Override the currently running logger configuration.
+     * <p>
+     * If the provided configuration file format is not recognised for example, if a log4j2 file is provided
+     * to logback, etc, you will potentially get different (strange) exceptions or unusual behaviour depending
+     * on the specific implementation that is active.
+     *
+     * @param newLoggerConfig the new logger configuration.
+     */
+    default IDelegateFactory overrideLoggerConfig(File newLoggerConfig) {
+        IApimanLogger logger = ApimanLoggerFactory.getLogger(IDelegateFactory.class);
+        logger.warn("The logger implementation you have selected does not support "
+            + "dynamic logger configuration changes. This operation will be ignored");
+        return this;
+    }
+
+    /**
+     * Override the currently running logger configuration
+     *
+     * @param newLoggerConfig the new logger configuration.
+     */
+    default IDelegateFactory overrideLoggerConfig(Map<String, LogLevel> newLoggerConfig) {
+        IApimanLogger logger = ApimanLoggerFactory.getLogger(IDelegateFactory.class);
+        logger.warn("The logger implementation you have selected does not support "
+            + "dynamic logger configuration changes. This operation will be ignored");
+        return this;
+    }
 }

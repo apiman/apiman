@@ -70,7 +70,8 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
                 new SystemResourceImpl(apimanConfig, engine),
                 new ApiResourceImpl(apimanConfig, engine),
                 new ClientResourceImpl(apimanConfig, engine),
-                new OrgResourceImpl(apimanConfig, engine));
+                new OrgResourceImpl(apimanConfig, engine)
+        );
 
         deployment.getProviderFactory().register(RestExceptionMapper.class);
 
@@ -96,16 +97,16 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
 
         if (apimanConfig.isSSL()) {
             httpOptions.setSsl(true)
-            .setKeyStoreOptions(
-                    new JksOptions()
-                        .setPath(apimanConfig.getKeyStore())
-                        .setPassword(apimanConfig.getKeyStorePassword())
-                    )
-            .setTrustStoreOptions(
+                .setKeyStoreOptions(
+                        new JksOptions()
+                            .setPath(apimanConfig.getKeyStore())
+                            .setPassword(apimanConfig.getKeyStorePassword())
+                        )
+                .setTrustStoreOptions(
                     new JksOptions()
                         .setPath(apimanConfig.getTrustStore())
                         .setPassword(apimanConfig.getTrustStorePassword())
-                    );
+                );
             addAllowedSslTlsProtocols(httpOptions);
         } else {
             log.warn("API is running in plaintext mode. Enable SSL in config for production deployments.");
