@@ -45,6 +45,12 @@
         <!-- This property tells Apiman log via jboss logging. Apiman-specific logging config can
         be set via the logging subsystem in this standalone.xml file. -->
         <property name="apiman.logger-delegate" value="jboss-logging"/>
+
+        <!-- Keycloak will create the apiman realm based on a file-->
+        <property name="keycloak.migration.action" value="import"/>
+        <property name="keycloak.migration.provider" value="singleFile"/>
+        <property name="keycloak.migration.strategy" value="IGNORE_EXISTING"/>
+        <property name="keycloak.migration.file" value="${jboss.home.dir}/apiman/data/apiman-realm-for-keycloak.json"/>
     </system-properties>
     <management>
         <security-realms>

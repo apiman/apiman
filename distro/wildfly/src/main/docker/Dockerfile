@@ -14,6 +14,7 @@ RUN chown -R jboss:0 ${JBOSS_HOME} \
 USER jboss
 
 RUN cd $HOME/wildfly && bsdtar -xvf apiman-distro-${docker.wildfly.version}-$APIMAN_VERSION-overlay.zip
-
+# Add initial keycloak user
+RUN /opt/jboss/wildfly/bin/add-user-keycloak.sh --realm master --user admin --password admin123!
 # Set the default command to run on boot
 ENTRYPOINT ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0", "-c", "standalone-apiman.xml"]

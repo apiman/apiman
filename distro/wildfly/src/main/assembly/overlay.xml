@@ -133,5 +133,12 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </fileSet>
+    <fileSet>
+      <directory>target/keycloak/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
   </fileSets>
 </assembly>
