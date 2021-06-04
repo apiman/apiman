@@ -46,6 +46,7 @@ public final class EsTestUtil {
                 .withEnv("opendistro_security.disabled", "true");
         }
         return new ElasticsearchContainer(DockerImageName.parse(esImageType)
-            .withTag(EsConstants.getEsVersion().getProperty("apiman.elasticsearch-version")));
+            .withTag(EsConstants.getEsVersion().getProperty("apiman.elasticsearch-version")))
+            .withEnv("xpack.security.enabled", "false");
     }
 }
