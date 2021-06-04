@@ -310,6 +310,8 @@ public class TestPlanRunner {
                 throw e;
             }
         } catch (Exception e) {
+            System.err.println("--- Exception ---");
+            System.err.println(response.body());
             throw new Error(e);
         } finally {
             IOUtils.closeQuietly(inputStream);

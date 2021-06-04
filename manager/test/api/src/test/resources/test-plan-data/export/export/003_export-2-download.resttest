@@ -6,300 +6,331 @@ Content-Disposition: attachment; filename=api-manager-export.json
 X-RestTest-ArrayOrdering: any
 
 {
-  "Metadata": {
-  },
-  "Users": [
-    {
-      "username": "admin",
-      "fullName": "Admin",
-      "email": "admin@example.org",
-      "admin": false
+    "Metadata": {
     },
-    {
-      "username": "admin2",
-      "fullName": "Admin 2",
-      "email": "admin2@example.org",
-      "admin": false
-    },
-    {
-      "username": "bwayne",
-      "fullName": "Bruce Wayne",
-      "email": "bwayne@wayne-enterprises.com",
-      "admin": false
-    },
-    {
-      "username": "ckent",
-      "fullName": "Clark Kent",
-      "email": "ckent@dailyplanet.com",
-      "admin": false
-    },
-    {
-      "username": "dprince",
-      "fullName": "Diana Prince",
-      "email": "dprince@themyscira.gov",
-      "admin": false
-    },
-    {
-      "username": "user1",
-      "fullName": "User 1",
-      "email": "user1@example.org",
-      "admin": false
-    },
-    {
-      "username": "user2",
-      "fullName": "User 2",
-      "email": "user2@example.org",
-      "admin": false
-    },
-    {
-      "username": "user3",
-      "fullName": "User 3",
-      "email": "user3@example.org",
-      "admin": false
-    },
-    {
-      "username": "user4",
-      "fullName": "User 4",
-      "email": "user4@example.org",
-      "admin": false
-    },
-    {
-      "username": "user5",
-      "fullName": "User 5",
-      "email": "user5@example.org",
-      "admin": false
-    }
-  ],
-  "Gateways": [
-    {
-      "id": "TheGateway",
-      "name": "The Gateway",
-      "description": "This is the gateway.",
-      "createdBy": "admin",
-      "modifiedBy": "admin",
-      "type": "REST",
-      "configuration": "{\"endpoint\":\"http://localhost:7070/mock-gateway\",\"username\":\"admin\",\"password\":\"$CRYPT::j8rdW76Z5gUI0I+9c8/GrA==\"}"
-    }
-  ],
-  "Plugins": [],
-  "Roles": [],
-  "PolicyDefinitions": [],
-  "Orgs": [
-    {
-      "OrganizationBean": {
-        "id": "Organization1",
-        "name": "Organization 1",
+    "Users": [{
+        "username": "admin",
+        "fullName": "Admin",
+        "email": "admin@example.org",
+        "joinedOn": "*",
+        "admin": false
+    }, {
+        "username": "admin2",
+        "fullName": "Admin 2",
+        "email": "admin2@example.org",
+        "joinedOn": "*",
+        "admin": false
+    }, {
+        "username": "bwayne",
+        "fullName": "Bruce Wayne",
+        "email": "bwayne@wayne-enterprises.com",
+        "joinedOn": "*",
+        "admin": false
+    }, {
+        "username": "ckent",
+        "fullName": "Clark Kent",
+        "email": "ckent@dailyplanet.com",
+        "joinedOn": "*",
+        "admin": false
+    }, {
+        "username": "dprince",
+        "fullName": "Diana Prince",
+        "email": "dprince@themyscira.gov",
+        "joinedOn": "*",
+        "admin": false
+    }, {
+        "username": "user1",
+        "fullName": "User 1",
+        "email": "user1@example.org",
+        "joinedOn": "*",
+        "admin": false
+    }, {
+        "username": "user2",
+        "fullName": "User 2",
+        "email": "user2@example.org",
+        "joinedOn": "*",
+        "admin": false
+    }, {
+        "username": "user3",
+        "fullName": "User 3",
+        "email": "user3@example.org",
+        "joinedOn": "*",
+        "admin": false
+    }, {
+        "username": "user4",
+        "fullName": "User 4",
+        "email": "user4@example.org",
+        "joinedOn": "*",
+        "admin": false
+    }, {
+        "username": "user5",
+        "fullName": "User 5",
+        "email": "user5@example.org",
+        "joinedOn": "*",
+        "admin": false
+    }],
+    "Gateways": [{
+        "id": "TheGateway",
+        "name": "The Gateway",
+        "description": "This is the gateway.",
         "createdBy": "admin",
-        "modifiedBy": "admin"
-      },
-      "Memberships": [],
-      "Plans": [
-        {
-          "PlanBean": {
-            "id": "Plan1",
-            "name": "Plan 1",
-            "description": "This is the description of Plan 1.",
-            "createdBy": "admin"
-          },
-          "Versions": [
-            {
-              "PlanVersionBean": {
-                "status": "Locked",
-                "version": "1.0",
+        "createdOn": "*",
+        "modifiedBy": "admin",
+        "modifiedOn": "*",
+        "type": "REST",
+        "configuration": "{\"endpoint\":\"http://localhost:7070/mock-gateway\",\"username\":\"admin\",\"password\":\"$CRYPT::j8rdW76Z5gUI0I+9c8/GrA==\"}"
+    }],
+    "Plugins": [],
+    "Roles": [],
+    "PolicyDefinitions": [],
+    "Developers": [],
+    "Orgs": [{
+        "OrganizationBean": {
+            "id": "Organization1",
+            "name": "Organization 1",
+            "createdBy": "admin",
+            "createdOn": "*",
+            "modifiedBy": "admin",
+            "modifiedOn": "*"
+        },
+        "Memberships": [],
+        "Plans": [{
+            "PlanBean": {
+                "id": "Plan1",
+                "name": "Plan 1",
+                "description": "This is the description of Plan 1.",
                 "createdBy": "admin",
-                "modifiedBy": "admin"
-              },
-              "Policies": []
-            }
-          ]
-        }
-      ],
-      "Apis": [
-        {
-          "ApiBean": {
-            "id": "API1",
-            "name": "API 1",
-            "description": "This is the description of API 1.",
-            "createdBy": "admin"
-          },
-          "Versions": [
-            {
-              "ApiVersionBean": {
-                "status": "Published",
-                "endpoint": "http://localhost:8080/ping",
-                "endpointType": "rest",
-                "endpointProperties": {},
-                "gateways": [
-                  {
-                    "gatewayId": "TheGateway"
-                  }
-                ],
-                "publicAPI": false,
-                "plans": [
-                  {
-                    "planId": "Plan1",
-                    "version": "1.0"
-                  }
-                ],
-                "version": "1.0",
+                "createdOn": "*"
+            },
+            "Versions": [{
+                "PlanVersionBean": {
+                    "id": 3,
+                    "status": "Locked",
+                    "version": "1.0",
+                    "createdBy": "admin",
+                    "createdOn": "*",
+                    "modifiedBy": "admin",
+                    "modifiedOn": "*",
+                    "lockedOn": "*"
+                },
+                "Policies": []
+            }]
+        }],
+        "Apis": [{
+            "ApiBean": {
+                "id": "API1",
+                "name": "API 1",
+                "description": "This is the description of API 1.",
                 "createdBy": "admin",
-                "modifiedBy": "admin"
-              },
-              "Policies": []
-            }
-          ]
-        }
-      ],
-      "Clients": [
-        {
-          "ClientBean": {
-            "id": "Client1",
-            "name": "Client 1",
-            "description": "This is the description of Client 1.",
-            "createdBy": "admin"
-          },
-          "Versions": [
-            {
-              "ClientVersionBean": {
-                "status": "Registered",
-                "version": "1.0",
-                "createdBy": "admin",
-                "modifiedBy": "admin"
-              },
-              "Policies": [],
-              "Contracts": [
-                {
-                  "api": {
-                    "api": {
-                      "organization": {
-                        "id": "Organization1"
-                      },
-                      "id": "API1"
-                    },
+                "createdOn": "*",
+                "numPublished": 1
+            },
+            "Versions": [{
+                "ApiVersionBean": {
+                    "id": 10,
+                    "status": "Published",
+                    "endpoint": "http://localhost:8080/ping",
+                    "endpointType": "rest",
                     "endpointProperties": {},
+                    "gateways": [{
+                        "gatewayId": "TheGateway"
+                    }],
                     "publicAPI": false,
-                    "version": "1.0"
-                  },
-                  "plan": {
-                    "plan": {
-                      "organization": {
-                        "id": "Organization1"
-                      },
-                      "id": "Plan1"
+                    "plans": [{
+                        "planId": "Plan1",
+                        "version": "1.0"
+                    }],
+                    "version": "1.0",
+                    "createdBy": "admin",
+                    "createdOn": "*",
+                    "modifiedBy": "admin",
+                    "modifiedOn": "*",
+                    "publishedOn": "*",
+                    "definitionType": "SwaggerJSON",
+                    "apiDefinition": {
+                        "id": 10,
+                        "data": "ewogICJzd2FnZ2VyVmVyc2lvbiI6ICIxLjIiLAogICJhcGlzIjogWwogICAgewogICAgICAicGF0aCI6ICJodHRwOi8vbG9jYWxob3N0OjgwMDAvbGlzdGluZ3MvZ3JlZXRpbmdzIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkdlbmVyYXRpbmcgZ3JlZXRpbmdzIGluIG91ciBhcHBsaWNhdGlvbi4iCiAgICB9CiAgXQp9Cg=="
                     },
-                    "version": "1.0"
-                  },
-                  "createdBy": "admin"
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "Audits": [
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Organization",
-          "what": "Create"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Plan",
-          "entityId": "Plan1",
-          "what": "Create"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Plan",
-          "entityId": "Plan1",
-          "entityVersion": "1.0",
-          "what": "Create"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Plan",
-          "entityId": "Plan1",
-          "entityVersion": "1.0",
-          "what": "Lock"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Client",
-          "entityId": "Client1",
-          "what": "Create"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Client",
-          "entityId": "Client1",
-          "entityVersion": "1.0",
-          "what": "Create"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Api",
-          "entityId": "API1",
-          "what": "Create"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Api",
-          "entityId": "API1",
-          "entityVersion": "1.0",
-          "what": "Create"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Api",
-          "entityId": "API1",
-          "entityVersion": "1.0",
-          "what": "Update",
-          "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"Plan1:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Api",
-          "entityId": "API1",
-          "entityVersion": "1.0",
-          "what": "Publish"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Client",
-          "entityId": "Client1",
-          "entityVersion": "1.0",
-          "what": "CreateContract",
-          "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Api",
-          "entityId": "API1",
-          "entityVersion": "1.0",
-          "what": "CreateContract",
-          "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
-        },
-        {
-          "who": "admin",
-          "organizationId": "Organization1",
-          "entityType": "Client",
-          "entityId": "Client1",
-          "entityVersion": "1.0",
-          "what": "Register"
-        }
-      ]
-    }
-  ]
+                    "parsePayload": false,
+                    "disableKeysStrip": false
+                },
+                "Policies": []
+            }]
+        }],
+        "Clients": [{
+            "ClientBean": {
+                "id": "Client1",
+                "name": "Client 1",
+                "description": "This is the description of Client 1.",
+                "createdBy": "admin",
+                "createdOn": "*"
+            },
+            "Versions": [{
+                "ClientVersionBean": {
+                    "id": 7,
+                    "status": "Registered",
+                    "version": "1.0",
+                    "createdBy": "admin",
+                    "createdOn": "*",
+                    "modifiedBy": "admin",
+                    "modifiedOn": "*",
+                    "publishedOn": "*",
+                    "apikey": "*"
+                },
+                "Policies": [],
+                "Contracts": [{
+                    "id": 15,
+                    "api": {
+                        "api": {
+                            "organization": {
+                                "id": "Organization1"
+                            },
+                            "id": "API1"
+                        },
+                        "endpointProperties": {},
+                        "publicAPI": false,
+                        "version": "1.0",
+                        "parsePayload": false,
+                        "disableKeysStrip": false
+                    },
+                    "plan": {
+                        "plan": {
+                            "organization": {
+                                "id": "Organization1"
+                            },
+                            "id": "Plan1"
+                        },
+                        "version": "1.0"
+                    },
+                    "createdBy": "admin",
+                    "createdOn": "*"
+                }]
+            }]
+        }],
+        "Audits": [{
+            "id": 1,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Organization",
+            "createdOn": "*",
+            "what": "Create"
+        }, {
+            "id": 2,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Plan",
+            "entityId": "Plan1",
+            "createdOn": "*",
+            "what": "Create"
+        }, {
+            "id": 4,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Plan",
+            "entityId": "Plan1",
+            "entityVersion": "1.0",
+            "createdOn": "*",
+            "what": "Create"
+        }, {
+            "id": 5,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Plan",
+            "entityId": "Plan1",
+            "entityVersion": "1.0",
+            "createdOn": "*",
+            "what": "Lock"
+        }, {
+            "id": 6,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Client",
+            "entityId": "Client1",
+            "createdOn": "*",
+            "what": "Create"
+        }, {
+            "id": 8,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Client",
+            "entityId": "Client1",
+            "entityVersion": "1.0",
+            "createdOn": "*",
+            "what": "Create"
+        }, {
+            "id": 9,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Api",
+            "entityId": "API1",
+            "createdOn": "*",
+            "what": "Create"
+        }, {
+            "id": 11,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Api",
+            "entityId": "API1",
+            "entityVersion": "1.0",
+            "createdOn": "*",
+            "what": "Create"
+        }, {
+            "id": 12,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Api",
+            "entityId": "API1",
+            "entityVersion": "1.0",
+            "createdOn": "*",
+            "what": "Update",
+            "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"Plan1:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
+        }, {
+            "id": 13,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Api",
+            "entityId": "API1",
+            "entityVersion": "1.0",
+            "createdOn": "*",
+            "what": "UpdateDefinition"
+        }, {
+            "id": 14,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Api",
+            "entityId": "API1",
+            "entityVersion": "1.0",
+            "createdOn": "*",
+            "what": "Publish"
+        }, {
+            "id": 16,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Client",
+            "entityId": "Client1",
+            "entityVersion": "1.0",
+            "createdOn": "*",
+            "what": "CreateContract",
+            "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+        }, {
+            "id": 17,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Api",
+            "entityId": "API1",
+            "entityVersion": "1.0",
+            "createdOn": "*",
+            "what": "CreateContract",
+            "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
+        }, {
+            "id": 18,
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Client",
+            "entityId": "Client1",
+            "entityVersion": "1.0",
+            "createdOn": "*",
+            "what": "Register"
+        }]
+    }]
 }

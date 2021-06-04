@@ -1002,6 +1002,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             String version, NewContractBean bean) throws StorageException, Exception {
         ContractBean contract;
         ClientVersionBean cvb;
+
+        System.out.println("foobar");
+        System.out.println(com.fasterxml.jackson.databind.cfg.PackageVersion.VERSION);
+
         cvb = getClientVersionFromStorage(organizationId, clientId, version);
 
         if (cvb.getStatus() == ClientStatus.Retired) {
