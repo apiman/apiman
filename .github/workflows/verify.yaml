@@ -42,9 +42,9 @@ jobs:
           # Vert.x file/static
           - name: Vert.x with immutable file registry
             command: -Dapiman.gateway-test.config=vertx3-file
-          # AMG (API Management Gateway / EAP)
-          - name: AMG 1
-            command: -Dapiman.gateway-test.config=amg-1
+#           # AMG (API Management Gateway / EAP)
+#           - name: AMG 1
+#             command: -Dapiman.gateway-test.config=amg-1
 
     steps:
       - name: Checkout Code
