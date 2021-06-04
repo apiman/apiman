@@ -106,8 +106,11 @@ public class StorageExporter {
             writer.startOrgs();
 
             Iterator<OrganizationBean> iter = storage.getAllOrganizations();
+            int foo = 0;
 
             while (iter.hasNext()) {
+                System.out.println("Organisation " + foo++);
+
                 OrganizationBean bean = iter.next();
                 writer.startOrg(bean);
                 logger.info(Messages.i18n.format("StorageExporter.ExportingOrgs") + bean); //$NON-NLS-1$
@@ -123,6 +126,8 @@ public class StorageExporter {
 
             writer.endOrgs();
         } catch (Exception e) {
+            System.err.println("Encountered serious error during attempt to export.");
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
