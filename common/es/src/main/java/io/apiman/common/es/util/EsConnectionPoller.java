@@ -40,6 +40,17 @@ import org.elasticsearch.common.unit.TimeValue;
 /**
  * Poll Elasticsearch to see whether a successful healthy connection can be established.
  *
+ * <p>After construction of the class with a configured {@link RestHighLevelClient},
+ * {@link #blockUntilReady()} should be called. This will block the calling thread until Elasticsearch
+ * is confirmed as reachable or various error conditions are encountered.
+ *
+ * <p>Class provides a very simple polling mechanism backed by {@link ScheduledExecutorService}, and attempts
+ * to retry connecting and verifying the health of an Elasticsearch cluster. Certain fatal error conditions
+ * will result in an immediate propagation of the exception, whilst standard {@link IOException}s result in
+ * a retry.
+ *
+ * @see #blockUntilReady()
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class EsConnectionPoller {
@@ -58,6 +69,14 @@ public class EsConnectionPoller {
     private RuntimeException latestException;
     private ScheduledFuture<?> future;
 
+    /**
+     * Constructor.
+     *
+     * @param client configured REST client
+     * @param initialDelaySecs initial delay before polling (can be zero) in seconds
+     * @param periodSecs period between poll attempts in seconds
+     * @param maxWaitSecs the maximum time to block in seconds
+     */
     EsConnectionPoller(
         RestHighLevelClient client,
         int initialDelaySecs,
@@ -71,7 +90,15 @@ public class EsConnectionPoller {
         this.startTime = System.currentTimeMillis();
     }
 
-    void blockUntilReady() {
+    /**
+     * Block calling thread until Elasticsearch can be reached successfully, the timeout period is exceeded,
+     * or a fatal error occurs.
+     *
+     * @throws FailedPollingException if Elasticsearch can not be reached, which wraps a range of checked
+     *      and unchecked exceptions. {@link FailedPollingException#getCause()} contains the wrapped
+     *      exception.
+     */
+    public void blockUntilReady() {
         future = schedulerService
             .scheduleAtFixedRate(this::pollElasticSearch, initialDelaySecs, periodSecs, timeUnit);
         try {
@@ -98,8 +125,9 @@ public class EsConnectionPoller {
             final ClusterHealthRequest healthRequest = new ClusterHealthRequest();
             // Health request will time out after 5s, and we will try again after the scheduled period via
             // the schedulerService.
-            healthRequest.timeout(new TimeValue(5, TimeUnit.SECONDS));
-            final ClusterHealthResponse healthResponse = client.cluster().health(healthRequest, RequestOptions.DEFAULT);
+            healthRequest.timeout(new TimeValue(periodSecs, TimeUnit.SECONDS));
+            final ClusterHealthResponse healthResponse = client.cluster()
+                .health(healthRequest, RequestOptions.DEFAULT);
 
             if (!healthResponse.isTimedOut()) {
                 long pollingTimeMeasure = System.currentTimeMillis() - startTime;
@@ -137,9 +165,18 @@ public class EsConnectionPoller {
         future.cancel(false);
     }
 
+    /**
+     * Wrapper for exceptions that may occur during a polling failure.
+     */
     private static final class FailedPollingException extends RuntimeException {
-        FailedPollingException(Exception rte) {
-            super("Failed while attempting to poll for Elasticsearch " + rte.getMessage(), rte);
+
+        /**
+         * Constructor.
+         *
+         * @param cause the exception to wrap.
+         */
+        FailedPollingException(Exception cause) {
+            super("Failed while attempting to poll for Elasticsearch " + cause.getMessage(), cause);
         }
     }
 
