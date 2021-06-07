@@ -195,7 +195,9 @@ public class StorageExporter {
                     if (versionBean.getDefinitionType() != null && versionBean.getDefinitionType() != None) {
                         logger.info("Exporting an API definition of type {0}.", versionBean.getDefinitionType());
                         InputStream data = storage.getApiDefinition(orgId, apiBean.getId(), versionBean.getVersion());
-                        writer.writeApiDefinition(data);
+                        if (data != null) {
+                            writer.writeApiDefinition(data);
+                        }
                     }
 
                     writer.endApiVersion();
