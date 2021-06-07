@@ -12,7 +12,7 @@
     <test name="Create API">test-plan-data/export/creates-1/006_create-api1.resttest</test>
     <test name="Create API Version">test-plan-data/export/creates-1/007_create-api1-version-1.0.resttest</test>
     <test name="Update API Version">test-plan-data/export/creates-1/008_update-api1-version-1.0.resttest</test>
-    <test name="Attach API Definition">test-plan-data/export/creates-1/008_1_add-api-definition.resttest</test>
+    <test name="Attach API Definition">test-plan-data/export/creates-1/008.5_add-api-definition.resttest</test>
     <test name="Publish API">test-plan-data/export/creates-1/009_publish-api-1.resttest</test>
     <test name="Create Contract">test-plan-data/export/creates-1/010_create-contract1.resttest</test>
     <test name="Register Client">test-plan-data/export/creates-1/011_register-client-1.resttest</test>

@@ -104,7 +104,7 @@ public interface IExportWriter {
     IExportWriter startApiPolicies();
     IExportWriter writeApiPolicy(PolicyBean policy);
     IExportWriter endApiPolicies();
-    IExportWriter writeApiDefinition(InputStream adb);
+    IExportWriter writeApiDefinition(InputStream apiDefinitionData);
     IExportWriter endApiVersion();
     IExportWriter endApiVersions();
     IExportWriter endApi();

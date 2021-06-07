@@ -17,8 +17,8 @@
 package io.apiman.manager.api.exportimport.manager;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
-import io.apiman.common.logging.impl.DoubleLogger;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.impl.DoubleLogger;
 import io.apiman.common.logging.impl.MultiLogger;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
@@ -70,8 +70,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-
-import org.elasticsearch.client.searchable_snapshots.MountSnapshotRequest.Storage;
 
 /**
  * Used to store imported entities into the {@link IStorage}.

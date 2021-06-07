@@ -44,6 +44,7 @@ import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Date;
 import java.util.Iterator;
 import javax.enterprise.context.ApplicationScoped;
@@ -102,6 +103,8 @@ public class StorageExporter {
             logger.info(Messages.i18n.format("StorageExporter.ExportComplete")); //$NON-NLS-1$
             logger.info("------------------------------------------"); //$NON-NLS-1$
         } catch (StorageException e) {
+            logger.error(e, "Apiman encountered a serious error during its attempt to export. "
+                + "Any export data received should not be relied upon, and the output may be corrupted.");
             throw new RuntimeException(e);
         }
     }
@@ -131,8 +134,6 @@ public class StorageExporter {
 
             writer.endOrgs();
         } catch (Exception e) {
-            System.err.println("Encountered serious error during attempt to export.");
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -193,7 +194,7 @@ public class StorageExporter {
 
                     // Api definition
                     if (versionBean.getDefinitionType() != null && versionBean.getDefinitionType() != None) {
-                        logger.info("Exporting an API definition of type {0}.", versionBean.getDefinitionType());
+                        logger.info(Messages.i18n.format("StorageExporter.ExportingApiDefinition", versionBean.getDefinitionType()));
                         InputStream data = storage.getApiDefinition(orgId, apiBean.getId(), versionBean.getVersion());
                         if (data != null) {
                             writer.writeApiDefinition(data);

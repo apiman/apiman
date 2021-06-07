@@ -19,6 +19,7 @@ package io.apiman.manager.api.beans.apis;
 import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 public class JacksonCyclicalSerialisationTest {
@@ -41,6 +42,11 @@ public class JacksonCyclicalSerialisationTest {
         adb.setData("wibbly, wobbly, woo".getBytes(StandardCharsets.UTF_8));
         adb.setApiVersion(apiVersion);
 
-        //apiVersion.setApiDefinition(adb);
+        apiVersion.apiDefinition = adb;
+
+        // If we successfully serialize here, then the cycle detection worked.
+        ObjectMapper om = new ObjectMapper();
+        System.out.println(om.writeValueAsString(apiVersion));
+        System.out.println(om.writeValueAsString(adb));
     }
 }

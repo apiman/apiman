@@ -1000,13 +1000,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     protected ContractBean createContractInternal(String organizationId, String clientId,
             String version, NewContractBean bean) throws StorageException, Exception {
-        ContractBean contract;
-        ClientVersionBean cvb;
-
-        System.out.println("foobar");
-        System.out.println(com.fasterxml.jackson.databind.cfg.PackageVersion.VERSION);
-
-        cvb = getClientVersionFromStorage(organizationId, clientId, version);
+        ClientVersionBean cvb = getClientVersionFromStorage(organizationId, clientId, version);
 
         if (cvb.getStatus() == ClientStatus.Retired) {
             throw ExceptionFactory.invalidClientStatusException();
@@ -1035,7 +1029,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.invalidPlanStatusException();
         }
 
-        contract = new ContractBean();
+        ContractBean contract = new ContractBean();
         contract.setClient(cvb);
         contract.setApi(avb);
         contract.setPlan(pvb);
