@@ -18,26 +18,16 @@ package io.apiman.common.es.util;
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.util.Holder;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
-import java.util.Date;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -53,14 +43,9 @@ import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.nio.conn.SchemeIOSessionStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.TimeValue;
 
 /**
  * Factory for creating elasticsearch clients.
@@ -69,6 +54,7 @@ import org.elasticsearch.common.unit.TimeValue;
  */
 public class DefaultEsClientFactory extends AbstractClientFactory implements IEsClientFactory {
 
+    private static final int POLL_INTERVAL_SECS = 5;
     private final IApimanLogger logger = ApimanLoggerFactory.getLogger(DefaultEsClientFactory.class);
 
     /**
@@ -107,7 +93,6 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
         String username = config.get("client.username"); //$NON-NLS-1$
         String password = config.get("client.password"); //$NON-NLS-1$
         int timeout = NumberUtils.toInt(config.get("client.timeout"), 10000); //$NON-NLS-1$
-
         long pollingTime = NumberUtils.toLong(config.get("client.polling.time"), 600); //$NON-NLS-1$
 
         if (StringUtils.isBlank(protocol)) {
@@ -139,7 +124,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
 
                 HttpAsyncClientBuilder asyncClientBuilder = HttpAsyncClientBuilder.create();
 
-                if(username != null && password != null) {
+                if (username != null && password != null) {
                     CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
                     credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
                     asyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
@@ -172,59 +157,10 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
         }
     }
 
-    private void waitForElasticsearch(RestHighLevelClient client, long pollingTime) throws Exception {
-        final Date startTime = new Date();
-        AtomicBoolean pollingSuccess = new AtomicBoolean(false);
-
-        ScheduledExecutorService schedulerService = Executors.newSingleThreadScheduledExecutor();
-        CountDownLatch cdl = new CountDownLatch(1);
-        Holder<Exception> exception = new Holder<>();
-
-        ScheduledFuture<?> sched = schedulerService.scheduleAtFixedRate(() -> {
-                    logger.info("Polling for Elasticsearch...");
-                    try {
-                        //Do Health request
-                        ClusterHealthRequest healthRequest = new ClusterHealthRequest();
-
-                        healthRequest.timeout(new TimeValue(5, TimeUnit.SECONDS));
-                        final ClusterHealthResponse healthResponse = client.cluster().health(healthRequest, RequestOptions.DEFAULT);
-
-                        if (!healthResponse.isTimedOut()) {
-                            // set polling status as successful
-                            pollingSuccess.set(true);
-                            // measure time if health request is successful
-                            final Date endTime = new Date();
-                            long pollingTimeMeasure = endTime.getTime() - startTime.getTime();
-                            logger.info("Took " + pollingTimeMeasure + " milliseconds for polling Elasticsearch");
-                            // wake up the waiting thread
-                            cdl.countDown();
-                        }
-                    } catch (ElasticsearchException | SSLException e) {
-                        logger.error("Error connecting to Elasticsearch: ", e);
-                        Thread.currentThread().interrupt();
-                        exception.setValue(e);
-                    } catch (IOException e) {
-                        logger.info("Unable to reach Elasticsearch with error ({0}). Will continue polling.", e.getMessage());
-                        exception.setValue(e);
-                    }
-                },
-                0, // Start immediately
-                10, // Poll every pollingPeriod seconds
-                TimeUnit.SECONDS);
-
-        cdl.await(pollingTime, TimeUnit.SECONDS); // Max wait for polling time
-        sched.cancel(true);
-
-        if (pollingSuccess.get()) {
-            logger.info("Polling for Elasticsearch has ended with success");
-        } else {
-            logger.warn("Polling for Elasticsearch has ended without success");
-        }
-
-        // CDL > 0 means we never successfully hit the health endpoint.
-        if (exception.getValue() != null && cdl.getCount() > 0) {
-            throw exception.getValue();
-        }
+    private void waitForElasticsearch(RestHighLevelClient client, long pollingTime) {
+        EsConnectionPoller poller = new EsConnectionPoller(client, 0, POLL_INTERVAL_SECS,
+            Math.toIntExact(pollingTime));
+        poller.blockUntilReady();
     }
 
     /**
