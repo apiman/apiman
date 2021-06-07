@@ -117,8 +117,6 @@ public class StorageExporter {
             int foo = 0;
 
             while (iter.hasNext()) {
-                System.out.println("Organisation " + foo++);
-
                 OrganizationBean bean = iter.next();
                 writer.startOrg(bean);
                 logger.info(Messages.i18n.format("StorageExporter.ExportingOrgs") + bean); //$NON-NLS-1$
