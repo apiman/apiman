@@ -713,6 +713,12 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     @Override
+    public InputStream getApiDefinition(String organizationId, String apiId, String version)
+        throws StorageException {
+        return this.delegate.getApiDefinition(organizationId, apiId, version);
+    }
+
+    @Override
     public Iterator<ContractBean> getAllContracts(OrganizationBean organizationBean, int lim) throws StorageException {
         return this.delegate.getAllContracts(organizationBean, lim);
     }

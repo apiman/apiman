@@ -17,6 +17,7 @@
 package io.apiman.manager.api.exportimport.manager;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -149,6 +150,11 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void apiPolicy(PolicyBean policy) {
         System.out.println("\t\t\tpolicy: " + policy);
+    }
+
+    @Override
+    public void apiDefinition(ApiDefinitionBean apiDef) {
+        System.out.println("\t\t\tapi definition:" + apiDef);
     }
 
     /**

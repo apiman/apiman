@@ -21,8 +21,11 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import org.apache.commons.io.IOUtils;
+
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -45,7 +48,9 @@ import io.apiman.manager.api.exportimport.OrgElementsEnum;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -455,9 +460,6 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         writeStartObject();
         try {
             avb = (ApiVersionBean) avb.clone();
-            if (avb.getApiDefinition() != null) {
-                avb.getApiDefinition().setApiVersion(null);
-            }
             avb.setApi(null);
             jg.writeObjectField(ApiVersionBean.class.getSimpleName(), avb);
         } catch (Exception e) {
@@ -489,6 +491,15 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     @Override
     public IExportWriter endApiPolicies() {
         writeEndArray(OrgElementsEnum.Policies);
+        return this;
+    }
+
+    public IExportWriter writeApiDefinition(InputStream is) {
+        try {
+            jg.writeBinaryField(OrgElementsEnum.ApiDefinition.name(), IOUtils.toByteArray(is));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return this;
     }
 

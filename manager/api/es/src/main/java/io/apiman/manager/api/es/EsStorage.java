@@ -1030,7 +1030,13 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
      */
     @Override
     public InputStream getApiDefinition(ApiVersionBean version) throws StorageException {
-        String id = id(version.getApi().getOrganization().getId(), version.getApi().getId(), version.getVersion()) + ":def"; //$NON-NLS-1$
+        return getApiDefinition(version.getApi().getOrganization().getId(), version.getApi().getId(), version.getVersion());
+    }
+
+    @Override
+    public InputStream getApiDefinition(String organizationId, String apiId, String version)
+        throws StorageException {
+        String id = id(organizationId, apiId, version) + ":def"; //$NON-NLS-1$
         Map<String, Object> source = getEntity(INDEX_MANAGER_POSTFIX_API_DEFINITION, id);
         if (source == null) {
             return null;

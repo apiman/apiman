@@ -41,6 +41,6 @@ public class JacksonCyclicalSerialisationTest {
         adb.setData("wibbly, wobbly, woo".getBytes(StandardCharsets.UTF_8));
         adb.setApiVersion(apiVersion);
 
-        apiVersion.setApiDefinition(adb);
+        //apiVersion.setApiDefinition(adb);
     }
 }

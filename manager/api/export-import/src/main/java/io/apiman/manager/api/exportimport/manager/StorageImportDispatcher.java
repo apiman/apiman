@@ -26,6 +26,7 @@ import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
@@ -56,6 +57,7 @@ import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 
+import java.io.ByteArrayInputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,6 +70,8 @@ import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.elasticsearch.client.searchable_snapshots.MountSnapshotRequest.Storage;
 
 /**
  * Used to store imported entities into the {@link IStorage}.
@@ -92,6 +96,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     private OrganizationBean currentOrg;
     private PlanBean currentPlan;
     private ApiBean currentApi;
+    private ApiVersionBean currentApiVersion;
     private ClientBean currentClient;
     private ClientVersionBean currentClientVersion;
 
@@ -397,6 +402,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     @Override
     public void apiVersion(ApiVersionBean apiVersion) {
+        currentApiVersion = apiVersion;
+
         try {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApiVersion") + apiVersion.getVersion()); //$NON-NLS-1$
             apiVersion.setApi(currentApi);
@@ -422,6 +429,15 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void apiPolicy(PolicyBean policy) {
         logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApiPolicy") + policy.getName()); //$NON-NLS-1$
         policy(policy);
+    }
+
+    public void apiDefinition(ApiDefinitionBean apiDef) {
+        logger.info("Importing API definition");
+        try {
+            storage.updateApiDefinition(currentApiVersion, new ByteArrayInputStream(apiDef.getData()));
+        } catch (StorageException e) {
+            error(e);
+        }
     }
 
     /**

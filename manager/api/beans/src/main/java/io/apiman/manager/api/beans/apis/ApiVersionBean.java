@@ -422,20 +422,20 @@ public class ApiVersionBean implements Serializable, Cloneable {
         this.definitionUrl = definitionUrl;
     }
 
-    /**
-     * @return the API definition, if set
-     */
-    public ApiDefinitionBean getApiDefinition() {
-        return apiDefinition;
-    }
-
-    /**
-     * @return get the API definition.
-     */
-    public ApiVersionBean setApiDefinition(ApiDefinitionBean apiDefinition) {
-        this.apiDefinition = apiDefinition;
-        return this;
-    }
+    // /**
+    //  * @return the API definition, if set
+    //  */
+    // public ApiDefinitionBean getApiDefinition() {
+    //     return apiDefinition;
+    // }
+    //
+    // /**
+    //  * @return get the API definition.
+    //  */
+    // public ApiVersionBean setApiDefinition(ApiDefinitionBean apiDefinition) {
+    //     this.apiDefinition = apiDefinition;
+    //     return this;
+    // }
 
     /**
      * @see java.lang.Object#hashCode()

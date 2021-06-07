@@ -17,6 +17,7 @@
 package io.apiman.manager.api.exportimport.read;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -77,6 +78,7 @@ public interface IImportReaderDispatcher {
     void api(ApiBean api);
     void apiVersion(ApiVersionBean apiVersion);
     void apiPolicy(PolicyBean policy);
+    void apiDefinition(ApiDefinitionBean apiDef);
 
     void client(ClientBean client);
     void clientVersion(ClientVersionBean clientVersion);
@@ -92,4 +94,5 @@ public interface IImportReaderDispatcher {
 
     // Called to perform a rollback of the storage
     void cancel();
+
 }

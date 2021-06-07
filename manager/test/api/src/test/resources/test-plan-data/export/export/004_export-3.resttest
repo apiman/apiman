@@ -121,13 +121,11 @@ X-RestTest-ArrayOrdering: any
           "createdBy": "admin",
           "modifiedBy": "admin",
           "definitionType": "SwaggerJSON",
-          "apiDefinition": {
-            "data": "ewogICJzd2FnZ2VyVmVyc2lvbiI6ICIxLjIiLAogICJhcGlzIjogWwogICAgewogICAgICAicGF0aCI6ICJodHRwOi8vbG9jYWxob3N0OjgwMDAvbGlzdGluZ3MvZ3JlZXRpbmdzIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkdlbmVyYXRpbmcgZ3JlZXRpbmdzIGluIG91ciBhcHBsaWNhdGlvbi4iCiAgICB9CiAgXQp9Cg=="
-          },
           "parsePayload": false,
           "disableKeysStrip": false
         },
-        "Policies": []
+        "Policies": [],
+        "ApiDefinition": "ewogICJzd2FnZ2VyVmVyc2lvbiI6ICIxLjIiLAogICJhcGlzIjogWwogICAgewogICAgICAicGF0aCI6ICJodHRwOi8vbG9jYWxob3N0OjgwMDAvbGlzdGluZ3MvZ3JlZXRpbmdzIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkdlbmVyYXRpbmcgZ3JlZXRpbmdzIGluIG91ciBhcHBsaWNhdGlvbi4iCiAgICB9CiAgXQp9Cg=="
       }]
     }],
     "Clients": [{

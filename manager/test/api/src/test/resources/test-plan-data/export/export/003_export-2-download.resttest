@@ -12,61 +12,51 @@ X-RestTest-ArrayOrdering: any
         "username": "admin",
         "fullName": "Admin",
         "email": "admin@example.org",
-        "joinedOn": "*",
         "admin": false
     }, {
         "username": "admin2",
         "fullName": "Admin 2",
         "email": "admin2@example.org",
-        "joinedOn": "*",
         "admin": false
     }, {
         "username": "bwayne",
         "fullName": "Bruce Wayne",
         "email": "bwayne@wayne-enterprises.com",
-        "joinedOn": "*",
         "admin": false
     }, {
         "username": "ckent",
         "fullName": "Clark Kent",
         "email": "ckent@dailyplanet.com",
-        "joinedOn": "*",
         "admin": false
     }, {
         "username": "dprince",
         "fullName": "Diana Prince",
         "email": "dprince@themyscira.gov",
-        "joinedOn": "*",
         "admin": false
     }, {
         "username": "user1",
         "fullName": "User 1",
         "email": "user1@example.org",
-        "joinedOn": "*",
         "admin": false
     }, {
         "username": "user2",
         "fullName": "User 2",
         "email": "user2@example.org",
-        "joinedOn": "*",
         "admin": false
     }, {
         "username": "user3",
         "fullName": "User 3",
         "email": "user3@example.org",
-        "joinedOn": "*",
         "admin": false
     }, {
         "username": "user4",
         "fullName": "User 4",
         "email": "user4@example.org",
-        "joinedOn": "*",
         "admin": false
     }, {
         "username": "user5",
         "fullName": "User 5",
         "email": "user5@example.org",
-        "joinedOn": "*",
         "admin": false
     }],
     "Gateways": [{
@@ -74,9 +64,7 @@ X-RestTest-ArrayOrdering: any
         "name": "The Gateway",
         "description": "This is the gateway.",
         "createdBy": "admin",
-        "createdOn": "*",
         "modifiedBy": "admin",
-        "modifiedOn": "*",
         "type": "REST",
         "configuration": "{\"endpoint\":\"http://localhost:7070/mock-gateway\",\"username\":\"admin\",\"password\":\"$CRYPT::j8rdW76Z5gUI0I+9c8/GrA==\"}"
     }],
@@ -89,9 +77,7 @@ X-RestTest-ArrayOrdering: any
             "id": "Organization1",
             "name": "Organization 1",
             "createdBy": "admin",
-            "createdOn": "*",
-            "modifiedBy": "admin",
-            "modifiedOn": "*"
+            "modifiedBy": "admin"
         },
         "Memberships": [],
         "Plans": [{
@@ -99,18 +85,14 @@ X-RestTest-ArrayOrdering: any
                 "id": "Plan1",
                 "name": "Plan 1",
                 "description": "This is the description of Plan 1.",
-                "createdBy": "admin",
-                "createdOn": "*"
+                "createdBy": "admin"
             },
             "Versions": [{
                 "PlanVersionBean": {
                     "status": "Locked",
                     "version": "1.0",
                     "createdBy": "admin",
-                    "createdOn": "*",
-                    "modifiedBy": "admin",
-                    "modifiedOn": "*",
-                    "lockedOn": "*"
+                    "modifiedBy": "admin"
                 },
                 "Policies": []
             }]
@@ -121,7 +103,6 @@ X-RestTest-ArrayOrdering: any
                 "name": "API 1",
                 "description": "This is the description of API 1.",
                 "createdBy": "admin",
-                "createdOn": "*",
                 "numPublished": 1
             },
             "Versions": [{
@@ -140,18 +121,13 @@ X-RestTest-ArrayOrdering: any
                     }],
                     "version": "1.0",
                     "createdBy": "admin",
-                    "createdOn": "*",
                     "modifiedBy": "admin",
-                    "modifiedOn": "*",
-                    "publishedOn": "*",
                     "definitionType": "SwaggerJSON",
-                    "apiDefinition": {
-                        "data": "ewogICJzd2FnZ2VyVmVyc2lvbiI6ICIxLjIiLAogICJhcGlzIjogWwogICAgewogICAgICAicGF0aCI6ICJodHRwOi8vbG9jYWxob3N0OjgwMDAvbGlzdGluZ3MvZ3JlZXRpbmdzIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkdlbmVyYXRpbmcgZ3JlZXRpbmdzIGluIG91ciBhcHBsaWNhdGlvbi4iCiAgICB9CiAgXQp9Cg=="
-                    },
                     "parsePayload": false,
                     "disableKeysStrip": false
                 },
-                "Policies": []
+                "Policies": [],
+                "ApiDefinition": "ewogICJzd2FnZ2VyVmVyc2lvbiI6ICIxLjIiLAogICJhcGlzIjogWwogICAgewogICAgICAicGF0aCI6ICJodHRwOi8vbG9jYWxob3N0OjgwMDAvbGlzdGluZ3MvZ3JlZXRpbmdzIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkdlbmVyYXRpbmcgZ3JlZXRpbmdzIGluIG91ciBhcHBsaWNhdGlvbi4iCiAgICB9CiAgXQp9Cg=="
             }]
         }],
         "Clients": [{
@@ -159,19 +135,15 @@ X-RestTest-ArrayOrdering: any
                 "id": "Client1",
                 "name": "Client 1",
                 "description": "This is the description of Client 1.",
-                "createdBy": "admin",
-                "createdOn": "*"
+                "createdBy": "admin"
+                
             },
             "Versions": [{
                 "ClientVersionBean": {
                     "status": "Registered",
                     "version": "1.0",
                     "createdBy": "admin",
-                    "createdOn": "*",
-                    "modifiedBy": "admin",
-                    "modifiedOn": "*",
-                    "publishedOn": "*",
-                    "apikey": "*"
+                    "modifiedBy": "admin"
                 },
                 "Policies": [],
                 "Contracts": [{
@@ -197,8 +169,8 @@ X-RestTest-ArrayOrdering: any
                         },
                         "version": "1.0"
                     },
-                    "createdBy": "admin",
-                    "createdOn": "*"
+                    "createdBy": "admin"
+                    
                 }]
             }]
         }],
@@ -206,22 +178,14 @@ X-RestTest-ArrayOrdering: any
             "who": "admin",
             "organizationId": "Organization1",
             "entityType": "Organization",
-            "createdOn": "*",
+            
             "what": "Create"
         }, {
             "who": "admin",
             "organizationId": "Organization1",
             "entityType": "Plan",
             "entityId": "Plan1",
-            "createdOn": "*",
-            "what": "Create"
-        }, {
-            "who": "admin",
-            "organizationId": "Organization1",
-            "entityType": "Plan",
-            "entityId": "Plan1",
-            "entityVersion": "1.0",
-            "createdOn": "*",
+            
             "what": "Create"
         }, {
             "who": "admin",
@@ -229,14 +193,22 @@ X-RestTest-ArrayOrdering: any
             "entityType": "Plan",
             "entityId": "Plan1",
             "entityVersion": "1.0",
-            "createdOn": "*",
+            
+            "what": "Create"
+        }, {
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Plan",
+            "entityId": "Plan1",
+            "entityVersion": "1.0",
+            
             "what": "Lock"
         }, {
             "who": "admin",
             "organizationId": "Organization1",
             "entityType": "Client",
             "entityId": "Client1",
-            "createdOn": "*",
+            
             "what": "Create"
         }, {
             "who": "admin",
@@ -244,7 +216,7 @@ X-RestTest-ArrayOrdering: any
             "entityType": "Client",
             "entityId": "Client1",
             "entityVersion": "1.0",
-            "createdOn": "*",
+            
             "what": "Create"
         }, {
 
@@ -252,7 +224,13 @@ X-RestTest-ArrayOrdering: any
             "organizationId": "Organization1",
             "entityType": "Api",
             "entityId": "API1",
-            "createdOn": "*",
+            "what": "Create"
+        }, {
+            "who": "admin",
+            "organizationId": "Organization1",
+            "entityType": "Api",
+            "entityId": "API1",
+            "entityVersion": "1.0",
             "what": "Create"
         }, {
 
@@ -261,16 +239,6 @@ X-RestTest-ArrayOrdering: any
             "entityType": "Api",
             "entityId": "API1",
             "entityVersion": "1.0",
-            "createdOn": "*",
-            "what": "Create"
-        }, {
-
-            "who": "admin",
-            "organizationId": "Organization1",
-            "entityType": "Api",
-            "entityId": "API1",
-            "entityVersion": "1.0",
-            "createdOn": "*",
             "what": "Update",
             "data": "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"Plan1:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
         }, {
@@ -280,7 +248,6 @@ X-RestTest-ArrayOrdering: any
             "entityType": "Api",
             "entityId": "API1",
             "entityVersion": "1.0",
-            "createdOn": "*",
             "what": "UpdateDefinition"
         }, {
 
@@ -289,7 +256,6 @@ X-RestTest-ArrayOrdering: any
             "entityType": "Api",
             "entityId": "API1",
             "entityVersion": "1.0",
-            "createdOn": "*",
             "what": "Publish"
         }, {
 
@@ -298,7 +264,6 @@ X-RestTest-ArrayOrdering: any
             "entityType": "Client",
             "entityId": "Client1",
             "entityVersion": "1.0",
-            "createdOn": "*",
             "what": "CreateContract",
             "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
         }, {
@@ -308,17 +273,14 @@ X-RestTest-ArrayOrdering: any
             "entityType": "Api",
             "entityId": "API1",
             "entityVersion": "1.0",
-            "createdOn": "*",
             "what": "CreateContract",
             "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization1\",\"apiId\":\"API1\",\"apiVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}"
         }, {
-
             "who": "admin",
             "organizationId": "Organization1",
             "entityType": "Client",
             "entityId": "Client1",
             "entityVersion": "1.0",
-            "createdOn": "*",
             "what": "Register"
         }]
     }]

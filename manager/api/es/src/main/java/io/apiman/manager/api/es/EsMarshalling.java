@@ -53,6 +53,7 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -1029,6 +1030,19 @@ public class EsMarshalling {
                 bean.getEndpointProperties().put(entry.getKey(), String.valueOf(entry.getValue()));
             }
         }
+
+        // Map<String, Object> apiDef = (Map<String, Object>) source.get("apiDefinition");
+        // if (apiDef != null) {
+        //     ApiDefinitionBean esDefinitionBean = unmarshallApiDefinition(apiDef);
+        //
+        //     io.apiman.manager.api.beans.apis.ApiDefinitionBean definitionBean =
+        //         new io.apiman.manager.api.beans.apis.ApiDefinitionBean();
+        //
+        //     definitionBean.setApiVersion(bean);
+        //     definitionBean.setData(esDefinitionBean.getData().getBytes(StandardCharsets.UTF_8));
+        //     bean.setApiDefinition(definitionBean);
+        // }
+
         postMarshall(bean);
         return bean;
     }

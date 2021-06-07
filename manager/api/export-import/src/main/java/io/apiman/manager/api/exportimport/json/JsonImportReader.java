@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -311,16 +312,46 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                     OrgElementsEnum fieldName = OrgElementsEnum.valueOf(jp.getCurrentName());
                     current = nextToken();
                     switch (fieldName) {
-                    case Policies:
-                        processEntities(PolicyBean.class, dispatcher::apiPolicy);
-                        break;
-                    default:
-                        throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
+                        case Policies:
+                            processEntities(PolicyBean.class, dispatcher::apiPolicy);
+                            break;
+                        case ApiDefinition:
+                            processEntities(ApiDefinitionBean.class, dispatcher::apiDefinition);
+                            break;
+                        default:
+                            throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
                     }
                 }
             }
         }
     }
+
+    // public void readApiDefinitions() throws Exception {
+    //     current = nextToken();
+    //     if (current == JsonToken.END_ARRAY) {
+    //         return;
+    //     }
+    //     while (nextToken() != JsonToken.END_ARRAY) {
+    //         // Traverse each api definition
+    //         while(nextToken() != JsonToken.END_OBJECT) {
+    //             if (jp.getCurrentName().equals(ApiDefinitionBean.class.getSimpleName())) {
+    //                 current = nextToken();
+    //                 ApiDefinitionBean apiDef = jp.readValueAs(ApiDefinitionBean.class);
+    //                 dispatcher.apiDefinition(apiDef);
+    //             } else {
+    //                 OrgElementsEnum fieldName = OrgElementsEnum.valueOf(jp.getCurrentName());
+    //                 current = nextToken();
+    //                 switch (fieldName) {
+    //                     case ApiDefinitions:
+    //                         processEntities(PolicyBean.class, dispatcher::apiPolicy);
+    //                         break;
+    //                     default:
+    //                         throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     public void readClientVersions() throws Exception {
         current = nextToken();

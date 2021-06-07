@@ -43,10 +43,15 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Iterator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import org.apache.commons.io.IOUtils;
+
+import static io.apiman.manager.api.beans.apis.ApiDefinitionType.None;
 
 @ApplicationScoped
 public class StorageExporter {
@@ -185,6 +190,14 @@ public class StorageExporter {
                         writer.writeApiPolicy(policyBean);
                     }
                     writer.endApiPolicies();
+
+                    // Api definition
+                    if (versionBean.getDefinitionType() != null && versionBean.getDefinitionType() != None) {
+                        logger.info("Exporting an API definition of type {0}.", versionBean.getDefinitionType());
+                        InputStream data = storage.getApiDefinition(orgId, apiBean.getId(), versionBean.getVersion());
+                        writer.writeApiDefinition(data);
+                    }
+
                     writer.endApiVersion();
                 }
                 writer.endApiVersions();
