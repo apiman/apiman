@@ -326,33 +326,6 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
         }
     }
 
-    // public void readApiDefinitions() throws Exception {
-    //     current = nextToken();
-    //     if (current == JsonToken.END_ARRAY) {
-    //         return;
-    //     }
-    //     while (nextToken() != JsonToken.END_ARRAY) {
-    //         // Traverse each api definition
-    //         while(nextToken() != JsonToken.END_OBJECT) {
-    //             if (jp.getCurrentName().equals(ApiDefinitionBean.class.getSimpleName())) {
-    //                 current = nextToken();
-    //                 ApiDefinitionBean apiDef = jp.readValueAs(ApiDefinitionBean.class);
-    //                 dispatcher.apiDefinition(apiDef);
-    //             } else {
-    //                 OrgElementsEnum fieldName = OrgElementsEnum.valueOf(jp.getCurrentName());
-    //                 current = nextToken();
-    //                 switch (fieldName) {
-    //                     case ApiDefinitions:
-    //                         processEntities(PolicyBean.class, dispatcher::apiPolicy);
-    //                         break;
-    //                     default:
-    //                         throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
     public void readClientVersions() throws Exception {
         current = nextToken();
         if (current == JsonToken.END_ARRAY) {

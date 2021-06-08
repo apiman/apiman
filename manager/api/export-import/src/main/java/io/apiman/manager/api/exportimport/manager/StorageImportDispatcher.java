@@ -429,8 +429,12 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         policy(policy);
     }
 
+    /**
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#apiDefinition(ApiDefinitionBean)
+     */
+    @Override
     public void apiDefinition(ApiDefinitionBean apiDef) {
-        logger.info("Importing API definition");
+        logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApiDefinition")); //$NON-NLS-1$
         try {
             storage.updateApiDefinition(currentApiVersion, new ByteArrayInputStream(apiDef.getData()));
         } catch (StorageException e) {
