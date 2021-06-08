@@ -21,6 +21,7 @@ import io.apiman.common.logging.IApimanLogger;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.net.ssl.SSLException;
 
+import org.apache.commons.lang3.Validate;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
@@ -83,7 +85,7 @@ public class EsConnectionPoller {
         int periodSecs,
         int maxWaitSecs
     ) {
-        this.client = client;
+        this.client = Objects.requireNonNull(client);
         this.initialDelaySecs = initialDelaySecs;
         this.periodSecs = periodSecs;
         this.maxWaitSecs = maxWaitSecs;
