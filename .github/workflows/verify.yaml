@@ -136,7 +136,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
 
-      - name: Build and deploy Apiman Parent POM/BOM & Deploy to OSSRH
+      - name: 'Apiman Parent: Build and deploy POM/BOM & Deploy to OSSRH'
         run: |
           cd parent
           sh ../mvnw -B clean install
@@ -145,12 +145,14 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
-      - name: Build and Publish Docker Images & Deploy OSSRH Snapshots
+      - name: 'Apiman: Build and Publish Docker Images & Deploy OSSRH Snapshots'
         run: |
           ./mvnw -B clean package docker:build -P docker -DskipTests
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker push apiman/on-wildfly:latest
+          docker push ghcr.io/apiman/on-wildfly:latest
           ./mvnw -B deploy -DskipTests -Dmaven.test.skip=true
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
