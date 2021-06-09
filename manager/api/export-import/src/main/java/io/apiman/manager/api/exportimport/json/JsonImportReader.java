@@ -46,10 +46,16 @@ import io.apiman.manager.api.exportimport.OrgElementsEnum;
 import io.apiman.manager.api.exportimport.exceptions.ImportNotNeededException;
 import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
-import org.apache.commons.io.IOUtils;
 
+import jdk.internal.joptsimple.internal.Strings;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringBufferInputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Read JSON in to recreate manager's state. FIFO.
@@ -67,6 +73,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
 
     /**
      * Constructor.
+     *
      * @param logger the apiman logger
      * @param in the input stream
      * @throws JsonParseException
@@ -316,7 +323,12 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                             processEntities(PolicyBean.class, dispatcher::apiPolicy);
                             break;
                         case ApiDefinition:
-                            processEntities(ApiDefinitionBean.class, dispatcher::apiDefinition);
+                            String apiDefinitionEncoded = jsonParser().getValueAsString();
+                            if (StringUtils.isNotBlank(apiDefinitionEncoded)) {
+                                dispatcher.apiDefinition(
+                                    new ByteArrayInputStream(apiDefinitionEncoded.getBytes(StandardCharsets.UTF_8))
+                                );
+                            }
                             break;
                         default:
                             throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);

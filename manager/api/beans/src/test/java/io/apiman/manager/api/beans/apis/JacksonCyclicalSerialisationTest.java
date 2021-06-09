@@ -48,5 +48,16 @@ public class JacksonCyclicalSerialisationTest {
         ObjectMapper om = new ObjectMapper();
         System.out.println(om.writeValueAsString(apiVersion));
         System.out.println(om.writeValueAsString(adb));
+
+
+
+
+
+
+
+
+
+        //
+
     }
 }

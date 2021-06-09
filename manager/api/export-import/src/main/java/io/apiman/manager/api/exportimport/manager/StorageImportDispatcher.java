@@ -26,7 +26,6 @@ import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
@@ -57,7 +56,7 @@ import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 
-import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
@@ -430,13 +429,13 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#apiDefinition(ApiDefinitionBean)
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#apiDefinition(InputStream)
      */
     @Override
-    public void apiDefinition(ApiDefinitionBean apiDef) {
+    public void apiDefinition(InputStream apiDef) {
         logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApiDefinition")); //$NON-NLS-1$
         try {
-            storage.updateApiDefinition(currentApiVersion, new ByteArrayInputStream(apiDef.getData()));
+            storage.updateApiDefinition(currentApiVersion, apiDef);
         } catch (StorageException e) {
             error(e);
         }

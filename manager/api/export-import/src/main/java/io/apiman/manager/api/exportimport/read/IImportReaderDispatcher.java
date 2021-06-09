@@ -37,6 +37,8 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.exportimport.exceptions.ImportNotNeededException;
 
+import java.io.InputStream;
+
 /**
  * Used to listen to the reading of an apiman import file.  The import
  * reader will parse the import file and then fire events for each
@@ -78,7 +80,7 @@ public interface IImportReaderDispatcher {
     void api(ApiBean api);
     void apiVersion(ApiVersionBean apiVersion);
     void apiPolicy(PolicyBean policy);
-    void apiDefinition(ApiDefinitionBean apiDef);
+    void apiDefinition(InputStream apiDef);
 
     void client(ClientBean client);
     void clientVersion(ClientVersionBean clientVersion);
