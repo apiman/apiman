@@ -151,7 +151,7 @@ jobs:
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker push apiman/on-wildfly:latest
           
-          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u $GITHUB_ACTOR --password-stdin
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login -u $GITHUB_ACTOR --password-stdin
           docker tag apiman/on-wildfly:latest ghcr.io/apiman/on-wildfly:latest
           docker push ghcr.io/apiman/on-wildfly:latest
           
