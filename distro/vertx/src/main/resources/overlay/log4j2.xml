@@ -9,13 +9,28 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
 <Configuration status="WARN">
   <Appenders>
     <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
-    <RandomAccessFile name="RandomAccessFile" fileName="apiman-gateway.log" immediateFlush="false">
+    <RollingRandomAccessFile
+      name="RollingRandomAccessFile"
+      fileName="logs/apiman/apiman-gateway.log"
+      filePattern="logs/apiman/apiman-gateway-%d{dd-MM-yyyy}-%i.log"
+      immediateFlush="false">
       <PatternLayout>
         <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
       </PatternLayout>
       <!-- JSON logging can be enabled by changing to JSONLayout. See https://logging.apache.org/log4j/log4j-2.2/manual/layouts.html#JSONLayout -->
       <!-- <JSONLayout /> -->
-    </RandomAccessFile>
+      <Policies>
+        <TimeBasedTriggeringPolicy modulate="true"/>
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10">
+        <Delete basePath="logs/apiman" maxDepth="1">
+          <IfFileName glob="apiman*.log" />
+          <IfLastModified age="14d" />
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingRandomAccessFile>
+
     <Console name="Console-Appender" target="SYSTEM_OUT" immediateFlush="false">
       <PatternLayout>
           <pattern>
@@ -28,8 +43,8 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
   </Appenders>
   <Loggers>
     <!-- apiman package only logging -->
-    <AsyncLogger level="${sys:apiman.gateway-logLevel:-info}" name="io.apiman" additivity="false">
-      <AppenderRef ref="RandomAccessFile"/>
+    <AsyncLogger level="${sys:apiman-logLevel:-info}" name="io.apiman" additivity="false">
+      <AppenderRef ref="RollingRandomAccessFile"/>
       <AppenderRef ref="Console-Appender"/>
     </AsyncLogger>
     <!-- You can add your own loggers with separate levels, etc. -->
@@ -38,8 +53,8 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
       <AppenderRef ref="Console-Appender"/>
     </AsyncLogger> -->
     <!-- Root/Global file logging config -->
-    <AsyncRoot level="${sys:apiman.gateway-logLevel:-info}" includeLocation="false">
-      <AppenderRef ref="RandomAccessFile"/>
+    <AsyncRoot level="${sys:apiman.apiman-logLevel:-info}" includeLocation="false">
+      <AppenderRef ref="RollingRandomAccessFile"/>
       <AppenderRef ref="Console-Appender"/>
     </AsyncRoot>
   </Loggers>
