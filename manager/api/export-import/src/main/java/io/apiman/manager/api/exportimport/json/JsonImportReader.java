@@ -164,23 +164,23 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                     current = nextToken();
 
                     switch (fieldName) {
-                    case Memberships:
-                        processEntities(RoleMembershipBean.class, dispatcher::membership);
-                        break;
-                    case Plans:
-                        readPlans();
-                        break;
-                    case Apis:
-                        readApis();
-                        break;
-                    case Clients:
-                        readClients();
-                        break;
-                    case Audits:
-                        processEntities(AuditEntryBean.class, dispatcher::audit);
-                        break;
-                    default:
-                        throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
+                        case Memberships:
+                            processEntities(RoleMembershipBean.class, dispatcher::membership);
+                            break;
+                        case Plans:
+                            readPlans();
+                            break;
+                        case Apis:
+                            readApis();
+                            break;
+                        case Clients:
+                            readClients();
+                            break;
+                        case Audits:
+                            processEntities(AuditEntryBean.class, dispatcher::audit);
+                            break;
+                        default:
+                            throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
                     }
                 }
             }

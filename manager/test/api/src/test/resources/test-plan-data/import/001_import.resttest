@@ -103,7 +103,8 @@ Content-Type: application/json
                 "modifiedOn": 1445973207183,
                 "publishedOn": 1445973207588
               },
-              "Policies": []
+              "Policies": [],
+              "ApiDefinition": "ewogICJzd2FnZ2VyVmVyc2lvbiI6ICIxLjIiLAogICJhcGlzIjogWwogICAgewogICAgICAicGF0aCI6ICJodHRwOi8vbG9jYWxob3N0OjgwMDAvbGlzdGluZ3MvZ3JlZXRpbmdzIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkdlbmVyYXRpbmcgZ3JlZXRpbmdzIGluIG91ciBhcHBsaWNhdGlvbi4iCiAgICB9CiAgXQp9Cg=="
             }
           ]
         }
@@ -370,7 +371,7 @@ Content-Type: application/json
 Content-Type: text/plain;charset=utf-8
 
 INFO: ----------------------------
-INFO: Starting apiman data import: .*apiman_import_migrated.*.json
+INFO: Starting apiman data import: .*apiman_import_migrated.*\.json
 INFO: Importing a user: importeduser
 INFO: Importing a gateway: The Gateway
 INFO: Importing an organization: Organization 1
@@ -378,6 +379,7 @@ INFO:   Importing a plan: Plan 1
 INFO:     Importing a plan version: 1.0
 INFO:     Importing an API: API 1
 INFO:     Importing an API version: 1.0
+INFO:      Importing API definition \(schema\)
 INFO:   Importing a client: Client 1
 INFO:     Importing a client version: 1.0
 INFO:   Importing an audit entry: 1

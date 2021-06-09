@@ -470,7 +470,7 @@ public class TestPlanRunner {
 
             if (expected != null) {
                 assertThat(actual)
-                    .withFailMessage("Response payload (text/plain) mismatch. Expected %s != %s\n", expected, actual)
+                    .withFailMessage("Response payload (text/plain) mismatch. Expected: <%s> but was: <%s>", expected, actual)
                     .matches(expected);
             }
         } catch (Exception e) {
