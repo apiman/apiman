@@ -150,9 +150,14 @@ jobs:
           ./mvnw -B clean package docker:build -P docker -DskipTests
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker push apiman/on-wildfly:latest
+          
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u $GITHUB_ACTOR --password-stdin
+          docker tag apiman/on-wildfly:latest ghcr.io/apiman/on-wildfly:latest
           docker push ghcr.io/apiman/on-wildfly:latest
+          
           ./mvnw -B deploy -DskipTests -Dmaven.test.skip=true
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
