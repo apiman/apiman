@@ -320,11 +320,9 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                             processEntities(PolicyBean.class, dispatcher::apiPolicy);
                             break;
                         case ApiDefinition:
-                            String apiDefinitionEncoded = jsonParser().getValueAsString();
-                            if (StringUtils.isNotBlank(apiDefinitionEncoded)) {
-                                dispatcher.apiDefinition(
-                                    new ByteArrayInputStream(apiDefinitionEncoded.getBytes(StandardCharsets.UTF_8))
-                                );
+                            byte[] schema = jsonParser().getBinaryValue();
+                            if (schema != null && schema.length > 0) {
+                                dispatcher.apiDefinition(new ByteArrayInputStream(schema));
                             }
                             break;
                         default:
