@@ -17,7 +17,6 @@ package io.apiman.manager.api.beans.apis;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -26,6 +25,9 @@ import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 /**
  * Bean used to store an API definition.
  *
@@ -33,6 +35,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "api_defs")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ApiDefinitionBean implements Serializable {
 
     private static final long serialVersionUID = 7744514362366320690L;
@@ -103,5 +106,13 @@ public class ApiDefinitionBean implements Serializable {
         return "ApiDefinitionBean [id=" + id + ", apiVersion=" + apiVersion + ", data="
                 + (data != null ? Arrays.toString(Arrays.copyOf(data, Math.min(data.length, maxLen))) : null)
                 + "]";
+    }
+
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

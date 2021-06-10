@@ -17,8 +17,8 @@
 package io.apiman.manager.api.exportimport.manager;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
-import io.apiman.common.logging.impl.DoubleLogger;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.impl.DoubleLogger;
 import io.apiman.common.logging.impl.MultiLogger;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
@@ -56,6 +56,7 @@ import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 
+import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
@@ -92,6 +93,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     private OrganizationBean currentOrg;
     private PlanBean currentPlan;
     private ApiBean currentApi;
+    private ApiVersionBean currentApiVersion;
     private ClientBean currentClient;
     private ClientVersionBean currentClientVersion;
 
@@ -397,6 +399,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     @Override
     public void apiVersion(ApiVersionBean apiVersion) {
+        currentApiVersion = apiVersion;
+
         try {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApiVersion") + apiVersion.getVersion()); //$NON-NLS-1$
             apiVersion.setApi(currentApi);
@@ -422,6 +426,19 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void apiPolicy(PolicyBean policy) {
         logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApiPolicy") + policy.getName()); //$NON-NLS-1$
         policy(policy);
+    }
+
+    /**
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#apiDefinition(InputStream)
+     */
+    @Override
+    public void apiDefinition(InputStream apiDef) {
+        logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApiDefinition")); //$NON-NLS-1$
+        try {
+            storage.updateApiDefinition(currentApiVersion, apiDef);
+        } catch (StorageException e) {
+            error(e);
+        }
     }
 
     /**

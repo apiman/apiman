@@ -3,6 +3,7 @@ GET /system/export admin/admin
 200
 Content-Type: application/json
 X-RestTest-ArrayOrdering: any
+X-RestTest-RegexMatching: true
 
 {
   "Metadata": {

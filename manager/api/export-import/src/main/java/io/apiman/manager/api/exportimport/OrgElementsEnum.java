@@ -19,5 +19,5 @@ public enum OrgElementsEnum {
     Memberships,
     Clients, Plans, Apis,
     Versions, Contracts, Policies,
-    Audits;
+    Audits, ApiDefinition;
 }

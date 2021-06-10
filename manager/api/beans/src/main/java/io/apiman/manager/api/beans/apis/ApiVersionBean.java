@@ -39,8 +39,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * Models a single version of an API. Every API in APIMan has basic meta-data
@@ -54,6 +56,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Table(name = "api_versions",
        uniqueConstraints = { @UniqueConstraint(columnNames = { "api_id", "api_org_id", "version" }) })
 @JsonInclude(Include.NON_NULL)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ApiVersionBean implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -2218697175049442690L;
@@ -106,8 +109,8 @@ public class ApiVersionBean implements Serializable, Cloneable {
     @Column(name = "definition_type")
     @Enumerated(EnumType.STRING)
     private ApiDefinitionType definitionType;
-    @OneToOne(mappedBy="apiVersion", orphanRemoval=true, cascade={CascadeType.REMOVE}, fetch=FetchType.LAZY)
-    private ApiDefinitionBean apiDefinition;
+    @OneToOne(mappedBy="apiVersion", orphanRemoval=true, cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
+    ApiDefinitionBean apiDefinition; // Deliberately no explicit getter/setter for this
     @Column(name = "parse_payload", updatable=true, nullable=true)
     private boolean parsePayload;
     @Column(name = "strip_keys", updatable=true, nullable=true)

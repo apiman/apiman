@@ -16,6 +16,7 @@
 package io.apiman.manager.api.exportimport.write;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -33,6 +34,8 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.system.MetadataBean;
+
+import java.io.InputStream;
 
 /**
  *
@@ -101,6 +104,7 @@ public interface IExportWriter {
     IExportWriter startApiPolicies();
     IExportWriter writeApiPolicy(PolicyBean policy);
     IExportWriter endApiPolicies();
+    IExportWriter writeApiDefinition(InputStream apiDefinitionData);
     IExportWriter endApiVersion();
     IExportWriter endApiVersions();
     IExportWriter endApi();

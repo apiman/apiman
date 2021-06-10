@@ -29,6 +29,7 @@ Content-Type: application/json
 ----
 200
 Content-Type: text/plain;charset=utf-8
+X-RestTest-RegexMatching: true
 
 INFO: ----------------------------
 INFO: Starting apiman data import: .*apiman_import_migrated.*.json

@@ -36,6 +36,8 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 
+import java.io.InputStream;
+
 @SuppressWarnings("nls")
 public class LoggingDispatcher implements IImportReaderDispatcher {
 
@@ -149,6 +151,11 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     @Override
     public void apiPolicy(PolicyBean policy) {
         System.out.println("\t\t\tpolicy: " + policy);
+    }
+
+    @Override
+    public void apiDefinition(InputStream apiDef) {
+        System.out.println("\t\t\tapi definition");
     }
 
     /**

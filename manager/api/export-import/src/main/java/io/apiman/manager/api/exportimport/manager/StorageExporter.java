@@ -43,10 +43,16 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Date;
 import java.util.Iterator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import org.apache.commons.io.IOUtils;
+
+import static io.apiman.manager.api.beans.apis.ApiDefinitionType.None;
 
 @ApplicationScoped
 public class StorageExporter {
@@ -97,33 +103,35 @@ public class StorageExporter {
             logger.info(Messages.i18n.format("StorageExporter.ExportComplete")); //$NON-NLS-1$
             logger.info("------------------------------------------"); //$NON-NLS-1$
         } catch (StorageException e) {
+            logger.error(e, "Apiman encountered a serious error during its attempt to export. "
+                + "Any export data received should not be relied upon, and the output may be corrupted.");
             throw new RuntimeException(e);
         }
     }
 
     private void exportOrgs() {
         try {
-          writer.startOrgs();
+            writer.startOrgs();
 
-          Iterator<OrganizationBean> iter = storage.getAllOrganizations();
+            Iterator<OrganizationBean> iter = storage.getAllOrganizations();
+            int foo = 0;
 
-          while (iter.hasNext()) {
-              OrganizationBean bean = iter.next();
-              writer.startOrg(bean);
-              logger.info(Messages.i18n.format("StorageExporter.ExportingOrgs") + bean); //$NON-NLS-1$
+            while (iter.hasNext()) {
+                OrganizationBean bean = iter.next();
+                writer.startOrg(bean);
+                logger.info(Messages.i18n.format("StorageExporter.ExportingOrgs") + bean); //$NON-NLS-1$
 
-              exportMemberships(bean.getId());
-              exportPlans(bean.getId());
-              exportApis(bean.getId());
-              exportClients(bean.getId());
-              exportAudits(bean.getId());
+                exportMemberships(bean.getId());
+                exportPlans(bean.getId());
+                exportApis(bean.getId());
+                exportClients(bean.getId());
+                exportAudits(bean.getId());
 
-              writer.endOrg();
-          }
+                writer.endOrg();
+            }
 
-          writer.endOrgs();
-        }
-        catch (Exception e) {
+            writer.endOrgs();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -155,8 +163,7 @@ public class StorageExporter {
                 writer.endPlan();
             }
             writer.endPlans();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -182,14 +189,23 @@ public class StorageExporter {
                         writer.writeApiPolicy(policyBean);
                     }
                     writer.endApiPolicies();
+
+                    // Api definition
+                    if (versionBean.getDefinitionType() != null && versionBean.getDefinitionType() != None) {
+                        logger.info(Messages.i18n.format("StorageExporter.ExportingApiDefinition", versionBean.getDefinitionType()));
+                        InputStream data = storage.getApiDefinition(orgId, apiBean.getId(), versionBean.getVersion());
+                        if (data != null) {
+                            writer.writeApiDefinition(data);
+                        }
+                    }
+
                     writer.endApiVersion();
                 }
                 writer.endApiVersions();
                 writer.endApi();
             }
             writer.endApis();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -239,8 +255,7 @@ public class StorageExporter {
                 writer.endClient();
             }
             writer.endClients();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -251,15 +266,14 @@ public class StorageExporter {
 
             writer.startMemberships();
 
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 RoleMembershipBean bean = iter.next();
                 logger.info(Messages.i18n.format("StorageExporter.ExportingMembership") + bean); //$NON-NLS-1$
                 writer.writeMembership(bean);
             }
 
             writer.endMemberships();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -270,15 +284,14 @@ public class StorageExporter {
 
             writer.startAudits();
 
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 AuditEntryBean bean = iter.next();
                 logger.info(Messages.i18n.format("StorageExporter.ExportingAuditEntry") + bean); //$NON-NLS-1$
                 writer.writeAudit(bean);
             }
 
             writer.endAudits();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -299,15 +312,14 @@ public class StorageExporter {
 
             writer.startGateways();
 
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 GatewayBean bean = iter.next();
                 logger.info(Messages.i18n.format("StorageExporter.ExportingGateway") + bean); //$NON-NLS-1$
                 writer.writeGateway(bean);
             }
 
             writer.endGateways();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -318,15 +330,14 @@ public class StorageExporter {
 
             writer.startPlugins();
 
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 PluginBean bean = iter.next();
                 logger.info(Messages.i18n.format("StorageExporter.ExportingPlugin") + bean); //$NON-NLS-1$
                 writer.writePlugin(bean);
             }
 
             writer.endPlugins();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -347,8 +358,7 @@ public class StorageExporter {
             }
 
             writer.endUsers();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -361,15 +371,14 @@ public class StorageExporter {
 
             writer.startRoles();
 
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 RoleBean bean = iter.next();
                 logger.info(Messages.i18n.format("StorageExporter.ExportingRole") + bean); //$NON-NLS-1$
                 writer.writeRole(bean);
             }
 
             writer.endRoles();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -382,15 +391,14 @@ public class StorageExporter {
 
             writer.startPolicyDefs();
 
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 PolicyDefinitionBean bean = iter.next();
                 logger.info(Messages.i18n.format("StorageExporter.ExportingPolicyDefinition") + bean); //$NON-NLS-1$
                 writer.writePolicyDef(bean);
             }
 
             writer.endPolicyDefs();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -402,7 +410,7 @@ public class StorageExporter {
             writer.startDevelopers();
 
             // iter can be null because jpa storage is not implemented
-            while (iter != null && iter.hasNext()){
+            while (iter != null && iter.hasNext()) {
                 DeveloperBean bean = iter.next();
                 logger.info(Messages.i18n.format("StorageExporter.ExportingDeveloper") + bean); //$NON-NLS-1$
                 writer.writeDeveloper(bean);

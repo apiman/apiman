@@ -15,6 +15,7 @@
  */
 package io.apiman.test.common.util;
 
+import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
 import io.apiman.test.common.json.JsonArrayOrderingType;
 import io.apiman.test.common.json.JsonCompare;
 import io.apiman.test.common.json.JsonMissingFieldType;
@@ -37,6 +38,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
@@ -72,6 +74,7 @@ import static org.assertj.core.api.Assertions.*;
 public class TestPlanRunner {
 
     private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
+    private final CaseInsensitiveStringMultiMap testMetaHeaders = new CaseInsensitiveStringMultiMap();
 
     /**
      * Constructor.
@@ -240,8 +243,10 @@ public class TestPlanRunner {
         }
         for (Entry<String, String> entry : restTest.getExpectedResponseHeaders().entrySet()) {
             String expectedHeaderName = entry.getKey();
-            if (expectedHeaderName.startsWith("X-RestTest-"))
+            if (expectedHeaderName.startsWith("X-RestTest-")) {
+                testMetaHeaders.put(entry.getKey(), entry.getValue());
                 continue;
+            }
             String expectedHeaderValue = entry.getValue();
             List<String> headers = response.headers().get(expectedHeaderName);
 
@@ -310,6 +315,8 @@ public class TestPlanRunner {
                 throw e;
             }
         } catch (Exception e) {
+            System.err.println("--- Exception ---");
+            System.err.println(response.body());
             throw new Error(e);
         } finally {
             IOUtils.closeQuietly(inputStream);
@@ -466,10 +473,16 @@ public class TestPlanRunner {
             String actual = builder.toString();
             String expected = restTest.getExpectedResponsePayload();
 
+            // If Regex-Match header set on the request, we use this to signify that we want regex matching.
+            boolean regexMatchMod = BooleanUtils.toBoolean(testMetaHeaders.get("X-RestTest-RegexMatching"));
             if (expected != null) {
-                assertThat(actual)
-                    .withFailMessage("Response payload (text/plain) mismatch. Expected %s != %s\n", expected, actual)
-                    .matches(expected);
+                if (regexMatchMod) {
+                    assertThat(actual)
+                        .withFailMessage("Response payload (text/plain) mismatch. Expected: <%s> but was: <%s>", expected, actual)
+                        .matches(expected);
+                } else {
+                    assertThat(actual).isEqualTo(expected);
+                }
             }
         } catch (Exception e) {
             throw new Error(e);

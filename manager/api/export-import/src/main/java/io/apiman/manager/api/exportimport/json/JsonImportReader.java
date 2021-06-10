@@ -15,11 +15,6 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
@@ -45,10 +40,19 @@ import io.apiman.manager.api.exportimport.OrgElementsEnum;
 import io.apiman.manager.api.exportimport.exceptions.ImportNotNeededException;
 import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
-import org.apache.commons.io.IOUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Read JSON in to recreate manager's state. FIFO.
@@ -66,6 +70,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
 
     /**
      * Constructor.
+     *
      * @param logger the apiman logger
      * @param in the input stream
      * @throws JsonParseException
@@ -159,23 +164,23 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                     current = nextToken();
 
                     switch (fieldName) {
-                    case Memberships:
-                        processEntities(RoleMembershipBean.class, dispatcher::membership);
-                        break;
-                    case Plans:
-                        readPlans();
-                        break;
-                    case Apis:
-                        readApis();
-                        break;
-                    case Clients:
-                        readClients();
-                        break;
-                    case Audits:
-                        processEntities(AuditEntryBean.class, dispatcher::audit);
-                        break;
-                    default:
-                        throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
+                        case Memberships:
+                            processEntities(RoleMembershipBean.class, dispatcher::membership);
+                            break;
+                        case Plans:
+                            readPlans();
+                            break;
+                        case Apis:
+                            readApis();
+                            break;
+                        case Clients:
+                            readClients();
+                            break;
+                        case Audits:
+                            processEntities(AuditEntryBean.class, dispatcher::audit);
+                            break;
+                        default:
+                            throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
                     }
                 }
             }
@@ -311,11 +316,17 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                     OrgElementsEnum fieldName = OrgElementsEnum.valueOf(jp.getCurrentName());
                     current = nextToken();
                     switch (fieldName) {
-                    case Policies:
-                        processEntities(PolicyBean.class, dispatcher::apiPolicy);
-                        break;
-                    default:
-                        throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
+                        case Policies:
+                            processEntities(PolicyBean.class, dispatcher::apiPolicy);
+                            break;
+                        case ApiDefinition:
+                            byte[] schema = jsonParser().getBinaryValue();
+                            if (schema != null && schema.length > 0) {
+                                dispatcher.apiDefinition(new ByteArrayInputStream(schema));
+                            }
+                            break;
+                        default:
+                            throw new RuntimeException("Unhandled entity " + fieldName + " with token " + current);
                     }
                 }
             }

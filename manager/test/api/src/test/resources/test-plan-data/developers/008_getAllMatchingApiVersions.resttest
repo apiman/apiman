@@ -7,7 +7,6 @@ Content-Type: application/json
 	"api": {
 		"organization": {
 			"name": "Organization 1",
-			"description": null,
 			"createdBy": "admin",
 			"modifiedBy": "admin"
 		},
@@ -32,8 +31,6 @@ Content-Type: application/json
 	"version": "1.0",
 	"createdBy": "admin",
 	"modifiedBy": "admin",
-	"retiredOn": null,
 	"definitionType": "SwaggerJSON",
-	"parsePayload": false,
-	"definitionUrl": null
+	"parsePayload": false
 }]
