@@ -17,7 +17,6 @@
 package io.apiman.manager.api.exportimport.read;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;

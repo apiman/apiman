@@ -15,17 +15,8 @@
  */
 package io.apiman.manager.api.exportimport.json;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import org.apache.commons.io.IOUtils;
-
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -50,23 +41,30 @@ import io.apiman.manager.api.exportimport.write.IExportWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import org.apache.commons.io.IOUtils;
+
 /**
- * Stream global elements
+ * Stream global elements.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> implements IExportWriter {
 
-    private JsonFactory jsonFactory = new JsonFactory();
-    private JsonGenerator jg;
-    private Map<Enum<GlobalElementsEnum>, Boolean> finished = new HashMap<>();
-    private ObjectMapper om = new ObjectMapper();
+    private final JsonGenerator jg;
+    private final Map<Enum<GlobalElementsEnum>, Boolean> finished = new HashMap<>();
+    private final ObjectMapper om = new ObjectMapper();
 
     {
+        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         om.setDateFormat(new ISO8601DateFormat());
         for (GlobalElementsEnum v : GlobalElementsEnum.values()) {
             finished.put(v, false);
@@ -75,13 +73,14 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
 
     /**
      * Constructor.
+     *
      * @param targetStream
-     * @param logger
+     * @param logger logger used (and abused!) for
      * @throws IOException
      */
     public JsonExportWriter(OutputStream targetStream, IApimanLogger logger) throws IOException {
         super(logger);
-        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        JsonFactory jsonFactory = new JsonFactory();
         jg = jsonFactory.createGenerator(targetStream, JsonEncoding.UTF8);
         jg.useDefaultPrettyPrinter();
         jg.setCodec(om);
@@ -549,7 +548,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClient(io.apiman.manager.api.beans.ClientBean.ClientBean)
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClient(ClientBean) 
      */
     @Override
     public IExportWriter startClient(ClientBean client) {
@@ -574,7 +573,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClientVersion(io.apiman.manager.api.beans.ClientVersionBean.ClientVersionBean)
+     * @see io.apiman.manager.api.exportimport.write.IExportWriter#startClientVersion(ClientVersionBean) 
      */
     @Override
     public IExportWriter startClientVersion(ClientVersionBean cvb) {
