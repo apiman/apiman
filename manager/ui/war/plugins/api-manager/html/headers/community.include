@@ -161,7 +161,7 @@
                         </li>
                         <li class="list-group-item" data-target="#admin-manage_policies-tertiary">
                             <a href="{{ pluginName }}/admin/policyDefs">
-                                <span class="list-group-item-value" apiman-i18n-key="actions.manage-policyDefs">Manage Policiy Definitions</span>
+                                <span class="list-group-item-value" apiman-i18n-key="actions.manage-policyDefs">Manage Policy Definitions</span>
                             </a>
                         </li>
                         <li class="list-group-item" data-target="#admin-manage_gateway-tertiary">
