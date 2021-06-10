@@ -624,8 +624,8 @@
         <subsystem xmlns="urn:jboss:domain:undertow:11.0" default-server="default-server" default-virtual-host="default-host" default-servlet-container="default" default-security-domain="other" statistics-enabled="${wildfly.undertow.statistics-enabled:${wildfly.statistics-enabled:false}}">
             <buffer-cache name="default"/>
             <server name="default-server">
-                <http-listener name="default" socket-binding="http" redirect-socket="https" enable-http2="true"/>
-                <https-listener name="https" socket-binding="https" security-realm="ApplicationRealm" enable-http2="true"/>
+                <http-listener name="default" socket-binding="http" redirect-socket="https" enable-http2="true" max-post-size="268435456"/>
+                <https-listener name="https" socket-binding="https" security-realm="ApplicationRealm" enable-http2="true" max-post-size="268435456"/>
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
                     <http-invoker security-realm="ApplicationRealm"/>
