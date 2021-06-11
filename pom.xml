@@ -141,10 +141,44 @@
         <artifactId>apiman-test-policies</artifactId>
         <version>${version.apiman}</version>
       </dependency>
+
+      <!-- Mock server -->
       <dependency>
         <groupId>org.mock-server</groupId>
         <artifactId>mockserver-netty</artifactId>
         <version>${version.org.mock-server}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-buffer</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-common</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!-- Override the version of netty with this one. And be lazy and use 'netty-all' -->
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <version>${version.io.netty}</version>
       </dependency>
       <dependency>
         <groupId>org.mock-server</groupId>
