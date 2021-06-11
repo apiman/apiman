@@ -202,7 +202,7 @@ public class GenericOptionsParserTest {
             5,
             // Note constraint check requires value greater than zero
             v -> v > 0,
-            "This will never be reached"
+            "must be greater than zero"
         );
     }
     

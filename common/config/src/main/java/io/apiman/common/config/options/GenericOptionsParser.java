@@ -18,10 +18,12 @@ package io.apiman.common.config.options;
 
 import io.apiman.common.config.options.exceptions.BadOptionConfigurationException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +64,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class GenericOptionsParser extends AbstractOptions {
 
-    private Map<String, String> options;
+    private TreeMap<String, String> options;
 
     public GenericOptionsParser(Map<String, String> options) {
         super(options);
@@ -72,6 +74,10 @@ public class GenericOptionsParser extends AbstractOptions {
     protected void parse(Map<String, String> options) {
         this.options = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         this.options.putAll(options);
+    }
+
+    protected TreeMap<String, String> getOptions() {
+        return options;
     }
 
     /**
@@ -109,7 +115,7 @@ public class GenericOptionsParser extends AbstractOptions {
      * @throws BadOptionConfigurationException if a value is not a valid integer or a constraint violation
      *                                         occurs (e.g. X > 5).
      */
-    public int getInt(List<String> keyAliases, int defaultValue, Function<Integer, Boolean> constraint,
+    public int getInt(List<String> keyAliases, int defaultValue, Predicate<Integer> constraint,
         String message) {
 
         AliasValueEntry candidate = getValue(keyAliases);
@@ -118,9 +124,9 @@ public class GenericOptionsParser extends AbstractOptions {
         }
         try {
             int parsedInt = Integer.parseInt(candidate.value);
-            if (!constraint.apply(parsedInt)) {
+            if (!constraint.test(parsedInt)) {
                 throw BadOptionConfigurationException
-                    .constraintFailure(candidate.alias, candidate.value, "integer", message);
+                    .constraintFailure(candidate.alias, "integer", candidate.value, message);
             }
             return parsedInt;
         } catch (NumberFormatException nfe) {
@@ -141,7 +147,7 @@ public class GenericOptionsParser extends AbstractOptions {
      * @throws BadOptionConfigurationException if a value is not a valid long or a constraint violation occurs
      *                                         (e.g. {@code X > 5}).
      */
-    public long getLong(List<String> keyAliases, long defaultValue, Function<Long, Boolean> constraint,
+    public long getLong(List<String> keyAliases, long defaultValue, Predicate<Long> constraint,
         String message) {
 
         AliasValueEntry candidate = getValue(keyAliases);
@@ -150,14 +156,20 @@ public class GenericOptionsParser extends AbstractOptions {
         }
         try {
             long parsedInt = Long.parseLong(candidate.value);
-            if (!constraint.apply(parsedInt)) {
+            if (!constraint.test(parsedInt)) {
                 throw BadOptionConfigurationException
-                    .constraintFailure(candidate.alias, candidate.value, "long", message);
+                    .constraintFailure(candidate.alias, "long", candidate.value, message);
             }
             return parsedInt;
         } catch (NumberFormatException nfe) {
             throw BadOptionConfigurationException.parseFailure(candidate.alias, "long", candidate.value, nfe);
         }
+    }
+
+    public String getRequiredString(List<String> keyAliases, Predicate<String> constraint, String message) {
+        return Optional
+            .ofNullable(getString(keyAliases, null, constraint, message))
+            .orElseThrow(() -> BadOptionConfigurationException.requiredValue(keyAliases, "string"));
     }
 
     /**
@@ -173,15 +185,15 @@ public class GenericOptionsParser extends AbstractOptions {
      *                                         X.startsWith('foo')}).
      */
     public String getString(List<String> keyAliases, String defaultValue,
-        Function<String, Boolean> constraint, String message) {
+        Predicate<String> constraint, String message) {
 
         AliasValueEntry candidate = getValue(keyAliases);
         if (candidate == null || StringUtils.isBlank(candidate.value)) {
             return defaultValue;
         }
-        if (!constraint.apply(candidate.value)) {
+        if (!constraint.test(candidate.value)) {
             throw BadOptionConfigurationException
-                .constraintFailure(candidate.alias, candidate.value, "string", message);
+                .constraintFailure(candidate.alias, "string", candidate.value, message);
         }
         return candidate.value;
     }
@@ -189,7 +201,7 @@ public class GenericOptionsParser extends AbstractOptions {
     private AliasValueEntry getValue(List<String> keyAliases) {
         return keyAliases.stream()
             .filter(candidate -> options.containsKey(candidate))
-            .map(candidate -> AliasValueEntry.of(candidate, options.get(candidate)))
+            .map(candidate -> AliasValueEntry.of(candidate, StringUtils.strip(options.get(candidate))))
             .findFirst()
             .orElse(null);
     }
@@ -207,5 +219,9 @@ public class GenericOptionsParser extends AbstractOptions {
         static AliasValueEntry of(String alias, String value) {
             return new AliasValueEntry(alias, value);
         }
+    }
+
+    public static <T> List<T> keys(T... keys) {
+        return Arrays.asList(keys);
     }
 }

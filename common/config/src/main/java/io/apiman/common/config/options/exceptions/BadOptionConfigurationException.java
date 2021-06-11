@@ -16,17 +16,19 @@
 
 package io.apiman.common.config.options.exceptions;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 
 /**
- * Thrown to indicate that a provided configuration option is invalid in some way, for example because
- * it could not be parsed or failed a constraint check.
+ * Thrown to indicate that a provided configuration option is invalid in some way, for example because it
+ * could not be parsed or failed a constraint check.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}.
  */
 public class BadOptionConfigurationException extends IllegalArgumentException {
+
     private String expectedType;
     private String optionName;
     private String actualValue;
@@ -42,15 +44,16 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
     /**
      * Indicate a parsing failure.
      *
-     * @param optionName option name/key being parsed.
+     * @param optionName   option name/key being parsed.
      * @param expectedType the anticipated type (e.g. boolean).
-     * @param actualValue the actual found.
-     * @param cause the cause of this issue, if it is an exception (e.g. NumberFormatException).
+     * @param actualValue  the actual found.
+     * @param cause        the cause of this issue, if it is an exception (e.g. NumberFormatException).
      */
     public static BadOptionConfigurationException parseFailure(String optionName, String expectedType,
         String actualValue, Throwable cause) {
 
-        String msg = "Expected '" + optionName + "' to be of type " + expectedType + " but provided value '" + actualValue + "' could not be parsed";
+        String msg = "Expected '" + optionName + "' to be of type " + expectedType + " but provided value '"
+            + actualValue + "' could not be parsed";
         return new BadOptionConfigurationException(msg, cause)
             .setOptionName(optionName)
             .setExpectedType(expectedType)
@@ -60,13 +63,14 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
     /**
      * Indicate a parsing failure.
      *
-     * @param optionName option name/key being parsed.
+     * @param optionName   option name/key being parsed.
      * @param expectedType the anticipated type (e.g. boolean).
-     * @param actualValue the actual found.
+     * @param actualValue  the actual found.
      */
     public static BadOptionConfigurationException parseFailure(String optionName, String expectedType,
         String actualValue) {
-        String msg = "Expected '" + optionName + "' to be of type " + expectedType + " but provided value '" + actualValue + "' could not be parsed";
+        String msg = "Expected '" + optionName + "' to be of type " + expectedType + " but provided value '"
+            + actualValue + "' could not be parsed";
         return new BadOptionConfigurationException(msg, null)
             .setOptionName(optionName)
             .setExpectedType(expectedType)
@@ -76,20 +80,37 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
     /**
      * Indicate a constraint failure.
      *
-     * @param optionName option name/key being parsed.
-     * @param expectedType the anticipated type (e.g. boolean).
-     * @param actualValue the actual found.
-     * @param constraintFailureMessage a human-readable message to display in the case of a
-     *                                 constraint failure (e.g. port should be greater than 0).
+     * @param optionName               option name/key being parsed.
+     * @param expectedType             the anticipated type (e.g. boolean).
+     * @param actualValue              the actual found.
+     * @param constraintFailureMessage a human-readable message to display in the case of a constraint failure
+     *                                 (e.g. port should be greater than 0).
      */
     public static BadOptionConfigurationException constraintFailure(String optionName, String expectedType,
         String actualValue, String constraintFailureMessage) {
-        String msg = "Option '" + optionName + "' of type " + expectedType + " failed a validation check: " + constraintFailureMessage;
+        String msg = "Option '" + optionName + "' of type " + expectedType + " failed a validation check: "
+            + constraintFailureMessage;
         return new BadOptionConfigurationException(msg, null)
             .setOptionName(optionName)
             .setExpectedType(expectedType)
             .setActualValue(actualValue)
             .setConstraintFailureMessage(constraintFailureMessage);
+    }
+
+    /**
+     * Indicate a failure to provide a required value.
+     *
+     * @param keyAliases   the key aliases. The first key will be used. List must not be empty.
+     * @param expectedType the anticipated type (e.g. boolean).
+     */
+    public static BadOptionConfigurationException requiredValue(List<String> keyAliases,
+        String expectedType) {
+
+        String optionName = keyAliases.get(0);
+        String msg = "A value of type " + expectedType + " must be provided for '" + optionName + "'";
+        return new BadOptionConfigurationException(msg, null)
+            .setOptionName(optionName)
+            .setExpectedType(expectedType);
     }
 
     /**
