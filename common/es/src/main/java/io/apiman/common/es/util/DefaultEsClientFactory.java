@@ -99,8 +99,8 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                 client = clients.get(clientKey);
                 LOGGER.info("Use cached elasticsearch-client with client key " + clientKey);
             } else {
-                RestClientBuilder clientBuilder = RestClient.builder(new HttpHost(host, port, protocol));
-                clientBuilder.setRequestConfigCallback(builder -> builder.setConnectTimeout(timeout)
+                RestClientBuilder clientBuilder = RestClient.builder(new HttpHost(host, port, protocol))
+                    .setRequestConfigCallback(builder -> builder.setConnectTimeout(timeout)
                     .setSocketTimeout(timeout));
 
                 HttpAsyncClientBuilder asyncClientBuilder = HttpAsyncClientBuilder.create();

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.function.Predicate;
 
 /**
  * Parser for Elasticsearch client options.
@@ -37,7 +38,7 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
 
     static final int DEFAULT_PORT = 9200;
     static final String DEFAULT_PROTOCOL = "http";
-    static final int DEFAULT_TIMEOUT_SECS = 10000;
+    static final int DEFAULT_TIMEOUT_MSECS = 10000;
     static final int DEFAULT_POLLING_TIME_SECS = 600;
 
     private final String defaultIndexPrefix;
@@ -109,9 +110,10 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
 
         this.timeout = getInt(
             keys("client.timeout"),
-            DEFAULT_TIMEOUT_SECS,
-            Predicates.greaterThanZeroInt(),
-            "must be greater than zero"
+            DEFAULT_TIMEOUT_MSECS,
+            GTE_MINUS_ONE,
+            "must be -1 or greater, where -1 is 'default', 0 is infinite,"
+                + " and positive integers are milliseconds"
         );
 
         this.pollingTime = getLong(
@@ -219,4 +221,6 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
             Arrays.fill(password, (byte) 0xa);
         }
     }
+
+    private static final Predicate<Integer> GTE_MINUS_ONE = v -> v >= -1;
 }
