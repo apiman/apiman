@@ -68,8 +68,8 @@ public class Predicates {
         return input -> input > 0;
     }
 
-    public static String fileExistsMsg() {
-        return "";
+    public static String fileExistsMsg(String description) {
+        return description + " file was not found";
     }
 
     public static Predicate<String> fileExists() {

@@ -70,6 +70,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
         Map<String, EsIndexProperties> esIndices,
         String defaultIndexPrefix) {
         ApimanEsClientOptionsParser parser = new ApimanEsClientOptionsParser(config, defaultIndexPrefix);
+        LOGGER.debug("ES client factory config: {0}", parser);
         return this.createEsClient(parser, esIndices);
     }
 
@@ -87,7 +88,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
         String indexNamePrefix = opts.getIndexNamePrefix();
         int timeout = opts.getTimeout();
 
-        LOGGER.info("Building an elasticsearch-client for {0}://{1}:{2} for index prefix {3}",
+        LOGGER.info("Building an Elasticsearch client for {0}://{1}:{2} for index prefix {3}",
             protocol, host, port, indexNamePrefix);
 
         synchronized (clients) {
@@ -97,7 +98,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
 
             if (clients.containsKey(clientKey)) {
                 client = clients.get(clientKey);
-                LOGGER.info("Use cached elasticsearch-client with client key " + clientKey);
+                LOGGER.info("Use cached Elasticsearch client with client key " + clientKey);
             } else {
                 RestClientBuilder clientBuilder = RestClient.builder(new HttpHost(host, port, protocol))
                     .setRequestConfigCallback(builder -> builder.setConnectTimeout(timeout)
@@ -123,18 +124,20 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                 clientBuilder.setHttpClientConfigCallback(httpAsyncClientBuilder -> asyncClientBuilder);
                 client = new RestHighLevelClient(clientBuilder);
 
-                try {
-                    this.waitForElasticsearch(client, opts.getPollingTime());
-                    // put client to list if polling is successful
-                    clients.put(clientKey, client);
-                    LOGGER.info("Created new elasticsearch-client for {0}://{1}:{2} for index prefix {3}",
+                EsConnectionPoller esConnectionPoller = new EsConnectionPoller(
+                    client, 0, POLL_INTERVAL_SECS, Math.toIntExact(opts.getPollingTime())
+                );
+
+                // Block and wait for Elasticsearch. Exception will be raised if not successful.
+                esConnectionPoller.blockUntilReady();
+
+                // Put client to list if polling is successful
+                clients.put(clientKey, client);
+                LOGGER.info("Created new Elasticsearch client for {0}://{1}:{2} for index prefix {3}",
                             protocol, host, port, indexNamePrefix);
-                } catch (Exception e) {
-                    LOGGER.error(e);
-                }
             }
 
-            if (opts.isInitialize()) { //$NON-NLS-1$
+            if (opts.isInitialize()) {
                 this.initializeIndices(client, esIndexes, indexNamePrefix);
             }
 
@@ -142,36 +145,30 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
         }
     }
 
-    private void waitForElasticsearch(RestHighLevelClient client, long pollingTime) {
-        EsConnectionPoller poller = new EsConnectionPoller(client, 0, POLL_INTERVAL_SECS,
-            Math.toIntExact(pollingTime));
-        poller.blockUntilReady();
-    }
-
     /**
-     * Configures the SSL connection to use certificates by setting the keystores
+     * Configures the SSL connection to use certificates by setting the keystores.
      *
      * @param asyncClientBuilder the client builder
      * @param config             the configuration
-     * @see <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/_encrypted_communication.html">Elasticsearch-Docs</>
+     * @see <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/_encrypted_communication.html">Elasticsearch-Docs</a>
      */
     @SuppressWarnings("nls")
     private void updateSslConfig(HttpAsyncClientBuilder asyncClientBuilder, GenericOptionsParser config) {
         try {
-            boolean allowSelfSigned = config.getBool(keys("client.allowSelfSigned"), false);
-            boolean allowAnyHost = config.getBool(keys("client.allowAnyHost"), false);
+            // TODO(msavy): merge together with TLSOptions?
+            final boolean allowSelfSigned = config.getBool(keys("client.allowSelfSigned"), false);
+            final boolean allowAnyHost = config.getBool(keys("client.allowAnyHost"), false);
 
             String clientKeystorePath = config.getRequiredString(
                 keys("client.keystore.path", "client.keystore"),
                 Predicates.fileExists(),
-                "not found at provided path"
+                Predicates.fileExistsMsg("key store")
             );
 
             String clientKeystorePassword = config.getString(
                 keys("client.keystore.password"),
                 null,
-                Predicates.anyOk(),
-                ""
+                Predicates.anyOk(), ""
             );
 
             String clientKeystoreFormat = config.getString(
@@ -184,7 +181,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             String trustStorePath = config.getRequiredString(
                 keys("client.truststore.path", "client.truststore"),
                 Predicates.fileExists(),
-                "not found at provided path"
+                Predicates.fileExistsMsg("trust store")
             );
 
             String trustStorePassword = config.getString(
