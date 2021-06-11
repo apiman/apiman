@@ -41,6 +41,8 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
     static final int DEFAULT_TIMEOUT_MSECS = 10000;
     static final int DEFAULT_POLLING_TIME_SECS = 600;
 
+    private static final Predicate<Integer> PREDICATE_GTE_MINUS_ONE = v -> v >= -1;
+
     private final String defaultIndexPrefix;
     private String indexNamePrefix;
     private String host;
@@ -69,27 +71,27 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
             keys("client.indexPrefix"),
             defaultIndexPrefix,
             Predicates.noWhitespace(),
-            "should not contain any whitespace"
+            Predicates.noWhitespaceMsg()
         );
 
         this.host = getRequiredString(
             keys("client.host"),
             Predicates.noWhitespace(),
-            "should not contain any whitespace"
+            Predicates.noWhitespaceMsg()
         );
 
         this.port = getInt(
             keys("client.port"),
             DEFAULT_PORT,
             Predicates.greaterThanZeroInt(),
-            "must be a greater than zero"
+            Predicates.greaterThanZeroMsg()
         );
 
         this.protocol = getString(
             keys("client.protocol"),
             DEFAULT_PROTOCOL,
             Predicates.matchesAny("http", "https"),
-            "must be http or https"
+            Predicates.matchesAnyMsg("http", "https")
         );
 
         this.initialize = getBool(keys("client.initialize"), true);
@@ -98,7 +100,7 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
             keys("client.username"),
             null,
             Predicates.noWhitespace(),
-            "should not contain any whitespace"
+            Predicates.noWhitespaceMsg()
         );
 
         this.password = getString(
@@ -111,7 +113,7 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
         this.timeout = getInt(
             keys("client.timeout"),
             DEFAULT_TIMEOUT_MSECS,
-            GTE_MINUS_ONE,
+            PREDICATE_GTE_MINUS_ONE,
             "must be -1 or greater, where -1 is 'default', 0 is infinite,"
                 + " and positive integers are milliseconds"
         );
@@ -120,7 +122,7 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
             keys("client.polling.time"),
             DEFAULT_POLLING_TIME_SECS,
             Predicates.greaterThanZeroLong(),
-            "must be greater than zero"
+            Predicates.greaterThanZeroMsg()
         );
     }
 
@@ -167,13 +169,62 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
         return username != null && password != null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ApimanEsClientOptionsParser that = (ApimanEsClientOptionsParser) o;
+        return port == that.port && initialize == that.initialize && timeout == that.timeout
+            && pollingTime == that.pollingTime && Objects.equals(defaultIndexPrefix,
+            that.defaultIndexPrefix) && Objects.equals(indexNamePrefix, that.indexNamePrefix)
+            && Objects.equals(host, that.host) && Objects.equals(protocol, that.protocol)
+            && Objects.equals(username, that.username) && Objects.equals(password,
+            that.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(defaultIndexPrefix, indexNamePrefix, host, port, protocol, initialize, username,
+            password, timeout, pollingTime);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ApimanEsClientOptionsParser.class.getSimpleName() + "[", "]")
+            .add("defaultIndexPrefix='" + defaultIndexPrefix + "'")
+            .add("indexNamePrefix='" + indexNamePrefix + "'")
+            .add("host='" + host + "'")
+            .add("port=" + port)
+            .add("protocol='" + protocol + "'")
+            .add("initialize=" + initialize)
+            .add("username='" + username + "'")
+            .add("password='" + password + "'")
+            .add("timeout=" + timeout)
+            .add("pollingTime=" + pollingTime)
+            .toString();
+    }
+
+    /**
+     * Username and password container, can be used with try-with-resources to overwrite in-memory password,
+     * as per best practices. But, most places just use a plain string, so it's probably not going to make
+     * much of a difference!
+     */
     public static final class UsernameAndPassword implements Closeable {
         private final String username;
         private final byte[] password;
 
-        public UsernameAndPassword(String username, String password) {
+        UsernameAndPassword(String username, String password) {
             this.username = username;
             this.password = password.getBytes(StandardCharsets.UTF_8);
+        }
+
+        UsernameAndPassword(String username, byte[] password) {
+            this.username = username;
+            this.password = password;
         }
 
         public byte[] getPassword() {
@@ -186,6 +237,11 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
 
         public String getUsername() {
             return username;
+        }
+
+        @Override
+        public void close() throws IOException {
+            Arrays.fill(password, (byte) 0xa);
         }
 
         @Override
@@ -215,12 +271,5 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
             result = 31 * result + Arrays.hashCode(password);
             return result;
         }
-
-        @Override
-        public void close() throws IOException {
-            Arrays.fill(password, (byte) 0xa);
-        }
     }
-
-    private static final Predicate<Integer> GTE_MINUS_ONE = v -> v >= -1;
 }

@@ -38,8 +38,16 @@ public class Predicates {
         return any -> true;
     }
 
+    public static String noWhitespaceMsg() {
+        return "must not contain any whitespace";
+    }
+
     public static Predicate<String> noWhitespace() {
         return s -> !StringUtils.containsWhitespace(s);
+    }
+
+    public static String matchesAnyMsg(String... allowedValues) {
+        return "must be one of: " + String.join(", ", allowedValues);
     }
 
     public static Predicate<String> matchesAny(String... allowedValues) {
@@ -48,12 +56,20 @@ public class Predicates {
             .anyMatch(allowed -> allowed.equalsIgnoreCase(input));
     }
 
+    public static String greaterThanZeroMsg() {
+        return "must be greater than zero";
+    }
+
     public static Predicate<Long> greaterThanZeroLong() {
         return input -> input > 0;
     }
 
     public static Predicate<Integer> greaterThanZeroInt() {
         return input -> input > 0;
+    }
+
+    public static String fileExistsMsg() {
+        return "";
     }
 
     public static Predicate<String> fileExists() {
