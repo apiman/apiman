@@ -16,6 +16,7 @@
 package io.apiman.common.es.util;
 
 import io.apiman.common.config.options.GenericOptionsParser;
+import io.apiman.common.config.options.Predicates;
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
@@ -38,7 +39,6 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
-import org.apache.http.nio.conn.SchemeIOSessionStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.elasticsearch.client.RestClient;
@@ -157,24 +157,53 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
      */
     @SuppressWarnings("nls")
     private void updateSslConfig(HttpAsyncClientBuilder asyncClientBuilder, GenericOptionsParser config) {
-        boolean allowSelfSigned = config.getBool(keys("client.allowSelfSigned"), false);
-        boolean allowAnyHost = config.getBool(keys("client.allowAnyHost"), false);
-
         try {
-            String clientKeystorePath = config.getRequiredString(keys("client.keystore"), f -> Files.exists(Paths.get(f)), "not found at provided path");
-            String clientKeystorePassword = config.getRequiredString(keys("client.keystore.password"), s -> true, null);
-            String trustStorePath = config.getRequiredString(keys("client.truststore"), f -> Files.exists(Paths.get(f)), "not found at provided path");
-            String trustStorePassword = config.getRequiredString(keys("client.truststore.password"), s -> true, null);
+            boolean allowSelfSigned = config.getBool(keys("client.allowSelfSigned"), false);
+            boolean allowAnyHost = config.getBool(keys("client.allowAnyHost"), false);
 
-            // TODO -- needs to still work when no configuration is provided and the system default stores are being used
-            // also needs to still support JKS and not just PKCS12.
-            // we may be able to roll this into the TLSOptions, but there's the annoyance of the JSON issue (alias might be OK).
+            String clientKeystorePath = config.getRequiredString(
+                keys("client.keystore.path", "client.keystore"),
+                Predicates.fileExists(),
+                "not found at provided path"
+            );
 
+            String clientKeystorePassword = config.getString(
+                keys("client.keystore.password"),
+                null,
+                Predicates.anyOk(),
+                ""
+            );
+
+            String clientKeystoreFormat = config.getString(
+                keys("client.keystore.format"),
+                "jks",
+                Predicates.matchesAny("pkcs12", "jks"),
+                "format must be jks or pkcs12"
+            );
+
+            String trustStorePath = config.getRequiredString(
+                keys("client.truststore.path", "client.truststore"),
+                Predicates.fileExists(),
+                "not found at provided path"
+            );
+
+            String trustStorePassword = config.getString(
+                keys("client.truststore.password"),
+                null,
+                Predicates.anyOk(), ""
+            );
+
+            String trustStoreFormat = config.getString(
+                keys("client.truststore.format"),
+                "jks",
+                Predicates.matchesAny("pkcs12", "jks"),
+                "format must be jks or pkcs12"
+            );
 
             Path trustStorePathObject = Paths.get(trustStorePath);
             Path keyStorePathObject = Paths.get(clientKeystorePath);
-            KeyStore truststore = KeyStore.getInstance("pkcs12");
-            KeyStore keyStore = KeyStore.getInstance("pkcs12");
+            KeyStore truststore = KeyStore.getInstance(trustStoreFormat);
+            KeyStore keyStore = KeyStore.getInstance(clientKeystoreFormat);
 
             try (InputStream is = Files.newInputStream(trustStorePathObject)) {
                 truststore.load(is, trustStorePassword.toCharArray());
@@ -195,9 +224,9 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             HostnameVerifier hostnameVerifier =
                 allowAnyHost ? NoopHostnameVerifier.INSTANCE : new DefaultHostnameVerifier();
 
-            SchemeIOSessionStrategy httpsIOSessionStrategy = new SSLIOSessionStrategy(sslContext,
-                hostnameVerifier);
-            asyncClientBuilder.setSSLStrategy(httpsIOSessionStrategy);
+            asyncClientBuilder.setSSLStrategy(
+                new SSLIOSessionStrategy(sslContext, hostnameVerifier)
+            );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

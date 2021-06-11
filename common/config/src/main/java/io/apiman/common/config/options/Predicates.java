@@ -16,6 +16,8 @@
 
 package io.apiman.common.config.options;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
@@ -52,5 +54,9 @@ public class Predicates {
 
     public static Predicate<Integer> greaterThanZeroInt() {
         return input -> input > 0;
+    }
+
+    public static Predicate<String> fileExists() {
+        return p -> Files.exists(Paths.get(p));
     }
 }

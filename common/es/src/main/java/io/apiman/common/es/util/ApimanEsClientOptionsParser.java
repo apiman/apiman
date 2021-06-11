@@ -167,7 +167,7 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
         return username != null && password != null;
     }
 
-    static final class UsernameAndPassword implements Closeable {
+    public static final class UsernameAndPassword implements Closeable {
         private final String username;
         private final byte[] password;
 
