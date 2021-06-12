@@ -24,7 +24,6 @@ import io.apiman.common.logging.IApimanLogger;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
@@ -69,6 +68,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
     public RestHighLevelClient createClient(Map<String, String> config,
         Map<String, EsIndexProperties> esIndices,
         String defaultIndexPrefix) {
+        
         ApimanEsClientOptionsParser parser = new ApimanEsClientOptionsParser(config, defaultIndexPrefix);
         LOGGER.debug("ES client factory config: {0}", parser);
         return this.createEsClient(parser, esIndices);
@@ -159,7 +159,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             final boolean allowSelfSigned = config.getBool(keys("client.allowSelfSigned"), false);
             final boolean allowAnyHost = config.getBool(keys("client.allowAnyHost"), false);
 
-            String clientKeystorePath = config.getRequiredString(
+            Path clientKeystorePath = config.getRequiredPath(
                 keys("client.keystore.path", "client.keystore"),
                 Predicates.fileExists(),
                 Predicates.fileExistsMsg("key store")
@@ -178,7 +178,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                 "format must be jks or pkcs12"
             );
 
-            String trustStorePath = config.getRequiredString(
+            Path trustStorePath = config.getRequiredPath(
                 keys("client.truststore.path", "client.truststore"),
                 Predicates.fileExists(),
                 Predicates.fileExistsMsg("trust store")
@@ -197,15 +197,13 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                 "format must be jks or pkcs12"
             );
 
-            Path trustStorePathObject = Paths.get(trustStorePath);
-            Path keyStorePathObject = Paths.get(clientKeystorePath);
             KeyStore truststore = KeyStore.getInstance(trustStoreFormat);
             KeyStore keyStore = KeyStore.getInstance(clientKeystoreFormat);
 
-            try (InputStream is = Files.newInputStream(trustStorePathObject)) {
+            try (InputStream is = Files.newInputStream(trustStorePath)) {
                 truststore.load(is, trustStorePassword.toCharArray());
             }
-            try (InputStream is = Files.newInputStream(keyStorePathObject)) {
+            try (InputStream is = Files.newInputStream(clientKeystorePath)) {
                 keyStore.load(is, clientKeystorePassword.toCharArray());
             }
 

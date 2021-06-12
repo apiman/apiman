@@ -17,7 +17,7 @@
 package io.apiman.common.config.options;
 
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
@@ -72,7 +72,11 @@ public class Predicates {
         return description + " file was not found";
     }
 
-    public static Predicate<String> fileExists() {
-        return p -> Files.exists(Paths.get(p));
+    public static Predicate<Path> fileExists() {
+        return Files::exists;
     }
+
+    // public static Predicate<String> fileExists() {
+    //     return p -> Files.exists(Paths.get(p));
+    // }
 }

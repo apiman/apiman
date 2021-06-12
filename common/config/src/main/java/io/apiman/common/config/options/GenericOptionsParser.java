@@ -18,6 +18,8 @@ package io.apiman.common.config.options;
 
 import io.apiman.common.config.options.exceptions.BadOptionConfigurationException;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -196,6 +198,26 @@ public class GenericOptionsParser extends AbstractOptions {
                 .constraintFailure(candidate.alias, "string", candidate.value, message);
         }
         return candidate.value;
+    }
+
+    public Path getRequiredPath(List<String> keyAliases, Predicate<Path> constraint, String message) {
+        return Optional
+            .ofNullable(getPath(keyAliases, null, constraint, message))
+            .orElseThrow(() -> BadOptionConfigurationException.requiredValue(keyAliases, "path"));
+    }
+
+    public Path getPath(List<String> keyAliases, Path defaultValue, Predicate<Path> constraint, String message) {
+        AliasValueEntry candidate = getValue(keyAliases);
+        if (candidate == null || StringUtils.isBlank(candidate.value)) {
+            return defaultValue;
+        }
+
+        Path parsedPath = Paths.get(candidate.value);
+        if (!constraint.test(parsedPath)) {
+            throw BadOptionConfigurationException
+                .constraintFailure(candidate.alias, "path", candidate.value, message);
+        }
+        return parsedPath;
     }
 
     private AliasValueEntry getValue(List<String> keyAliases) {
