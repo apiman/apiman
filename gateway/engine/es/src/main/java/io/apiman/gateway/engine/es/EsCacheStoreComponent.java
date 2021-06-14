@@ -18,6 +18,8 @@ package io.apiman.gateway.engine.es;
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
@@ -28,17 +30,17 @@ import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.storage.model.CacheEntry;
+
+import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.codec.binary.Base64;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.common.xcontent.XContentType;
-
-import java.io.IOException;
-import java.util.Map;
 
 import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
@@ -49,6 +51,8 @@ import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER
  */
 @DependsOnComponents({ IBufferFactoryComponent.class })
 public class EsCacheStoreComponent extends AbstractEsComponent implements ICacheStoreComponent {
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(EsCacheStoreComponent.class);
+
     private IBufferFactoryComponent bufferFactory;
 
     /**
@@ -80,6 +84,7 @@ public class EsCacheStoreComponent extends AbstractEsComponent implements ICache
         try {
             getClient().index(indexRequest, RequestOptions.DEFAULT);
         } catch (Throwable e) {
+            LOGGER.error(e, "Unable to cache entry at {0}. This should be non-fatal.", cacheKey);
         }
     }
 
@@ -96,19 +101,23 @@ public class EsCacheStoreComponent extends AbstractEsComponent implements ICache
         return new ISignalWriteStream() {
             boolean finished = false;
             boolean aborted = false;
+
             @Override
             public void abort(Throwable t) {
                 finished = true;
                 aborted = false;
             }
+
             @Override
             public boolean isFinished() {
                 return finished;
             }
+
             @Override
             public void write(IApimanBuffer chunk) {
                 data.append(chunk);
             }
+
             @Override
             public void end() {
                 if (!aborted) {
@@ -117,6 +126,7 @@ public class EsCacheStoreComponent extends AbstractEsComponent implements ICache
                         IndexRequest indexRequest = new IndexRequest(getFullIndexName()).source(JSON_MAPPER.writeValueAsBytes(entry), XContentType.JSON).id(cacheKey);
                         getClient().index(indexRequest, RequestOptions.DEFAULT);
                     } catch (Throwable e) {
+                        LOGGER.error(e, "Unable to put binary at {0}. This should be non-fatal.", cacheKey);
                     }
                 }
                 finished = true;
@@ -159,7 +169,6 @@ public class EsCacheStoreComponent extends AbstractEsComponent implements ICache
             GetResponse response = getClient().get(new GetRequest(getFullIndexName()).id(cacheKey), RequestOptions.DEFAULT);
 
             // Did the GET succeed?  If not, return null.
-            // TODO log the error
             if (!response.isExists()) {
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
                 return;
@@ -188,23 +197,28 @@ public class EsCacheStoreComponent extends AbstractEsComponent implements ICache
                     public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
                         this.bodyHandler = bodyHandler;
                     }
+
                     @Override
                     public void endHandler(IAsyncHandler<Void> endHandler) {
                         this.endHandler = endHandler;
                     }
+
                     @Override
                     public T getHead() {
                         return head;
                     }
+
                     @Override
                     public boolean isFinished() {
                         return finished;
                     }
+
                     @Override
                     public void abort(Throwable t) {
                         finished = true;
                         aborted = true;
                     }
+
                     @Override
                     public void transmit() {
                         if (!aborted) {
@@ -216,10 +230,11 @@ public class EsCacheStoreComponent extends AbstractEsComponent implements ICache
                 };
                 handler.handle(AsyncResultImpl.create(rval));
             } catch (Throwable e) {
-                // TODO log this error
+                LOGGER.error(e, "Error attempting to stream cached binary on key {0}", cacheKey);
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
             }
         } catch (Throwable e) {
+            LOGGER.error(e, "Error attempting to GET cached binary on key {0}", cacheKey);
             handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
         }
     }
@@ -239,7 +254,8 @@ public class EsCacheStoreComponent extends AbstractEsComponent implements ICache
     }
 
     /**
-     * get index full name for cache entry
+     * Get index full name for cache entry.
+     *
      * @return full index name
      */
     private String getFullIndexName() {
