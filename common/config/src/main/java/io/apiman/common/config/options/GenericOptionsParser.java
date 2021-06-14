@@ -146,8 +146,8 @@ public class GenericOptionsParser extends AbstractOptions {
      * @param message      a human-readable message to describe the constraint and display in the case of a
      *                     constraint violation.
      * @return the parsed long, or the default value if none found
-     * @throws BadOptionConfigurationException if a value is not a valid long or a constraint violation occurs
-     *                                         (e.g. {@code X > 5}).
+     * @throws BadOptionConfigurationException if a value is not a valid long, or a constraint violation
+     *                                         occurs (e.g. {@code X > 5}).
      */
     public long getLong(List<String> keyAliases, long defaultValue, Predicate<Long> constraint,
         String message) {
@@ -168,6 +168,13 @@ public class GenericOptionsParser extends AbstractOptions {
         }
     }
 
+    /**
+     * As {@link #getString(List, String, Predicate, String)}, but additionally throw an exception if no value
+     * is provided.
+     *
+     * @throws BadOptionConfigurationException if a constraint violation occurs or if no value was provided.
+     * @see #getString(List, String, Predicate, String)
+     */
     public String getRequiredString(List<String> keyAliases, Predicate<String> constraint, String message) {
         return Optional
             .ofNullable(getString(keyAliases, null, constraint, message))
@@ -200,12 +207,32 @@ public class GenericOptionsParser extends AbstractOptions {
         return candidate.value;
     }
 
+    /**
+     * As {@link #getPath(List, Path, Predicate, String)}, but additionally throw an exception if no value is
+     * provided.
+     *
+     * @throws BadOptionConfigurationException if a constraint violation occurs or if no value was provided.
+     * @see #getString(List, String, Predicate, String)
+     */
     public Path getRequiredPath(List<String> keyAliases, Predicate<Path> constraint, String message) {
         return Optional
             .ofNullable(getPath(keyAliases, null, constraint, message))
             .orElseThrow(() -> BadOptionConfigurationException.requiredValue(keyAliases, "path"));
     }
 
+    /**
+     * Parse a {@link Path} from the options using the key aliases. Note that this method does not guarantee
+     * that the file/path exists. Use a predicate for this such as {@link Predicates#fileExists()}.
+     *
+     * @param keyAliases   the key aliases
+     * @param defaultValue the default value
+     * @param constraint   the constraint that the value should obey
+     * @param message      a human-readable message to describe the constraint and display in the case of a
+     *                     constraint violation.
+     * @return the parsed path
+     * @throws BadOptionConfigurationException if a constraint violation occurs.
+     * @see Predicates#fileExists() File exists predicate.
+     */
     public Path getPath(List<String> keyAliases, Path defaultValue, Predicate<Path> constraint, String message) {
         AliasValueEntry candidate = getValue(keyAliases);
         if (candidate == null || StringUtils.isBlank(candidate.value)) {
@@ -218,6 +245,14 @@ public class GenericOptionsParser extends AbstractOptions {
                 .constraintFailure(candidate.alias, "path", candidate.value, message);
         }
         return parsedPath;
+    }
+
+    /**
+     * Varargs of key aliases into list for use with most get/parse methods.
+     */
+    @SafeVarargs
+    public static <T> List<T> keys(T... keys) {
+        return Arrays.asList(keys);
     }
 
     private AliasValueEntry getValue(List<String> keyAliases) {
@@ -241,9 +276,5 @@ public class GenericOptionsParser extends AbstractOptions {
         static AliasValueEntry of(String alias, String value) {
             return new AliasValueEntry(alias, value);
         }
-    }
-
-    public static <T> List<T> keys(T... keys) {
-        return Arrays.asList(keys);
     }
 }

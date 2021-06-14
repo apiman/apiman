@@ -75,8 +75,4 @@ public class Predicates {
     public static Predicate<Path> fileExists() {
         return Files::exists;
     }
-
-    // public static Predicate<String> fileExists() {
-    //     return p -> Files.exists(Paths.get(p));
-    // }
 }
