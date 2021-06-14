@@ -38,8 +38,7 @@ public abstract class AbstractEsComponent {
      */
     public AbstractEsComponent(Map<String, String> config) {
         this.config = config;
-        String indexPrefix = config.getOrDefault("client.indexPrefix", getDefaultIndexPrefix()); //$NON-NLS-1$
-        this.indexPrefix = indexPrefix;
+        this.indexPrefix = config.getOrDefault("client.indexPrefix", getDefaultIndexPrefix());
     }
 
     /**
@@ -73,14 +72,14 @@ public abstract class AbstractEsComponent {
      * @return the client factory to use to create the ES client
      */
     protected IEsClientFactory createEsClientFactory() {
-        String factoryClass = config.get("client.type");
+        String factoryClass = config.getOrDefault("client.type", "es");
         // In order to maintain backwards compatibility, we still accept 'jest' for the factory name, even
         // though jest has now been replaced with an official HTTP client from Elastic.
         if (EsUtils.isEsOrJest(factoryClass)) { //$NON-NLS-1$
             factoryClass = DefaultEsClientFactory.class.getName();
-        } else if ("local".equals(factoryClass)) { //$NON-NLS-1$
+        } else if ("local".equalsIgnoreCase(factoryClass)) { //$NON-NLS-1$
             factoryClass = LocalClientFactory.class.getName();
-        } else if (factoryClass == null) {
+        } else {
             throw new RuntimeException("Invalid elasticsearch client type: " + factoryClass); //$NON-NLS-1$
         }
 

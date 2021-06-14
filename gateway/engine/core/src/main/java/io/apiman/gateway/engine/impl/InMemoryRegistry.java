@@ -164,7 +164,7 @@ public class InMemoryRegistry implements IRegistry {
 
     /**
      * Gets the client and returns it.
-     * @param apiKey
+     * @param idx the index
      */
     protected Client getClientInternal(String idx) {
         Client client;
@@ -304,9 +304,7 @@ public class InMemoryRegistry implements IRegistry {
 
     /**
      * Gets an API by its unique identifying info (orgid, id, version).
-     * @param apiOrgId
-     * @param apiId
-     * @param apiVersion
+     *
      * @return an Api or null if not found
      */
     private Api getApiInternal(String apiOrgId, String apiId, String apiVersion) {
@@ -331,10 +329,8 @@ public class InMemoryRegistry implements IRegistry {
     /**
      * Generates an in-memory key for an api, used to index the client for later quick
      * retrieval.
-     * @param orgId
-     * @param apiId
-     * @param version
-     * @return a api key
+     *
+     * @return an api key index
      */
     private String getApiIndex(String orgId, String apiId, String version) {
         return "API::" + orgId + "|" + apiId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

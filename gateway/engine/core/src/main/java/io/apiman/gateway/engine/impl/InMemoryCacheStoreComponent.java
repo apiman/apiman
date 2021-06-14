@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.config.options.GenericOptionsParser;
+import io.apiman.common.config.options.Predicates;
 import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
@@ -30,6 +32,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static io.apiman.common.config.options.GenericOptionsParser.keys;
+
 /**
  * An in-memory implementation of the {@link ICacheStoreComponent} interface.
  * This implementation simply stores cached data in memory.
@@ -39,12 +43,12 @@ import java.util.Map;
 @DependsOnComponents( { IBufferFactoryComponent.class } )
 public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
 
-    private Object mapMutex = new Object();
-    private Object cacheSizeMutex = new Object();
+    private final Object mapMutex = new Object();
+    private final Object cacheSizeMutex = new Object();
 
-    private Map<String, Long> expireOnMap = new HashMap<>();
-    private Map<String, Object> objectCache = new LinkedHashMap<>();
-    private Map<String, IApimanBuffer> dataCache = new HashMap<>();
+    private final Map<String, Long> expireOnMap = new HashMap<>();
+    private final Map<String, Object> objectCache = new LinkedHashMap<>();
+    private final Map<String, IApimanBuffer> dataCache = new HashMap<>();
     private long cacheSize = 0;
     private long maxCacheSize = 10 * 1024 * 1024L; // 10 MB
 
@@ -61,10 +65,13 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
      * @param config
      */
     public InMemoryCacheStoreComponent(Map<String, String> config) {
-        String mcs = config.get("maxCacheSize"); //$NON-NLS-1$
-        if (mcs != null) {
-            maxCacheSize = new Long(mcs);
-        }
+        GenericOptionsParser optParser = new GenericOptionsParser(config);
+        this.maxCacheSize = optParser.getLong(
+            keys("maxCacheSize"),
+            0L,
+            Predicates.greaterThanZeroLong(),
+            Predicates.greaterThanZeroMsg()
+        );
     }
 
     /**
@@ -176,7 +183,7 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
             object = objectCache.get(cacheKey);
             if (object != null) {
                 Long expiresOn = expireOnMap.get(cacheKey);
-                if (System.currentTimeMillis() > expiresOn ) {
+                if (System.currentTimeMillis() > expiresOn) {
                     expired = true;
                 }
             }
@@ -194,9 +201,7 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
                     objectCache.remove(cacheKey);
                     expireOnMap.remove(cacheKey);
                     dataCache.remove(cacheKey);
-                    if (buffer != null) {
-                        cacheSize -= buffer.length();
-                    }
+                    cacheSize -= buffer.length();
                 }
             }
             rval = null;
@@ -213,22 +218,27 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
                 public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
                     this.bodyHandler = bodyHandler;
                 }
+
                 @Override
                 public void endHandler(IAsyncHandler<Void> endHandler) {
                     this.endHandler = endHandler;
                 }
+
                 @Override
                 public T getHead() {
                     return head;
                 }
+
                 @Override
                 public boolean isFinished() {
                     return finished;
                 }
+
                 @Override
                 public void abort(Throwable t) {
                     finished = true;
                 }
+
                 @Override
                 public void transmit() {
                     bodyHandler.handle(data);

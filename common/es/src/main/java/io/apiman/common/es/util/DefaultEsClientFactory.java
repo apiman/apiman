@@ -68,7 +68,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
     public RestHighLevelClient createClient(Map<String, String> config,
         Map<String, EsIndexProperties> esIndices,
         String defaultIndexPrefix) {
-        
+
         ApimanEsClientOptionsParser parser = new ApimanEsClientOptionsParser(config, defaultIndexPrefix);
         LOGGER.debug("ES client factory config: {0}", parser);
         return this.createEsClient(parser, esIndices);
