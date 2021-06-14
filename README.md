@@ -32,7 +32,7 @@ The general idea is to keep your 'master' branch in-sync with the 'upstream/mast
 
 ### Requirements
 - Maven 3.x
-- Java 8+
+- Java 8+ (your application server must also support the version of Java you intend to deploy on)
 - Docker (for running tests with [testcontainers](https://www.testcontainers.org/supported_docker_environment/))
 
 The following command compiles all the code, installs the JARs into your local Maven repository, and runs all of the unit tests:
@@ -55,9 +55,9 @@ action as quickly as possible try this:
 The above maven command will do the following:
 
 1. A full build of apiman
-2. Download WildFly 10.x
-3. Unpack and configure WildFly 10.x
-4. Deploy the WildFly 10.x version of apiman to WildFly
+2. Download WildFly
+3. Unpack and configure WildFly
+4. Deploy the WildFly version of Apiman to WildFly
 
 Once WildFly has started up, and if all went well, you can point your browser to the
 [API Manager](http://localhost:8080/apimanui/) and log in (either register a new user
