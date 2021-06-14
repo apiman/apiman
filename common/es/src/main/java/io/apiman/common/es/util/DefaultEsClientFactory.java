@@ -131,7 +131,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                 // Block and wait for Elasticsearch. Exception will be raised if not successful.
                 esConnectionPoller.blockUntilReady();
 
-                // Put client to list if polling is successful
+                // Put client into list if polling is successful
                 clients.put(clientKey, client);
                 LOGGER.info("Created new Elasticsearch client for {0}://{1}:{2} for index prefix {3}",
                             protocol, host, port, indexNamePrefix);
