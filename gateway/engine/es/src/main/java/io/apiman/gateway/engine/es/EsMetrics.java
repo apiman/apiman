@@ -66,6 +66,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
 
     /**
      * Constructor.
+     *
      * @param config map of configuration options
      */
     public EsMetrics(Map<String, String> config) {
@@ -113,10 +114,10 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
      */
     private void startConsumerThread() {
         Thread thread = new Thread(() -> {
-		    while (true) {
-		        processQueue();
-		    }
-		}, "EsMetricsConsumer"); //$NON-NLS-1$
+            while (true) {
+                processQueue();
+            }
+        }, "EsMetricsConsumer"); //$NON-NLS-1$
         thread.setDaemon(true);
         thread.start();
     }

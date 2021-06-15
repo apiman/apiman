@@ -28,8 +28,10 @@ public class TLSOptions extends AbstractOptions {
     public static final String PREFIX = "tls.";
     public static final String TLS_TRUSTSTORE = PREFIX + "trustStore";
     public static final String TLS_TRUSTSTOREPASSWORD = PREFIX + "trustStorePassword";
+    public static final String TLS_TRUSTSTORE_FORMAT = PREFIX + "trustStoreFormat";
     public static final String TLS_KEYSTORE = PREFIX + "keyStore";
     public static final String TLS_KEYSTOREPASSWORD = PREFIX + "keyStorePassword";
+    public static final String TLS_KEYSTORE_FORMAT = PREFIX + "keyStoreFormat";
     public static final String TLS_KEYALIASES = PREFIX + "keyAliases";
     public static final String TLS_KEYPASSWORD = PREFIX + "keyPassword";
     public static final String TLS_ALLOWEDPROTOCOLS = PREFIX + "allowedProtocols";
