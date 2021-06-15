@@ -1,0 +1,97 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.apiman</groupId>
+    <artifactId>apiman-guides</artifactId>
+    <version>1.2.9.Final</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>apiman-guides-developer-guide</artifactId>
+  <packaging>jdocbook</packaging>
+  <name>Developer Guide</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>1.5.3</version>
+        <executions>
+          <execution>
+            <id>output-docbook</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>en-US</sourceDirectory>
+          <outputDirectory>target/docbook/en-US</outputDirectory>
+          <backend>docbook</backend>
+          <doctype>book</doctype>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jboss.maven.plugins</groupId>
+        <artifactId>maven-jdocbook-plugin</artifactId>
+        <version>2.3.9</version>
+        <extensions>true</extensions>
+        <dependencies>
+          <dependency>
+            <groupId>org.jboss.pressgang</groupId>
+            <artifactId>pressgang-xslt-ns</artifactId>
+            <version>2.0.2</version>
+          </dependency>
+          <dependency>
+            <groupId>org.jboss.pressgang</groupId>
+            <artifactId>pressgang-jdocbook-style</artifactId>
+            <type>jdocbook-style</type>
+            <version>3.1.3</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <sourceDocumentName>Guide.xml</sourceDocumentName>
+          <sourceDirectory>target/docbook/</sourceDirectory>
+          <imageResource>
+            <directory>.</directory>
+            <includes>
+              <include>images/*</include>
+            </includes>
+          </imageResource>
+          <formats>
+            <format>
+              <formatName>html</formatName>
+              <stylesheetResource>classpath:/xslt/org/jboss/xhtml-single.xsl</stylesheetResource>
+              <finalName>index.html</finalName>
+            </format>
+            <format>
+              <formatName>pdf</formatName>
+              <stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource>
+              <finalName>apiman-developer-guide.pdf</finalName>
+            </format>
+          </formats>
+          <options>
+            <xincludeSupported>true</xincludeSupported>
+            <xmlTransformerType>saxon</xmlTransformerType>
+            <docbookVersion>1.72.0</docbookVersion>
+            <transformerParameters>
+              <property>
+                <name>javax.xml.parsers.DocumentBuilderFactory</name>
+                <value>org.apache.xerces.jaxp.DocumentBuilderFactoryImpl</value>
+              </property>
+              <property>
+                <name>javax.xml.parsers.SAXParserFactory</name>
+                <value>org.apache.xerces.jaxp.SAXParserFactoryImpl</value>
+              </property>
+            </transformerParameters>
+          </options>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+

@@ -1,0 +1,47 @@
+<authorgroup>
+
+  <author>
+    <honorific>Mr</honorific>
+    <firstname>Eric</firstname>
+    <surname>Wittmann</surname>
+    <affiliation>
+      <shortaffil>Red Hat</shortaffil>
+      <jobtitle>Senior Software Engineer</jobtitle>
+      <orgname>JBoss</orgname>
+      <orgdiv>Middleware</orgdiv>
+    </affiliation>
+  </author>
+
+  <author>
+    <honorific>Mr</honorific>
+    <firstname>Marc</firstname>
+    <surname>Savy</surname>
+    <affiliation>
+      <shortaffil>Red Hat</shortaffil>
+      <jobtitle>Software Engineer</jobtitle>
+      <orgname>JBoss</orgname>
+      <orgdiv>Middleware</orgdiv>
+    </affiliation>
+  </author>
+
+</authorgroup>
+
+<copyright>
+  <year>2013-2014</year>
+</copyright>
+
+<revhistory>
+  <revision>
+    <revnumber>1.0.0.Final</revnumber>
+    <date>Dec 2014</date>
+    <authorinitials>MAS</authorinitials>
+    <revremark>Initial developer docs added</revremark>
+  </revision>
+
+  <revision>
+    <revnumber>1.0.0</revnumber>
+    <date>Sep 2014</date>
+    <authorinitials>EPW</authorinitials>
+    <revremark>1st Draft</revremark>
+  </revision>
+</revhistory>

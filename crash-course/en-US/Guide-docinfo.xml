@@ -1,0 +1,37 @@
+<authorgroup>
+  <author>
+    <honorific>Mr</honorific>
+    <firstname>Len</firstname>
+    <surname>DiMaggio</surname>
+    <affiliation>
+      <shortaffil>Red Hat</shortaffil>
+      <jobtitle>Quality Engineer Guy</jobtitle>
+      <orgname>JBoss</orgname>
+      <orgdiv>QE</orgdiv>
+    </affiliation>
+  </author>
+  <author>
+    <honorific>Mr</honorific>
+    <firstname>Eric</firstname>
+    <surname>Wittmann</surname>
+    <affiliation>
+      <shortaffil>Red Hat</shortaffil>
+      <jobtitle>Principal Software Engineer</jobtitle>
+      <orgname>JBoss</orgname>
+      <orgdiv>ipaas </orgdiv>
+    </affiliation>
+  </author>
+</authorgroup>
+
+<copyright>
+  <year>2016</year>
+</copyright>
+
+<revhistory>
+  <revision>
+    <revnumber>1.0</revnumber>
+    <date>May 2016</date>
+    <authorinitials>LD</authorinitials>
+    <revremark>1st Draft</revremark>
+  </revision>
+</revhistory>
