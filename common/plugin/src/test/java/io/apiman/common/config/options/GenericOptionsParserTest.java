@@ -18,13 +18,17 @@ package io.apiman.common.config.options;
 
 import io.apiman.common.config.options.exceptions.BadOptionConfigurationException;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import static org.assertj.core.api.Assertions.*;
+
+import static io.apiman.common.config.options.GenericOptionsParser.keys;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericOptionsParserTest {
 
@@ -34,7 +38,7 @@ public class GenericOptionsParserTest {
             put("seychelles", "true");
         }};
         GenericOptionsParser opts = new GenericOptionsParser(map);
-        assertThat(opts.getBool(Collections.singletonList("SEYCHELLES"), false)).isTrue();
+        assertThat(opts.getBool(keys("SEYCHELLES"), false)).isTrue();
     }
 
     // Boolean
@@ -46,7 +50,7 @@ public class GenericOptionsParserTest {
         }};
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
-        boolean actual = opts.getBool(Collections.singletonList("mahe"), true);
+        boolean actual = opts.getBool(keys("mahe"), true);
 
         // Should come from defaultValue above
         assertThat(actual).isTrue();
@@ -63,10 +67,10 @@ public class GenericOptionsParserTest {
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
 
-        assertThat(opts.getBool(Arrays.asList("skipMe", "seychelles"), false)).isTrue();
-        assertThat(opts.getBool(Collections.singletonList("mahe"), false)).isTrue();
-        assertThat(opts.getBool(Collections.singletonList("aldabra"), false)).isTrue();
-        assertThat(opts.getBool(Arrays.asList("coetivy", "willbeignored"), false)).isTrue();
+        assertThat(opts.getBool(keys("skipMe", "seychelles"), false)).isTrue();
+        assertThat(opts.getBool(keys("mahe"), false)).isTrue();
+        assertThat(opts.getBool(keys("aldabra"), false)).isTrue();
+        assertThat(opts.getBool(keys("coetivy", "willbeignored"), false)).isTrue();
     }
 
     @Test
@@ -80,10 +84,10 @@ public class GenericOptionsParserTest {
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
 
-        assertThat(opts.getBool(Arrays.asList("skipMe", "seychelles"), true)).isFalse();
-        assertThat(opts.getBool(Collections.singletonList("mahe"), true)).isFalse();
-        assertThat(opts.getBool(Collections.singletonList("aldabra"), true)).isFalse();
-        assertThat(opts.getBool(Arrays.asList("coetivy", "willbeignored"), true)).isFalse();
+        assertThat(opts.getBool(keys("skipMe", "seychelles"), true)).isFalse();
+        assertThat(opts.getBool(keys("mahe"), true)).isFalse();
+        assertThat(opts.getBool(keys("aldabra"), true)).isFalse();
+        assertThat(opts.getBool(keys("coetivy", "willbeignored"), true)).isFalse();
     }
 
     @Test(expected = BadOptionConfigurationException.class)
@@ -93,7 +97,7 @@ public class GenericOptionsParserTest {
         }};
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
-        opts.getBool(Collections.singletonList("seychelles"), true);
+        opts.getBool(keys("seychelles"), true);
     }
 
     // Integer
@@ -105,7 +109,7 @@ public class GenericOptionsParserTest {
         }};
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
-        int actual = opts.getInt(Collections.singletonList("mahe"), 9001, f -> f > 0, "hello");
+        int actual = opts.getInt(keys("mahe"), 9001, f -> f > 0, "hello");
 
         // Should come from defaultValue above
         assertThat(actual).isEqualTo(9001);
@@ -118,7 +122,7 @@ public class GenericOptionsParserTest {
         }};
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
-        int actual = opts.getInt(Collections.singletonList("seychelles"), 5, v -> v > 0,
+        int actual = opts.getInt(keys("seychelles"), 5, v -> v > 0,
             "Value should be greater than zero");
 
         assertThat(actual).isEqualTo(8080);
@@ -131,7 +135,7 @@ public class GenericOptionsParserTest {
         }};
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
-        opts.getInt(Collections.singletonList("seychelles"), 5, v -> v > 0,
+        opts.getInt(keys("seychelles"), 5, v -> v > 0,
             "This will never be reached");
     }
 
@@ -143,7 +147,7 @@ public class GenericOptionsParserTest {
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
         opts.getInt(
-            Collections.singletonList("seychelles"),
+            keys("seychelles"),
             5,
             // Note constraint check requires value greater than zero
             v -> v > 0,
@@ -160,7 +164,7 @@ public class GenericOptionsParserTest {
         }};
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
-        long actual = opts.getLong(Collections.singletonList("mahe"), 9001L, f -> f > 0, "hello");
+        long actual = opts.getLong(keys("mahe"), 9001L, f -> f > 0, "hello");
 
         // Should come from defaultValue above
         assertThat(actual).isEqualTo(9001L);
@@ -173,7 +177,7 @@ public class GenericOptionsParserTest {
         }};
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
-        long actual = opts.getLong(Collections.singletonList("seychelles"), 5, v -> v > 0,
+        long actual = opts.getLong(keys("seychelles"), 5, v -> v > 0,
             "Value should be greater than zero");
 
         assertThat(actual).isEqualTo(Long.MAX_VALUE);
@@ -186,7 +190,7 @@ public class GenericOptionsParserTest {
         }};
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
-        opts.getLong(Collections.singletonList("seychelles"), 5, v -> v > 0,
+        opts.getLong(keys("seychelles"), 5, v -> v > 0,
             "This will never be reached");
     }
 
@@ -198,7 +202,7 @@ public class GenericOptionsParserTest {
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
         opts.getLong(
-            Collections.singletonList("seychelles"),
+            keys("seychelles"),
             5,
             // Note constraint check requires value greater than zero
             v -> v > 0,
@@ -216,7 +220,7 @@ public class GenericOptionsParserTest {
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
         opts.getString(
-            Collections.singletonList("seychelles"),
+            keys("seychelles"),
             "this value instead",
             // Note constraint check requires value greater than zero
             v -> v.length() > 100,
@@ -232,7 +236,7 @@ public class GenericOptionsParserTest {
 
         GenericOptionsParser opts = new GenericOptionsParser(map);
         String actual = opts.getString(
-            Collections.singletonList("mahe"),
+            keys("mahe"),
             "praslin",
             s -> s.length() > 3,
             "black parrot says hello"
@@ -240,6 +244,71 @@ public class GenericOptionsParserTest {
 
         // Should come from defaultValue above
         assertThat(actual).isEqualTo("praslin");
+    }
+
+    // Path
+
+    @Test
+    public void Given_OptionMapWithValidPath_When_ParsingPath_Then_ShouldReturnParsedPath()
+        throws IOException {
+        Path tempFile = Files.createTempFile("apiman-test", "bar");
+        Files.write(tempFile, "some ole nonsense".getBytes(StandardCharsets.UTF_8));
+
+        Map<String, String> map = new HashMap<String, String>() {{
+            put("seychelles", tempFile.toAbsolutePath().toString());
+        }};
+
+        GenericOptionsParser opts = new GenericOptionsParser(map);
+        Path parsedPath = opts.getPath(
+            keys("seychelles"),
+            null,
+            Predicates.fileExists().and(Predicates.fileSizeGreaterThanZero()),
+            "File must exist and be greater then zero in size"
+        );
+
+        assertThat(parsedPath).exists();
+        assertThat(parsedPath).hasContent("some ole nonsense");
+    }
+
+    @Test(expected = BadOptionConfigurationException.class)
+    public void Given_OptionMapWithFileThatExistsButIsEmpty_When_ParsingPathWithGreaterThanZeroPredicate_Then_ShouldFailConstraintCheck()
+        throws IOException {
+        Path tempFile = Files.createTempFile("apiman-test", "bar");
+
+        Map<String, String> map = new HashMap<String, String>() {{
+            put("seychelles", tempFile.toAbsolutePath().toString());
+        }};
+
+        GenericOptionsParser opts = new GenericOptionsParser(map);
+
+        // Will throw exception as file is empty
+        opts.getPath(
+            keys("seychelles"),
+            null,
+            Predicates.fileExists().and(Predicates.fileSizeGreaterThanZero()),
+            "File must exist and be greater then zero in size"
+        );
+    }
+
+
+    @Test
+    public void Given_OptionMapWithNoMatchingKey_When_ParsingPath_Then_ShouldUseDefaultValue()
+        throws IOException {
+        Map<String, String> emptyOpts = new HashMap<>();
+
+        Path tempFile = Files.createTempFile("apiman-test", "bar");
+        Files.write(tempFile, "blah blah".getBytes(StandardCharsets.UTF_8));
+
+        GenericOptionsParser opts = new GenericOptionsParser(emptyOpts);
+        Path parsedPath = opts.getPath(
+            keys("blahblahdoesnotexist"),
+            tempFile,
+            Predicates.fileExists().and(Predicates.fileSizeGreaterThanZero()),
+            "File must exist and be greater then zero in size"
+        );
+
+        assertThat(parsedPath).exists();
+        assertThat(parsedPath).hasContent("blah blah");
     }
 
 

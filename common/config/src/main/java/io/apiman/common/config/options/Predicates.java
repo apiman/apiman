@@ -16,6 +16,8 @@
 
 package io.apiman.common.config.options;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -74,5 +76,15 @@ public class Predicates {
 
     public static Predicate<Path> fileExists() {
         return Files::exists;
+    }
+
+    public static Predicate<Path> fileSizeGreaterThanZero() {
+        return f -> {
+            try {
+                return Files.size(f) > 0;
+            } catch (IOException ioe) {
+                throw new UncheckedIOException(ioe);
+            }
+        };
     }
 }
