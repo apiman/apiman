@@ -1,0 +1,6 @@
+name: apiman-docs
+title: Apiman Development Guide
+version: latest
+start_page: ROOT:development/Guide.adoc
+nav:
+  - modules/ROOT/nav.adoc

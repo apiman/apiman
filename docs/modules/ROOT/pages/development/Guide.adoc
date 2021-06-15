@@ -12,7 +12,7 @@ code to apiman.  It is likely also a good starting point for those wishing to pr
 functionality by implementing a plugin, although more information about plugins can
 be found in the 'Plugins' section.
 
-include::Resources.asciidoc[]
+include::Resources.adoc[]
 
 
 == Architecture
@@ -48,7 +48,7 @@ The easiest way to extend the functionality of apiman is by implementing an apim
 plugin.  This section details how this is done and what functionality can be
 extended or provided.
 
-include::Plugins.asciidoc[]
+include::Plugins.adoc[]
 
 
 == Gateway Implementations
@@ -60,7 +60,7 @@ A set of simple, asynchronous interfaces are provided which an implementor shoul
 fulfill using the platform's native functionality to allow apiman to interact with
 its various components and services.
 
-include::Gateway.asciidoc[]
+include::Gateway.adoc[]
 
 
 :numbered!:
