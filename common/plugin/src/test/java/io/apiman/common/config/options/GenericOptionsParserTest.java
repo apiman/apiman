@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.*;
 public class GenericOptionsParserTest {
 
     @Test
-    public void Given_OptionMap_When_GettingGettingKey_Then_ShouldFindValueCaseInsensitively() {
+    public void Given_OptionMap_When_GettingKey_Then_ShouldFindValueCaseInsensitively() {
         Map<String, String> map = new HashMap<String, String>() {{
             put("seychelles", "true");
         }};
@@ -125,7 +125,7 @@ public class GenericOptionsParserTest {
     }
 
     @Test(expected = BadOptionConfigurationException.class)
-    public void Given_OptionMapWithMalformattedInteger_When_ParsingAsInteger_Then_ShouldThrowBadConfigurationException() {
+    public void Given_OptionMapWithMalformedInteger_When_ParsingAsInteger_Then_ShouldThrowBadConfigurationException() {
         Map<String, String> map = new HashMap<String, String>() {{
             put("seychelles", "definitely not an integer");
         }};
@@ -180,7 +180,7 @@ public class GenericOptionsParserTest {
     }
 
     @Test(expected = BadOptionConfigurationException.class)
-    public void Given_OptionMapWithMalformattedLong_When_ParsingAsLong_Then_ShouldThrowBadConfigurationException() {
+    public void Given_OptionMapWithMalformedLong_When_ParsingAsLong_Then_ShouldThrowBadConfigurationException() {
         Map<String, String> map = new HashMap<String, String>() {{
             put("seychelles", "definitely not an Long");
         }};
