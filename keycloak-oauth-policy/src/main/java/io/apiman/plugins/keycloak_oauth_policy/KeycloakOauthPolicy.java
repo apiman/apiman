@@ -15,6 +15,8 @@
  */
 package io.apiman.plugins.keycloak_oauth_policy;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
@@ -50,6 +52,7 @@ import java.util.Collections;
  */
 public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfigBean> {
 
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(KeycloakOauthPolicy.class);
     private static final String AUTHORIZATION_KEY = "Authorization"; //$NON-NLS-1$
     private static final String ACCESS_TOKEN_QUERY_KEY = "access_token"; //$NON-NLS-1$
     private static final String BEARER = "Bearer "; //$NON-NLS-1$
@@ -91,15 +94,12 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         } else if (doTokenAuth(successStatus, request, context, config, chain, rawToken).getValue()) {
             // Transport security check
             if (config.getRequireTransportSecurity() && !request.isTransportSecure()) {
-                // If we've detected a situation where we should blacklist a
-                // token
+                // If we've detected a situation where we should blacklist a token
                 if (config.getBlacklistUnsafeTokens()) {
-                    blacklistToken(context, rawToken, new IAsyncResultHandler<Void>() {
-                        @Override
-                        public void handle(IAsyncResult<Void> result) {
-                            if (result.isError()) {
-                                // TODO log the error (need a policy logger)
-                            }
+                    blacklistToken(context, rawToken, (IAsyncResult<Void> result) -> {
+                        if (result.isError()) {
+                            LOGGER.error("An error occurred when blacklisting a token",
+                                 result.getError());
                         }
                     });
                 }
@@ -110,16 +110,13 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
 
             // If enabled we check against the blacklist
             if (config.getBlacklistUnsafeTokens()) {
-                isBlacklistedToken(context, rawToken, new IAsyncResultHandler<Boolean>() {
-                    @Override
-                    public void handle(IAsyncResult<Boolean> result) {
-                        if (result.isError()) {
-                            throwError(successStatus, chain, result.getError());
-                        } else if (result.getResult()) {
-                            doFailure(successStatus, chain, failureFactory.blacklistedToken(context));
-                        } else {
-                            chain.doApply(request);
-                        }
+                isBlacklistedToken(context, rawToken, (IAsyncResult<Boolean> result) -> {
+                    if (result.isError()) {
+                        throwError(successStatus, chain, result.getError());
+                    } else if (result.getResult()) {
+                        doFailure(successStatus, chain, failureFactory.blacklistedToken(context));
+                    } else {
+                        chain.doApply(request);
                     }
                 });
             } else {

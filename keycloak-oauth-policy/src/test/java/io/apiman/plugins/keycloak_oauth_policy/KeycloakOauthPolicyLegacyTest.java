@@ -128,15 +128,6 @@ public class KeycloakOauthPolicyLegacyTest {
             willReturn(new InMemorySharedStateComponent());
     }
 
-    private String generateAndSerializeToken() throws CertificateEncodingException, IOException {
-        token.notBefore(Time.currentTime() - 100);
-
-        config.setRealm("apiman-realm");
-        config.setRealmCertificateString(certificateAsPem(idpCertificates[0]));
-
-        return new JWSBuilder().jsonContent(token).rsa256(idpPair.getPrivate());
-    }
-
     @Test
     public void subjectToSub() throws CertificateEncodingException, IOException {
         ForwardAuthInfo authInfo = new ForwardAuthInfo();
@@ -184,5 +175,14 @@ public class KeycloakOauthPolicyLegacyTest {
             writer.close();
         }
         return sw.toString();
+    }
+
+    private String generateAndSerializeToken() throws CertificateEncodingException, IOException {
+        token.notBefore(Time.currentTime() - 100);
+
+        config.setRealm("apiman-realm");
+        config.setRealmCertificateString(certificateAsPem(idpCertificates[0]));
+
+        return new JWSBuilder().jsonContent(token).rsa256(idpPair.getPrivate());
     }
 }
