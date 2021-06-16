@@ -161,7 +161,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
 
             Path clientKeystorePath = config.getRequiredPath(
                 keys("client.keystore.path", "client.keystore"),
-                Predicates.fileExists(),
+                Predicates.fileExists().and(Predicates.fileSizeGreaterThanZero()),
                 Predicates.fileExistsMsg("key store")
             );
 
@@ -180,7 +180,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
 
             Path trustStorePath = config.getRequiredPath(
                 keys("client.truststore.path", "client.truststore"),
-                Predicates.fileExists(),
+                Predicates.fileExists().and(Predicates.fileSizeGreaterThanZero()),
                 Predicates.fileExistsMsg("trust store")
             );
 

@@ -78,6 +78,10 @@ public class Predicates {
         return Files::exists;
     }
 
+    public static String fileEmptyMsg() {
+        return "file must not be empty";
+    }
+
     public static Predicate<Path> fileSizeGreaterThanZero() {
         return f -> {
             try {

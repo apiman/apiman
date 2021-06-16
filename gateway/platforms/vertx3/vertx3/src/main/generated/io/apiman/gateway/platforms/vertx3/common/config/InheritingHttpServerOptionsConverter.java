@@ -148,6 +148,11 @@ public class InheritingHttpServerOptionsConverter {
             obj.setMaxChunkSize(((Number)member.getValue()).intValue());
           }
           break;
+        case "maxFormAttributeSize":
+          if (member.getValue() instanceof Number) {
+            obj.setMaxFormAttributeSize(((Number)member.getValue()).intValue());
+          }
+          break;
         case "maxHeaderSize":
           if (member.getValue() instanceof Number) {
             obj.setMaxHeaderSize(((Number)member.getValue()).intValue());
@@ -323,6 +328,11 @@ public class InheritingHttpServerOptionsConverter {
             obj.setWebSocketAllowServerNoContext((Boolean)member.getValue());
           }
           break;
+        case "webSocketClosingTimeout":
+          if (member.getValue() instanceof Number) {
+            obj.setWebSocketClosingTimeout(((Number)member.getValue()).intValue());
+          }
+          break;
         case "webSocketCompressionLevel":
           if (member.getValue() instanceof Number) {
             obj.setWebSocketCompressionLevel(((Number)member.getValue()).intValue());
@@ -427,6 +437,7 @@ public class InheritingHttpServerOptionsConverter {
     }
     json.put("logActivity", obj.getLogActivity());
     json.put("maxChunkSize", obj.getMaxChunkSize());
+    json.put("maxFormAttributeSize", obj.getMaxFormAttributeSize());
     json.put("maxHeaderSize", obj.getMaxHeaderSize());
     json.put("maxInitialLineLength", obj.getMaxInitialLineLength());
     json.put("maxWebSocketFrameSize", obj.getMaxWebSocketFrameSize());
@@ -476,6 +487,7 @@ public class InheritingHttpServerOptionsConverter {
     json.put("useAlpn", obj.isUseAlpn());
     json.put("usePooledBuffers", obj.isUsePooledBuffers());
     json.put("webSocketAllowServerNoContext", obj.getWebSocketAllowServerNoContext());
+    json.put("webSocketClosingTimeout", obj.getWebSocketClosingTimeout());
     json.put("webSocketCompressionLevel", obj.getWebSocketCompressionLevel());
     json.put("webSocketPreferredClientNoContext", obj.getWebSocketPreferredClientNoContext());
     if (obj.getWebSocketSubProtocols() != null) {
