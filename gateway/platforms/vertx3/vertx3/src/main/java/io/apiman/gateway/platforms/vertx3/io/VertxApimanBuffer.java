@@ -27,7 +27,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class VertxApimanBuffer implements IApimanBuffer {
 
-    private Buffer nativeBuffer;
+    private final Buffer nativeBuffer;
 
     public VertxApimanBuffer() {
         this.nativeBuffer = Buffer.buffer();
@@ -69,7 +69,7 @@ public class VertxApimanBuffer implements IApimanBuffer {
 
     @Override
     public void insert(int index, IApimanBuffer buffer) {
-       nativeBuffer.setBuffer(index, (Buffer) buffer.getNativeBuffer());
+        nativeBuffer.setBuffer(index, (Buffer) buffer.getNativeBuffer());
     }
 
     @Override

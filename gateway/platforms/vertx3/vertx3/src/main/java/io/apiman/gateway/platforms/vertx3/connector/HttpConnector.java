@@ -37,6 +37,12 @@ import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.platforms.vertx3.http.HttpApiFactory;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.util.Map.Entry;
+
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
@@ -47,11 +53,6 @@ import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.util.Map.Entry;
 
 /**
  * A Vert.x-based HTTP connector; implementing both {@link ISignalReadStream} and {@link ISignalWriteStream}.
@@ -64,34 +65,34 @@ import java.util.Map.Entry;
  */
 @SuppressWarnings("nls")
 class HttpConnector implements IApiConnectionResponse, IApiConnection {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private ApiRequest apiRequest;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final ApiRequest apiRequest;
     private ApiResponse apiResponse;
 
-    private IAsyncResultHandler<IApiConnectionResponse> resultHandler;
+    private final IAsyncResultHandler<IApiConnectionResponse> resultHandler;
     private IAsyncHandler<Void> drainHandler;
     private IAsyncHandler<IApimanBuffer> bodyHandler;
     private IAsyncHandler<Void> endHandler;
-    private ExceptionHandler exceptionHandler;
+    private final ExceptionHandler exceptionHandler;
 
     private boolean inboundFinished = false;
     private boolean outboundFinished = false;
 
-    private Api api;
-    private String apiPath;
-    private String apiHost;
-    private String destination;
-    private int apiPort;
+    private final Api api;
+    private final String apiPath;
+    private final String apiHost;
+    private final String destination;
+    private final int apiPort;
     private BasicAuthOptions basicOptions;
 
-    private HttpClient client;
+    private final HttpClient client;
     private HttpClientRequest clientRequest;
     private HttpClientResponse clientResponse;
 
-    private URI apiEndpoint;
+    private final URI apiEndpoint;
 
-    private ApimanHttpConnectorOptions options;
-    private IConnectorConfig connectorConfig;
+    private final ApimanHttpConnectorOptions options;
+    private final IConnectorConfig connectorConfig;
 
 
     /**
@@ -135,17 +136,21 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
     private void verifyConnection() {
         switch (options.getRequiredAuthType()) {
-        case BASIC:
-            basicOptions = new BasicAuthOptions(api.getEndpointProperties());
-            if (!options.isSsl() && basicOptions.isRequireSSL())
-                throw new ConnectorException("Endpoint security requested (BASIC auth) but endpoint is not secure (SSL).");
-            break;
-        case MTLS:
-            if (!options.isSsl())
-                throw new ConnectorException("Mutual TLS specified, but endpoint is not HTTPS.");
-            break;
-        case DEFAULT:
-            break;
+            case BASIC:
+                basicOptions = new BasicAuthOptions(api.getEndpointProperties());
+                if (!options.isSsl() && basicOptions.isRequireSSL()) {
+                    throw new ConnectorException("Endpoint security requested (BASIC auth) but endpoint is not secure (SSL).");
+                }
+                break;
+            case MTLS:
+                if (!options.isSsl()) {
+                    throw new ConnectorException("Mutual TLS specified, but endpoint is not HTTPS.");
+                }
+                break;
+            case DEFAULT:
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + options.getRequiredAuthType());
         }
     }
 
@@ -248,7 +253,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     @Override
     public void write(IApimanBuffer chunk) {
         if (inboundFinished) {
-            throw new IllegalStateException(Messages.getString("HttpConnector.0"));
+            throw new IllegalStateException(Messages.getString("HttpConnector.InboundAlreadyFinished"));
         }
 
         if (chunk.getNativeBuffer() instanceof Buffer) {
@@ -258,7 +263,10 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
                 clientRequest.drainHandler(drainHandler::handle);
             }
         } else {
-            throw new IllegalArgumentException(Messages.getString("HttpConnector.1"));
+            throw new IllegalArgumentException(
+                Messages.format("HttpConnector.WrongBufferType",
+                    chunk.getNativeBuffer().getClass().getCanonicalName())
+            );
         }
     }
 
@@ -317,8 +325,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
             ConnectorException ce = ErrorHandler.handleConnectionError(error);
             logger.error("Connection Error: " + error.getMessage(), error);
 
-            resultHandler.handle(AsyncResultImpl
-                    .<IApiConnectionResponse> create(ce));
+            resultHandler.handle(AsyncResultImpl.create(ce));
         }
     }
 
