@@ -32,10 +32,18 @@ import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jcabi.http.Request;
+import com.jcabi.http.Response;
+import com.jcabi.http.Wire;
+import com.jcabi.http.request.ApacheRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -56,14 +64,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.jcabi.http.Request;
-import com.jcabi.http.Response;
-import com.jcabi.http.request.ApacheRequest;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Runs a test plan.
@@ -149,7 +150,11 @@ public class TestPlanRunner {
 
         log("Sending HTTP request to: " + uri);
 
-        Request request = new ApacheRequest(uri.toString()).method(restTest.getRequestMethod());
+        // Retries attempt to connect up to 4 times if there's an IOException
+        // e.g. occasional CI issue connecting to localhost on first attempt)
+        Request request = new ApacheRequest(uri.toString())
+            .through(RetryIfUnableToConnect.class)
+            .method(restTest.getRequestMethod());
 
         try {
             Map<String, String> requestHeaders = restTest.getRequestHeaders();
@@ -527,4 +532,46 @@ public class TestPlanRunner {
     private void logPlain(String message) {
         logger.info("    >> " + message);
     }
+
+
+    /**
+     * Retry if unable to connect (used by jcabi, needs to be public as they use reflection magic).
+     */
+    public static final class RetryIfUnableToConnect implements Wire {
+
+        private transient Wire origin;
+
+        public RetryIfUnableToConnect(Wire wire) {
+            this.origin = wire;
+        }
+
+        @Override
+        public Response send(Request req, String home, String method,
+            Collection<Entry<String, String>> headers, InputStream content, int connect, int read)
+            throws IOException {
+            int attempt = 0;
+            while (true) {
+                if (attempt > 3) {
+                    throw new IOException(
+                        String.format("Failed after %d attempts", attempt)
+                    );
+                }
+                try {
+                    return this.origin.send(
+                        req, home, method, headers, content, connect, read
+                    );
+                } catch (final IOException ex) {
+                    System.out.println("An IO issue occurred. Will try again momentarily: " + ex.getMessage());
+                    ex.printStackTrace();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                ++attempt;
+            }
+        }
+    }
+
 }
