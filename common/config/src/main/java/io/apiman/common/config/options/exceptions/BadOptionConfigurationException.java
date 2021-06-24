@@ -164,12 +164,7 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", BadOptionConfigurationException.class.getSimpleName() + "[", "]")
-            .add("expectedType='" + expectedType + "'")
-            .add("optionName='" + optionName + "'")
-            .add("actualValue='" + actualValue + "'")
-            .add("constraintFailureMessage='" + constraintFailureMessage + "'")
-            .toString();
+        return super.toString();
     }
 
     @Override
