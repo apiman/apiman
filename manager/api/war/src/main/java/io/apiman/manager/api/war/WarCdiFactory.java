@@ -135,10 +135,8 @@ public class WarCdiFactory {
     public static IMetricsAccessor provideMetricsAccessor(WarApiManagerConfig config,
                                                           @New NoOpMetricsAccessor noopMetrics, IPluginRegistry pluginRegistry) {
         IMetricsAccessor metrics;
-        if (EsUtils.isEsOrJest(config.getMetricsType())) { //$NON-NLS-1$
-            metrics = new EsMetricsAccessor(config.getStorageESClientFactoryConfig());
-        } else if (config.getMetricsType().equals(EsMetricsAccessor.class.getName())) {
-            metrics = new EsMetricsAccessor(config.getStorageESClientFactoryConfig());
+        if (EsUtils.isEsOrJest(config.getMetricsType()) || config.getMetricsType().equals(EsMetricsAccessor.class.getName())) { //$NON-NLS-1$
+            metrics = new EsMetricsAccessor(config.getMetricsESClientFactoryConfig());
         } else if ("noop".equals(config.getMetricsType())) { //$NON-NLS-1$
             metrics = noopMetrics;
         } else if (config.getMetricsType().equals(NoOpMetricsAccessor.class.getName())) {
