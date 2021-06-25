@@ -1,0 +1,22 @@
+name: Trigger rebuild and redeployment of Apiman docs website
+
+on:
+  push:
+    branches: [ master ] # Put all branches we want to track docs for here.
+    paths-ignore:
+      - '.github/workflows/**'
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
+
+jobs:
+  sendRebuildDispatchEvent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send rebuild-apiman-antora-docs repository dispatch event to apiman/apiman-docs to trigger the Apiman Antora docs to be rebuilt and redeployed.
+        uses: peter-evans/repository-dispatch@v1.1.3
+        with:
+          token: ${{ secrets.REPO_DISPATCH_ACCESS_TOKEN }}
+          repository: apiman/apiman-docs
+          event-type: rebuild-apiman-antora-docs
+ 
