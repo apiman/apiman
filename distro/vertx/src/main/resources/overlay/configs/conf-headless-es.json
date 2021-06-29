@@ -10,12 +10,16 @@
         "timeout": 10000,
         "polling-time": 600
         // only for https
-        // "allowSelfSigned": false,
-        // "allowAnyHost": false,
-        // "truststore": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
-        // "truststore-password": "secret"
-        // "client-keystore": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
-        // "client-keystore-password": "secret"
+        //"allowSelfSigned": false,
+        //"allowAnyHost": false,
+        //"truststore": {
+        //  "path": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
+        //  "password": "secret"
+        //},
+        //"keystore": {
+        //  "path": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
+        //  "password": "secret"
+        //}
       }
     }
   },
@@ -125,10 +129,14 @@
         // only for https
         //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
         //"allowAnyHost": "${apiman.es.allowAnyHost}",
-        //"truststore": "${apiman.es.truststore}",
-        //"truststore-password": "${apiman.es.truststore-password}",
-        //"keystore": "${apiman.es.keystore}",
-        //"keystore-password": "${apiman.es.keystore-password}"
+        //"truststore": {
+        //  "path": "${apiman.es.truststore.path}",
+        //  "password": "${apiman.es.truststore.password}"
+        //},
+        //"keystore": {
+        //  "path": "${apiman.es.keystore.path.path}",
+        //  "password": "${apiman.es.keystore.path.password}"
+        //},
       }
     }
   },
@@ -151,10 +159,14 @@
           // only for https
           //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
           //"allowAnyHost": "${apiman.es.allowAnyHost}",
-          //"truststore": "${apiman.es.truststore}",
-          //"truststore-password": "${apiman.es.truststore-password}",
-          //"keystore": "${apiman.es.keystore}",
-          //"keystore-password": "${apiman.es.keystore-password}"
+          //"truststore": {
+          //  "path": "${apiman.es.truststore.path}",
+          //  "password": "${apiman.es.truststore.password}"
+          //},
+          //"keystore": {
+          //  "path": "${apiman.es.keystore.path.path}",
+          //  "password": "${apiman.es.keystore.path.password}"
+          //},
         }
       }
     },
@@ -176,10 +188,14 @@
           // only for https
           //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
           //"allowAnyHost": "${apiman.es.allowAnyHost}",
-          //"truststore": "${apiman.es.truststore}",
-          //"truststore-password": "${apiman.es.truststore-password}",
-          //"keystore": "${apiman.es.keystore}",
-          //"keystore-password": "${apiman.es.keystore-password}"
+          //"truststore": {
+          //  "path": "${apiman.es.truststore.path}",
+          //  "password": "${apiman.es.truststore.password}"
+          //},
+          //"keystore": {
+          //  "path": "${apiman.es.keystore.path.path}",
+          //  "password": "${apiman.es.keystore.path.password}"
+          //},
         }
       }
     },
@@ -201,10 +217,14 @@
           // only for https
           //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
           //"allowAnyHost": "${apiman.es.allowAnyHost}",
-          //"truststore": "${apiman.es.truststore}",
-          //"truststore-password": "${apiman.es.truststore-password}",
-          //"keystore": "${apiman.es.keystore}",
-          //"keystore-password": "${apiman.es.keystore-password}"
+          //"truststore": {
+          //  "path": "${apiman.es.truststore.path}",
+          //  "password": "${apiman.es.truststore.password}"
+          //},
+          //"keystore": {
+          //  "path": "${apiman.es.keystore.path.path}",
+          //  "password": "${apiman.es.keystore.path.password}"
+          //},
         }
       }
     },
