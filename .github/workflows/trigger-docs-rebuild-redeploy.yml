@@ -3,8 +3,6 @@ name: Trigger rebuild and redeployment of Apiman docs website
 on:
   push:
     branches: [ master ] # Put all branches we want to track docs for here.
-    paths-ignore:
-      - '.github/workflows/**'
     paths:
       - 'docs/**'
   workflow_dispatch:
