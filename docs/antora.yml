@@ -1,4 +1,4 @@
-name: apiman-docs
+name: core
 title: Apiman Development Guide
 version: latest
 start_page: ROOT:development/Guide.adoc
