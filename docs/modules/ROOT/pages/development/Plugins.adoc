@@ -1,11 +1,13 @@
-=== Creating a Plugin
+= Creating a Plugin
+
 An apiman plugin is basically a java web archive (WAR) with a little bit of extra
-sauce.  This approach makes it very easy to build using maven, and should be quite
+sauce.
+This approach makes it very easy to build using maven, and should be quite
 familiar to most Java developers.  Because a plugin consists of some resources files,
 compiled java classes, front-end resource such as HTML and javascript, and dependencies
 in the form of JARs, the WAR format is a natural choice.
 
-==== The Plugin Specification File
+== The Plugin Specification File
 In addition to the standard layout of a Java Web Archive, an apiman plugin must contain
 the following plugin specification file (which contains information about the plugin):
 
@@ -35,7 +37,7 @@ should be of the following format:
 If this 'plugin.json' file is missing from the plugin archive, then the plugin will
 fail to load.
 
-==== Using Maven to Create a Plugin
+== Using Maven to Create a Plugin
 One benefit of using WAR as the format of an apiman plugin is that plugins can easily
 be created using Maven.  This section will describe how this can be done.  Note that
 you can use the following simple plugin as a reference if you prefer:
@@ -117,7 +119,7 @@ which will make it easier to maintain your *plugin.json* file:
 Note that the 'version' of the plugin is set to *${project.version}*, which will get
 automatically changed to the version of your maven project at build time.
 
-==== Making Your Plugin Available to apiman
+=== Making Your Plugin Available to apiman
 Plugins are identified by their Maven coordinates (groupId, artifactId, version,
 classifier, type).  Note that the classifier and type are optional.  If the type is
 not specified when loading a plugin, apiman will assume 'war'.
@@ -152,14 +154,14 @@ In order to provide a custom policy from a plugin, several things are needed:
 The next few sections explain each of these elements further, but note that they are
 all included in the apiman plugin WAR.
 
-==== Policy Implementation
+=== Policy Implementation
 A policy implementation is the java code that is executed by the API Gateway when
 a managed API request is made.  This is the bread and butter of the API Gateway; its
 primary purpose.  For each request, the API Gateway creates a chain of policies that
 must be executed before proxying the request to the back-end API implementation.
 Each of the policies in that chain is an implementation of the 'IPolicy' interface.
 
-===== Standard IPolicy
+==== Standard IPolicy
 All policies must implement the `IPolicy` interface, consisting of several methods.
 
 The `apply` method with `ApiRequest` is called during the request phase, and
@@ -194,12 +196,12 @@ be invoked for each unique configuration of the policy.
 For mroe information about policy configuration, see the *Policy Configuration* section
 below.
 
-====== Indicating Successes
+===== Indicating Successes
 If a policy determines that the conversation can continue, `chain.doApply` should
 be signalled. Any modifications you wish to pass onto the next policy should be
 completed and included in the invocation.
 
-====== Indicating Failures
+===== Indicating Failures
 If it is determined that a conversation should be interrupted for governance reasons
 (i.e. according to business logic and not exceptional), then `chain.doFailure` should
 be signalled. A useful `PolicyFailure` should be provided, which allows gateways to
@@ -208,12 +210,12 @@ respond in a sensible way to the requestor.
 TIP: The platform's `IPolicyFailureFactoryComponent` can be used to generate failures.
 See the *Provided Components* section for more details on this component.
 
-====== Handling Exceptions
+===== Handling Exceptions
 As a factor of the asynchronous nature of apiman, any exceptions that may occur during
 the operation of a policy should be caught and explicitly handed to `chain.doError`.
 If exceptions are left uncaught, then it is possible that they will be lost.
 
-===== IData Policy
+==== IData Policy
 Whilst standard policies are concerned only with the head of the conversation, it
 is also possible for policies to access and manipulate the body in transit. A data
 policy must implement the `IDataPolicy` interface.
@@ -264,13 +266,13 @@ public IReadWriteStream<ApiRequest> getRequestDataHandler(final ApiRequest reque
 }
 ----
 
-IMPORTANT: Do not mutate an `IApimanBuffer` once handed over.
+IMPORTANT: Do not mutate an `IApimanBuffer` once handed over. Immediately see
 
 The request or response body will not begin streaming before the corresponding `doApply`
 has been called, however, it is still possible to interrupt the conversation during
 the streaming phase by signalling `doFailure` or `doError`.
 
-===== Performance Considerations
+==== Performance Considerations
 Policies are amongst the most impactful elements of the system for performance. To
 minimise the impact of a policy implementors may wish to follow these guidelines:
 
@@ -279,7 +281,7 @@ minimise the impact of a policy implementors may wish to follow these guidelines
 - Data policies should interact with the data stream as efficiently as possible and prefer mutating in-place (especially with small changes).
 - If you are contributing a policy to apiman: implement any long-running tasks asynchronously (e.g. database calls); **do not** block the main thread (e.g. blocking futures, wait, sleep); use asynchronous techniques to interact with the outside world, such as callbacks.
 
-===== Dependencies
+==== Dependencies
 Typically a policy implementation should minimize the number of third party libraries
 it depends on, but often times this is unavoidable.  Plugins are isolated from one
 another, so it is a simple matter of including any required dependencies inside the
@@ -301,7 +303,7 @@ Use `getLogger` with a class. The `IApimanLogger` interface provides the methods
 available for logging, with a variety of pluggable backends available to implement
 the functionality.
 
-===== Usage
+==== Usage
 
 [source,java]
 ----
@@ -326,7 +328,7 @@ the functionality.
 <1> Consult the interface's javadoc for the full list of available methods.
 <2> Format string with arguments.
 
-===== Configuration
+==== Configuration
 A few logging backends https://github.com/apiman/apiman/tree/master/common/logging[are provided],
 which should satisfy most user's requirements.
 
@@ -345,7 +347,7 @@ Those shipped in the project, are:
 
 NOTE: Ensure that the implementation is available on the classpath.
 
-===== Custom Implementation
+==== Custom Implementation
 
 To provide your own implementation, you must implement `IDelegateFactory` and which
 should create instances your implementations of `IApimanLogger`. Ensure that your
@@ -399,7 +401,7 @@ public class ExampleLogger implements IDelegateFactory {
 <1> Passing the message through to your logger.
 <2> Debug, trace, etc. Consult the interface.
 
-===== Provided Components
+==== Provided Components
 All policy implementations have access to various resources at runtime.  These resources
 are primarily accessed through the *IPolicyContext* object that is passed to the policy
 when it is executed.  Along with the ability to set conversation-level attributes, the
@@ -428,7 +430,7 @@ philosophy in the API Gateway.
 
 TIP: For more information about each component, see its javadoc.
 
-==== Policy Definition
+=== Policy Definition
 The policy implementation is what allows the API Gateway to execute the policy at runtime.
 But how does the API Manager know about the policy so that users can add it to a Plan,
 API, or Client App from within the User Interface?  The answer is that the plugin
@@ -492,7 +494,7 @@ Maven set the values for you:
 plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/com.example.plugins.ExamplePolicy
 ----
 
-==== Policy Configuration Form
+=== Policy Configuration Form
 You may be wondering how configuration information specific to a Plan, API, or
 Client App is managed.  Since the same policy implementation instance is used for all
 requests, unique configuration appropriate to a particular request must be passed to
@@ -508,7 +510,7 @@ The string data is created in the API Manager user interface, either by interact
 a Policy Configuration Form contributed by the plugin, or (if no form is included
 in the plugin) by a default configuration form (a simple text area).
 
-===== Default Policy Configuration
+==== Default Policy Configuration
 If the policy definition indicates that the configuration form type is *Default*, then it is
 up to the UI to determine how to display configuration information.  For the policies provided
 by apiman itself, there are UI forms provided.  If the policy is contributed from a plugin,
@@ -518,7 +520,7 @@ TextArea is presented to the user.
 WARNING: This approach is clearly not recommended, because users will likely have no idea what to
 enter into the TextArea presented to them.
 
-===== JSON Schema Policy Configuration
+==== JSON Schema Policy Configuration
 Alternatively, the policy definition can specify a http://json-schema.org/[JSON Schema] in
 the policy definition JSON file.  For example, the policy definition might include the
 following:
@@ -679,7 +681,7 @@ public class MyPolicy extends AbstractMappedPolicy<MyConfigBean> {
 }
 ----
 
-===== JSON Schema Policy Configuration SDK
+==== JSON Schema Policy Configuration SDK
 If you are creating a non-trivial JSON Schema (more than just a couple of simple fields)
 it can be difficult to get it right without a few iterations.  For this reason, we have
 created a simple "SDK" to help you create your JSON Schema quickly.  The SDK can be found
@@ -705,13 +707,13 @@ TIP: Once you have the JSON Schema finalized, you could also use the online http
 tool to generate a good starting point for a Java Bean that can be used to marshal/unmarshal your policy's configuration
 data at runtime.  See the discussion about AbstractMappedPolicy above for additional information.
 
-=== Unit Testing a Plugin Policy
+== Unit Testing a Plugin Policy
 While it is quite simple to create a custom policy for apiman, you may be wondering the best way to
 unit test your implementation.  Fortunately we have made this extremely easy by including an easy-to-use
 Policy Testing junit framework.  Once you have followed the instructions above to create your custom
 policy, refer to this section to learn how to test it using junit.
 
-==== Import the Framework (Maven Dependency)
+=== Import the Framework (Maven Dependency)
 The first thing you will need is to include the appropriate maven dependencies in your project's
 pom.xml file.  There is a single additional dependency that you will need (make sure to import it using
 the 'test' maven scope):
@@ -726,7 +728,7 @@ the 'test' maven scope):
 </dependency>
 ----
 
-==== Create and Annotate a JUnit Test Case
+=== Create and Annotate a JUnit Test Case
 Once you have imported the appropriate dependency, you can go ahead and create a JUnit test case.  The
 only additional thing you need is to annotate your test case appropriately and make sure your test case
 Java class extends the framework's 'ApimanPolicyTest' base class.
@@ -782,7 +784,7 @@ public class CustomPolicyTest extends ApimanPolicyTest {
 }
 ----
 
-==== Providing a Custom Back-End API Mock
+=== Providing a Custom Back-End API Mock
 Sometimes the echo API is not sufficient when testing your custom policy.  Perhaps the custom policy
 is more tightly coupled to the API it is protecting.  In this case you may want to provide your own
 custom back-end API mock implementation.  This can be done by simply annotating either the class or
@@ -815,7 +817,7 @@ the send() method will return with a custom response (as created and returned by
 back-end API implementation).
 
 
-=== Using a Plugin Policy
+== Using a Plugin Policy
 Once you have built and unit tested your plugin policy, you will most likely want to actually use the policy
 in apiman.  This can be done by adding the plugin to apiman via the Plugin Management UI in the API Manager
 user interface.
@@ -824,7 +826,7 @@ TIP: The Plugin Management UI is restricted to admin users of the API Manager.
 
 For more information about how to use the Plugin Management UI, please see the apiman User Guide.
 
-==== Iterating a Plugin Policy
+=== Iterating a Plugin Policy
 When developing a custom plugin policy, it can be cumbersome to have to uninstall and reinstall the plugin
 every time you make a change.  Hopefully, unit testing will help you quickly iterate your plugin policy
 implementation, but there are times when testing in a live environment is necessary.
@@ -855,19 +857,19 @@ the following *apiman.properties* property to "true":  `apiman-gateway.policy-fa
 TIP: Don't use this "auto plugin reloading" feature in production as the lack of policy caching will be a
 significant performance problem.
 
-==== Uninstalling a Plugin
+=== Uninstalling a Plugin
 Again, you can use the Plugin Management UI to uninstall a plugin.  Please note that when you do this,
 any API that is already configured to *use* the plugin will continue to work.  If you wish for an API
 to no longer use a plugin policy, you must remove the policy from the API as a separate step.
 
-==== Upgrading a Plugin
+=== Upgrading a Plugin
 Often times new versions of a plugin may become available.  When this happens you can use the Plugin
 Management UI to upgrade a plugin to a newer version.  Please note that this will *not* automatically
 upgrade any API using the older version of the plugin.  Instead, to upgrade an API to use the newer
 plugin policy, you will need to remove the old policy configuration and re-add it.  This will cause
 the API to pick up the newer version.  Of course, any *new* APIs will always use the new version.
 
-=== Contributing a Core Component
+== Contributing a Core Component
 In addition to policies, the apiman plugin framework allows developers to provide custom implementations
 of core apiman components.  What does this mean?  Apiman is composed of a number of different core
 components, all working together to provide API Management functionality.  Both the API Gateway and
@@ -898,7 +900,7 @@ However, if you wish to provide a custom implementation of something, you can im
 Java interface for the correct component, bundle the implementation up into a plugin, and then tell
 apiman to use yours instead of the default.
 
-==== Implementing a Custom Core Component
+=== Implementing a Custom Core Component
 The procedure for creating a plugin to hold your custom component is exactly the same as already
 described in the *Creating a Plugin* section above.  Once you have created your plugin, including
 a custom implementation of a core component is simply a matter of creating a Java class that
@@ -976,7 +978,7 @@ TIP: While optional, it is often useful to provide a constructor that takes a ma
 params.  These values comes from the *apiman.properties* and is an arbitrary set of keys/values.  It
 can be extremely helpful when, for example, configuring the mongodb connection information.
 
-==== Enabling Your Custom Component
+=== Enabling Your Custom Component
 Now that you have a custom component built and included in a plugin, you will need to make sure
 that the plugin is available to your server.  You can do this by deploying the plugin artifact
 to a maven repository and then making that repository available to apiman by adding its URL to
@@ -1027,11 +1029,11 @@ mongo.password=sa123!
 mongo.database=apiman
 ----
 
-==== Core Component Customization Points
+=== Core Component Customization Points
 This section lists all/most of the available customization points available within apiman.  These represent
 all of the core apiman components that can be replaced by custom implementations provided via plugins.
 
-===== API Manager Components
+==== API Manager Components
 [width="100%",options="header"]
 |=======
 |Component Interface |Description
@@ -1044,7 +1046,7 @@ all of the core apiman components that can be replaced by custom implementations
 |io.apiman.manager.api.core.IApiCatalog |Provides access to external APIs which users may wish to import.
 |=======
 
-====== io.apiman.manager.api.core.INewUserBootstrapper Example Configuration
+===== io.apiman.manager.api.core.INewUserBootstrapper Example Configuration
 
 [source]
 ----
@@ -1053,7 +1055,7 @@ apiman-manager.user-bootstrapper.foo1=value-1
 apiman-manager.user-bootstrapper.foo2=value-2
 ----
 
-====== io.apiman.manager.api.core.IStorage Example Configuration
+===== io.apiman.manager.api.core.IStorage Example Configuration
 
 [source]
 ----
@@ -1062,7 +1064,7 @@ apiman-manager.storage.foo1=value-1
 apiman-manager.storage.foo2=value-2
 ----
 
-====== io.apiman.manager.api.core.IStorageQuery Example Configuration
+===== io.apiman.manager.api.core.IStorageQuery Example Configuration
 
 [source]
 ----
@@ -1074,7 +1076,7 @@ apiman-manager.storage-query.foo2=value-2
 TIP: If your custom IStorage implementation *also* implements IStorageQuery, then it will be used instead of
 trying to create a separate instance of IStorageQuery.
 
-====== io.apiman.manager.api.core.IMetricsAccessor Example Configuration
+===== io.apiman.manager.api.core.IMetricsAccessor Example Configuration
 
 [source]
 ----
@@ -1083,7 +1085,7 @@ apiman-manager.metrics.foo1=value-1
 apiman-manager.metrics.foo2=value-2
 ----
 
-====== io.apiman.manager.api.core.IApiKeyGenerator Example Configuration
+===== io.apiman.manager.api.core.IApiKeyGenerator Example Configuration
 
 [source]
 ----
@@ -1092,7 +1094,7 @@ apiman-manager.api-keys.generator.foo1=value-1
 apiman-manager.api-keys.generator.foo2=value-2
 ----
 
-====== io.apiman.common.util.crypt.IDataEncrypter Example Configuration
+===== io.apiman.common.util.crypt.IDataEncrypter Example Configuration
 
 [source]
 ----
@@ -1101,7 +1103,7 @@ apiman.encrypter.foo1=value-1
 apiman.encrypter.foo2=value-2
 ----
 
-====== io.apiman.manager.api.core.IApiCatalog Example Configuration
+===== io.apiman.manager.api.core.IApiCatalog Example Configuration
 
 [source]
 ----
@@ -1111,7 +1113,7 @@ apiman-manager.api-catalog.foo2=value-2
 ----
 
 
-===== API Gateway Components
+==== API Gateway Components
 [width="100%",options="header"]
 |=======
 |Component Interface |Description
@@ -1133,7 +1135,7 @@ apiman-manager.api-catalog.foo2=value-2
 |=======
 
 
-====== io.apiman.gateway.engine.IRegistry Example Configuration
+===== io.apiman.gateway.engine.IRegistry Example Configuration
 
 [source]
 ----
@@ -1141,7 +1143,7 @@ apiman-gateway.registry=plugin:com.example.groupId:artifactId:1.0.Final/com.exam
 apiman-gateway.registry.foo1=value-1
 ----
 
-====== io.apiman.common.util.crypt.IDataEncrypter Example Configuration
+===== io.apiman.common.util.crypt.IDataEncrypter Example Configuration
 
 [source]
 ----
@@ -1150,7 +1152,7 @@ apiman.encrypter.foo1=value-1
 apiman.encrypter.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.IConnectorFactory Example Configuration
+===== io.apiman.gateway.engine.IConnectorFactory Example Configuration
 
 [source]
 ----
@@ -1159,7 +1161,7 @@ apiman-gateway.connector-factory.foo1=value-1
 apiman-gateway.connector-factory.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.policy.IPolicyFactory Example Configuration
+===== io.apiman.gateway.engine.policy.IPolicyFactory Example Configuration
 
 [source]
 ----
@@ -1170,7 +1172,7 @@ apiman-gateway.policy-factory.foo2=value-2
 
 *Note*: there is rarely a reason to provide a custom policy factory.
 
-====== io.apiman.gateway.engine.IPolicyFailureWriter Example Configuration
+===== io.apiman.gateway.engine.IPolicyFailureWriter Example Configuration
 
 [source]
 ----
@@ -1179,7 +1181,7 @@ apiman-gateway.writers.policy-failure.foo1=value-1
 apiman-gateway.writers.policy-failure.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.IPolicyErrorWriter Example Configuration
+===== io.apiman.gateway.engine.IPolicyErrorWriter Example Configuration
 
 [source]
 ----
@@ -1188,7 +1190,7 @@ apiman-gateway.writers.error.foo1=value-1
 apiman-gateway.writers.error.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.components.IBufferFactoryComponent Example Configuration
+===== io.apiman.gateway.engine.components.IBufferFactoryComponent Example Configuration
 
 [source]
 ----
@@ -1201,7 +1203,7 @@ apiman-gateway.components.IBufferFactoryComponent.foo2=value-2
 used when the API Gateway is running in EAP or WildFly.  There is a different buffer factory used when the
 API Gateway is running in vert.x.  There is typically not another reason to override this.
 
-====== io.apiman.gateway.engine.components.ICacheStoreComponent Example Configuration
+===== io.apiman.gateway.engine.components.ICacheStoreComponent Example Configuration
 
 [source]
 ----
@@ -1210,7 +1212,7 @@ apiman-gateway.components.ICacheStoreComponent.foo1=value-1
 apiman-gateway.components.ICacheStoreComponent.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.components.IHttpClientComponent Example Configuration
+===== io.apiman.gateway.engine.components.IHttpClientComponent Example Configuration
 
 [source]
 ----
@@ -1219,7 +1221,7 @@ apiman-gateway.components.IHttpClientComponent.foo1=value-1
 apiman-gateway.components.IHttpClientComponent.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.components.IJdbcComponent Example Configuration
+===== io.apiman.gateway.engine.components.IJdbcComponent Example Configuration
 
 [source]
 ----
@@ -1228,7 +1230,7 @@ apiman-gateway.components.IJdbcComponent.foo1=value-1
 apiman-gateway.components.IJdbcComponent.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.components.ILdapComponent Example Configuration
+===== io.apiman.gateway.engine.components.ILdapComponent Example Configuration
 
 [source]
 ----
@@ -1237,7 +1239,7 @@ apiman-gateway.components.ILdapComponent.foo1=value-1
 apiman-gateway.components.ILdapComponent.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.components.IPeriodicComponent Example Configuration
+===== io.apiman.gateway.engine.components.IPeriodicComponent Example Configuration
 
 [source]
 ----
@@ -1246,7 +1248,7 @@ apiman-gateway.components.IPeriodicComponent.foo1=value-1
 apiman-gateway.components.IPeriodicComponent.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent Example Configuration
+===== io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent Example Configuration
 
 [source]
 ----
@@ -1255,7 +1257,7 @@ apiman-gateway.components.IPolicyFailureFactoryComponent.foo1=value-1
 apiman-gateway.components.IPolicyFailureFactoryComponent.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.components.IRateLimiterComponent Example Configuration
+===== io.apiman.gateway.engine.components.IRateLimiterComponent Example Configuration
 
 [source]
 ----
@@ -1264,7 +1266,7 @@ apiman-gateway.components.IRateLimiterComponent.foo1=value-1
 apiman-gateway.components.IRateLimiterComponent.foo2=value-2
 ----
 
-====== io.apiman.gateway.engine.components.ISharedStateComponent Example Configuration
+===== io.apiman.gateway.engine.components.ISharedStateComponent Example Configuration
 
 [source]
 ----
@@ -1273,7 +1275,7 @@ apiman-gateway.components.ISharedStateComponent.foo1=value-1
 apiman-gateway.components.ISharedStateComponent.foo2=value-2
 ----
 
-==== Providing a Custom API Catalog
+=== Providing a Custom API Catalog
 Apiman allows users to import one or more API (to be managed) from a globally configured API Catalog.  This
 feature makes it easier to manage APIs that are "known" by providing API catalog entries which include
 information such as the endpoint, endpoint type, etc.  Importing an API from the catalog brings those fields
@@ -1366,7 +1368,7 @@ instantiated.
 
 
 
-==== Providing a Custom Data Encrypter
+=== Providing a Custom Data Encrypter
 Whenever apiman stores data, either in the API Manager or in the API Gateway, it uses a Data Encrypter
 to first encrypt potentially sensitive information.  Examples are:
 
@@ -1424,7 +1426,7 @@ passed to its constructor containing the following:
 
 
 
-==== Providing a Custom Policy Failure/Error Writer
+=== Providing a Custom Policy Failure/Error Writer
 When a policy fails (or an error occurs) in the API Gateway, the result of the failure must be sent
 back to the calling HTTP client.  By default, apiman has a particular format (either JSON or XML
 depending on the Content-Type of the API being called) it uses when responding to the client.  However,
@@ -1441,14 +1443,15 @@ public interface IPolicyFailureWriter {
 }
 ----
 
-```java
+[source,java]
+----
 public interface IPolicyErrorWriter {
 
     public void write(ApiRequest request, Throwable error, IApiClientResponse response);
 
 }
 
-```
+----
 
 
 When creating a custom implementation, all you need to do is provide a Java class which implements
@@ -1483,7 +1486,7 @@ passed to its constructor containing the following:
 
 
 
-==== Providing a Custom User Bootstrapper
+=== Providing a Custom User Bootstrapper
 Whenever a new user is added to apiman, a record is added for her in the API Manager data store.  No
 additional steps are taken by default.  However, in some cases you may want to perform some specific
 bootstrapping tasks when a new user is created, for example:

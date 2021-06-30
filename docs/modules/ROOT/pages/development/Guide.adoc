@@ -5,7 +5,6 @@
 Are you interested in contributing to the development of apiman?  Maybe you want to embed the
 project in your own solution?  In either case this is the guide for you.
 
-
 == Developer Resources
 This section describes a number of resources that are useful if you wish to contribute
 code to apiman.  It is likely also a good starting point for those wishing to provide

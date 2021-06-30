@@ -1,6 +1,6 @@
 
 === Source Code
-The apiman source code is located in github here:
+The apiman source code is located in GitHub here:
 
 https://github.com/apiman/apiman
 
