@@ -1,0 +1,29 @@
+= Migration Instructions
+
+== Migrating from 1.5.X or 2.0.0 to 2.1.0
+
+=== Elasticsearch Migration
+
+==== Not Keeping Metrics (5.X to 7.X)
+
+If the existing metrics are not important for you:
+
+. Drop you current 5.X installation completely or delete the indexes:
+.. `apiman_metrics`
+.. `apiman_manager`
+.. `apiman_gateway`
+. Use the latest 7.X version of elasticsearch for a fresh start
+
+==== Keeping Metrics (5.X to 7.X)
+
+If you want to keep your metrics follow the steps:
+
+. Make sure you have the latest version of elasticsearch 5.x (5.6.16). You have to be at least on this version.
+. Update elasticsearch 5.6.16 to *6.8.16* with xpack enabled.
+. Make sure you have installed kibana in the same version (6.8.16 with xpack enabled)
+. Run the migration assistant as explained here to prepare to update to the required version of elasticsearch 7.X https://www.elastic.co/guide/en/kibana/6.8/upgrade-assistant.html
+. Delete the index `apiman_manager` and `apiman_gateway` in kibana. Do *not* delete `apiman_metrics`
+
+==== 7.X Notes
+
+If you are already on elasticsearch 7.X the scripts, then you have to make sure you run an export and drop/reindex the indexes `apiman_manager` and `apiman_gateway`
