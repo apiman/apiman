@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   api-management-devportal:
-    image: "apiman-devportal:latest"
+    image: "apiman/developer-portal"
     container_name: "apiman-devportal"
     expose:
 #      - "80" #enable this for http
