@@ -21,8 +21,6 @@ jobs:
     name: Verify Build
     runs-on: ubuntu-latest
     if: github.repository_owner == 'Apiman'
-    permissions:
-      pull-requests: write
     strategy:
       matrix:
         java: [ 8, 11, 17-ea ]
