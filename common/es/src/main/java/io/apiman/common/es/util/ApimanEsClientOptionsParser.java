@@ -202,7 +202,7 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
             .add("protocol='" + protocol + "'")
             .add("initialize=" + initialize)
             .add("username='" + username + "'")
-            .add("password='" + password + "'")
+            .add("password='****'")
             .add("timeout=" + timeout)
             .add("pollingTime=" + pollingTime)
             .toString();
