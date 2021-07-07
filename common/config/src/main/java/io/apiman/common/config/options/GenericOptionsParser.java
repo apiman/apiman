@@ -27,6 +27,8 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -67,6 +69,7 @@ import org.apache.commons.lang3.StringUtils;
 public class GenericOptionsParser extends AbstractOptions {
 
     private TreeMap<String, String> options;
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(GenericOptionsParser.class);
 
     public GenericOptionsParser(Map<String, String> options) {
         super(options);
@@ -258,9 +261,16 @@ public class GenericOptionsParser extends AbstractOptions {
     private AliasValueEntry getValue(List<String> keyAliases) {
         return keyAliases.stream()
             .filter(candidate -> options.containsKey(candidate))
-            .map(candidate -> AliasValueEntry.of(candidate, StringUtils.strip(options.get(candidate))))
+            .map(candidate -> mapValue(candidate, keyAliases))
             .findFirst()
             .orElse(null);
+    }
+
+    private AliasValueEntry mapValue(String candidate, List<String> keyAliases){
+        if (keyAliases.indexOf(candidate) != 0){
+            LOGGER.warn("The setting \"{0}\" has been deprecated and could be removed in future releases. Please use \"{1}\" instead.", candidate, keyAliases.get(0));
+        }
+        return AliasValueEntry.of(candidate, StringUtils.strip(options.get(candidate)));
     }
 
     private static final class AliasValueEntry {
