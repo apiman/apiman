@@ -1,4 +1,4 @@
-FROM node:12.18.0 as base
+FROM node:14.17.3 as base
 
 # Start with npm tasks
 WORKDIR /usr/src/app
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build-production
 
 # Stage 2
-FROM nginx:1.19.2-alpine
+FROM nginx:1.21.1-alpine
 
 COPY --from=base /usr/src/app/dist/api-mgmt-dev-portal /usr/share/nginx/html
 
