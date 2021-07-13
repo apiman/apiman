@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ClientMappingComponent } from './client-mapping.component';
 
@@ -22,7 +22,7 @@ describe('ClientMappingComponent', () => {
   let component: ClientMappingComponent;
   let fixture: ComponentFixture<ClientMappingComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ClientMappingComponent ]
     })

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CreateDeveloperComponent } from './create-developer.component';
 import {AdminService} from '../services/admin.service';
@@ -96,7 +96,7 @@ describe('CreateDeveloperComponent', () => {
   const toasterService = jasmine.createSpyObj('toasterService', ['pop']);
   const loadingSpinnerService = jasmine.createSpyObj('loadingSpinnerService', ['startWaiting', 'stopWaiting']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CreateDeveloperComponent, ClientMappingComponent ],
       providers: [

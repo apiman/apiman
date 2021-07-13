@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { version } from '../../../package.json';
+import pkg from '../../../package.json';
 
 @Component({
   selector: 'app-about',
@@ -32,7 +32,6 @@ export class AboutComponent implements OnInit {
    * Set version during initialization
    */
   ngOnInit() {
-    this.devportalVersion = version;
+    this.devportalVersion = pkg.version;
   }
-
 }
