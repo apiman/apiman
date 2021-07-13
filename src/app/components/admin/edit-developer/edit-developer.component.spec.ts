@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EditDeveloperComponent } from './edit-developer.component';
 
@@ -22,7 +22,7 @@ describe('EditDeveloperComponent', () => {
   let component: EditDeveloperComponent;
   let fixture: ComponentFixture<EditDeveloperComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ EditDeveloperComponent ]
     })

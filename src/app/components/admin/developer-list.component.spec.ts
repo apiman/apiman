@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DeveloperListComponent } from './developer-list.component';
 
@@ -22,7 +22,7 @@ describe('DeveloperListComponent', () => {
   let component: DeveloperListComponent;
   let fixture: ComponentFixture<DeveloperListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DeveloperListComponent ]
     })
