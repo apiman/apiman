@@ -1,6 +1,6 @@
 {
   "name": "api-mgmt-dev-portal",
-  "version": "7.7.1",
+  "version": "7.8.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --disable-host-check",
