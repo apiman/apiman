@@ -84,6 +84,7 @@
       <outputDirectory>apiman</outputDirectory>
       <includes>
         <include>io.apiman:apiman-distro-data:jar</include>
+        <include>io.apiman:apiman-distro-tools</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>

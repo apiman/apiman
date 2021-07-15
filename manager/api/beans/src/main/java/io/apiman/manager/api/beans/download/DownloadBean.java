@@ -17,6 +17,7 @@
 package io.apiman.manager.api.beans.download;
 
 import java.util.Date;
+import java.util.StringJoiner;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -114,4 +115,13 @@ public class DownloadBean {
         this.expires = expires;
     }
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", DownloadBean.class.getSimpleName() + "[", "]")
+            .add("id='" + id + "'")
+            .add("type=" + type)
+            .add("path='" + path + "'")
+            .add("expires=" + expires)
+            .toString();
+    }
 }

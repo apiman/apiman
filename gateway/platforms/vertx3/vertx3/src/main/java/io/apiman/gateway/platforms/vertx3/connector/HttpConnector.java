@@ -231,11 +231,11 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     public void abort(Throwable t) {
         bodyHandler(null);
 
-        if(clientRequest != null) {
-           clientRequest.end();
+        if (clientRequest != null) {
+            clientRequest.end();
         }
 
-        if(clientResponse != null) {
+        if (clientResponse != null) {
             clientResponse.netSocket().close(); //TODO verify
         }
     }
@@ -297,8 +297,9 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
     }
 
     private String queryParams(QueryMap queryParams) {
-        if (queryParams == null || queryParams.isEmpty())
+        if (queryParams == null || queryParams.isEmpty()) {
             return "";
+        }
 
         StringBuilder sb = new StringBuilder(queryParams.size() * 2 * 10);
         String joiner = "?";

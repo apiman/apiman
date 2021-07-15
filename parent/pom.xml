@@ -50,6 +50,7 @@
     <version.docker.plugin>0.36.0</version.docker.plugin>
     <version.frontend-maven.plugin>1.6</version.frontend-maven.plugin>
     <version.git-commit-id.plugin>2.2.1</version.git-commit-id.plugin>
+    <version.shade.plugin>3.2.4</version.shade.plugin>
 
     <!-- Dependency Versions -->
     <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
@@ -121,6 +122,8 @@
     <version.javax.json.javax.json-api>1.1.4</version.javax.json.javax.json-api>
     <version.javax.xml.bind>2.3.3</version.javax.xml.bind>
     <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
+    <version.info.picocli>4.6.1</version.info.picocli>
+    <version.apache.maven.maven-artifact>3.8.1</version.apache.maven.maven-artifact>
   </properties>
 
   <reporting>
@@ -865,6 +868,21 @@
         <groupId>org.apache.directory.server</groupId>
         <artifactId>apacheds-test-framework</artifactId>
         <version>${version.org.apache.directory.server}</version>
+      </dependency>
+      <dependency>
+        <groupId>info.picocli</groupId>
+        <artifactId>picocli</artifactId>
+        <version>${version.info.picocli}</version>
+      </dependency>
+      <dependency>
+        <groupId>info.picocli</groupId>
+        <artifactId>picocli-codegen</artifactId>
+        <version>${version.info.picocli}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${version.apache.maven.maven-artifact}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

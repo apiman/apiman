@@ -70,6 +70,12 @@
       <!-- Internal Projects -->
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-migration-assistant</artifactId>
+        <version>${project.version}</version>
+<!--        <classifier>shaded</classifier>-->
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-tools-server-all</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -651,6 +657,7 @@
     <module>manager</module>
     <module>gateway</module>
     <module>test</module>
+    <module>migration-assistant</module>
   </modules>
 
   <profiles>

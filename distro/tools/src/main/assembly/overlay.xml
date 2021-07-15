@@ -1,0 +1,33 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
+
+  <id>apiman-tools</id>
+  <formats>
+    <format>zip</format> <!-- consider dir? -->
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>*</include>
+      </includes>
+      <outputFileNameMapping>migration-assistant-cli.jar</outputFileNameMapping>
+      <useProjectArtifact>true</useProjectArtifact>
+      <useProjectAttachments>true</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+  </dependencySets>
+  <fileSets>
+    <fileSet>
+      <directory>src/main/resources/overlay</directory>
+      <outputDirectory>${project.artifactId}-${project.version}</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
+  </fileSets>
+</assembly>
