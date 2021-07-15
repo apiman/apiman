@@ -50,8 +50,12 @@
       <groupId>io.apiman</groupId>
       <artifactId>apiman-distro-data</artifactId>
     </dependency>
-
-    <!-- Keycloak -->
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-distro-tools</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+    </dependency><!-- Keycloak -->
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-server-overlay</artifactId>
