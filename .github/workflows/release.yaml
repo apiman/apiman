@@ -97,18 +97,20 @@ jobs:
           git checkout master
           git branch --set-upstream-to=origin/master
           git pull
-      - name: Apiman Deployer Code Checkout
-        run: |
-          mkdir deployer
-          cd deployer
-          git init
-          git remote add origin "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apiman/apiman-deployer.git"
-          git fetch
-          git checkout master
-          git branch --set-upstream-to=origin/master
-          git pull
+#       - name: Apiman Deployer Code Checkout
+#         run: |
+#           mkdir deployer
+#           cd deployer
+#           git init
+#           git remote add origin "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apiman/apiman-deployer.git"
+#           git fetch
+#           git checkout master
+#           git branch --set-upstream-to=origin/master
+#           git pull
 
       # Update all project versions to the version # being released
+      - name: Update Apiman *Parent* Release Version ${{steps.metadata.outputs.release-version}} in pom.xml
+        run: cd apiman/parent && mvn versions:set -DnewVersion=${{steps.metadata.outputs.release-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
       - name: Update Apiman Release Version ${{steps.metadata.outputs.release-version}} in pom.xml
         run: cd apiman && mvn versions:set -DnewVersion=${{steps.metadata.outputs.release-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
       - name: Update Apiman Version in Plugins Project
@@ -117,6 +119,8 @@ jobs:
         run: cd plugins && mvn versions:set -DnewVersion=${{steps.metadata.outputs.release-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
 
       # Validate all builds
+      - name: Validating Apiman Parent maven build
+        run: cd apiman/parent && mvn clean install
       - name: Validating Apiman maven build
         run: cd apiman && mvn clean install
       - name: Validating Apiman Plugins maven build
@@ -135,19 +139,19 @@ jobs:
           git add .
           git commit -m "Automated commit for Release Version: ${{steps.metadata.outputs.release-version}}"
           git push
-      - name: Update Apiman Deployer
-        run: |
-          cd deployer
-          sed -i  "s/APIMAN_VERSION=.*$/APIMAN_VERSION=${{steps.metadata.outputs.release-version}}/g" deployer.sh
-          git add .
-          git commit -m "Automated commit for Release Version: ${{steps.metadata.outputs.release-version}}"
-          git push
-          git tag -a -m "Tagging release $RELEASE_VERSION" ${{steps.metadata.outputs.release-version}}
-          git push origin ${{steps.metadata.outputs.release-version}}
-          sed -i  "s/APIMAN_VERSION=.*$/APIMAN_VERSION=${{steps.metadata.outputs.snapshot-version}}/g" deployer.sh
-          git add .
-          git commit -m "Update to next development version: ${{steps.metadata.outputs.snapshot-version}}"
-          git push
+#       - name: Update Apiman Deployer
+#         run: |
+#           cd deployer
+#           sed -i  "s/APIMAN_VERSION=.*$/APIMAN_VERSION=${{steps.metadata.outputs.release-version}}/g" deployer.sh
+#           git add .
+#           git commit -m "Automated commit for Release Version: ${{steps.metadata.outputs.release-version}}"
+#           git push
+#           git tag -a -m "Tagging release $RELEASE_VERSION" ${{steps.metadata.outputs.release-version}}
+#           git push origin ${{steps.metadata.outputs.release-version}}
+#           sed -i  "s/APIMAN_VERSION=.*$/APIMAN_VERSION=${{steps.metadata.outputs.snapshot-version}}/g" deployer.sh
+#           git add .
+#           git commit -m "Update to next development version: ${{steps.metadata.outputs.snapshot-version}}"
+#           git push
 
       # Create GitHub "release" with attached assets
       - name: Signing and Archiving the Quickstart ZIP
@@ -209,6 +213,8 @@ jobs:
       - name: Deploy Apiman to Maven Central
         run: |
           cd apiman
+          mvn deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
+          cd parent
           mvn deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
       # Tag and release Apiman Plugins
       - name: Tag and Release Apiman Plugins
