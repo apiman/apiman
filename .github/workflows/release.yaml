@@ -160,8 +160,10 @@ jobs:
           mkdir -p releases
           cp distro/wildfly/target/apiman-distro-wildfly-${{steps.metadata.outputs.release-version}}-overlay.zip releases/.
           cp distro/vertx/target/apiman-distro-vertx-${{steps.metadata.outputs.release-version}}.zip releases/.
+          cp distro/tomcat/target/apiman-distro-tomcat-${{steps.metadata.outputs.release-version}}.zip releases/.
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apiman-distro-wildfly-${{steps.metadata.outputs.release-version}}-overlay.zip
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apiman-distro-vertx-${{steps.metadata.outputs.release-version}}.zip
+          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apiman-distro-tomcat-${{steps.metadata.outputs.release-version}}-overlay.zip
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@latest
@@ -206,6 +208,28 @@ jobs:
           asset_path: /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-vertx-${{steps.metadata.outputs.release-version}}.zip.asc
           asset_name: apiman-distro-vertx-${{steps.metadata.outputs.release-version}}.zip.asc
           asset_content_type: application/octet-stream
+          
+      - name: Upload Tomcat Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs object, which include a `upload_url` 
+          asset_path: /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-tomcat-${{steps.metadata.outputs.release-version}}-overlay.zip
+          asset_name: apiman-distro-tomcat-${{steps.metadata.outputs.release-version}}-overlay.zip
+          asset_content_type: application/zip
+      - name: Upload Tomcat Asset (asc)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url` 
+          asset_path: /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-tomcat-${{steps.metadata.outputs.release-version}}-overlay.zip.asc
+          asset_name: apiman-distro-tomcat-${{steps.metadata.outputs.release-version}}-overlay.zip.asc
+          asset_content_type: application/octet-stream
+          
+  
+          # releases/apiman-distro-tomcat-${{steps.metadata.outputs.release-version}}-overlay.zip
       - name: Generate Release Notes
         run: cd apiman && gren release --token=${{ secrets.GITHUB_TOKEN }} --override
 
@@ -256,6 +280,8 @@ jobs:
       # Update project pom.xml files to next snapshot version and push to GH
       - name: Update Apiman Next Snapshot Version ${{steps.metadata.outputs.snapshot-version}} in pom.xml
         run: cd apiman && mvn versions:set -DnewVersion=${{steps.metadata.outputs.snapshot-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
+      - name: Update Apiman Parent Next Snapshot Version ${{steps.metadata.outputs.snapshot-version}} in pom.xml
+        run: cd apiman/parent && mvn versions:set -DnewVersion=${{steps.metadata.outputs.snapshot-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
       - name: Update Apiman Plugins Next Snapshot Version ${{steps.metadata.outputs.snapshot-version}} in pom.xml
         run: cd plugins && mvn versions:set -DnewVersion=${{steps.metadata.outputs.snapshot-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
       - name: Commit Changes for Apiman Next Snapshot Version ${{steps.metadata.outputs.snapshot-version}}
