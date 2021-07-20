@@ -119,7 +119,7 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
         );
 
         this.pollingTime = getLong(
-            keys("client.polling.time"),
+            keys("client.pollingTime", "client.polling.time"),
             DEFAULT_POLLING_TIME_SECS,
             Predicates.greaterThanZeroLong(),
             Predicates.greaterThanZeroMsg()

@@ -8,9 +8,18 @@
         "username": null,
         "password": null,
         "timeout": 10000,
-        "polling": {
-          "time": 60
-        }
+        "pollingTime": 600
+        // only for https
+        //"allowSelfSigned": false,
+        //"allowAnyHost": false,
+        //"truststore": {
+        //  "path": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
+        //  "password": "secret"
+        //},
+        //"keystore": {
+        //  "path": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
+        //  "password": "secret"
+        //}
       }
     }
   },
@@ -24,12 +33,21 @@
         "host": "${apiman.es.host}",
         "port": "${apiman.es.port}",
         "initialize": true,
-        "polling": {
-          "time": "${apiman.es.polling.time}"
-        },
+        "pollingTime": "${apiman.es.pollingTime}",
         "username": "${apiman.es.username}",
         "password": "${apiman.es.password}",
         "timeout": "${apiman.es.timeout}"//,
+        // only for https
+        //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
+        //"allowAnyHost": "${apiman.es.allowAnyHost}",
+        //"truststore": {
+        //  "path": "${apiman.es.truststore.path}",
+        //  "password": "${apiman.es.truststore.password}"
+        //},
+        //"keystore": {
+        //  "path": "${apiman.es.keystore.path.path}",
+        //  "password": "${apiman.es.keystore.path.password}"
+        //},
         //"cache-polling-interval": 15
         //"indexPrefix": ""
       }
@@ -122,9 +140,21 @@
         "host": "${apiman.es.host}",
         "port": "${apiman.es.port}",
         "initialize": true,
+        "pollingTime": "${apiman.es.pollingTime}",
         "username": "${apiman.es.username}",
         "password": "${apiman.es.password}",
-        "timeout": "${apiman.es.timeout}"
+        "timeout": "${apiman.es.timeout}"//,
+        // only for https
+        //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
+        //"allowAnyHost": "${apiman.es.allowAnyHost}",
+        //"truststore": {
+        //  "path": "${apiman.es.truststore.path}",
+        //  "password": "${apiman.es.truststore.password}"
+        //},
+        //"keystore": {
+        //  "path": "${apiman.es.keystore.path.path}",
+        //  "password": "${apiman.es.keystore.path.password}"
+        //},
       }
     }
   },
@@ -140,9 +170,21 @@
           "host": "${apiman.es.host}",
           "port": "${apiman.es.port}",
           "initialize": true,
+          "pollingTime": "${apiman.es.pollingTime}",
           "username": "${apiman.es.username}",
           "password": "${apiman.es.password}",
-          "timeout": "${apiman.es.timeout}"
+          "timeout": "${apiman.es.timeout}"//,
+          // only for https
+          //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
+          //"allowAnyHost": "${apiman.es.allowAnyHost}",
+          //"truststore": {
+          //  "path": "${apiman.es.truststore.path}",
+          //  "password": "${apiman.es.truststore.password}"
+          //},
+          //"keystore": {
+          //  "path": "${apiman.es.keystore.path.path}",
+          //  "password": "${apiman.es.keystore.path.password}"
+          //},
         }
       }
     },
@@ -157,9 +199,21 @@
           "host": "${apiman.es.host}",
           "port": "${apiman.es.port}",
           "initialize": true,
+          "pollingTime": "${apiman.es.pollingTime}",
           "username": "${apiman.es.username}",
           "password": "${apiman.es.password}",
-          "timeout": "${apiman.es.timeout}"
+          "timeout": "${apiman.es.timeout}"//,
+          // only for https
+          //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
+          //"allowAnyHost": "${apiman.es.allowAnyHost}",
+          //"truststore": {
+          //  "path": "${apiman.es.truststore.path}",
+          //  "password": "${apiman.es.truststore.password}"
+          //},
+          //"keystore": {
+          //  "path": "${apiman.es.keystore.path.path}",
+          //  "password": "${apiman.es.keystore.path.password}"
+          //},
         }
       }
     },
@@ -174,9 +228,21 @@
           "host": "${apiman.es.host}",
           "port": "${apiman.es.port}",
           "initialize": true,
+          "pollingTime": "${apiman.es.pollingTime}",
           "username": "${apiman.es.username}",
           "password": "${apiman.es.password}",
-          "timeout": "${apiman.es.timeout}"
+          "timeout": "${apiman.es.timeout}"//,
+          // only for https
+          //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
+          //"allowAnyHost": "${apiman.es.allowAnyHost}",
+          //"truststore": {
+          //  "path": "${apiman.es.truststore.path}",
+          //  "password": "${apiman.es.truststore.password}"
+          //},
+          //"keystore": {
+          //  "path": "${apiman.es.keystore.path.path}",
+          //  "password": "${apiman.es.keystore.path.password}"
+          //},
         }
       }
     },

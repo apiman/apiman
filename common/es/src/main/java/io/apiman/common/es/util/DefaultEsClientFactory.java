@@ -156,8 +156,8 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
     private void updateSslConfig(HttpAsyncClientBuilder asyncClientBuilder, GenericOptionsParser config) {
         try {
             // TODO(msavy): merge together with TLSOptions?
-            final boolean allowSelfSigned = config.getBool(keys("client.allowSelfSigned"), false);
-            final boolean allowAnyHost = config.getBool(keys("client.allowAnyHost"), false);
+            final boolean allowSelfSigned = config.getBool(keys("client.allowSelfSigned", "client.trust.certificate"), false);
+            final boolean allowAnyHost = config.getBool(keys("client.allowAnyHost", "client.trust.host"), false);
 
             Path clientKeystorePath = config.getRequiredPath(
                 keys("client.keystore.path", "client.keystore"),
