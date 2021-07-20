@@ -38,7 +38,6 @@ import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
 import io.apiman.manager.api.es.EsMetricsAccessor;
-import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -88,8 +87,6 @@ public class ManagerApiMicroServiceCdiFactory {
         IStorage storage;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = initJpaStorage(config, jpaStorage);
-        } else if (EsUtils.isEsOrJest(config.getStorageType())) { //$NON-NLS-1$
-            storage = new EsStorage(config.getStorageESClientFactoryConfig());
         } else {
             try {
                 storage = createCustomComponent(IStorage.class, config.getStorageType(),
@@ -112,8 +109,6 @@ public class ManagerApiMicroServiceCdiFactory {
                                                     IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageQueryType())) { //$NON-NLS-1$
             return initJpaStorage(config, jpaStorage);
-        } else if (EsUtils.isEsOrJest(config.getStorageQueryType())) { //$NON-NLS-1$
-            return new EsStorage(config.getStorageESClientFactoryConfig());
         } else {
             try {
                 return createCustomComponent(IStorageQuery.class, config.getStorageQueryType(),

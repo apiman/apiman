@@ -33,7 +33,6 @@ import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.es.EsMetricsAccessor;
-import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.IJpaProperties;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -60,8 +59,6 @@ import javax.inject.Named;
 @SuppressWarnings("nls")
 @Named("ApimanLogFactory")
 public class TestCdiFactory {
-
-    private static final int JEST_TIMEOUT = -1;
 
     @Produces @ApplicationScoped
     public static ISecurityContext provideSecurityContext(@New DefaultSecurityContext defaultSC) {
@@ -104,9 +101,6 @@ public class TestCdiFactory {
         TestType testType = ManagerTestUtils.getTestType();
         if (testType == TestType.jpa) {
             return jpaStorage;
-        } else if (testType == TestType.es) {
-            EsStorage esStorage = new EsStorage(ManagerApiTestServer.getTestClientConfig());
-            return new TestEsStorageWrapper(esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
         }
@@ -117,9 +111,6 @@ public class TestCdiFactory {
         TestType testType = ManagerTestUtils.getTestType();
         if (testType == TestType.jpa) {
             return jpaStorage;
-        } else if (testType == TestType.es) {
-            EsStorage esStorage = new EsStorage(ManagerApiTestServer.getTestClientConfig());
-            return new TestEsStorageQueryWrapper(esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
         }
