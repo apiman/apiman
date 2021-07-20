@@ -29,7 +29,6 @@ public class MustNotFilterBuilder extends AbstractQueryBuilder {
 
     /**
      * Constructor.
-     * @param operationType
      * @param filters
      */
     public MustNotFilterBuilder(QueryBuilder... filters) {

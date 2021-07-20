@@ -29,7 +29,6 @@ public class MustFilterBuilder extends AbstractQueryBuilder {
 
     /**
      * Constructor.
-     * @param operationType
      * @param filters
      */
     public MustFilterBuilder(QueryBuilder... filters) {
