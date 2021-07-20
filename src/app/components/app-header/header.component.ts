@@ -16,7 +16,7 @@
 
 import {Component} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
-import {environment} from '../../../environments/environment';
+import { faUserCircle, faCaretDown, faInfo, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-app-header',
@@ -24,9 +24,11 @@ import {environment} from '../../../environments/environment';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-
-  public user: string = this.keycloak.getKeycloakInstance().profile.username;
-  public logo: string = environment.logoUrl;
+  public faUserCircle = faUserCircle;
+  public faCaretDown = faCaretDown;
+  public faInfo = faInfo;
+  public faSignOutAlt = faSignOutAlt;
+  public user: string = this.keycloak.getKeycloakInstance().profile.firstName + ' ' + this.keycloak.getKeycloakInstance().profile.lastName;
 
   constructor(private keycloak: KeycloakService) {}
 
@@ -39,5 +41,4 @@ export class HeaderComponent {
       redirectUri: location.href
     });
   }
-
 }

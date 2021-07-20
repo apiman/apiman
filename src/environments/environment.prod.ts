@@ -19,7 +19,6 @@ export const environment = {
   apiMgmtRealm: '${KEYCLOAK_REALM}',
   apiMgmtUiRestUrl: '${API_MGMT_UI_REST_URL}',
   keycloakAuthUrl: '${KEYCLOAK_AUTH_URL}',
-  logoUrl: '${LOGO_FILE_URL}',
   aboutLogoUrl: '${ABOUT_LOGO_FILE_URL}',
   firstLink: '${FIRST_LINK}',
   firstLinkLabel: '${FIRST_LINK_LABEL}',

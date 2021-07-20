@@ -23,7 +23,6 @@ export const environment = {
   apiMgmtRealm: '[keycloakRealm]',
   apiMgmtUiRestUrl: 'https://[apimanUiRestEndpoint]:[port]/apiman',
   keycloakAuthUrl: 'https://[keycloakEndpoint]:[port]/auth',
-  logoUrl: 'assets/ScheerPASLogo.svg',
   aboutLogoUrl: 'assets/about-logo.png',
   firstLink: 'https://scheer-pas.com',
   firstLinkLabel: 'Project Site',

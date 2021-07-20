@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "$schema": "node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -29,13 +29,14 @@
             ],
             "styles": [
               "src/styles/styles.scss",
-              "./node_modules/angular2-toaster/src/toaster.scss",
-              "./node_modules/swagger-ui-dist/swagger-ui.css",
+              "node_modules/typeface-roboto/index.css",
+              "node_modules/angular2-toaster/src/toaster.scss",
+              "node_modules/swagger-ui-dist/swagger-ui.css",
               "src/styles/swagger-custom-styles.css"
             ],
             "scripts": [
-              "./node_modules/swagger-ui-dist/swagger-ui-bundle.js",
-              "./node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
+              "node_modules/swagger-ui-dist/swagger-ui-bundle.js",
+              "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,
@@ -109,8 +110,8 @@
             "styles": [
               "src/styles/styles.scss",
               "node_modules/typeface-roboto/index.css",
-              "./node_modules/angular2-toaster/src/toaster.scss",
-              "./node_modules/swagger-ui-dist/swagger-ui.css",
+              "node_modules/angular2-toaster/src/toaster.scss",
+              "node_modules/swagger-ui-dist/swagger-ui.css",
               "src/styles/swagger-custom-styles.css"
             ],
             "scripts": []

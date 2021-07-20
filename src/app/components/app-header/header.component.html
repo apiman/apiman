@@ -14,25 +14,28 @@
   ~ limitations under the License.
   -->
 
-<nav>
-  <img routerLink="/" src="{{ logo }}" class="logo clickable" alt="Logo">
-
+<header>
+  <div class="caption">API Developer Portal</div>
   <div class="rightMenu">
     <div class="floatRight">
-      <mat-icon id="header-icon">desktop_windows</mat-icon>
-      <div id="app-header">Developer Portal</div>
       <div class="dropDownWrapper clickable" [matMenuTriggerFor]="menu">
-        <mat-icon id="user-icon">person</mat-icon>
         <div id="app-user">{{user}}</div>
-        <mat-icon id="dropDown">keyboard_arrow_down</mat-icon>
+        <fa-icon class="header-icons" [icon]="faUserCircle"></fa-icon>
+        <fa-icon class="header-icons" id="caret" [icon]="faCaretDown"></fa-icon>
       </div>
       <mat-menu #menu="matMenu">
-        <div mat-menu-item class="clickable" routerLink="/about">About</div>
-        <div mat-menu-item class="clickable" (click)="logout()">Logout</div>
+        <div mat-menu-item class="clickable" routerLink="/about">
+          <fa-icon class="drop-icon" [icon]="faInfo"></fa-icon>
+          <span>About</span>
+        </div>
+        <div mat-menu-item class="clickable" (click)="logout()">
+          <fa-icon class="drop-icon" [icon]="faSignOutAlt"></fa-icon>
+          <span>Logout</span>
+        </div>
       </mat-menu>
     </div>
   </div>
-</nav>
+</header>
 
 
 

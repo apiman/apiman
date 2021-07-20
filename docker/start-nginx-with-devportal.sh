@@ -24,15 +24,6 @@ then
 fi
 sed -i "s|FAVICON_FILE_URL|${FAVICON_FILE_URL:-favicon.ico}|g" "/usr/share/nginx/html/index.html"
 
-
-# Set the default logo
-if [ -n "$LOGO_FILE_URL" ]
-then
-  printf "Using custom img url: %s\n" "$LOGO_FILE_URL"
-else
-  export LOGO_FILE_URL="assets/ScheerPASLogo.svg"
-fi
-
 # Set the default about logo
 if [ -n "$ABOUT_LOGO_FILE_URL" ]
 then

@@ -19,22 +19,108 @@
 @import './material-icons.scss';
 
 :root {
-  --branding-bg-color: #06618e;
+  /* Scheer Corporate Colors */
+  --red: rgba(208, 50, 55, 1);
+  --red-80: rgba(208, 50, 55, .8);
+  --red-60: rgba(208, 50, 55, .6);
+  --red-40: rgba(208, 50, 55, .4);
+  --red-20: rgba(208, 50, 55, .2);
 
-  --branding-header-bg-color: #c8c9cc;
-  --branding-header-color: #6a747f;
+  --blue: rgba(41, 150, 204, 1);
+  --blue-80: rgba(41, 150, 204, .8);
+  --blue-60: rgba(41, 150, 204, .6);
+  --blue-40: rgba(41, 150, 204, .4);
+  --blue-20: rgba(41, 150, 204, .2);
 
-  --branding-menu-color: white;
+  --grey: rgba(186, 182, 185, 1);
+  --grey-80: rgba(186, 182, 185, .8);
+  --grey-60: rgba(186, 182, 185, .6);
+  --grey-40: rgba(186, 182, 185, .4);
+  --grey-20: rgba(186, 182, 185, .2);
 
-  --branding-button-bg: #2996cc;
-  --branding-button-border-color: #2996cc;
+  --white: rgba(255, 255, 255, 1);
+
+  --dark-red: rgba(172, 30, 28, 1);
+  --dark-red-80: rgba(172, 30, 28, .8);
+  --dark-red-60: rgba(172, 30, 28, .6);
+  --dark-red-40: rgba(172, 30, 28, .4);
+  --dark-red-20: rgba(172, 30, 28, .2);
+
+  --dark-blue: rgba(5, 97, 141, 1);
+  --dark-blue-80: rgba(5, 97, 141, .8);
+  --dark-blue-60: rgba(5, 97, 141, .6);
+  --dark-blue-40: rgba(5, 97, 141, .4);
+  --dark-blue-20: rgba(5, 97, 141, .2);
+
+  --dark-grey: rgba(106, 116, 127, 1);
+  --dark-grey-80: rgba(106, 116, 127, .8);
+  --dark-grey-60: rgba(106, 116, 127, .6);
+  --dark-grey-40: rgba(106, 116, 127, .4);
+  --dark-grey-20: rgba(106, 116, 127, .2);
+
+  --black: rgba(0, 0, 0, 1);
+  --black-80: rgba(0, 0, 0, .8);
+  --black-60: rgba(0, 0, 0, .6);
+  --black-40: rgba(0, 0, 0, .4);
+  --black-20: rgba(0, 0, 0, .2);
+
+  --orange: rgba(239, 124, 0, 1);
+  --orange-80: rgba(239, 124, 0, .8);
+  --orange-60: rgba(239, 124, 0, .6);
+  --orange-40: rgba(239, 124, 0, .4);
+  --orange-20: rgba(239, 124, 0, .2);
+
+  --Pantone-vivid-navy: rgba(0, 67, 255, 1);
+  --Pantone-vivid-navy-80: rgba(0, 67, 255, .8);
+  --Pantone-vivid-navy-60: rgba(0, 67, 255, .6);
+  --Pantone-vivid-navy-40: rgba(0, 67, 255, .4);
+  --Pantone-vivid-navy-20: rgba(0, 67, 255, .2);
+
+  --Pantone-deep-navy: rgba(17, 44, 116, 1);
+  --Pantone-deep-navy-80: rgba(17, 44, 116, .8);
+  --Pantone-deep-navy-60: rgba(17, 44, 116, .6);
+  --Pantone-deep-navy-40: rgba(17, 44, 116, .4);
+  --Pantone-deep-navy-20: rgba(17, 44, 116, .2);
+
+  --Pantone-1797C: rgba(192, 66, 64, 1);
+  --Pantone-1797C-80: rgba(192, 66, 64, .8);
+  --Pantone-1797C-60: rgba(192, 66, 64, .6);
+  --Pantone-1797C-40: rgba(192, 66, 64, .4);
+  --Pantone-1797C-20: rgba(192, 66, 64, .2);
+
+  --Pantone-black: rgba(15, 21, 30, 1);
+  --Pantone-black-80: rgba(15, 21, 30, .8);
+  --Pantone-black-60: rgba(15, 21, 30, .6);
+  --Pantone-black-40: rgba(15, 21, 30, .4);
+  --Pantone-black-20: rgba(15, 21, 30, .2);
+
+  /* light grey */
+  --Pantone-P106-1C: rgba(244, 245, 248, 1);
+
+  /* grey */
+  --Pantone-P179-2U: rgba(218, 220, 223, 1);
+
+  /* medium grey */
+  --Pantone-P174-4U: rgba(146, 148, 153, 1);
+
+  /* dark grey */
+  --Pantone-P174-10U: rgba(105, 108, 118, 1);
+
+
+  /* Devportal Colors */
+
+  --branding-bg-color: var(--blue);
+
+  --branding-menu-color: var(--white);
+
+  --branding-button-bg: var(--blue);
+  --branding-button-border-color: var(--blue);
+  --branding-button-hover-color: var(--blue);
+  --branding-button-focus-color: var(--blue);
 
   --branding-container-header-color: var(--branding-bg-color);
 
-  --branding-button-hover-color: #06628e;
-  --branding-button-focus-color: #06628e;
-
-  --alert-color-hover: #ac1e1c;
+  --alert-color-hover: var(--red);
 
   --branding-grey-color-fill: #bab6b9;
   --branding-color-green: #0F9D58;

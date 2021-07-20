@@ -14,21 +14,34 @@
  * limitations under the License.
  */
 
-:host {
-  background: var(--branding-header-bg-color);
-  display: flex;
-
-  padding: 18px;
-  color: var(--branding-header-color);
-}
-
-nav {
+header {
+  background-image: url(^assets/ScheerPASLogo.svg),
+    linear-gradient(to right, transparent 0, transparent 48px, var(--white) 48px, var(--white) 248px, transparent 248px),
+    linear-gradient(to bottom, var(--blue) 0, var(--blue) 8px, var(--white) 8px);
+  background-repeat: no-repeat;
+  background-position: 64px center, left, center;
+  background-size: auto 20px, 100%, 100%;
+  height: 60px;
   width: 100%;
+  box-sizing: border-box;
+  padding: 0 32px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  z-index: 2;
 }
 
-.logo {
-  height: 20px;
-  width: 170px;
+header .caption {
+  display: flex;
+  flex-grow: 1;
+  margin: 0 0 0 216px;
+  font-size: 24px;
+  align-items: center;
+  font-weight: 200;
+  line-height: 20px;
 }
 
 .rightMenu {
@@ -58,6 +71,8 @@ mat-icon {
 
 #app-user {
   margin-top: 3px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .dropDownWrapper {
@@ -76,4 +91,30 @@ mat-icon {
 
 #dropDown {
   margin-left: 0;
+}
+
+.header-icons {
+  color: var(--blue-80);
+  height: 24px;
+  width: 24px;
+  font-size: 24px;
+  margin-left: 8px;
+  text-align: center;
+}
+
+.drop-icon {
+  color: var(--blue-80);
+  height: 24px;
+  width: 24px;
+  font-size: 24px;
+  margin-left: 8px;
+  margin-right: 16px;
+  vertical-align: sub;
+  display: inline-block;
+}
+
+#caret {
+  font-size: 14px;
+  line-height: 24px;
+  width: auto;
 }
