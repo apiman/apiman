@@ -352,9 +352,9 @@
       // even if your client is not set to "confidential". Leave this dummy section if you're using non-confidential.
       "credentials": {
         "secret": "217b725d-7790-47a7-a3fc-5cf31f92a8db"
-      },
-      "truststore": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
-      "truststore-password": "secret"
+      }//,
+      // "truststore": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
+      // "truststore-password": "secret"
       // "client-keystore": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
       // "client-keystore-password": "secret"
       // End paste here
