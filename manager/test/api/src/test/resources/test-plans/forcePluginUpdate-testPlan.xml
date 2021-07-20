@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+    <testGroup name="Force republish after a plugin update">
+        <test name="Create Gateway">test-plan-data/plugins/force-update-on-gateway/000_create-gateway.resttest</test>
+        <test name="Add plugin">test-plan-data/plugins/force-update-on-gateway/001_add-fields-plugin.resttest</test>
+        <test name="Create Org">test-plan-data/plugins/force-update-on-gateway/002_create-org-1.resttest</test>
+        <test name="Create API">test-plan-data/plugins/force-update-on-gateway/003_create-api-1.resttest</test>
+        <test name="Create API Version">test-plan-data/plugins/force-update-on-gateway/004_create-api-version-1.0.resttest</test>
+        <test name="Add Policy">test-plan-data/plugins/force-update-on-gateway/005_create-policy-1.resttest</test>
+        <test name="Publish API">test-plan-data/plugins/force-update-on-gateway/006_publish-api-1.resttest</test>
+        <test name="Update Plugins at import">test-plan-data/plugins/force-update-on-gateway/007_import-new-plugin-version.resttest</test>
+    </testGroup>
+</testPlan>

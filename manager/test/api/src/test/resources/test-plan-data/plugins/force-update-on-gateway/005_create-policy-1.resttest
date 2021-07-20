@@ -1,0 +1,33 @@
+POST /organizations/Organization1/apis/API1/versions/1.0/policies admin/admin
+Content-Type: application/json
+
+{
+  "definitionId" : "fields-policy"
+}
+----
+200
+Content-Type: application/json
+
+{
+	"id": 6,
+	"type": "Api",
+	"organizationId": "Organization1",
+	"entityId": "API1",
+	"entityVersion": "1.0",
+	"name": "Fields Policy",
+	"createdBy": "admin",
+	"modifiedBy": "admin",
+	"definition": {
+		"id": "fields-policy",
+		"policyImpl": "plugin:io.apiman.test:custom-fields-plugin:1.0-SNAPSHOT:war/io.apiman.test.plugins.FieldsPolicy",
+		"name": "Fields Policy",
+		"description": "A policy used to test refreshing a snapshot plugin policy...",
+		"icon": "question",
+		"templates": [],
+		"pluginId": ${plugin-id},
+		"formType": "JsonSchema",
+		"form": "schemas/fields-policyDef.schema",
+		"deleted": false
+	},
+	"orderIndex": 1
+}

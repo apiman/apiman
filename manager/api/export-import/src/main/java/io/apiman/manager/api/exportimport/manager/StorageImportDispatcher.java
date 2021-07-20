@@ -106,6 +106,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
 
     private MetadataBean currentMetadata = new MetadataBean();
 
+    private boolean forceReRegisterAll = false;
+
     /**
      * Constructor.
      */
@@ -122,8 +124,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * Set an additional logger implementations. 
-     * 
+     * Set an additional logger implementations.
+     *
      * @see #start(String, IApimanLogger)
      */
     public void start(String fileName, List<IApimanLogger> extraLoggers) {
@@ -240,6 +242,9 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
                 plugin.setId(null);
                 storage.createPlugin(plugin);
             }
+            // after update plugins we force reregister of everything to update published plugins in the gateway
+            forceReRegisterAll = true;
+
         } catch (StorageException e) {
             error(e);
         }
@@ -542,6 +547,10 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     @Override
     public void close() {
         try {
+            if (forceReRegisterAll) {
+                reregisterAll();
+            }
+
             importContracts();
             publishApis();
             registerClients();
@@ -634,6 +643,38 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void reregisterAll() throws StorageException {
+        Iterator<OrganizationBean> organizations = storage.getAllOrganizations();
+
+        while (organizations.hasNext()){
+            OrganizationBean organizationBean = organizations.next();
+            // Get all apis
+            Iterator<ApiBean> apis = storage.getAllApis(organizationBean.getId());
+            while (apis.hasNext()){
+                ApiBean apiBean = apis.next();
+                Iterator<ApiVersionBean> apiVersions = storage.getAllApiVersions(organizationBean.getId(), apiBean.getId());
+                while (apiVersions.hasNext()){
+                    ApiVersionBean apiVersionBean = apiVersions.next();
+                    if (apiVersionBean.getStatus() == ApiStatus.Published) {
+                        apisToPublish.add(new EntityInfo(organizationBean.getId(), apiBean.getId(), apiVersionBean.getVersion()));
+                    }
+                }
+            }
+            // Get all clients
+            Iterator<ClientBean> clients = storage.getAllClients(organizationBean.getId());
+            while (clients.hasNext()){
+                ClientBean clientBean = clients.next();
+                Iterator<ClientVersionBean> clientVersions = storage.getAllClientVersions(organizationBean.getId(), clientBean.getId());
+                while (clientVersions.hasNext()){
+                    ClientVersionBean clientVersionBean = clientVersions.next();
+                    if (clientVersionBean.getStatus() == ClientStatus.Registered) {
+                        clientsToRegister.add(new EntityInfo(organizationBean.getId(), clientBean.getId(), clientVersionBean.getVersion()));
+                    }
+                }
+            }
         }
     }
 

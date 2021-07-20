@@ -1,0 +1,52 @@
+POST /system/import admin/admin
+Content-Type: application/json
+
+{
+  "Metadata": {
+    "exportedOn": 1445973221630,
+    "apimanVersion": "1.2.3-SNAPSHOT"
+  },
+  "Plugins": [
+    {
+      "id": 1,
+      "groupId": "io.apiman.test",
+      "artifactId": "custom-fields-plugin",
+      "version": "2.0.0",
+      "name": "Fields Policy Plugin",
+      "description": "This is a simple plugin that tests refreshing a plugin in the API manager. (v1)",
+      "createdBy": "admin",
+      "createdOn": "2021-07-22T06:43:26Z",
+      "deleted": false
+    }
+  ],
+  "PolicyDefinitions": [
+    {
+      "id": "fields-policy",
+      "policyImpl": "plugin:io.apiman.test:custom-fields-plugin:2.0.0:war/io.apiman.test.plugins.FieldsPolicy",
+      "name": "Fields Policy",
+      "description": "A policy used to test refreshing a snapshot plugin policy...",
+      "icon": "question",
+      "templates": [],
+      "pluginId": 1,
+      "formType": "JsonSchema",
+      "form": "schemas/fields-policyDef.schema",
+      "deleted": false
+    }
+  ]
+}
+
+----
+200
+Content-Type: text/plain;charset=utf-8
+X-RestTest-RegexMatching: true
+
+INFO: ----------------------------
+INFO: Starting apiman data import: .*apiman_import_migrated.*.json
+INFO: Importing a plugin: io.apiman.test/custom-fields-plugin/2.0.0
+INFO: Importing a policy definition: Fields Policy
+INFO: Publishing APIs to the gateway.
+INFO:  Publishing API: Organization1 / API1 -> 1.0
+INFO: Registering clients in the gateway.
+INFO: -----------------------------------
+INFO: Data import completed successfully!
+INFO: -----------------------------------
