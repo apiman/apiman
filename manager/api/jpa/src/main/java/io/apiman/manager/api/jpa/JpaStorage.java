@@ -2222,7 +2222,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM AuditEntryBean b "
-                + "WHERE organization_id = :orgId "
+                + "WHERE b.organizationId = :orgId "
                 + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
@@ -2266,7 +2266,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
                 "SELECT b "
                 + "FROM RoleMembershipBean b "
-                + "WHERE organizationId = :orgId "
+                + "WHERE b.organizationId = :orgId "
                 + "ORDER BY b.id ASC"; //$NON-NLS-1$
 
         Query query = entityManager.createQuery(jpql);
@@ -2504,7 +2504,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query = getActiveEntityManager().createNativeQuery(sql);
         } else {
             String jpql =
-                "DELETE ContractBean deleteBean " +
+                "DELETE FROM ContractBean deleteBean " +
                 "   WHERE deleteBean IN ( " +
                 "       SELECT b " +
                 "           FROM ContractBean b " +
@@ -2541,7 +2541,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query = getActiveEntityManager().createNativeQuery(sql);
         } else {
             String jpql =
-                "DELETE ContractBean deleteBean " +
+                "DELETE FROM ContractBean deleteBean " +
                 "   WHERE deleteBean IN ( " +
                 "       SELECT b " +
                 "           FROM ContractBean b " +
@@ -2577,7 +2577,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query = getActiveEntityManager().createNativeQuery(sql);
         } else {
             String jpql =
-                "DELETE ContractBean deleteBean " +
+                "DELETE FROM ContractBean deleteBean " +
                 "   WHERE deleteBean IN ( " +
                 "       SELECT b " +
                 "           FROM ContractBean b " +
