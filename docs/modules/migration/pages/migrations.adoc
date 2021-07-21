@@ -24,7 +24,7 @@ WARNING: This will result in data loss, please ensure this data is not important
 
 If the existing metrics are not important for you:
 
-. Drop you current 5.X installation completely or delete the indexes:
+. Drop your current 5.X installation completely or delete the indexes:
 .. `apiman_metrics`
 .. `apiman_manager`
 .. `apiman_gateway`
