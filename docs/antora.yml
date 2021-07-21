@@ -1,6 +1,6 @@
 name: core
-title: Development Guide
+title: Apiman Guides
 version: 1.5.7.Final
-start_page: ROOT:development/Guide.adoc
+start_page: ROOT:index.adoc
 nav:
   - modules/ROOT/nav.adoc

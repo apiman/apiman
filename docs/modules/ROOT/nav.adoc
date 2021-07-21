@@ -1,4 +1,5 @@
-* xref:development/Guide.adoc[Guide]
-** xref:development/Gateway.adoc[Gateway]
-** xref:development/Plugins.adoc[Plugins]
-** xref:development/Resources.adoc[Resources]
+* xref:development:Guide.adoc[Development Guide]
+** xref:development:Guide.adoc#_developer_resources[Developer Resources]
+** xref:development:Guide.adoc#_plugins[Apiman Plugins]
+** xref:development:Guide.adoc#_gateway_implementations[Gateway Implementations]
+
