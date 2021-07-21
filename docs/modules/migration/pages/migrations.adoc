@@ -1,0 +1,52 @@
+= Apiman Migration Guide
+
+Notes for upgrading to newer versions of Apiman.
+
+== Migrating to 2.1.0.Final
+
+If upgrading to Apiman 2.1.0.Final from a prior version.
+
+If you are not using Elasticsearch, then no special action is required.
+
+=== Elasticsearch
+
+If you are using Elasticsearch for the Apiman Manager API backend and/or metrics, the following sections are important to pay close attention to.
+
+Over time, it has become increasingly more difficult to maintain backwards compatibility between different versions of Elasticsearch due to frequent changes to all aspects of the database in the upstream (schemas, types, etc).
+
+Please pay close attention to the instructions, as Elasticsearch can be very selective which versions work properly during an upgrade process.
+
+TIP: Consider backing up your data before taking any action.
+
+==== Discarding Metrics (5.X to 7.X)
+
+WARNING: This will result in data loss, please ensure this data is not important before dropping any indices.
+
+If the existing metrics are not important for you:
+
+. Drop you current 5.X installation completely or delete the indexes:
+.. `apiman_metrics`
+.. `apiman_manager`
+.. `apiman_gateway`
+. Use the latest 7.X version of Elasticsearch for a fresh start
+
+==== Keeping Metrics (5.X to 7.X)
+
+NOTE: Enabling the Elasticsearch `xpack` features may change the license that you are running Elasticsearch under. Users should perform appropriate due diligence.
+
+If you want to keep your metrics follow the steps:
+
+. Make sure you have the latest version of Elasticsearch 5.x (5.6.16). You have to be at least on this version.
+. Update Elasticsearch 5.6.16 to *6.8.16* with `xpack` enabled.
+. Make sure you have installed kibana in the same version (6.8.16 with `xpack` enabled)
+. Run the migration assistant as explained here to prepare to update to the required version of Elasticsearch 7.X https://www.elastic.co/guide/en/kibana/6.8/upgrade-assistant.html
+. Delete the index `apiman_manager` and `apiman_gateway` in kibana. Do *not* delete `apiman_metrics`
+
+==== 7.X Notes
+
+A bug was introduced in the schema definition in 2.0.0.Final.
+
+If you are already on Elasticsearch 7.X, then make sure you run an export, and drop/reindex the indexes `apiman_manager` and `apiman_gateway`.
+
+Metrics should be unaffected.
+
