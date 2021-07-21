@@ -597,7 +597,7 @@ after a plugin has been selected by a user.
 ----
 
 .Generated UI Form
-image::plugin-policy-config-1.png[Generated UI Form]
+image::ROOT:plugin-policy-config-1.png[Generated UI Form]
 
 .JSON Configuration Data Format
 [source,json]
