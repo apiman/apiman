@@ -9,6 +9,13 @@
 
   <name>apiman-parent</name>
   <description>Apiman Parent</description>
+  <url>https://www.apiman.io/</url>
+
+  <organization>
+    <name>Apiman</name>
+    <url>https://www.github.com/apiman</url>
+  </organization>
+
   <licenses>
     <license>
       <name>Apache License Version 2.0</name>
@@ -16,6 +23,31 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://www.github.com/apiman/apiman/issues</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:git@github.com:apiman/apiman.git</connection>
+    <developerConnection>scm:git:git@github.com:apiman/apiman.git</developerConnection>
+    <url>scm:git:git@github.com:apiman/apiman.git</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Marc Savy</name>
+      <id>msavy</id>
+      <email>marc@blackparrotlabs.io</email>
+      <organization>Black Parrot Labs</organization>
+      <roles>
+        <role>Tech Lead</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
