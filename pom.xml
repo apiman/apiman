@@ -3,14 +3,14 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-parent</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.1.0.Final</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.apiman.plugins</groupId>
   <artifactId>apiman-plugins</artifactId>
-  <version>2.0.1-SNAPSHOT</version>
+  <version>2.1.0.Final</version>
   <name>apiman-plugins</name>
   <packaging>pom</packaging>
 
@@ -85,7 +85,7 @@
   </repositories>
 
   <properties>
-    <version.apiman>2.0.1-SNAPSHOT</version.apiman>
+    <version.apiman>2.1.0.Final</version.apiman>
 
     <version.org.bouncycastle>1.60</version.org.bouncycastle>
     <version.org.json>20140107</version.org.json>
