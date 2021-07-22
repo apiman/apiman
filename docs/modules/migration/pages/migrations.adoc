@@ -8,13 +8,15 @@ If upgrading to Apiman 2.1.0.Final from a prior version.
 
 === Manual action required
 
+==== Fixing pre-2.1.0.Final Apiman export files
+
 In older versions of Apiman Manager export files were missing their Api Definition schemas (Swagger, OpenAPI, etc).
 
 We have provided a migration assistant CLI tool in order to fix this.
 
 * Download an Apiman distro (e.g. Tomcat, Wildfly).
 * In the `apiman` folder you will find a file called `migration-assistant-cli.jar`.
-* You can run the tool as follows:
+* You can run the tool as follows. Note that it should be run against the *older/existing installation* (i.e. pre-2.1.0.Final):
 
 ```
 $ java -jar migration-assistant-cli.jar export upgrade \
@@ -26,11 +28,13 @@ $ java -jar migration-assistant-cli.jar export upgrade \
 ```
 <1> An Apiman user with administrator privileges.
 <2> Password.
-<3> Apiman Manager API endpoint, often this is your bound hostname followed by `/apiman`.
+<3> Apiman Manager API endpoint of your *old version of Apiman*, often this is your bound hostname followed by `/apiman`.
 <4> Where to write the enriched export JSON.
 <5> Whether to trust all certificates and hostnames (when using TLS).
 
 This initial version of the migration assistant tool does nothing other than this enrichment operation.
+
+Once the operation is completed, you can import the file into Apiman 2.1.0.Final and the API definitions will be present.
 
 === Elasticsearch
 
