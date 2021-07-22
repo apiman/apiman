@@ -25,6 +25,8 @@ import io.apiman.migration.util.OkHttpUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -82,6 +84,9 @@ public class EnrichPre21ExportCommand implements Callable<Integer> {
     @Option(names = { "--output" }, required = true, description = "Where to write the enriched JSON file")
     File output;
 
+    @Option(names = { "--overwrite" }, description = "Overwrite the output file if it already exists")
+    boolean overwriteIfExists = false;
+
     @Option(names = { "-k", "--trust-all" }, description = "Trust all certificates when connecting to endpoint")
     boolean trustAll = false;
 
@@ -89,16 +94,24 @@ public class EnrichPre21ExportCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-
         client = OkHttpUtils.createClient(trustAll);
         checkVersion();
         DownloadBean downloadBean = triggerExport();
         File exportJson = downloadExportJson(downloadBean);
         JsonNode rootNode = enrichWithSchema(exportJson);
 
+        if (Files.exists(output.toPath())) {
+            if (overwriteIfExists) {
+                LOGGER.debug("Deleting existing file at {}", output.getAbsolutePath());
+                Files.delete(output.toPath());
+            } else {
+                throw new FileAlreadyExistsException("File " + output.getAbsolutePath() + " already exists. "
+                    + "Hint: you can use --overwrite");
+            }
+        }
+
         LOGGER.info("Writing result of enrichment to {}", output.getAbsolutePath());
         OBJECT_MAPPER.writeTree(OBJECT_MAPPER.createGenerator(output, JsonEncoding.UTF8), rootNode);
-
         return 0;
     }
 
