@@ -28,15 +28,16 @@ echo "Release Version: $RELEASE_VERSION"
 echo "Dev Version: $DEV_VERSION"
 echo "######################################"
 
-sed -i -r "s/\"version\".?:.?\".*\"/\"version\" : \"$RELEASE_VERSION\"/g" registry.json
-
+jq ".plugins[].version = \"$RELEASE_VERSION\" | .version = \"$RELEASE_VERSION\"" registry.json > tmp.json
+mv tmp.json registry.json
 git add .
 git commit -m "Prepare for release $RELEASE_VERSION"
 git push origin $BRANCH
 git tag -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
 git push origin $RELEASE_VERSION
 
-sed -i -r "s/\"version\".?:.?\".*\"/\"version\" : \"$DEV_VERSION\"/g" registry.json
+jq ".plugins[].version = \"$RELEASE_VERSION\" | .version = \"$RELEASE_VERSION\"" registry.json > tmp.json
+mv tmp.json registry.json
 git add .
 git commit -m "Update to next development version: $DEV_VERSION"
 git push origin $BRANCH
