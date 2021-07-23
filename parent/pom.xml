@@ -119,7 +119,7 @@
     <version.org.apache.logging.log4j>2.14.1</version.org.apache.logging.log4j>
     <version.org.eclipse.jetty>9.4.41.v20210516</version.org.eclipse.jetty>
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
-    <version.org.elasticsearch>7.13.2</version.org.elasticsearch>
+    <version.org.elasticsearch>7.13.4</version.org.elasticsearch>
     <version.org.hamcrest>1.3</version.org.hamcrest>
     <version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>1.0.2</version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>
     <version.org.hibernate>5.5.2.Final</version.org.hibernate>
