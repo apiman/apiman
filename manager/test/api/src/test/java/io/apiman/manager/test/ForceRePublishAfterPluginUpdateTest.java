@@ -21,6 +21,7 @@ import io.apiman.manager.test.junit.ManagerRestTestPlan;
 import io.apiman.manager.test.junit.ManagerRestTestPublishPayload;
 import io.apiman.manager.test.junit.ManagerRestTester;
 import io.apiman.manager.test.junit.RestTestSystemProperties;
+
 import org.junit.runner.RunWith;
 
 /**
@@ -33,7 +34,7 @@ import org.junit.runner.RunWith;
 @RunWith(ManagerRestTester.class)
 @ManagerRestTestPlan("test-plans/forcePluginUpdate-testPlan.xml")
 @RestTestSystemProperties({
-    "apiman.test.m2-path", "src/test/resources/test-plan-data/plugins/m2"
+    "apiman.test.m2-path", "/test-plan-data/plugins/m2-force-republish-to-upgrade-plugins"
 })
 @ManagerRestTestGatewayLog(
     "GET:/mock-gateway/system/status\n" +
@@ -45,7 +46,7 @@ import org.junit.runner.RunWith;
     "",
     "{\"publicAPI\":true,\"organizationId\":\"Organization1\",\"apiId\":\"API1\",\"version\":\"1.0\",\"endpoint\":\"http://localhost:8080/endpoint\",\"endpointType\":\"rest\",\"endpointContentType\":\"json\",\"endpointProperties\":{},\"parsePayload\":false,\"apiPolicies\":[{\"policyJsonConfig\":null,\"policyImpl\":\"plugin:io.apiman.test:custom-fields-plugin:1.0-SNAPSHOT:war/io.apiman.test.plugins.FieldsPolicy\"}],\"keysStrippingDisabled\":false}",
     "",
-    "{\"publicAPI\":true,\"organizationId\":\"Organization1\",\"apiId\":\"API1\",\"version\":\"1.0\",\"endpoint\":\"http://localhost:8080/endpoint\",\"endpointType\":\"rest\",\"endpointContentType\":null,\"endpointProperties\":{},\"parsePayload\":false,\"apiPolicies\":[{\"policyJsonConfig\":null,\"policyImpl\":\"plugin:io.apiman.test:custom-fields-plugin:2.0.0:war/io.apiman.test.plugins.FieldsPolicy\"}],\"keysStrippingDisabled\":false}"
+    "{\"publicAPI\":true,\"organizationId\":\"Organization1\",\"apiId\":\"API1\",\"version\":\"1.0\",\"endpoint\":\"http://localhost:8080/endpoint\",\"endpointType\":\"rest\",\"endpointContentType\":null,\"endpointProperties\":{},\"parsePayload\":false,\"apiPolicies\":[{\"policyJsonConfig\":null,\"policyImpl\":\"plugin:io.apiman.test:custom-fields-plugin:2.0-SNAPSHOT:war/io.apiman.test.plugins.FieldsPolicy\"}],\"keysStrippingDisabled\":false}"
 })
 public class ForceRePublishAfterPluginUpdateTest {
 }

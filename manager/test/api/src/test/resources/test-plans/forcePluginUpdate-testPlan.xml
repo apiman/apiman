@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" name="Reimport Apiman Export and force republish of APIs to Gateway">
     <testGroup name="Force republish after a plugin update">
         <test name="Create Gateway">test-plan-data/plugins/force-update-on-gateway/000_create-gateway.resttest</test>
         <test name="Add plugin">test-plan-data/plugins/force-update-on-gateway/001_add-fields-plugin.resttest</test>

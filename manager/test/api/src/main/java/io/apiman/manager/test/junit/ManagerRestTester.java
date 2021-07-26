@@ -74,8 +74,13 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
      */
     public ManagerRestTester(Class<?> testClass) throws InitializationError {
         super(testClass);
+        loadTestPlans(super.getTestClass().getJavaClass());
+    }
+
+    @Override
+    protected Statement withBeforeClasses(Statement statement) {
         configureSystemProperties();
-        loadTestPlans(testClass);
+        return super.withBeforeClasses(statement);
     }
 
     /**
@@ -372,7 +377,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
     }
 
     /**
-     * Configure some proeprties.
+     * Configure some properties.
      */
     private void configureSystemProperties() {
         TestUtil.setProperty("apiman.test.gateway.endpoint", "http://localhost:" + getTestServerPort() + "/mock-gateway");
@@ -387,6 +392,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
                 String pname = strings[idx];
                 String pval = strings[idx+1];
                 log("Setting system property \"{0}\" to \"{1}\".", pname, pval);
+                System.out.println("Runner = " + System.identityHashCode(this));
                 if (System.getProperty(pname) == null) {
                     resetSysProps.add(pname);
                 }
@@ -400,6 +406,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
      */
     private void resetSystemProperties() {
         for (String propName : resetSysProps) {
+            log("Clearing system property " + propName);
             System.clearProperty(propName);
         }
         resetSysProps.clear();

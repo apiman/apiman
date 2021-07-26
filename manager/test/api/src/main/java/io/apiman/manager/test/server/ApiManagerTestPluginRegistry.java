@@ -21,6 +21,7 @@ import io.apiman.manager.api.core.plugin.AbstractPluginRegistry;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -71,6 +72,18 @@ public class ApiManagerTestPluginRegistry extends AbstractPluginRegistry {
             return;
         }
         File testM2Dir = new File(testM2Path).getAbsoluteFile();
+
+        if (!testM2Dir.exists()) {
+            // Try to resolve via resources
+            testM2Dir = toAbsolutePathFromResources(testM2Path);
+
+            // If still no good, then...
+            if (!testM2Dir.exists()) {
+                System.err.println("apiman.test.m2-path is set as " + testM2Path +
+                    " but it does not seem to exist on the filesystem or Java resources");
+            }
+        }
+
         File pluginArtifactFile = new File(testM2Dir, PluginUtils.getMavenPath(coordinates));
         if (!pluginArtifactFile.isFile()) {
             return;
@@ -80,6 +93,11 @@ public class ApiManagerTestPluginRegistry extends AbstractPluginRegistry {
         } catch (IOException e) {
             pluginArtifactFile.delete();
         }
+    }
+
+    private static File toAbsolutePathFromResources(String resourcePath) {
+        URL resourceURL = ApiManagerTestPluginRegistry.class.getResource(resourcePath);
+        return FileUtils.toFile(resourceURL);
     }
 
 }

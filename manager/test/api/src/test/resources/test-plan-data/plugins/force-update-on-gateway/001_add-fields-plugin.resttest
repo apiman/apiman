@@ -1,6 +1,5 @@
 POST /plugins admin/admin
 Content-Type: application/json
-X-RestTest-System-Property: apiman.test.m2-path=src/test/resources/test-plan-data/plugins/m2-fields-v1
 
 {
   "groupId" : "io.apiman.test",
