@@ -30,11 +30,11 @@ import org.junit.runner.RunWith;
 @RunWith(ManagerRestTester.class)
 @ManagerRestTestPlan("test-plans/plugins-testPlan.xml")
 @RestTestSystemProperties({
-    "apiman.test.m2-path", "src/test/resources/test-plan-data/plugins/m2"
+    "apiman.test.m2-path", "/test-plan-data/plugins/m2"
 })
 @SuppressWarnings("nls")
 public class PluginsTest {
-    
+
     @BeforeClass
     public static void setup() {
         System.setProperty("apiman-manager.plugins.registries", PluginsTest.class.getResource("test-registry.json").toString());

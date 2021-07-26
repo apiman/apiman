@@ -61,7 +61,7 @@ public class AbstractPluginRegistryTest {
         }
 
         /**
-         * @see io.apiman.manager.api.core.plugin.AbstractPluginRegistry#downloadFromMavenRepo(java.io.File, io.apiman.common.plugin.PluginCoordinates, java.net.URL)
+         * @see io.apiman.manager.api.core.plugin.AbstractPluginRegistry#downloadFromMavenRepo(File, PluginCoordinates, URI) (java.io.File, io.apiman.common.plugin.PluginCoordinates, java.net.URL)
          */
         @Override
         protected boolean downloadFromMavenRepo(File pluginFile, PluginCoordinates coordinates,
