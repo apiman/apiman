@@ -33,6 +33,9 @@ import java.util.stream.IntStream;
 import net.openhft.hashing.Access;
 import net.openhft.hashing.LongHashFunction;
 
+import static java.nio.ByteOrder.BIG_ENDIAN;
+import static java.nio.ByteOrder.LITTLE_ENDIAN;
+
 /**
  * A simple multimap able to accept multiple values for a given key.
  * <p>
@@ -459,7 +462,64 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap, Serializa
 
         @Override
         protected Access<String> reverseAccess() {
-            return null;
+            return new ReverseAccess<>(LOWER_CASE_ACCESS_INSTANCE);
+        }
+    }
+
+    /**
+     * The default reverse byte order delegating {@code Access} class.
+     */
+    private static class ReverseAccess<String> extends Access<String> {
+
+        final Access<String> access;
+
+        private ReverseAccess(final Access<String> access) {
+            this.access = access;
+        }
+
+        @Override
+        public long getLong(final String input, final long offset) {
+            return Long.reverseBytes(access.getLong(input, offset));
+        }
+
+        @Override
+        public long getUnsignedInt(final String input, final long offset) {
+            return Long.reverseBytes(access.getUnsignedInt(input, offset)) >>> 32;
+        }
+
+        @Override
+        public int getInt(final String input, final long offset) {
+            return Integer.reverseBytes(access.getInt(input, offset));
+        }
+
+        @Override
+        public int getUnsignedShort(final String input, final long offset) {
+            return Integer.reverseBytes(access.getUnsignedShort(input, offset)) >>> 16;
+        }
+
+        @Override
+        public int getShort(final String input, final long offset) {
+            return Integer.reverseBytes(access.getShort(input, offset)) >> 16;
+        }
+
+        @Override
+        public int getUnsignedByte(final String input, final long offset) {
+            return access.getUnsignedByte(input, offset);
+        }
+
+        @Override
+        public int getByte(final String input, final long offset) {
+            return access.getByte(input, offset);
+        }
+
+        @Override
+        public ByteOrder byteOrder(final String input) {
+            return LITTLE_ENDIAN == access.byteOrder(input) ? BIG_ENDIAN : LITTLE_ENDIAN;
+        }
+
+        @Override
+        protected Access<String> reverseAccess() {
+            return access;
         }
     }
 }
