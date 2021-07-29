@@ -1,4 +1,4 @@
-FROM jboss/base-jdk:8
+FROM jboss/base-jdk:11
 LABEL maintainter="jcechace@redhat.com>" \
       description="Vert.X implementation of Apiman Gateway" \
       version="1.0" \
