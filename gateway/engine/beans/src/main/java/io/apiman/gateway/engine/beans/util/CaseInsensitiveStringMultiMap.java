@@ -456,5 +456,10 @@ public class CaseInsensitiveStringMultiMap implements IStringMultiMap, Serializa
         public ByteOrder byteOrder(String input) {
             return ByteOrder.nativeOrder();
         }
+
+        @Override
+        protected Access<String> reverseAccess() {
+            return null;
+        }
     }
 }
