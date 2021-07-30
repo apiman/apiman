@@ -65,20 +65,14 @@ import org.apache.commons.lang3.BooleanUtils;
  */
 @ApplicationScoped
 public class SystemResourceImpl implements ISystemResource {
-    @Inject
-    private IStorage storage;
-    @Inject
-    private ISecurityContext securityContext;
-    @Inject
-    private Version version;
-    @Inject
-    private StorageExporter exporter;
-    @Inject
-    private StorageImportDispatcher importer;
-    @Inject
-    private DataMigrator migrator;
-    @Inject
-    private IDownloadManager downloadManager;
+    
+    private final IStorage storage;
+    private final ISecurityContext securityContext;
+    private final Version version;
+    private final StorageExporter exporter;
+    private final StorageImportDispatcher importer;
+    private final DataMigrator migrator;
+    private final IDownloadManager downloadManager;
 
     @Context
     private HttpServletRequest request;
@@ -86,7 +80,18 @@ public class SystemResourceImpl implements ISystemResource {
     /**
      * Constructor.
      */
-    public SystemResourceImpl() {
+    @Inject
+    public SystemResourceImpl(IStorage storage,
+        ISecurityContext securityContext, Version version,
+        StorageExporter exporter, StorageImportDispatcher importer,
+        DataMigrator migrator, IDownloadManager downloadManager) {
+        this.storage = storage;
+        this.securityContext = securityContext;
+        this.version = version;
+        this.exporter = exporter;
+        this.importer = importer;
+        this.migrator = migrator;
+        this.downloadManager = downloadManager;
     }
 
     /**
@@ -99,10 +104,10 @@ public class SystemResourceImpl implements ISystemResource {
         rval.setName("API Manager REST API"); //$NON-NLS-1$
         rval.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs."); //$NON-NLS-1$
         rval.setMoreInfo("https://www.apiman.io/latest/api-manager-restdocs.html"); //$NON-NLS-1$
-        rval.setUp(getStorage() != null);
-        if (getVersion() != null) {
-            rval.setVersion(getVersion().getVersionString());
-            rval.setBuiltOn(getVersion().getVersionDate());
+        rval.setUp(storage != null);
+        if (version != null) {
+            rval.setVersion(version.getVersionString());
+            rval.setBuiltOn(version.getVersionDate());
         }
         return rval;
     }
@@ -136,8 +141,8 @@ public class SystemResourceImpl implements ISystemResource {
             @Override
             public void write(OutputStream os) throws IOException, WebApplicationException {
                 IExportWriter writer = new JsonExportWriter(os, exportLogger);
-                getExporter().init(writer);
-                getExporter().export();
+                exporter.init(writer);
+                exporter.export();
                 os.flush();
             }
         };
@@ -275,61 +280,5 @@ public class SystemResourceImpl implements ISystemResource {
         };
 
         return Response.ok(stream).build();
-    }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
-    }
-
-    /**
-     * @return the version
-     */
-    public Version getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version the version to set
-     */
-    public void setVersion(Version version) {
-        this.version = version;
-    }
-
-    /**
-     * @return the exporter
-     */
-    public StorageExporter getExporter() {
-        return exporter;
-    }
-
-    /**
-     * @param exporter the exporter to set
-     */
-    public void setExporter(StorageExporter exporter) {
-        this.exporter = exporter;
-    }
-
-    /**
-     * @return the securityContext
-     */
-    public ISecurityContext getSecurityContext() {
-        return securityContext;
-    }
-
-    /**
-     * @param securityContext the securityContext to set
-     */
-    public void setSecurityContext(ISecurityContext securityContext) {
-        this.securityContext = securityContext;
     }
 }

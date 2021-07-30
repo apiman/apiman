@@ -79,20 +79,36 @@ public class ActionResourceImpl implements IActionResource {
 
     private final IApimanLogger log = ApimanLoggerFactory.getLogger(ActionResourceImpl.class);
 
-    @Inject IStorage storage;
-    @Inject IStorageQuery query;
-    @Inject IGatewayLinkFactory gatewayLinkFactory;
-    @Inject IOrganizationResource orgs;
+    private final IStorage storage;
+    private final IStorageQuery query;
+    private final IGatewayLinkFactory gatewayLinkFactory;
+    private final IOrganizationResource orgs;
 
-    @Inject IApiValidator apiValidator;
-    @Inject IClientValidator clientValidator;
+    private final IApiValidator apiValidator;
+    private final IClientValidator clientValidator;
 
-    @Inject ISecurityContext securityContext;
+    private final ISecurityContext securityContext;
 
     /**
      * Constructor.
      */
-    public ActionResourceImpl() {
+    @Inject
+    public ActionResourceImpl(
+        IStorage storage,
+        IStorageQuery query,
+        IGatewayLinkFactory gatewayLinkFactory,
+        IOrganizationResource orgs,
+        IApiValidator apiValidator,
+        IClientValidator clientValidator,
+        ISecurityContext securityContext
+    ) {
+        this.storage = storage;
+        this.query = query;
+        this.gatewayLinkFactory = gatewayLinkFactory;
+        this.orgs = orgs;
+        this.apiValidator = apiValidator;
+        this.clientValidator = clientValidator;
+        this.securityContext = securityContext;
     }
 
     /**
@@ -610,103 +626,4 @@ public class ActionResourceImpl implements IActionResource {
         log.debug(String.format("Successfully locked Plan %s: %s", //$NON-NLS-1$
                 versionBean.getPlan().getName(), versionBean.getPlan()));
     }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
-    }
-
-    /**
-     * @return the query
-     */
-    public IStorageQuery getQuery() {
-        return query;
-    }
-
-    /**
-     * @param query the query to set
-     */
-    public void setQuery(IStorageQuery query) {
-        this.query = query;
-    }
-
-    /**
-     * @return the apiValidator
-     */
-    public IApiValidator getApiValidator() {
-        return apiValidator;
-    }
-
-    /**
-     * @param apiValidator the apiValidator to set
-     */
-    public void setApiValidator(IApiValidator apiValidator) {
-        this.apiValidator = apiValidator;
-    }
-
-    /**
-     * @return the clientValidator
-     */
-    public IClientValidator getClientValidator() {
-        return clientValidator;
-    }
-
-    /**
-     * @param clientValidator the clientValidator to set
-     */
-    public void setClientValidator(IClientValidator clientValidator) {
-        this.clientValidator = clientValidator;
-    }
-
-    /**
-     * @return the securityContext
-     */
-    public ISecurityContext getSecurityContext() {
-        return securityContext;
-    }
-
-    /**
-     * @param securityContext the securityContext to set
-     */
-    public void setSecurityContext(ISecurityContext securityContext) {
-        this.securityContext = securityContext;
-    }
-
-    /**
-     * @return the orgs
-     */
-    public IOrganizationResource getOrgs() {
-        return orgs;
-    }
-
-    /**
-     * @param orgs the orgs to set
-     */
-    public void setOrgs(IOrganizationResource orgs) {
-        this.orgs = orgs;
-    }
-
-    /**
-     * @return the gatewayLinkFactory
-     */
-    public IGatewayLinkFactory getGatewayLinkFactory() {
-        return gatewayLinkFactory;
-    }
-
-    /**
-     * @param gatewayLinkFactory the gatewayLinkFactory to set
-     */
-    public void setGatewayLinkFactory(IGatewayLinkFactory gatewayLinkFactory) {
-        this.gatewayLinkFactory = gatewayLinkFactory;
-    }
-
 }

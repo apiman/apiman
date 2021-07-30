@@ -38,13 +38,9 @@ import javax.ws.rs.core.Response;
 @ApplicationScoped
 public class DownloadResourceImpl implements IDownloadResource {
 
-    @Inject
-    private IDownloadManager downloadManager;
-    
-    @Inject
-    private ISystemResource system;
-    @Inject
-    private IOrganizationResource orgs;
+    private final IDownloadManager downloadManager;
+    private final ISystemResource system;
+    private final IOrganizationResource orgs;
 
     @Context
     private HttpServletRequest request;
@@ -52,7 +48,15 @@ public class DownloadResourceImpl implements IDownloadResource {
     /**
      * Constructor.
      */
-    public DownloadResourceImpl() {
+    @Inject
+    public DownloadResourceImpl(
+         IDownloadManager downloadManager,
+         ISystemResource system,
+         IOrganizationResource orgs
+    ) {
+        this.downloadManager = downloadManager;
+        this.system = system;
+        this.orgs = orgs;
     }
     
     /**
@@ -97,20 +101,6 @@ public class DownloadResourceImpl implements IDownloadResource {
         return info;
     }
 
-    /**
-     * @return the downloadManager
-     */
-    public IDownloadManager getDownloadManager() {
-        return downloadManager;
-    }
-
-    /**
-     * @param downloadManager the downloadManager to set
-     */
-    public void setDownloadManager(IDownloadManager downloadManager) {
-        this.downloadManager = downloadManager;
-    }
-    
     private static class ApiRegistryInfo {
         public String organizationId;
         public String clientId;

@@ -47,14 +47,19 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
 
-    @Inject IStorage storage;
-    @Inject IStorageQuery query;
-    @Inject ISecurityContext securityContext;
+    private final IStorage storage;
+    private final IStorageQuery query;
+    private final ISecurityContext securityContext;
     
     /**
      * Constructor.
      */
-    public PolicyDefinitionResourceImpl() {
+    @Inject
+    public PolicyDefinitionResourceImpl(IStorage storage, IStorageQuery query,
+        ISecurityContext securityContext) {
+        this.storage = storage;
+        this.query = query;
+        this.securityContext = securityContext;
     }
 
     /**
@@ -187,34 +192,6 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
-    }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
-    }
-
-    /**
-     * @return the securityContext
-     */
-    public ISecurityContext getSecurityContext() {
-        return securityContext;
-    }
-
-    /**
-     * @param securityContext the securityContext to set
-     */
-    public void setSecurityContext(ISecurityContext securityContext) {
-        this.securityContext = securityContext;
     }
     
 }

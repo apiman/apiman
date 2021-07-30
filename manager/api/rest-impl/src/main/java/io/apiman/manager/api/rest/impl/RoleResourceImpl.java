@@ -47,18 +47,19 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 public class RoleResourceImpl implements IRoleResource {
-    
-    @Inject
-    IStorage storage;
-    @Inject
-    IStorageQuery query;
-    @Inject
-    ISecurityContext securityContext;
+
+    private final IStorage storage;
+    private final IStorageQuery query;
+    private final ISecurityContext securityContext;
     
     /**
      * Constructor.
      */
-    public RoleResourceImpl() {
+    @Inject
+    public RoleResourceImpl(IStorage storage, IStorageQuery query, ISecurityContext securityContext) {
+        this.storage = storage;
+        this.query = query;
+        this.securityContext = securityContext;
     }
     
     /**
@@ -77,15 +78,15 @@ public class RoleResourceImpl implements IRoleResource {
         role.setName(bean.getName());
         role.setPermissions(bean.getPermissions());
         try {
-            getStorage().beginTx();
-            if (getStorage().getRole(role.getId()) != null) {
+            storage.beginTx();
+            if (storage.getRole(role.getId()) != null) {
                 throw ExceptionFactory.roleAlreadyExistsException(role.getId());
             }
-            getStorage().createRole(role);
-            getStorage().commitTx();
+            storage.createRole(role);
+            storage.commitTx();
             return role;
         } catch (StorageException e) {
-            getStorage().rollbackTx();
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -97,14 +98,14 @@ public class RoleResourceImpl implements IRoleResource {
     public RoleBean get(String roleId) throws RoleNotFoundException {
         // No permission check needed
         try {
-            getStorage().beginTx();
+            storage.beginTx();
             RoleBean role = getRoleFromStorage(roleId);
             // Hide sensitive data and set only needed data for the UI
             return RestHelper.hideSensitiveDataFromRoleBean(securityContext, role);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         } finally {
-            getStorage().rollbackTx();
+            storage.rollbackTx();
         }
     }
     
@@ -116,7 +117,7 @@ public class RoleResourceImpl implements IRoleResource {
         securityContext.checkAdminPermissions();
 
         try {
-            getStorage().beginTx();
+            storage.beginTx();
             RoleBean role = getRoleFromStorage(roleId);
             if (bean.getDescription() != null) {
                 role.setDescription(bean.getDescription());
@@ -131,16 +132,16 @@ public class RoleResourceImpl implements IRoleResource {
                 role.getPermissions().clear();
                 role.getPermissions().addAll(bean.getPermissions());
             }
-            getStorage().updateRole(role);
-            getStorage().commitTx();
+            storage.updateRole(role);
+            storage.commitTx();
         } catch (StorageException e) {
-            getStorage().rollbackTx();
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
 
     private RoleBean getRoleFromStorage(String roleId) throws StorageException, RoleNotFoundException {
-        RoleBean role = getStorage().getRole(roleId);
+        RoleBean role = storage.getRole(roleId);
         if (role == null) {
             throw ExceptionFactory.roleNotFoundException(roleId);
         }
@@ -156,11 +157,11 @@ public class RoleResourceImpl implements IRoleResource {
 
         RoleBean bean = get(roleId);
         try {
-            getStorage().beginTx();
-            getStorage().deleteRole(bean);
-            getStorage().commitTx();
+            storage.beginTx();
+            storage.deleteRole(bean);
+            storage.commitTx();
         } catch (StorageException e) {
-            getStorage().rollbackTx();
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -177,10 +178,10 @@ public class RoleResourceImpl implements IRoleResource {
 
             // Hide sensitive data and set only needed data for the UI
             if (securityContext.isAdmin()) {
-                return getQuery().findRoles(criteria).getBeans();
+                return query.findRoles(criteria).getBeans();
             } else {
                 List<RoleBean> roles = new ArrayList<>();
-                for (RoleBean role : getQuery().findRoles(criteria).getBeans()) {
+                for (RoleBean role : query.findRoles(criteria).getBeans()) {
                     roles.add(RestHelper.hideSensitiveDataFromRoleBean(securityContext, role));
                 }
                 return roles;
@@ -188,47 +189,5 @@ public class RoleResourceImpl implements IRoleResource {
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
-    }
-
-    /**
-     * @return the securityContext
-     */
-    public ISecurityContext getSecurityContext() {
-        return securityContext;
-    }
-
-    /**
-     * @param securityContext the securityContext to set
-     */
-    public void setSecurityContext(ISecurityContext securityContext) {
-        this.securityContext = securityContext;
-    }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
-    }
-
-    /**
-     * @return the query
-     */
-    public IStorageQuery getQuery() {
-        return query;
-    }
-
-    /**
-     * @param query the query to set
-     */
-    public void setQuery(IStorageQuery query) {
-        this.query = query;
     }
 }

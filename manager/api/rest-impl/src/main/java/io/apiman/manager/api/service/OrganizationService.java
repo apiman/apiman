@@ -1,20 +1,4 @@
-/*
- * Copyright 2014 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package io.apiman.manager.api.rest.impl;
+package io.apiman.manager.api.service;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
@@ -142,7 +126,6 @@ import io.apiman.manager.api.rest.exceptions.PlanAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.PlanNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PlanVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
-import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
@@ -172,17 +155,15 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.StreamSupport;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -191,14 +172,14 @@ import org.joda.time.format.ISODateTimeFormat;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Implementation of the Organization API.
+ * Organization services
  *
- * @author eric.wittmann@redhat.com
+ * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@RequestScoped
-public class OrganizationResourceImpl implements IOrganizationResource {
+@ApplicationScoped
+public class OrganizationService {
 
-    private static final IApimanLogger log = ApimanLoggerFactory.getLogger(OrganizationResourceImpl.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(OrganizationService.class);
 
     private static final long ONE_MINUTE_MILLIS = 1 * 60 * 1000L;
     private static final long ONE_HOUR_MILLIS = 1 * 60 * 60 * 1000L;
@@ -225,13 +206,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     private final ISecurityContext securityContext;
     private final IGatewayLinkFactory gatewayLinkFactory;
 
-    @Context HttpServletRequest request;
-
     /**
      * Constructor.
      */
     @Inject
-    public OrganizationResourceImpl(
+    public OrganizationService(
         ApiManagerConfig config,
         IStorage storage,
         IStorageQuery query,
@@ -261,11 +240,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         this.gatewayLinkFactory = gatewayLinkFactory;
     }
 
-    /**
-     * @see IOrganizationResource#create(io.apiman.manager.api.beans.orgs.NewOrganizationBean)
-     */
-    @Override
-    public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException, InvalidNameException {
+    @Transactional
+    public OrganizationBean create(
+        NewOrganizationBean bean) throws OrganizationAlreadyExistsException, InvalidNameException {
         if (config.isAdminOnlyOrgCreationEnabled()) {
             securityContext.checkAdminPermissions();
         }
@@ -289,20 +266,21 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
         }
 
-        OrganizationBean orgBean = new OrganizationBean();
-        orgBean.setName(bean.getName());
-        orgBean.setDescription(bean.getDescription());
-        orgBean.setId(BeanUtils.idFromName(bean.getName()));
-        orgBean.setCreatedOn(new Date());
-        orgBean.setCreatedBy(securityContext.getCurrentUser());
-        orgBean.setModifiedOn(new Date());
-        orgBean.setModifiedBy(securityContext.getCurrentUser());
-        try {
+        return tryAction(() -> {
+            OrganizationBean orgBean = new OrganizationBean();
+            orgBean.setName(bean.getName());
+            orgBean.setDescription(bean.getDescription());
+            orgBean.setId(BeanUtils.idFromName(bean.getName()));
+            orgBean.setCreatedOn(new Date());
+            orgBean.setCreatedBy(securityContext.getCurrentUser());
+            orgBean.setModifiedOn(new Date());
+            orgBean.setModifiedBy(securityContext.getCurrentUser());
+
             // Store/persist the new organization
-            storage.beginTx();
             if (storage.getOrganization(orgBean.getId()) != null) {
                 throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());
             }
+
             storage.createOrganization(orgBean);
             storage.createAuditEntry(AuditUtils.organizationCreated(orgBean, securityContext));
 
@@ -310,32 +288,24 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             for (RoleBean roleBean : autoGrantedRoles) {
                 String currentUser = securityContext.getCurrentUser();
                 String orgId = orgBean.getId();
-                RoleMembershipBean membership = RoleMembershipBean.create(currentUser, roleBean.getId(), orgId);
+                RoleMembershipBean membership = RoleMembershipBean.create(currentUser, roleBean.getId(),
+                    orgId);
                 membership.setCreatedOn(new Date());
                 storage.createMembership(membership);
             }
-            storage.commitTx();
-            log.debug(String.format("Created organization %s: %s", orgBean.getName(), orgBean)); //$NON-NLS-1$
+
+            LOGGER.debug(String.format("Created organization %s: %s", orgBean.getName(), orgBean)); //$NON-NLS-1$
+
             return orgBean;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#delete(java.lang.String)
-     */
-    @Override
+    @Transactional
     public void delete(String organizationId)
-            throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
+        throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             OrganizationBean organizationBean = getOrganizationFromStorage(organizationId);
 
             // Any active app versions?
@@ -360,55 +330,38 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             // Any active plans versions?
             Iterator<PlanVersionBean> planVers = storage.getAllPlanVersions(organizationBean, 5);
             if (planVers.hasNext()) {
-                log.warn("There are locked plans(s): these will be deleted."); //$NON-NLS-1$
+                LOGGER.warn("There are locked plans(s): these will be deleted."); //$NON-NLS-1$
             }
 
             // Delete org
             storage.deleteOrganization(organizationBean);
-            storage.commitTx();
-            log.debug("Deleted Organization: " + organizationBean.getName()); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+
+            LOGGER.debug("Deleted Organization: " + organizationBean.getName()); //$NON-NLS-1$
+        });
     }
 
-    /**
-     * @see IOrganizationResource#deleteClient(java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public void deleteClient(String organizationId, String clientId)
-            throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
+        throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         securityContext.checkPermissions(PermissionType.clientAdmin, organizationId);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             ClientBean client = getClientFromStorage(organizationId, clientId);
             Iterator<ClientVersionBean> clientVersions = storage.getAllClientVersions(organizationId, clientId);
             Iterable<ClientVersionBean> iterable = () -> clientVersions;
 
             List<ClientVersionBean> registeredElems = StreamSupport.stream(iterable.spliterator(), false)
-                    .filter(clientVersion -> clientVersion.getStatus() == ClientStatus.Registered)
-                    .limit(5)
-                    .collect(toList());
+                .filter(clientVersion -> clientVersion.getStatus() == ClientStatus.Registered)
+                .limit(5)
+                .collect(toList());
 
             if (!registeredElems.isEmpty()) {
                 throw ExceptionFactory.entityStillActiveExceptionClientVersions(registeredElems);
             }
 
             storage.deleteClient(client);
-            storage.commitTx();
-            log.debug("Deleted ClientApp: " + client.getName()); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            LOGGER.debug("Deleted ClientApp: " + client.getName()); //$NON-NLS-1$
+        });
     }
 
     private ClientBean getClientFromStorage(String organizationId, String clientId) throws StorageException {
@@ -419,26 +372,23 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return client;
     }
 
-    /**
-     * @see IOrganizationResource#deleteApi(java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public void deleteApi(String organizationId, String apiId)
-            throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
+        throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         securityContext.checkPermissions(PermissionType.apiAdmin, organizationId);
-
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             ApiBean api = getApiFromStorage(organizationId, apiId);
 
             Iterator<ApiVersionBean> apiVersions = storage.getAllApiVersions(organizationId, apiId);
             Iterable<ApiVersionBean> iterable = () -> apiVersions;
 
-            List<ApiVersionBean> apiVersionBeans = StreamSupport.stream(iterable.spliterator(), false).collect(toList());
+            List<ApiVersionBean> apiVersionBeans = StreamSupport.stream(iterable.spliterator(), false)
+                .collect(toList());
+
             List<ApiVersionBean> registeredElems = apiVersionBeans.stream()
-                    .filter(clientVersion -> clientVersion.getStatus() == ApiStatus.Published)
-                    .limit(5)
-                    .collect(toList());
+                .filter(clientVersion -> clientVersion.getStatus() == ApiStatus.Published)
+                .limit(5)
+                .collect(toList());
 
             if (!registeredElems.isEmpty()) {
                 throw ExceptionFactory.entityStillActiveExceptionApiVersions(registeredElems);
@@ -453,140 +403,65 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
 
             storage.deleteApi(api);
-            storage.commitTx();
-            log.debug("Deleted API: " + api.getName()); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            LOGGER.debug("Deleted API: " + api.getName()); //$NON-NLS-1$
+        });
     }
 
-    /**
-     * Checks if the api version has an api definition
-     *
-     * @param apiVersion the apiVersion
-     * @return true if the version has a definition, else false
-     */
-    private boolean apiVersionHasApiDefinition(ApiVersionBean apiVersion) throws StorageException {
-        // additional check if the document really exists in the storage
-        return apiVersion.getDefinitionType() != null && apiVersion.getDefinitionType() != ApiDefinitionType.None && storage.getApiDefinition(apiVersion) != null;
-    }
-
-    /**
-     * @see IOrganizationResource#get(java.lang.String)
-     */
-    @Override
+    @Transactional
     public OrganizationBean get(String organizationId) throws OrganizationNotFoundException {
         // No permission check is needed, because this would break All Organizations UI
+        OrganizationBean organizationBean = tryAction(() -> getOrganizationFromStorage(organizationId));
 
-        try {
-            storage.beginTx();
-            OrganizationBean organizationBean = getOrganizationFromStorage(organizationId);
-            storage.commitTx();
-            log.debug(String.format("Got organization %s: %s", organizationBean.getName(), organizationBean)); //$NON-NLS-1$
+        LOGGER.debug(String.format("Got organization %s: %s", organizationBean.getName(), organizationBean)); //$NON-NLS-1$
 
-            // Hide sensitive data and set only needed data for the UI
-            if (securityContext.hasPermission(PermissionType.orgView, organizationId)){
-                return organizationBean;
-            } else {
-                return RestHelper.hideSensitiveDataFromOrganizationBean(organizationBean);
-            }
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+        // Hide sensitive data and set only needed data for the UI
+        if (securityContext.hasPermission(PermissionType.orgView, organizationId)){
+            return organizationBean;
+        } else {
+            return RestHelper.hideSensitiveDataFromOrganizationBean(organizationBean);
         }
     }
 
-    /**
-     * Get the organization from storage.
-     * Will throw an exception if no organization is found
-     * @param organizationId the organizationId
-     * @return the organization
-     * @throws OrganizationNotFoundException if no organizations is found
-     */
-    private OrganizationBean getOrganizationFromStorage(String organizationId) throws OrganizationNotFoundException, StorageException {
-        OrganizationBean organizationBean = storage.getOrganization(organizationId);
-        if (organizationBean == null) {
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        }
-        return organizationBean;
-    }
-
-    /**
-     * @see IOrganizationResource#update(java.lang.String, io.apiman.manager.api.beans.orgs.UpdateOrganizationBean)
-     */
-    @Override
+    @Transactional
     public void update(String organizationId, UpdateOrganizationBean bean)
-            throws OrganizationNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.orgEdit, organizationId);
 
-        try {
-            storage.beginTx();
-            OrganizationBean orgForUpdate = getOrganizationFromStorage(organizationId);
+        OrganizationBean orgForUpdate = tryAction(() -> getOrganizationFromStorage(organizationId));
 
-            EntityUpdatedData auditData = new EntityUpdatedData();
-            if (AuditUtils.valueChanged(orgForUpdate.getDescription(), bean.getDescription())) {
-                auditData.addChange("description", orgForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
-                orgForUpdate.setDescription(bean.getDescription());
-            }
-            storage.updateOrganization(orgForUpdate);
-            storage.createAuditEntry(AuditUtils.organizationUpdated(orgForUpdate, auditData, securityContext));
-            storage.commitTx();
-            log.debug(String.format("Updated organization %s: %s", orgForUpdate.getName(), orgForUpdate)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+        EntityUpdatedData auditData = new EntityUpdatedData();
+        if (AuditUtils.valueChanged(orgForUpdate.getDescription(), bean.getDescription())) {
+            auditData.addChange("description", orgForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
+            orgForUpdate.setDescription(bean.getDescription());
         }
+
+        tryAction(() -> storage.updateOrganization(orgForUpdate));
+        tryAction(() -> storage.createAuditEntry(AuditUtils.organizationUpdated(orgForUpdate, auditData, securityContext));
+
+        LOGGER.debug(String.format("Updated organization %s: %s", orgForUpdate.getName(), orgForUpdate)); //$NON-NLS-1$
     }
 
-    /**
-     * @see IOrganizationResource#activity(java.lang.String, int, int)
-     */
-    @Override
+    @Transactional
     public SearchResultsBean<AuditEntryBean> activity(String organizationId, int page, int pageSize)
-            throws OrganizationNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, NotAuthorizedException {
         // Only members are allowed to see this
         if (!securityContext.isMemberOf(organizationId)) {
             throw ExceptionFactory.notAuthorizedException();
         }
 
-        if (page <= 1) {
-            page = 1;
-        }
-        if (pageSize == 0) {
-            pageSize = 20;
-        }
-        try {
-            SearchResultsBean<AuditEntryBean> rval;
-            PagingBean paging = new PagingBean();
-            paging.setPage(page);
-            paging.setPageSize(pageSize);
-            rval = query.auditEntity(organizationId, null, null, null, paging);
-            return rval;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            throw new SystemErrorException(e);
-        }
+        final int finalPage = Math.max(page, 1);
+        final int finalPageSize = pageSize <= 0 ? 20 : pageSize;
+
+        PagingBean paging = new PagingBean();
+        paging.setPage(finalPage);
+        paging.setPageSize(finalPageSize);
+        return tryAction(() -> query.auditEntity(organizationId, null, null, null, paging));
     }
 
-    /**
-     * @see IOrganizationResource#createClient(java.lang.String, io.apiman.manager.api.beans.clients.NewClientBean)
-     */
-    @Override
+    @Transactional
     public ClientBean createClient(String organizationId, NewClientBean bean)
-            throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException,
-            InvalidNameException {
+        throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException,
+        InvalidNameException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         FieldValidator.validateName(bean.getName());
@@ -597,9 +472,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newClient.setDescription(bean.getDescription());
         newClient.setCreatedBy(securityContext.getCurrentUser());
         newClient.setCreatedOn(new Date());
-        try {
+
+        tryAction(() -> {
             // Store/persist the new client
-            storage.beginTx();
             OrganizationBean org = getOrganizationFromStorage(organizationId);
             newClient.setOrganization(org);
 
@@ -615,97 +490,48 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 newClientVersion.setVersion(bean.getInitialVersion());
                 createClientVersionInternal(newClientVersion, newClient);
             }
+        });
 
-            storage.commitTx();
-
-            log.debug(String.format("Created client %s: %s", newClient.getName(), newClient)); //$NON-NLS-1$
-            return newClient;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        LOGGER.debug(String.format("Created client %s: %s", newClient.getName(), newClient)); //$NON-NLS-1$
+        return newClient;
     }
 
-    /**
-     * @see IOrganizationResource#getClient(java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public ClientBean getClient(String organizationId, String clientId)
-            throws ClientNotFoundException, NotAuthorizedException {
+        throws ClientNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
-
-        try {
-            storage.beginTx();
-            ClientBean clientBean = getClientFromStorage(organizationId, clientId);
-            storage.commitTx();
-            log.debug(String.format("Got client %s: %s", clientBean.getName(), clientBean)); //$NON-NLS-1$
-            return clientBean;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        ClientBean clientBean = tryAction(() -> getClientFromStorage(organizationId, clientId));
+        LOGGER.debug(String.format("Got client %s: %s", clientBean.getName(), clientBean)); //$NON-NLS-1$
+        return clientBean;
     }
 
-    /**
-     * @see IOrganizationResource#getClientActivity(java.lang.String, java.lang.String, int, int)
-     */
-    @Override
+    @Transactional
     public SearchResultsBean<AuditEntryBean> getClientActivity(String organizationId, String clientId,
-            int page, int pageSize) throws ClientNotFoundException, NotAuthorizedException {
+        int page, int pageSize) throws ClientNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
-        if (page <= 1) {
-            page = 1;
-        }
-        if (pageSize == 0) {
-            pageSize = 20;
-        }
-        try {
-            SearchResultsBean<AuditEntryBean> rval;
-            PagingBean paging = new PagingBean();
-            paging.setPage(page);
-            paging.setPageSize(pageSize);
-            rval = query.auditEntity(organizationId, clientId, null, ClientBean.class, paging);
-            return rval;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            throw new SystemErrorException(e);
-        }
+        final int finalPage = Math.max(page, 1);
+        final int finalPageSize = pageSize <= 0 ? 20 : pageSize;
+
+        PagingBean paging = new PagingBean();
+        paging.setPage(finalPage);
+        paging.setPageSize(finalPageSize);
+        return tryAction(() -> query.auditEntity(organizationId, clientId, null, ClientBean.class, paging));
     }
 
-    /**
-     * @see IOrganizationResource#listClients(java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<ClientSummaryBean> listClients(String organizationId) throws OrganizationNotFoundException,
-            NotAuthorizedException {
+        NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.orgView, organizationId);
-
-        try {
-            return query.getClientsInOrg(organizationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getClientsInOrg(organizationId));
     }
 
-    /**
-     * @see IOrganizationResource#updateClient(java.lang.String, java.lang.String, io.apiman.manager.api.beans.clients.UpdateClientBean)
-     */
-    @Override
+    @Transactional
     public void updateClient(String organizationId, String clientId, UpdateClientBean bean)
-            throws ClientNotFoundException, NotAuthorizedException {
+        throws ClientNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             ClientBean clientForUpdate = getClientFromStorage(organizationId, clientId);
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(clientForUpdate.getDescription(), bean.getDescription())) {
@@ -714,24 +540,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.updateClient(clientForUpdate);
             storage.createAuditEntry(AuditUtils.clientUpdated(clientForUpdate, auditData, securityContext));
-            storage.commitTx();
-            log.debug(String.format("Updated client %s: %s", clientForUpdate.getName(), clientForUpdate)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+
+            LOGGER.debug(String.format("Updated client %s: %s", clientForUpdate.getName(), clientForUpdate)); //$NON-NLS-1$
+        });
     }
 
-    /**
-     * @see IOrganizationResource#createClientVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.clients.NewClientVersionBean)
-     */
-    @Override
+    // Manual TX, could refactor this into just one tx?
     public ClientVersionBean createClientVersion(String organizationId, String clientId,
-            NewClientVersionBean bean) throws ClientNotFoundException, NotAuthorizedException,
-            InvalidVersionException, ClientVersionAlreadyExistsException {
+        NewClientVersionBean bean) throws ClientNotFoundException, NotAuthorizedException,
+        InvalidVersionException, ClientVersionAlreadyExistsException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         FieldValidator.validateVersion(bean.getVersion());
@@ -781,60 +598,45 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return newVersion;
     }
 
-    /**
-     * @see IOrganizationResource#getClientApiKey(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public ApiKeyBean getClientApiKey(String organizationId, String clientId, String version)
-            throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException {
+        throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
-        ClientVersionBean client = getClientVersionInternal(organizationId, clientId, version);
+        ClientVersionBean client = tryAction(() -> getClientVersionInternal(organizationId, clientId, version));
         ApiKeyBean apiKeyBean = new ApiKeyBean();
         apiKeyBean.setApiKey(client.getApikey());
         return apiKeyBean;
     }
 
-    /**
-     * @see IOrganizationResource#updateClientApiKey(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.clients.ApiKeyBean)
-     */
-    @Override
+    @Transactional
     public ApiKeyBean updateClientApiKey(String organizationId, String clientId, String version, ApiKeyBean bean)
-            throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException,
-            InvalidClientStatusException {
+        throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException,
+        InvalidClientStatusException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
-        try {
-            ClientVersionBean clientVersion = getClientVersionInternal(organizationId, clientId, version);
 
-            if (clientVersion.getStatus() == ClientStatus.Registered) {
-                throw ExceptionFactory.invalidClientStatusException();
-            }
+        ClientVersionBean clientVersion = tryAction(() -> getClientVersionInternal(organizationId, clientId, version));
 
-            String newApiKey = bean.getApiKey();
-            if (StringUtils.isEmpty(newApiKey)) {
-                newApiKey = apiKeyGenerator.generate();
-            }
-
-            clientVersion.setApikey(newApiKey);
-            clientVersion.setModifiedBy(securityContext.getCurrentUser());
-            clientVersion.setModifiedOn(new Date());
-
-            storage.beginTx();
-            storage.updateClientVersion(clientVersion);
-            storage.commitTx();
-
-            log.debug(String.format("Updated an API Key for client %s version %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
-            ApiKeyBean rval = new ApiKeyBean();
-            rval.setApiKey(newApiKey);
-            return rval;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+        if (clientVersion.getStatus() == ClientStatus.Registered) {
+            throw ExceptionFactory.invalidClientStatusException();
         }
+
+        String newApiKey = bean.getApiKey();
+        if (StringUtils.isEmpty(newApiKey)) {
+            newApiKey = apiKeyGenerator.generate();
+        }
+
+        clientVersion.setApikey(newApiKey);
+        clientVersion.setModifiedBy(securityContext.getCurrentUser());
+        clientVersion.setModifiedOn(new Date());
+
+        tryAction(() -> storage.updateClientVersion(clientVersion));
+
+        LOGGER.debug(String.format("Updated an API Key for client %s version %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
+        ApiKeyBean rval = new ApiKeyBean();
+        rval.setApiKey(newApiKey);
+        return rval;
     }
 
     /**
@@ -844,7 +646,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @throws StorageException
      */
     protected ClientVersionBean createClientVersionInternal(NewClientVersionBean bean,
-            ClientBean client) throws StorageException {
+        ClientBean client) throws StorageException {
         if (!BeanUtils.isValidVersion(bean.getVersion())) {
             throw new StorageException("Invalid/illegal client version: " + bean.getVersion()); //$NON-NLS-1$
         }
@@ -865,18 +667,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         storage.createClientVersion(newVersion);
         storage.createAuditEntry(AuditUtils.clientVersionCreated(newVersion, securityContext));
 
-        log.debug(String.format("Created new client version %s: %s", newVersion.getClient().getName(), newVersion)); //$NON-NLS-1$
+        LOGGER.debug(String.format("Created new client version %s: %s", newVersion.getClient().getName(), newVersion)); //$NON-NLS-1$
         return newVersion;
     }
 
     /**
      * @see IOrganizationResource#getClientVersion(java.lang.String, java.lang.String, java.lang.String)
      */
-    @Override
+    
     public ClientVersionBean getClientVersion(String organizationId, String clientId, String version)
-            throws ClientVersionNotFoundException, NotAuthorizedException {
+        throws ClientVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
-        return getClientVersionInternal(organizationId, clientId, version);
+        return tryAction(() -> getClientVersionInternal(organizationId, clientId, version));
     }
 
     /**
@@ -888,20 +690,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @return the client version
      * @throws ClientVersionNotFoundException if client not found
      */
-    protected ClientVersionBean getClientVersionInternal(String organizationId, String clientId, String version) throws ClientVersionNotFoundException {
-        try {
-            storage.beginTx();
-            ClientVersionBean clientVersion = getClientVersionFromStorage(organizationId, clientId, version);
-            storage.commitTx();
-            log.debug(String.format("Got new client version %s: %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
-            return clientVersion;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+    protected ClientVersionBean getClientVersionInternal(String organizationId, String clientId, String version)
+        throws ClientVersionNotFoundException, StorageException {
+        ClientVersionBean clientVersion = getClientVersionFromStorage(organizationId, clientId, version);
+        LOGGER.debug(String.format("Got new client version %s: %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
+        return clientVersion;
     }
 
     private ClientVersionBean getClientVersionFromStorage(String organizationId, String clientId, String version) throws StorageException, ClientVersionNotFoundException {
@@ -912,43 +705,25 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return clientVersion;
     }
 
-    /**
-     * @see IOrganizationResource#getClientVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
-     */
-    @Override
+    @Transactional
     public SearchResultsBean<AuditEntryBean> getClientVersionActivity(String organizationId,
-            String clientId, String version, int page, int pageSize)
-            throws ClientVersionNotFoundException, NotAuthorizedException {
+        String clientId, String version, int page, int pageSize)
+        throws ClientVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
-        if (page <= 1) {
-            page = 1;
-        }
-        if (pageSize == 0) {
-            pageSize = 20;
-        }
-        try {
-            SearchResultsBean<AuditEntryBean> rval;
-            PagingBean paging = new PagingBean();
-            paging.setPage(page);
-            paging.setPageSize(pageSize);
-            rval = query.auditEntity(organizationId, clientId, version, ClientBean.class, paging);
-            return rval;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            throw new SystemErrorException(e);
-        }
+        final int finalPage = Math.max(page, 1);
+        final int finalPageSize = pageSize <= 0 ? 20 : pageSize;
+
+        PagingBean paging = new PagingBean();
+        paging.setPage(finalPage);
+        paging.setPageSize(finalPageSize);
+        return tryAction(() -> query.auditEntity(organizationId, clientId, version, ClientBean.class, paging));
     }
 
-    /**
-     * @see IOrganizationResource#getClientUsagePerApi(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public ClientUsagePerApiBean getClientUsagePerApi(String organizationId, String clientId,
-            String version, String fromDate, String toDate) throws NotAuthorizedException,
-            InvalidMetricCriteriaException {
+        String version, String fromDate, String toDate) throws NotAuthorizedException,
+        InvalidMetricCriteriaException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
         if (fromDate == null) {
@@ -966,32 +741,21 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return metrics.getClientUsagePerApi(organizationId, clientId, version, from, to);
     }
 
-    /**
-     * @see IOrganizationResource#listClientVersions(java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<ClientVersionSummaryBean> listClientVersions(String organizationId, String clientId)
-            throws ClientNotFoundException, NotAuthorizedException {
+        throws ClientNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
         // Try to get the client first - will throw a ClientNotFoundException if not found.
         getClient(organizationId, clientId);
 
-        try {
-            List<ClientVersionSummaryBean> clientVersions = query.getClientVersions(organizationId, clientId);
-            return clientVersions;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getClientVersions(organizationId, clientId));
     }
 
-    /**
-     * @see IOrganizationResource#createContract(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.contracts.NewContractBean)
-     */
-    @Override
+    // TODO Manual TX
     public ContractBean createContract(String organizationId, String clientId, String version,
-            NewContractBean bean) throws OrganizationNotFoundException, ClientNotFoundException,
-            ApiNotFoundException, PlanNotFoundException, ContractAlreadyExistsException,
-            NotAuthorizedException {
+        NewContractBean bean) throws OrganizationNotFoundException, ClientNotFoundException,
+        ApiNotFoundException, PlanNotFoundException, ContractAlreadyExistsException,
+        NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         try {
@@ -999,16 +763,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             ContractBean contract = createContractInternal(organizationId, clientId, version, bean);
 
             storage.commitTx();
-            log.debug(String.format("Created new contract %s: %s", contract.getId(), contract)); //$NON-NLS-1$
+            LOGGER.debug(String.format("Created new contract %s: %s", contract.getId(), contract)); //$NON-NLS-1$
             return contract;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
         } catch (Exception e) {
             storage.rollbackTx();
-            // Up above we are optimistically creating the contract.  If it fails, check to see
+            // Up above, we are optimistically creating the contract.  If it fails, check to see
             // if it failed because it was a duplicate.  If so, throw something sensible.  We
-            // only do this on failure (we would get a FK contraint failure, for example) to
+            // only do this on failure (we would get a FK constraint failure, for example) to
             // reduce overhead on the typical happy path.
             if (contractAlreadyExists(organizationId, clientId, version, bean)) {
                 throw ExceptionFactory.contractAlreadyExistsException();
@@ -1020,15 +784,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
     /**
      * Creates a contract.
-     * @param organizationId
-     * @param clientId
-     * @param version
-     * @param bean
-     * @throws StorageException
-     * @throws Exception
      */
     protected ContractBean createContractInternal(String organizationId, String clientId,
-            String version, NewContractBean bean) throws StorageException, Exception {
+        String version, NewContractBean bean) throws StorageException, Exception {
         ClientVersionBean cvb = getClientVersionFromStorage(organizationId, clientId, version);
 
         if (cvb.getStatus() == ClientStatus.Retired) {
@@ -1085,13 +843,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     /**
      * Check to see if the contract already exists, by getting a list of all the
      * client's contracts and comparing with the one being created.
-     * @param organizationId
-     * @param clientId
-     * @param version
-     * @param bean
      */
     private boolean contractAlreadyExists(String organizationId, String clientId, String version,
-            NewContractBean bean) {
+        NewContractBean bean) {
         try {
             List<ContractSummaryBean> contracts = query.getClientContracts(organizationId, clientId, version);
             for (ContractSummaryBean contract : contracts) {
@@ -1109,39 +863,24 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
-    /**
-     * @see IOrganizationResource#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
-     */
-    @Override
+    @Transactional
     public ContractBean getContract(String organizationId, String clientId, String version,
-            Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
+        Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
-        try {
-            storage.beginTx();
+        return tryAction(() -> {
             ContractBean contract = storage.getContract(contractId);
             if (contract == null)
                 throw ExceptionFactory.contractNotFoundException(contractId);
 
-            storage.commitTx();
-
-            log.debug(String.format("Got contract %s: %s", contract.getId(), contract)); //$NON-NLS-1$
+            LOGGER.debug(String.format("Got contract %s: %s", contract.getId(), contract)); //$NON-NLS-1$
             return contract;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#deleteAllContracts(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public void deleteAllContracts(String organizationId, String clientId, String version)
-            throws ClientNotFoundException, NotAuthorizedException {
+        throws ClientNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         List<ContractSummaryBean> contracts = getClientVersionContracts(organizationId, clientId, version);
@@ -1150,17 +889,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
-    /**
-     * @see IOrganizationResource#deleteContract(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
-     */
-    @Override
+    @Transactional
     public void deleteContract(String organizationId, String clientId, String version, Long contractId)
-            throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException,
-            InvalidClientStatusException {
+        throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException,
+        InvalidClientStatusException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             ContractBean contract = storage.getContract(contractId);
             if (contract == null) {
                 throw ExceptionFactory.contractNotFoundException(contractId);
@@ -1187,112 +922,72 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             clientV.setModifiedOn(new Date());
             storage.updateClientVersion(clientV);
 
-            storage.commitTx();
-            log.debug(String.format("Deleted contract: %s", contract)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            LOGGER.debug(String.format("Deleted contract: %s", contract)); //$NON-NLS-1$
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getClientVersionContracts(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<ContractSummaryBean> getClientVersionContracts(String organizationId, String clientId, String version)
-            throws ClientNotFoundException, NotAuthorizedException {
+        throws ClientNotFoundException, NotAuthorizedException {
 
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
         // Try to get the client first - will throw a ClientNotFoundException if not found.
         getClientVersionInternal(organizationId, clientId, version);
 
-        try {
-            List<ContractSummaryBean> contracts = query.getClientContracts(organizationId, clientId, version);
-            return contracts;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getClientContracts(organizationId, clientId, version));
     }
 
-    /**
-     * @see IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
     public Response getApiRegistryJSON(String organizationId, String clientId, String version,
-            String download) throws ClientVersionNotFoundException, NotAuthorizedException {
+        String download) throws ClientVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
-        if ("true".equals(download)) { //$NON-NLS-1$
-            try {
+        if (BooleanUtils.toBoolean(download)) { //$NON-NLS-1$
+            return tryAction(() -> {
                 String path = String.format("%s/%s/%s", organizationId, clientId, version); //$NON-NLS-1$
                 DownloadBean dbean = downloadManager.createDownload(DownloadType.apiRegistryJson, path);
                 return Response.ok(dbean, MediaType.APPLICATION_JSON).build();
-            } catch (StorageException e) {
-                throw new SystemErrorException(e);
-            }
+            });
         } else {
             return getApiRegistryJSONInternal(organizationId, clientId, version);
         }
     }
 
-    /**
-     * @see IOrganizationResource#getApiRegistryJSONInternal(String, String, String)
-     */
-    @Override
     public Response getApiRegistryJSONInternal(String organizationId, String clientId, String version) throws ClientVersionNotFoundException {
         // We don't need a permission check here because the permission was already checked while creating the download id
         ApiRegistryBean apiRegistry = getApiRegistry(organizationId, clientId, version);
         return Response.ok(apiRegistry, MediaType.APPLICATION_JSON)
-                .header("Content-Disposition", "attachment; filename=api-registry.json") //$NON-NLS-1$ //$NON-NLS-2$
-                .build();
+            .header("Content-Disposition", "attachment; filename=api-registry.json") //$NON-NLS-1$ //$NON-NLS-2$
+            .build();
     }
 
-    /**
-     * @see IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public Response getApiRegistryXML(String organizationId, String clientId, String version,
-            String download) throws ClientVersionNotFoundException, NotAuthorizedException {
+        String download) throws ClientVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
         if ("true".equals(download)) { //$NON-NLS-1$
-            try {
+            return tryAction(() -> {
                 String path = String.format("%s/%s/%s", organizationId, clientId, version); //$NON-NLS-1$
                 DownloadBean dbean = downloadManager.createDownload(DownloadType.apiRegistryXml, path);
                 return Response.ok(dbean, MediaType.APPLICATION_JSON).build();
-            } catch (StorageException e) {
-                throw new SystemErrorException(e);
-            }
+            });
         } else {
             return getApiRegistryXMLInternal(organizationId, clientId, version);
         }
     }
 
-    /**
-     * @see IOrganizationResource#getApiRegistryXMLInternal(String, String, String)
-     */
-    @Override
     public Response getApiRegistryXMLInternal(String organizationId, String clientId, String version) throws ClientVersionNotFoundException {
         // We don't need a permission check here because the permission was already checked while creating the download id
         ApiRegistryBean apiRegistry = getApiRegistry(organizationId, clientId, version);
         return Response.ok(apiRegistry, MediaType.APPLICATION_XML)
-                .header("Content-Disposition", "attachment; filename=api-registry.xml") //$NON-NLS-1$ //$NON-NLS-2$
-                .build();
+            .header("Content-Disposition", "attachment; filename=api-registry.xml") //$NON-NLS-1$ //$NON-NLS-2$
+            .build();
     }
 
     /**
      * Gets the API registry.
-     * @param organizationId
-     * @param clientId
-     * @param version
-     * @throws ClientVersionNotFoundException
      */
+    @Transactional
     private ApiRegistryBean getApiRegistry(String organizationId, String clientId, String version) throws ClientVersionNotFoundException {
         // Try to get the client first - will throw a ClientVersionNotFoundException if not found.
         ClientVersionBean clientVersion = getClientVersionInternal(organizationId, clientId, version);
@@ -1329,7 +1024,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
 
             return apiRegistry;
-        } catch (StorageException|GatewayAuthenticationException e) {
+        } catch (StorageException| GatewayAuthenticationException e) {
             throw new SystemErrorException(e);
         } finally {
             if (txStarted) {
@@ -1341,40 +1036,29 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
-    /**
-     * @see IOrganizationResource#createClientPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.NewPolicyBean)
-     */
-    @Override
+    @Transactional
     public PolicyBean createClientPolicy(String organizationId, String clientId, String version,
-            NewPolicyBean bean) throws OrganizationNotFoundException, ClientVersionNotFoundException,
-            NotAuthorizedException {
+        NewPolicyBean bean) throws OrganizationNotFoundException, ClientVersionNotFoundException,
+        NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
-        // Make sure the Client exists
-        ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
+        return tryAction(() -> {
+            // Make sure the Client exists
+            ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
 
-        PolicyBean policy = doCreatePolicy(organizationId, clientId, version, bean, PolicyType.Client);
+            PolicyBean policy = doCreatePolicy(organizationId, clientId, version, bean, PolicyType.Client);
 
-        try {
-            storage.beginTx();
             cvb.setModifiedBy(securityContext.getCurrentUser());
             cvb.setModifiedOn(new Date());
-            storage.commitTx();
-        } catch (Exception e) {
-            storage.rollbackTx();
-            log.error(e);
-        }
 
-        return policy;
+            return policy;
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getClientPolicy(java.lang.String, java.lang.String, java.lang.String, long)
-     */
-    @Override
+    // Tx via doGetPolicy for now.
     public PolicyBean getClientPolicy(String organizationId, String clientId, String version, long policyId)
-            throws OrganizationNotFoundException, ClientVersionNotFoundException,
-            PolicyNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, ClientVersionNotFoundException,
+        PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
         // Make sure the client version exists
@@ -1384,20 +1068,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return policy;
     }
 
-    /**
-     * @see IOrganizationResource#updateClientPolicy(java.lang.String, java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.UpdatePolicyBean)
-     */
-    @Override
+    @Transactional
     public void updateClientPolicy(String organizationId, String clientId, String version,
-            long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
-            ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
+        long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
+        ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         // Make sure the client version exists.
         ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             PolicyBean policy = this.storage.getPolicy(PolicyType.Client, organizationId, clientId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
@@ -1414,31 +1094,19 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             cvb.setModifiedOn(new Date());
             cvb.setModifiedBy(securityContext.getCurrentUser());
             storage.updateClientVersion(cvb);
-
-            storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#deleteClientPolicy(java.lang.String, java.lang.String, java.lang.String, long)
-     */
-    @Override
+    @Transactional
     public void deleteClientPolicy(String organizationId, String clientId, String version, long policyId)
-            throws OrganizationNotFoundException, ClientVersionNotFoundException,
-            PolicyNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, ClientVersionNotFoundException,
+        PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         // Make sure the client version exists;
         ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             PolicyBean policy = this.storage.getPolicy(PolicyType.Client, organizationId, clientId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
@@ -1449,48 +1117,29 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             cvb.setModifiedBy(securityContext.getCurrentUser());
             cvb.setModifiedOn(new Date());
             storage.updateClientVersion(cvb);
-
-            storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#listClientPolicies(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<PolicySummaryBean> listClientPolicies(String organizationId, String clientId, String version)
-            throws OrganizationNotFoundException, ClientVersionNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, ClientVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
         // Try to get the client version first - will throw an exception if not found.
         getClientVersionInternal(organizationId, clientId, version);
 
-        try {
-            return query.getPolicies(organizationId, clientId, version, PolicyType.Client);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getPolicies(organizationId, clientId, version, PolicyType.Client));
     }
 
-    /**
-     * @see IOrganizationResource#reorderClientPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyChainBean)
-     */
-    @Override
+    @Transactional
     public void reorderClientPolicies(String organizationId, String clientId, String version,
-            PolicyChainBean policyChain) throws OrganizationNotFoundException,
-            ClientVersionNotFoundException, NotAuthorizedException {
+        PolicyChainBean policyChain) throws OrganizationNotFoundException,
+        ClientVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         // Make sure the client version exists.
         ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             List<Long> newOrder = new ArrayList<>(policyChain.getPolicies().size());
             for (PolicySummaryBean psb : policyChain.getPolicies()) {
                 newOrder.add(psb.getId());
@@ -1501,24 +1150,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             cvb.setModifiedBy(securityContext.getCurrentUser());
             cvb.setModifiedOn(new Date());
             storage.updateClientVersion(cvb);
-
-            storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#createApi(java.lang.String, io.apiman.manager.api.beans.apis.NewApiBean)
-     */
-    @Override
+    @Transactional
     public ApiBean createApi(String organizationId, NewApiBean bean)
-            throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException,
-            InvalidNameException {
+        throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException,
+        InvalidNameException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         FieldValidator.validateName(bean.getName());
@@ -1529,10 +1167,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newApi.setId(BeanUtils.idFromName(bean.getName()));
         newApi.setCreatedOn(new Date());
         newApi.setCreatedBy(securityContext.getCurrentUser());
-        try {
+
+        return tryAction(() -> {
             GatewaySummaryBean gateway = getSingularGateway();
 
-            storage.beginTx();
             OrganizationBean orgBean = getOrganizationFromStorage(organizationId);
             if (storage.getApi(orgBean.getId(), newApi.getId()) != null) {
                 throw ExceptionFactory.apiAlreadyExistsException(bean.getName());
@@ -1557,47 +1195,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 createApiVersionInternal(newApiVersion, newApi, gateway);
             }
 
-            storage.commitTx();
             return newApi;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getApi(java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public ApiBean getApi(String organizationId, String apiId)
-            throws ApiNotFoundException, NotAuthorizedException {
+        throws ApiNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
-        return getApiInternal(organizationId, apiId);
-    }
-
-    /**
-     * Gets the API internal.
-     * This method can be also used to check if the API exists
-     * @param organizationId
-     * @param apiId
-     * @return
-     */
-    private ApiBean getApiInternal(String organizationId, String apiId) throws ApiNotFoundException {
-        try {
-            storage.beginTx();
-            ApiBean bean = getApiFromStorage(organizationId, apiId);
-            storage.commitTx();
-            return bean;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> getApiFromStorage(organizationId, apiId));
     }
 
     /**
@@ -1615,12 +1221,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return apiBean;
     }
 
-    /**
-     * @see IOrganizationResource#getApiActivity(java.lang.String, java.lang.String, int, int)
-     */
-    @Override
+    @Transactional
     public SearchResultsBean<AuditEntryBean> getApiActivity(String organizationId, String apiId,
-            int page, int pageSize) throws ApiNotFoundException, NotAuthorizedException {
+        int page, int pageSize) throws ApiNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (page <= 1) {
@@ -1629,50 +1232,37 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (pageSize == 0) {
             pageSize = 20;
         }
-        try {
-            SearchResultsBean<AuditEntryBean> rval;
-            PagingBean paging = new PagingBean();
-            paging.setPage(page);
-            paging.setPageSize(pageSize);
-            rval = query.auditEntity(organizationId, apiId, null, ApiBean.class, paging);
-            return rval;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+
+        final PagingBean paging = new PagingBean();
+        paging.setPage(page);
+        paging.setPageSize(pageSize);
+
+        return tryAction(() -> query.auditEntity(organizationId, apiId, null, ApiBean.class, paging));
     }
 
-    /**
-     * @see IOrganizationResource#listApis(java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<ApiSummaryBean> listApis(String organizationId) throws OrganizationNotFoundException {
         // No permission check is needed, because this would break All Organizations UI
 
         // make sure the org exists
         get(organizationId);
 
-        try {
+        return tryAction(() -> {
             // Hide sensitive data and set only needed data for the UI
-            if (securityContext.hasPermission(PermissionType.orgView, organizationId)){
+            if (securityContext.hasPermission(PermissionType.orgView, organizationId)) {
                 return query.getApisInOrg(organizationId);
             } else {
                 return RestHelper.hideSensitiveDataFromApiSummaryBeanList(query.getApisInOrg(organizationId));
             }
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#updateApi(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.UpdateApiBean)
-     */
-    @Override
+    @Transactional
     public void updateApi(String organizationId, String apiId, UpdateApiBean bean)
-            throws ApiNotFoundException, NotAuthorizedException {
+        throws ApiNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             ApiBean apiForUpdate = getApiFromStorage(organizationId, apiId);
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(apiForUpdate.getDescription(), bean.getDescription())) {
@@ -1681,47 +1271,28 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.updateApi(apiForUpdate);
             storage.createAuditEntry(AuditUtils.apiUpdated(apiForUpdate, auditData, securityContext));
-            storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#createApiVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.NewApiVersionBean)
-     */
-    @Override
+    @Transactional
     public ApiVersionBean createApiVersion(String organizationId, String apiId,
-            NewApiVersionBean bean) throws ApiNotFoundException, NotAuthorizedException,
-            InvalidVersionException, ApiVersionAlreadyExistsException {
+        NewApiVersionBean bean) throws ApiNotFoundException, NotAuthorizedException,
+        InvalidVersionException, ApiVersionAlreadyExistsException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         FieldValidator.validateVersion(bean.getVersion());
 
-        ApiVersionBean newVersion;
-        try {
+        ApiVersionBean newVersion = tryAction(() -> {
             GatewaySummaryBean gateway = getSingularGateway();
 
-            storage.beginTx();
             ApiBean api = getApiFromStorage(organizationId, apiId);
 
             if (storage.getApiVersion(organizationId, apiId, bean.getVersion()) != null) {
                 throw ExceptionFactory.apiVersionAlreadyExistsException(apiId, bean.getVersion());
             }
 
-            newVersion = createApiVersionInternal(bean, api, gateway);
-            storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            return createApiVersionInternal(bean, api, gateway);
+        });
 
         if (bean.isClone() && bean.getCloneVersion() != null) {
             try {
@@ -1761,11 +1332,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                         Response response = getApiDefinition(organizationId, apiId, bean.getCloneVersion());
                         definition = (InputStream) response.getEntity();
                         storeApiDefinition(organizationId, apiId, newVersion.getVersion(),
-                                cloneSource.getDefinitionType(), definition, cloneSource.getDefinitionUrl());
+                            cloneSource.getDefinitionType(), definition, cloneSource.getDefinitionUrl());
                     } catch (ApiDefinitionNotFoundException svnfe) {
                         // This is ok - it just means the API doesn't have one, so do nothing.
                     } catch (Exception sdnfe) {
-                        log.error("Unable to create response", sdnfe); //$NON-NLS-1$
+                        LOGGER.error("Unable to create response", sdnfe); //$NON-NLS-1$
                     } finally {
                         IOUtils.closeQuietly(definition);
                     }
@@ -1794,14 +1365,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
     /**
      * Creates an API version.
-     * @param bean
-     * @param api
-     * @param gateway
-     * @throws Exception
-     * @throws StorageException
      */
     protected ApiVersionBean createApiVersionInternal(NewApiVersionBean bean,
-            ApiBean api, GatewaySummaryBean gateway) throws Exception, StorageException {
+        ApiBean api, GatewaySummaryBean gateway) throws Exception, StorageException {
         if (!BeanUtils.isValidVersion(bean.getVersion())) {
             throw new StorageException("Invalid/illegal API version: " + bean.getVersion()); //$NON-NLS-1$
         }
@@ -1849,7 +1415,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             newVersion.setStatus(ApiStatus.Created);
         }
 
-        // Ensure all of the plans are in the right status (locked)
+        // Ensure all the plans are in the right status (locked)
         Set<ApiPlanBean> plans = newVersion.getPlans();
         if (plans != null) {
             for (ApiPlanBean splanBean : plans) {
@@ -1872,7 +1438,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 definition = new URL(bean.getDefinitionUrl()).openStream();
                 storage.updateApiDefinition(newVersion, definition);
             } catch (Exception e) {
-                log.error("Unable to store API definition from: " + bean.getDefinitionUrl(), e); //$NON-NLS-1$
+                LOGGER.error("Unable to store API definition from: " + bean.getDefinitionUrl(), e); //$NON-NLS-1$
                 // Set definition type silently to None
                 newVersion.setDefinitionType(ApiDefinitionType.None);
                 storage.updateApiVersion(newVersion);
@@ -1885,17 +1451,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return newVersion;
     }
 
-    /**
-     * @see IOrganizationResource#getApiVersion(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public ApiVersionBean getApiVersion(String organizationId, String apiId, String version)
-            throws ApiVersionNotFoundException {
+        throws ApiVersionNotFoundException {
         // No permission check is needed, because this would break All APIs UI
-        try {
-            storage.beginTx();
+        return tryAction(() -> {
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
-            storage.commitTx();
 
             if (securityContext.hasPermission(PermissionType.apiView, organizationId)) {
                 decryptEndpointProperties(apiVersion);
@@ -1903,21 +1464,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             } else {
                 return RestHelper.hideSensitiveDataFromApiVersionBean(apiVersion);
             }
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getApiVersionStatus(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public ApiVersionStatusBean getApiVersionStatus(String organizationId, String apiId,
-            String version) throws ApiVersionNotFoundException, NotAuthorizedException {
+        String version) throws ApiVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         ApiVersionBean versionBean = getApiVersion(organizationId, apiId, version);
@@ -1925,19 +1477,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return apiValidator.getStatus(versionBean, policies);
     }
 
-    /**
-     * @see IOrganizationResource#getApiDefinition(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public Response getApiDefinition(String organizationId, String apiId, String version)
-            throws ApiVersionNotFoundException {
+        throws ApiVersionNotFoundException {
         // No permission check is needed, because this would break All APIs UI
         // Allow the user to view a definition
 
-        try {
-            storage.beginTx();
+        return tryAction(() -> {
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
-            if (apiVersion.getDefinitionType() == ApiDefinitionType.None || apiVersion.getDefinitionType() == null) {
+            if (apiVersion.getDefinitionType() == ApiDefinitionType.None
+                || apiVersion.getDefinitionType() == null) {
                 throw ExceptionFactory.apiDefinitionNotFoundException(apiId, version);
             }
             InputStream definition = storage.getApiDefinition(apiVersion);
@@ -1945,7 +1494,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.apiDefinitionNotFoundException(apiId, version);
             }
 
-            definition = updateDefinitionWithManagedEndpoint(organizationId, apiId, version, apiVersion, definition);
+            definition = updateDefinitionWithManagedEndpoint(organizationId, apiId, version, apiVersion,
+                definition);
             ResponseBuilder builder = Response.ok().entity(definition);
 
             if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerJSON) {
@@ -1956,17 +1506,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 builder.type("text/xml"); //$NON-NLS-1$
             } else {
                 IOUtils.closeQuietly(definition);
-                throw new Exception("API definition type not supported: " + apiVersion.getDefinitionType()); //$NON-NLS-1$
+                throw new Exception(
+                    "API definition type not supported: " + apiVersion.getDefinitionType()); //$NON-NLS-1$
             }
-            storage.commitTx();
             return builder.build();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
     /**
@@ -2013,34 +1557,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return new ByteArrayInputStream(updatedDefinitionString.getBytes(StandardCharsets.UTF_8));
     }
 
-    /**
-     * @see IOrganizationResource#getApiVersionEndpointInfo(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
-    public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(String organizationId,
-            String apiId, String version) throws ApiVersionNotFoundException,
-            InvalidApiStatusException {
+    @Transactional
+    public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(String organizationId, String apiId, String version)
+        throws ApiVersionNotFoundException, InvalidApiStatusException {
         // No permission check is needed, because this would break All APIs UI
-        try {
-            storage.beginTx();
+        return tryAction(() -> {
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             if (apiVersion.getStatus() != ApiStatus.Published) {
                 throw new InvalidApiStatusException(Messages.i18n.format("ApiNotPublished")); //$NON-NLS-1$
             }
             ApiVersionEndpointSummaryBean rval = getApiVersionEndpointInfoFromStorage(apiVersion, organizationId, apiId, version);
-            storage.commitTx();
             return rval;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
     private ApiVersionEndpointSummaryBean getApiVersionEndpointInfoFromStorage(ApiVersionBean apiVersion, String organizationId,
-            String apiId, String version) throws GatewayNotFoundException, GatewayAuthenticationException, StorageException {
+        String apiId, String version) throws GatewayNotFoundException, GatewayAuthenticationException, StorageException {
         Set<ApiGatewayBean> gateways = apiVersion.getGateways();
         if (gateways.isEmpty()) {
             throw new SystemErrorException("No Gateways for published API!"); //$NON-NLS-1$
@@ -2049,7 +1581,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (gateway == null) {
             throw new GatewayNotFoundException();
         } else {
-            log.debug(String.format("Got endpoint summary: %s", gateway)); //$NON-NLS-1$
+            LOGGER.debug(String.format("Got endpoint summary: %s", gateway)); //$NON-NLS-1$
         }
         IGatewayLink link = gatewayLinkFactory.create(gateway);
         ApiEndpoint endpoint = link.getApiEndpoint(organizationId, apiId, version);
@@ -2058,13 +1590,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return rval;
     }
 
-    /**
-     * @see IOrganizationResource#getApiVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
-     */
-    @Override
+    @Transactional
     public SearchResultsBean<AuditEntryBean> getApiVersionActivity(String organizationId,
-            String apiId, String version, int page, int pageSize) throws ApiVersionNotFoundException,
-            NotAuthorizedException {
+        String apiId, String version, int page, int pageSize) throws ApiVersionNotFoundException,
+        NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (page <= 1) {
@@ -2073,24 +1602,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (pageSize == 0) {
             pageSize = 20;
         }
-        try {
-            SearchResultsBean<AuditEntryBean> rval;
-            PagingBean paging = new PagingBean();
-            paging.setPage(page);
-            paging.setPageSize(pageSize);
-            rval = query.auditEntity(organizationId, apiId, version, ApiBean.class, paging);
-            return rval;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        PagingBean paging = new PagingBean();
+        paging.setPage(page);
+        paging.setPageSize(pageSize);
+
+        return tryAction(() -> query.auditEntity(organizationId, apiId, version, ApiBean.class, paging));
     }
 
-    /**
-     * @see IOrganizationResource#updateApiVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.UpdateApiVersionBean)
-     */
-    @Override
+    @Transactional
     public ApiVersionBean updateApiVersion(String organizationId, String apiId, String version,
-            UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException {
+        UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
@@ -2164,7 +1685,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             avb.setDisableKeysStrip(bean.getDisableKeysStrip());
         }
 
-        try {
+       return tryAction(() -> {
             if (avb.getGateways() == null || avb.getGateways().isEmpty()) {
                 GatewaySummaryBean gateway = getSingularGateway();
                 if (gateway != null && avb.getGateways() == null) {
@@ -2186,15 +1707,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     throw ExceptionFactory.invalidApiStatusException();
                 }
             }
-        } catch (Exception e) {
-            throw new SystemErrorException(e);
-        }
 
-        try {
             encryptEndpointProperties(avb);
-            storage.beginTx();
 
-            // Ensure all of the plans are in the right status (locked)
+            // Ensure all the plans are in the right status (locked)
             Set<ApiPlanBean> plans = avb.getPlans();
             if (plans != null) {
                 for (ApiPlanBean splanBean : plans) {
@@ -2211,34 +1727,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             storage.updateApiVersion(avb);
             storage.createAuditEntry(AuditUtils.apiVersionUpdated(avb, data, securityContext));
-            storage.commitTx();
-            log.debug(String.format("Successfully updated API Version: %s", avb)); //$NON-NLS-1$
+            LOGGER.debug(String.format("Successfully updated API Version: %s", avb)); //$NON-NLS-1$
             decryptEndpointProperties(avb);
             return avb;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#updateApiDefinition(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
-    public void updateApiDefinition(String organizationId, String apiId, String version)
-            throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException {
+    @Transactional
+    public void updateApiDefinition(String organizationId, String apiId, String version, String contentType, InputStream data)
+        throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
-        String contentType = request.getContentType();
-        InputStream data;
-        try {
-            data = request.getInputStream();
-        } catch (IOException e) {
-            throw new SystemErrorException(e);
-        }
         try {
             ApiDefinitionType newDefinitionType;
             if (contentType.toLowerCase().contains("application/json")) { //$NON-NLS-1$
@@ -2251,112 +1750,81 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw new SystemErrorException(Messages.i18n.format("InvalidApiDefinitionContentType", contentType)); //$NON-NLS-1$
             }
             storeApiDefinition(organizationId, apiId, version, newDefinitionType, data, null);
-            log.debug(String.format("Updated API definition for %s", apiId)); //$NON-NLS-1$
+            LOGGER.debug(String.format("Updated API definition for %s", apiId)); //$NON-NLS-1$
         } finally {
             IOUtils.closeQuietly(data);
         }
     }
 
-    /**
-     * @see IOrganizationResource#updateApiDefinitionFromURL(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.apis.NewApiDefinitionBean)
-     */
-    @Override
+    @Transactional
     public void updateApiDefinitionFromURL(String organizationId, String apiId, String version,
-            NewApiDefinitionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException,
-                    InvalidApiStatusException {
+        NewApiDefinitionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException,
+        InvalidApiStatusException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
-        InputStream data;
+        InputStream data = null;
         String definitionUrl;
         try {
             definitionUrl = bean.getDefinitionUrl();
             URL url = new URL(definitionUrl);
             data = url.openStream();
-        } catch (IOException e) {
-            throw new SystemErrorException(e);
-        }
-        try {
+
             storeApiDefinition(organizationId, apiId, version, bean.getDefinitionType(), data, definitionUrl);
-            log.debug(String.format("Updated API definition for %s from URL %s", apiId, bean.getDefinitionUrl())); //$NON-NLS-1$
+            LOGGER.debug(String.format("Updated API definition for %s from URL %s", apiId, bean.getDefinitionUrl())); //$NON-NLS-1$
+        } catch (IOException | StorageException e) {
+            throw new SystemErrorException(e);
         } finally {
             IOUtils.closeQuietly(data);
         }
     }
 
     private void storeApiDefinition(String organizationId, String apiId, String version,
-            ApiDefinitionType definitionType, InputStream data, String definitionUrl) {
+        ApiDefinitionType definitionType, InputStream data, String definitionUrl) throws StorageException {
 
-        try {
-            storage.beginTx();
-            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
-            if (apiVersion.getDefinitionType() != definitionType) {
-                apiVersion.setDefinitionType(definitionType);
-                storage.updateApiVersion(apiVersion);
-            }
-            // update the definition url silently in storage if it's a new one
-            if ((definitionUrl != null && (apiVersion.getDefinitionUrl() == null || !apiVersion.getDefinitionUrl().equals(definitionUrl)))) {
-                apiVersion.setDefinitionUrl(definitionUrl);
-                storage.updateApiVersion(apiVersion);
-            }
-            storage.createAuditEntry(AuditUtils.apiDefinitionUpdated(apiVersion, securityContext));
-            storage.updateApiDefinition(apiVersion, data);
+        ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
 
-            apiVersion.setModifiedOn(new Date());
-            apiVersion.setModifiedBy(securityContext.getCurrentUser());
+        if (apiVersion.getDefinitionType() != definitionType) {
+            apiVersion.setDefinitionType(definitionType);
             storage.updateApiVersion(apiVersion);
-
-            storage.commitTx();
-            log.debug(String.format("Stored API definition %s: %s", apiId, apiVersion)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
         }
+        // update the definition url silently in storage if it's a new one
+        if ((definitionUrl != null && (apiVersion.getDefinitionUrl() == null || !apiVersion.getDefinitionUrl().equals(definitionUrl)))) {
+            apiVersion.setDefinitionUrl(definitionUrl);
+            storage.updateApiVersion(apiVersion);
+        }
+        storage.createAuditEntry(AuditUtils.apiDefinitionUpdated(apiVersion, securityContext));
+        storage.updateApiDefinition(apiVersion, data);
+
+        apiVersion.setModifiedOn(new Date());
+        apiVersion.setModifiedBy(securityContext.getCurrentUser());
+        storage.updateApiVersion(apiVersion);
+
+        LOGGER.debug(String.format("Stored API definition %s: %s", apiId, apiVersion)); //$NON-NLS-1$
     }
 
-    /**
-     * @see IOrganizationResource#listApiVersions(java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<ApiVersionSummaryBean> listApiVersions(String organizationId, String apiId)
-            throws ApiNotFoundException {
+        throws ApiNotFoundException {
         // No permission check is needed, because this would break All APIs UI
         // Try to get the API first - will throw a ApiNotFoundException if not found.
-        getApiInternal(organizationId, apiId);
-
-        try {
-            return query.getApiVersions(organizationId, apiId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        getApi(organizationId, apiId);
+        return tryAction(() -> query.getApiVersions(organizationId, apiId));
     }
 
-    /**
-     * @see IOrganizationResource#getApiVersionPlans(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<ApiPlanSummaryBean> getApiVersionPlans(String organizationId, String apiId,
-            String version) throws ApiVersionNotFoundException, NotAuthorizedException {
+        String version) throws ApiVersionNotFoundException, NotAuthorizedException {
         // No permission check is needed, because this would break All APIs UI
         // Ensure the version exists first.
         getApiVersion(organizationId, apiId, version);
 
-        try {
-            return query.getApiVersionPlans(organizationId, apiId, version);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getApiVersionPlans(organizationId, apiId, version));
     }
 
-    /**
-     * @see IOrganizationResource#createApiPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.NewPolicyBean)
-     */
-    @Override
+    @Transactional
     public PolicyBean createApiPolicy(String organizationId, String apiId, String version,
-            NewPolicyBean bean) throws OrganizationNotFoundException, ApiVersionNotFoundException,
-            NotAuthorizedException {
+        NewPolicyBean bean) throws OrganizationNotFoundException, ApiVersionNotFoundException,
+        NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists
@@ -2372,54 +1840,39 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
         }
 
-        PolicyBean policy = doCreatePolicy(organizationId, apiId, version, bean, PolicyType.Api);
-        log.debug(String.format("Created API policy %s", avb)); //$NON-NLS-1$
+        return tryAction(() -> {
+            PolicyBean policy = doCreatePolicy(organizationId, apiId, version, bean, PolicyType.Api);
+            LOGGER.debug(String.format("Created API policy %s", avb)); //$NON-NLS-1$
 
-        try {
-            storage.beginTx();
             avb.setModifiedOn(new Date());
             avb.setModifiedBy(securityContext.getCurrentUser());
-            storage.commitTx();
-        } catch (Exception e) {
-            storage.rollbackTx();
-            log.error(e);
-        }
 
-        return policy;
+            return policy;
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getApiPolicy(java.lang.String, java.lang.String, java.lang.String, long)
-     */
-    @Override
+    @Transactional
     public PolicyBean getApiPolicy(String organizationId, String apiId, String version, long policyId)
-            throws OrganizationNotFoundException, ApiVersionNotFoundException,
-            PolicyNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, ApiVersionNotFoundException,
+        PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         // Make sure the API exists
         getApiVersion(organizationId, apiId, version);
 
-        PolicyBean policy = doGetPolicy(PolicyType.Api, organizationId, apiId, version, policyId);
-
-        return policy;
+        return doGetPolicy(PolicyType.Api, organizationId, apiId, version, policyId);
     }
 
-    /**
-     * @see IOrganizationResource#updateApiPolicy(java.lang.String,
-     *      java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.UpdatePolicyBean)
-     */
-    @Override
+    @Transactional
     public void updateApiPolicy(String organizationId, String apiId, String version,
-            long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
-            ApiVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
+        long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
+        ApiVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             PolicyBean policy = storage.getPolicy(PolicyType.Api, organizationId, apiId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
@@ -2438,23 +1891,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateApiVersion(avb);
 
             storage.commitTx();
-            log.debug(String.format("Updated API policy %s", policy)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            LOGGER.debug(String.format("Updated API policy %s", policy)); //$NON-NLS-1$
+        });
     }
 
-    /**
-     * @see IOrganizationResource#deleteApiPolicy(java.lang.String, java.lang.String, java.lang.String, long)
-     */
-    @Override
+    @Transactional
     public void deleteApiPolicy(String organizationId, String apiId, String version, long policyId)
-            throws OrganizationNotFoundException, ApiVersionNotFoundException,
-            PolicyNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, ApiVersionNotFoundException,
+        PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists and is in the right status.
@@ -2470,9 +1914,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
         }
 
-        try {
-            storage.beginTx();
-            PolicyBean policy = this.storage.getPolicy(PolicyType.Api, organizationId, apiId, version, policyId);
+        tryAction(() -> {
+            PolicyBean policy = this.storage.getPolicy(PolicyType.Api, organizationId, apiId, version,
+                policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
             }
@@ -2483,27 +1927,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             avb.setModifiedOn(new Date());
             storage.updateApiVersion(avb);
 
-            storage.commitTx();
-            log.debug(String.format("Deleted API %s policy: %s", apiId, policy)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            LOGGER.debug(String.format("Deleted API %s policy: %s", apiId, policy)); //$NON-NLS-1$
+        });
     }
 
-    /**
-     * @see IOrganizationResource#deleteApiDefinition(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public void deleteApiDefinition(String organizationId, String apiId, String version)
-            throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             apiVersion.setDefinitionType(ApiDefinitionType.None);
             apiVersion.setModifiedBy(securityContext.getCurrentUser());
@@ -2511,49 +1944,30 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.createAuditEntry(AuditUtils.apiDefinitionDeleted(apiVersion, securityContext));
             storage.deleteApiDefinition(apiVersion);
             storage.updateApiVersion(apiVersion);
-            storage.commitTx();
-            log.debug(String.format("Deleted API %s definition %s", apiId, apiVersion)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            LOGGER.debug(String.format("Deleted API %s definition %s", apiId, apiVersion)); //$NON-NLS-1$
+        });
     }
 
-    /**
-     * @see IOrganizationResource#listApiPolicies(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<PolicySummaryBean> listApiPolicies(String organizationId, String apiId, String version)
-            throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         // Try to get the API first - will throw an exception if not found.
         getApiVersion(organizationId, apiId, version);
-
-        try {
-            return query.getPolicies(organizationId, apiId, version, PolicyType.Api);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getPolicies(organizationId, apiId, version, PolicyType.Api));
     }
 
-    /**
-     * @see IOrganizationResource#reorderApiPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyChainBean)
-     */
-    @Override
+    @Transactional
     public void reorderApiPolicies(String organizationId, String apiId, String version,
-            PolicyChainBean policyChain) throws OrganizationNotFoundException,
-            ApiVersionNotFoundException, NotAuthorizedException {
+        PolicyChainBean policyChain) throws OrganizationNotFoundException,
+        ApiVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             List<Long> newOrder = new ArrayList<>(policyChain.getPolicies().size());
             for (PolicySummaryBean psb : policyChain.getPolicies()) {
                 newOrder.add(psb.getId());
@@ -2564,29 +1978,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             avb.setModifiedBy(securityContext.getCurrentUser());
             avb.setModifiedOn(new Date());
             storage.updateApiVersion(avb);
-
-            storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getApiPolicyChain(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public PolicyChainBean getApiPolicyChain(String organizationId, String apiId, String version,
-            String planId) throws ApiVersionNotFoundException, PlanNotFoundException {
+        String planId) throws ApiVersionNotFoundException, PlanNotFoundException {
         // No permission check is needed, because this would break All APIs UI
 
         // Try to get the API first - will throw an exception if not found.
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
 
-        try {
+        return tryAction(() -> {
             String planVersion = null;
             Set<ApiPlanBean> plans = avb.getPlans();
             if (plans != null) {
@@ -2601,52 +2004,40 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.planNotFoundException(planId);
             }
             // Hide sensitive data and set only needed data for the UI
-            List<PolicySummaryBean> apiPolicies = RestHelper.hideSensitiveDataFromPolicySummaryBeanList(securityContext, query.getPolicies(organizationId, apiId, version, PolicyType.Api));
-            List<PolicySummaryBean> planPolicies = RestHelper.hideSensitiveDataFromPolicySummaryBeanList(securityContext, query.getPolicies(organizationId, planId, planVersion, PolicyType.Plan));
+            List<PolicySummaryBean> apiPolicies = RestHelper.hideSensitiveDataFromPolicySummaryBeanList(
+                securityContext, query.getPolicies(organizationId, apiId, version, PolicyType.Api));
+            List<PolicySummaryBean> planPolicies = RestHelper.hideSensitiveDataFromPolicySummaryBeanList(
+                securityContext, query.getPolicies(organizationId, planId, planVersion, PolicyType.Plan));
 
             PolicyChainBean chain = new PolicyChainBean();
             chain.getPolicies().addAll(planPolicies);
             chain.getPolicies().addAll(apiPolicies);
             return chain;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getApiVersionContracts(java.lang.String, java.lang.String, java.lang.String, int, int)
-     */
-    @Override
+    @Transactional
     public List<ContractSummaryBean> getApiVersionContracts(String organizationId,
-            String apiId, String version, int page, int pageSize) throws ApiVersionNotFoundException,
-            NotAuthorizedException {
+        String apiId, String version, int page, int pageSize) throws ApiVersionNotFoundException,
+        NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
-
-        if (page <= 1) {
-            page = 1;
-        }
-        if (pageSize == 0) {
-            pageSize = 20;
-        }
 
         // Try to get the API first - will throw an exception if not found.
         getApiVersion(organizationId, apiId, version);
 
-        try {
-            List<ContractSummaryBean> contracts = query.getContracts(organizationId, apiId, version, page, pageSize);
-            log.debug(String.format("Got API %s version %s contracts: %s", apiId, version, contracts)); //$NON-NLS-1$
+        final int finalPage = Math.max(page, 1);
+        final int finalPageSize = pageSize == 0 ? 20 : pageSize;
+
+        return tryAction(() -> {
+            List<ContractSummaryBean> contracts = query.getContracts(organizationId, apiId, version, finalPage, finalPageSize);
+            LOGGER.debug(String.format("Got API %s version %s contracts: %s", apiId, version, contracts)); //$NON-NLS-1$
             return contracts;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getUsage(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public UsageHistogramBean getUsage(String organizationId, String apiId, String version,
-            HistogramIntervalType interval, String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
+        HistogramIntervalType interval, String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
@@ -2668,12 +2059,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return metrics.getUsage(organizationId, apiId, version, interval, from, to);
     }
 
-    /**
-     * @see IOrganizationResource#getUsagePerClient(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public UsagePerClientBean getUsagePerClient(String organizationId, String apiId, String version,
-            String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
+        String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
@@ -2690,12 +2078,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return metrics.getUsagePerClient(organizationId, apiId, version, from, to);
     }
 
-    /**
-     * @see IOrganizationResource#getUsagePerPlan(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public UsagePerPlanBean getUsagePerPlan(String organizationId, String apiId, String version,
-            String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
+        String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
@@ -2712,13 +2097,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return metrics.getUsagePerPlan(organizationId, apiId, version, from, to);
     }
 
-    /**
-     * @see IOrganizationResource#getResponseStats(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public ResponseStatsHistogramBean getResponseStats(String organizationId, String apiId,
-            String version, HistogramIntervalType interval, String fromDate, String toDate)
-            throws NotAuthorizedException, InvalidMetricCriteriaException {
+        String version, HistogramIntervalType interval, String fromDate, String toDate)
+        throws NotAuthorizedException, InvalidMetricCriteriaException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
@@ -2739,13 +2121,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return metrics.getResponseStats(organizationId, apiId, version, interval, from, to);
     }
 
-    /**
-     * @see IOrganizationResource#getResponseStatsSummary(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String apiId,
-            String version, String fromDate, String toDate) throws NotAuthorizedException,
-            InvalidMetricCriteriaException {
+        String version, String fromDate, String toDate) throws NotAuthorizedException,
+        InvalidMetricCriteriaException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
@@ -2762,13 +2141,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return metrics.getResponseStatsSummary(organizationId, apiId, version, from, to);
     }
 
-    /**
-     * @see IOrganizationResource#getResponseStatsPerClient(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public ResponseStatsPerClientBean getResponseStatsPerClient(String organizationId, String apiId,
-            String version, String fromDate, String toDate) throws NotAuthorizedException,
-            InvalidMetricCriteriaException {
+        String version, String fromDate, String toDate) throws NotAuthorizedException,
+        InvalidMetricCriteriaException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
@@ -2785,13 +2161,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return metrics.getResponseStatsPerClient(organizationId, apiId, version, from, to);
     }
 
-    /**
-     * @see IOrganizationResource#getResponseStatsPerPlan(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String apiId,
-            String version, String fromDate, String toDate) throws NotAuthorizedException,
-            InvalidMetricCriteriaException {
+        String version, String fromDate, String toDate) throws NotAuthorizedException,
+        InvalidMetricCriteriaException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
@@ -2808,13 +2181,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return metrics.getResponseStatsPerPlan(organizationId, apiId, version, from, to);
     }
 
-    /**
-     * @see IOrganizationResource#createPlan(java.lang.String,
-     *      io.apiman.manager.api.beans.plans.NewPlanBean)
-     */
-    @Override
+    @Transactional
     public PlanBean createPlan(String organizationId, NewPlanBean bean) throws OrganizationNotFoundException,
-            PlanAlreadyExistsException, NotAuthorizedException, InvalidNameException {
+        PlanAlreadyExistsException, NotAuthorizedException, InvalidNameException {
         securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         FieldValidator.validateName(bean.getName());
@@ -2825,9 +2194,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newPlan.setId(BeanUtils.idFromName(bean.getName()));
         newPlan.setCreatedOn(new Date());
         newPlan.setCreatedBy(securityContext.getCurrentUser());
-        try {
+
+        return tryAction(() -> {
             // Store/persist the new plan
-            storage.beginTx();
             OrganizationBean orgBean = getOrganizationFromStorage(organizationId);
             if (storage.getPlan(orgBean.getId(), newPlan.getId()) != null) {
                 throw ExceptionFactory.planAlreadyExistsException(newPlan.getName());
@@ -2842,99 +2211,58 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 createPlanVersionInternal(newPlanVersion, newPlan);
             }
 
-            storage.commitTx();
-            log.debug(String.format("Created plan: %s", newPlan)); //$NON-NLS-1$
+            LOGGER.debug(String.format("Created plan: %s", newPlan)); //$NON-NLS-1$
             return newPlan;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getPlan(java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public PlanBean getPlan(String organizationId, String planId)
-            throws PlanNotFoundException, NotAuthorizedException {
+        throws PlanNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
-
-        try {
-            storage.beginTx();
+        return tryAction(() -> {
             PlanBean bean = storage.getPlan(organizationId, planId);
             if (bean == null) {
                 throw ExceptionFactory.planNotFoundException(planId);
             }
-            storage.commitTx();
-            log.debug(String.format("Got plan: %s", bean)); //$NON-NLS-1$
+            LOGGER.debug(String.format("Got plan: %s", bean)); //$NON-NLS-1$
             return bean;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getPlanActivity(java.lang.String, java.lang.String, int, int)
-     */
-    @Override
+    @Transactional
     public SearchResultsBean<AuditEntryBean> getPlanActivity(String organizationId, String planId, int page, int pageSize)
-            throws PlanNotFoundException, NotAuthorizedException {
+        throws PlanNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
 
-        if (page <= 1) {
-            page = 1;
-        }
-        if (pageSize == 0) {
-            pageSize = 20;
-        }
-        try {
-            SearchResultsBean<AuditEntryBean> rval;
-            PagingBean paging = new PagingBean();
-            paging.setPage(page);
-            paging.setPageSize(pageSize);
-            rval = query.auditEntity(organizationId, planId, null, PlanBean.class, paging);
-            return rval;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        final int finalPage = Math.max(page, 1);
+        final int finalPageSize = pageSize <= 0 ? 20 : pageSize;
+
+        PagingBean paging = new PagingBean();
+        paging.setPage(finalPage);
+        paging.setPageSize(finalPageSize);
+
+        return tryAction(() -> query.auditEntity(organizationId, planId, null, PlanBean.class, paging));
     }
 
-    /**
-     * @see IOrganizationResource#listPlans(java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<PlanSummaryBean> listPlans(String organizationId) throws OrganizationNotFoundException,
-            NotAuthorizedException {
+        NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.orgView, organizationId);
 
         get(organizationId);
 
-        try {
-            return query.getPlansInOrg(organizationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getPlansInOrg(organizationId));
     }
 
-    /**
-     * @see IOrganizationResource#updatePlan(java.lang.String,
-     * java.lang.String, io.apiman.manager.api.beans.plans.UpdatePlanBean)
-     */
-    @Override
+    @Transactional
     public void updatePlan(String organizationId, String planId, UpdatePlanBean bean)
-            throws PlanNotFoundException, NotAuthorizedException {
+        throws PlanNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         EntityUpdatedData auditData = new EntityUpdatedData();
-        try {
-            storage.beginTx();
+
+        tryAction(() -> {
             PlanBean planForUpdate = storage.getPlan(organizationId, planId);
             if (planForUpdate == null) {
                 throw ExceptionFactory.planNotFoundException(planId);
@@ -2945,32 +2273,19 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.updatePlan(planForUpdate);
             storage.createAuditEntry(AuditUtils.planUpdated(planForUpdate, auditData, securityContext));
-            storage.commitTx();
-            log.debug(String.format("Updated plan: %s", planForUpdate)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            LOGGER.debug(String.format("Updated plan: %s", planForUpdate)); //$NON-NLS-1$
+        });
     }
 
-    /**
-     * @see IOrganizationResource#createPlanVersion(java.lang.String,
-     *      java.lang.String, io.apiman.manager.api.beans.plans.NewPlanVersionBean)
-     */
-    @Override
+    @Transactional
     public PlanVersionBean createPlanVersion(String organizationId, String planId, NewPlanVersionBean bean)
-            throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException,
-            PlanVersionAlreadyExistsException {
+        throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException,
+        PlanVersionAlreadyExistsException {
         securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         FieldValidator.validateVersion(bean.getVersion());
 
-        PlanVersionBean newVersion;
-        try {
-            storage.beginTx();
+        PlanVersionBean newVersion = tryAction(() -> {
             PlanBean plan = storage.getPlan(organizationId, planId);
             if (plan == null) {
                 throw ExceptionFactory.planNotFoundException(planId);
@@ -2980,15 +2295,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.planVersionAlreadyExistsException(planId, bean.getVersion());
             }
 
-            newVersion = createPlanVersionInternal(bean, plan);
-            storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            return createPlanVersionInternal(bean, plan);
+        });
 
         if (bean.isClone() && bean.getCloneVersion() != null) {
             try {
@@ -3005,18 +2313,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
         }
 
-        log.debug(String.format("Created plan %s version: %s", planId, newVersion)); //$NON-NLS-1$
+        LOGGER.debug(String.format("Created plan %s version: %s", planId, newVersion)); //$NON-NLS-1$
         return newVersion;
     }
 
     /**
      * Creates a plan version.
-     * @param bean
-     * @param plan
-     * @throws StorageException
      */
     private PlanVersionBean createPlanVersionInternal(NewPlanVersionBean bean, PlanBean plan)
-            throws StorageException {
+        throws StorageException {
         if (!BeanUtils.isValidVersion(bean.getVersion())) {
             throw new StorageException("Invalid/illegal plan version: " + bean.getVersion()); //$NON-NLS-1$
         }
@@ -3034,31 +2339,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return newVersion;
     }
 
-    /**
-     * @see IOrganizationResource#getPlanVersion(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
-            throws PlanVersionNotFoundException, NotAuthorizedException {
+        throws PlanVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         return getPlanVersionInternal(organizationId, planId, version);
     }
 
     private PlanVersionBean getPlanVersionInternal(String organizationId, String planId, String version) throws PlanVersionNotFoundException {
-        try {
-            storage.beginTx();
+        return tryAction(() -> {
             PlanVersionBean planVersion = getPlanVersionFromStorage(organizationId, planId, version);
-            storage.commitTx();
-            log.debug(String.format("Got plan %s version: %s", planId, planVersion)); //$NON-NLS-1$
+            LOGGER.debug(String.format("Got plan %s version: %s", planId, planVersion)); //$NON-NLS-1$
             return planVersion;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
     private PlanVersionBean getPlanVersionFromStorage(String organizationId, String planId, String version) throws PlanVersionNotFoundException, StorageException {
@@ -3069,59 +2363,36 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         return planVersion;
     }
 
-    /**
-     * @see IOrganizationResource#getPlanVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
-     */
-    @Override
+    @Transactional
     public SearchResultsBean<AuditEntryBean> getPlanVersionActivity(String organizationId, String planId,
-            String version, int page, int pageSize) throws PlanVersionNotFoundException,
-            NotAuthorizedException {
+        String version, int page, int pageSize) throws PlanVersionNotFoundException,
+        NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
 
-        if (page <= 1) {
-            page = 1;
-        }
-        if (pageSize == 0) {
-            pageSize = 20;
-        }
-        try {
-            SearchResultsBean<AuditEntryBean> rval;
-            PagingBean paging = new PagingBean();
-            paging.setPage(page);
-            paging.setPageSize(pageSize);
-            rval = query.auditEntity(organizationId, planId, version, PlanBean.class, paging);
-            return rval;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        final int finalPage = Math.max(page, 1);
+        final int finalPageSize = pageSize == 0 ? 20 : pageSize;
+
+        PagingBean paging = new PagingBean();
+        paging.setPage(finalPage);
+        paging.setPageSize(finalPageSize);
+        return tryAction(() -> query.auditEntity(organizationId, planId, version, PlanBean.class, paging));
     }
 
-    /**
-     * @see IOrganizationResource#listPlanVersions(java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<PlanVersionSummaryBean> listPlanVersions(String organizationId, String planId)
-            throws PlanNotFoundException, NotAuthorizedException {
+        throws PlanNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         // Try to get the plan first - will throw a PlanNotFoundException if not found.
         getPlan(organizationId, planId);
 
-        try {
-            return query.getPlanVersions(organizationId, planId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getPlanVersions(organizationId, planId));
     }
 
-    /**
-     * @see IOrganizationResource#createPlanPolicy(java.lang.String,
-     *      java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.NewPolicyBean)
-     */
-    @Override
+    @Transactional
     public PolicyBean createPlanPolicy(String organizationId, String planId, String version,
-            NewPolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
-            NotAuthorizedException {
+        NewPolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
+        NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists and is in the right state
@@ -3130,29 +2401,19 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.invalidPlanStatusException();
         }
 
-        log.debug(String.format("Creating plan %s policy %s", planId, pvb)); //$NON-NLS-1$
-        PolicyBean policy = doCreatePolicy(organizationId, planId, version, bean, PolicyType.Plan);
-
-        try {
-            storage.beginTx();
+        return tryAction(() -> {
             pvb.setModifiedOn(new Date());
             pvb.setModifiedBy(securityContext.getCurrentUser());
-            storage.commitTx();
-        } catch (Exception e) {
-            storage.rollbackTx();
-            log.error(e);
-        }
 
-        return policy;
+            LOGGER.debug(String.format("Creating plan %s policy %s", planId, pvb)); //$NON-NLS-1$
+            return doCreatePolicy(organizationId, planId, version, bean, PolicyType.Plan);
+        });
     }
 
-    /**
-     * @see IOrganizationResource#getPlanPolicy(java.lang.String, java.lang.String, java.lang.String, long)
-     */
-    @Override
+    @Transactional
     public PolicyBean getPlanPolicy(String organizationId, String planId, String version, long policyId)
-            throws OrganizationNotFoundException, PlanVersionNotFoundException,
-            PolicyNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, PlanVersionNotFoundException,
+        PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         // Make sure the plan version exists
@@ -3160,25 +2421,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         PolicyBean policy = doGetPolicy(PolicyType.Plan, organizationId, planId, version, policyId);
 
-        log.debug(String.format("Got plan policy %s", policy)); //$NON-NLS-1$
+        LOGGER.debug(String.format("Got plan policy %s", policy)); //$NON-NLS-1$
         return policy;
     }
 
-    /**
-     * @see IOrganizationResource#updatePlanPolicy(java.lang.String,
-     *      java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.UpdatePolicyBean)
-     */
-    @Override
+    @Transactional
     public void updatePlanPolicy(String organizationId, String planId, String version,
-            long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
-            PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
+        long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
+        PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists
         PlanVersionBean pvb = getPlanVersionInternal(organizationId, planId, version);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             PolicyBean policy = storage.getPolicy(PolicyType.Plan, organizationId, planId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
@@ -3196,24 +2452,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             pvb.setModifiedOn(new Date());
             storage.updatePlanVersion(pvb);
 
-            storage.commitTx();
-            log.debug(String.format("Updated plan policy %s", policy)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            LOGGER.debug(String.format("Updated plan policy %s", policy)); //$NON-NLS-1$
+        });
     }
 
-    /**
-     * @see IOrganizationResource#deletePlanPolicy(java.lang.String, java.lang.String, java.lang.String, long)
-     */
-    @Override
+    @Transactional
     public void deletePlanPolicy(String organizationId, String planId, String version, long policyId)
-            throws OrganizationNotFoundException, PlanVersionNotFoundException,
-            PolicyNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, PlanVersionNotFoundException,
+        PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists
@@ -3222,8 +2468,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.invalidPlanStatusException();
         }
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             PolicyBean policy = this.storage.getPolicy(PolicyType.Plan, organizationId, planId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
@@ -3236,73 +2481,49 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updatePlanVersion(pvb);
 
             storage.commitTx();
-            log.debug(String.format("Deleted plan policy %s", policy)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            LOGGER.debug(String.format("Deleted plan policy %s", policy)); //$NON-NLS-1$
+        });
     }
 
-    @Override
+    @Transactional
     public void deletePlan(String organizationId, String planId)
-            throws ApiNotFoundException, NotAuthorizedException, InvalidPlanStatusException {
+        throws ApiNotFoundException, NotAuthorizedException, InvalidPlanStatusException {
         securityContext.checkPermissions(PermissionType.planAdmin, organizationId);
 
         List<PlanVersionSummaryBean> lockedPlans = listPlanVersions(organizationId, planId).stream()
-                .filter(summary -> summary.getStatus() == PlanStatus.Locked).collect(toList());
+            .filter(summary -> summary.getStatus() == PlanStatus.Locked).collect(toList());
 
         if (!lockedPlans.isEmpty())
             throw ExceptionFactory.invalidPlanStatusException(lockedPlans);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             PlanBean plan = storage.getPlan(organizationId, planId);
             storage.deletePlan(plan);
             storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#listPlanPolicies(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<PolicySummaryBean> listPlanPolicies(String organizationId, String planId, String version)
-            throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
+        throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         // Try to get the plan first - will throw an exception if not found.
         getPlanVersionInternal(organizationId, planId, version);
 
-        try {
-            return query.getPolicies(organizationId, planId, version, PolicyType.Plan);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getPolicies(organizationId, planId, version, PolicyType.Plan));
     }
 
-    /**
-     * @see IOrganizationResource#reorderPlanPolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyChainBean)
-     */
-    @Override
+    @Transactional
     public void reorderPlanPolicies(String organizationId, String planId, String version,
-            PolicyChainBean policyChain) throws OrganizationNotFoundException,
-            PlanVersionNotFoundException, NotAuthorizedException {
+        PolicyChainBean policyChain) throws OrganizationNotFoundException,
+        PlanVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists
         PlanVersionBean pvb = getPlanVersionInternal(organizationId, planId, version);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             List<Long> newOrder = new ArrayList<>(policyChain.getPolicies().size());
             for (PolicySummaryBean psb : policyChain.getPolicies()) {
                 newOrder.add(psb.getId());
@@ -3313,15 +2534,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             pvb.setModifiedBy(securityContext.getCurrentUser());
             pvb.setModifiedOn(new Date());
             storage.updatePlanVersion(pvb);
-
-            storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
 
@@ -3336,89 +2549,63 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @return the stored policy bean (with updated information)
      */
     private PolicyBean doCreatePolicy(String organizationId, String entityId, String entityVersion,
-            NewPolicyBean bean, PolicyType type) throws PolicyDefinitionNotFoundException {
+        NewPolicyBean bean, PolicyType type) throws Exception {
+
         if (bean.getDefinitionId() == null) {
             throw ExceptionFactory.policyDefNotFoundException("null"); //$NON-NLS-1$
         }
-        PolicyDefinitionBean def;
-        try {
-            storage.beginTx();
-            def = storage.getPolicyDefinition(bean.getDefinitionId());
-            if (def == null) {
-                throw ExceptionFactory.policyDefNotFoundException(bean.getDefinitionId());
-            }
-            storage.rollbackTx();
-        } catch (AbstractRestException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new SystemErrorException(e);
+
+        PolicyDefinitionBean def = storage.getPolicyDefinition(bean.getDefinitionId());
+        if (def == null) {
+            throw ExceptionFactory.policyDefNotFoundException(bean.getDefinitionId());
         }
 
-        int newIdx;
-        try {
-            newIdx = query.getMaxPolicyOrderIndex(organizationId, entityId, entityVersion, type) + 1;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
+        int newIdx = query.getMaxPolicyOrderIndex(organizationId, entityId, entityVersion, type) + 1;
+
+        PolicyBean policy = new PolicyBean();
+        policy.setId(null);
+        policy.setDefinition(def);
+        policy.setName(def.getName());
+        policy.setConfiguration(bean.getConfiguration());
+        policy.setCreatedBy(securityContext.getCurrentUser());
+        policy.setCreatedOn(new Date());
+        policy.setModifiedBy(securityContext.getCurrentUser());
+        policy.setModifiedOn(new Date());
+        policy.setOrganizationId(organizationId);
+        policy.setEntityId(entityId);
+        policy.setEntityVersion(entityVersion);
+        policy.setType(type);
+        policy.setOrderIndex(newIdx);
+
+        if (type == PolicyType.Client) {
+            ClientVersionBean cvb = storage.getClientVersion(organizationId, entityId, entityVersion);
+            cvb.setModifiedBy(securityContext.getCurrentUser());
+            cvb.setModifiedOn(new Date());
+            storage.updateClientVersion(cvb);
+        } else if (type == PolicyType.Api) {
+            ApiVersionBean avb = storage.getApiVersion(organizationId, entityId, entityVersion);
+            avb.setModifiedBy(securityContext.getCurrentUser());
+            avb.setModifiedOn(new Date());
+            storage.updateApiVersion(avb);
+        } else if (type == PolicyType.Plan) {
+            PlanVersionBean pvb = storage.getPlanVersion(organizationId, entityId, entityVersion);
+            pvb.setModifiedBy(securityContext.getCurrentUser());
+            pvb.setModifiedOn(new Date());
+            storage.updatePlanVersion(pvb);
         }
 
-        try {
-            PolicyBean policy = new PolicyBean();
-            policy.setId(null);
-            policy.setDefinition(def);
-            policy.setName(def.getName());
-            policy.setConfiguration(bean.getConfiguration());
-            policy.setCreatedBy(securityContext.getCurrentUser());
-            policy.setCreatedOn(new Date());
-            policy.setModifiedBy(securityContext.getCurrentUser());
-            policy.setModifiedOn(new Date());
-            policy.setOrganizationId(organizationId);
-            policy.setEntityId(entityId);
-            policy.setEntityVersion(entityVersion);
-            policy.setType(type);
-            policy.setOrderIndex(newIdx);
+        storage.createPolicy(policy);
+        storage.createAuditEntry(AuditUtils.policyAdded(policy, type, securityContext));
 
-            storage.beginTx();
+        PolicyTemplateUtil.generatePolicyDescription(policy);
 
-            if (type == PolicyType.Client) {
-                ClientVersionBean cvb = storage.getClientVersion(organizationId, entityId, entityVersion);
-                cvb.setModifiedBy(securityContext.getCurrentUser());
-                cvb.setModifiedOn(new Date());
-                storage.updateClientVersion(cvb);
-            } else if (type == PolicyType.Api) {
-                ApiVersionBean avb = storage.getApiVersion(organizationId, entityId, entityVersion);
-                avb.setModifiedBy(securityContext.getCurrentUser());
-                avb.setModifiedOn(new Date());
-                storage.updateApiVersion(avb);
-            } else if (type == PolicyType.Plan) {
-                PlanVersionBean pvb = storage.getPlanVersion(organizationId, entityId, entityVersion);
-                pvb.setModifiedBy(securityContext.getCurrentUser());
-                pvb.setModifiedOn(new Date());
-                storage.updatePlanVersion(pvb);
-            }
-
-            storage.createPolicy(policy);
-            storage.createAuditEntry(AuditUtils.policyAdded(policy, type, securityContext));
-            storage.commitTx();
-
-            PolicyTemplateUtil.generatePolicyDescription(policy);
-
-            log.debug(String.format("Created client policy: %s", policy)); //$NON-NLS-1$
-            return policy;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        LOGGER.debug(String.format("Created client policy: %s", policy)); //$NON-NLS-1$
+        return policy;
     }
 
-    /**
-     * @see IOrganizationResource#grant(java.lang.String, io.apiman.manager.api.beans.idm.GrantRolesBean)
-     */
-    @Override
+    @Transactional
     public void grant(String organizationId, GrantRolesBean bean) throws OrganizationNotFoundException,
-            RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
+        RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
 
         // Verify that the references are valid.
@@ -3430,8 +2617,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         MembershipData auditData = new MembershipData();
         auditData.setUserId(bean.getUserId());
-        try {
-            storage.beginTx();
+
+        tryAction(() -> {
             for (String roleId : bean.getRoleIds()) {
                 RoleMembershipBean membership = RoleMembershipBean.create(bean.getUserId(), roleId, organizationId);
                 membership.setCreatedOn(new Date());
@@ -3442,23 +2629,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 auditData.addRole(roleId);
             }
             storage.createAuditEntry(AuditUtils.membershipGranted(organizationId, auditData, securityContext));
-            storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#revoke(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public void revoke(String organizationId, String roleId, String userId)
-            throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException,
-            NotAuthorizedException {
+        throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException,
+        NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
 
         get(organizationId);
@@ -3468,28 +2645,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         MembershipData auditData = new MembershipData();
         auditData.setUserId(userId);
 
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             storage.deleteMembership(userId, roleId, organizationId);
             auditData.addRole(roleId);
             storage.createAuditEntry(AuditUtils.membershipRevoked(organizationId, auditData, securityContext));
-            storage.commitTx();
-            log.debug(String.format("Revoked User %s Role %s Org %s", userId, roleId, organizationId)); //$NON-NLS-1$
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+            LOGGER.debug(String.format("Revoked User %s Role %s Org %s", userId, roleId, organizationId)); //$NON-NLS-1$
+        });
     }
 
-    /**
-     * @see IOrganizationResource#revokeAll(java.lang.String, java.lang.String)
-     */
-    @Override
+    @Transactional
     public void revokeAll(String organizationId, String userId) throws OrganizationNotFoundException,
-            RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
+        RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
 
         get(organizationId);
@@ -3498,26 +2664,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         MembershipData auditData = new MembershipData();
         auditData.setUserId(userId);
         auditData.addRole("*"); //$NON-NLS-1$
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             storage.deleteMemberships(userId, organizationId);
             storage.createAuditEntry(AuditUtils.membershipRevoked(organizationId, auditData, securityContext));
-            storage.commitTx();
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IOrganizationResource#listMembers(java.lang.String)
-     */
-    @Override
+    @Transactional
     public List<MemberBean> listMembers(String organizationId) throws OrganizationNotFoundException,
-            NotAuthorizedException {
+        NotAuthorizedException {
         // Only members are allowed to see other members
         if (!securityContext.isMemberOf(organizationId)) {
             throw ExceptionFactory.notAuthorizedException();
@@ -3525,10 +2680,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         get(organizationId);
 
-        try {
+        return tryAction(() -> {
             Set<RoleMembershipBean> memberships = query.getOrgMemberships(organizationId);
             TreeMap<String, MemberBean> members = new TreeMap<>();
-            storage.beginTx();
+
             for (RoleMembershipBean membershipBean : memberships) {
                 String userId = membershipBean.getUserId();
                 String roleId = membershipBean.getRoleId();
@@ -3558,54 +2713,35 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 }
             }
             return new ArrayList<>(members.values());
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        } finally {
-            storage.rollbackTx();
-        }
+        });
     }
 
     /**
      * Gets a policy by its id.  Also verifies that the policy really does belong to
      * the entity indicated.
-     * @param type the policy type
-     * @param organizationId the org id
-     * @param entityId the entity id
-     * @param entityVersion the entity version
-     * @param policyId the policy id
-     * @return a policy bean
-     * @throws PolicyNotFoundException
      */
     private PolicyBean doGetPolicy(PolicyType type, String organizationId, String entityId,
-            String entityVersion, long policyId) throws PolicyNotFoundException {
-        try {
-            storage.beginTx();
-            PolicyBean policy = storage.getPolicy(type, organizationId, entityId, entityVersion, policyId);
-            if (policy == null) {
-                throw ExceptionFactory.policyNotFoundException(policyId);
-            }
-            storage.commitTx();
-            if (policy.getType() != type) {
-                throw ExceptionFactory.policyNotFoundException(policyId);
-            }
-            if (!policy.getOrganizationId().equals(organizationId)) {
-                throw ExceptionFactory.policyNotFoundException(policyId);
-            }
-            if (!policy.getEntityId().equals(entityId)) {
-                throw ExceptionFactory.policyNotFoundException(policyId);
-            }
-            if (!policy.getEntityVersion().equals(entityVersion)) {
-                throw ExceptionFactory.policyNotFoundException(policyId);
-            }
-            PolicyTemplateUtil.generatePolicyDescription(policy);
-            return policy;
-        } catch (AbstractRestException e) {
-            storage.rollbackTx();
-            throw e;
-        } catch (Exception e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+        String entityVersion, long policyId) throws PolicyNotFoundException, StorageException, Exception {
+
+        PolicyBean policy = storage.getPolicy(type, organizationId, entityId, entityVersion, policyId);
+        if (policy == null) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
         }
+        storage.commitTx();
+        if (policy.getType() != type) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
+        }
+        if (!policy.getOrganizationId().equals(organizationId)) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
+        }
+        if (!policy.getEntityId().equals(entityId)) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
+        }
+        if (!policy.getEntityVersion().equals(entityVersion)) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
+        }
+        PolicyTemplateUtil.generatePolicyDescription(policy);
+        return policy;
     }
 
     /**
@@ -3629,10 +2765,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
                 DataEncryptionContext ctx = new DataEncryptionContext(
-                        versionBean.getApi().getOrganization().getId(),
-                        versionBean.getApi().getId(),
-                        versionBean.getVersion(),
-                        EntityType.Api);
+                    versionBean.getApi().getOrganization().getId(),
+                    versionBean.getApi().getId(),
+                    versionBean.getVersion(),
+                    EntityType.Api);
                 entry.setValue(encrypter.decrypt(entry.getValue(), ctx));
             }
         }
@@ -3646,10 +2782,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {
                 DataEncryptionContext ctx = new DataEncryptionContext(
-                        versionBean.getApi().getOrganization().getId(),
-                        versionBean.getApi().getId(),
-                        versionBean.getVersion(),
-                        EntityType.Api);
+                    versionBean.getApi().getOrganization().getId(),
+                    versionBean.getApi().getId(),
+                    versionBean.getVersion(),
+                    EntityType.Api);
                 entry.setValue(encrypter.encrypt(entry.getValue(), ctx));
             }
         }
@@ -3661,7 +2797,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     private DateTime parseFromDate(String fromDate) {
         // Default to the last 30 days
         DateTime defaultFrom = new DateTime().withZone(DateTimeZone.UTC).minusDays(30).withHourOfDay(0)
-                .withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+            .withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
         return parseDate(fromDate, defaultFrom, true);
     }
 
@@ -3712,27 +2848,27 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * interval, and that the
      */
     private void validateTimeSeriesMetric(DateTime from, DateTime to, HistogramIntervalType interval)
-            throws InvalidMetricCriteriaException {
+        throws InvalidMetricCriteriaException {
         long millis = to.getMillis() - from.getMillis();
         long divBy = ONE_DAY_MILLIS;
         switch (interval) {
-        case day:
-            divBy = ONE_DAY_MILLIS;
-            break;
-        case hour:
-            divBy = ONE_HOUR_MILLIS;
-            break;
-        case minute:
-            divBy = ONE_MINUTE_MILLIS;
-            break;
-        case month:
-            divBy = ONE_MONTH_MILLIS;
-            break;
-        case week:
-            divBy = ONE_WEEK_MILLIS;
-            break;
-        default:
-            break;
+            case day:
+                divBy = ONE_DAY_MILLIS;
+                break;
+            case hour:
+                divBy = ONE_HOUR_MILLIS;
+                break;
+            case minute:
+                divBy = ONE_MINUTE_MILLIS;
+                break;
+            case month:
+                divBy = ONE_MONTH_MILLIS;
+                break;
+            case week:
+                divBy = ONE_WEEK_MILLIS;
+                break;
+            default:
+                break;
         }
         long totalDataPoints = millis / divBy;
         if (totalDataPoints > 5000) {
@@ -3757,6 +2893,71 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.apiVersionNotFoundException(apiId, version);
         }
         return apiVersion;
+    }
+
+    /**
+     * Get the organization from storage.
+     * Will throw an exception if no organization is found
+     * @param organizationId the organizationId
+     * @return the organization
+     * @throws OrganizationNotFoundException if no organizations is found
+     */
+    private OrganizationBean getOrganizationFromStorage(String organizationId) throws OrganizationNotFoundException, StorageException {
+        OrganizationBean organizationBean = storage.getOrganization(organizationId);
+        if (organizationBean == null) {
+            throw ExceptionFactory.organizationNotFoundException(organizationId);
+        }
+        return organizationBean;
+    }
+
+
+    /**
+     * Checks if the api version has an api definition
+     *
+     * @param apiVersion the apiVersion
+     * @return true if the version has a definition, else false
+     */
+    private boolean apiVersionHasApiDefinition(ApiVersionBean apiVersion) throws StorageException {
+        // additional check if the document really exists in the storage
+        return apiVersion.getDefinitionType() != null
+            && apiVersion.getDefinitionType() != ApiDefinitionType.None
+            && storage.getApiDefinition(apiVersion) != null;
+    }
+
+    /**
+     * Try an action that may result in an exception
+     */
+    private <T> T tryAction(StorageSupplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (AbstractRestException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * Try an action that may result in an exception
+     */
+    private void tryAction(StorageCaller supplier) {
+        try {
+            supplier.call();
+        } catch (AbstractRestException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    @FunctionalInterface
+    private interface StorageSupplier<T> {
+        T get() throws StorageException, Exception;
+    }
+
+    @FunctionalInterface
+    private interface StorageCaller {
+        void call() throws StorageException, Exception;
     }
 
 }

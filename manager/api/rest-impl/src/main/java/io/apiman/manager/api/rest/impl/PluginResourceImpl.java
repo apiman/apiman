@@ -77,22 +77,33 @@ import io.apiman.manager.api.security.ISecurityContext;
 @ApplicationScoped
 public class PluginResourceImpl implements IPluginResource {
 
-    private final IApimanLogger log = ApimanLoggerFactory.getLogger(PluginResourceImpl.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(PluginResourceImpl.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    @Inject IStorage storage;
-    @Inject IStorageQuery query;
-    @Inject ISecurityContext securityContext;
-    @Inject IPluginRegistry pluginRegistry;
-    @Inject ApiManagerConfig config;
+    private IStorage storage;
+    private IStorageQuery query;
+    private ISecurityContext securityContext;
+    private IPluginRegistry pluginRegistry;
+    private ApiManagerConfig config;
 
-    private Map<URI, PluginRegistryBean> registryCache = new HashMap<>();
-
+    private final Map<URI, PluginRegistryBean> registryCache = new HashMap<>();
 
     /**
      * Constructor.
      */
-    public PluginResourceImpl() {
+    @Inject
+    public PluginResourceImpl(
+        IStorage storage,
+        IStorageQuery query,
+        ISecurityContext securityContext,
+        IPluginRegistry pluginRegistry,
+        ApiManagerConfig config
+    ) {
+        this.storage = storage;
+        this.query = query;
+        this.securityContext = securityContext;
+        this.pluginRegistry = pluginRegistry;
+        this.config = config;
     }
 
     /**
@@ -121,7 +132,7 @@ public class PluginResourceImpl implements IPluginResource {
 
         boolean isSnapshot = PluginUtils.isSnapshot(coordinates);
         if (isSnapshot) {
-            log.debug("Loading a snapshot version of plugin: " + coordinates); //$NON-NLS-1$
+            LOGGER.debug("Loading a snapshot version of plugin: " + coordinates); //$NON-NLS-1$
         }
         boolean isUpgrade = isSnapshot || bean.isUpgrade();
 
@@ -221,11 +232,11 @@ public class PluginResourceImpl implements IPluginResource {
             }
 
             storage.commitTx();
-            log.info(String.format("Created plugin mvn:%s:%s:%s", pluginBean.getGroupId(), pluginBean.getArtifactId(),  //$NON-NLS-1$
+            LOGGER.info(String.format("Created plugin mvn:%s:%s:%s", pluginBean.getGroupId(), pluginBean.getArtifactId(),  //$NON-NLS-1$
                     pluginBean.getVersion()));
-            log.info(String.format("\tCreated %s policy definitions from plugin.", String.valueOf(createdPolicyDefCounter))); //$NON-NLS-1$
+            LOGGER.info(String.format("\tCreated %s policy definitions from plugin.", String.valueOf(createdPolicyDefCounter))); //$NON-NLS-1$
             if (isUpdatePolicyDefs) {
-                log.info(String.format("\tUpdated %s policy definitions from plugin.", String.valueOf(updatedPolicyDefCounter))); //$NON-NLS-1$
+                LOGGER.info(String.format("\tUpdated %s policy definitions from plugin.", String.valueOf(updatedPolicyDefCounter))); //$NON-NLS-1$
             }
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -290,7 +301,7 @@ public class PluginResourceImpl implements IPluginResource {
             }
 
             storage.commitTx();
-            log.info(String.format("Deleted plugin mvn:%s:%s:%s", pbean.getGroupId(), pbean.getArtifactId(),  //$NON-NLS-1$
+            LOGGER.info(String.format("Deleted plugin mvn:%s:%s:%s", pbean.getGroupId(), pbean.getArtifactId(),  //$NON-NLS-1$
                     pbean.getVersion()));
         } catch (AbstractRestException e) {
             storage.rollbackTx();

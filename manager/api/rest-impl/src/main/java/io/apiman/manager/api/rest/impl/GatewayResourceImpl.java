@@ -64,18 +64,30 @@ public class GatewayResourceImpl implements IGatewayResource {
 
     private final IApimanLogger log = ApimanLoggerFactory.getLogger(GatewayResourceImpl.class);
 
-    @Inject IStorage storage;
-    @Inject IStorageQuery query;
-    @Inject ISecurityContext securityContext;
-    @Inject IGatewayLinkFactory gatewayLinkFactory;
-    @Inject IDataEncrypter encrypter;
+    private final IStorage storage;
+    private final IStorageQuery query;
+    private final ISecurityContext securityContext;
+    private final IGatewayLinkFactory gatewayLinkFactory;
+    private final IDataEncrypter encrypter;
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Constructor.
      */
-    public GatewayResourceImpl() {
+    @Inject
+    public GatewayResourceImpl(
+         IStorage storage,
+         IStorageQuery query,
+         ISecurityContext securityContext,
+         IGatewayLinkFactory gatewayLinkFactory,
+         IDataEncrypter encrypter
+    ) {
+        this.storage = storage;
+        this.query = query;
+        this.securityContext = securityContext;
+        this.gatewayLinkFactory = gatewayLinkFactory;
+        this.encrypter = encrypter;
     }
 
     /**
@@ -315,34 +327,6 @@ public class GatewayResourceImpl implements IGatewayResource {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
-    }
-
-    /**
-     * @return the securityContext
-     */
-    public ISecurityContext getSecurityContext() {
-        return securityContext;
-    }
-
-    /**
-     * @param securityContext the securityContext to set
-     */
-    public void setSecurityContext(ISecurityContext securityContext) {
-        this.securityContext = securityContext;
     }
 
 }

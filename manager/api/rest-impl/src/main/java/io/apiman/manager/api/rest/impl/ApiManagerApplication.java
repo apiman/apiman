@@ -39,15 +39,17 @@ import java.util.Set;
 @ApplicationScoped
 public class ApiManagerApplication extends Application {
 
-    @Inject
-    ExportImportManager manager;
+    private final ExportImportManager manager;
+
 
     private Set<Class<?>> classes = new HashSet<>();
 
     /**
      * Constructor.
      */
-    public ApiManagerApplication() {
+    @Inject
+    public ApiManagerApplication(ExportImportManager manager) {
+        this.manager = manager;
         //add swagger 2.0 config
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion(new Version().getVersionString());

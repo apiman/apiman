@@ -49,24 +49,27 @@ import javax.ws.rs.core.Response;
  */
 public class DeveloperResourceImpl implements IDeveloperResource {
 
-    private final IApimanLogger log = ApimanLoggerFactory.getLogger(DeveloperResourceImpl.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DeveloperResourceImpl.class);
 
-    @Inject
-    IStorage storage;
-    @Inject
-    IStorageQuery query;
-    @Inject
-    ISecurityContext securityContext;
-    @Inject
-    IGatewayLinkFactory gatewayLinkFactory;
-
-
-    private OrganizationResourceImpl organizationResource;
+    private final IStorage storage;
+    private final IStorageQuery query;
+    private final ISecurityContext securityContext;
+    private final IGatewayLinkFactory gatewayLinkFactory;
 
     /**
      * Constructor
      */
-    public DeveloperResourceImpl() {
+    @Inject
+    public DeveloperResourceImpl(
+        IStorage storage,
+        IStorageQuery query,
+        ISecurityContext securityContext,
+        IGatewayLinkFactory gatewayLinkFactory) {
+
+        this.storage = storage;
+        this.query = query;
+        this.securityContext = securityContext;
+        this.gatewayLinkFactory = gatewayLinkFactory;
     }
 
     @Override
@@ -131,7 +134,7 @@ public class DeveloperResourceImpl implements IDeveloperResource {
             }
             storage.createDeveloper(developerBean);
             storage.commitTx();
-            log.debug(String.format("Created developer %s: %s", developerBean.getId(), developerBean)); //$NON-NLS-1$
+            LOGGER.debug(String.format("Created developer %s: %s", developerBean.getId(), developerBean)); //$NON-NLS-1$
         } catch (StorageException e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -152,7 +155,7 @@ public class DeveloperResourceImpl implements IDeveloperResource {
             developerBean.setClients(bean.getClients());
             storage.updateDeveloper(developerBean);
             storage.commitTx();
-            log.debug(String.format("Updated developer %s: %s", developerBean.getId(), developerBean));
+            LOGGER.debug(String.format("Updated developer %s: %s", developerBean.getId(), developerBean));
         } catch (StorageException e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -172,7 +175,7 @@ public class DeveloperResourceImpl implements IDeveloperResource {
             storage.beginTx();
             developerBean = getDeveloperBeanFromStorage(id);
             storage.commitTx();
-            log.debug(String.format("Got developer %s: %s", developerBean.getId(), developerBean));
+            LOGGER.debug(String.format("Got developer %s: %s", developerBean.getId(), developerBean));
         } catch (StorageException e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -209,7 +212,7 @@ public class DeveloperResourceImpl implements IDeveloperResource {
             DeveloperBean developerBean = getDeveloperBeanFromStorage(id);
             storage.deleteDeveloper(developerBean);
             storage.commitTx();
-            log.debug("Deleted developer: " + developerBean.getId()); //$NON-NLS-1$
+            LOGGER.debug("Deleted developer: " + developerBean.getId()); //$NON-NLS-1$
         } catch (StorageException e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -314,7 +317,6 @@ public class DeveloperResourceImpl implements IDeveloperResource {
      */
     @Override
     public Response getPublicApiDefinition(String organizationId, String apiId, String version) {
-        instantiateOrganizationResource();
 
         try {
             storage.beginTx();
@@ -338,8 +340,6 @@ public class DeveloperResourceImpl implements IDeveloperResource {
     @Override
     public Response getApiDefinition(String developerId, String organizationId, String apiId, String version) throws DeveloperNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(developerId);
-
-        instantiateOrganizationResource();
 
         Set<DeveloperMappingBean> developerClients;
         List<ContractSummaryBean> contracts;
@@ -365,15 +365,5 @@ public class DeveloperResourceImpl implements IDeveloperResource {
             throw new SystemErrorException(e);
         }
         return null;
-    }
-
-    private void instantiateOrganizationResource() {
-        if (organizationResource == null) {
-            organizationResource = new OrganizationResourceImpl();
-            organizationResource.securityContext = securityContext;
-            organizationResource.storage = storage;
-            organizationResource.query = query;
-            organizationResource.gatewayLinkFactory = gatewayLinkFactory;
-        }
     }
 }

@@ -79,7 +79,7 @@ import java.util.*;
 @ApplicationScoped @Alternative
 public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery {
 
-    private static Logger logger = LoggerFactory.getLogger(JpaStorage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JpaStorage.class);
 
     @Inject IDataEncrypter encrypter;
     @PostConstruct
@@ -661,7 +661,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 return null;
             }
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -911,7 +911,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return gateways;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -952,7 +952,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return plugins;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -994,7 +994,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return rval;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1026,7 +1026,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return orgs;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1074,7 +1074,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return rval;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1121,7 +1121,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return rval;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1146,7 +1146,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } catch (NoResultException e) {
             return null;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -1179,7 +1179,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } catch (NoResultException e) {
             return null;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -1222,7 +1222,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return rval;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1320,7 +1320,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return rval;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1345,7 +1345,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } catch (NoResultException e) {
             return null;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -1388,7 +1388,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return rval;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1405,7 +1405,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         try {
             return getClientContractsInternal(organizationId, clientId, version);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1520,7 +1520,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 rval.getApis().add(entry);
             }
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1568,7 +1568,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return rval;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1593,7 +1593,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } catch (NoResultException e) {
             return null;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -1631,7 +1631,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return rval;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1676,7 +1676,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return rval;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1741,7 +1741,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return beans;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1925,7 +1925,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             memberships.addAll(resultList);
             return memberships;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1952,7 +1952,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             memberships.addAll(resultList);
             return memberships;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -1977,7 +1977,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             memberships.addAll(resultList);
             return memberships;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -2012,7 +2012,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
             return permissions;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         } finally {
             rollbackTx();
@@ -2448,7 +2448,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     private void deleteAllMemberships(OrganizationBean organizationBean) throws StorageException {
-        String jpql = "DELETE RoleMembershipBean b "
+        String jpql = "DELETE FROM RoleMembershipBean b "
                     + " WHERE b.organizationId = :orgId ";
 
         Query query = getActiveEntityManager().createQuery(jpql);
@@ -2605,7 +2605,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void deleteAllPlans(OrganizationBean organizationBean) throws StorageException {
         deleteAllPlanVersions(organizationBean);
 
-        String jpql = "DELETE PlanBean p "
+        String jpql = "DELETE FROM PlanBean p "
                 + "     WHERE p.organization.id = :orgId ";
 
         Query query = getActiveEntityManager().createQuery(jpql);
@@ -2614,7 +2614,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     private void deleteAllPlanVersions(OrganizationBean organizationBean) throws StorageException {
-        String jpql = "DELETE PlanVersionBean deleteBean "
+        String jpql = "DELETE FROM PlanVersionBean deleteBean "
                 + " WHERE deleteBean IN ("
                 + "SELECT v"
                 + "  FROM PlanVersionBean v "

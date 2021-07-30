@@ -48,15 +48,25 @@ import java.util.List;
 @ApplicationScoped
 public class SearchResourceImpl implements ISearchResource {
 
-    @Inject IStorage storage;
-    @Inject IStorageQuery query;
-    @Inject IApiCatalog apiCatalog;
-    @Inject ISecurityContext securityContext;
+    private final IStorage storage;
+    private final IStorageQuery query;
+    private final IApiCatalog apiCatalog;
+    private final ISecurityContext securityContext;
 
     /**
      * Constructor.
+     * @param storage
+     * @param query
+     * @param apiCatalog
+     * @param securityContext
      */
-    public SearchResourceImpl() {
+    @Inject
+    public SearchResourceImpl(IStorage storage, IStorageQuery query,
+        IApiCatalog apiCatalog, ISecurityContext securityContext) {
+        this.storage = storage;
+        this.query = query;
+        this.apiCatalog = apiCatalog;
+        this.securityContext = securityContext;
     }
 
     /**
@@ -221,7 +231,7 @@ public class SearchResourceImpl implements ISearchResource {
             // Hide sensitive data and set only needed data for the UI
             SearchCriteriaUtil.validateSearchCriteria(criteria);
             List<RoleBean> roles = new ArrayList<>();
-            for (RoleBean bean : getQuery().findRoles(criteria).getBeans()) {
+            for (RoleBean bean : query.findRoles(criteria).getBeans()) {
                 roles.add(RestHelper.hideSensitiveDataFromRoleBean(securityContext, bean));
             }
             SearchResultsBean<RoleBean> result = new SearchResultsBean<>();
@@ -239,33 +249,5 @@ public class SearchResourceImpl implements ISearchResource {
     @Override
     public List<ApiNamespaceBean> getApiNamespaces() {
         return apiCatalog.getNamespaces(securityContext.getCurrentUser());
-    }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
-    }
-
-    /**
-     * @return the query
-     */
-    public IStorageQuery getQuery() {
-        return query;
-    }
-
-    /**
-     * @param query the query to set
-     */
-    public void setQuery(IStorageQuery query) {
-        this.query = query;
     }
 }

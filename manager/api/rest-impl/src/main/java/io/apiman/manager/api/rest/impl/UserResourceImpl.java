@@ -48,21 +48,22 @@ import java.util.Set;
  */
 @ApplicationScoped
 public class UserResourceImpl implements IUserResource {
-    
-    @Inject
-    private
-    IStorage storage;
-    @Inject
-    ISecurityContext securityContext;
-    @Inject
-    IStorageQuery query;
-    @Inject
-    private INewUserBootstrapper userBootstrapper;
+
+    private final IStorage storage;
+    private final ISecurityContext securityContext;
+    private final IStorageQuery query;
+    private final INewUserBootstrapper userBootstrapper;
 
     /**
      * Constructor.
      */
-    public UserResourceImpl() {
+    @Inject
+    public UserResourceImpl(IStorage storage, ISecurityContext securityContext,
+        IStorageQuery query, INewUserBootstrapper userBootstrapper) {
+        this.storage = storage;
+        this.securityContext = securityContext;
+        this.query = query;
+        this.userBootstrapper = userBootstrapper;
     }
 
     /**
@@ -315,47 +316,5 @@ public class UserResourceImpl implements IUserResource {
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
-    }
-
-    /**
-     * @return the securityContext
-     */
-    public ISecurityContext getSecurityContext() {
-        return securityContext;
-    }
-
-    /**
-     * @param securityContext the securityContext to set
-     */
-    public void setSecurityContext(ISecurityContext securityContext) {
-        this.securityContext = securityContext;
-    }
-
-    /**
-     * @return the query
-     */
-    public IStorageQuery getQuery() {
-        return query;
-    }
-
-    /**
-     * @param query the query to set
-     */
-    public void setQuery(IStorageQuery query) {
-        this.query = query;
-    }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
     }
 }
