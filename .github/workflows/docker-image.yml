@@ -11,30 +11,34 @@ jobs:
     name: Verify Docker Image Builds
     runs-on: ubuntu-latest
     if: github.repository_owner == 'Apiman'
-
+    env:
+      APIMAN_RELEASE_VERION: 2.1.0.Final
     steps:
       - uses: actions/checkout@v2
       - name: Build the Docker images
         run: |
-          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" --tag apiman/cli:latest cli
-          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" --tag apiman/on-wildfly:latest on-wildfly
-          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" --tag apiman/vertx-openshift:latest vertx-openshift
-          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" --tag apiman/vertx-standalone:latest vertx-standalone
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/cli:latest cli
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/on-wildfly:latest on-wildfly
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/vertx-openshift:latest vertx-openshift
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/vertx-standalone:latest vertx-standalone
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/migration-assistant:latest migration-assistant
 
   publish-latest:
     name: Publish Docker Latest Images
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
     needs: [ build-verify ]
-
+    env:
+      APIMAN_RELEASE_VERION: 2.1.0.Final
     steps:
       - uses: actions/checkout@v2
       - name: Build the Docker images
         run: |
           # apiman/on-wildfly:latest is build and pushed via main pipeline
-          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" -t apiman/cli:latest -t ghcr.io/apiman/cli:latest cli
-          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" -t apiman/vertx-openshift:latest -t ghcr.io/apiman/vertx-openshift:latest vertx-openshift
-          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" -t apiman/vertx-standalone:latest -t ghcr.io/apiman/vertx-standalone:latest vertx-standalone
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/cli:latest -t ghcr.io/apiman/cli:latest cli
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/vertx-openshift:latest -t ghcr.io/apiman/vertx-openshift:latest vertx-openshift
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/vertx-standalone:latest -t ghcr.io/apiman/vertx-standalone:latest vertx-standalone
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/migration-assistant:latest -t ghcr.io/apiman/migration-assistant:latest migration-assistant
 
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker push apiman/cli:latest
@@ -45,3 +49,4 @@ jobs:
           docker push ghcr.io/apiman/cli:latest
           docker push ghcr.io/apiman/vertx-openshift:latest
           docker push ghcr.io/apiman/vertx-standalone:latest
+          docker push ghcr.io/apiman/migration-assistant:latest
