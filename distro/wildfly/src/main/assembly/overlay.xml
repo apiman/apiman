@@ -111,14 +111,7 @@
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
-      <directory>target/keycloak/standalone</directory>
-      <outputDirectory>standalone</outputDirectory>
-      <filtered>false</filtered>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>target/keycloak/modules</directory>
+      <directory>target/keycloak-server-overlay/modules</directory>
       <outputDirectory>modules</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
@@ -128,14 +121,31 @@
       </excludes>
     </fileSet>
     <fileSet>
-      <directory>target/keycloak/themes</directory>
+      <directory>target/keycloak-wildfly-adapter-dist/modules</directory>
+      <outputDirectory>modules</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+      <excludes>
+        <exclude>**/aesh/**</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target/keycloak-server-overlay/themes</directory>
       <outputDirectory>themes</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
-      <directory>target/keycloak/bin</directory>
+      <directory>target/keycloak-server-overlay/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>target/keycloak-wildfly-adapter-dist/bin</directory>
       <outputDirectory>bin</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>

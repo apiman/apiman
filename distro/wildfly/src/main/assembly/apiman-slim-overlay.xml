@@ -1,33 +1,16 @@
-<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
-  <id>overlay</id>
+  <id>apiman-slim-overlay</id>
   <formats>
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
-    <!-- log4j2 logging -->
-    <dependencySet>
-      <outputDirectory>log4j2/lib</outputDirectory>
-      <includes>
-        <include>org.apache.logging.log4j:log4j-api</include>
-        <include>org.apache.logging.log4j:log4j-core</include>
-        <include>org.apache.logging.log4j:log4j-appserver</include>
-        <include>com.lmax:disruptor</include>
-        <include>com.fasterxml.jackson.core:jackson-databind</include>
-        <include>com.fasterxml.jackson.core:jackson-core</include>
-        <include>com.fasterxml.jackson.core:jackson-annotations</include>
-      </includes>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-    </dependencySet>
-
     <!-- apiman-manager -->
     <dependencySet>
-      <outputDirectory>webapps</outputDirectory>
+      <outputDirectory>standalone/deployments</outputDirectory>
       <includes>
-        <include>*:apiman-manager-ui-war-tomcat8:war</include>
+        <include>*:apiman-manager-ui-war-wildfly8:war</include>
       </includes>
       <outputFileNameMapping>apimanui.war</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
@@ -39,9 +22,9 @@
     </dependencySet>
     <!-- apiman -->
     <dependencySet>
-      <outputDirectory>webapps</outputDirectory>
+      <outputDirectory>standalone/deployments</outputDirectory>
       <includes>
-        <include>*:apiman-manager-api-war-tomcat8:war</include>
+        <include>*:apiman-manager-api-war-wildfly8:war</include>
       </includes>
       <outputFileNameMapping>apiman.war</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
@@ -53,9 +36,9 @@
     </dependencySet>
     <!-- apiman-gateway-api -->
     <dependencySet>
-      <outputDirectory>webapps</outputDirectory>
+      <outputDirectory>standalone/deployments</outputDirectory>
       <includes>
-        <include>*:apiman-gateway-platforms-war-tomcat8-api:war</include>
+        <include>*:apiman-gateway-platforms-war-wildfly8-api:war</include>
       </includes>
       <outputFileNameMapping>apiman-gateway-api.war</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
@@ -67,9 +50,9 @@
     </dependencySet>
     <!-- apiman-gateway -->
     <dependencySet>
-      <outputDirectory>webapps</outputDirectory>
+      <outputDirectory>standalone/deployments</outputDirectory>
       <includes>
-        <include>*:apiman-gateway-platforms-war-tomcat8-gateway:war</include>
+        <include>*:apiman-gateway-platforms-war-wildfly8-gateway:war</include>
       </includes>
       <outputFileNameMapping>apiman-gateway.war</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
@@ -101,7 +84,7 @@
       </unpackOptions>
     </dependencySet>
     <dependencySet>
-      <outputDirectory>data</outputDirectory>
+      <outputDirectory>standalone/data</outputDirectory>
       <includes>
         <include>io.apiman:apiman-distro-data:jar</include>
       </includes>
@@ -128,8 +111,18 @@
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
-      <directory>target/keycloak-tomcat-adapter-dist</directory>
-      <outputDirectory>lib</outputDirectory>
+      <directory>target/keycloak-wildfly-adapter-dist/modules</directory>
+      <outputDirectory>modules</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+      <excludes>
+        <exclude>**/aesh/**</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target/keycloak-wildfly-adapter-dist/bin</directory>
+      <outputDirectory>bin</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>

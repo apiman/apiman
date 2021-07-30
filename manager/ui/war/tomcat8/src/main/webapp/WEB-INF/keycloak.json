@@ -1,0 +1,23 @@
+{
+  "realm": "${keycloak.realm}",
+  "resource": "apimanui",
+  "auth-server-url": "${keycloak.protocol}://${keycloak.host}:${keycloak.port}/auth",
+  "ssl-required": "external",
+  "use-resource-role-mappings": false,
+  "enable-cors": true,
+  "cors-max-age": 1000,
+  "cors-allowed-methods": "POST, PUT, DELETE, GET",
+  "bearer-only": false,
+  "enable-basic-auth": true,
+  "expose-token": true,
+  "credentials" : {
+    "secret" : "${keycloak.apimanui.secret}"
+  },
+  "connection-pool-size": 20,
+  "principal-attribute": "preferred_username",
+  "allow-any-hostname": "${allowAnyHost:false}",
+  "redirect-rewrite-rules": {
+    "^(.*)$" : "${keycloak.redirect.prefix:}$1"
+  },
+  "disable-trust-manager": true
+}
