@@ -1,0 +1,47 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-verify:
+    name: Verify Docker Image Builds
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'Apiman'
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker images
+        run: |
+          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" --tag apiman/cli:latest cli
+          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" --tag apiman/on-wildfly:latest on-wildfly
+          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" --tag apiman/vertx-openshift:latest vertx-openshift
+          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" --tag apiman/vertx-standalone:latest vertx-standalone
+
+  publish-latest:
+    name: Publish Docker Latest Images
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
+    needs: [ build-verify ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker images
+        run: |
+          # apiman/on-wildfly:latest is build and pushed via main pipeline
+          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" -t apiman/cli:latest -t ghcr.io/apiman/cli:latest cli
+          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" -t apiman/vertx-openshift:latest -t ghcr.io/apiman/vertx-openshift:latest vertx-openshift
+          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" -t apiman/vertx-standalone:latest -t ghcr.io/apiman/vertx-standalone:latest vertx-standalone
+
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          docker push apiman/cli:latest
+          docker push apiman/vertx-openshift:latest
+          docker push apiman/vertx-standalone:latest
+
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+          docker push ghcr.io/apiman/cli:latest
+          docker push ghcr.io/apiman/vertx-openshift:latest
+          docker push ghcr.io/apiman/vertx-standalone:latest
