@@ -16,6 +16,7 @@
 package io.apiman.manager.api.beans.clients;
 
 import java.io.Serializable;
+import java.util.StringJoiner;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -53,4 +54,10 @@ public class ApiKeyBean implements Serializable {
         this.apiKey = apiKey;
     }
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ApiKeyBean.class.getSimpleName() + "[", "]")
+            .add("apiKey='****'")
+            .toString();
+    }
 }

@@ -17,14 +17,12 @@ package io.apiman.manager.api.jpa;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import org.hibernate.jpa.HibernatePersistenceProvider;
 
 /**
  * Produces an instance of {@link EntityManagerFactory}.
@@ -72,23 +70,32 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         // First try using standard JPA to load the persistence unit.  If that fails, then
         // try using hibernate directly in a couple ways (depends on hibernate version and
         // platform we're running on).
-        try {
-            emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
-        } catch (Throwable t1) {
-            try {
-                emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
-            } catch (Throwable t3) {
-                throw t1;
-            }
-        }
+        // try {
+        //     emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+        // } catch (Throwable t1) {
+        //     try {
+        //         emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+        //     } catch (Throwable t3) {
+        //         throw t1;
+        //     }
+        // }
+
+        System.out.println("Hibernate properties init");
+        //Persistence.getPersistenceUtil().
     }
 
     /**
      * @see io.apiman.manager.api.jpa.IEntityManagerFactoryAccessor#getEntityManagerFactory()
      */
     @Override
+    @Produces
     public EntityManagerFactory getEntityManagerFactory() {
         return emf;
+    }
+
+    @Produces
+    public EntityManager getEntityManager() {
+        return emf.createEntityManager();
     }
 
 }

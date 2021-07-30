@@ -27,6 +27,7 @@ import io.apiman.manager.api.rest.exceptions.DownloadNotFoundException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
@@ -36,24 +37,31 @@ import javax.ws.rs.core.Response;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class DownloadResourceImpl implements IDownloadResource {
 
-    @Inject
     private IDownloadManager downloadManager;
-    
-    @Inject
     private ISystemResource system;
-    @Inject
     private IOrganizationResource orgs;
 
     @Context
-    private HttpServletRequest request;
+    private HttpServletRequest request; // put this back to arg injection something weird with https://github.com/quarkusio/quarkus/issues/7495
 
     /**
      * Constructor.
      */
-    public DownloadResourceImpl() {
+    @Inject
+    public DownloadResourceImpl(
+         IDownloadManager downloadManager,
+         ISystemResource system,
+         IOrganizationResource orgs
+    ) {
+        this.downloadManager = downloadManager;
+        this.system = system;
+        this.orgs = orgs;
     }
+
+    public DownloadResourceImpl() {}
     
     /**
      * @see IDownloadResource#download(java.lang.String)
@@ -97,20 +105,6 @@ public class DownloadResourceImpl implements IDownloadResource {
         return info;
     }
 
-    /**
-     * @return the downloadManager
-     */
-    public IDownloadManager getDownloadManager() {
-        return downloadManager;
-    }
-
-    /**
-     * @param downloadManager the downloadManager to set
-     */
-    public void setDownloadManager(IDownloadManager downloadManager) {
-        this.downloadManager = downloadManager;
-    }
-    
     private static class ApiRegistryInfo {
         public String organizationId;
         public String clientId;

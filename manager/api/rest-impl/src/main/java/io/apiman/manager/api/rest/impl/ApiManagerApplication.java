@@ -19,15 +19,24 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
-import io.swagger.jaxrs.config.BeanConfig;
+import io.apiman.manager.api.service.ApiService;
+import io.apiman.manager.api.service.ClientAppService;
+import io.apiman.manager.api.service.ContractService;
+import io.apiman.manager.api.service.DevPortalService;
+import io.apiman.manager.api.service.OrganizationService;
+import io.apiman.manager.api.service.PlanService;
+import io.apiman.manager.api.service.PolicyService;
+import io.apiman.manager.api.service.StatsService;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
+
+import io.swagger.jaxrs.config.BeanConfig;
 
 
 /**
@@ -40,7 +49,7 @@ import java.util.Set;
 public class ApiManagerApplication extends Application {
 
     @Inject
-    ExportImportManager manager;
+    private ExportImportManager manager;
 
     private Set<Class<?>> classes = new HashSet<>();
 
@@ -48,6 +57,7 @@ public class ApiManagerApplication extends Application {
      * Constructor.
      */
     public ApiManagerApplication() {
+
         //add swagger 2.0 config
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion(new Version().getVersionString());
@@ -69,15 +79,28 @@ public class ApiManagerApplication extends Application {
         classes.add(DownloadResourceImpl.class);
         classes.add(DeveloperResourceImpl.class);
 
+        classes.add(ApiService.class);
+        classes.add(ClientAppService.class);
+        classes.add(ContractService.class);
+        classes.add(DevPortalService.class);
+        classes.add(OrganizationService.class);
+        classes.add(PlanService.class);
+        classes.add(PolicyService.class);
+        classes.add(StatsService.class);
+
         //add swagger 2.0 resource
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
         classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
         classes.add(RestExceptionMapper.class);
+
+
     }
     
     @PostConstruct
     protected void postConstruct() {
+        System.out.println("In postconstruct");
+
         if (manager.isImportExport()) {
             manager.doImportExport();
         }

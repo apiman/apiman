@@ -37,6 +37,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,16 +47,30 @@ import java.util.List;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class SearchResourceImpl implements ISearchResource {
 
-    @Inject IStorage storage;
-    @Inject IStorageQuery query;
-    @Inject IApiCatalog apiCatalog;
-    @Inject ISecurityContext securityContext;
+    private IStorage storage;
+    private IStorageQuery query;
+    private IApiCatalog apiCatalog;
+    private ISecurityContext securityContext;
 
     /**
      * Constructor.
      */
+    @Inject
+    public SearchResourceImpl(
+        IStorage storage,
+        IStorageQuery query,
+        IApiCatalog apiCatalog,
+        ISecurityContext securityContext
+    ) {
+        this.storage = storage;
+        this.query = query;
+        this.apiCatalog = apiCatalog;
+        this.securityContext = securityContext;
+    }
+
     public SearchResourceImpl() {
     }
 
@@ -108,7 +123,6 @@ public class SearchResourceImpl implements ISearchResource {
                 return result;
             }
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -221,7 +235,7 @@ public class SearchResourceImpl implements ISearchResource {
             // Hide sensitive data and set only needed data for the UI
             SearchCriteriaUtil.validateSearchCriteria(criteria);
             List<RoleBean> roles = new ArrayList<>();
-            for (RoleBean bean : getQuery().findRoles(criteria).getBeans()) {
+            for (RoleBean bean : query.findRoles(criteria).getBeans()) {
                 roles.add(RestHelper.hideSensitiveDataFromRoleBean(securityContext, bean));
             }
             SearchResultsBean<RoleBean> result = new SearchResultsBean<>();
@@ -239,33 +253,5 @@ public class SearchResourceImpl implements ISearchResource {
     @Override
     public List<ApiNamespaceBean> getApiNamespaces() {
         return apiCatalog.getNamespaces(securityContext.getCurrentUser());
-    }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
-    }
-
-    /**
-     * @return the query
-     */
-    public IStorageQuery getQuery() {
-        return query;
-    }
-
-    /**
-     * @param query the query to set
-     */
-    public void setQuery(IStorageQuery query) {
-        this.query = query;
     }
 }

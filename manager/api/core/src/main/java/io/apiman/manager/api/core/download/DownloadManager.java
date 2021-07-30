@@ -24,9 +24,9 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.util.Date;
 import java.util.UUID;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Default implementation of the {@link IDownloadManager} interface.
@@ -34,21 +34,30 @@ import javax.inject.Inject;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class DownloadManager implements IDownloadManager {
     
     private static final int DEFAULT_EXPIRES_LENGTH = 120000;
 
     @Inject
     private IStorage storage;
-    
+
     /**
      * Constructor.
      */
+    @Inject
+    public DownloadManager(IStorage storage) {
+        this.storage = storage;
+    }
+
+    /**
+     * Noarg constructor.
+     */
     public DownloadManager() {
     }
-    
+
     /**
-     * @see io.apiman.manager.api.core.IDownloadManager#createDownload(io.apiman.manager.api.beans.download.DownloadType, java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public DownloadBean createDownload(DownloadType type, String path) throws StorageException {
@@ -57,40 +66,25 @@ public class DownloadManager implements IDownloadManager {
         download.setId(UUID.randomUUID().toString());
         download.setType(type);
         download.setPath(path);
-
-        storage.beginTx();
-        try {
-            storage.createDownload(download);
-            storage.commitTx();
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw e;
-        }
+        storage.createDownload(download);
         return download;
     }
-    
+
     /**
-     * @see io.apiman.manager.api.core.IDownloadManager#getDownload(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public DownloadBean getDownload(String downloadId) throws StorageException {
-        storage.beginTx();
-        try {
-            DownloadBean download = storage.getDownload(downloadId);
-            if (download != null) {
-                storage.deleteDownload(download);
-                storage.commitTx();
-                Date now = new Date();
-                // Check if the download expired.  If so, return null instead of the download.
-                if (now.getTime() > download.getExpires().getTime()) {
-                    download = null;
-                }
+        DownloadBean download = storage.getDownload(downloadId);
+        if (download != null) {
+            storage.deleteDownload(download);
+            Date now = new Date();
+            // Check if the download expired.  If so, return null instead of the download.
+            if (now.getTime() > download.getExpires().getTime()) {
+                download = null;
             }
-            return download;
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw e;
         }
+        return download;
     }
     
 }

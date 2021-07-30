@@ -211,6 +211,7 @@ public class ManagerApiMicroServiceCdiFactory {
                 initializer.initialize();
             }
         }
+
         return sJpaStorage;
     }
 

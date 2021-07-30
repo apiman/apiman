@@ -28,6 +28,13 @@
       <artifactId>apiman-distro-data</artifactId>
     </dependency>
 
+    <!-- SQL builder -->
+    <dependency>
+      <groupId>org.jdbi</groupId>
+      <artifactId>jdbi3-core</artifactId>
+      <version>3.21.0</version>
+    </dependency>
+
     <!-- Spec Libs -->
     <dependency>
       <groupId>javax.enterprise</groupId>

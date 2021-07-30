@@ -28,19 +28,20 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.persistence.EntityExistsException;
+import java.util.Optional;
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.sql.DataSource;
 
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,19 +52,13 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractJpaStorage {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractJpaStorage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJpaStorage.class);
 
-    @Inject
-    private IEntityManagerFactoryAccessor emfAccessor;
+    @PersistenceContext(unitName = "apiman-manager-api-jpa")
+    private EntityManager em;
 
-    public String getDialect() {
-        return (String) emfAccessor.getEntityManagerFactory().getProperties().get("hibernate.dialect"); //$NON-NLS-1$
-    }
-
-    private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<>();
-    public static boolean isTxActive() {
-        return activeEM.get() != null;
-    }
+    // @Resource(lookup = "java:/apiman/datasources/apiman-manager")
+    // private DataSource jpaDataSource;
 
     /**
      * Constructor.
@@ -71,66 +66,35 @@ public abstract class AbstractJpaStorage {
     public AbstractJpaStorage() {
     }
 
-    /**
-     * @see io.apiman.manager.api.core.IStorage#beginTx()
-     */
-    protected void beginTx() throws StorageException {
-        if (activeEM.get() != null) {
-            throw new StorageException("Transaction already active."); //$NON-NLS-1$
-        }
-        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
-        activeEM.set(entityManager);
-        entityManager.getTransaction().begin();
-    }
+    // public <T> List<T> nativeQueryList(String queryString, Class<T> klazz) {
+    //     return getJdbi()
+    //         .withHandle(handle -> handle.createQuery(queryString).);
+    // }
 
-    /**
-     * @see io.apiman.manager.api.core.IStorage#commitTx()
-     */
-    protected void commitTx() throws StorageException {
-        if (activeEM.get() == null) {
-            throw new StorageException("Transaction not active."); //$NON-NLS-1$
-        }
-
-        try {
-            activeEM.get().getTransaction().commit();
-            activeEM.get().close();
-            activeEM.set(null);
-        } catch (EntityExistsException e) {
-            throw new StorageException(e);
-        } catch (RollbackException e) {
-            logger.error(e.getMessage(), e);
-            throw new StorageException(e);
-        } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
-            throw new StorageException(t);
-        }
-    }
-
-    /**
-     * @see io.apiman.manager.api.core.IStorage#rollbackTx()
-     */
-    protected void rollbackTx() {
-        if (activeEM.get() == null) {
-            throw new RuntimeException("Transaction not active."); //$NON-NLS-1$
-        }
-        try {
-            JpaUtil.rollbackQuietly(activeEM.get());
-        } finally {
-            activeEM.get().close();
-            activeEM.set(null);
-        }
+    protected Jdbi getJdbi() {
+        return Jdbi.create(lookupDS("java:/apiman/datasources/apiman-manager"));
     }
 
     /**
      * @return the thread's entity manager
-     * @throws StorageException if a storage problem occurs while storing a bean
      */
-    protected EntityManager getActiveEntityManager() throws StorageException {
-        EntityManager entityManager = activeEM.get();
-        if (entityManager == null) {
-            throw new StorageException("Transaction not active."); //$NON-NLS-1$
+    protected EntityManager getActiveEntityManager() {
+        return em;
+    }
+
+    private static javax.sql.DataSource lookupDS(String dsJndiLocation) {
+        javax.sql.DataSource ds;
+        try {
+            InitialContext ctx = new InitialContext();
+            ds = (DataSource) ctx.lookup(dsJndiLocation);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return entityManager;
+
+        if (ds == null) {
+            throw new RuntimeException("Datasource not found: " + dsJndiLocation); //$NON-NLS-1$
+        }
+        return ds;
     }
 
     /**
@@ -145,7 +109,7 @@ public abstract class AbstractJpaStorage {
         try {
             entityManager.persist(bean);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -161,7 +125,7 @@ public abstract class AbstractJpaStorage {
                 entityManager.merge(bean);
             }
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -177,7 +141,7 @@ public abstract class AbstractJpaStorage {
         try {
             entityManager.remove(bean);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -196,7 +160,7 @@ public abstract class AbstractJpaStorage {
         try {
             rval = entityManager.find(type, id);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
         return rval;
@@ -216,7 +180,7 @@ public abstract class AbstractJpaStorage {
         try {
             rval = entityManager.find(type, id);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
         return rval;
@@ -244,7 +208,7 @@ public abstract class AbstractJpaStorage {
             Object key = new OrganizationBasedCompositeId(orgBean, id);
             rval = entityManager.find(type, key);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
         return rval;
@@ -299,16 +263,13 @@ public abstract class AbstractJpaStorage {
             results.setBeans(resultList);
             return results;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
 
     /**
      * Gets a count of the number of rows that would be returned by the search.
-     * @param criteria
-     * @param entityManager
-     * @param type
      */
     protected <T> int executeCountQuery(SearchCriteriaBean criteria, EntityManager entityManager, Class<T> type) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -322,10 +283,6 @@ public abstract class AbstractJpaStorage {
 
     /**
      * Applies the criteria found in the {@link SearchCriteriaBean} to the JPA query.
-     * @param criteria
-     * @param builder
-     * @param query
-     * @param from
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <T> void applySearchCriteriaToQuery(SearchCriteriaBean criteria, CriteriaBuilder builder,
@@ -371,18 +328,18 @@ public abstract class AbstractJpaStorage {
         }
     }
 
-    /**
-     * @return the emfAccessor
-     */
-    public IEntityManagerFactoryAccessor getEmfAccessor() {
-        return emfAccessor;
-    }
+    protected <T> Optional<T> getOne(Query query) {
+        List<T> resultList = (List<T>) query.getResultList();
 
-    /**
-     * @param emfAccessor the emfAccessor to set
-     */
-    public void setEmfAccessor(IEntityManagerFactoryAccessor emfAccessor) {
-        this.emfAccessor = emfAccessor;
+        if (resultList.size() > 1) {
+            throw new IllegalStateException("More than one result for query");
+        }
+
+        if (resultList.size() == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(resultList.get(0));
     }
 
     /**

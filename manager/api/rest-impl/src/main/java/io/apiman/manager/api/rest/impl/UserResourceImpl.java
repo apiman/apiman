@@ -32,10 +32,12 @@ import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
+import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -47,42 +49,42 @@ import java.util.Set;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class UserResourceImpl implements IUserResource {
-    
-    @Inject
-    private
-    IStorage storage;
-    @Inject
-    ISecurityContext securityContext;
-    @Inject
-    IStorageQuery query;
-    @Inject
+@Transactional
+public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
+
+    private IStorage storage;
+    private ISecurityContext securityContext;
+    private IStorageQuery query;
     private INewUserBootstrapper userBootstrapper;
 
     /**
      * Constructor.
      */
+    @Inject
+    public UserResourceImpl(IStorage storage,
+        ISecurityContext securityContext,
+        IStorageQuery query,
+        INewUserBootstrapper userBootstrapper) {
+        this.storage = storage;
+        this.securityContext = securityContext;
+        this.query = query;
+        this.userBootstrapper = userBootstrapper;
+    }
+
     public UserResourceImpl() {
     }
 
-    /**
-     * @see IUserResource#get(java.lang.String)
-     */
     @Override
     public UserBean get(String userId) throws UserNotFoundException {
         securityContext.checkIfUserIsCurrentUser(userId);
-
         return getUserInternal(userId);
     }
 
-    /**
-     * @see IUserResource#getInfo()
-     */
     @Override
     public CurrentUserBean getInfo() {
         String userId = securityContext.getCurrentUser();
 
-        try {
+        return tryAction(() -> {
             CurrentUserBean currentUser = new CurrentUserBean();
             UserBean user = getUserInternal(userId);
             if (user == null) {
@@ -99,15 +101,10 @@ public class UserResourceImpl implements IUserResource {
                     user.setEmail(""); //$NON-NLS-1$
                 }
                 user.setJoinedOn(new Date());
-                storage.beginTx();
-                try {
-                    storage.createUser(user);
-                    userBootstrapper.bootstrapUser(user, storage);
-                    storage.commitTx();
-                } catch (StorageException e1) {
-                    storage.rollbackTx();
-                    throw new SystemErrorException(e1);
-                }
+
+                storage.createUser(user);
+                userBootstrapper.bootstrapUser(user, storage);
+
                 currentUser.setPermissions(new HashSet<>());
             } else {
                 Set<PermissionBean> permissions = query.getPermissions(userId);
@@ -116,32 +113,15 @@ public class UserResourceImpl implements IUserResource {
             currentUser.initFromUser(user);
             currentUser.setAdmin(securityContext.isAdmin());
             return currentUser;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    private UserBean getUserInternal(String userId) {
-        try {
-            storage.beginTx();
-            UserBean user = storage.getUser(userId);
-            return user;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        } finally {
-            storage.rollbackTx();
-        }
-    }
-    
-    /**
-     * @see IUserResource#update(java.lang.String, io.apiman.manager.api.beans.idm.UpdateUserBean)
-     */
     @Override
     public void update(String userId, UpdateUserBean user) throws UserNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
-        try {
-            UserBean updatedUser = getUserInternal(userId);
+        tryAction(() -> {
+            UserBean updatedUser = tryAction(() -> storage.getUser(userId));
             if (updatedUser == null) {
                 throw ExceptionFactory.userNotFoundException(userId);
             }
@@ -152,46 +132,32 @@ public class UserResourceImpl implements IUserResource {
                 updatedUser.setFullName(user.getFullName());
             }
 
-            storage.beginTx();
             storage.updateUser(updatedUser);
-            storage.commitTx();
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IUserResource#getOrganizations(java.lang.String)
-     */
     @Override
     public List<OrganizationSummaryBean> getOrganizations(String userId) throws NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
         Set<String> permittedOrganizations = new HashSet<>();
-        try {
+
+        return tryAction(() -> {
             Set<RoleMembershipBean> memberships = query.getUserMemberships(userId);
             for (RoleMembershipBean membership : memberships) {
                 permittedOrganizations.add(membership.getOrganizationId());
             }
             return query.getOrgs(permittedOrganizations);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IUserResource#getClients(java.lang.String)
-     */
     @Override
     public List<ClientSummaryBean> getClients(String userId) throws NotAuthorizedException, SystemErrorException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
         return getClientsInternal(userId, PermissionType.clientView);
     }
-    /**
-     * @see IUserResource#getEditableClients(String)
-     * */
+
     @Override
     public List<ClientSummaryBean> getEditableClients(String userId) throws NotAuthorizedException, SystemErrorException {
         securityContext.checkIfUserIsCurrentUser(userId);
@@ -199,32 +165,14 @@ public class UserResourceImpl implements IUserResource {
         return getClientsInternal(userId, PermissionType.clientEdit);
     }
 
-    private List<ClientSummaryBean> getClientsInternal(String userId, PermissionType permissionType) throws SystemErrorException {
-        try {
-            return query.getClientsInOrgs(getPermittedOrganizations(userId, permissionType));
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
-    }
-
-    /**
-     * @see IUserResource#getApis(java.lang.String)
-     */
     @Override
     public List<ApiSummaryBean> getApis(String userId) throws NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
         Set<String> permittedOrganizations = getPermittedOrganizations(userId, PermissionType.apiView);
-        try {
-            return query.getApisInOrgs(permittedOrganizations);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getApisInOrgs(permittedOrganizations));
     }
 
-    /**
-     * @see IUserResource#getActivity(java.lang.String, int, int)
-     */
     @Override
     public SearchResultsBean<AuditEntryBean> getActivity(String userId, int page, int pageSize) throws NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
@@ -247,26 +195,18 @@ public class UserResourceImpl implements IUserResource {
         }
     }
 
-    /**
-     * @see IUserResource#getPermissionsForUser(java.lang.String)
-     */
     @Override
     public UserPermissionsBean getPermissionsForUser(String userId) throws UserNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
-        try {
+        return tryAction(() -> {
             UserPermissionsBean bean = new UserPermissionsBean();
             bean.setUserId(userId);
             bean.setPermissions(query.getPermissions(userId));
             return bean;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IUserResource#getClientOrganizations(String)
-     */
     @Override
     public List<OrganizationSummaryBean> getClientOrganizations(String userId) throws SystemErrorException {
         securityContext.checkIfUserIsCurrentUser(userId);
@@ -274,9 +214,6 @@ public class UserResourceImpl implements IUserResource {
         return getOrganizationsInternal(userId, PermissionType.clientEdit);
     }
 
-    /**
-     * @see IUserResource#getApiOrganizations(String)
-     */
     @Override
     public List<OrganizationSummaryBean> getApiOrganizations(String userId) throws SystemErrorException {
         securityContext.checkIfUserIsCurrentUser(userId);
@@ -284,9 +221,6 @@ public class UserResourceImpl implements IUserResource {
         return getOrganizationsInternal(userId, PermissionType.apiEdit);
     }
 
-    /**
-     * @see IUserResource#getPlanOrganizations(String)
-     */
     @Override
     public List<OrganizationSummaryBean> getPlanOrganizations(String userId) throws SystemErrorException {
         securityContext.checkIfUserIsCurrentUser(userId);
@@ -296,66 +230,25 @@ public class UserResourceImpl implements IUserResource {
 
     private Set<String> getPermittedOrganizations(String userId, PermissionType permissionType) throws SystemErrorException {
         Set<String> permittedOrganizations = new HashSet<>();
-        try {
-            Set<PermissionBean> permissions = query.getPermissions(userId);
-            for (PermissionBean permission : permissions) {
-                if (permission.getName() == permissionType) {
-                    permittedOrganizations.add(permission.getOrganizationId());
-                }
+
+        Set<PermissionBean> permissions = tryAction(() -> query.getPermissions(userId));
+        for (PermissionBean permission : permissions) {
+            if (permission.getName() == permissionType) {
+                permittedOrganizations.add(permission.getOrganizationId());
             }
-            return permittedOrganizations;
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
         }
+        return permittedOrganizations;
     }
 
     private List<OrganizationSummaryBean> getOrganizationsInternal(String userId, PermissionType permissionType) throws SystemErrorException {
-        try {
-            return query.getOrgs(getPermittedOrganizations(userId, permissionType));
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        return tryAction(() -> query.getOrgs(getPermittedOrganizations(userId, permissionType)));
     }
 
-    /**
-     * @return the securityContext
-     */
-    public ISecurityContext getSecurityContext() {
-        return securityContext;
+    private UserBean getUserInternal(String id) {
+        return tryAction(() -> storage.getUser(id));
     }
 
-    /**
-     * @param securityContext the securityContext to set
-     */
-    public void setSecurityContext(ISecurityContext securityContext) {
-        this.securityContext = securityContext;
-    }
-
-    /**
-     * @return the query
-     */
-    public IStorageQuery getQuery() {
-        return query;
-    }
-
-    /**
-     * @param query the query to set
-     */
-    public void setQuery(IStorageQuery query) {
-        this.query = query;
-    }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
+    private List<ClientSummaryBean> getClientsInternal(String userId, PermissionType permissionType) throws SystemErrorException {
+        return tryAction(() -> query.getClientsInOrgs(getPermittedOrganizations(userId, permissionType)));
     }
 }

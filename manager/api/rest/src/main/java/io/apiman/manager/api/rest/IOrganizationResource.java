@@ -106,7 +106,7 @@ public interface IOrganizationResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException,
+    public OrganizationBean createOrg(NewOrganizationBean bean) throws OrganizationAlreadyExistsException,
             NotAuthorizedException, InvalidNameException;
 
     /**
@@ -121,7 +121,7 @@ public interface IOrganizationResource {
      */
     @DELETE
     @Path("{organizationId}")
-    public void delete(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException,
+    public void deleteOrg(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException,
             NotAuthorizedException, EntityStillActiveException;
 
     /**
@@ -153,7 +153,7 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public OrganizationBean get(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException;
+    public OrganizationBean getOrg(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException;
 
     /**
      * Updates meta-information about a single Organization.
@@ -168,7 +168,7 @@ public interface IOrganizationResource {
     @PUT
     @Path("{organizationId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void update(@PathParam("organizationId") String organizationId, UpdateOrganizationBean bean)
+    public void updateOrg(@PathParam("organizationId") String organizationId, UpdateOrganizationBean bean)
             throws OrganizationNotFoundException, NotAuthorizedException;
 
     /**
@@ -188,7 +188,7 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/activity")
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<AuditEntryBean> activity(
+    public SearchResultsBean<AuditEntryBean> getOrgActivity(
             @PathParam("organizationId") String organizationId, @QueryParam("page") int page,
             @QueryParam("count") int pageSize) throws OrganizationNotFoundException, NotAuthorizedException;
 

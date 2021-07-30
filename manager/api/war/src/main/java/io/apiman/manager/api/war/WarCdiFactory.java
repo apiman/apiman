@@ -101,8 +101,7 @@ public class WarCdiFactory {
             storage = initJpaStorage(config, jpaStorage);
         } else {
             try {
-                storage = createCustomComponent(IStorage.class, config.getStorageType(),
-                        config.getStorageProperties(), pluginRegistry);
+                storage = createCustomComponent(IStorage.class, config.getStorageType(), config.getStorageProperties(), pluginRegistry);
             } catch (Throwable t) {
                 throw new RuntimeException("Error or unknown storage type: " + config.getStorageType(), t); //$NON-NLS-1$
             }
@@ -215,6 +214,7 @@ public class WarCdiFactory {
      * @param jpaStorage
      */
     private static JpaStorage initJpaStorage(ApiManagerConfig config, JpaStorage jpaStorage) {
+        System.out.println("Init JPA?");
         if (sJpaStorage == null) {
             sJpaStorage = jpaStorage;
             if (config.isInitializeStorageJPA()) {
