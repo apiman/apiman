@@ -32,23 +32,23 @@ public interface ISecurityContext {
     /**
      * @return the currently authentiated user.
      */
-    public String getCurrentUser();
+    String getCurrentUser();
 
     /**
      * @return the currently authenticated user's full name
      */
-    public String getFullName();
+    String getFullName();
 
     /**
      * @return the currently authenticated user's email address
      */
-    public String getEmail();
+    String getEmail();
 
     /**
      * Returns true if the current user is an administrator.
      * @return true if admin, else false
      */
-    public boolean isAdmin();
+    boolean isAdmin();
 
     /**
      * Returns true if the current user has permission to perform a particular
@@ -57,12 +57,12 @@ public interface ISecurityContext {
      * @param organizationId the org id
      * @return true if has permission, else false
      */
-    public boolean hasPermission(PermissionType permission, String organizationId);
+    boolean hasPermission(PermissionType permission, String organizationId);
 
     /**
      * @param organizationId
      */
-    public boolean isMemberOf(String organizationId);
+    boolean isMemberOf(String organizationId);
 
     /**
      * Returns the set of organizations for which the current user is allowed
@@ -70,14 +70,14 @@ public interface ISecurityContext {
      * @param permission the permission type
      * @return set of permitted organizations
      */
-    public Set<String> getPermittedOrganizations(PermissionType permission);
+    Set<String> getPermittedOrganizations(PermissionType permission);
 
     /**
      * Gets a request header from the current in-scope request.
      * @param headerName the header name
      * @return the request header
      */
-    public String getRequestHeader(String headerName);
+    String getRequestHeader(String headerName);
 
     /**
      * Checks if the current user has permission to perform a particular

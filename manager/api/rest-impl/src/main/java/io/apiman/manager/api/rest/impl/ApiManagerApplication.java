@@ -19,6 +19,15 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
+import io.apiman.manager.api.service.ApiService;
+import io.apiman.manager.api.service.ClientAppService;
+import io.apiman.manager.api.service.ContractService;
+import io.apiman.manager.api.service.DevPortalService;
+import io.apiman.manager.api.service.OrganizationService;
+import io.apiman.manager.api.service.PlanService;
+import io.apiman.manager.api.service.PolicyService;
+import io.apiman.manager.api.service.StatsService;
+
 import io.swagger.jaxrs.config.BeanConfig;
 
 import javax.annotation.PostConstruct;
@@ -70,6 +79,15 @@ public class ApiManagerApplication extends Application {
         classes.add(ActionResourceImpl.class);
         classes.add(DownloadResourceImpl.class);
         classes.add(DeveloperResourceImpl.class);
+
+        classes.add(ApiService.class);
+        classes.add(ClientAppService.class);
+        classes.add(ContractService.class);
+        classes.add(DevPortalService.class);
+        classes.add(OrganizationService.class);
+        classes.add(PlanService.class);
+        classes.add(PolicyService.class);
+        classes.add(StatsService.class);
 
         //add swagger 2.0 resource
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);

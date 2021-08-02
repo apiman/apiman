@@ -68,8 +68,7 @@ public class EntityValidator implements IApiValidator, IClientValidator {
      */
     @Override
     public boolean isReady(ClientVersionBean client, boolean hasContracts) throws Exception {
-        boolean ready = hasContracts;
-        return ready;
+        return hasContracts;
     }
 
     /**

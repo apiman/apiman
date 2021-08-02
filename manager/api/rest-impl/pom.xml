@@ -126,6 +126,10 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+    </dependency>
+
   </dependencies>
 </project>

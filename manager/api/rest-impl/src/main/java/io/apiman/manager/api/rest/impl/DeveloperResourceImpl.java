@@ -35,26 +35,36 @@ import io.apiman.manager.api.rest.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
+import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.service.ApiService;
+import io.apiman.manager.api.service.ClientAppService;
+import io.apiman.manager.api.service.ContractService;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Implementation of the Developer Portal API
  */
-public class DeveloperResourceImpl implements IDeveloperResource {
+@Transactional
+public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DeveloperResourceImpl.class);
 
     private final IStorage storage;
     private final IStorageQuery query;
     private final ISecurityContext securityContext;
-    private final IGatewayLinkFactory gatewayLinkFactory;
+    private final ContractService contractService;
+    private final ApiService apiService;
+    private final ClientAppService clientService;
 
     /**
      * Constructor
@@ -64,61 +74,29 @@ public class DeveloperResourceImpl implements IDeveloperResource {
         IStorage storage,
         IStorageQuery query,
         ISecurityContext securityContext,
-        IGatewayLinkFactory gatewayLinkFactory) {
-
+        IGatewayLinkFactory gatewayLinkFactory, ContractService contractService,
+        ApiService apiService, ClientAppService clientService) {
         this.storage = storage;
         this.query = query;
         this.securityContext = securityContext;
-        this.gatewayLinkFactory = gatewayLinkFactory;
+        this.contractService = contractService;
+        this.apiService = apiService;
+        this.clientService = clientService;
     }
 
     @Override
     public List<ApiVersionBean> getAllPublicApiVersions() throws NotAuthorizedException {
-        List<ApiVersionBean> apiVersionBeans = new ArrayList<>();
-        Iterator<ApiVersionBean> iterator;
-        try {
-            storage.beginTx();
-            iterator = storage.getAllPublicApiVersions();
-            storage.commitTx();
-            while (iterator.hasNext()) {
-                ApiVersionBean apiVersionBean = iterator.next();
-                apiVersionBeans.add(apiVersionBean);
-            }
-
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
-        return apiVersionBeans;
+        Iterator<ApiVersionBean> iterator = tryAction(storage::getAllPublicApiVersions);
+        return ImmutableList.copyOf(iterator);
     }
 
-    /**
-     * @see IDeveloperResource#getDevelopers()
-     */
     @Override
     public List<DeveloperBean> getDevelopers() throws NotAuthorizedException {
         securityContext.checkAdminPermissions();
-
-        Iterator<DeveloperBean> iterator;
-        List<DeveloperBean> developerBeans = new ArrayList<>();
-        try {
-            storage.beginTx();
-            iterator = storage.getDevelopers();
-            storage.commitTx();
-            while (iterator.hasNext()) {
-                DeveloperBean bean = iterator.next();
-                developerBeans.add(bean);
-            }
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
-        return developerBeans;
+        Iterator<DeveloperBean> iterator = tryAction(storage::getDevelopers);
+        return ImmutableList.copyOf(iterator);
     }
 
-    /**
-     * @see IDeveloperResource#create(DeveloperBean)
-     */
     @Override
     public DeveloperBean create(DeveloperBean bean) throws InvalidNameException, NotAuthorizedException, DeveloperAlreadyExistsException {
         securityContext.checkAdminPermissions();
@@ -127,141 +105,49 @@ public class DeveloperResourceImpl implements IDeveloperResource {
         developerBean.setId(bean.getId());
         developerBean.setClients(bean.getClients());
 
-        try {
-            storage.beginTx();
+        return tryAction(() -> {
             if (storage.getDeveloper(bean.getId()) != null) {
                 throw ExceptionFactory.developerAlreadyExistsException(bean.getId());
             }
             storage.createDeveloper(developerBean);
-            storage.commitTx();
             LOGGER.debug(String.format("Created developer %s: %s", developerBean.getId(), developerBean)); //$NON-NLS-1$
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
-        return developerBean;
+            return developerBean;
+        });
     }
 
-    /**
-     * @see IDeveloperResource#update(String, UpdateDeveloperBean)
-     */
     @Override
     public void update(String id, UpdateDeveloperBean bean) throws DeveloperNotFoundException, NotAuthorizedException {
         securityContext.checkAdminPermissions();
-
-        try {
-            storage.beginTx();
+        tryAction(() -> {
             DeveloperBean developerBean = getDeveloperBeanFromStorage(id);
             developerBean.setClients(bean.getClients());
             storage.updateDeveloper(developerBean);
-            storage.commitTx();
             LOGGER.debug(String.format("Updated developer %s: %s", developerBean.getId(), developerBean));
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        });
     }
 
-    /**
-     * @see IDeveloperResource#get(String)
-     */
     @Override
     public DeveloperBean get(String id) throws DeveloperNotFoundException, NotAuthorizedException {
         securityContext.checkAdminPermissions();
-
-        DeveloperBean developerBean;
-        try {
-
-            storage.beginTx();
-            developerBean = getDeveloperBeanFromStorage(id);
-            storage.commitTx();
-            LOGGER.debug(String.format("Got developer %s: %s", developerBean.getId(), developerBean));
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
-        return developerBean;
+        return getDeveloperBeanFromStorage(id);
     }
 
-    /**
-     * Gets the developer from storage
-     * A transaction must be present
-     *
-     * @param id the id of the developer
-     * @return the developer
-     * @throws StorageException           if something unexpected happens
-     * @throws DeveloperNotFoundException when trying to get, update, or delete an organization that does not exist
-     */
-    private DeveloperBean getDeveloperBeanFromStorage(String id) throws StorageException, DeveloperNotFoundException {
-        DeveloperBean developerBean = storage.getDeveloper(id);
-        if (developerBean == null) {
-            throw ExceptionFactory.developerNotFoundException(id);
-        }
-        return developerBean;
-    }
-
-    /**
-     * @see IDeveloperResource#delete(String)
-     */
     @Override
     public void delete(String id) throws DeveloperNotFoundException, NotAuthorizedException {
         securityContext.checkAdminPermissions();
 
-        try {
-            storage.beginTx();
-            DeveloperBean developerBean = getDeveloperBeanFromStorage(id);
-            storage.deleteDeveloper(developerBean);
-            storage.commitTx();
-            LOGGER.debug("Deleted developer: " + developerBean.getId()); //$NON-NLS-1$
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
+        DeveloperBean developerBean = getDeveloperBeanFromStorage(id);
+        tryAction(() -> storage.deleteDeveloper(developerBean));
+        LOGGER.debug("Deleted developer: {0}", developerBean.getId()); //$NON-NLS-1$
     }
 
-    /**
-     * @see IDeveloperResource#getAllApiVersions(String)
-     */
     @Override
     public List<ClientVersionSummaryBean> getAllClientVersions(String id) throws DeveloperNotFoundException, NotAuthorizedException {
        securityContext.checkIfUserIsCurrentUser(id);
-
-        DeveloperBean developer;
-        List<ClientVersionSummaryBean> clientVersionSummaryBeans;
-        try {
-            storage.beginTx();
-            developer = getDeveloperBeanFromStorage(id);
-            storage.commitTx();
-
-            clientVersionSummaryBeans = queryMatchingClientVersions(developer);
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
-        return clientVersionSummaryBeans;
+        DeveloperBean developer = getDeveloperBeanFromStorage(id);
+        return queryMatchingClientVersions(developer);
     }
 
-    /**
-     * Queries all matching client versions to the corresponding developer
-     *
-     * @param developer the developer
-     * @return a list of ClientVersionSummaryBeans
-     * @throws StorageException if something unexpected happens
-     */
-    private List<ClientVersionSummaryBean> queryMatchingClientVersions(DeveloperBean developer) throws StorageException {
-        List<ClientVersionSummaryBean> clientVersionSummaryBeans = new ArrayList<>();
-        Set<DeveloperMappingBean> developerMappingBeans = developer.getClients();
-
-        for (DeveloperMappingBean bean : developerMappingBeans) {
-            List<ClientVersionSummaryBean> allClientVersionsList = query.getClientVersions(bean.getOrganizationId(), bean.getClientId());
-            clientVersionSummaryBeans.addAll(allClientVersionsList);
-        }
-        return clientVersionSummaryBeans;
-    }
-
-    /**
-     * @see IDeveloperResource#getAllClientContracts(String)
-     */
     @Override
     public List<ContractSummaryBean> getAllClientContracts(String id) throws DeveloperNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(id);
@@ -270,27 +156,18 @@ public class DeveloperResourceImpl implements IDeveloperResource {
         List<ClientVersionSummaryBean> clientVersionSummaryBeans;
         List<ContractSummaryBean> contractSummaryBeans = new ArrayList<>();
 
-        try {
-            storage.beginTx();
-            developer = getDeveloperBeanFromStorage(id);
-            storage.commitTx();
+        developer = getDeveloperBeanFromStorage(id);
 
-            clientVersionSummaryBeans = queryMatchingClientVersions(developer);
-            for (ClientVersionSummaryBean bean : clientVersionSummaryBeans) {
-                List<ContractSummaryBean> allClientContracts = query.getClientContracts(bean.getOrganizationId(), bean.getId(), bean.getVersion());
-                contractSummaryBeans.addAll(allClientContracts);
-            }
-
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+        clientVersionSummaryBeans = queryMatchingClientVersions(developer);
+        for (ClientVersionSummaryBean bean : clientVersionSummaryBeans) {
+            List<ContractSummaryBean> allClientContracts =
+                tryAction(() -> query.getClientContracts(bean.getOrganizationId(), bean.getId(), bean.getVersion()));
+            contractSummaryBeans.addAll(allClientContracts);
         }
+
         return contractSummaryBeans;
     }
 
-    /**
-     * @see IDeveloperResource#getAllApiVersions(String)
-     */
     @Override
     public List<ApiVersionBean> getAllApiVersions(String id) throws DeveloperNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(id);
@@ -301,7 +178,7 @@ public class DeveloperResourceImpl implements IDeveloperResource {
         try {
             storage.beginTx();
             for (ContractSummaryBean contract : contracts) {
-                ApiVersionBean apiVersion = storage.getApiVersion(contract.getApiOrganizationId(), contract.getApiId(), contract.getApiVersion());
+                ApiVersionBean apiVersion = apiService.getApiVersion(contract.getApiOrganizationId(), contract.getApiId(), contract.getApiVersion());
                 apiVersionBeans.add(apiVersion);
             }
             storage.commitTx();
@@ -312,58 +189,71 @@ public class DeveloperResourceImpl implements IDeveloperResource {
         return apiVersionBeans;
     }
 
-    /**
-     * @see IDeveloperResource#getPublicApiDefinition(String, String, String)
-     */
     @Override
     public Response getPublicApiDefinition(String organizationId, String apiId, String version) {
-
-        try {
-            storage.beginTx();
-            ApiVersionBean apiVersion = organizationResource.getApiVersionFromStorage(organizationId, apiId, version);
-            storage.commitTx();
-            if (apiVersion.isPublicAPI()) {
-                return organizationResource.getApiDefinition(organizationId, apiId, version);
-            } else {
-                throw ExceptionFactory.notAuthorizedException();
-            }
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+        ApiVersionBean apiVersion = apiService.getApiVersion(organizationId, apiId, version);
+        if (apiVersion.isPublicAPI()) {
+            return apiService.getApiDefinition(organizationId, apiId, version);
+        } else {
+            throw ExceptionFactory.notAuthorizedException();
         }
-
     }
 
-    /**
-     * @see IDeveloperResource#getApiDefinition(String, String, String, String)
-     */
     @Override
     public Response getApiDefinition(String developerId, String organizationId, String apiId, String version) throws DeveloperNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(developerId);
 
-        Set<DeveloperMappingBean> developerClients;
-        List<ContractSummaryBean> contracts;
+        Set<DeveloperMappingBean> developerClients= getDeveloperBeanFromStorage(developerId).getClients();
 
-        try {
-            storage.beginTx();
-            developerClients = getDeveloperBeanFromStorage(developerId).getClients();
+        return tryAction(() -> {
             // get all contracts from the API Version
-            contracts = query.getContracts(organizationId, apiId, version, 1, 10000);
-            storage.commitTx();
+            List<ContractSummaryBean> contracts = query.getContracts(organizationId, apiId, version, 1, 10000);
 
             for (ContractSummaryBean contract : contracts) {
                 for (DeveloperMappingBean client : developerClients) {
                     // check if the developer is allowed to request the definition
                     if (client.getClientId().equals(contract.getClientId()) && client.getOrganizationId().equals(contract.getClientOrganizationId())) {
-                        return organizationResource.getApiDefinition(organizationId, apiId, version);
+                        return apiService.getApiDefinition(organizationId, apiId, version);
+                    } else {
+                        return null;
                     }
                 }
             }
 
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+        });
+    }
+
+    /**
+     * Gets the developer from storage
+     * A transaction must be present
+     *
+     * @param id the id of the developer
+     * @return the developer
+     * @throws DeveloperNotFoundException when trying to get, update, or delete an organization that does not exist
+     */
+    private DeveloperBean getDeveloperBeanFromStorage(String id) throws DeveloperNotFoundException {
+        DeveloperBean developerBean = tryAction(() -> storage.getDeveloper(id));
+        if (developerBean == null) {
+            throw ExceptionFactory.developerNotFoundException(id);
         }
-        return null;
+        return developerBean;
+    }
+
+    /**
+     * Queries all matching client versions to the corresponding developer
+     *
+     * @param developer the developer
+     * @return a list of ClientVersionSummaryBeans
+     */
+    private List<ClientVersionSummaryBean> queryMatchingClientVersions(DeveloperBean developer) {
+        List<ClientVersionSummaryBean> clientVersionSummaryBeans = new ArrayList<>();
+        Set<DeveloperMappingBean> developerMappingBeans = developer.getClients();
+
+        for (DeveloperMappingBean bean : developerMappingBeans) {
+            List<ClientVersionSummaryBean> allClientVersionsList =
+                tryAction(() -> query.getClientVersions(bean.getOrganizationId(), bean.getClientId()));
+            clientVersionSummaryBeans.addAll(allClientVersionsList);
+        }
+        return clientVersionSummaryBeans;
     }
 }
