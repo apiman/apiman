@@ -28,15 +28,15 @@ import io.apiman.manager.api.service.PlanService;
 import io.apiman.manager.api.service.PolicyService;
 import io.apiman.manager.api.service.StatsService;
 
-import io.swagger.jaxrs.config.BeanConfig;
-
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
+
+import io.swagger.jaxrs.config.BeanConfig;
 
 
 /**
@@ -48,7 +48,8 @@ import java.util.Set;
 @ApplicationScoped
 public class ApiManagerApplication extends Application {
 
-    private final ExportImportManager manager;
+    @Inject
+    private ExportImportManager manager;
 
 
     private Set<Class<?>> classes = new HashSet<>();
@@ -56,9 +57,7 @@ public class ApiManagerApplication extends Application {
     /**
      * Constructor.
      */
-    @Inject
-    public ApiManagerApplication(ExportImportManager manager) {
-        this.manager = manager;
+    public ApiManagerApplication() {
         //add swagger 2.0 config
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion(new Version().getVersionString());

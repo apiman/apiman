@@ -38,8 +38,6 @@ import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
-import io.apiman.manager.api.core.IApiValidator;
-import io.apiman.manager.api.core.IClientValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -84,9 +82,6 @@ public class ActionResourceImpl implements IActionResource {
     private final IGatewayLinkFactory gatewayLinkFactory;
     private final IOrganizationResource orgs;
 
-    private final IApiValidator apiValidator;
-    private final IClientValidator clientValidator;
-
     private final ISecurityContext securityContext;
 
     /**
@@ -98,16 +93,12 @@ public class ActionResourceImpl implements IActionResource {
         IStorageQuery query,
         IGatewayLinkFactory gatewayLinkFactory,
         IOrganizationResource orgs,
-        IApiValidator apiValidator,
-        IClientValidator clientValidator,
         ISecurityContext securityContext
     ) {
         this.storage = storage;
         this.query = query;
         this.gatewayLinkFactory = gatewayLinkFactory;
         this.orgs = orgs;
-        this.apiValidator = apiValidator;
-        this.clientValidator = clientValidator;
         this.securityContext = securityContext;
     }
 

@@ -91,9 +91,6 @@ import java.util.stream.StreamSupport;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.io.IOUtils;
 
@@ -339,8 +336,7 @@ public class ApiService implements DataAccessUtilMixin {
                     // Clone the API definition document
                     InputStream definition = null;
                     try {
-                        Response response = getApiDefinition(organizationId, apiId, bean.getCloneVersion());
-                        definition = (InputStream) response.getEntity();
+                        definition = getApiDefinition(organizationId, apiId, bean.getCloneVersion()).getDefinition();
                         setApiDefinition(organizationId, apiId, newVersion.getVersion(),
                             cloneSource.getDefinitionType(), definition, cloneSource.getDefinitionUrl());
                     } catch (ApiDefinitionNotFoundException svnfe) {
@@ -487,39 +483,22 @@ public class ApiService implements DataAccessUtilMixin {
     }
 
     // TODO do not return response from service layer, only presentation layer.
-    public Response getApiDefinition(String organizationId, String apiId, String version)
+    public ApiDefinitionStream getApiDefinition(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
         // No permission check is needed, because this would break All APIs UI
         // Allow the user to view a definition
 
-        return tryAction(() -> {
-            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
-            if (apiVersion.getDefinitionType() == ApiDefinitionType.None
-                || apiVersion.getDefinitionType() == null) {
-                throw ExceptionFactory.apiDefinitionNotFoundException(apiId, version);
-            }
+       return tryAction(() -> {
+            ApiVersionBean apiVersion = getApiVersion(organizationId, apiId, version);
+
             InputStream definition = storage.getApiDefinition(apiVersion);
             if (definition == null) {
                 throw ExceptionFactory.apiDefinitionNotFoundException(apiId, version);
             }
 
-            definition = updateDefinitionWithManagedEndpoint(organizationId, apiId, version, apiVersion,
-                definition);
-            ResponseBuilder builder = Response.ok().entity(definition);
-
-            if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerJSON) {
-                builder.type(MediaType.APPLICATION_JSON);
-            } else if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerYAML) {
-                builder.type("application/x-yaml"); //$NON-NLS-1$
-            } else if (apiVersion.getDefinitionType() == ApiDefinitionType.WSDL) {
-                builder.type("text/xml"); //$NON-NLS-1$
-            } else {
-                IOUtils.closeQuietly(definition);
-                throw new Exception(
-                    "API definition type not supported: " + apiVersion.getDefinitionType()); //$NON-NLS-1$
-            }
-            return builder.build();
-        });
+            definition = updateDefinitionWithManagedEndpoint(organizationId, apiId, version, apiVersion, definition);
+            return new ApiDefinitionStream(apiVersion.getDefinitionType(), definition);
+       });
     }
 
     /**
@@ -1077,5 +1056,22 @@ public class ApiService implements DataAccessUtilMixin {
         }
     }
 
+    // TODO(msavy): put with rest of DTOs when get to that phase
+    public static final class ApiDefinitionStream {
+        private final ApiDefinitionType definitionType;
+        private final InputStream definition;
 
+        public ApiDefinitionStream(ApiDefinitionType definitionType, InputStream definition) {
+            this.definitionType = definitionType;
+            this.definition = definition;
+        }
+
+        public ApiDefinitionType getDefinitionType() {
+            return definitionType;
+        }
+
+        public InputStream getDefinition() {
+            return definition;
+        }
+    }
 }

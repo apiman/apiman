@@ -27,7 +27,6 @@ import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.IDeveloperResource;
 import io.apiman.manager.api.rest.exceptions.DeveloperAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.DeveloperNotFoundException;
@@ -38,6 +37,7 @@ import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.ApiService;
+import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
 import io.apiman.manager.api.service.ClientAppService;
 import io.apiman.manager.api.service.ContractService;
 
@@ -62,9 +62,7 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
     private final IStorage storage;
     private final IStorageQuery query;
     private final ISecurityContext securityContext;
-    private final ContractService contractService;
     private final ApiService apiService;
-    private final ClientAppService clientService;
 
     /**
      * Constructor
@@ -74,14 +72,14 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
         IStorage storage,
         IStorageQuery query,
         ISecurityContext securityContext,
-        IGatewayLinkFactory gatewayLinkFactory, ContractService contractService,
-        ApiService apiService, ClientAppService clientService) {
+        ContractService contractService,
+        ApiService apiService,
+        ClientAppService clientService
+    ) {
         this.storage = storage;
         this.query = query;
         this.securityContext = securityContext;
-        this.contractService = contractService;
         this.apiService = apiService;
-        this.clientService = clientService;
     }
 
     @Override
@@ -193,7 +191,11 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
     public Response getPublicApiDefinition(String organizationId, String apiId, String version) {
         ApiVersionBean apiVersion = apiService.getApiVersion(organizationId, apiId, version);
         if (apiVersion.isPublicAPI()) {
-            return apiService.getApiDefinition(organizationId, apiId, version);
+            ApiDefinitionStream apiDef = apiService.getApiDefinition(organizationId, apiId, version);
+            return Response.ok()
+                .entity(apiDef.getDefinition())
+                .type(apiDef.getDefinitionType().getMediaType())
+                .build();
         } else {
             throw ExceptionFactory.notAuthorizedException();
         }
@@ -203,9 +205,9 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
     public Response getApiDefinition(String developerId, String organizationId, String apiId, String version) throws DeveloperNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(developerId);
 
-        Set<DeveloperMappingBean> developerClients= getDeveloperBeanFromStorage(developerId).getClients();
+        Set<DeveloperMappingBean> developerClients = getDeveloperBeanFromStorage(developerId).getClients();
 
-        return tryAction(() -> {
+        return (Response) tryAction(() -> {
             // get all contracts from the API Version
             List<ContractSummaryBean> contracts = query.getContracts(organizationId, apiId, version, 1, 10000);
 
@@ -213,13 +215,16 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
                 for (DeveloperMappingBean client : developerClients) {
                     // check if the developer is allowed to request the definition
                     if (client.getClientId().equals(contract.getClientId()) && client.getOrganizationId().equals(contract.getClientOrganizationId())) {
-                        return apiService.getApiDefinition(organizationId, apiId, version);
-                    } else {
-                        return null;
+                        ApiDefinitionStream apiDef = apiService.getApiDefinition(organizationId, apiId, version);
+                        return Response.ok()
+                            .entity(apiDef.getDefinition())
+                            .type(apiDef.getDefinitionType().getMediaType())
+                            .build();
                     }
                 }
             }
 
+            return Response.noContent();
         });
     }
 

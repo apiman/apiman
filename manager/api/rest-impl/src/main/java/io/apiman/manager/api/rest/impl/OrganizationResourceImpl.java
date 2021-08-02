@@ -109,6 +109,7 @@ import io.apiman.manager.api.rest.exceptions.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.ApiService;
+import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
 import io.apiman.manager.api.service.ClientAppService;
 import io.apiman.manager.api.service.ContractService;
 import io.apiman.manager.api.service.OrganizationService;
@@ -473,7 +474,11 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public Response getApiDefinition(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
-        return apiService.getApiDefinition(organizationId, apiId, version);
+        ApiDefinitionStream apiDef = apiService.getApiDefinition(organizationId, apiId, version);
+        return Response.ok()
+            .entity(apiDef.getDefinition())
+            .type(apiDef.getDefinitionType().getMediaType())
+            .build();
     }
 
     @Override
