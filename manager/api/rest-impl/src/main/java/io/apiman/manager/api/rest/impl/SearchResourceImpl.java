@@ -48,25 +48,28 @@ import java.util.List;
 @ApplicationScoped
 public class SearchResourceImpl implements ISearchResource {
 
-    private final IStorage storage;
-    private final IStorageQuery query;
-    private final IApiCatalog apiCatalog;
-    private final ISecurityContext securityContext;
+    private IStorage storage;
+    private IStorageQuery query;
+    private IApiCatalog apiCatalog;
+    private ISecurityContext securityContext;
 
     /**
      * Constructor.
-     * @param storage
-     * @param query
-     * @param apiCatalog
-     * @param securityContext
      */
     @Inject
-    public SearchResourceImpl(IStorage storage, IStorageQuery query,
-        IApiCatalog apiCatalog, ISecurityContext securityContext) {
+    public SearchResourceImpl(
+        IStorage storage,
+        IStorageQuery query,
+        IApiCatalog apiCatalog,
+        ISecurityContext securityContext
+    ) {
         this.storage = storage;
         this.query = query;
         this.apiCatalog = apiCatalog;
         this.securityContext = securityContext;
+    }
+
+    public SearchResourceImpl() {
     }
 
     /**

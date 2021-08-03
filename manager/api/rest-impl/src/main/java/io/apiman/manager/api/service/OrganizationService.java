@@ -79,14 +79,14 @@ public class OrganizationService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(OrganizationService.class);
 
-    private final ApiManagerConfig config;
-    private final IStorage storage;
-    private final IStorageQuery query;
-    private final IUserResource users;
-    private final IRoleResource roles;
-    private final ISecurityContext securityContext;
-    private final IGatewayLinkFactory gatewayLinkFactory;
-    private final ClientAppService clientService;
+    private ApiManagerConfig config;
+    private IStorage storage;
+    private IStorageQuery query;
+    private IUserResource users;
+    private IRoleResource roles;
+    private ISecurityContext securityContext;
+    private IGatewayLinkFactory gatewayLinkFactory;
+    private ClientAppService clientService;
 
     /**
      * Constructor.
@@ -111,7 +111,10 @@ public class OrganizationService implements DataAccessUtilMixin {
         this.gatewayLinkFactory = gatewayLinkFactory;
         this.clientService = clientService;
     }
-    
+
+    public OrganizationService() {
+    }
+
     public OrganizationBean createOrg(
         NewOrganizationBean bean) throws OrganizationAlreadyExistsException, InvalidNameException {
         if (config.isAdminOnlyOrgCreationEnabled()) {

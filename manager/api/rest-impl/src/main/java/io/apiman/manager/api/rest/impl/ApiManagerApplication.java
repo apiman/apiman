@@ -93,6 +93,8 @@ public class ApiManagerApplication extends Application {
         classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
         classes.add(RestExceptionMapper.class);
+
+
     }
     
     @PostConstruct

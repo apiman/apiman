@@ -59,10 +59,10 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DeveloperResourceImpl.class);
 
-    private final IStorage storage;
-    private final IStorageQuery query;
-    private final ISecurityContext securityContext;
-    private final ApiService apiService;
+    private IStorage storage;
+    private IStorageQuery query;
+    private ISecurityContext securityContext;
+    private ApiService apiService;
 
     /**
      * Constructor
@@ -80,6 +80,9 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
         this.query = query;
         this.securityContext = securityContext;
         this.apiService = apiService;
+    }
+
+    public DeveloperResourceImpl() {
     }
 
     @Override

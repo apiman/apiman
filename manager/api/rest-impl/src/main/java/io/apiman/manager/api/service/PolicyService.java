@@ -33,9 +33,9 @@ public class PolicyService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(PolicyService.class);
 
-    private final IStorage storage;
-    private final IStorageQuery query;
-    private final ISecurityContext securityContext;
+    private IStorage storage;
+    private IStorageQuery query;
+    private ISecurityContext securityContext;
 
     @Inject
     public PolicyService(
@@ -46,6 +46,9 @@ public class PolicyService implements DataAccessUtilMixin {
         this.storage = storage;
         this.query = query;
         this.securityContext = securityContext;
+    }
+
+    public PolicyService() {
     }
 
     /**

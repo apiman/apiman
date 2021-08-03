@@ -78,7 +78,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 public class PluginResourceImpl implements IPluginResource {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(PluginResourceImpl.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private IStorage storage;
     private IStorageQuery query;
@@ -104,6 +104,9 @@ public class PluginResourceImpl implements IPluginResource {
         this.securityContext = securityContext;
         this.pluginRegistry = pluginRegistry;
         this.config = config;
+    }
+
+    public PluginResourceImpl() {
     }
 
     /**
@@ -197,7 +200,7 @@ public class PluginResourceImpl implements IPluginResource {
             int createdPolicyDefCounter = 0;
             int updatedPolicyDefCounter = 0;
             for (URL url : policyDefs) {
-                PolicyDefinitionBean policyDef = (PolicyDefinitionBean) mapper.reader(PolicyDefinitionBean.class).readValue(url);
+                PolicyDefinitionBean policyDef = (PolicyDefinitionBean) MAPPER.reader(PolicyDefinitionBean.class).readValue(url);
                 if (policyDef.getId() == null || policyDef.getId().trim().isEmpty()) {
                     throw ExceptionFactory.policyDefInvalidException(Messages.i18n.format("PluginResourceImpl.MissingPolicyDefId", policyDef.getName())); //$NON-NLS-1$
                 }
@@ -433,7 +436,7 @@ public class PluginResourceImpl implements IPluginResource {
             return fromCache;
         }
         try {
-            PluginRegistryBean registry = mapper.reader(PluginRegistryBean.class).readValue(registryUrl.toURL());
+            PluginRegistryBean registry = MAPPER.reader(PluginRegistryBean.class).readValue(registryUrl.toURL());
             registryCache.put(registryUrl, registry);
             return registry;
         } catch (IOException e) {

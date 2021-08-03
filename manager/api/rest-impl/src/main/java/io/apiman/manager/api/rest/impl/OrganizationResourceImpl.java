@@ -142,15 +142,15 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(OrganizationResourceImpl.class);
 
-    private final OrganizationService organizationService;
-    private final ApiService apiService;
-    private final PlanService planService;
-    private final ClientAppService clientService;
-    private final ContractService contractService;
-    private final StatsService statsService;
-    private final IDownloadManager downloadManager;
-    private final ISecurityContext securityContext;
-    private final HttpServletRequest request;
+    private OrganizationService organizationService;
+    private ApiService apiService;
+    private PlanService planService;
+    private ClientAppService clientService;
+    private ContractService contractService;
+    private StatsService statsService;
+    private IDownloadManager downloadManager;
+    private ISecurityContext securityContext;
+    private HttpServletRequest request;
 
 
     @Inject
@@ -173,6 +173,9 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         this.downloadManager = downloadManager;
         this.securityContext = securityContext;
         this.request = request;
+    }
+
+    public OrganizationResourceImpl() {
     }
 
     @Override

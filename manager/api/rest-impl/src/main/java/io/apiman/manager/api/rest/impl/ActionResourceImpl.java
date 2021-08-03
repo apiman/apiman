@@ -77,12 +77,12 @@ public class ActionResourceImpl implements IActionResource {
 
     private final IApimanLogger log = ApimanLoggerFactory.getLogger(ActionResourceImpl.class);
 
-    private final IStorage storage;
-    private final IStorageQuery query;
-    private final IGatewayLinkFactory gatewayLinkFactory;
-    private final IOrganizationResource orgs;
+    private IStorage storage;
+    private IStorageQuery query;
+    private IGatewayLinkFactory gatewayLinkFactory;
+    private IOrganizationResource orgs;
 
-    private final ISecurityContext securityContext;
+    private ISecurityContext securityContext;
 
     /**
      * Constructor.
@@ -100,6 +100,9 @@ public class ActionResourceImpl implements IActionResource {
         this.gatewayLinkFactory = gatewayLinkFactory;
         this.orgs = orgs;
         this.securityContext = securityContext;
+    }
+
+    public ActionResourceImpl() {
     }
 
     /**

@@ -71,13 +71,13 @@ public class ClientAppService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ClientAppService.class);
 
-    private final IStorage storage;
-    private final IStorageQuery query;
-    private final ISecurityContext securityContext;
-    private final OrganizationService organizationService;
-    private final ContractService contractService;
-    private final PolicyService policyService;
-    private final IApiKeyGenerator apiKeyGenerator;
+    private IStorage storage;
+    private IStorageQuery query;
+    private ISecurityContext securityContext;
+    private OrganizationService organizationService;
+    private ContractService contractService;
+    private PolicyService policyService;
+    private IApiKeyGenerator apiKeyGenerator;
 
     @Inject
     public ClientAppService(
@@ -95,6 +95,9 @@ public class ClientAppService implements DataAccessUtilMixin {
         this.contractService = contractService;
         this.policyService = policyService;
         this.apiKeyGenerator = apiKeyGenerator;
+    }
+
+    public ClientAppService() {
     }
 
     public ClientBean createClient(String organizationId, NewClientBean bean)

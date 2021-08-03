@@ -47,29 +47,29 @@ public class ContractService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractService.class);
 
-    private final IStorage storage;
-    private final IStorageQuery query;
-    private final ClientAppService clientAppService;
-    private final ContractService contractService;
-    private final PlanService planService;
-    private final ISecurityContext securityContext;
-    private final IClientValidator clientValidator;
+    private IStorage storage;
+    private IStorageQuery query;
+    private ClientAppService clientAppService;
+    private PlanService planService;
+    private ISecurityContext securityContext;
+    private IClientValidator clientValidator;
 
     @Inject
     public ContractService(IStorage storage,
         IStorageQuery query,
         ClientAppService clientAppService,
-        ContractService contractService,
         PlanService planService,
         ISecurityContext securityContext,
         IClientValidator clientValidator) {
         this.storage = storage;
         this.query = query;
         this.clientAppService = clientAppService;
-        this.contractService = contractService;
         this.planService = planService;
         this.securityContext = securityContext;
         this.clientValidator = clientValidator;
+    }
+
+    public ContractService() {
     }
 
     public ContractBean createContract(String organizationId, String clientId, String version,

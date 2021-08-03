@@ -2198,9 +2198,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 + "    AND s.id = :apiId"
                 + "  ORDER BY v.id ASC";
 
-        Query query = entityManager.createQuery(jpql);
-        query.setParameter("orgId", organizationId);
-        query.setParameter("apiId", apiId);
+        Query query = entityManager.createQuery(jpql)
+            .setParameter("orgId", organizationId)
+            .setParameter("apiId", apiId)
+            .setHint(QueryHints.READ_ONLY, true);
+
         return super.getAll(ApiVersionBean.class, query);
     }
 

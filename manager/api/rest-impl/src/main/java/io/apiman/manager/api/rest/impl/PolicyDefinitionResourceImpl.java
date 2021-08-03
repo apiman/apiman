@@ -47,9 +47,9 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
 
-    private final IStorage storage;
-    private final IStorageQuery query;
-    private final ISecurityContext securityContext;
+    private IStorage storage;
+    private IStorageQuery query;
+    private ISecurityContext securityContext;
     
     /**
      * Constructor.
@@ -60,6 +60,9 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
         this.storage = storage;
         this.query = query;
         this.securityContext = securityContext;
+    }
+
+    public PolicyDefinitionResourceImpl() {
     }
 
     /**

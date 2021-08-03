@@ -60,11 +60,11 @@ public class PlanService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(PlanService.class);
 
-    private final IStorage storage;
-    private final IStorageQuery query;
-    private final ISecurityContext securityContext;
-    private final OrganizationService organizationService;
-    private final PolicyService policyService;
+    private IStorage storage;
+    private IStorageQuery query;
+    private ISecurityContext securityContext;
+    private OrganizationService organizationService;
+    private PolicyService policyService;
 
     @Inject
     public PlanService(
@@ -79,6 +79,9 @@ public class PlanService implements DataAccessUtilMixin {
         this.securityContext = securityContext;
         this.organizationService = organizationService;
         this.policyService = policyService;
+    }
+
+    public PlanService() {
     }
 
     @Transactional

@@ -37,13 +37,16 @@ public class StatsService {
     private static final long ONE_MONTH_MILLIS = 30 * 24 * 60 * 60 * 1000L;
 
 
-    private final IMetricsAccessor metrics;
-    private final ISecurityContext securityContext;
+    private IMetricsAccessor metrics;
+    private ISecurityContext securityContext;
 
     @Inject
     public StatsService(IMetricsAccessor metrics, ISecurityContext securityContext) {
         this.metrics = metrics;
         this.securityContext = securityContext;
+    }
+
+    public StatsService() {
     }
 
     public UsagePerClientBean getUsagePerClient(String organizationId, String apiId, String version,

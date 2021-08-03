@@ -66,13 +66,13 @@ import org.apache.commons.lang3.BooleanUtils;
 @ApplicationScoped
 public class SystemResourceImpl implements ISystemResource {
     
-    private final IStorage storage;
-    private final ISecurityContext securityContext;
-    private final Version version;
-    private final StorageExporter exporter;
-    private final StorageImportDispatcher importer;
-    private final DataMigrator migrator;
-    private final IDownloadManager downloadManager;
+    private IStorage storage;
+    private ISecurityContext securityContext;
+    private Version version;
+    private StorageExporter exporter;
+    private StorageImportDispatcher importer;
+    private DataMigrator migrator;
+    private IDownloadManager downloadManager;
 
     @Context
     private HttpServletRequest request;
@@ -81,10 +81,15 @@ public class SystemResourceImpl implements ISystemResource {
      * Constructor.
      */
     @Inject
-    public SystemResourceImpl(IStorage storage,
-        ISecurityContext securityContext, Version version,
-        StorageExporter exporter, StorageImportDispatcher importer,
-        DataMigrator migrator, IDownloadManager downloadManager) {
+    public SystemResourceImpl(
+        IStorage storage,
+        ISecurityContext securityContext,
+        Version version,
+        StorageExporter exporter,
+        StorageImportDispatcher importer,
+        DataMigrator migrator,
+        IDownloadManager downloadManager
+    ) {
         this.storage = storage;
         this.securityContext = securityContext;
         this.version = version;
@@ -92,6 +97,9 @@ public class SystemResourceImpl implements ISystemResource {
         this.importer = importer;
         this.migrator = migrator;
         this.downloadManager = downloadManager;
+    }
+
+    public SystemResourceImpl() {
     }
 
     /**

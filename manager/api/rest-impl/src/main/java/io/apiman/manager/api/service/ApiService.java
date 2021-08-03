@@ -104,14 +104,14 @@ import static java.util.stream.Collectors.toList;
 public class ApiService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ApiService.class);
-    private final IStorage storage;
-    private final IStorageQuery query;
-    private final OrganizationService organizationService;
-    private final IApiValidator apiValidator;
-    private final ISecurityContext securityContext;
-    private final IDataEncrypter encrypter;
-    private final IGatewayLinkFactory gatewayLinkFactory;
-    private final PolicyService policyService;
+    private IStorage storage;
+    private IStorageQuery query;
+    private OrganizationService organizationService;
+    private IApiValidator apiValidator;
+    private ISecurityContext securityContext;
+    private IDataEncrypter encrypter;
+    private IGatewayLinkFactory gatewayLinkFactory;
+    private PolicyService policyService;
 
     @Inject
     public ApiService(IStorage storage,
@@ -131,7 +131,10 @@ public class ApiService implements DataAccessUtilMixin {
         this.gatewayLinkFactory = gatewayLinkFactory;
         this.policyService = policyService;
     }
-    
+
+    public ApiService() {
+    }
+
     public void deleteApi(String organizationId, String apiId)
         throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
         securityContext.checkPermissions(PermissionType.apiAdmin, organizationId);

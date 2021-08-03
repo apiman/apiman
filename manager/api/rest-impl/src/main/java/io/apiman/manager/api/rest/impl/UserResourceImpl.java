@@ -52,10 +52,10 @@ import java.util.Set;
 @Transactional
 public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
 
-    private final IStorage storage;
-    private final ISecurityContext securityContext;
-    private final IStorageQuery query;
-    private final INewUserBootstrapper userBootstrapper;
+    private IStorage storage;
+    private ISecurityContext securityContext;
+    private IStorageQuery query;
+    private INewUserBootstrapper userBootstrapper;
 
     /**
      * Constructor.
@@ -69,6 +69,9 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         this.securityContext = securityContext;
         this.query = query;
         this.userBootstrapper = userBootstrapper;
+    }
+
+    public UserResourceImpl() {
     }
 
     @Override

@@ -38,12 +38,12 @@ import javax.ws.rs.core.Response;
 @ApplicationScoped
 public class DownloadResourceImpl implements IDownloadResource {
 
-    private final IDownloadManager downloadManager;
-    private final ISystemResource system;
-    private final IOrganizationResource orgs;
+    private IDownloadManager downloadManager;
+    private ISystemResource system;
+    private IOrganizationResource orgs;
 
     @Context
-    private HttpServletRequest request;
+    private HttpServletRequest request; // put this back to arg injection something weird with https://github.com/quarkusio/quarkus/issues/7495
 
     /**
      * Constructor.
@@ -58,6 +58,8 @@ public class DownloadResourceImpl implements IDownloadResource {
         this.system = system;
         this.orgs = orgs;
     }
+
+    public DownloadResourceImpl() {}
     
     /**
      * @see IDownloadResource#download(java.lang.String)
