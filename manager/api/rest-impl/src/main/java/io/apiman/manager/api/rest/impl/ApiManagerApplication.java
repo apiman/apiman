@@ -17,6 +17,8 @@
 package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.config.Version;
+import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.service.ApiService;
@@ -51,13 +53,13 @@ public class ApiManagerApplication extends Application {
     @Inject
     private ExportImportManager manager;
 
-
     private Set<Class<?>> classes = new HashSet<>();
 
     /**
      * Constructor.
      */
     public ApiManagerApplication() {
+
         //add swagger 2.0 config
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion(new Version().getVersionString());
@@ -99,6 +101,8 @@ public class ApiManagerApplication extends Application {
     
     @PostConstruct
     protected void postConstruct() {
+        System.out.println("In postconstruct");
+
         if (manager.isImportExport()) {
             manager.doImportExport();
         }

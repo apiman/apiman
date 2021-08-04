@@ -17,10 +17,11 @@ package io.apiman.manager.api.jpa;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -87,8 +88,14 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
      * @see io.apiman.manager.api.jpa.IEntityManagerFactoryAccessor#getEntityManagerFactory()
      */
     @Override
+    @Produces
     public EntityManagerFactory getEntityManagerFactory() {
         return emf;
+    }
+
+    @Produces
+    public EntityManager getEntityManager() {
+        return emf.createEntityManager();
     }
 
 }

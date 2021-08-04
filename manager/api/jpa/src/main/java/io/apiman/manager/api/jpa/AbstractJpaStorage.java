@@ -28,18 +28,24 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+import javax.annotation.Resource;
 import javax.inject.Inject;
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
-import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +59,9 @@ public abstract class AbstractJpaStorage {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractJpaStorage.class);
 
+    @PersistenceContext(name = "apiman-manager-api-jpa", type = PersistenceContextType.EXTENDED)
+    private EntityManager em;
+
     @Inject
     private IEntityManagerFactoryAccessor emfAccessor;
 
@@ -60,10 +69,12 @@ public abstract class AbstractJpaStorage {
         return (String) emfAccessor.getEntityManagerFactory().getProperties().get("hibernate.dialect"); //$NON-NLS-1$
     }
 
-    private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<>();
-    public static boolean isTxActive() {
-        return activeEM.get() != null;
-    }
+    // private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<>();
+    // public static boolean isTxActive() {
+    //     return true;
+    //     //return em.getTransaction().isActive();
+    //     //return activeEM.get() != null;
+    // }
 
     /**
      * Constructor.
@@ -71,66 +82,65 @@ public abstract class AbstractJpaStorage {
     public AbstractJpaStorage() {
     }
 
-    /**
-     * @see io.apiman.manager.api.core.IStorage#beginTx()
-     */
-    protected void beginTx() throws StorageException {
-        if (activeEM.get() != null) {
-            throw new StorageException("Transaction already active."); //$NON-NLS-1$
-        }
-        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
-        activeEM.set(entityManager);
-        entityManager.getTransaction().begin();
-    }
+    // @Resource(lookup = "")
+    // private UserTransaction transaction;
+    //
 
-    /**
-     * @see io.apiman.manager.api.core.IStorage#commitTx()
-     */
-    protected void commitTx() throws StorageException {
-        if (activeEM.get() == null) {
-            throw new StorageException("Transaction not active."); //$NON-NLS-1$
-        }
-
-        try {
-            activeEM.get().getTransaction().commit();
-            activeEM.get().close();
-            activeEM.set(null);
-        } catch (EntityExistsException e) {
-            throw new StorageException(e);
-        } catch (RollbackException e) {
-            logger.error(e.getMessage(), e);
-            throw new StorageException(e);
-        } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
-            throw new StorageException(t);
-        }
-    }
-
-    /**
-     * @see io.apiman.manager.api.core.IStorage#rollbackTx()
-     */
-    protected void rollbackTx() {
-        if (activeEM.get() == null) {
-            throw new RuntimeException("Transaction not active."); //$NON-NLS-1$
-        }
-        try {
-            JpaUtil.rollbackQuietly(activeEM.get());
-        } finally {
-            activeEM.get().close();
-            activeEM.set(null);
-        }
-    }
+    // /**
+    //  * @see io.apiman.manager.api.core.IStorage#beginTx()
+    //  */
+    // protected void beginTx() throws StorageException {
+    //     System.out.println("Begin TX");
+    //     try {
+    //         transaction.begin();
+    //     } catch (SystemException | NotSupportedException e) {
+    //         e.printStackTrace();
+    //         throw new StorageException(e);
+    //     }
+    //     // if (activeEM.get() != null) {
+    //     //     throw new StorageException("Transaction already active."); //$NON-NLS-1$
+    //     // }
+    //     // EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
+    //     // activeEM.set(entityManager);
+    //     // entityManager.getTransaction().begin();
+    // }
+    //
+    // /**
+    //  * @see io.apiman.manager.api.core.IStorage#commitTx()
+    //  */
+    // protected void commitTx() throws StorageException {
+    //     System.out.println("Commit TX");
+    //     try {
+    //         transaction.commit();
+    //     } catch (SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {
+    //         e.printStackTrace();
+    //         throw new StorageException(e);
+    //     }
+    // }
+    //
+    // /**
+    //  * @see io.apiman.manager.api.core.IStorage#rollbackTx()
+    //  */
+    // protected void rollbackTx() {
+    //     System.out.println("Rollback TX");
+    //     try {
+    //         transaction.rollback();
+    //     } catch (SystemException e) {
+    //         e.printStackTrace();
+    //         throw new RuntimeException(e);
+    //     }
+    // }
 
     /**
      * @return the thread's entity manager
      * @throws StorageException if a storage problem occurs while storing a bean
      */
     protected EntityManager getActiveEntityManager() throws StorageException {
-        EntityManager entityManager = activeEM.get();
-        if (entityManager == null) {
-            throw new StorageException("Transaction not active."); //$NON-NLS-1$
-        }
-        return entityManager;
+        // EntityManager entityManager = activeEM.get();
+        // if (entityManager == null) {
+        //     throw new StorageException("Transaction not active."); //$NON-NLS-1$
+        // }
+        return em;
     }
 
     /**

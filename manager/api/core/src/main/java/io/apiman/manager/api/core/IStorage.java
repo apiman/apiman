@@ -55,11 +55,11 @@ public interface IStorage {
     /*
      * Transaction related methods
      */
-
-    public void beginTx() throws StorageException;
-    public void commitTx() throws StorageException;
-    public void rollbackTx();
-    public void initialize();
+    //
+    // public void beginTx() throws StorageException;
+    // public void commitTx() throws StorageException;
+    // public void rollbackTx();
+    // public void initialize();
 
     /*
      * Various creation methods.  These are called by the REST layer to create stuff.

@@ -48,7 +48,11 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -211,6 +215,7 @@ public class ManagerApiMicroServiceCdiFactory {
                 initializer.initialize();
             }
         }
+
         return sJpaStorage;
     }
 

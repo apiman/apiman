@@ -50,6 +50,9 @@ import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Cache;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,11 +62,13 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -81,11 +86,29 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JpaStorage.class);
 
+    // @Inject
+    // EntityManager em;
+
     @Inject IDataEncrypter encrypter;
+
     @PostConstruct
     public void postConstruct() {
         // Kick the encrypter, causing it to be loaded/resolved in CDI
         encrypter.encrypt("", new DataEncryptionContext());
+
+        //
+        // SessionFactory sessionFactory = em.unwrap(SessionFactory.class);
+        // Session session = sessionFactory.getCurrentSession();
+        //
+        // if (session != null) {
+        //     session.clear(); // internal cache clear
+        // }
+        //
+        // Cache cache = sessionFactory.getCache();
+        //
+        // if (cache != null) {
+        //     cache.evictAllRegions(); // Evict data from all query regions.
+        // }
     }
 
     /**
@@ -2200,8 +2223,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
         Query query = entityManager.createQuery(jpql)
             .setParameter("orgId", organizationId)
-            .setParameter("apiId", apiId)
-            .setHint(QueryHints.READ_ONLY, true);
+            .setParameter("apiId", apiId);
+            //.setHint(QueryHints.READ_ONLY, true);
 
         return super.getAll(ApiVersionBean.class, query);
     }

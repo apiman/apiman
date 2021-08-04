@@ -18,9 +18,11 @@ package io.apiman.manager.api.war;
 import io.apiman.common.config.ConfigFactory;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.exportimport.read.IImportReader;
+import io.apiman.manager.api.jpa.JpaStorageInitializer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,11 +56,19 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
         config = ConfigFactory.createConfig();
     }
 
+    @Inject
+    private ApiManagerConfig config2;
+
     /**
      * @see javax.servlet.GenericServlet#init()
      */
     @Override
     public void init() throws ServletException {
+        LOGGER.info("Trying to run early....");
+
+        JpaStorageInitializer init = new JpaStorageInitializer(config2.getHibernateDataSource(), config2.getHibernateDialect());
+        init.initialize();
+
         Thread t = new Thread(() -> {
             if (isImportEnabled()){
                 File dataDir = getDataDir();

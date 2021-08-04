@@ -16,6 +16,8 @@
 
 package io.apiman.manager.api.jpa;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.ddl.DdlParser;
 
 import java.io.InputStream;
@@ -25,7 +27,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
@@ -50,8 +51,10 @@ import org.hibernate.dialect.SQLServerDialect;
  * use.
  * @author eric.wittmann@gmail.com
  */
+// TODO(msavy): let's replace this with the liquibase DB initialiser + migrator
 public class JpaStorageInitializer {
-    
+
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JpaStorageInitializer.class);
     private static final Map<String, String> DB_TYPE_MAP = new HashMap<>();
     static {
         DB_TYPE_MAP.put(ApimanH2Dialect.class.getName(), "h2"); //$NON-NLS-1$
@@ -82,7 +85,6 @@ public class JpaStorageInitializer {
 
     /**
      * Constructor.
-     * @param config
      */
     public JpaStorageInitializer(String dsJndiLocation, String hibernateDialect) {
         if (dsJndiLocation == null) {
@@ -113,16 +115,20 @@ public class JpaStorageInitializer {
         }
         return ds;
     }
-    
+
     /**
      * Called to initialize the database.
      */
     @SuppressWarnings("nls")
     public void initialize() {
+        System.out.println("Going to try to initialise JPA storage");
+
         QueryRunner run = new QueryRunner(ds);
         Boolean isInitialized;
         
         try {
+            //ds.getConnection().setAutoCommit(false);
+
             isInitialized = run.query("SELECT * FROM apis", new ResultSetHandler<Boolean>() {
                 @Override
                 public Boolean handle(ResultSet rs) throws SQLException {
@@ -130,31 +136,35 @@ public class JpaStorageInitializer {
                 }
             });
         } catch (SQLException e) {
+            LOGGER.error(e);
             isInitialized = false;
         }
         
         if (isInitialized) {
-            System.out.println("============================================");
-            System.out.println("Apiman Manager database already initialized.");
-            System.out.println("============================================");
+            LOGGER.info("============================================");
+            LOGGER.info("Apiman Manager database already initialized.");
+            LOGGER.info("============================================");
             return;
         }
         
         ClassLoader cl = JpaStorageInitializer.class.getClassLoader();
         URL resource = cl.getResource("ddls/apiman_" + dbType + ".ddl");
         try (InputStream is = resource.openStream()) {
-            System.out.println("=======================================");
-            System.out.println("Initializing apiman Manager database.");
+            LOGGER.info("=======================================");
+            LOGGER.info("Initializing Apiman Manager database. "  + resource.getPath());
             DdlParser ddlParser = new DdlParser();
             List<String> statements = ddlParser.parse(is);
             for (String sql : statements){
-                System.out.println(sql);
+                LOGGER.info(sql);
                 run.update(sql);
             }
-            System.out.println("=======================================");
+            LOGGER.info("=======================================");
+            //run.getDataSource().getConnection().commit();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
     }
 
 }
