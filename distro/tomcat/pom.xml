@@ -71,7 +71,7 @@
     <!--Keycloak-->
     <dependency>
       <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-wildfly-adapter-dist</artifactId>
+      <artifactId>keycloak-tomcat-adapter-dist</artifactId>
       <version>${version.org.keycloak}</version>
       <type>zip</type>
     </dependency>
@@ -85,31 +85,6 @@
         <configuration>
           <skip>true</skip>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.keycloak</groupId>
-                  <artifactId>keycloak-tomcat-adapter-dist</artifactId>
-                  <version>${version.org.keycloak}</version>
-                  <type>zip</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/keycloak-tomcat-adapter-dist</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>

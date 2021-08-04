@@ -22,6 +22,16 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
+    <!-- Keycloak Adapter -->
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>org.keycloak:keycloak-tomcat-adapter-dist</include>
+      </includes>
+      <unpack>true</unpack>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
 
     <!-- apiman-manager -->
     <dependencySet>
@@ -123,13 +133,6 @@
     <fileSet>
       <directory>src/main/resources/overlay</directory>
       <outputDirectory></outputDirectory>
-      <filtered>false</filtered>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>target/keycloak-tomcat-adapter-dist</directory>
-      <outputDirectory>lib</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
