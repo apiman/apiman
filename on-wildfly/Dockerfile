@@ -2,6 +2,7 @@
 FROM jboss/wildfly:20.0.1.Final
 
 MAINTAINER Marc Savy <marc.savy@redhat.com>
+EXPOSE 8080 8443
 
 ARG APIMAN_VERSION
 
