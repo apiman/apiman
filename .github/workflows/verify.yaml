@@ -36,9 +36,9 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
       - name: Build Project
-        run: mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true
+        run: ./mvnw clean install -B -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true
       - name: Run Tests
-        run: mvn test install -Dinvoker.skip -Dmaven.javadoc.skip=true
+        run: ./mvnw test install -B -Dmaven.javadoc.skip=true
 
   publish-snapshots:
     name: Publish master snapshot artifacts
