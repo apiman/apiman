@@ -79,17 +79,12 @@ public class ContractService implements DataAccessUtilMixin {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         try {
-            storage.beginTx();
             ContractBean contract = createContractInternal(organizationId, clientId, version, bean);
-
-            storage.commitTx();
             LOGGER.debug(String.format("Created new contract %s: %s", contract.getId(), contract)); //$NON-NLS-1$
             return contract;
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             // Up above, we are optimistically creating the contract.  If it fails, check to see
             // if it failed because it was a duplicate.  If so, throw something sensible.  We
             // only do this on failure (we would get a FK constraint failure, for example) to

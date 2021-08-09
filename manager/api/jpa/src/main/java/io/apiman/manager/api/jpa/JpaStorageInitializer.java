@@ -32,6 +32,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.hibernate.Hibernate;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.MySQL57InnoDBDialect;
 import org.hibernate.dialect.MySQL5Dialect;

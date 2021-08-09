@@ -17,8 +17,6 @@
 package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.config.Version;
-import io.apiman.manager.api.core.IStorage;
-import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.service.ApiService;

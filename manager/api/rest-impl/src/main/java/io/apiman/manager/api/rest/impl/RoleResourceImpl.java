@@ -39,6 +39,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Implementation of the Role API.
@@ -46,6 +47,7 @@ import javax.inject.Inject;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class RoleResourceImpl implements IRoleResource {
 
     private IStorage storage;
@@ -81,15 +83,12 @@ public class RoleResourceImpl implements IRoleResource {
         role.setName(bean.getName());
         role.setPermissions(bean.getPermissions());
         try {
-            storage.beginTx();
             if (storage.getRole(role.getId()) != null) {
                 throw ExceptionFactory.roleAlreadyExistsException(role.getId());
             }
             storage.createRole(role);
-            storage.commitTx();
             return role;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -101,14 +100,12 @@ public class RoleResourceImpl implements IRoleResource {
     public RoleBean get(String roleId) throws RoleNotFoundException {
         // No permission check needed
         try {
-            storage.beginTx();
             RoleBean role = getRoleFromStorage(roleId);
             // Hide sensitive data and set only needed data for the UI
             return RestHelper.hideSensitiveDataFromRoleBean(securityContext, role);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         } finally {
-            storage.rollbackTx();
         }
     }
     
@@ -120,7 +117,6 @@ public class RoleResourceImpl implements IRoleResource {
         securityContext.checkAdminPermissions();
 
         try {
-            storage.beginTx();
             RoleBean role = getRoleFromStorage(roleId);
             if (bean.getDescription() != null) {
                 role.setDescription(bean.getDescription());
@@ -136,9 +132,7 @@ public class RoleResourceImpl implements IRoleResource {
                 role.getPermissions().addAll(bean.getPermissions());
             }
             storage.updateRole(role);
-            storage.commitTx();
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -160,11 +154,8 @@ public class RoleResourceImpl implements IRoleResource {
 
         RoleBean bean = get(roleId);
         try {
-            storage.beginTx();
             storage.deleteRole(bean);
-            storage.commitTx();
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }

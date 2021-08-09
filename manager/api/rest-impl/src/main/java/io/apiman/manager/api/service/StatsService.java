@@ -19,6 +19,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -28,6 +29,7 @@ import org.joda.time.format.ISODateTimeFormat;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
+@Transactional
 public class StatsService {
 
     private static final long ONE_MINUTE_MILLIS = 1 * 60 * 1000L;

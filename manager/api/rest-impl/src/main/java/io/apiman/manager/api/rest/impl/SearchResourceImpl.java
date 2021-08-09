@@ -37,6 +37,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,7 @@ import java.util.List;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class SearchResourceImpl implements ISearchResource {
 
     private IStorage storage;
@@ -121,7 +123,6 @@ public class SearchResourceImpl implements ISearchResource {
                 return result;
             }
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }

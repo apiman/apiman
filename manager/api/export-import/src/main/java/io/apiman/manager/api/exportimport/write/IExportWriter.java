@@ -16,7 +16,6 @@
 package io.apiman.manager.api.exportimport.write;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -35,13 +34,14 @@ import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.system.MetadataBean;
 
+import java.io.Closeable;
 import java.io.InputStream;
 
 /**
  *
  * @author msavy
  */
-public interface IExportWriter {
+public interface IExportWriter extends AutoCloseable, Closeable {
     // Metadata
     IExportWriter writeMetadata(MetadataBean metadata);
 

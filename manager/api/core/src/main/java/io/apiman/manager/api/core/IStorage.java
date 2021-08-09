@@ -16,7 +16,6 @@
 package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -205,4 +204,5 @@ public interface IStorage {
      */
     public Iterator<ApiVersionBean> getAllPublicApiVersions() throws StorageException;
 
+    // void rollbackTx();
 }

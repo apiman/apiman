@@ -66,6 +66,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Implementation of the Action API.
@@ -73,6 +74,7 @@ import javax.inject.Inject;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class ActionResourceImpl implements IActionResource {
 
     private final IApimanLogger log = ApimanLoggerFactory.getLogger(ActionResourceImpl.class);
@@ -176,14 +178,12 @@ public class ActionResourceImpl implements IActionResource {
         gatewayApi.setPublicAPI(versionBean.isPublicAPI());
         gatewayApi.setParsePayload(versionBean.isParsePayload());
         gatewayApi.setKeysStrippingDisabled(versionBean.getDisableKeysStrip());
-        boolean hasTx = false;
+
         try {
             if (versionBean.isPublicAPI()) {
                 List<Policy> policiesToPublish = new ArrayList<>();
                 List<PolicySummaryBean> apiPolicies = query.getPolicies(action.getOrganizationId(),
                         action.getEntityId(), action.getEntityVersion(), PolicyType.Api);
-                storage.beginTx();
-                hasTx = true;
                 for (PolicySummaryBean policySummaryBean : apiPolicies) {
                     PolicyBean apiPolicy = storage.getPolicy(PolicyType.Api, action.getOrganizationId(),
                             action.getEntityId(), action.getEntityVersion(), policySummaryBean.getId());
@@ -196,15 +196,10 @@ public class ActionResourceImpl implements IActionResource {
             }
         } catch (StorageException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
-        } finally {
-            if (hasTx) {
-                storage.rollbackTx();
-            }
         }
 
         // Publish the API to all relevant gateways
         try {
-            storage.beginTx();
             Set<ApiGatewayBean> gateways = versionBean.getGateways();
             if (gateways == null) {
                 throw new PublishingException("No gateways specified for API!"); //$NON-NLS-1$
@@ -231,12 +226,7 @@ public class ActionResourceImpl implements IActionResource {
             storage.updateApi(api);
             storage.updateApiVersion(versionBean);
             storage.createAuditEntry(AuditUtils.apiPublished(versionBean, securityContext));
-            storage.commitTx();
-        } catch (PublishingException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         } catch (Exception e) {
-            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
 
@@ -289,7 +279,6 @@ public class ActionResourceImpl implements IActionResource {
 
         // Retire the API from all relevant gateways
         try {
-            storage.beginTx();
             Set<ApiGatewayBean> gateways = versionBean.getGateways();
             if (gateways == null) {
                 throw new PublishingException("No gateways specified for API!"); //$NON-NLS-1$
@@ -316,12 +305,7 @@ public class ActionResourceImpl implements IActionResource {
             storage.updateApi(api);
             storage.updateApiVersion(versionBean);
             storage.createAuditEntry(AuditUtils.apiRetired(versionBean, securityContext));
-            storage.commitTx();
-        } catch (PublishingException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("RetireError"), e); //$NON-NLS-1$
         } catch (Exception e) {
-            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("RetireError"), e); //$NON-NLS-1$
         }
 
@@ -384,7 +368,6 @@ public class ActionResourceImpl implements IActionResource {
         // looking up all referenced APIs and getting the gateway information for them.
         // Each of those gateways must be told about the client.
         try {
-            storage.beginTx();
             Map<String, IGatewayLink> links = new HashMap<>();
             for (Contract contract : client.getContracts()) {
                 ApiVersionBean svb = storage.getApiVersion(contract.getApiOrgId(), contract.getApiId(), contract.getApiVersion());
@@ -429,9 +412,7 @@ public class ActionResourceImpl implements IActionResource {
                 gatewayLink.registerClient(client);
                 gatewayLink.close();
             }
-            storage.commitTx();
         } catch (Exception e) {
-            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("RegisterError"), e); //$NON-NLS-1$
         }
 
@@ -439,12 +420,9 @@ public class ActionResourceImpl implements IActionResource {
         versionBean.setPublishedOn(new Date());
 
         try {
-            storage.beginTx();
             storage.updateClientVersion(versionBean);
             storage.createAuditEntry(AuditUtils.clientRegistered(versionBean, securityContext));
-            storage.commitTx();
         } catch (Exception e) {
-            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("RegisterError"), e); //$NON-NLS-1$
         }
 
@@ -487,18 +465,14 @@ public class ActionResourceImpl implements IActionResource {
                       throw new RuntimeException("Missing case for switch!"); //$NON-NLS-1$
                   }
                 }
+
                 List<PolicySummaryBean> clientPolicies = query.getPolicies(org, id, ver, policyType);
-                try {
-                    storage.beginTx();
-                    for (PolicySummaryBean policySummaryBean : clientPolicies) {
-                        PolicyBean policyBean = storage.getPolicy(policyType, org, id, ver, policySummaryBean.getId());
-                        Policy policy = new Policy();
-                        policy.setPolicyJsonConfig(policyBean.getConfiguration());
-                        policy.setPolicyImpl(policyBean.getDefinition().getPolicyImpl());
-                        policies.add(policy);
-                    }
-                } finally {
-                    storage.rollbackTx();
+                for (PolicySummaryBean policySummaryBean : clientPolicies) {
+                    PolicyBean policyBean = storage.getPolicy(policyType, org, id, ver, policySummaryBean.getId());
+                    Policy policy = new Policy();
+                    policy.setPolicyJsonConfig(policyBean.getConfiguration());
+                    policy.setPolicyImpl(policyBean.getDefinition().getPolicyImpl());
+                    policies.add(policy);
                 }
             }
             return policies;
@@ -542,7 +516,6 @@ public class ActionResourceImpl implements IActionResource {
         // looking up all referenced APIs and getting the gateway information for them.
         // Each of those gateways must be told about the client.
         try {
-            storage.beginTx();
             Map<String, IGatewayLink> links = new HashMap<>();
             for (ContractSummaryBean contractBean : contractBeans) {
                 ApiVersionBean svb = storage.getApiVersion(contractBean.getApiOrganizationId(),
@@ -558,13 +531,11 @@ public class ActionResourceImpl implements IActionResource {
                     }
                 }
             }
-            storage.commitTx();
             for (IGatewayLink gatewayLink : links.values()) {
                 gatewayLink.unregisterClient(client);
                 gatewayLink.close();
             }
         } catch (Exception e) {
-            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("UnregisterError"), e); //$NON-NLS-1$
         }
 
@@ -572,12 +543,9 @@ public class ActionResourceImpl implements IActionResource {
         versionBean.setRetiredOn(new Date());
 
         try {
-            storage.beginTx();
             storage.updateClientVersion(versionBean);
             storage.createAuditEntry(AuditUtils.clientUnregistered(versionBean, securityContext));
-            storage.commitTx();
         } catch (Exception e) {
-            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("UnregisterError"), e); //$NON-NLS-1$
         }
 
@@ -608,12 +576,9 @@ public class ActionResourceImpl implements IActionResource {
         versionBean.setLockedOn(new Date());
 
         try {
-            storage.beginTx();
             storage.updatePlanVersion(versionBean);
             storage.createAuditEntry(AuditUtils.planLocked(versionBean, securityContext));
-            storage.commitTx();
         } catch (Exception e) {
-            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("LockError"), e); //$NON-NLS-1$
         }
 

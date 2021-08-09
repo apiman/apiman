@@ -51,6 +51,7 @@ import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -60,6 +61,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class GatewayResourceImpl implements IGatewayResource {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(GatewayResourceImpl.class);
@@ -154,19 +156,15 @@ public class GatewayResourceImpl implements IGatewayResource {
         gateway.setModifiedBy(securityContext.getCurrentUser());
         gateway.setModifiedOn(now);
         try {
-            storage.beginTx();
             if (storage.getGateway(gateway.getId()) != null) {
                 throw ExceptionFactory.gatewayAlreadyExistsException(gateway.getName());
             }
             // Store/persist the new gateway
             encryptPasswords(gateway);
             storage.createGateway(gateway);
-            storage.commitTx();
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
         decryptPasswords(gateway);
@@ -183,21 +181,16 @@ public class GatewayResourceImpl implements IGatewayResource {
         securityContext.checkAdminPermissions();
 
         try {
-            storage.beginTx();
             GatewayBean gateway = storage.getGateway(gatewayId);
             if (gateway == null) {
                 throw ExceptionFactory.gatewayNotFoundException(gatewayId);
             }
             decryptPasswords(gateway);
-
-            storage.commitTx();
             LOGGER.debug(String.format("Successfully fetched gateway %s: %s", gateway.getName(), gateway)); //$NON-NLS-1$
             return gateway;
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -208,7 +201,6 @@ public class GatewayResourceImpl implements IGatewayResource {
     public GatewayEndpointSummaryBean getGatewayEndpoint(String gatewayId)  throws GatewayNotFoundException {
         // No permission check is needed
         try {
-            storage.beginTx();
             GatewayBean gateway = storage.getGateway(gatewayId);
             if (gateway == null) {
                 throw ExceptionFactory.gatewayNotFoundException(gatewayId);
@@ -219,13 +211,10 @@ public class GatewayResourceImpl implements IGatewayResource {
             GatewayEndpoint endpoint = link.getGatewayEndpoint();
             GatewayEndpointSummaryBean gatewayEndpoint = new GatewayEndpointSummaryBean();
             gatewayEndpoint.setEndpoint(endpoint.getEndpoint());
-            storage.commitTx();
             return gatewayEndpoint;
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -239,7 +228,6 @@ public class GatewayResourceImpl implements IGatewayResource {
         securityContext.checkAdminPermissions();
 
         try {
-            storage.beginTx();
             Date now = new Date();
 
             GatewayBean gateway = storage.getGateway(gatewayId);
@@ -256,14 +244,11 @@ public class GatewayResourceImpl implements IGatewayResource {
                 gateway.setConfiguration(gatewayToUpdate.getConfiguration());
             encryptPasswords(gateway);
             storage.updateGateway(gateway);
-            storage.commitTx();
 
             LOGGER.debug(String.format("Successfully updated gateway %s: %s", gateway.getName(), gateway)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -277,20 +262,16 @@ public class GatewayResourceImpl implements IGatewayResource {
         securityContext.checkAdminPermissions();
 
         try {
-            storage.beginTx();
             GatewayBean gateway = storage.getGateway(gatewayId);
             if (gateway == null) {
                 throw ExceptionFactory.gatewayNotFoundException(gatewayId);
             }
             storage.deleteGateway(gateway);
-            storage.commitTx();
 
             LOGGER.debug(String.format("Successfully deleted gateway %s: %s", gateway.getName(), gateway)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }

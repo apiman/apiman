@@ -75,6 +75,7 @@
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>javax.transaction-api</artifactId>
+      <version>1.3</version>
     </dependency>
 
     <!-- The jenkins build fails without this...unknown why -->

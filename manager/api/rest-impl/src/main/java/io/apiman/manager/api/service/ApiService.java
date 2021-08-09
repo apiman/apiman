@@ -838,7 +838,6 @@ public class ApiService implements DataAccessUtilMixin {
             avb.setModifiedOn(new Date());
             storage.updateApiVersion(avb);
 
-            storage.commitTx();
             LOGGER.debug(String.format("Updated API policy %s", policy)); //$NON-NLS-1$
         });
     }

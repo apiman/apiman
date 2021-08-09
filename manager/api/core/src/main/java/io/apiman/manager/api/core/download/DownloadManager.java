@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Default implementation of the {@link IDownloadManager} interface.

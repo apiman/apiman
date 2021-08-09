@@ -56,6 +56,7 @@ import static java.util.stream.Collectors.toList;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
+@Transactional
 public class PlanService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(PlanService.class);
@@ -84,7 +85,6 @@ public class PlanService implements DataAccessUtilMixin {
     public PlanService() {
     }
 
-    @Transactional
     public PlanBean createPlan(String organizationId, NewPlanBean bean) throws OrganizationNotFoundException,
         PlanAlreadyExistsException, NotAuthorizedException, InvalidNameException {
         securityContext.checkPermissions(PermissionType.planEdit, organizationId);
@@ -118,8 +118,7 @@ public class PlanService implements DataAccessUtilMixin {
             return newPlan;
         });
     }
-
-    @Transactional
+    
     public PlanBean getPlan(String organizationId, String planId)
         throws PlanNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
@@ -132,8 +131,7 @@ public class PlanService implements DataAccessUtilMixin {
             return bean;
         });
     }
-
-    @Transactional
+    
     public SearchResultsBean<AuditEntryBean> getPlanActivity(String organizationId, String planId, int page, int pageSize)
         throws PlanNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
@@ -147,8 +145,7 @@ public class PlanService implements DataAccessUtilMixin {
 
         return tryAction(() -> query.auditEntity(organizationId, planId, null, PlanBean.class, paging));
     }
-
-    @Transactional
+    
     public List<PlanSummaryBean> listPlans(String organizationId) throws OrganizationNotFoundException,
         NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.orgView, organizationId);
@@ -157,8 +154,7 @@ public class PlanService implements DataAccessUtilMixin {
 
         return tryAction(() -> query.getPlansInOrg(organizationId));
     }
-
-    @Transactional
+    
     public void updatePlan(String organizationId, String planId, UpdatePlanBean bean)
         throws PlanNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planEdit, organizationId);
@@ -179,8 +175,7 @@ public class PlanService implements DataAccessUtilMixin {
             LOGGER.debug(String.format("Updated plan: %s", planForUpdate)); //$NON-NLS-1$
         });
     }
-
-    @Transactional
+    
     public PlanVersionBean createPlanVersion(String organizationId, String planId, NewPlanVersionBean bean)
         throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException,
         PlanVersionAlreadyExistsException {
@@ -242,7 +237,7 @@ public class PlanService implements DataAccessUtilMixin {
         return newVersion;
     }
 
-    @Transactional
+    
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
         throws PlanVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
@@ -310,7 +305,6 @@ public class PlanService implements DataAccessUtilMixin {
         });
     }
 
-
     public PolicyBean getPlanPolicy(String organizationId, String planId, String version, long policyId)
         throws OrganizationNotFoundException, PlanVersionNotFoundException,
         PolicyNotFoundException, NotAuthorizedException {
@@ -324,7 +318,6 @@ public class PlanService implements DataAccessUtilMixin {
         LOGGER.debug(String.format("Got plan policy %s", policy)); //$NON-NLS-1$
         return policy;
     }
-
 
     public void updatePlanPolicy(String organizationId, String planId, String version,
         long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
@@ -379,7 +372,6 @@ public class PlanService implements DataAccessUtilMixin {
             pvb.setModifiedOn(new Date());
             storage.updatePlanVersion(pvb);
 
-            storage.commitTx();
             LOGGER.debug(String.format("Deleted plan policy %s", policy)); //$NON-NLS-1$
         });
     }
@@ -397,7 +389,6 @@ public class PlanService implements DataAccessUtilMixin {
         tryAction(() -> {
             PlanBean plan = storage.getPlan(organizationId, planId);
             storage.deletePlan(plan);
-            storage.commitTx();
         });
     }
 

@@ -69,6 +69,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Used to store imported entities into the {@link IStorage}.
@@ -76,6 +77,7 @@ import javax.inject.Inject;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
+@Transactional
 public class StorageImportDispatcher implements IImportReaderDispatcher {
 
     @Inject
@@ -153,12 +155,6 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         apisToPublish.clear();
         clientsToRegister.clear();
         gatewayLinkCache.clear();
-
-        try {
-            this.storage.beginTx();
-        } catch (StorageException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -553,7 +549,6 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
 
             saveMetadata(true);
 
-            storage.commitTx();
             logger.info("-----------------------------------"); //$NON-NLS-1$
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingImportComplete")); //$NON-NLS-1$
             logger.info("-----------------------------------"); //$NON-NLS-1$
@@ -584,7 +579,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     @Override
     public void cancel() {
-        this.storage.rollbackTx();
+        throw new RuntimeException("Stopped");
+        //this.storage.rollbackTx();
     }
 
     /**

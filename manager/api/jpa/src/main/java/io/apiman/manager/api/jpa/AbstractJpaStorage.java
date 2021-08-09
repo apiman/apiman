@@ -28,11 +28,8 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.annotation.Resource;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -40,13 +37,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,24 +49,10 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractJpaStorage {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractJpaStorage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJpaStorage.class);
 
-    @PersistenceContext(name = "apiman-manager-api-jpa", type = PersistenceContextType.EXTENDED)
-    private EntityManager em;
-
-    @Inject
-    private IEntityManagerFactoryAccessor emfAccessor;
-
-    public String getDialect() {
-        return (String) emfAccessor.getEntityManagerFactory().getProperties().get("hibernate.dialect"); //$NON-NLS-1$
-    }
-
-    // private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<>();
-    // public static boolean isTxActive() {
-    //     return true;
-    //     //return em.getTransaction().isActive();
-    //     //return activeEM.get() != null;
-    // }
+    @PersistenceContext(unitName = "apiman-manager-api-jpa")
+    private Session session;
 
     /**
      * Constructor.
@@ -82,65 +60,11 @@ public abstract class AbstractJpaStorage {
     public AbstractJpaStorage() {
     }
 
-    // @Resource(lookup = "")
-    // private UserTransaction transaction;
-    //
-
-    // /**
-    //  * @see io.apiman.manager.api.core.IStorage#beginTx()
-    //  */
-    // protected void beginTx() throws StorageException {
-    //     System.out.println("Begin TX");
-    //     try {
-    //         transaction.begin();
-    //     } catch (SystemException | NotSupportedException e) {
-    //         e.printStackTrace();
-    //         throw new StorageException(e);
-    //     }
-    //     // if (activeEM.get() != null) {
-    //     //     throw new StorageException("Transaction already active."); //$NON-NLS-1$
-    //     // }
-    //     // EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
-    //     // activeEM.set(entityManager);
-    //     // entityManager.getTransaction().begin();
-    // }
-    //
-    // /**
-    //  * @see io.apiman.manager.api.core.IStorage#commitTx()
-    //  */
-    // protected void commitTx() throws StorageException {
-    //     System.out.println("Commit TX");
-    //     try {
-    //         transaction.commit();
-    //     } catch (SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {
-    //         e.printStackTrace();
-    //         throw new StorageException(e);
-    //     }
-    // }
-    //
-    // /**
-    //  * @see io.apiman.manager.api.core.IStorage#rollbackTx()
-    //  */
-    // protected void rollbackTx() {
-    //     System.out.println("Rollback TX");
-    //     try {
-    //         transaction.rollback();
-    //     } catch (SystemException e) {
-    //         e.printStackTrace();
-    //         throw new RuntimeException(e);
-    //     }
-    // }
-
     /**
      * @return the thread's entity manager
-     * @throws StorageException if a storage problem occurs while storing a bean
      */
-    protected EntityManager getActiveEntityManager() throws StorageException {
-        // EntityManager entityManager = activeEM.get();
-        // if (entityManager == null) {
-        //     throw new StorageException("Transaction not active."); //$NON-NLS-1$
-        // }
-        return em;
+    protected Session getActiveEntityManager() {
+        return session;
     }
 
     /**
@@ -155,7 +79,7 @@ public abstract class AbstractJpaStorage {
         try {
             entityManager.persist(bean);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -171,7 +95,7 @@ public abstract class AbstractJpaStorage {
                 entityManager.merge(bean);
             }
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -187,7 +111,7 @@ public abstract class AbstractJpaStorage {
         try {
             entityManager.remove(bean);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
@@ -206,7 +130,7 @@ public abstract class AbstractJpaStorage {
         try {
             rval = entityManager.find(type, id);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
         return rval;
@@ -226,7 +150,7 @@ public abstract class AbstractJpaStorage {
         try {
             rval = entityManager.find(type, id);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
         return rval;
@@ -254,7 +178,7 @@ public abstract class AbstractJpaStorage {
             Object key = new OrganizationBasedCompositeId(orgBean, id);
             rval = entityManager.find(type, key);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
         return rval;
@@ -268,7 +192,7 @@ public abstract class AbstractJpaStorage {
      */
     protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
         SearchResultsBean<T> results = new SearchResultsBean<>();
-        EntityManager entityManager = getActiveEntityManager();
+        Session entityManager = getActiveEntityManager();
         try {
             // Set some default in the case that paging information was not included in the request.
             PagingBean paging = criteria.getPaging();
@@ -309,18 +233,15 @@ public abstract class AbstractJpaStorage {
             results.setBeans(resultList);
             return results;
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
     }
 
     /**
      * Gets a count of the number of rows that would be returned by the search.
-     * @param criteria
-     * @param entityManager
-     * @param type
      */
-    protected <T> int executeCountQuery(SearchCriteriaBean criteria, EntityManager entityManager, Class<T> type) {
+    protected <T> int executeCountQuery(SearchCriteriaBean criteria, Session entityManager, Class<T> type) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
         Root<T> from = countQuery.from(type);
@@ -332,10 +253,6 @@ public abstract class AbstractJpaStorage {
 
     /**
      * Applies the criteria found in the {@link SearchCriteriaBean} to the JPA query.
-     * @param criteria
-     * @param builder
-     * @param query
-     * @param from
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <T> void applySearchCriteriaToQuery(SearchCriteriaBean criteria, CriteriaBuilder builder,
@@ -379,20 +296,6 @@ public abstract class AbstractJpaStorage {
                 query.orderBy(builder.desc(from.get(orderBy.getName())));
             }
         }
-    }
-
-    /**
-     * @return the emfAccessor
-     */
-    public IEntityManagerFactoryAccessor getEmfAccessor() {
-        return emfAccessor;
-    }
-
-    /**
-     * @param emfAccessor the emfAccessor to set
-     */
-    public void setEmfAccessor(IEntityManagerFactoryAccessor emfAccessor) {
-        this.emfAccessor = emfAccessor;
     }
 
     /**

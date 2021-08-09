@@ -49,6 +49,7 @@ import java.text.MessageFormat;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -64,6 +65,7 @@ import org.apache.commons.lang3.BooleanUtils;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class SystemResourceImpl implements ISystemResource {
     
     private IStorage storage;

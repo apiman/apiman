@@ -192,7 +192,6 @@ public class ClientAppService implements DataAccessUtilMixin {
         });
     }
 
-    // Manual TX, could refactor this into just one tx?
     public ClientVersionBean createClientVersion(String organizationId, String clientId,
         NewClientVersionBean bean) throws ClientNotFoundException, NotAuthorizedException,
         InvalidVersionException, ClientVersionAlreadyExistsException {
@@ -202,19 +201,15 @@ public class ClientAppService implements DataAccessUtilMixin {
 
         ClientVersionBean newVersion;
         try {
-            storage.beginTx();
             ClientBean client = getClientFromStorage(organizationId, clientId);
             if (storage.getClientVersion(organizationId, clientId, bean.getVersion()) != null) {
                 throw ExceptionFactory.clientVersionAlreadyExistsException(clientId, bean.getVersion());
             }
 
             newVersion = createClientVersionInternal(bean, client);
-            storage.commitTx();
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
 

@@ -38,6 +38,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Implementation of the PolicyDefinition API.
@@ -45,6 +46,7 @@ import javax.inject.Inject;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
 
     private IStorage storage;
@@ -92,7 +94,6 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
             bean.setId(BeanUtils.idFromName(bean.getId()));
         }
         try {
-            storage.beginTx();
             if (storage.getPolicyDefinition(bean.getId()) != null) {
                 throw ExceptionFactory.policyDefAlreadyExistsException(bean.getName());
             }
@@ -101,13 +102,10 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
             }
             // Store/persist the new policyDef
             storage.createPolicyDefinition(bean);
-            storage.commitTx();
             return bean;
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -119,18 +117,14 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     public PolicyDefinitionBean get(String policyDefinitionId) throws PolicyDefinitionNotFoundException {
         // No permission check is needed
         try {
-            storage.beginTx();
             PolicyDefinitionBean bean = storage.getPolicyDefinition(policyDefinitionId);
             if (bean == null) {
                 throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
             }
-            storage.commitTx();
             return bean;
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -144,7 +138,6 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
         securityContext.checkAdminPermissions();
 
         try {
-            storage.beginTx();
             PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);
             if (pdb == null) {
                 throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
@@ -159,12 +152,9 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
             if (bean.getIcon() != null)
                 pdb.setIcon(bean.getIcon());
             storage.updatePolicyDefinition(pdb);
-            storage.commitTx();
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -178,7 +168,6 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
        securityContext.checkAdminPermissions();
 
         try {
-            storage.beginTx();
             PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);
             if (pdb == null) {
                 throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
@@ -187,12 +176,9 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
                 throw new SystemErrorException(Messages.i18n.format("CannotDeletePluginPolicyDef")); //$NON-NLS-1$
             }
             storage.deletePolicyDefinition(pdb);
-            storage.commitTx();
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }

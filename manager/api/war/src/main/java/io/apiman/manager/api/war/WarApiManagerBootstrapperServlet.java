@@ -22,6 +22,7 @@ import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.exportimport.read.IImportReader;
+import io.apiman.manager.api.jpa.EntityManagerFactoryAccessor;
 import io.apiman.manager.api.jpa.JpaStorageInitializer;
 
 import java.io.File;
@@ -33,6 +34,7 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import javax.sql.DataSource;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.FileUtils;
@@ -59,12 +61,18 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     @Inject
     private ApiManagerConfig config2;
 
+    @Inject
+    private EntityManagerFactoryAccessor emf;
+
+    @Inject
+    private DataSource ds;
+
     /**
      * @see javax.servlet.GenericServlet#init()
      */
     @Override
     public void init() throws ServletException {
-        LOGGER.info("Trying to run early....");
+        LOGGER.info("Trying to run early.... " + ds.toString());
 
         JpaStorageInitializer init = new JpaStorageInitializer(config2.getHibernateDataSource(), config2.getHibernateDialect());
         init.initialize();

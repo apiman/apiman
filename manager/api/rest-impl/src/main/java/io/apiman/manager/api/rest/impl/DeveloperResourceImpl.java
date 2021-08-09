@@ -26,13 +26,11 @@ import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
-import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.IDeveloperResource;
 import io.apiman.manager.api.rest.exceptions.DeveloperAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.DeveloperNotFoundException;
 import io.apiman.manager.api.rest.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -175,17 +173,9 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
 
         List<ApiVersionBean> apiVersionBeans = new ArrayList<>();
         List<ContractSummaryBean> contracts = getAllClientContracts(id);
-
-        try {
-            storage.beginTx();
-            for (ContractSummaryBean contract : contracts) {
-                ApiVersionBean apiVersion = apiService.getApiVersion(contract.getApiOrganizationId(), contract.getApiId(), contract.getApiVersion());
-                apiVersionBeans.add(apiVersion);
-            }
-            storage.commitTx();
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+        for (ContractSummaryBean contract : contracts) {
+            ApiVersionBean apiVersion = apiService.getApiVersion(contract.getApiOrganizationId(), contract.getApiId(), contract.getApiVersion());
+            apiVersionBeans.add(apiVersion);
         }
         return apiVersionBeans;
     }

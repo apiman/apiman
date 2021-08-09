@@ -278,7 +278,6 @@ public class OrganizationService implements DataAccessUtilMixin {
 
             List<ApiEntryBean> apis = apiRegistry.getApis();
 
-            storage.beginTx();
             txStarted = true;
             for (ApiEntryBean api : apis) {
                 String gatewayId = api.getGatewayId();
@@ -304,9 +303,6 @@ public class OrganizationService implements DataAccessUtilMixin {
         } catch (StorageException| GatewayAuthenticationException e) {
             throw new SystemErrorException(e);
         } finally {
-            if (txStarted) {
-                storage.rollbackTx();
-            }
             for (IGatewayLink link : gatewayLinks.values()) {
                 link.close();
             }

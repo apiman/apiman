@@ -27,6 +27,7 @@ import io.apiman.manager.api.rest.exceptions.DownloadNotFoundException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
@@ -36,6 +37,7 @@ import javax.ws.rs.core.Response;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class DownloadResourceImpl implements IDownloadResource {
 
     private IDownloadManager downloadManager;

@@ -46,7 +46,6 @@ import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
