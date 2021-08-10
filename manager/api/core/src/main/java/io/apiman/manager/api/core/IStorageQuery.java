@@ -52,14 +52,14 @@ import java.util.Set;
 public interface IStorageQuery {
 
     /**
-     * Lists all of the Plugins.
+     * Lists all the Plugins.
      * @return list of plugins
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public List<PluginSummaryBean> listPlugins() throws StorageException;
 
     /**
-     * Lists all of the Gateways.
+     * Lists all the Gateways.
      * @return list of gateways
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
@@ -286,7 +286,7 @@ public interface IStorageQuery {
             PolicyType type) throws StorageException;
 
     /**
-     * Lists all of the policy definitions contributed via a particular plugin.
+     * Lists all the policy definitions contributed via a particular plugin.
      * @param pluginId the plugin id
      * @return list of plugin policy defs
      * @throws StorageException if a storage problem occurs while storing a bean.

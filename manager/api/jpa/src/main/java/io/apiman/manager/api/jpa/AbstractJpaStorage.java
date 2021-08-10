@@ -28,6 +28,8 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -37,8 +39,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.sql.DataSource;
 
-import org.hibernate.Session;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +55,10 @@ public abstract class AbstractJpaStorage {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJpaStorage.class);
 
     @PersistenceContext(unitName = "apiman-manager-api-jpa")
-    private Session session;
+    private EntityManager em;
+
+    // @Resource(lookup = "java:/apiman/datasources/apiman-manager")
+    // private DataSource jpaDataSource;
 
     /**
      * Constructor.
@@ -60,11 +66,35 @@ public abstract class AbstractJpaStorage {
     public AbstractJpaStorage() {
     }
 
+    // public <T> List<T> nativeQueryList(String queryString, Class<T> klazz) {
+    //     return getJdbi()
+    //         .withHandle(handle -> handle.createQuery(queryString).);
+    // }
+
+    protected Jdbi getJdbi() {
+        return Jdbi.create(lookupDS("java:/apiman/datasources/apiman-manager"));
+    }
+
     /**
      * @return the thread's entity manager
      */
-    protected Session getActiveEntityManager() {
-        return session;
+    protected EntityManager getActiveEntityManager() {
+        return em;
+    }
+
+    private static javax.sql.DataSource lookupDS(String dsJndiLocation) {
+        javax.sql.DataSource ds;
+        try {
+            InitialContext ctx = new InitialContext();
+            ds = (DataSource) ctx.lookup(dsJndiLocation);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        if (ds == null) {
+            throw new RuntimeException("Datasource not found: " + dsJndiLocation); //$NON-NLS-1$
+        }
+        return ds;
     }
 
     /**
@@ -192,7 +222,7 @@ public abstract class AbstractJpaStorage {
      */
     protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
         SearchResultsBean<T> results = new SearchResultsBean<>();
-        Session entityManager = getActiveEntityManager();
+        EntityManager entityManager = getActiveEntityManager();
         try {
             // Set some default in the case that paging information was not included in the request.
             PagingBean paging = criteria.getPaging();
@@ -241,7 +271,7 @@ public abstract class AbstractJpaStorage {
     /**
      * Gets a count of the number of rows that would be returned by the search.
      */
-    protected <T> int executeCountQuery(SearchCriteriaBean criteria, Session entityManager, Class<T> type) {
+    protected <T> int executeCountQuery(SearchCriteriaBean criteria, EntityManager entityManager, Class<T> type) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
         Root<T> from = countQuery.from(type);
@@ -296,6 +326,20 @@ public abstract class AbstractJpaStorage {
                 query.orderBy(builder.desc(from.get(orderBy.getName())));
             }
         }
+    }
+
+    protected <T> Optional<T> getOne(Query query) {
+        List<T> resultList = (List<T>) query.getResultList();
+
+        if (resultList.size() > 1) {
+            throw new IllegalStateException("More than one result for query");
+        }
+
+        if (resultList.size() == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(resultList.get(0));
     }
 
     /**

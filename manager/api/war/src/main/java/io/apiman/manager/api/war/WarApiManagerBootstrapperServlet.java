@@ -34,7 +34,6 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import javax.sql.DataSource;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.FileUtils;
@@ -64,15 +63,15 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     @Inject
     private EntityManagerFactoryAccessor emf;
 
-    @Inject
-    private DataSource ds;
+    // @Inject
+    // private DataSource ds;
 
     /**
      * @see javax.servlet.GenericServlet#init()
      */
     @Override
     public void init() throws ServletException {
-        LOGGER.info("Trying to run early.... " + ds.toString());
+        // LOGGER.info("Trying to run early.... " + ds.toString());
 
         JpaStorageInitializer init = new JpaStorageInitializer(config2.getHibernateDataSource(), config2.getHibernateDialect());
         init.initialize();

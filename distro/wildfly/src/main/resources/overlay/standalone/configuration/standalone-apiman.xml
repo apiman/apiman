@@ -199,7 +199,7 @@
                         <password>sa</password>
                     </security>
                 </datasource>
-                <datasource jndi-name="java:apiman/datasources/apiman-manager" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
+                <datasource jndi-name="java:/apiman/datasources/apiman-manager" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
                     <connection-url>jdbc:h2:${jboss.server.data.dir}/h2/apiman-manager-api;AUTO_SERVER=TRUE</connection-url>
                     <driver>h2</driver>
                     <security>

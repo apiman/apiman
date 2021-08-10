@@ -91,7 +91,7 @@ public class JpaStorageInitializer {
         if (dsJndiLocation == null) {
             throw new RuntimeException("Missing datasource JNDI location from JPA storage configuration."); //$NON-NLS-1$
         }
-        ds = lookupDS(dsJndiLocation);
+        ds = lookupDS("java:/apiman/datasources/apiman-manager");
         dbType = DB_TYPE_MAP.get(hibernateDialect);
         if (dbType == null) {
             throw new RuntimeException("Unknown hibernate dialect configured: " + hibernateDialect); //$NON-NLS-1$

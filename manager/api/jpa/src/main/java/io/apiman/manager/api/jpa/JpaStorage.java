@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.jpa;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.ApiBean;
@@ -77,7 +79,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -88,10 +90,7 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-
-import org.hibernate.Session;
-import org.hibernate.query.NativeQuery;
-import org.hibernate.query.Query;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -99,8 +98,6 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A JPA implementation of the storage interface.
@@ -111,7 +108,7 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped @Alternative
 public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JpaStorage.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JpaStorage.class);
 
     private IDataEncrypter encrypter;
 
@@ -641,37 +638,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException {
         try {
-            EntityManager entityManager = getActiveEntityManager();
-
-            String sql =
-            "SELECT p.id, p.artifact_id, p.group_id, p.version, p.classifier, p.type, p.name, p.description, p.created_by, p.created_on, p.deleted" +
-            "  FROM plugins p" +
-            " WHERE p.group_id = ? AND p.artifact_id = ?";
-            
-            Query query = entityManager.createNativeQuery(sql);
-            query.setParameter(1, groupId);
-            query.setParameter(2, artifactId);
-            List<Object[]> rows = query.getResultList();
-            if (!rows.isEmpty()) {
-                Object[] row = rows.get(0);
-                PluginBean plugin = new PluginBean();
-                plugin.setId(((Number) row[0]).longValue());
-                plugin.setArtifactId(String.valueOf(row[1]));
-                plugin.setGroupId(String.valueOf(row[2]));
-                plugin.setVersion(String.valueOf(row[3]));
-                plugin.setClassifier((String) row[4]);
-                plugin.setType((String) row[5]);
-                plugin.setName(String.valueOf(row[6]));
-                plugin.setDescription(String.valueOf(row[7]));
-                plugin.setCreatedBy(String.valueOf(row[8]));
-                plugin.setCreatedOn((Date) row[9]);
-                plugin.setDeleted(parseBoolValue(row[10]));
-                return plugin;
-            } else {
-                return null;
-            }
+            Query query = getActiveEntityManager().createQuery(
+                "SELECT p FROM PluginBean p"
+                    + "  WHERE p.groupId = :groupId "
+                    + "    AND p.artifactId = :artifactId",
+                PluginBean.class)
+                .setParameter("groupId", groupId)
+                .setParameter("artifactId", artifactId);
+            return (PluginBean) super.getOne(query).orElse(null); // TODO consider migrating to Optional
         } catch (Throwable t) {
-            LOGGER.error(t.getMessage(), t);
+            LOGGER.error(t, t.getMessage());
             throw new StorageException(t);
         }
     }
@@ -923,35 +899,20 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * {@inheritDoc}
      */
-    @Override
+    @Override// TODO consider just returning GatewayBean and using converter
     public List<PluginSummaryBean> listPlugins() throws StorageException {
         try {
-            EntityManager entityManager = getActiveEntityManager();
+            String sql =
+            "SELECT p.id, p.artifact_id, p.group_id, p.version, p.classifier, p.type, p.name, p.description, p.created_by, p.created_on" +
+            "  FROM plugins p" +
+            " WHERE p.deleted IS NULL OR p.deleted = 0" +
+            " ORDER BY p.name ASC";
 
-                    String sql =
-                    "SELECT p.id, p.artifact_id, p.group_id, p.version, p.classifier, p.type, p.name, p.description, p.created_by, p.created_on" +
-                    "  FROM plugins p" +
-                    " WHERE p.deleted IS NULL OR p.deleted = 0" +
-                    " ORDER BY p.name ASC";
-            Query query = entityManager.createNativeQuery(sql);
-
-            List<Object[]> rows = query.getResultList();
-            List<PluginSummaryBean> plugins = new ArrayList<>(rows.size());
-            for (Object [] row : rows) {
-                PluginSummaryBean plugin = new PluginSummaryBean();
-                plugin.setId(((Number) row[0]).longValue());
-                plugin.setArtifactId(String.valueOf(row[1]));
-                plugin.setGroupId(String.valueOf(row[2]));
-                plugin.setVersion(String.valueOf(row[3]));
-                plugin.setClassifier((String) row[4]);
-                plugin.setType((String) row[5]);
-                plugin.setName(String.valueOf(row[6]));
-                plugin.setDescription(String.valueOf(row[7]));
-                plugin.setCreatedBy(String.valueOf(row[8]));
-                plugin.setCreatedOn((Date) row[9]);
-                plugins.add(plugin);
-            }
-            return plugins;
+            return getJdbi().withHandle(handle ->
+                handle.createQuery(sql)
+                      .mapToBean(PluginSummaryBean.class)
+                      .list()
+            );
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -964,33 +925,17 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<PolicyDefinitionSummaryBean> listPolicyDefinitions() throws StorageException {
         try {
-            EntityManager entityManager = getActiveEntityManager();
+            String sql =
+                "SELECT pd.id, pd.policy_impl, pd.name, pd.description, pd.icon, pd.plugin_id, pd.form_type" +
+                "  FROM policydefs pd" +
+                " WHERE pd.deleted IS NULL OR pd.deleted = 0" +
+                " ORDER BY pd.name ASC";
 
-                    String sql =
-                    "SELECT pd.id, pd.policy_impl, pd.name, pd.description, pd.icon, pd.plugin_id, pd.form_type" +
-                    "  FROM policydefs pd" +
-                    " WHERE pd.deleted IS NULL OR pd.deleted = 0" +
-                    " ORDER BY pd.name ASC";
-            Query query = entityManager.createNativeQuery(sql);
-
-            List<Object[]> rows = query.getResultList();
-            List<PolicyDefinitionSummaryBean> rval = new ArrayList<>(rows.size());
-            for (Object [] row : rows) {
-                PolicyDefinitionSummaryBean bean = new PolicyDefinitionSummaryBean();
-                bean.setId(String.valueOf(row[0]));
-                bean.setPolicyImpl(String.valueOf(row[1]));
-                bean.setName(String.valueOf(row[2]));
-                bean.setDescription(String.valueOf(row[3]));
-                bean.setIcon(String.valueOf(row[4]));
-                if (row[5] != null) {
-                    bean.setPluginId(((Number) row[5]).longValue());
-                }
-                if (row[6] != null) {
-                    bean.setFormType(PolicyFormType.valueOf(String.valueOf(row[6])));
-                }
-                rval.add(bean);
-            }
-            return rval;
+            return getJdbi().withHandle(handle ->
+                 handle.createQuery(sql)
+                       .mapToBean(PolicyDefinitionSummaryBean.class)
+                       .list()
+            );
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -1002,25 +947,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public List<OrganizationSummaryBean> getOrgs(Set<String> orgIds) throws StorageException {
-        List<OrganizationSummaryBean> orgs = new ArrayList<>();
         if (orgIds == null || orgIds.isEmpty()) {
-            return orgs;
+            return Collections.emptyList();
         }
-
         try {
-            EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT o from OrganizationBean o WHERE o.id IN :orgs ORDER BY o.id ASC";
-            Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgs", orgIds);
-            List<OrganizationBean> qr = query.getResultList();
-            for (OrganizationBean bean : qr) {
-                OrganizationSummaryBean summary = new OrganizationSummaryBean();
-                summary.setId(bean.getId());
-                summary.setName(bean.getName());
-                summary.setDescription(bean.getDescription());
-                orgs.add(summary);
-            }
-            return orgs;
+            return getJdbi().withHandle(handle ->
+                 handle.createQuery("SELECT * FROM ORGANIZATIONS org WHERE org.ID IN (<orgIds>) ORDER BY org.id ASC")
+                       .bindList("orgIds", orgIds)
+                       .mapToBean(OrganizationSummaryBean.class)
+                       .list()
+            );
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -1042,31 +978,27 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public List<ClientSummaryBean> getClientsInOrgs(Set<String> orgIds) throws StorageException {
-        List<ClientSummaryBean> rval = new ArrayList<>();
         if (orgIds == null || orgIds.isEmpty()) {
-            return rval;
+            return Collections.emptyList();
         }
 
         try {
-            EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT a FROM ClientBean a JOIN a.organization o WHERE o.id IN :orgs ORDER BY a.id ASC";
-            Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgs", orgIds);
+            String sql =
+                 "SELECT client.*, "
+                 + "       ( " // Add extra column with count of number of contracts for given client.
+                 + "           SELECT COUNT(*) FROM CONTRACTS contract "
+                 + "           JOIN CLIENT_VERSIONS clientVersion on contract.CLIENTV_ID = clientVersion.ID "
+                 + "           WHERE clientVersion.CLIENT_ID = client.ID "
+                 + "       ) AS NUM_CONTRACTS "
+                 + "FROM CLIENTS client "
+                 + "WHERE client.ORGANIZATION_ID IN (<orgIds>) ORDER BY client.ID ASC";
 
-            List<ClientBean> qr = query.getResultList();
-            for (ClientBean bean : qr) {
-                ClientSummaryBean summary = new ClientSummaryBean();
-                summary.setId(bean.getId());
-                summary.setName(bean.getName());
-                summary.setDescription(bean.getDescription());
-                // TODO find the number of contracts - probably need a native SQL query to pull that together
-                summary.setNumContracts(0);
-                OrganizationBean org = bean.getOrganization();
-                summary.setOrganizationId(org.getId());
-                summary.setOrganizationName(org.getName());
-                rval.add(summary);
-            }
-            return rval;
+            return getJdbi().withHandle(handle ->
+                 handle.createQuery(sql)
+                       .bindList("orgIds", orgIds)
+                       .mapToBean(ClientSummaryBean.class)
+                       .list()
+            );
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -1078,7 +1010,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public List<ApiSummaryBean> getApisInOrg(String orgId) throws StorageException {
-        Set<String> orgIds = new HashSet<>();
+        Set<String> orgIds = new HashSet<>(1);
         orgIds.add(orgId);
         return getApisInOrgs(orgIds);
     }
@@ -1088,11 +1020,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public List<ApiSummaryBean> getApisInOrgs(Set<String> orgIds) throws StorageException {
-        List<ApiSummaryBean> rval = new ArrayList<>();
         if (orgIds == null || orgIds.isEmpty()) {
-            return rval;
+            return Collections.emptyList();
         }
 
+        List<ApiSummaryBean> rval = new ArrayList<>();
         try {
             EntityManager entityManager = getActiveEntityManager();
             String jpql = "SELECT a FROM ApiBean a JOIN a.organization o WHERE o.id IN :orgs ORDER BY a.id ASC";
@@ -1676,13 +1608,13 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<PolicyDefinitionSummaryBean> listPluginPolicyDefs(Long pluginId) throws StorageException {
         try {
-            Session entityManager = getActiveEntityManager();
+            EntityManager entityManager = getActiveEntityManager();
                     String sql =
                     "SELECT pd.id, pd.policy_impl, pd.name, pd.description, pd.icon, pd.plugin_id, pd.form_type" +
                     "  FROM policydefs pd" +
                     " WHERE pd.plugin_id = :pluginId" +
                     " ORDER BY pd.name ASC";
-            NativeQuery query = entityManager
+            Query query = entityManager
                 .createNativeQuery(sql)
                 .setParameter("pluginId", pluginId);
 

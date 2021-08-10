@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 
 <persistence-unit name="apiman-manager-api-jpa" transaction-type="JTA">
-    <jta-data-source>java:apiman/datasources/apiman-manager</jta-data-source>
+    <jta-data-source>java:/apiman/datasources/apiman-manager</jta-data-source>
     <class>io.apiman.manager.api.beans.idm.UserBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleMembershipBean</class>
@@ -33,7 +33,7 @@
       <property name="hibernate.order_updates" value="true"/>
       <property name="hibernate.connection.autocommit" value="false"/>
       <property name="hibernate.format_sql" value="true"/>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+<!--      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>-->
       
       <!-- Don't allow WF/EAP to manage the persistence unit - vital since we're dynamically setting most of the
       properties *after* WF/EAP has started! -->
