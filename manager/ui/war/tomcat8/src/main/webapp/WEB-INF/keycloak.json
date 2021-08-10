@@ -1,7 +1,7 @@
 {
-  "realm": "${keycloak.realm}",
+  "realm": "${env.APIMAN_KEYCLOAK_REALM:apiman}",
   "resource": "apimanui",
-  "auth-server-url": "${keycloak.protocol}://${keycloak.host}:${keycloak.port}/auth",
+  "auth-server-url": "${env.APIMAN_KEYCLOAK_URL:http://keycloak:8080/auth}",
   "ssl-required": "external",
   "use-resource-role-mappings": false,
   "enable-cors": true,
@@ -11,13 +11,13 @@
   "enable-basic-auth": true,
   "expose-token": true,
   "credentials" : {
-    "secret" : "${keycloak.apimanui.secret}"
+    "secret" : "${env.APIMAN_KEYCLOAK_APIMANUI_SECRET}"
   },
   "connection-pool-size": 20,
   "principal-attribute": "preferred_username",
-  "allow-any-hostname": "${allowAnyHost:false}",
+  "allow-any-hostname": "${env.APIMAN_ALLOW_ANY_HOST:false}",
   "redirect-rewrite-rules": {
-    "^(.*)$" : "${keycloak.redirect.prefix:}$1"
+    "^(.*)$" : "${env.APIMAN_KEYCLOAK_REDIRECT_PREFIX:}$1"
   },
   "disable-trust-manager": true
 }
