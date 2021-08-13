@@ -11,10 +11,20 @@
 
   <properties>
     <version.org.postgresql.jdbc.driver>9.4-1201-jdbc41</version.org.postgresql.jdbc.driver>
-    <version.mysql.jdbc.driver>5.1.35</version.mysql.jdbc.driver>
+    <version.mysql.jdbc.driver>8.0.26</version.mysql.jdbc.driver>
     <version.com.oracle.driver>12.1.0.2</version.com.oracle.driver>
     <version.mssql.driver>4.2</version.mssql.driver>
-    <version.liquibase>3.4.1</version.liquibase>
+
+    <version.liquibase>4.4.3</version.liquibase>
+
+    <!-- Just for Liquibase generation - likely do not need to change -->
+    <version.liquibase-hibernate5>4.3.5</version.liquibase-hibernate5>
+    <version.hibernate5>5.5.3.Final</version.hibernate5>
+    <version.javassist>3.24.0-GA</version.javassist>
+    <version.javax.validation-api>2.0.1.Final</version.javax.validation-api>
+    <version.spring-boot>2.3.4.RELEASE</version.spring-boot>
+
+    <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
   </properties>
 
   <dependencies>
@@ -69,33 +79,31 @@
             <artifactId>liquibase-core</artifactId>
             <version>${version.liquibase}</version>
           </dependency>
-          <dependency>
-            <groupId>org.liquibase.ext</groupId>
-            <artifactId>liquibase-hibernate4</artifactId>
-            <version>3.5</version>
-          </dependency>
-          <!-- Note: the dependency versions below are specific to the liquibase-hibernate4 version being used 
-            above. -->
-          <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>3.2.4.RELEASE</version>
-          </dependency>
-          <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>3.2.4.RELEASE</version>
-          </dependency>
-          <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>3.2.4.RELEASE</version>
-          </dependency>
-          <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.29</version>
-          </dependency>
+            <dependency>
+              <groupId>org.liquibase</groupId>
+              <artifactId>liquibase-core</artifactId>
+              <version>${version.liquibase}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.liquibase.ext</groupId>
+              <artifactId>liquibase-hibernate5</artifactId>
+              <version>${version.liquibase-hibernate5}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-starter-data-jpa</artifactId>
+              <version>${version.spring-boot}</version>
+            </dependency>
+            <dependency>
+              <groupId>javax.validation</groupId>
+              <artifactId>validation-api</artifactId>
+              <version>${version.javax.validation-api}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.javassist</groupId>
+              <artifactId>javassist</artifactId>
+              <version>${version.javassist}</version>
+            </dependency>
         </dependencies>
         <configuration>
           <changeLogFile>${basedir}/src/main/liquibase/master.xml</changeLogFile>
