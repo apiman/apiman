@@ -87,7 +87,7 @@
   <properties>
     <version.apiman>2.1.0.Final</version.apiman>
 
-    <version.org.bouncycastle>1.60</version.org.bouncycastle>
+    <version.org.bouncycastle>1.67</version.org.bouncycastle>
     <version.org.json>20140107</version.org.json>
     <version.org.mock-server>5.11.2</version.org.mock-server>
     <version.io.jsonwebtoken.jjwt>0.9.1</version.io.jsonwebtoken.jjwt>
