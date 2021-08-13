@@ -17,21 +17,44 @@
 package io.apiman.manager.api.beans.developers;
 
 import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Models the mapping data for a developer
  */
+@Entity
+@Table(name = "developermappings")
 public class DeveloperMappingBean implements Serializable {
 
     private static final long serialVersionUID = -5334196591430185705L;
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(nullable = false)
+    private String id;
+    @Column(name = "client_id", nullable = false)
     private String clientId;
+    @Column(name = "organization_id")
     private String organizationId;
 
     /**
      * Constructor
      */
     public DeveloperMappingBean() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public DeveloperMappingBean setId(String id) {
+        this.id = id;
+        return this;
     }
 
     /**
@@ -51,7 +74,7 @@ public class DeveloperMappingBean implements Serializable {
     }
 
     /**
-     * Get the organiztaion id
+     * Get the organization id
      * @return the organization id
      */
     public String getOrganizationId() {
@@ -73,5 +96,6 @@ public class DeveloperMappingBean implements Serializable {
     public String toString() {
         return "DeveloperMappingBean [clientId=" + clientId + ",organizationId=" + organizationId + "]";
     }
+
 }
 

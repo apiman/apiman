@@ -21,17 +21,30 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Models a developer
  * The Keycloak Username is used as ID
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Table(name = "developers")
+@Entity
 public class DeveloperBean implements Serializable {
 
     private static final long serialVersionUID = 7127400624541487145L;
 
+    @Id
+    @GeneratedValue
     private String id;
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<DeveloperMappingBean> clients = new LinkedHashSet<>();
 
     /**

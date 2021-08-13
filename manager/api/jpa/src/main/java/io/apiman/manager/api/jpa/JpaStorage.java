@@ -66,7 +66,6 @@ import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
-import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.IStorage;
@@ -97,7 +96,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * A JPA implementation of the storage interface.
@@ -183,8 +181,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * {@inheritDoc}
      */
     @Override
-    public void createDeveloper(DeveloperBean developerBean) {
-        // TODO: Implement
+    public void createDeveloper(DeveloperBean developerBean) throws StorageException {
+        super.create(developerBean);
     }
 
     /**
@@ -336,7 +334,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void updateDeveloper(DeveloperBean developer) throws StorageException {
-        // TODO: Implement
+        super.update(developer);
     }
 
     /**
@@ -510,7 +508,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deleteDeveloper(DeveloperBean developer) throws StorageException {
-        // TODO: Implement
+        super.delete(developer);
     }
 
     /**
@@ -612,8 +610,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public DeveloperBean getDeveloper(String id) throws StorageException {
-        // TODO: Implement
-        return null;
+        return super.get(id, DeveloperBean.class);
     }
 
     /**
@@ -650,16 +647,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             LOGGER.error(t, t.getMessage());
             throw new StorageException(t);
         }
-    }
-
-    private Boolean parseBoolValue(Object object) {
-        if (object instanceof Boolean) {
-            return (Boolean) object;
-        } else if (object instanceof Number) {
-            Byte num = ((Number) object).byteValue();
-            return num > 0;
-        }
-        return BooleanUtils.toBooleanObject(String.valueOf(object));
     }
 
     /**
@@ -896,7 +883,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
     }
 
-    /**
+    /**C
      * {@inheritDoc}
      */
     @Override// TODO consider just returning GatewayBean and using converter
@@ -1608,34 +1595,18 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<PolicyDefinitionSummaryBean> listPluginPolicyDefs(Long pluginId) throws StorageException {
         try {
-            EntityManager entityManager = getActiveEntityManager();
-                    String sql =
-                    "SELECT pd.id, pd.policy_impl, pd.name, pd.description, pd.icon, pd.plugin_id, pd.form_type" +
-                    "  FROM policydefs pd" +
-                    " WHERE pd.plugin_id = :pluginId" +
-                    " ORDER BY pd.name ASC";
-            Query query = entityManager
-                .createNativeQuery(sql)
-                .setParameter("pluginId", pluginId);
+            String sql = ""
+                 + "SELECT pd.id, pd.policy_impl, pd.name, pd.description, pd.icon, pd.plugin_id, pd.form_type"
+                 + "  FROM policydefs pd"
+                 + " WHERE pd.plugin_id = :pluginId"
+                 + " ORDER BY pd.name ASC";
 
-            List<Object[]> rows = query.getResultList();
-            List<PolicyDefinitionSummaryBean> beans = new ArrayList<>(rows.size());
-            for (Object [] row : rows) {
-                PolicyDefinitionSummaryBean bean = new PolicyDefinitionSummaryBean();
-                bean.setId(String.valueOf(row[0]));
-                bean.setPolicyImpl(String.valueOf(row[1]));
-                bean.setName(String.valueOf(row[2]));
-                bean.setDescription(String.valueOf(row[3]));
-                bean.setIcon(String.valueOf(row[4]));
-                if (row[5] != null) {
-                    bean.setPluginId(((Number) row[5]).longValue());
-                }
-                if (row[6] != null) {
-                    bean.setFormType(PolicyFormType.valueOf(String.valueOf(row[6])));
-                }
-                beans.add(bean);
-            }
-            return beans;
+            return getJdbi().withHandle(handle ->
+                 handle.createQuery(sql)
+                       .bind("pluginId", pluginId)
+                       .mapToBean(PolicyDefinitionSummaryBean.class)
+                       .list()
+            );
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -1747,12 +1718,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query.setParameter("roleId", roleId);
             query.setParameter("userId", userId);
             query.setParameter("orgId", organizationId);
-            RoleMembershipBean bean = null;
-            List<?> resultList = query.getResultList();
-            if (!resultList.isEmpty()) {
-                bean = (RoleMembershipBean) resultList.iterator().next();
-            }
-            return bean;
+            return (RoleMembershipBean) query.getResultStream().findFirst().orElse(null);
         } catch (Throwable t) {
             throw new StorageException(t);
         }
@@ -2179,8 +2145,12 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public Iterator<DeveloperBean> getDevelopers() throws StorageException {
-        // TODO: Implement
-        return null;
+        EntityManager entityManager = getActiveEntityManager();
+
+        String jpql = "SELECT db FROM DeveloperBean db ORDER BY db.id ASC";
+
+        Query query = entityManager.createQuery(jpql);
+        return super.getAll(DeveloperBean.class, query);
     }
 
     @Override
@@ -2415,7 +2385,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 "   )";
 
         Query query = getActiveEntityManager().createQuery(jpql);
-
         query.setParameter("orgId", organizationBean.getId());
         query.executeUpdate();
     }
