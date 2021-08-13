@@ -57,19 +57,11 @@ public abstract class AbstractJpaStorage {
     @PersistenceContext(unitName = "apiman-manager-api-jpa")
     private EntityManager em;
 
-    // @Resource(lookup = "java:/apiman/datasources/apiman-manager")
-    // private DataSource jpaDataSource;
-
     /**
      * Constructor.
      */
     public AbstractJpaStorage() {
     }
-
-    // public <T> List<T> nativeQueryList(String queryString, Class<T> klazz) {
-    //     return getJdbi()
-    //         .withHandle(handle -> handle.createQuery(queryString).);
-    // }
 
     protected Jdbi getJdbi() {
         return Jdbi.create(lookupDS("java:/apiman/datasources/apiman-manager"));

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
+<Configuration>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%msg%n"/>
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
         </Console>
     </Appenders>
     <Loggers>
         <Root level="INFO">
             <AppenderRef ref="Console"/>
         </Root>
+        <AsyncLogger level="TRACE" name="io.apiman" additivity="false">
+            <AppenderRef ref="RollingRandomAccessFile"/>
+            <AppenderRef ref="Console-Appender"/>
+        </AsyncLogger>
     </Loggers>
 </Configuration>

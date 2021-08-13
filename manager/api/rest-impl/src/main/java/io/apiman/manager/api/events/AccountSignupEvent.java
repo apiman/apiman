@@ -1,0 +1,120 @@
+package io.apiman.manager.api.events;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import org.apache.commons.lang3.Validate;
+
+/**
+ * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
+ */
+@JsonDeserialize(builder = AccountSignupEvent.Builder.class)
+public class AccountSignupEvent extends VersionedApimanEvent {
+    private String userId;
+    private String emailAddress;
+    private String firstName;
+    private String surname;
+    // TODO decide on all the attributes to use here, would be nice to capture everything that's not password
+
+    private Map<String, Object> attributes; // TODO check for most appropriate type here
+    // What details in here, hmm!
+
+    public AccountSignupEvent(ApimanEventHeaders headers, String userId, String emailAddress,
+         String firstName, String surname, Map<String, Object> attributes) {
+        super(headers);
+        this.userId = userId;
+        this.emailAddress = emailAddress;
+        this.firstName = firstName;
+        this.surname = surname;
+        this.attributes = attributes;
+    }
+
+    AccountSignupEvent() {super(null);}
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public Builder builder() {
+        return new Builder();
+    }
+
+    @JsonPOJOBuilder(withPrefix = "set")
+    public static class Builder {
+        private ApimanEventHeaders headers;
+        private String userId;
+        private String emailAddress;
+        private String firstName;
+        private String surname;
+        private final Map<String, Object> attributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+        public Builder setHeaders(ApimanEventHeaders headers) {
+            this.headers = headers;
+            return this;
+        }
+
+        public Builder setUserId(String userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder setEmailAddress(String emailAddress) {
+            this.emailAddress = emailAddress;
+            return this;
+        }
+
+        public Builder setFirstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder setSurname(String surname) {
+            this.surname = surname;
+            return this;
+        }
+
+        public Builder addAttribute(String name, Object value) {
+            Validate.notBlank(name, "Attribute key must not be null or blank");
+            this.attributes.put(name, value);
+            return this;
+        }
+
+        public Builder setAttributes(Map<String, Object> attributesIn) {
+            Objects.requireNonNull(attributesIn);
+            if (attributesIn.containsKey(null)) {
+                throw new IllegalArgumentException("Attribute key must not be null");
+            }
+            this.attributes.putAll(attributesIn);
+            return this;
+        }
+
+        public AccountSignupEvent build() {
+            Objects.requireNonNull(headers, "headers must be set");
+            Validate.notBlank(userId, "userId must be set");
+            Validate.notBlank(emailAddress, "email address must be set");
+            Validate.notBlank(firstName, "firstName must be set");
+            Validate.notBlank(surname, "surname must be set");
+
+            return new AccountSignupEvent(headers, userId, emailAddress, firstName, surname, attributes);
+        }
+    }
+}
