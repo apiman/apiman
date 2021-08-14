@@ -85,8 +85,6 @@
   </repositories>
 
   <properties>
-    <version.apiman>2.1.0.Final</version.apiman>
-
     <version.org.bouncycastle>1.67</version.org.bouncycastle>
     <version.org.json>20140107</version.org.json>
     <version.org.mock-server>5.11.2</version.org.mock-server>
@@ -103,43 +101,43 @@
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-common-plugin</artifactId>
-        <version>${version.apiman}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-common-util</artifactId>
-        <version>${version.apiman}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-gateway-engine-beans</artifactId>
-        <version>${version.apiman}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-gateway-engine-core</artifactId>
-        <version>${version.apiman}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-gateway-engine-policies</artifactId>
-        <version>${version.apiman}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-common-logging-core</artifactId>
-        <version>${version.apiman}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-test-common</artifactId>
-        <version>${version.apiman}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- testing -->
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-test-policies</artifactId>
-        <version>${version.apiman}</version>
+        <version>${project.version}</version>
       </dependency>
 
       <!-- Mock server -->
