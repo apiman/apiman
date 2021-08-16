@@ -155,7 +155,7 @@
     <version.javax.xml.bind>2.3.3</version.javax.xml.bind>
     <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
     <version.info.picocli>4.6.1</version.info.picocli>
-    <version.apache.maven.maven-artifact>3.8.1</version.apache.maven.maven-artifact>
+    <version.apache.maven.maven-artifact>3.8.2</version.apache.maven.maven-artifact>
   </properties>
 
   <reporting>
