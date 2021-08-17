@@ -18,6 +18,7 @@ package io.apiman.common.config.options;
 
 import io.apiman.common.config.options.exceptions.BadOptionConfigurationException;
 
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -245,6 +246,33 @@ public class GenericOptionsParser extends AbstractOptions {
                 .constraintFailure(candidate.alias, "path", candidate.value, message);
         }
         return parsedPath;
+    }
+
+    public URI getRequiredUri(List<String> keyAliases, Predicate<URI> constraint, String message) {
+        return Optional
+             .ofNullable(getUri(keyAliases, null, constraint, message))
+             .orElseThrow(() -> BadOptionConfigurationException.requiredValue(keyAliases, "URI"));
+    }
+
+    public URI getUri(List<String> keyAliases, URI defaultValue, Predicate<URI> constraint, String message) {
+        AliasValueEntry candidate = getValue(keyAliases);
+        if (candidate == null || StringUtils.isBlank(candidate.value)) {
+            return defaultValue;
+        }
+
+        URI parsedUri;
+
+        try {
+            parsedUri = URI.create(candidate.value);
+        } catch (IllegalArgumentException iae) {
+            throw BadOptionConfigurationException
+                 .parseFailure(candidate.alias, "URI", candidate.value, iae);
+        }
+        if (!constraint.test(parsedUri)) {
+            throw BadOptionConfigurationException
+                 .constraintFailure(candidate.alias, "URI", candidate.value, message);
+        }
+        return parsedUri;
     }
 
     /**
