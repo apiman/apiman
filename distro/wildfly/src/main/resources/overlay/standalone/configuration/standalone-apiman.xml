@@ -484,6 +484,24 @@
                 <cacheTemplates>true</cacheTemplates>
                 <dir>${jboss.home.dir}/themes</dir>
             </theme>
+            <!-- Start Apiman SPIs -->
+            <spi name="required-action">
+                <provider name="approval-required" enabled="true">
+                    <properties>
+                        <property name="adminRole" value="apiadmin"/> <!-- Bypasses checks -->
+                        <property name="notApprovedRedirectUrl" value="https://example.com/your-account-has-not-yet-been-approved"/>
+                    </properties>
+                </provider>
+            </spi>
+            <spi name="eventsListener">
+                <provider name="apiman-push-events" enabled="true">
+                    <properties>
+                        <property name="apimanManagerUrl" value="http://localhost:8080/apiman"/>
+                        <property name="serviceAccount" value="admin"/>
+                    </properties>
+                </provider>
+            </spi>
+            <!-- End Apiman SPIs -->
             <spi name="hostname">
                 <default-provider>default</default-provider>
                 <provider name="default" enabled="true">

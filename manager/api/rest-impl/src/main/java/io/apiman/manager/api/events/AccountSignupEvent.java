@@ -12,8 +12,11 @@ import org.apache.commons.lang3.Validate;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @JsonDeserialize(builder = AccountSignupEvent.Builder.class)
-public class AccountSignupEvent extends VersionedApimanEvent {
+@EventRevision(1)
+public class AccountSignupEvent implements IVersionedApimanEvent {
+    private ApimanEventHeaders headers;
     private String userId;
+    private String username;
     private String emailAddress;
     private String firstName;
     private String surname;
@@ -22,20 +25,36 @@ public class AccountSignupEvent extends VersionedApimanEvent {
     private Map<String, Object> attributes; // TODO check for most appropriate type here
     // What details in here, hmm!
 
-    public AccountSignupEvent(ApimanEventHeaders headers, String userId, String emailAddress,
+    AccountSignupEvent(ApimanEventHeaders headers, String userId, String username, String emailAddress,
          String firstName, String surname, Map<String, Object> attributes) {
-        super(headers);
+        this.headers = headers;
         this.userId = userId;
+        this.username = username;
         this.emailAddress = emailAddress;
         this.firstName = firstName;
         this.surname = surname;
         this.attributes = attributes;
     }
 
-    AccountSignupEvent() {super(null);}
+    AccountSignupEvent() {}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ApimanEventHeaders getHeaders() {
+        return headers;
+    }
+
+    /**
+     * Accountholder's user ID
+     */
     public String getUserId() {
         return userId;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getEmailAddress() {
@@ -54,7 +73,7 @@ public class AccountSignupEvent extends VersionedApimanEvent {
         return attributes;
     }
 
-    public Builder builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -62,6 +81,7 @@ public class AccountSignupEvent extends VersionedApimanEvent {
     public static class Builder {
         private ApimanEventHeaders headers;
         private String userId;
+        private String username;
         private String emailAddress;
         private String firstName;
         private String surname;
@@ -74,6 +94,11 @@ public class AccountSignupEvent extends VersionedApimanEvent {
 
         public Builder setUserId(String userId) {
             this.userId = userId;
+            return this;
+        }
+
+        public Builder setUsername(String username) {
+            this.username = username;
             return this;
         }
 
@@ -110,11 +135,12 @@ public class AccountSignupEvent extends VersionedApimanEvent {
         public AccountSignupEvent build() {
             Objects.requireNonNull(headers, "headers must be set");
             Validate.notBlank(userId, "userId must be set");
+            Validate.notBlank(username, "Username must be set");
             Validate.notBlank(emailAddress, "email address must be set");
             Validate.notBlank(firstName, "firstName must be set");
             Validate.notBlank(surname, "surname must be set");
 
-            return new AccountSignupEvent(headers, userId, emailAddress, firstName, surname, attributes);
+            return new AccountSignupEvent(headers, userId, username, emailAddress, firstName, surname, attributes);
         }
     }
 }
