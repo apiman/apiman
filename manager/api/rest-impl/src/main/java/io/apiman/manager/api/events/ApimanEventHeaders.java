@@ -121,6 +121,15 @@ public class ApimanEventHeaders {
             return this;
         }
 
+        public Builder setProperties(Map<String, Object> propertiesIn) {
+            Objects.requireNonNull(propertiesIn);
+            if (propertiesIn.containsKey(null)) {
+                throw new IllegalArgumentException("Header property key must not be null");
+            }
+            this.otherProperties.putAll(propertiesIn);
+            return this;
+        }
+
         public ApimanEventHeaders build() {
             Validate.notBlank(id, "ID field must be set and not blank");
             Objects.requireNonNull(source, "Source must be set");

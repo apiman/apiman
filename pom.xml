@@ -658,6 +658,7 @@
     <module>gateway</module>
     <module>test</module>
     <module>migration-assistant</module>
+    <module>manager/api/events</module>
   </modules>
 
   <profiles>
