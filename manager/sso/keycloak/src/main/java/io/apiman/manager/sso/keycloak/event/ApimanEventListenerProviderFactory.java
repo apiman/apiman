@@ -1,7 +1,8 @@
-package io.apiman.manager.sso.keycloak;
+package io.apiman.manager.sso.keycloak.event;
 
-import io.apiman.manager.sso.keycloak.processors.EventProcessor;
-import io.apiman.manager.sso.keycloak.processors.NewUserEventProcessor;
+import io.apiman.manager.sso.keycloak.KeycloakOptsMapShim;
+import io.apiman.manager.sso.keycloak.event.processors.EventProcessor;
+import io.apiman.manager.sso.keycloak.event.processors.NewUserEventProcessor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class ApimanEventListenerProviderFactory implements EventListenerProvider
     private final Map<EventType, EventProcessor> eventProcessorMap = new HashMap<>();
 
     private ProviderFactory<HttpClientProvider> httpClientFactory;
-    private ApimanProviderFactoryOptionsParser options;
+    private ApimanEventListenerOptions options;
 
     @Override
     public EventListenerProvider create(KeycloakSession keycloakSession) {
@@ -32,7 +33,7 @@ public class ApimanEventListenerProviderFactory implements EventListenerProvider
 
     @Override
     public void init(Scope scope) {
-        options = new ApimanProviderFactoryOptionsParser(new KeycloakOptionsMapShim(scope));
+        options = new ApimanEventListenerOptions(new KeycloakOptsMapShim(scope));
         initProcessors();
     }
 

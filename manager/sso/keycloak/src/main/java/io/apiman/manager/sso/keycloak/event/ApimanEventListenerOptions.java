@@ -1,30 +1,35 @@
-package io.apiman.manager.sso.keycloak;
+package io.apiman.manager.sso.keycloak.event;
 
 import io.apiman.common.config.options.GenericOptionsParser;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public class ApimanProviderFactoryOptionsParser extends GenericOptionsParser {
+public class ApimanEventListenerOptions extends GenericOptionsParser {
     private URI apiManagerUri;
+    //private boolean newAccountRequiresApproval;
 
-    public ApimanProviderFactoryOptionsParser(Map<String, String> options) {
+    public ApimanEventListenerOptions(Map<String, String> options) {
         super(options);
     }
 
     @Override
     protected void parse(Map<String, String> options) {
-        super.parse(options);
+        //super.parse(options);
+        this.options = (TreeMap) options;
         apiManagerUri = getRequiredUri(
-             keys(ApimanEventProviderConfigConstants.APIMAN_MANAGER_API_URI),
+             keys("apimanManagerUrl"),
              this::hasRequiredUriComponents,
-             "Apiman Manager endpoint must contain protocol/scheme (e.g. http), host, port (e.g. 8080), "
-                  + "and any path segment (e.g. /apiman). "
+             "Apiman Manager endpoint must contain protocol/scheme (e.g. http), host, "
+                  + "port (e.g. 8080), and any path segment (e.g. /apiman). "
                   + "Examples: https://localhost:8443/apiman or http://localhost:8080/apiman"
         );
+
+        //newAccountRequiresApproval = getBool()
     }
 
     public URI getApiManagerUri() {

@@ -1,4 +1,4 @@
-package io.apiman.manager.sso.keycloak;
+package io.apiman.manager.sso.keycloak.event;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.provider.ProviderFactory;
 
-import io.apiman.manager.sso.keycloak.processors.EventProcessor;
+import io.apiman.manager.sso.keycloak.event.processors.EventProcessor;
 
 /**
  * Pushes events to Apiman Manager that it needs to know about.
@@ -37,8 +37,8 @@ public class ApimanEventListenerProvider implements EventListenerProvider {
     public void onEvent(Event event) {
         if (handlers.containsKey(event.getType())) {
             EventProcessor handler = handlers.get(event.getType());
-            LOGGER.debugv("Found a handler {0} for event: {1}", handler, event);
-            handler.onEvent(session, event);
+            LOGGER.debugv("Invoking a handler {0} for event: {1}", handler, event);
+            handler.onEvent(session, event, httpClientFactory);
         }
     }
 

@@ -2,7 +2,9 @@ package io.apiman.manager.sso.keycloak;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,17 +13,17 @@ import org.keycloak.Config.Scope;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public class KeycloakOptionsMapShim implements Map<String, String> {
+public class KeycloakOptsMapShim extends TreeMap<String, String> {
 
     private final Scope scope;
 
-    public KeycloakOptionsMapShim(Scope scope) {
+    public KeycloakOptsMapShim(Scope scope) {
         this.scope = scope;
     }
 
     @Override
     public int size() {
-        return 0;
+        return 1;
     }
 
     @Override

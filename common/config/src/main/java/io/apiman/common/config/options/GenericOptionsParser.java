@@ -67,7 +67,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class GenericOptionsParser extends AbstractOptions {
 
-    private TreeMap<String, String> options;
+    protected TreeMap<String, String> options;
 
     public GenericOptionsParser(Map<String, String> options) {
         super(options);

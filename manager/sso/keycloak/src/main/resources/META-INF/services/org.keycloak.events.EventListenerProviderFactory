@@ -1,1 +1,1 @@
-io.apiman.manager.sso.keycloak.ApimanEventListenerProviderFactory
+io.apiman.manager.sso.keycloak.event.ApimanEventListenerProviderFactory

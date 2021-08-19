@@ -18,6 +18,7 @@ package io.apiman.common.config.options;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -90,5 +91,9 @@ public class Predicates {
                 throw new UncheckedIOException(ioe);
             }
         };
+    }
+
+    public static Predicate<URI> isHttpOrHttps() {
+        return uri -> "http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme());
     }
 }
