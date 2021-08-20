@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * Options for Apiman's Keycloak event listener
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class ApimanEventListenerOptions extends GenericOptionsParser {

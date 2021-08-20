@@ -18,6 +18,8 @@ import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.provider.ProviderFactory;
 
 /**
+ * Creates {@link ApimanEventListenerProvider}
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class ApimanEventListenerProviderFactory implements EventListenerProviderFactory {

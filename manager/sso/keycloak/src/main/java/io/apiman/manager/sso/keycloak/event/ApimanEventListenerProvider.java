@@ -33,6 +33,9 @@ public class ApimanEventListenerProvider implements EventListenerProvider {
         this.httpClientFactory = httpClientFactory;
     }
 
+    /**
+     * Accept Keycloak event and then if a handler exists for that event type, invoke it.
+     */
     @Override
     public void onEvent(Event event) {
         if (handlers.containsKey(event.getType())) {

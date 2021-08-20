@@ -10,6 +10,8 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 
 /**
+ * Provides singleton {@link AccountApprovalRequiredActionProvider}
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class AccountApprovalRequiredActionFactory implements RequiredActionFactory {
