@@ -1,12 +1,13 @@
 package io.apiman.manager.sso.keycloak.event;
 
 import io.apiman.manager.sso.keycloak.KeycloakOptsMapShim;
-import io.apiman.manager.sso.keycloak.event.processors.EventProcessor;
+import io.apiman.manager.sso.keycloak.event.processors.IEventProcessor;
 import io.apiman.manager.sso.keycloak.event.processors.NewUserEventProcessor;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.logging.Logger;
 import org.keycloak.Config.Scope;
 import org.keycloak.connections.httpclient.HttpClientProvider;
 import org.keycloak.events.EventListenerProvider;
@@ -21,7 +22,8 @@ import org.keycloak.provider.ProviderFactory;
  */
 public class ApimanEventListenerProviderFactory implements EventListenerProviderFactory {
 
-    private final Map<EventType, EventProcessor> eventProcessorMap = new HashMap<>();
+    private static final Logger LOGGER = Logger.getLogger(ApimanEventListenerProviderFactory.class);
+    private final Map<EventType, IEventProcessor> eventProcessorMap = new HashMap<>();
 
     private ProviderFactory<HttpClientProvider> httpClientFactory;
     private ApimanEventListenerOptions options;
@@ -35,6 +37,7 @@ public class ApimanEventListenerProviderFactory implements EventListenerProvider
     public void init(Scope scope) {
         options = new ApimanEventListenerOptions(new KeycloakOptsMapShim(scope));
         initProcessors();
+        LOGGER.debugv("Apiman SPI {0} initialised", getId());
     }
 
     @Override

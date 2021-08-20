@@ -21,18 +21,29 @@ public class AccountApprovalOptions extends GenericOptionsParser {
         super(options);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void parse(Map<String, String> options) {
         this.options = (TreeMap) options;
         adminRole = getString(keys("adminRole"), DEFAULT_ADMIN_ROLE, anyOk(), "");
-        notApprovedUri = getRequiredUri(keys("notApprovedRedirectUri"), this::hasRequiredUriComponents,
+        notApprovedUri = getRequiredUri(keys("notApprovedRedirectUrl"), this::hasRequiredUriComponents,
              "Must provide http or https URI to redirect unapproved accounts to.");
     }
 
+    /**
+     * Get the role that represents an administrator (who should be able to bypass approval checks).
+     * @return admin role name
+     */
     public String getAdminRole() {
         return adminRole;
     }
 
+    /**
+     * URI to redirect browser to when their account has not yet been approved.
+     * @return redirect URI
+     */
     public URI getNotApprovedUri() {
         return notApprovedUri;
     }

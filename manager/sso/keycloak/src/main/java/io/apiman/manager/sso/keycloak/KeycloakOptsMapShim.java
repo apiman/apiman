@@ -1,5 +1,8 @@
 package io.apiman.manager.sso.keycloak;
 
+import io.apiman.common.config.options.GenericOptionsParser;
+import io.apiman.manager.sso.keycloak.approval.AccountApprovalOptions;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,6 +14,13 @@ import org.jetbrains.annotations.Nullable;
 import org.keycloak.Config.Scope;
 
 /**
+ * Apiman's option parsing code works with a map interface, however, Keycloak's {@link Scope} (Config), does
+ * not implement Map (only basic get operations). To work around this we provide a shim/delegate with the
+ * majority of the methods stubbed out. It's not beautiful, but it works.
+ *
+ * @see GenericOptionsParser
+ * @see AccountApprovalOptions
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class KeycloakOptsMapShim extends TreeMap<String, String> {
@@ -45,7 +55,7 @@ public class KeycloakOptsMapShim extends TreeMap<String, String> {
     }
 
     @Override
-    public String get(Object key) {
+    public String get(@NotNull Object key) {
         if (!(key instanceof String)) {
             throw new IllegalArgumentException("Key must be String");
         }
@@ -54,7 +64,7 @@ public class KeycloakOptsMapShim extends TreeMap<String, String> {
 
     @Nullable
     @Override
-    public String put(String key, String value) {
+    public String put(@NotNull String key, String value) {
         throw new UnsupportedOperationException("Read only configuration data");
     }
 

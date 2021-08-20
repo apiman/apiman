@@ -11,7 +11,7 @@ import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.provider.ProviderFactory;
 
-import io.apiman.manager.sso.keycloak.event.processors.EventProcessor;
+import io.apiman.manager.sso.keycloak.event.processors.IEventProcessor;
 
 /**
  * Pushes events to Apiman Manager that it needs to know about.
@@ -21,11 +21,11 @@ import io.apiman.manager.sso.keycloak.event.processors.EventProcessor;
 public class ApimanEventListenerProvider implements EventListenerProvider {
 
     private static final Logger LOGGER = Logger.getLogger(ApimanEventListenerProvider.class);
-    private final Map<EventType, EventProcessor> handlers;
+    private final Map<EventType, IEventProcessor> handlers;
     private final KeycloakSession session;
     private final ProviderFactory<HttpClientProvider> httpClientFactory;
 
-    public ApimanEventListenerProvider(Map<EventType, EventProcessor> handlers,
+    public ApimanEventListenerProvider(Map<EventType, IEventProcessor> handlers,
          KeycloakSession session,
          ProviderFactory<HttpClientProvider> httpClientFactory) {
         this.handlers = handlers;
@@ -36,7 +36,7 @@ public class ApimanEventListenerProvider implements EventListenerProvider {
     @Override
     public void onEvent(Event event) {
         if (handlers.containsKey(event.getType())) {
-            EventProcessor handler = handlers.get(event.getType());
+            IEventProcessor handler = handlers.get(event.getType());
             LOGGER.debugv("Invoking a handler {0} for event: {1}", handler, event);
             handler.onEvent(session, event, httpClientFactory);
         }
@@ -44,7 +44,6 @@ public class ApimanEventListenerProvider implements EventListenerProvider {
 
     @Override
     public void onEvent(AdminEvent event, boolean includeRepresentation) {
-        // Do what?
     }
 
     @Override

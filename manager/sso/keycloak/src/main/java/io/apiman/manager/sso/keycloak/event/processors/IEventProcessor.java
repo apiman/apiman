@@ -6,9 +6,14 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.provider.ProviderFactory;
 
 /**
+ * Process a Keycloak event.
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public interface EventProcessor {
-    void onEvent(KeycloakSession session, Event event,
-         ProviderFactory<HttpClientProvider> httpClientFactory);
+public interface IEventProcessor {
+
+    /**
+     * Handle a Keycloak event.
+     */
+    void onEvent(KeycloakSession session, Event event, ProviderFactory<HttpClientProvider> httpClientFactory);
 }

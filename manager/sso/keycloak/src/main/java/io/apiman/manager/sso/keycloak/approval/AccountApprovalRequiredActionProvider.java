@@ -12,7 +12,7 @@ import org.keycloak.models.UserModel;
 /**
  * A user is required to have their account approved (perhaps manually or by an external process).
  *
- * <p>This is achieved by testing whether the {@link AccountApprovalRequiredAction#APIMAN_APPROVAL_ATTRIBUTE}
+ * <p>This is achieved by testing whether the {@link AccountApprovalRequiredActionProvider#APIMAN_APPROVAL_ATTRIBUTE}
  * is present on a user's account.
  *
  * <p>If it is not, the user is redirected to a config-specified error URI, with some additional query
@@ -24,14 +24,14 @@ import org.keycloak.models.UserModel;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public class AccountApprovalRequiredAction implements RequiredActionProvider {
+public class AccountApprovalRequiredActionProvider implements RequiredActionProvider {
     public static final String APIMAN_APPROVAL_ATTRIBUTE = "apiman-account-approved";
 
-    private static final Logger LOGGER = Logger.getLogger(AccountApprovalRequiredAction.class);
+    private static final Logger LOGGER = Logger.getLogger(AccountApprovalRequiredActionProvider.class);
 
     private final AccountApprovalOptions approvalConfig;
 
-    public AccountApprovalRequiredAction(AccountApprovalOptions approvalConfig) {
+    public AccountApprovalRequiredActionProvider(AccountApprovalOptions approvalConfig) {
         this.approvalConfig = approvalConfig;
     }
 
@@ -60,7 +60,7 @@ public class AccountApprovalRequiredAction implements RequiredActionProvider {
                  APIMAN_APPROVAL_ATTRIBUTE, user.getUsername(), approvalConfig.getAdminRole());
             requiredActionCtx.success();
         } else {
-            LOGGER.debugv("Account {0} failed the approval required action challenge (attribute {1}).",
+            LOGGER.debugv("Account {0} failed the approval required action challenge (attribute {1}). ⛔️",
                  user.getUsername(), APIMAN_APPROVAL_ATTRIBUTE);
             requiredActionCtx
                  .getAuthenticationSession()

@@ -11,7 +11,6 @@ import java.util.TreeMap;
  */
 public class ApimanEventListenerOptions extends GenericOptionsParser {
     private URI apiManagerUri;
-    //private boolean newAccountRequiresApproval;
 
     public ApimanEventListenerOptions(Map<String, String> options) {
         super(options);
@@ -19,7 +18,6 @@ public class ApimanEventListenerOptions extends GenericOptionsParser {
 
     @Override
     protected void parse(Map<String, String> options) {
-        //super.parse(options);
         this.options = (TreeMap) options;
         apiManagerUri = getRequiredUri(
              keys("apimanManagerUrl"),
@@ -28,10 +26,11 @@ public class ApimanEventListenerOptions extends GenericOptionsParser {
                   + "port (e.g. 8080), and any path segment (e.g. /apiman). "
                   + "Examples: https://localhost:8443/apiman or http://localhost:8080/apiman"
         );
-
-        //newAccountRequiresApproval = getBool()
     }
 
+    /**
+     * Get URI for the Apiman Manager API
+     */
     public URI getApiManagerUri() {
         return apiManagerUri;
     }
@@ -39,8 +38,7 @@ public class ApimanEventListenerOptions extends GenericOptionsParser {
     private boolean hasRequiredUriComponents(URI uri) {
         return uri.getScheme() != null
              && isHttpOrHttps(uri)
-             && uri.getHost() != null
-             && uri.getPort() != -1;
+             && uri.getHost() != null;
     }
 
     private boolean isHttpOrHttps(URI uri) {

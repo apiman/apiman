@@ -2,6 +2,7 @@ package io.apiman.manager.sso.keycloak.approval;
 
 import io.apiman.manager.sso.keycloak.KeycloakOptsMapShim;
 
+import org.jboss.logging.Logger;
 import org.keycloak.Config.Scope;
 import org.keycloak.authentication.RequiredActionFactory;
 import org.keycloak.authentication.RequiredActionProvider;
@@ -14,7 +15,8 @@ import org.keycloak.models.KeycloakSessionFactory;
 public class AccountApprovalRequiredActionFactory implements RequiredActionFactory {
 
     public static final String PROVIDER_ID = "approval-required";
-    private static AccountApprovalRequiredAction APPROVAL_REQUIRED_ACTION;
+    private static final Logger LOGGER = Logger.getLogger(AccountApprovalRequiredActionFactory.class);
+    private static AccountApprovalRequiredActionProvider APPROVAL_REQUIRED_ACTION;
 
     /**
      * {@inheritDoc}
@@ -38,7 +40,8 @@ public class AccountApprovalRequiredActionFactory implements RequiredActionFacto
     @Override
     public void init(Scope config) {
         AccountApprovalOptions approvalConfig = new AccountApprovalOptions(new KeycloakOptsMapShim(config));
-        APPROVAL_REQUIRED_ACTION = new AccountApprovalRequiredAction(approvalConfig);
+        APPROVAL_REQUIRED_ACTION = new AccountApprovalRequiredActionProvider(approvalConfig);
+        LOGGER.debugv("Apiman SPI {0} initialised", getId());
     }
 
     /**

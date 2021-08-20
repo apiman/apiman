@@ -13,7 +13,7 @@
 
     <artifactId>apiman-manager-sso-keycloak</artifactId>
     <name>apiman-manager-sso-keycloak</name>
-    <description>Keycloak event listeners for Apiman Manager</description>
+    <description>Apiman Manager extensions for Keycloak</description>
 
     <dependencies>
         <dependency>
@@ -23,19 +23,16 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-server-spi</artifactId>
-            <version>${version.org.keycloak}</version> <!-- TODO(msavy): Globally manage this dep -->
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-server-spi-private</artifactId>
-            <version>${version.org.keycloak}</version> <!-- TODO(msavy): Globally manage this dep -->
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-services</artifactId>
-            <version>${version.org.keycloak}</version> <!-- TODO(msavy): Globally manage this dep -->
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -46,7 +43,7 @@
     </dependencies>
 
     <build>
-        <finalName>apiman-manager-keycloak-events-plugin</finalName>
+        <finalName>apiman-manager-keycloak-extensions</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
