@@ -12,8 +12,10 @@ import org.apache.commons.lang3.Validate;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @JsonDeserialize(builder = AccountSignupEvent.Builder.class)
-public class AccountSignupEvent extends VersionedApimanEvent {
+public class AccountSignupEvent implements VersionedApimanEvent {
+    private ApimanEventHeaders headers;
     private String userId;
+    private String username;
     private String emailAddress;
     private String firstName;
     private String surname;
@@ -24,7 +26,7 @@ public class AccountSignupEvent extends VersionedApimanEvent {
 
     public AccountSignupEvent(ApimanEventHeaders headers, String userId, String emailAddress,
          String firstName, String surname, Map<String, Object> attributes) {
-        super(headers);
+        this.headers = headers;
         this.userId = userId;
         this.emailAddress = emailAddress;
         this.firstName = firstName;
@@ -32,8 +34,19 @@ public class AccountSignupEvent extends VersionedApimanEvent {
         this.attributes = attributes;
     }
 
-    AccountSignupEvent() {super(null);}
+    AccountSignupEvent() {}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ApimanEventHeaders getHeaders() {
+        return headers;
+    }
+
+    /**
+     * Accountholder's user ID
+     */
     public String getUserId() {
         return userId;
     }

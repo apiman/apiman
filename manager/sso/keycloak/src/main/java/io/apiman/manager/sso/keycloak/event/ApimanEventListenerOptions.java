@@ -1,6 +1,7 @@
 package io.apiman.manager.sso.keycloak.event;
 
 import io.apiman.common.config.options.GenericOptionsParser;
+import io.apiman.common.config.options.Predicates;
 
 import java.net.URI;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.TreeMap;
  */
 public class ApimanEventListenerOptions extends GenericOptionsParser {
     private URI apiManagerUri;
+    private String clientId;
 
     public ApimanEventListenerOptions(Map<String, String> options) {
         super(options);
@@ -27,6 +29,12 @@ public class ApimanEventListenerOptions extends GenericOptionsParser {
              "Apiman Manager endpoint must contain protocol/scheme (e.g. http), host, "
                   + "port (e.g. 8080), and any path segment (e.g. /apiman). "
                   + "Examples: https://localhost:8443/apiman or http://localhost:8080/apiman"
+        );
+        this.clientId = getString(
+             keys("clientId"),
+             "apiman-service-account",
+             Predicates.noWhitespace(),
+             Predicates.noWhitespaceMsg()
         );
     }
 
@@ -46,5 +54,9 @@ public class ApimanEventListenerOptions extends GenericOptionsParser {
     private boolean isHttpOrHttps(URI uri) {
         return "http".equalsIgnoreCase(uri.getScheme())
              || "https".equalsIgnoreCase(uri.getScheme());
+    }
+
+    public String getClientId() {
+        return clientId;
     }
 }

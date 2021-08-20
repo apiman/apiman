@@ -497,6 +497,7 @@
                 <provider name="apiman-push-events" enabled="true">
                     <properties>
                         <property name="apimanManagerUrl" value="http://localhost:8080/apiman"/>
+                        <property name="serviceAccount" value="admin"/>
                     </properties>
                 </provider>
             </spi>
