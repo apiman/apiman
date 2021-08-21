@@ -16,34 +16,28 @@ import javax.ws.rs.core.UriBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.ContentType;
 import org.jboss.logging.Logger;
-import org.keycloak.OAuth2Constants;
 import org.keycloak.common.util.Retry;
+import org.keycloak.common.util.Time;
 import org.keycloak.connections.httpclient.HttpClientProvider;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventType;
-import org.keycloak.jose.jws.JWSBuilder;
-import org.keycloak.models.AuthenticatedClientSessionModel;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientProvider;
-import org.keycloak.models.KeyManager;
 import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.TokenManager;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserProvider;
-import org.keycloak.models.UserSessionProvider;
 import org.keycloak.models.utils.KeycloakModelUtils;
-import org.keycloak.protocol.oidc.TokenManager;
 import org.keycloak.provider.ProviderFactory;
 import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.JsonWebToken;
 import org.keycloak.services.Urls;
-import org.keycloak.services.managers.AuthenticationManager;
-import org.keycloak.services.managers.AuthenticationSessionManager;
-import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.util.JsonSerialization;
 import org.keycloak.util.TokenUtil;
 
@@ -69,7 +63,9 @@ public class NewUserEventProcessor implements IEventProcessor {
      * Process a {@link org.keycloak.events.EventType#REGISTER} and send to Apiman Manager API via HTTP.
      */
     @Override
-    public void onEvent(KeycloakSession session, Event event, ProviderFactory<HttpClientProvider> httpClientFactory) {
+    public void onEvent(KeycloakSession session, Event event,
+         ProviderFactory<HttpClientProvider> httpClientFactory) {
+
         typeCheck(event);
 
         if (LOGGER.isDebugEnabled()) {
@@ -78,42 +74,18 @@ public class NewUserEventProcessor implements IEventProcessor {
 
         RealmModel realm = session.realms().getRealm(event.getRealmId());
         UserModel newRegisteredUser = session.users().getUserById(event.getUserId(), realm);
-        //UserModel serviceAccount = session.
-
-
-        LOGGER.debugv("Realm: {0}, User: {1}", realm.getName(), newRegisteredUser);
+        LOGGER.debugv("Realm: {0}, User: {1}", realm.getName(), newRegisteredUser.getUsername());
 
         // Push to Apiman, retry a few times.
         HttpClientProvider clientProvider = httpClientFactory.create(session);
         Retry.executeWithBackoff(
-             (attempt) -> postEventToApiman(attempt, session, realm, clientProvider, event, newRegisteredUser),
+             (attempt) -> postEventToApiman(attempt, session, realm, clientProvider, event,
+                  newRegisteredUser),
              this::logRetries,
              ATTEMPTS_COUNT,
              INTERVAL_BASE_MILLIS
         );
     }
-
-    // public Token generateToken(ClientModel client, UserModel user, AuthenticatedClientSessionModel clientSession) {
-    //     LogoutToken token = new LogoutToken();
-    //     token.id(KeycloakModelUtils.generateId());
-    //     token.issuedNow();
-    //     token.issuer(clientSession.getNote(OIDCLoginProtocol.ISSUER));
-    //     token.putEvents(TokenUtil.TOKEN_BACKCHANNEL_LOGOUT_EVENT, JsonSerialization.createObjectNode());
-    //     token.addAudience(client.getClientId());
-    //
-    //     OIDCAdvancedConfigWrapper oidcAdvancedConfigWrapper = OIDCAdvancedConfigWrapper.fromClientModel(client);
-    //     if (oidcAdvancedConfigWrapper.isBackchannelLogoutSessionRequired()){
-    //         token.setSid(clientSession.getUserSession().getId());
-    //     }
-    //     if (oidcAdvancedConfigWrapper.getBackchannelLogoutRevokeOfflineTokens()){
-    //         token.putEvents(TokenUtil.TOKEN_BACKCHANNEL_LOGOUT_EVENT_REVOKE_OFFLINE_TOKENS, true);
-    //     }
-    //     token.setSubject(user.getId());
-    //
-    //     return token;
-    // }
-
-    // private String getServiceAccount(RealmModel realm, KeycloakSession session) {
 
     private String generateToken(RealmModel realm, KeycloakSession session) {
         ClientProvider clientProvider = session.getProvider(ClientProvider.class);
@@ -121,46 +93,47 @@ public class NewUserEventProcessor implements IEventProcessor {
         UserModel serviceAccount = session.getProvider(UserProvider.class).getServiceAccount(client);
         KeycloakContext ctx = session.getContext();
 
-        // build token and set required attributes
-        AccessToken token = new AccessToken();
-        token.id(KeycloakModelUtils.generateId());
-        token.type(TokenUtil.TOKEN_TYPE_BEARER);
-        token.subject(serviceAccount.getId());
-        token.issuedNow();
-        token.issuedFor(client.getClientId());
-        token.audience(client.getName());
-        token.subject(serviceAccount.getId());
-        token.issuer(
-             Urls.realmIssuer(
-                  ctx.getUri().getBaseUri(),
-                  ctx.getRealm().getName()
+        long issuedAt = Time.currentTime();
+        JsonWebToken token = new AccessToken()
+             .id(KeycloakModelUtils.generateId())
+             .type(TokenUtil.TOKEN_TYPE_BEARER)
+             .subject(serviceAccount.getId())
+             .issuedNow()
+             .issuedFor(client.getClientId())
+             .audience(client.getName())
+             .subject(serviceAccount.getId())
+             .issuer(
+                Urls.realmIssuer(
+                    ctx.getUri().getBaseUri(),
+                    ctx.getRealm().getName()
+                )
              )
-        );
-        token.issuedNow();
-        token.expiration((int) (token.getIat() + 240L));
+             .iat(issuedAt)
+             .exp(issuedAt + 240L);
 
-        // sign token
-        KeyManager.ActiveRsaKey key = session.keys().getActiveRsaKey(ctx.getRealm());
-        return new JWSBuilder()
-             .kid(key.getKid())
-             .type(OAuth2Constants.JWT)
-             .jsonContent(token)
-             .rsa256(key.getPrivateKey());
+        TokenManager tokenManager = session.tokens();
+        // TODO(msavy): should we offer JWE? Might be nice for low-trust environments or plaintext tokenManager.encodeAndEncrypt
+        return tokenManager.encode(token);
     }
 
     private void postEventToApiman(int attempt, KeycloakSession session, RealmModel realm,
          HttpClientProvider client, Event event, UserModel user) {
         try {
             URI apimanEventEndpoint = calculateURI();
-            LOGGER.debugv("Attempt {0} to POST {1} event to {2}", attempt, EventType.REGISTER.name(), apimanEventEndpoint);
 
             NewAccountCreatedDto newAccount = buildApimanEvent(event, user);
-            HttpEntity entity = new StringEntity(JsonSerialization.writeValueAsPrettyString(newAccount));
+            HttpEntity payload = EntityBuilder.create()
+                                              .setContentType(ContentType.APPLICATION_JSON)
+                                              .setText(JsonSerialization.writeValueAsPrettyString(newAccount))
+                                              .build();
+
+            LOGGER.debugv("Attempt {0} to POST {1} to {2}",
+                 attempt, newAccount, apimanEventEndpoint);
 
             HttpPost post = new HttpPost();
             post.setHeader("Authorization", "Bearer " + generateToken(realm, session));
             post.setURI(apimanEventEndpoint);
-            post.setEntity(entity);
+            post.setEntity(payload);
 
             HttpResponse response = client.getHttpClient().execute(post);
 
@@ -198,7 +171,8 @@ public class NewUserEventProcessor implements IEventProcessor {
 
     private void typeCheck(Event event) {
         if (!event.getType().equals(EventType.REGISTER)) {
-            String msg = MessageFormat.format("Expected to process {0} but got {1}", EventType.REGISTER, event.getType());
+            String msg = MessageFormat.format("Expected to process {0} but got {1}", EventType.REGISTER,
+                 event.getType());
             throw new IllegalArgumentException(msg);
         }
     }

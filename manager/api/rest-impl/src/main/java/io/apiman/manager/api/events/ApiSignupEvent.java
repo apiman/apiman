@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @JsonDeserialize(builder = ApiSignupEvent.Builder.class)
-public class ApiSignupEvent {
+public class ApiSignupEvent implements VersionedApimanEvent {
 
     private ApimanEventHeaders headers;
     private String userId;
@@ -33,7 +33,14 @@ public class ApiSignupEvent {
 
     // TODO do we need this empty constructor anymore for POJO serialization or can we get away with it? Experiment w/ JAX-RS/RESTEasy
     ApiSignupEvent() {
-        super(null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ApimanEventHeaders getHeaders() {
+        return headers;
     }
 
     public String getUserId() {
