@@ -56,6 +56,9 @@ public class ApimanEventListenerOptions extends GenericOptionsParser {
              || "https".equalsIgnoreCase(uri.getScheme());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getClientId() {
         return clientId;
     }

@@ -1,7 +1,5 @@
 package io.apiman.manager.api.events;
 
-import io.apiman.common.util.Preconditions;
-
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -72,6 +70,10 @@ public class ApimanEventHeaders {
         return new Builder();
     }
 
+    public static Builder builder(ApimanEventHeaders original) {
+        return new Builder(original);
+    }
+
     @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private String id;
@@ -80,7 +82,17 @@ public class ApimanEventHeaders {
         private String subject;
         private OffsetDateTime time = OffsetDateTime.now();
         private long eventVersion;
-        private final Map<String, Object> otherProperties = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        private Map<String, Object> otherProperties = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+        public Builder(ApimanEventHeaders original) {
+            this.id = original.id;
+            this.source = original.source;
+            this.type = original.type;
+            this.subject = original.subject;
+            this.time = original.time;
+            this.eventVersion = original.eventVersion;
+            this.otherProperties = original.otherProperties;
+        }
 
         public Builder() {
         }
@@ -95,6 +107,9 @@ public class ApimanEventHeaders {
             return this;
         }
 
+        /**
+         * If you do not set this then the class' FQN name will be used.
+         */
         public Builder setType(String type) {
             this.type = type;
             return this;
@@ -110,6 +125,10 @@ public class ApimanEventHeaders {
             return this;
         }
 
+        /**
+         * Version of the event these headers are associated with. If you do not set this then the
+         * class' <tt>@EventVersion</tt> annotation will be used.
+         */
         public Builder setEventVersion(long eventVersion) {
             this.eventVersion = eventVersion;
             return this;
@@ -133,10 +152,10 @@ public class ApimanEventHeaders {
         public ApimanEventHeaders build() {
             Validate.notBlank(id, "ID field must be set and not blank");
             Objects.requireNonNull(source, "Source must be set");
-            Objects.requireNonNull(type, "Type must be set");
-            Objects.requireNonNull(subject, "Subject must be set");
+            //Objects.requireNonNull(type, "Type must be set");
+            //Objects.requireNonNull(subject, "Subject must be set");
             Objects.requireNonNull(time, "Time must be set");
-            Preconditions.checkArgument(eventVersion > 0, "Version must be > 0");
+            // Preconditions.checkArgument(eventVersion > 0, "Version must be > 0");
 
             return new ApimanEventHeaders(
                  id,

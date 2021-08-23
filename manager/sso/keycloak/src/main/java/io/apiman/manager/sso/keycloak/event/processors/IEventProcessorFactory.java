@@ -1,19 +1,19 @@
 package io.apiman.manager.sso.keycloak.event.processors;
 
-import org.keycloak.connections.httpclient.HttpClientProvider;
+import io.apiman.manager.sso.keycloak.event.ApimanEventListenerOptions;
+
 import org.keycloak.events.Event;
 import org.keycloak.models.KeycloakSession;
-import org.keycloak.provider.ProviderFactory;
+import org.keycloak.models.KeycloakSessionFactory;
 
 /**
  * Process a Keycloak event.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public interface IEventProcessor {
-
+public interface IEventProcessorFactory {
     /**
      * Handle a Keycloak event.
      */
-    void onEvent(KeycloakSession session, Event event, ProviderFactory<HttpClientProvider> httpClientFactory);
+    void onEvent(KeycloakSession session, Event event);
 }

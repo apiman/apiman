@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @JsonDeserialize(builder = ApiSignupEvent.Builder.class)
-public class ApiSignupEvent implements VersionedApimanEvent {
+public class ApiSignupEvent implements IVersionedApimanEvent {
 
     private ApimanEventHeaders headers;
     private String userId;

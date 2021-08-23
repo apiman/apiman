@@ -8,7 +8,7 @@ package io.apiman.manager.api.events;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public interface VersionedApimanEvent {
+public interface IVersionedApimanEvent {
 
     /**
      * Get headers for this event
