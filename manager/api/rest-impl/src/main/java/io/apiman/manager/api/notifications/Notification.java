@@ -1,5 +1,7 @@
 package io.apiman.manager.api.notifications;
 
+import io.apiman.manager.api.beans.notifications.NotificationStatus;
+
 import java.util.Date;
 
 /**

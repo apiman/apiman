@@ -58,6 +58,11 @@
       <artifactId>hibernate-core</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.vladmihalcea</groupId>
+      <artifactId>hibernate-types-55</artifactId>
+      <version>2.12.1</version>
+    </dependency>
 
     <!-- Commons -->
     <dependency>

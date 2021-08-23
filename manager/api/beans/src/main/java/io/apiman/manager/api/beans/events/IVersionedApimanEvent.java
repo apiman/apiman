@@ -1,4 +1,4 @@
-package io.apiman.manager.api.events;
+package io.apiman.manager.api.beans.events;
 
 /**
  * All Apiman events should implement this class.
