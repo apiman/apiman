@@ -1,4 +1,4 @@
-package io.apiman.manager.api.events;
+package io.apiman.manager.api.beans.events;
 
 import java.util.Map;
 import java.util.Objects;
@@ -12,7 +12,7 @@ import org.apache.commons.lang3.Validate;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @JsonDeserialize(builder = AccountSignupEvent.Builder.class)
-@EventRevision(1)
+@EventVersion(1)
 public class AccountSignupEvent implements IVersionedApimanEvent {
     private ApimanEventHeaders headers;
     private String userId;

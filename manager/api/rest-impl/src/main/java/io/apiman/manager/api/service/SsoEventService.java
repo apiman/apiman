@@ -2,9 +2,9 @@ package io.apiman.manager.api.service;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.beans.events.AccountSignupEvent;
+import io.apiman.manager.api.beans.events.ApimanEventHeaders;
 import io.apiman.manager.api.beans.events.dto.NewAccountCreatedDto;
-import io.apiman.manager.api.events.AccountSignupEvent;
-import io.apiman.manager.api.events.ApimanEventHeaders;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -21,7 +21,6 @@ public class SsoEventService {
     }
 
     public void newAccountCreated(NewAccountCreatedDto newAccountCreatedDto) {
-        LOGGER.debug("Received an account creation event (externally): {0}", newAccountCreatedDto);
 
         ApimanEventHeaders headers = ApimanEventHeaders
              .builder()
@@ -39,6 +38,9 @@ public class SsoEventService {
              .setFirstName(newAccountCreatedDto.getFirstName())
              .setSurname(newAccountCreatedDto.getSurname())
              .build();
+
+        LOGGER.debug("Received an account creation event (externally): {0}. \n "
+             + "Translated into: {1}", newAccountCreatedDto, accountSignup);
     }
 
     private static String key(String userId, OffsetDateTime createdOn) {
