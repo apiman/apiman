@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 /**
@@ -23,13 +24,18 @@ public class NotificationPreferenceEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "notification_type", nullable = false)
-    @NotEmpty
-    private String notificationType;
+    @Column(name = "userId", nullable = false)
+    @NotBlank
+    private String userId;
 
     @Column(name = "notification_type", nullable = false)
-    @NotEmpty
+    @NotBlank
     private String notificationType;
+
+    // TODO(msavy): allow enable/disable for specific notification reasons
+    // @Column(name = "", nullable = false)
+    // @NotBlank
+    // private String enabledForReasons;
 
     public NotificationPreferenceEntity() {
     }

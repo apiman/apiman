@@ -23,4 +23,12 @@ public class JsonUtil {
             throw new UncheckedIOException(e);
         }
     }
+
+    public static <T> T toPojo(JsonNode payload, Class<T> klazz) {
+        try {
+            return OM.treeToValue(payload, klazz);
+        } catch (JsonProcessingException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 }

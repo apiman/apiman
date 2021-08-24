@@ -34,6 +34,10 @@ public class NotificationEntity {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "category", nullable = false)
+    @NotNull
+    private NotificationCategory category;
+
     @Column(name = "reason", nullable = false)
     @NotBlank
     private String reason;
@@ -76,6 +80,15 @@ public class NotificationEntity {
 
     public NotificationEntity setId(Long id) {
         this.id = id;
+        return this;
+    }
+
+    public NotificationCategory getCategory() {
+        return category;
+    }
+
+    public NotificationEntity setCategory(NotificationCategory category) {
+        this.category = category;
         return this;
     }
 
@@ -152,15 +165,22 @@ public class NotificationEntity {
         return this;
     }
 
-    public NotificationEntity setPayload(IVersionedApimanEvent event) {
-        this.payload = JsonUtil.toJsonTree(event);
+    public NotificationEntity setPayload(IVersionedApimanEvent payload) {
+        this.payload = JsonUtil.toJsonTree(payload);
         return this;
     }
+
+    // TODO(msavy): Look in headers -> type, then pass to factory to reify it
+    //
+    // public <P extends IVersionedApimanEvent> P getEventPayload() {
+    //     return JsonUtil.toPojo(payload, IVersionedApimanEvent.class);
+    // }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", NotificationEntity.class.getSimpleName() + "[", "]")
              .add("id=" + id)
+             .add("category=" + category)
              .add("reason='" + reason + "'")
              .add("reasonMessage='" + reasonMessage + "'")
              .add("notificationStatus=" + notificationStatus)
