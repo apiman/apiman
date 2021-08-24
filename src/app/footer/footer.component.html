@@ -1,0 +1,11 @@
+<div class="footer">
+  <hr>
+  <div class="row">
+    <div class="footer-links" *ngFor="let link of links; let last = last;">
+      <a href={{link.link}} target="_blank">
+        <span>{{link.name}}</span>
+      </a>
+      <span class="footer-separator" *ngIf="!last">|</span>
+    </div>
+  </div>
+</div>
