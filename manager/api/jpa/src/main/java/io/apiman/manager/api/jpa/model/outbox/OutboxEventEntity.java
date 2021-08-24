@@ -16,9 +16,14 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 /**
+ * Models an entry in a transactional outbox.
  *
  * <p>Thanks, @vladmihalcea for <a href="https://github.com/vladmihalcea/hibernate-types">JSONB support in Hibernate</a>
- * <p>Thanks, @gunnarmorling for <a href="https://debezium.io/blog/2019/02/19/reliable-microservices-data-exchange-with-the-outbox-pattern/">Debezium Outbox pattern blog</a>
+ * <p>Thanks, @gunnarmorling for
+ *  <a href="https://debezium.io/blog/2019/02/19/reliable-microservices-data-exchange-with-the-outbox-pattern/">
+ *     Debezium Outbox pattern blog
+ *  </a>
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Entity

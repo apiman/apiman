@@ -19,6 +19,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * Write event to the transactional outbox (to hook into Debezium or similar).
+ *
+ * <p>This will allow events to propagate outside the system boundaries.
+ *
+ * <p>See the following resources for more information:
+ *
+ * <ul>
+ *     <li>
+ *         <a href="https://microservices.io/patterns/data/transactional-outbox.html">
+ *           Transactional Outbox pattern (general concepts)
+ *         </a>
+ *     </li>
+ *     <li>
+ *         <a href="https://debezium.io/blog/2019/02/19/reliable-microservices-data-exchange-with-the-outbox-pattern/">
+ *             Transactional Outbox with Debezium
+ *         </a>
+ *     </li>
+ * </ul>
+ *
+ * <p>In short, we write the event to the database and immediately delete it. At first glance this may seem strange.
+ * However, this still ensures that the record is written to the transaction long and is recoverable by a CDC engine
+ * such as Debezium. This allows this information to be reliably "pushed" into another platform such as Debezium.
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
@@ -27,13 +50,27 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(TransactionalOutboxService.class);
     private static final ObjectMapper OM = new ObjectMapper();
 
-
     @Inject
     public TransactionalOutboxService() {
 
     }
 
-    public void insert(@Observes IVersionedApimanEvent apimanEvent) {
+    /**
+     * Anything event fired that uses the {@link IVersionedApimanEvent} interface will be stored in the outbox.
+     * Fire events using the CDI observable system; generally, they should be enrolled in a transaction to ensure
+     * transactional properties.
+     *
+     * <p>This is then packed into an {@link OutboxEventEntity} and stored.
+     *
+     * <p>If the version number has not been set explicitly in the header segment by the implementor, it will be taken
+     * from the {@link EventVersion} annotation, which can be placed on any {@link IVersionedApimanEvent} impl.
+     * This allows multiple versions of an event to be detected/supported if that is necessary at some future point.
+     *
+     * <p>If the type of the event has not been set, the FQCN will be used (i.e. full class name).
+     *
+     * @param apimanEvent any {@link IVersionedApimanEvent} (usually fired by CDI observable subsystem).
+     */
+    public void onEvent(@Observes IVersionedApimanEvent apimanEvent) {
         ApimanEventHeaders headers = apimanEvent.getHeaders();
         long eventVersion = getEventVersion(apimanEvent, headers);
         String eventType = getType(apimanEvent);
@@ -52,11 +89,14 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
         LOGGER.debug("Persisted event to transactional outbox & immediately deleted {0}", outboxEvent);
     }
 
+    // Serialize into Jackson JsonNode. Hibernate can serialize this into JSONB.
     private JsonNode serializeWithoutHeaders(IVersionedApimanEvent apimanEvent) {
+        // Ignore #getHeaders as we're packing that in manually in #onEvent.
         OM.addMixIn(apimanEvent.getClass(), IgnoreHeadersMixin.class);
         return OM.valueToTree(apimanEvent);
     }
 
+    // Use value set in headers or canonical class name
     private String getType(IVersionedApimanEvent apimanEvent) {
         String currentValue = apimanEvent.getHeaders().getType();
         if (StringUtils.isEmpty(currentValue)) {
@@ -66,6 +106,11 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
         }
     }
 
+    /**
+     * Use version number in priority: (1) provided in headers, (2) in @EventVersion annotation.
+     * If no version number is provided, then a default value of 0 is used and a warning emitted.
+     * Could consider upgrading this to an exception?
+     */
     private long getEventVersion(IVersionedApimanEvent event, ApimanEventHeaders headers) {
         // Version was not set, get it from the annotation if possible.
         if (headers.getEventVersion() <= 0) {
@@ -81,6 +126,7 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
         }
     }
 
+    // Ignore #getHeaders as we're packing that in manually.
     private abstract static class IgnoreHeadersMixin {
 
         @JsonIgnore
