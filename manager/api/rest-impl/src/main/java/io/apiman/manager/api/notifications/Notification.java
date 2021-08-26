@@ -1,32 +1,55 @@
 package io.apiman.manager.api.notifications;
 
+import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
+import io.apiman.manager.api.beans.notifications.NotificationCategory;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 
 import java.util.Date;
+import java.util.StringJoiner;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public class Notification<P extends INotificationPayload> {
-    private String id;
+public class Notification<P extends IVersionedApimanEvent> {
+    private Long id;
+    private NotificationCategory category;
     private String reason;
     private String reasonMessage;
-    private NotificationStatus status;
+    private NotificationStatus notificationStatus;
     private Date createdOn;
     private Date modifiedOn;
     private String recipient;
     private String source;
-    private P data;
+    private P payload;
 
     public Notification() {
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public Notification<P> setId(String id) {
+    public Notification<P> setId(Long id) {
         this.id = id;
+        return this;
+    }
+
+    public NotificationCategory getCategory() {
+        return category;
+    }
+
+    public Notification<P> setCategory(NotificationCategory category) {
+        this.category = category;
         return this;
     }
 
@@ -39,12 +62,22 @@ public class Notification<P extends INotificationPayload> {
         return this;
     }
 
-    public NotificationStatus getStatus() {
-        return status;
+    public String getReasonMessage() {
+        return reasonMessage;
     }
 
-    public Notification<P> setStatus(NotificationStatus status) {
-        this.status = status;
+    public Notification<P> setReasonMessage(String reasonMessage) {
+        this.reasonMessage = reasonMessage;
+        return this;
+    }
+
+    public NotificationStatus getNotificationStatus() {
+        return notificationStatus;
+    }
+
+    public Notification<P> setNotificationStatus(
+         NotificationStatus notificationStatus) {
+        this.notificationStatus = notificationStatus;
         return this;
     }
 
@@ -84,21 +117,28 @@ public class Notification<P extends INotificationPayload> {
         return this;
     }
 
-    public P getData() {
-        return data;
+    public P getPayload() {
+        return payload;
     }
 
-    public Notification<P> setData(P data) {
-        this.data = data;
+    public Notification<P> setPayload(P payload) {
+        this.payload = payload;
         return this;
     }
 
-    public String getReasonMessage() {
-        return reasonMessage;
-    }
-
-    public Notification<P> setReasonMessage(String reasonMessage) {
-        this.reasonMessage = reasonMessage;
-        return this;
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Notification.class.getSimpleName() + "[", "]")
+             .add("id=" + id)
+             .add("category=" + category)
+             .add("reason='" + reason + "'")
+             .add("reasonMessage='" + reasonMessage + "'")
+             .add("notificationStatus=" + notificationStatus)
+             .add("createdOn=" + createdOn)
+             .add("modifiedOn=" + modifiedOn)
+             .add("recipient='" + recipient + "'")
+             .add("source='" + source + "'")
+             .add("payload=" + payload)
+             .toString();
     }
 }

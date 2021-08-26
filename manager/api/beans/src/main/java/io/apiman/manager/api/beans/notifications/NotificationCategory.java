@@ -1,9 +1,14 @@
 package io.apiman.manager.api.beans.notifications;
 
 /**
+ * Coarse-grained notification category (useful for simple filtering and subscription management)
+ *
+ * Add categories as we go...
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public enum NotificationCategory {
+
     /**
      * User administration notification, such as a new account signup.
      */

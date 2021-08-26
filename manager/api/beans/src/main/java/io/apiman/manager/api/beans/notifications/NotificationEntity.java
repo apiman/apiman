@@ -1,12 +1,16 @@
 package io.apiman.manager.api.beans.notifications;
 
 import io.apiman.common.util.JsonUtil;
+import io.apiman.manager.api.beans.events.ApimanEventHeaders;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.StringJoiner;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -14,6 +18,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
 import org.hibernate.annotations.Type;
@@ -34,6 +39,7 @@ public class NotificationEntity {
     @GeneratedValue
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     @NotNull
     private NotificationCategory category;
@@ -46,6 +52,7 @@ public class NotificationEntity {
     @NotBlank
     private String reasonMessage;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "notification_status", nullable = false)
     @NotNull
     private NotificationStatus notificationStatus;
@@ -168,6 +175,25 @@ public class NotificationEntity {
     public NotificationEntity setPayload(IVersionedApimanEvent payload) {
         this.payload = JsonUtil.toJsonTree(payload);
         return this;
+    }
+
+    /**
+     * Pulls the payload type out of its headers segment.
+     *
+     * @return the type of the payload via its headers, and "missing" if unset.
+     */
+    @JsonIgnore
+    public String getPayloadType() {
+        return this.payload.at("/headers/type").asText("missing");
+    }
+
+    @JsonIgnore
+    public Optional<ApimanEventHeaders> getHeaders() {
+        JsonNode possibleHeaders = this.payload.at("/headers");
+        if (!possibleHeaders.isMissingNode() && possibleHeaders.isObject()) {
+            return Optional.of(JsonUtil.toPojo(possibleHeaders, ApimanEventHeaders.class));
+        }
+        return Optional.empty();
     }
 
     // TODO(msavy): Look in headers -> type, then pass to factory to reify it
