@@ -2,8 +2,8 @@ package io.apiman.manager.api.jpa;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.beans.events.ApimanEvent;
 import io.apiman.manager.api.beans.events.ApimanEventHeaders;
-import io.apiman.manager.api.beans.events.EventVersion;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.jpa.model.outbox.OutboxEventEntity;
 
@@ -63,7 +63,7 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
      * <p>This is then packed into an {@link OutboxEventEntity} and stored.
      *
      * <p>If the version number has not been set explicitly in the header segment by the implementor, it will be taken
-     * from the {@link EventVersion} annotation, which can be placed on any {@link IVersionedApimanEvent} impl.
+     * from the {@link ApimanEvent} annotation, which can be placed on any {@link IVersionedApimanEvent} impl.
      * This allows multiple versions of an event to be detected/supported if that is necessary at some future point.
      *
      * <p>If the type of the event has not been set, the FQCN will be used (i.e. full class name).
@@ -114,13 +114,14 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
     private long getEventVersion(IVersionedApimanEvent event, ApimanEventHeaders headers) {
         // Version was not set, get it from the annotation if possible.
         if (headers.getEventVersion() <= 0) {
-            EventVersion ev = headers.getClass().getAnnotation(EventVersion.class);
-            if (ev == null) {
+            if (headers.getClass().isAnnotationPresent(ApimanEvent.class)) {
+                ApimanEvent ev = headers.getClass().getAnnotation(ApimanEvent.class);
+                return ev.version();
+            } else {
                 LOGGER.warn("No event version set for {0}, defaulting to 1. "
                      + "This may cause unintended effects.", event.getClass().getCanonicalName());
                 return 1;
             }
-            return ev.value();
         } else {
             return headers.getEventVersion();
         }

@@ -12,6 +12,8 @@ public class SmtpEmailConfiguration {
     private String password;
 
     // TODO trust store and keystore
+    public SmtpEmailConfiguration() {
+    }
 
     private SmtpEmailConfiguration(String from,
          String host,
@@ -52,46 +54,33 @@ public class SmtpEmailConfiguration {
         return password;
     }
 
-    public static final class EmailConfigurationBuilder {
-        private String from;
-        private String host;
-        private String port;
-        private String[] authMethods;
-        private String username;
-        private String password;
+    public SmtpEmailConfiguration setFrom(String from) {
+        this.from = from;
+        return this;
+    }
 
-        public EmailConfigurationBuilder setFrom(String from) {
-            this.from = from;
-            return this;
-        }
+    public SmtpEmailConfiguration setHost(String host) {
+        this.host = host;
+        return this;
+    }
 
-        public EmailConfigurationBuilder setHost(String host) {
-            this.host = host;
-            return this;
-        }
+    public SmtpEmailConfiguration setPort(String port) {
+        this.port = port;
+        return this;
+    }
 
-        public EmailConfigurationBuilder setPort(String port) {
-            this.port = port;
-            return this;
-        }
+    public SmtpEmailConfiguration setAuthMethods(String[] authMethods) {
+        this.authMethods = authMethods;
+        return this;
+    }
 
-        public EmailConfigurationBuilder setAuthMethods(String[] authMethods) {
-            this.authMethods = authMethods;
-            return this;
-        }
+    public SmtpEmailConfiguration setUsername(String username) {
+        this.username = username;
+        return this;
+    }
 
-        public EmailConfigurationBuilder setUsername(String username) {
-            this.username = username;
-            return this;
-        }
-
-        public EmailConfigurationBuilder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public SmtpEmailConfiguration createSmtpEmailConfiguration() {
-            return new SmtpEmailConfiguration(from, host, port, authMethods, username, password);
-        }
+    public SmtpEmailConfiguration setPassword(String password) {
+        this.password = password;
+        return this;
     }
 }

@@ -26,6 +26,7 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
@@ -43,6 +44,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the persistent storage interface for Apiman DT.
@@ -204,5 +206,6 @@ public interface IStorage {
      */
     public Iterator<ApiVersionBean> getAllPublicApiVersions() throws StorageException;
 
-    // void rollbackTx();
+    List<UserBean> getAllUsersWithPermission(PermissionType permission, String orgName) throws StorageException;
+    List<UserBean> getAllUsersWithRole(String roleName, String orgName) throws StorageException;
 }

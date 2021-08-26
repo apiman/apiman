@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 /**
@@ -23,16 +24,16 @@ public class EmailNotificationTemplateBean {
     private Long id;
 
     @Column(name = "notification_template_body", nullable = false, length = 10000)
-    @NotEmpty
+    @NotBlank
     private String notificationTemplateBody;
 
     @Column(name = "notification_template_subject", nullable = false)
-    @NotEmpty
+    @NotBlank
     private String notificationTemplateSubject;
 
-    @Column(name = "notification_type", nullable = false)
-    @NotEmpty
-    private String notificationType;
+    @Column(name = "notification_reason", nullable = false)
+    @NotBlank
+    private String notificationReason;
 
     public EmailNotificationTemplateBean() {
     }
@@ -64,12 +65,12 @@ public class EmailNotificationTemplateBean {
         return this;
     }
 
-    public String getNotificationType() {
-        return notificationType;
+    public String getNotificationReason() {
+        return notificationReason;
     }
 
-    public EmailNotificationTemplateBean setNotificationType(String notificationType) {
-        this.notificationType = notificationType;
+    public EmailNotificationTemplateBean setNotificationReason(String notificationType) {
+        this.notificationReason = notificationType;
         return this;
     }
 
@@ -79,7 +80,7 @@ public class EmailNotificationTemplateBean {
              .add("id=" + id)
              .add("notificationTemplateBody='" + notificationTemplateBody + "'")
              .add("notificationTemplateSubject='" + notificationTemplateSubject + "'")
-             .add("notificationType='" + notificationType + "'")
+             .add("notificationReason='" + notificationReason + "'")
              .toString();
     }
 }

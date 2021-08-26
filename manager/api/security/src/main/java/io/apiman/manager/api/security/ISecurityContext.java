@@ -17,7 +17,9 @@ package io.apiman.manager.api.security;
 
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.security.beans.UserDto;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,7 +32,7 @@ import java.util.Set;
 public interface ISecurityContext {
 
     /**
-     * @return the currently authentiated user.
+     * @return the currently authenticated user.
      */
     String getCurrentUser();
 
@@ -60,7 +62,7 @@ public interface ISecurityContext {
     boolean hasPermission(PermissionType permission, String organizationId);
 
     /**
-     * @param organizationId
+     * @param organizationId the org ID
      */
     boolean isMemberOf(String organizationId);
 
@@ -101,4 +103,17 @@ public interface ISecurityContext {
      */
     void checkIfUserIsCurrentUser(String userId) throws NotAuthorizedException;
 
+    /**
+     * Find all users in an org who have a specific role.
+     * <p>
+     * This may interrogate a remote IDM (e.g. Keycloak), in which case the orgName may or may not be used.
+     * Users of this method should be aware that the user returned may not be stored in Apiman's user table
+     * (i.e. is in the IDM only).
+     */
+    List<UserDto> getUsersWithRole(String roleName, String orgName);
+
+    /**
+     * Find all users in an org who have a specific permission
+     */
+    List<UserDto> getUsersWithPermission(PermissionType permission, String orgName);
 }

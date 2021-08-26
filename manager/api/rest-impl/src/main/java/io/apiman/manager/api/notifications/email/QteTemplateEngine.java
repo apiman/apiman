@@ -16,7 +16,7 @@ import io.quarkus.qute.TemplateInstance;
 @ServiceMode
 public class QteTemplateEngine {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(QteTemplateEngine.class);
-    private Engine engine;
+    private final Engine engine;
 
     public QteTemplateEngine() {
         engine = Engine.builder()
