@@ -1,0 +1,16 @@
+<mat-card class="api-card" style="display: flex; flex-direction: column;">
+  <mat-card-header class="api-card-header">
+    <div mat-card-avatar class="api-card-icon" style="background-image: url({{apiCard.icon}})"></div>
+    <mat-card-title class="api-card-title">{{apiCard.title}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="api-card-content">
+    <p>
+      {{apiCard.shortDescription}}
+    </p>
+  </mat-card-content>
+  <mat-card-actions class="api-card-actions">
+    <button mat-raised-button color="primary" class="api-card-button">API Docs</button>
+    <button mat-raised-button color="primary" class="api-card-button">Learn More</button>
+  </mat-card-actions>
+</mat-card>
+

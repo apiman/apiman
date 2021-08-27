@@ -19,7 +19,7 @@ export class FooterComponent implements OnInit {
     },
     {
       name: 'Apiman',
-      link: 'https://www.apiman.io/..'
+      link: 'https://www.apiman.io/'
     },
     {
       name: 'Github',
@@ -27,6 +27,6 @@ export class FooterComponent implements OnInit {
     },
     {
       name: 'Keybase',
-      link: 'https://keybase.io/..'
+      link: 'https://keybase.io/'
     }];
 }
