@@ -14,7 +14,7 @@ export class ApiService {
     return this.getApis().pipe(map(apis => apis.filter(api => api.featuredApi)));
   }
 
-  getApi(id: string): Observable<Api> {
+  getApi(id: string): Observable<Api | undefined> {
     const api = this.getApis().pipe(
       map(apis => apis.find(api => api.id === id))
     );

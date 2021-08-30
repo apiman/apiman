@@ -10,6 +10,9 @@ import {MarkdownModule} from "ngx-markdown";
 import {MatIconModule} from "@angular/material/icon";
 import {MatStepperModule} from "@angular/material/stepper";
 import {MatExpansionModule} from "@angular/material/expansion";
+import {MatInputModule} from "@angular/material/input";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {FormsModule} from "@angular/forms";
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -18,6 +21,8 @@ import { ApiCardComponent } from './components/api-card/api-card.component';
 import { CardListComponent } from './components/card-list/card-list.component';
 import { MarketplaceApiDetailsComponent } from './components/marketplace-api-details/marketplace-api-details.component';
 import { HomeComponent } from './components/home/home.component';
+import { MarketplaceApiTermsComponent } from "./components/marketplace-api-terms/marketplace-api-terms.component";
+import { MarketplaceSignupStepperComponent } from "./components/marketplace-signup-stepper/marketplace-signup-stepper.component";
 
 @NgModule({
   declarations: [
@@ -27,6 +32,8 @@ import { HomeComponent } from './components/home/home.component';
     ApiCardComponent,
     CardListComponent,
     MarketplaceApiDetailsComponent,
+    MarketplaceApiTermsComponent,
+    MarketplaceSignupStepperComponent,
     HomeComponent
   ],
   imports: [
@@ -40,7 +47,10 @@ import { HomeComponent } from './components/home/home.component';
     MatExpansionModule,
     MatIconModule,
     MatListModule,
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    FormsModule,
+    MatCheckboxModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,3 +1,5 @@
+<h1>Details Page</h1>
+
 <mat-card>
   <mat-card-header>
     <img mat-card-avatar alt="Logo" src="https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png">
@@ -6,7 +8,7 @@
   </mat-card-header>
 </mat-card>
 
-<mat-grid-list cols="3" rowHeight="100%">
+<mat-grid-list cols="3" rowHeight="100vh">
   <mat-grid-tile colspan="2" class="grid-content">
     <markdown [data]="markdown"></markdown>
   </mat-grid-tile>
@@ -50,90 +52,3 @@
     <button mat-raised-button>SIGN UP</button>
   </mat-card-actions>
 </mat-card>
-
-
-
-
-<h1>Test</h1>
-
-<mat-stepper linear #stepper>
-  <mat-step label="Select Version">
-    <mat-accordion class="example-headers-align">
-
-      <mat-expansion-panel [expanded]="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            v3.0
-          </mat-panel-title>
-          <mat-panel-description>
-            Version 3 of this API!
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
-        <mat-card>
-          <mat-card-header>
-            <img mat-card-avatar alt="Logo" src="https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png">
-            <mat-card-title>Apiman API</mat-card-title>
-            <mat-card-subtitle>The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs.</mat-card-subtitle>
-          </mat-card-header>
-        </mat-card>
-
-        <mat-grid-list cols="3" rowHeight="100%" style="min-height: 50vh">
-          <mat-grid-tile colspan="2" class="grid-content">
-            <markdown [data]="markdown"></markdown>
-          </mat-grid-tile>
-          <mat-grid-tile colspan="1" class="grid-content">
-            <div>
-              <h1>Key Features</h1>
-              <mat-list>
-                <mat-list-item *ngFor="let feature of features">
-                  <mat-icon matListIcon>folder</mat-icon>
-                  <span>{{feature}}</span>
-                </mat-list-item>
-              </mat-list>
-            </div>
-          </mat-grid-tile>
-        </mat-grid-list>
-
-
-        <mat-action-row>
-          <button mat-button color="primary">Next</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            v2.0
-          </mat-panel-title>
-          <mat-panel-description>
-             Version 2 of this API!
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <mat-action-row>
-          <button mat-button color="primary">Next</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            v1.0
-          </mat-panel-title>
-          <mat-panel-description>
-            Version 1 of this API!
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <mat-action-row>
-          <button mat-button color="primary">Next</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-
-
-
-    </mat-accordion>
-  </mat-step>
-  <mat-step label="Agreement"></mat-step>
-  <mat-step label="Summary"></mat-step>
-  <mat-step label="Confirmation"></mat-step>
-</mat-stepper>
