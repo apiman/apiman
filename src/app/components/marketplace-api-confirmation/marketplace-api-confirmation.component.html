@@ -1,0 +1,67 @@
+<h2>Using your API</h2>
+
+<mat-grid-list cols="2" rowHeight="8:1">
+  <mat-grid-tile>
+    <div class="box">
+      <h3>API Key</h3>
+      <p>Some useful hints...</p>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-divider [vertical]="true"></mat-divider>
+    <div class="box">
+      <p>You will be provided with an API-Key...</p>
+      <input value="{{apiKey}}">
+      <button mat-icon-button [cdkCopyToClipboard]="apiKey">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div class="box">
+      <h3>Endpoint</h3>
+      <p>Some useful hints...</p>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-divider [vertical]="true"></mat-divider>
+    <div class="box">
+      <p>You will be provided with an endpoint...</p>
+      <input value="{{apiEndpoint}}">
+      <button mat-icon-button [cdkCopyToClipboard]="apiEndpoint">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div class="box">
+      <h3>Authentication</h3>
+      <p>Some useful hints...</p>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-divider [vertical]="true"></mat-divider>
+    <div class="box">
+      <p>You will be provided with OAuth credentials...</p>
+      <input value="{{apiEndpoint}}">
+      <button mat-icon-button [cdkCopyToClipboard]="apiEndpoint">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div class="box">
+      <h3>API Documentation</h3>
+      <p>Some useful hints...</p>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-divider [vertical]="true"></mat-divider>
+    <div class="box">
+      <p>Further documentation</p>
+      <button mat-raised-button>View API Docs &amp; Try It Now</button>
+    </div>
+  </mat-grid-tile>
+
+</mat-grid-list>
+

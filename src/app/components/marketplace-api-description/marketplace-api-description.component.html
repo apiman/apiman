@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-card-header>
+    <img mat-card-avatar alt="Logo" src="https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png">
+    <mat-card-title>Apiman API</mat-card-title>
+    <mat-card-subtitle>The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs.</mat-card-subtitle>
+  </mat-card-header>
+</mat-card>
+
+<mat-grid-list cols="3" rowHeight="1:1">
+  <mat-grid-tile colspan="2" class="grid-content">
+    <div class="box">
+      <markdown [data]="markdown"></markdown>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile colspan="1" class="grid-content">
+    <div class="box">
+      <h1>Key Features</h1>
+      <mat-list>
+        <mat-list-item *ngFor="let feature of features">
+          <mat-icon matListIcon>folder</mat-icon>
+          <span>{{feature}}</span>
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
