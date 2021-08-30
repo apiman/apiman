@@ -1,6 +1,8 @@
 export interface Api {
-  icon: string;
-  title: string;
-  shortDescription: string;
-  longDescription: string;
+  id: string
+  icon: string
+  title: string
+  shortDescription: string
+  longDescription: string
+  featuredApi: boolean
 }
