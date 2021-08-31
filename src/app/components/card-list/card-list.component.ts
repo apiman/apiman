@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { Api } from '../../interfaces/api'
+import {Plan} from "../../interfaces/plan";
 import { ApiService } from "../../services/api/api.service";
+import {PlanService} from "../../services/plan/plan.service";
 
 @Component({
   selector: 'app-card-list',
@@ -10,17 +12,20 @@ import { ApiService } from "../../services/api/api.service";
 export class CardListComponent implements OnInit {
 
   apis: Api[] = [];
+  plans: Plan[] = [];
 
   @Input() listType = "";
+  @Input() cardType = "";
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService,
+              private planService: PlanService) { }
 
   ngOnInit(): void {
     if (this.listType === "api") {
       this.getApis();
     } else if (this.listType === "featuredApi") {
       this.getFeaturedApis();
-    } else if (this.listType === "plan") {
+    } else {
       this.getPlans();
     }
   }
@@ -33,11 +38,10 @@ export class CardListComponent implements OnInit {
   getFeaturedApis(): void {
     this.apiService.getFeaturedApis()
       .subscribe(apis => this.apis = apis);
-    console.log(this.apis);
   }
 
   getPlans(): void {
-    // To-Do
-    // add request for plans (either apiService or planService)
+    this.planService.getPlans()
+      .subscribe(plans => this.plans = plans);
   }
 }

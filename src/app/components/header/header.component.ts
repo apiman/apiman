@@ -12,7 +12,8 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  // To-Do replace hard-coded values with configurable variable
+  // To-Do
+  // replace hard-coded values with configurable variable
   header = {
     title: "KoolBank API Developer Portal",
     subtitle: "Welcome Message goes here."

@@ -1,12 +1,8 @@
 <div class="api-card-list">
-<!--  <div *ngIf="getCardType()==='api'">-->
-    <div class="api-card" *ngFor="let apiCard of apis;">
-      <app-api-card [apiCard]="apiCard"></app-api-card>
-    </div>
-<!--  </div>-->
-<!--  <div *ngIf="getCardType()==='plan'">-->
-<!--    <div class="plan-card" *ngFor="let planCard of planCardList;">-->
-<!--      <app-api-card [planCard]="planCard"></app-api-card>-->
-<!--    </div>-->
-<!--  </div>-->
+  <ng-container *ngIf="cardType==='api'">
+    <app-api-card *ngFor="let api of apis;" [api]="api" class="api-card"></app-api-card>
+  </ng-container>
+  <ng-container class="plan-card" *ngIf="cardType==='plan'">
+    <app-plan-card *ngFor="let plan of plans;" [plan]="plan"></app-plan-card>
+  </ng-container>
 </div>

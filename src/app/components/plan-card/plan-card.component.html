@@ -1,0 +1,21 @@
+<mat-card class="plan-card">
+  <mat-card-header>
+    <mat-card-title>{{plan.title}}</mat-card-title>
+    <mat-card-subtitle>{{plan.subtitle}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      <ng-container *ngFor="let policy of plan.policies">
+        <mat-list-item>
+          <p>{{policy.title}}
+            <span class="right">{{policy.configuration}}</span>
+          </p>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </ng-container>
+    </mat-list>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button>SIGN UP</button>
+  </mat-card-actions>
+</mat-card>

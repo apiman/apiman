@@ -26,29 +26,4 @@
 </mat-grid-list>
 
 <h2>Plans</h2>
-
-<mat-card class="plan-card">
-  <mat-card-header>
-    <mat-card-title>Sandbox</mat-card-title>
-    <mat-card-subtitle>Try this API in a sandbox</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <mat-list>
-      <mat-list-item>
-        <p>Rate Limiting
-          <span class="right">500 Requests per day</span>
-        </p>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <p>Quota
-          <span class="right">500 MB per day</span>
-        </p>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-    </mat-list>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-raised-button>SIGN UP</button>
-  </mat-card-actions>
-</mat-card>
+<app-card-list [cardType]="'plan'"></app-card-list>

@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Api} from "../../interfaces/api";
 
 @Component({
   selector: 'app-api-card',
@@ -11,10 +12,12 @@ export class ApiCardComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  @Input() apiCard = {
+  @Input() api: Api = {
+    id: "",
     title: "",
     shortDescription: "",
     longDescription: "",
+    featuredApi: false,
     icon: ""
   };
 }

@@ -23,6 +23,7 @@ import { MarketplaceApiDetailsComponent } from './components/marketplace-api-det
 import { HomeComponent } from './components/home/home.component';
 import { MarketplaceApiTermsComponent } from "./components/marketplace-api-terms/marketplace-api-terms.component";
 import { MarketplaceSignupStepperComponent } from "./components/marketplace-signup-stepper/marketplace-signup-stepper.component";
+import { PlanCardComponent } from './components/plan-card/plan-card.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MarketplaceSignupStepperComponent } from "./components/marketplace-sign
     MarketplaceApiDetailsComponent,
     MarketplaceApiTermsComponent,
     MarketplaceSignupStepperComponent,
-    HomeComponent
+    HomeComponent,
+    PlanCardComponent
   ],
   imports: [
     BrowserModule,
