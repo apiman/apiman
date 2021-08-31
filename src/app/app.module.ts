@@ -28,6 +28,7 @@ import { MarketplaceApiConfirmationComponent } from './components/marketplace-ap
 import {ClipboardModule} from "@angular/cdk/clipboard";
 import { MarketplaceApiDescriptionComponent } from './components/marketplace-api-description/marketplace-api-description.component';
 import { PlanCardComponent } from './components/plan-card/plan-card.component';
+import { MarketplaceComponent } from './components/marketplace/marketplace.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { PlanCardComponent } from './components/plan-card/plan-card.component';
     MarketplaceApiPoliciesComponent,
     MarketplaceApiConfirmationComponent,
     MarketplaceApiDescriptionComponent,
-    PlanCardComponent
+    PlanCardComponent,
+    MarketplaceComponent
   ],
   imports: [
     BrowserModule,
