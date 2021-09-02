@@ -132,6 +132,7 @@
     <version.org.jboss.weld.weld>3.1.8.Final</version.org.jboss.weld.weld>
     <version.org.keycloak>12.0.4</version.org.keycloak>
     <version.org.mockito>3.11.2</version.org.mockito>
+    <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
     <version.org.mvel>2.4.12.Final</version.org.mvel>
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
     <version.org.reflections>0.9.11</version.org.reflections>
@@ -703,6 +704,11 @@
         <groupId>com.sun.xml.bind</groupId>
         <artifactId>jaxb-impl</artifactId>
         <version>${version.javax.xml.bind}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${version.org.mapstruct}</version>
       </dependency>
       <dependency>
         <groupId>org.mvel</groupId>

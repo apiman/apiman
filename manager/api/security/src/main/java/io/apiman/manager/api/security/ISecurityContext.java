@@ -30,7 +30,7 @@ import java.util.Set;
 public interface ISecurityContext {
 
     /**
-     * @return the currently authentiated user.
+     * @return the currently authenticated user.
      */
     String getCurrentUser();
 
@@ -60,7 +60,7 @@ public interface ISecurityContext {
     boolean hasPermission(PermissionType permission, String organizationId);
 
     /**
-     * @param organizationId
+     * @param organizationId the org ID
      */
     boolean isMemberOf(String organizationId);
 

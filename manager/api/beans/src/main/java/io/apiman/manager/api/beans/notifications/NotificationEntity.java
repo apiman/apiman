@@ -4,7 +4,7 @@ import io.apiman.common.util.JsonUtil;
 import io.apiman.manager.api.beans.events.ApimanEventHeaders;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.StringJoiner;
 import javax.persistence.Column;
@@ -14,6 +14,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -21,8 +23,10 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * Models a notification, which can also contain a payload.
@@ -57,13 +61,19 @@ public class NotificationEntity {
     @NotNull
     private NotificationStatus notificationStatus;
 
-    @Column(name = "created_on", updatable=false, nullable=false)
-    @NotNull
-    private Date createdOn;
+    // TODO(msavy): consider tracking dismissal reason? for example, old or irrelevant, etc?
 
-    @Column(name = "modified_on", nullable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    @Column(name = "created_on", updatable = false)
     @NotNull
-    private Date modifiedOn;
+    private OffsetDateTime createdOn; // TODO consider java.time.OffsetDateTime
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    @Column(name = "modified_on")
+    @NotNull
+    private OffsetDateTime modifiedOn; // TODO consider java.time.OffsetDateTime
 
     @Column(name = "recipient", nullable = false)
     @NotEmpty
@@ -127,20 +137,20 @@ public class NotificationEntity {
         return this;
     }
 
-    public Date getCreatedOn() {
+    public OffsetDateTime getCreatedOn() {
         return createdOn;
     }
 
-    public NotificationEntity setCreatedOn(Date createdOn) {
+    public NotificationEntity setCreatedOn(OffsetDateTime createdOn) {
         this.createdOn = createdOn;
         return this;
     }
 
-    public Date getModifiedOn() {
+    public OffsetDateTime getModifiedOn() {
         return modifiedOn;
     }
 
-    public NotificationEntity setModifiedOn(Date modifiedOn) {
+    public NotificationEntity setModifiedOn(OffsetDateTime modifiedOn) {
         this.modifiedOn = modifiedOn;
         return this;
     }

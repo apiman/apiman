@@ -47,8 +47,9 @@ public class SearchCriteriaFilterBean implements Serializable {
     /**
      * @param name the name to set
      */
-    public void setName(String name) {
+    public SearchCriteriaFilterBean setName(String name) {
         this.name = name;
+        return this;
     }
 
     /**
@@ -61,8 +62,9 @@ public class SearchCriteriaFilterBean implements Serializable {
     /**
      * @param value the value to set
      */
-    public void setValue(String value) {
+    public SearchCriteriaFilterBean setValue(String value) {
         this.value = value;
+        return this;
     }
 
     /**
@@ -75,8 +77,9 @@ public class SearchCriteriaFilterBean implements Serializable {
     /**
      * @param operator the operator to set
      */
-    public void setOperator(SearchCriteriaFilterOperator operator) {
+    public SearchCriteriaFilterBean setOperator(SearchCriteriaFilterOperator operator) {
         this.operator = operator;
+        return this;
     }
 
     /**

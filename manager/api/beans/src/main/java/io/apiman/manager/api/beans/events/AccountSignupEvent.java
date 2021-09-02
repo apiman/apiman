@@ -12,7 +12,7 @@ import org.apache.commons.lang3.Validate;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @JsonDeserialize(builder = AccountSignupEvent.Builder.class)
-@EventVersion(1)
+@ApimanEvent(version = 1)
 public class AccountSignupEvent implements IVersionedApimanEvent {
     private ApimanEventHeaders headers;
     private String userId;
@@ -20,19 +20,21 @@ public class AccountSignupEvent implements IVersionedApimanEvent {
     private String emailAddress;
     private String firstName;
     private String surname;
+    private boolean approvalRequired;
     // TODO decide on all the attributes to use here, would be nice to capture everything that's not password
 
     private Map<String, Object> attributes; // TODO check for most appropriate type here
     // What details in here, hmm!
 
     AccountSignupEvent(ApimanEventHeaders headers, String userId, String username, String emailAddress,
-         String firstName, String surname, Map<String, Object> attributes) {
+         String firstName, String surname, boolean approvalRequired, Map<String, Object> attributes) {
         this.headers = headers;
         this.userId = userId;
         this.username = username;
         this.emailAddress = emailAddress;
         this.firstName = firstName;
         this.surname = surname;
+        this.approvalRequired = approvalRequired;
         this.attributes = attributes;
     }
 
@@ -73,6 +75,10 @@ public class AccountSignupEvent implements IVersionedApimanEvent {
         return attributes;
     }
 
+    public boolean isApprovalRequired() {
+        return approvalRequired;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -85,6 +91,7 @@ public class AccountSignupEvent implements IVersionedApimanEvent {
         private String emailAddress;
         private String firstName;
         private String surname;
+        private boolean approvalRequired;
         private final Map<String, Object> attributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
         public Builder setHeaders(ApimanEventHeaders headers) {
@@ -140,7 +147,13 @@ public class AccountSignupEvent implements IVersionedApimanEvent {
             Validate.notBlank(firstName, "firstName must be set");
             Validate.notBlank(surname, "surname must be set");
 
-            return new AccountSignupEvent(headers, userId, username, emailAddress, firstName, surname, attributes);
+            return new AccountSignupEvent(headers, userId, username, emailAddress, firstName, surname, approvalRequired,
+                 attributes);
+        }
+
+        public Builder setApprovalRequired(boolean approvalRequired) {
+            this.approvalRequired = approvalRequired;
+            return this;
         }
     }
 }

@@ -15,9 +15,13 @@
  */
 package io.apiman.manager.api.security.impl;
 
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.servlet.http.HttpServletRequest;
+
+import org.keycloak.adapters.KeycloakDeployment;
+import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 
 /**
  * An alternative security context used when protected by keycloak.
@@ -31,6 +35,12 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
      * Constructor.
      */
     public KeycloakSecurityContext() {
+    }
+
+    public void get() {
+        HttpServletRequest request = servletRequest.get();
+        RefreshableKeycloakSecurityContext session = (RefreshableKeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
+        KeycloakDeployment deployment = session.getDeployment();
     }
 
     /**
@@ -67,5 +77,13 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
         } else {
             return null;
         }
+    }
+
+    public List<String> getAllUsersWithRole() {
+        return
+    }
+
+    public List<String> getAllUsersWithAttribute() {
+
     }
 }

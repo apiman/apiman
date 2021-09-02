@@ -1,7 +1,9 @@
-package io.apiman.manager.api.notifications.dto;
+package io.apiman.manager.api.beans.notifications.dto;
 
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
+
+import java.util.List;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
@@ -10,8 +12,7 @@ public class CreateNotificationDto {
     private NotificationCategory category;
     private String reason;
     private String reasonMessage;
-    private RecipientType recipientType;
-    private String recipient;
+    private List<RecipientDto> recipient;
     private String source;
     private IVersionedApimanEvent payload;
 
@@ -45,11 +46,12 @@ public class CreateNotificationDto {
         return this;
     }
 
-    public String getRecipient() {
+    public List<RecipientDto> getRecipient() {
         return recipient;
     }
 
-    public CreateNotificationDto setRecipient(String recipient) {
+    public CreateNotificationDto setRecipient(
+         List<RecipientDto> recipient) {
         this.recipient = recipient;
         return this;
     }
@@ -69,15 +71,6 @@ public class CreateNotificationDto {
 
     public CreateNotificationDto setPayload(IVersionedApimanEvent payload) {
         this.payload = payload;
-        return this;
-    }
-
-    public RecipientType getRecipientType() {
-        return recipientType;
-    }
-
-    public CreateNotificationDto setRecipientType(RecipientType recipientType) {
-        this.recipientType = recipientType;
         return this;
     }
 }

@@ -5,12 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Revision of event
- *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface EventVersion {
-    int value();
+public @interface ApimanEvent {
+    String name() default "";
+    int version() default 1;
 }

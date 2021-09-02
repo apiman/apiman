@@ -44,6 +44,7 @@ public class DeveloperBean implements Serializable {
     @Id
     @GeneratedValue
     private String id;
+
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<DeveloperMappingBean> clients = new LinkedHashSet<>();
 
