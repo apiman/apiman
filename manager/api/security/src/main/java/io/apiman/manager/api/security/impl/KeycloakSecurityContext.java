@@ -15,12 +15,13 @@
  */
 package io.apiman.manager.api.security.impl;
 
+import io.apiman.manager.api.security.beans.UserDto;
+
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.servlet.http.HttpServletRequest;
 
-import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 
 /**
@@ -30,17 +31,12 @@ import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
  */
 @ApplicationScoped @Alternative
 public class KeycloakSecurityContext extends AbstractSecurityContext {
+    private volatile KeycloakAdminClient keycloakAdminClient;
 
     /**
      * Constructor.
      */
     public KeycloakSecurityContext() {
-    }
-
-    public void get() {
-        HttpServletRequest request = servletRequest.get();
-        RefreshableKeycloakSecurityContext session = (RefreshableKeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
-        KeycloakDeployment deployment = session.getDeployment();
     }
 
     /**
@@ -79,11 +75,20 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
         }
     }
 
-    public List<String> getAllUsersWithRole() {
-        return
+    @Override
+    public List<UserDto> getUsersForRole(String roleName) {
+        return getKeycloakAdminClient().getUsersForRole(roleName);
     }
 
-    public List<String> getAllUsersWithAttribute() {
-
+    private KeycloakAdminClient getKeycloakAdminClient() {
+        if (keycloakAdminClient == null) {
+            synchronized (this) {
+                HttpServletRequest request = servletRequest.get();
+                RefreshableKeycloakSecurityContext session = (RefreshableKeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
+                keycloakAdminClient = new KeycloakAdminClient(session.getDeployment());
+                return keycloakAdminClient;
+            }
+        }
+        return keycloakAdminClient;
     }
 }

@@ -16,19 +16,27 @@
 package io.apiman.manager.api.security.impl;
 
 import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.security.beans.UserDto;
 import io.apiman.manager.api.security.i18n.Messages;
+
+import com.google.common.collect.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Base class for security context implementations.
@@ -42,6 +50,8 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     private static Logger logger = LoggerFactory.getLogger(AbstractSecurityContext.class);
     @Inject
     private IStorageQuery query;
+    @Inject
+    private IStorage storage;
 
     /**
      * Constructor.
@@ -57,7 +67,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#isAdmin()
+     * {@inheritDoc}
      */
     @Override
     public boolean isAdmin() {
@@ -66,7 +76,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getRequestHeader(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public String getRequestHeader(String headerName) {
@@ -74,7 +84,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getCurrentUser()
+     * {@inheritDoc}
      */
     @Override
     public String getCurrentUser() {
@@ -82,7 +92,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getEmail()
+     * {@inheritDoc}
      */
     @Override
     public String getEmail() {
@@ -90,7 +100,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getFullName()
+     * {@inheritDoc}
      */
     @Override
     public String getFullName() {
@@ -98,7 +108,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#hasPermission(io.apiman.manager.api.beans.idm.PermissionType, java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public boolean hasPermission(PermissionType permission, String organizationId) {
@@ -111,7 +121,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#isMemberOf(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public boolean isMemberOf(String organizationId) {
@@ -122,7 +132,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getPermittedOrganizations(io.apiman.manager.api.beans.idm.PermissionType)
+     * {@inheritDoc}
      */
     @Override
     public Set<String> getPermittedOrganizations(PermissionType permission) {
@@ -169,7 +179,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see ISecurityContext#checkPermissions(PermissionType, String)
+     * {@inheritDoc}
      */
     @Override
     public void checkPermissions(PermissionType permission, String organizationId) throws NotAuthorizedException {
@@ -179,7 +189,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see ISecurityContext#checkAdminPermissions()
+     * {@inheritDoc}
      */
     @Override
     public void checkAdminPermissions() throws NotAuthorizedException {
@@ -189,12 +199,47 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     /**
-     * @see ISecurityContext#checkIfUserIsCurrentUser(String)
+     * {@inheritDoc}
      */
     @Override
     public void checkIfUserIsCurrentUser(String userId) throws NotAuthorizedException {
         if (!isAdmin() && !getCurrentUser().equals(userId)) {
             throw ExceptionFactory.notAuthorizedException();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UserDto> getUsersWithPermission(String permission, String orgName) {
+        try {
+            return Streams.stream(iStorage.getAllUsersWithPermission(permission, orgName))
+                          .map(this::toUserDto)
+                          .collect(Collectors.toList());        } catch (StorageException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UserDto> getUsersWithRole(String roleName, String orgName) {
+        try {
+            return Streams.stream(iStorage.getAllUsersWithRole(roleName, orgName))
+                          .map(this::toUserDto)
+                          .collect(Collectors.toList());
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    protected UserDto toUserDto(UserBean userBean) {
+        return new UserDto()
+             .setId(userBean.getUsername())
+             .setUsername(userBean.getUsername())
+             .setEmail(userBean.getEmail())
+             .setFullName(userBean.getFullName());
     }
 }

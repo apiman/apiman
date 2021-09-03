@@ -2272,6 +2272,32 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         return super.getAll(ApiVersionBean.class, query);
     }
 
+    @Override
+    public Iterator<UserBean> getAllUsersWithPermission(PermissionType permission, String orgName) throws StorageException {
+        Query query = getActiveEntityManager()
+             .createNativeQuery("SELECT DISTINCT u.* FROM USERS u, MEMBERSHIPS m, PERMISSIONS p "
+                                     + "INNER JOIN PERMISSIONS ON p.ROLE_ID = m.ROLE_ID "
+                                     + "INNER JOIN MEMBERSHIPS ON m.USER_ID = u.USERNAME "
+                                     + "INNER JOIN USERS ON u.USERNAME = m.USER_ID "
+                                     + "WHERE p.PERMISSIONS = :permissionType "
+                                     + "AND m.ORG_ID = :orgName")
+             .setParameter("permissionType", permission)
+             .setParameter("orgName", orgName);
+        return super.getAll(UserBean.class, query);
+    }
+
+    @Override
+    public Iterator<UserBean> getAllUsersWithRole(String roleName, String orgName) throws StorageException {
+        Query query = getActiveEntityManager()
+             .createNativeQuery("SELECT DISTINCT u.* FROM USERS u, MEMBERSHIPS m "
+                                     + "INNER JOIN USERS ON u.USERNAME = m.USER_ID "
+                                     + "WHERE m.ORG_ID = :orgName "
+                                     + "AND m.ROLE_ID = :roleName")
+             .setParameter("orgName", orgName)
+             .setParameter("roleName", roleName);
+        return super.getAll(UserBean.class, query);
+    }
+
     private void deleteAllPolicies(OrganizationBean organizationBean) throws StorageException {
         deleteAllPolicies(organizationBean, null);
     }

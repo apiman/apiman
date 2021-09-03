@@ -26,6 +26,7 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
@@ -204,5 +205,6 @@ public interface IStorage {
      */
     public Iterator<ApiVersionBean> getAllPublicApiVersions() throws StorageException;
 
-    // void rollbackTx();
+    Iterator<UserBean> getAllUsersWithPermission(PermissionType permission, String orgName) throws StorageException;
+    Iterator<UserBean> getAllUsersWithRole(String roleName, String orgName) throws StorageException;
 }

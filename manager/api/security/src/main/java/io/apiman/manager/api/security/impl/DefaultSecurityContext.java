@@ -15,9 +15,23 @@
  */
 package io.apiman.manager.api.security.impl;
 
+import io.apiman.common.config.options.AbstractOptions;
+import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
+import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.rest.exceptions.SystemErrorException;
+import io.apiman.manager.api.security.beans.UserDto;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+
+import com.google.common.collect.Streams;
 
 /**
  * The basic/default implementation of a security context.
@@ -27,14 +41,23 @@ import javax.servlet.http.HttpServletRequest;
 @ApplicationScoped @Alternative
 public class DefaultSecurityContext extends AbstractSecurityContext {
 
+    private IStorage iStorage;
+    // private ApiManagerConfig config;
+
     /**
      * Constructor.
      */
+    @Inject
+    public DefaultSecurityContext(IStorage iStorage) {
+        this.iStorage = iStorage;
+    }
+
     public DefaultSecurityContext() {
     }
 
     /**
      * Called to set the current context http servlet request.
+     *
      * @param request
      */
     protected static void setServletRequest(HttpServletRequest request) {
@@ -54,5 +77,4 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
     protected static void clearServletRequest() {
         servletRequest.remove();
     }
-
 }

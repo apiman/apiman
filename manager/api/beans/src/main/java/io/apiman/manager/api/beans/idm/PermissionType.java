@@ -21,10 +21,16 @@ package io.apiman.manager.api.beans.idm;
  * @author eric.wittmann@redhat.com
  */
 public enum PermissionType {
-    
+
     orgView,  orgEdit,  orgAdmin,
     apiView,  apiEdit,  apiAdmin,
     clientView,  clientEdit,  clientAdmin,
-    planView, planEdit, planAdmin
-    
+    planView, planEdit, planAdmin,
+
+    accountApprover, // Approve a new account signup
+    //apiSignupApprover, //
+
+    devPortalView, // View only things that are published to API Portal and/or your own client apps
+    devPortalEdit,  // Create new ClientApps, etc?
+    // devPortalInvite // Invite people to your org (sort of mini orgAdmin) -- can we use orgAdmin for this perhaps?
 }
