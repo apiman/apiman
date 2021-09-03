@@ -15,9 +15,13 @@
  */
 package io.apiman.manager.api.security.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.security.beans.UserDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +35,7 @@ import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
  */
 @ApplicationScoped @Alternative
 public class KeycloakSecurityContext extends AbstractSecurityContext {
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(KeycloakSecurityContext.class);
     private volatile KeycloakAdminClient keycloakAdminClient;
 
     /**
@@ -75,9 +80,20 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<UserDto> getUsersForRole(String roleName) {
-        return getKeycloakAdminClient().getUsersForRole(roleName);
+    public List<UserDto> getUsersWithRole(String roleName, String orgName) {
+        List<UserDto> apimanUsers = super.getUsersWithRole(roleName, orgName);
+        LOGGER.debug("Apiman stored users for role {0} and org {1}: {2}", roleName, orgName, apimanUsers);
+
+        List<UserDto> keycloakUsersWithRole = getKeycloakAdminClient().getUsersForRole(roleName);
+        LOGGER.debug("Keycloak users for role {0} (using same realm as configured): {2}", roleName, keycloakUsersWithRole);
+        // join lists, distinct as there is likely be overlap
+        return Stream.concat(apimanUsers.stream(), keycloakUsersWithRole.stream())
+                     .distinct()
+                     .collect(Collectors.toUnmodifiableList());
     }
 
     private KeycloakAdminClient getKeycloakAdminClient() {

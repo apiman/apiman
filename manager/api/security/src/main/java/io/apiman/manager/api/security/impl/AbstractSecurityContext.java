@@ -212,11 +212,12 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
      * {@inheritDoc}
      */
     @Override
-    public List<UserDto> getUsersWithPermission(String permission, String orgName) {
+    public List<UserDto> getUsersWithPermission(PermissionType permission, String orgName) {
         try {
-            return Streams.stream(iStorage.getAllUsersWithPermission(permission, orgName))
+            return Streams.stream(storage.getAllUsersWithPermission(permission, orgName))
                           .map(this::toUserDto)
-                          .collect(Collectors.toList());        } catch (StorageException e) {
+                          .collect(Collectors.toList());
+        } catch (StorageException e) {
             throw new RuntimeException(e);
         }
     }
@@ -227,7 +228,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     @Override
     public List<UserDto> getUsersWithRole(String roleName, String orgName) {
         try {
-            return Streams.stream(iStorage.getAllUsersWithRole(roleName, orgName))
+            return Streams.stream(storage.getAllUsersWithRole(roleName, orgName))
                           .map(this::toUserDto)
                           .collect(Collectors.toList());
         } catch (StorageException e) {

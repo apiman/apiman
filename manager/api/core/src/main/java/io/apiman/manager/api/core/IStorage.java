@@ -44,6 +44,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the persistent storage interface for Apiman DT.
@@ -205,6 +206,6 @@ public interface IStorage {
      */
     public Iterator<ApiVersionBean> getAllPublicApiVersions() throws StorageException;
 
-    Iterator<UserBean> getAllUsersWithPermission(PermissionType permission, String orgName) throws StorageException;
-    Iterator<UserBean> getAllUsersWithRole(String roleName, String orgName) throws StorageException;
+    List<UserBean> getAllUsersWithPermission(PermissionType permission, String orgName) throws StorageException;
+    List<UserBean> getAllUsersWithRole(String roleName, String orgName) throws StorageException;
 }

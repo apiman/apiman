@@ -104,8 +104,16 @@ public interface ISecurityContext {
     void checkIfUserIsCurrentUser(String userId) throws NotAuthorizedException;
 
     /**
-     *
+     * Find all users in an org who have a specific role.
+     * <p>
+     * This may interrogate a remote IDM (e.g. Keycloak), in which case the orgName may or may not be used.
+     * Users of this method should be aware that the user returned may not be stored in Apiman's user table
+     * (i.e. is in the IDM only).
      */
     List<UserDto> getUsersWithRole(String roleName, String orgName);
-    List<UserDto> getUsersWithPermission(String permission, String orgName);
+
+    /**
+     * Find all users in an org who have a specific permission
+     */
+    List<UserDto> getUsersWithPermission(PermissionType permission, String orgName);
 }
