@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,7 +13,6 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatInputModule} from "@angular/material/input";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {FormsModule} from "@angular/forms";
-
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -29,6 +28,37 @@ import {ClipboardModule} from "@angular/cdk/clipboard";
 import { MarketplaceApiDescriptionComponent } from './components/marketplace-api-description/marketplace-api-description.component';
 import { PlanCardComponent } from './components/plan-card/plan-card.component';
 import { MarketplaceComponent } from './components/marketplace/marketplace.component';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {InitializerService} from './services/initializer/initializer.service';
+import config from './../../config.json';
+
+export function initializeApp(devPortalInitializer: InitializerService): () => Promise<void> {
+  /* Define promisses needed for the app initialization */
+  const initLanguagePromise: Promise<void> = new Promise((resolve, reject) => {
+    devPortalInitializer.initLanguage(config.language).then(() => {
+      resolve();
+    }).catch(() => {
+      reject();
+    });
+  });
+
+  return (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      /* Insert defined promisses */
+      Promise.all([initLanguagePromise]).then(() => {
+        resolve();
+      }).catch((e) => {
+        reject(e);
+      });
+    });
+  }
+}
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './../assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -60,11 +90,24 @@ import { MarketplaceComponent } from './components/marketplace/marketplace.compo
     MatListModule,
     MarkdownModule.forRoot(),
     FormsModule,
+    HttpClientModule,
     MatCheckboxModule,
     MatInputModule,
-    ClipboardModule
+    ClipboardModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient],
+      }
+    })
   ],
-  providers: [],
+  providers: [{
+    provide: APP_INITIALIZER,
+    useFactory: initializeApp,
+    multi: true,
+    deps: [InitializerService]
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

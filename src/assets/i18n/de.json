@@ -1,0 +1,11 @@
+{
+  "COMMON": {
+    "OKAY": "Okay",
+    "CANCEL": "Abbrechen",
+    "YES": "Ja",
+    "NO": "Nein"
+  },
+  "MPLACE": {
+    "TITLE": "Marktplatz"
+  }
+}
