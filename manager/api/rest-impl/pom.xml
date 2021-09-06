@@ -144,8 +144,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${version.compiler.plugin}</version>
         <configuration>
-          <source>1.8</source> <!-- Probably best to be conservative here for cases where beans are used outside of Apiman -->
-          <target>1.8</target>
+          <source>11</source> <!-- Probably best to be conservative here for cases where beans are used outside of Apiman -->
+          <target>11</target>
           <annotationProcessorPaths>
             <path>
               <groupId>org.mapstruct</groupId>

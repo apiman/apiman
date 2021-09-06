@@ -319,6 +319,10 @@ public abstract class ApiManagerConfig {
         return getPrefixedProperties("apiman.encrypter."); //$NON-NLS-1$
     }
 
+    public Map<String, String> getNotificationProperties() {
+        return getPrefixedProperties("apiman-manager.notifications.");
+    }
+
     /**
      * Gets a map of properties prefixed by the given string.
      */

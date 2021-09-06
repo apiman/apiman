@@ -23,6 +23,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.security.beans.UserDto;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -76,5 +77,10 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
      */
     protected static void clearServletRequest() {
         servletRequest.remove();
+    }
+
+    @Override
+    public List<UserDto> getRemoteUsersWithRole(String roleName) {
+        return Collections.emptyList();
     }
 }

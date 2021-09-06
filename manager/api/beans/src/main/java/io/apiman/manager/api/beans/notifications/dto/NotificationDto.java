@@ -4,20 +4,20 @@ import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.StringJoiner;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class NotificationDto<P extends IVersionedApimanEvent> {
-    private Long id;
+    public Long id;
     private NotificationCategory category;
     private String reason;
     private String reasonMessage;
     private NotificationStatus notificationStatus;
-    private Date createdOn;
-    private Date modifiedOn;
+    private OffsetDateTime createdOn;
+    private OffsetDateTime modifiedOn;
     private String recipient;
     private String source;
     private P payload;
@@ -71,20 +71,20 @@ public class NotificationDto<P extends IVersionedApimanEvent> {
         return this;
     }
 
-    public Date getCreatedOn() {
+    public OffsetDateTime getCreatedOn() {
         return createdOn;
     }
 
-    public NotificationDto<P> setCreatedOn(Date createdOn) {
+    public NotificationDto<P> setCreatedOn(OffsetDateTime createdOn) {
         this.createdOn = createdOn;
         return this;
     }
 
-    public Date getModifiedOn() {
+    public OffsetDateTime getModifiedOn() {
         return modifiedOn;
     }
 
-    public NotificationDto<P> setModifiedOn(Date modifiedOn) {
+    public NotificationDto<P> setModifiedOn(OffsetDateTime modifiedOn) {
         this.modifiedOn = modifiedOn;
         return this;
     }

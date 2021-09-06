@@ -4,23 +4,27 @@ import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 
 import java.util.Map;
-import javax.xml.ws.ServiceMode;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import io.quarkus.qute.Engine;
+import io.quarkus.qute.ReflectionValueResolver;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@ServiceMode
+@ApplicationScoped
 public class QteTemplateEngine {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(QteTemplateEngine.class);
     private final Engine engine;
 
+    @Inject
     public QteTemplateEngine() {
         engine = Engine.builder()
                        .addDefaults()
+                       .addValueResolver(new ReflectionValueResolver()) // Doesn't allow reflection by default
                        .build();
     }
 

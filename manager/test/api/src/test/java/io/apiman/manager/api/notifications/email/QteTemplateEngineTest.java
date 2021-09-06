@@ -1,5 +1,8 @@
 package io.apiman.manager.api.notifications.email;
 
+import io.apiman.manager.api.beans.events.AccountSignupEvent;
+import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
+
 import java.util.Map;
 
 import org.junit.Test;
@@ -11,6 +14,24 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class QteTemplateEngineTest {
+    public static final class Foo extends NotificationDto<AccountSignupEvent> {
+        public int blah = 231;
+    }
+
+    @Test
+    public void renderSomethingNested() {
+        QteTemplateEngine engine = new QteTemplateEngine();
+
+        Foo test = new Foo();
+
+        String rendered = engine.applyTemplate(
+             "Hello, {test.blah}",
+             Map.of("test", test)
+        );
+        assertThat(rendered).isEqualTo("Hello, 231");
+    }
+
+
     @Test
     public void renderSomethingCool() {
         QteTemplateEngine engine = new QteTemplateEngine();

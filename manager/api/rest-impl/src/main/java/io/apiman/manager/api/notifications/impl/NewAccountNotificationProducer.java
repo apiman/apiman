@@ -1,5 +1,7 @@
 package io.apiman.manager.api.notifications.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.events.AccountSignupEvent;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
@@ -17,20 +19,21 @@ import javax.inject.Inject;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
-public class NewAccountEventProcessor implements INotificationProducer {
+public class NewAccountNotificationProducer implements INotificationProducer {
 
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(NewAccountNotificationProducer.class);
     public static final String APIMAN_ACCOUNT_APPROVAL_REQUEST = "apiman.account.approval.request";
     private final NotificationService notificationService;
 
     @Inject
-    public NewAccountEventProcessor(NotificationService notificationService) {
+    public NewAccountNotificationProducer(NotificationService notificationService) {
         this.notificationService = notificationService;
     }
 
     @Override
     public void processEvent(IVersionedApimanEvent event) {
         if (!(event instanceof AccountSignupEvent)) {
-            System.out.println("NewAccountEventProcessor not interested in " + event.getClass());
+            LOGGER.trace("NewAccountEventProcessor not interested in {0}", event.getClass()); // TODO deleteme
             return;
         }
 

@@ -15,8 +15,9 @@
  */
 package io.apiman.manager.api.security.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.idm.PermissionType;
-import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -25,18 +26,15 @@ import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.beans.UserDto;
+import io.apiman.manager.api.security.beans.UserMapper;
 import io.apiman.manager.api.security.i18n.Messages;
 
-import com.google.common.collect.Streams;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Base class for security context implementations.
@@ -47,7 +45,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
 
     protected static final ThreadLocal<HttpServletRequest> servletRequest = new ThreadLocal<>();
     private static final ThreadLocal<IndexedPermissions> permissions = new ThreadLocal<>();
-    private static Logger logger = LoggerFactory.getLogger(AbstractSecurityContext.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(AbstractSecurityContext.class);
     @Inject
     private IStorageQuery query;
     @Inject
@@ -159,7 +157,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
         try {
             return new IndexedPermissions(getQuery().getPermissions(userId));
         } catch (StorageException e) {
-            logger.error(Messages.getString("AbstractSecurityContext.ErrorLoadingPermissions") + userId, e); //$NON-NLS-1$
+            LOGGER.error(Messages.getString("AbstractSecurityContext.ErrorLoadingPermissions") + userId, e); //$NON-NLS-1$
             return new IndexedPermissions(new HashSet<>());
         }
     }
@@ -214,8 +212,9 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     @Override
     public List<UserDto> getUsersWithPermission(PermissionType permission, String orgName) {
         try {
-            return Streams.stream(storage.getAllUsersWithPermission(permission, orgName))
-                          .map(this::toUserDto)
+            return storage.getAllUsersWithPermission(permission, orgName)
+                          .stream()
+                          .map(UserMapper::toDto)
                           .collect(Collectors.toList());
         } catch (StorageException e) {
             throw new RuntimeException(e);
@@ -228,19 +227,12 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     @Override
     public List<UserDto> getUsersWithRole(String roleName, String orgName) {
         try {
-            return Streams.stream(storage.getAllUsersWithRole(roleName, orgName))
-                          .map(this::toUserDto)
+            return storage.getAllUsersWithRole(roleName, orgName)
+                          .stream()
+                          .map(UserMapper::toDto)
                           .collect(Collectors.toList());
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
-    }
-
-    protected UserDto toUserDto(UserBean userBean) {
-        return new UserDto()
-             .setId(userBean.getUsername())
-             .setUsername(userBean.getUsername())
-             .setEmail(userBean.getEmail())
-             .setFullName(userBean.getFullName());
     }
 }

@@ -3,6 +3,7 @@ package io.apiman.manager.api.jpa;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
+import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -14,9 +15,12 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.Query;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Storage for simple notifications system
@@ -37,7 +41,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public SearchResultsBean<NotificationEntity> getUnreadNotificationsByRecipientId(@NotNull String recipientUserId, @NotNull PagingBean paging)
+    public SearchResultsBean<NotificationEntity> getUnreadNotificationsByRecipientId(@NotNull String recipientUserId, @Nullable PagingBean paging)
          throws StorageException {
         var filter = new SearchCriteriaFilterBean()
              .setName("recipient")
@@ -135,5 +139,17 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
              .executeUpdate();
         LOGGER.debug("Marked all unread notifications for recipient {0} to status {1}, "
              + "this affected {2} records.", recipientUserId, status, n);
+    }
+
+    @Override
+    public Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(String userId, String notificationType) {
+        Query query = getActiveEntityManager()
+             .createQuery(
+                  "SELECT NotificationPreferenceEntity "
+                       + "FROM NotificationPreferenceEntity pref "
+                       + "WHERE pref.userId = :userId "
+                       + "AND pref.notificationType = :notificationType"
+             );
+        return super.getOne(query);
     }
 }

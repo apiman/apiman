@@ -4,7 +4,9 @@ import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.JsonUtil;
 import io.apiman.common.util.Preconditions;
+import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
+import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
@@ -12,15 +14,24 @@ import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.INotificationRepository;
+import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.notifications.mappers.NotificationMapper;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.security.beans.UserDto;
+import io.apiman.manager.api.security.beans.UserMapper;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Notifications for tell users useful things. Once a notification has been created with {@link
@@ -34,26 +45,30 @@ import javax.transaction.Transactional;
 public class NotificationService implements DataAccessUtilMixin {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(NotificationService.class);
 
+    private IStorage storage;
     private INotificationRepository notificationRepository;
     private NotificationMapper notificationMapper;
     private Event<NotificationDto<?>> notificationDispatcher;
+    private ISecurityContext securityContext;
 
     @Inject
     public NotificationService(
+         IStorage storage,
          INotificationRepository notificationRepository,
          NotificationMapper notificationMapper,
          Event<NotificationDto<?>> notificationDispatcher,
          ISecurityContext securityContext) {
+        this.storage = storage;
         this.notificationRepository = notificationRepository;
         this.notificationMapper = notificationMapper;
         this.notificationDispatcher = notificationDispatcher;
+        this.securityContext = securityContext;
     }
 
     public NotificationService() {
-
     }
 
-    public int unreadNotifications(String userId) {
+    public int unreadNotifications(@NotNull String userId) {
         return notificationRepository.countUnreadNotificationsByUserId(userId);
     }
 
@@ -64,7 +79,7 @@ public class NotificationService implements DataAccessUtilMixin {
      * @param paging pagination.
      * @return results with list of NotificationEntity and paging info.
      */
-    public SearchResultsBean<NotificationEntity> getLatestNotifications(String recipientId, PagingBean paging) {
+    public SearchResultsBean<NotificationEntity> getLatestNotifications(@NotNull String recipientId, @Nullable PagingBean paging) {
         return tryAction(() -> notificationRepository.getUnreadNotificationsByRecipientId(recipientId, paging));
     }
 
@@ -73,19 +88,18 @@ public class NotificationService implements DataAccessUtilMixin {
      *
      * @param newNotification the new notification.
      */
-    public void sendNotification(CreateNotificationDto newNotification) {
+    public void sendNotification(@NotNull CreateNotificationDto newNotification) {
         LOGGER.debug("Creating new notification(s): {0}", newNotification);
 
-        // Can have multiple recipients for same notification.
-        for (RecipientDto recipientDto : newNotification.getRecipient()) {
-            // In DB we store this using a pattern
-            //String recipient = calculateRecipient(recipientDto);
+        List<UserDto> resolvedRecipients = calculateRecipients(newNotification.getRecipient());
 
+        for (UserDto resolvedRecipient : resolvedRecipients) {
             NotificationEntity notificationEntity = new NotificationEntity()
                  .setCategory(newNotification.getCategory())
                  .setReason(newNotification.getReason())
                  .setReasonMessage(newNotification.getReasonMessage())
-                 .setRecipient(recipient)
+                 .setNotificationStatus(NotificationStatus.OPEN)
+                 .setRecipient(resolvedRecipient.getUsername())
                  .setSource(newNotification.getSource())
                  .setPayload(JsonUtil.toJsonTree(newNotification.getPayload()));
 
@@ -111,15 +125,19 @@ public class NotificationService implements DataAccessUtilMixin {
      * <p>You may want to take the userId from the security context when executing on behalf of an external entity to
      * ensure that the user is actually who they claim to be.
      *
+     * <p>An exception will be thrown if an attempt to mark as read is made using {@link NotificationStatus#OPEN}.
+     *
+     * @throws IllegalArgumentException if status argument is {@link NotificationStatus#OPEN}.
+     *
      * @param recipientId     ID of the owner/recipient of the notification. We need this to prevent unauthorised users
      *                        interfering with other users' notifications.
      * @param notificationIds list of notification IDs
-     *
      * @param status          status to set (e.g. system read, user read)
      */
-    public void markNotificationsAsRead(String recipientId, List<Long> notificationIds, NotificationStatus status) {
-        if (notificationIds.isEmpty())
+    public void markNotificationsAsRead(@NotNull String recipientId, @NotNull List<Long> notificationIds, @NotNull NotificationStatus status) {
+        if (notificationIds.isEmpty()) {
             return;
+        }
 
         Preconditions.checkArgument(status != NotificationStatus.OPEN,
              "When marking a notification as read a non-OPEN status must be provided: " + status);
@@ -129,16 +147,28 @@ public class NotificationService implements DataAccessUtilMixin {
         tryAction(() -> notificationRepository.markNotificationsReadById(recipientId, notificationIds, status));
     }
 
-    private String calculateRecipient(RecipientDto recipientDto) {
-        switch (recipientDto.getRecipientType()) {
+    public Optional<NotificationPreferenceEntity> getNotificationPreference(String userId, String notificationType) {
+        return tryAction(() -> notificationRepository.getNotificationPreferenceByUserIdAndType(userId, notificationType));
+    }
+
+    private List<UserDto> calculateRecipients(List<RecipientDto> recipientDto) {
+        return recipientDto.stream()
+                           .flatMap(recipient -> calculateRecipient(recipient).stream())
+                           .collect(Collectors.toList());
+    }
+
+    private List<UserDto> calculateRecipient(RecipientDto singleRecipient) {
+        switch (singleRecipient.getRecipientType()) {
             case INDIVIDUAL:
-                return recipientDto.getRecipient();
+                UserBean result = tryAction(() -> storage.getUser(singleRecipient.getRecipient()));
+                if (result == null) {
+                    return Collections.emptyList();
+                }
+                return List.of(UserMapper.toDto(result));
             case ROLE:
-                return "role/" + recipientDto.getRecipient();
-            case ATTRIBUTE:
-                return "attribute/" + recipientDto.getRecipient();
+                return securityContext.getRemoteUsersWithRole(singleRecipient.getRecipient());
             default:
-                throw new IllegalStateException("Unexpected value: " + recipientDto.getRecipientType());
+                throw new IllegalStateException("Unexpected value: " + singleRecipient.getRecipientType());
         }
     }
 

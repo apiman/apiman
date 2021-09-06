@@ -2272,6 +2272,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         return super.getAll(ApiVersionBean.class, query);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UserBean> getAllUsersWithPermission(PermissionType permission, String orgName) throws StorageException {
         return getJdbi().withHandle(h -> h.createQuery(
@@ -2288,6 +2291,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UserBean> getAllUsersWithRole(String roleName, String orgName) throws StorageException {
         return getJdbi().withHandle(h -> h.createQuery(

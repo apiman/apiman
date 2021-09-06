@@ -1,41 +1,37 @@
 package io.apiman.manager.api.beans.notifications;
 
 import java.util.StringJoiner;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 /**
  * A very simple global template system for various email notifications.
  *
- * For event X.Y.Z = use this body and subject line.
+ * By notification reason or category. Category might be more useful for more generic notifications.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@Entity
-@Table(name = "email_notification_templates")
-public class EmailNotificationTemplateBean {
+// @Entity
+// @Table(name = "email_notification_templates")
+public class EmailNotificationTemplate {
 
-    @Id
-    @Column(name = "id", nullable = false)
-    private Long id;
+    // @Id
+    // @Column(name = "id", nullable = false)
+    // private Long id;
 
-    @Column(name = "notification_template_body", nullable = false, length = 10000)
-    @NotBlank
+    // @Column(name = "notification_template_body", nullable = false, length = 10000)
+    // @NotBlank
     private String notificationTemplateBody;
 
-    @Column(name = "notification_template_subject", nullable = false)
-    @NotBlank
+    // @Column(name = "notification_template_subject", nullable = false)
+    // @NotBlank
     private String notificationTemplateSubject;
 
-    @Column(name = "notification_reason", nullable = false)
-    @NotBlank
+    // @Column(name = "notification_reason", nullable = true)
     private String notificationReason;
 
-    public EmailNotificationTemplateBean() {
+    // @Column(name = "notification_category", nullable = true)
+    private NotificationCategory notificationCategory;
+
+    public EmailNotificationTemplate() {
     }
 
     public Long getId() {
@@ -50,7 +46,7 @@ public class EmailNotificationTemplateBean {
         return notificationTemplateBody;
     }
 
-    public EmailNotificationTemplateBean setNotificationTemplateBody(String notificationTemplateBody) {
+    public EmailNotificationTemplate setNotificationTemplateBody(String notificationTemplateBody) {
         this.notificationTemplateBody = notificationTemplateBody;
         return this;
     }
@@ -59,7 +55,7 @@ public class EmailNotificationTemplateBean {
         return notificationTemplateSubject;
     }
 
-    public EmailNotificationTemplateBean setNotificationTemplateSubject(
+    public EmailNotificationTemplate setNotificationTemplateSubject(
          String notificationTemplateSubject) {
         this.notificationTemplateSubject = notificationTemplateSubject;
         return this;
@@ -69,18 +65,29 @@ public class EmailNotificationTemplateBean {
         return notificationReason;
     }
 
-    public EmailNotificationTemplateBean setNotificationReason(String notificationType) {
+    public EmailNotificationTemplate setNotificationReason(String notificationType) {
         this.notificationReason = notificationType;
+        return this;
+    }
+
+    public NotificationCategory getNotificationCategory() {
+        return notificationCategory;
+    }
+
+    public EmailNotificationTemplate setNotificationCategory(
+         NotificationCategory notificationCategory) {
+        this.notificationCategory = notificationCategory;
         return this;
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", EmailNotificationTemplateBean.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", EmailNotificationTemplate.class.getSimpleName() + "[", "]")
              .add("id=" + id)
              .add("notificationTemplateBody='" + notificationTemplateBody + "'")
              .add("notificationTemplateSubject='" + notificationTemplateSubject + "'")
              .add("notificationReason='" + notificationReason + "'")
+             .add("notificationCategory=" + notificationCategory)
              .toString();
     }
 }
