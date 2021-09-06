@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -65,11 +64,11 @@ public class ApiVersionBean implements Serializable, Cloneable {
     private Long id;
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name="api_id", referencedColumnName="id"),
-        @JoinColumn(name="api_org_id", referencedColumnName="organization_id")
+         @JoinColumn(name = "api_id", referencedColumnName = "id"),
+         @JoinColumn(name = "api_org_id", referencedColumnName = "organization_id")
     })
     private ApiBean api;
-    @Column(updatable=true, nullable=false)
+    @Column(updatable = true, nullable = false)
     @Enumerated(EnumType.STRING)
     private ApiStatus status;
     private String endpoint;
@@ -79,28 +78,39 @@ public class ApiVersionBean implements Serializable, Cloneable {
     @Column(name = "endpoint_ct")
     @Enumerated(EnumType.STRING)
     private EndpointContentType endpointContentType;
-    @ElementCollection(fetch=FetchType.EAGER)
-    @MapKeyColumn(name="name")
-    @Column(name="value")
-    @CollectionTable(name="endpoint_properties", joinColumns=@JoinColumn(name="api_version_id"))
+    @ElementCollection(fetch = FetchType.EAGER)
+    @MapKeyColumn(name = "name")
+    @Column(name = "value")
+    @CollectionTable(name = "endpoint_properties", joinColumns = @JoinColumn(name = "api_version_id"))
     private Map<String, String> endpointProperties = new HashMap<>();
-    @ElementCollection(fetch=FetchType.EAGER)
-    @CollectionTable(name="api_gateways", joinColumns=@JoinColumn(name="api_version_id"))
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "api_gateways", joinColumns = @JoinColumn(name = "api_version_id"))
     private Set<ApiGatewayBean> gateways;
-    @Column(name = "public_api", updatable=true, nullable=false)
+    @Column(name = "public_api", updatable = true, nullable = false)
     private boolean publicAPI;
-    @ElementCollection(fetch=FetchType.EAGER)
-    @CollectionTable(name="api_plans", joinColumns=@JoinColumn(name="api_version_id"))
+    // @Column(name = "public_api", updatable=true, nullable=false)
+    // private boolean publish;
+    // @Column(name = "extended_description", updatable=true, nullable=false)
+    // @Nationalize
+    // @Lob // <-- may not be necessary?
+    // private String extendedDescription;
+    // @Lob
+    //
+
+    @OneToOne(mappedBy = "apiVersion", orphanRemoval = true, cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    ApiDefinitionBean apiDefinition; // Deliberately no explicit getter/setter for this
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "api_plans", joinColumns = @JoinColumn(name = "api_version_id"))
     private Set<ApiPlanBean> plans;
-    @Column(updatable=false)
+    @Column(updatable = false)
     private String version;
-    @Column(name = "created_by", updatable=false, nullable=false)
+    @Column(name = "created_by", updatable = false, nullable = false)
     private String createdBy;
-    @Column(name = "created_on", updatable=false, nullable=false)
+    @Column(name = "created_on", updatable = false, nullable = false)
     private Date createdOn;
-    @Column(name = "modified_by", updatable=true, nullable=false)
+    @Column(name = "modified_by", updatable = true, nullable = false)
     private String modifiedBy;
-    @Column(name = "modified_on", updatable=true, nullable=false)
+    @Column(name = "modified_on", updatable = true, nullable = false)
     private Date modifiedOn;
     @Column(name = "published_on")
     private Date publishedOn;
@@ -109,13 +119,11 @@ public class ApiVersionBean implements Serializable, Cloneable {
     @Column(name = "definition_type")
     @Enumerated(EnumType.STRING)
     private ApiDefinitionType definitionType;
-    @OneToOne(mappedBy="apiVersion", orphanRemoval=true, cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
-    ApiDefinitionBean apiDefinition; // Deliberately no explicit getter/setter for this
-    @Column(name = "parse_payload", updatable=true, nullable=true)
+    @Column(name = "parse_payload", updatable = true, nullable = true)
     private boolean parsePayload;
-    @Column(name = "strip_keys", updatable=true, nullable=true)
+    @Column(name = "strip_keys", updatable = true, nullable = true)
     private boolean disableKeysStrip;
-    @Column(name = "definition_url", updatable=true, nullable=true)
+    @Column(name = "definition_url", updatable = true, nullable = true)
     private String definitionUrl;
 
     /**

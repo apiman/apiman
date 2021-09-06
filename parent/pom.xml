@@ -94,7 +94,7 @@
     <version.com.unboundid.unboundid-ldapsdk>6.0.0</version.com.unboundid.unboundid-ldapsdk>
     <version.commons-beanutils>1.9.4</version.commons-beanutils>
     <version.commons-codec>1.15</version.commons-codec>
-    <version.commons-collections>3.2.2</version.commons-collections>
+    <version.commons-collections>4.4</version.commons-collections>
     <version.commons-configuration>1.10</version.commons-configuration>
     <version.commons-dbcp>1.4</version.commons-dbcp>
     <version.commons-dbutils>1.7</version.commons-dbutils>
@@ -529,8 +529,8 @@
         <version>${version.commons-configuration}</version>
       </dependency>
       <dependency>
-        <groupId>commons-collections</groupId>
-        <artifactId>commons-collections</artifactId>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
         <version>${version.commons-collections}</version>
       </dependency>
       <dependency>

@@ -17,7 +17,7 @@ package io.apiman.manager.api.security.impl;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.manager.api.security.beans.UserDto;
+import io.apiman.manager.api.beans.idm.UserDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +45,7 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getCurrentUser()
+     * {@inheritDoc}
      */
     @Override
     public String getCurrentUser() {
@@ -53,7 +53,7 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.impl.DefaultSecurityContext#getFullName()
+     * {@inheritDoc}
      */
     @Override
     public String getFullName() {
@@ -67,7 +67,7 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.impl.DefaultSecurityContext#getEmail()
+     * {@inheritDoc}
      */
     @Override
     public String getEmail() {
@@ -80,6 +80,13 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
         }
     }
 
+    @Override
+    public List<UserDto> getRemoteUsersWithRole(String roleName) {
+        List<UserDto> keycloakUsersWithRole = getKeycloakAdminClient().getUsersForRole(roleName);
+        LOGGER.debug("Keycloak users for role {0} (using same realm as configured): {2}", roleName, keycloakUsersWithRole);
+        return keycloakUsersWithRole;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -87,11 +94,8 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
     public List<UserDto> getUsersWithRole(String roleName, String orgName) {
         List<UserDto> apimanUsers = super.getUsersWithRole(roleName, orgName);
         LOGGER.debug("Apiman stored users for role {0} and org {1}: {2}", roleName, orgName, apimanUsers);
-
-        List<UserDto> keycloakUsersWithRole = getKeycloakAdminClient().getUsersForRole(roleName);
-        LOGGER.debug("Keycloak users for role {0} (using same realm as configured): {2}", roleName, keycloakUsersWithRole);
         // join lists, distinct as there is likely be overlap
-        return Stream.concat(apimanUsers.stream(), keycloakUsersWithRole.stream())
+        return Stream.concat(apimanUsers.stream(), getRemoteUsersWithRole(roleName).stream())
                      .distinct()
                      .collect(Collectors.toUnmodifiableList());
     }

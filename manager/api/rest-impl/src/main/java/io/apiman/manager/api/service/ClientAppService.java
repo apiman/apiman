@@ -347,12 +347,7 @@ public class ClientAppService implements DataAccessUtilMixin {
         throws ClientVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
-        final int finalPage = Math.max(page, 1);
-        final int finalPageSize = pageSize <= 0 ? 20 : pageSize;
-
-        PagingBean paging = new PagingBean();
-        paging.setPage(finalPage);
-        paging.setPageSize(finalPageSize);
+        PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, clientId, version, ClientBean.class, paging));
     }
     
@@ -360,12 +355,7 @@ public class ClientAppService implements DataAccessUtilMixin {
         int page, int pageSize) throws ClientNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
-        final int finalPage = Math.max(page, 1);
-        final int finalPageSize = pageSize <= 0 ? 20 : pageSize;
-
-        PagingBean paging = new PagingBean();
-        paging.setPage(finalPage);
-        paging.setPageSize(finalPageSize);
+        PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, clientId, null, ClientBean.class, paging));
     }
 

@@ -17,7 +17,15 @@
 package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
-import io.apiman.manager.api.beans.idm.*;
+import io.apiman.manager.api.beans.idm.CurrentUserBean;
+import io.apiman.manager.api.beans.idm.PermissionBean;
+import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.idm.RoleMembershipBean;
+import io.apiman.manager.api.beans.idm.UpdateUserBean;
+import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.UserPermissionsBean;
+import io.apiman.manager.api.beans.notifications.NotificationCriteriaBean;
+import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
@@ -33,18 +41,22 @@ import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
+import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
 import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.service.NotificationService;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Implementation of the User API.
+ *
+ * TODO(msavy): Extract into service fully
  * 
  * @author eric.wittmann@redhat.com
  */
@@ -53,6 +65,7 @@ import java.util.Set;
 public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
 
     private IStorage storage;
+    private NotificationService notificationService;
     private ISecurityContext securityContext;
     private IStorageQuery query;
     private INewUserBootstrapper userBootstrapper;
@@ -62,10 +75,12 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
      */
     @Inject
     public UserResourceImpl(IStorage storage,
+        NotificationService notificationService,
         ISecurityContext securityContext,
         IStorageQuery query,
         INewUserBootstrapper userBootstrapper) {
         this.storage = storage;
+        this.notificationService = notificationService;
         this.securityContext = securityContext;
         this.query = query;
         this.userBootstrapper = userBootstrapper;
@@ -177,19 +192,9 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
     public SearchResultsBean<AuditEntryBean> getActivity(String userId, int page, int pageSize) throws NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
-        if (page <= 1) {
-            page = 1;
-        }
-        if (pageSize == 0) {
-            pageSize = 20;
-        }
         try {
-            SearchResultsBean<AuditEntryBean> rval;
-            PagingBean paging = new PagingBean();
-            paging.setPage(page);
-            paging.setPageSize(pageSize);
-            rval = query.auditUser(userId, paging);
-            return rval;
+            PagingBean paging = PagingBean.create(page, pageSize);
+            return query.auditUser(userId, paging);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -205,6 +210,14 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
             bean.setPermissions(query.getPermissions(userId));
             return bean;
         });
+    }
+
+    @Override
+    public SearchResultsBean<NotificationDto<?>> searchLatestNotificationsForUser(String userId, NotificationCriteriaBean criteria)
+         throws UserNotFoundException, NotAuthorizedException {
+        securityContext.checkIfUserIsCurrentUser(userId);
+        SearchCriteriaUtil.validateSearchCriteria(criteria);
+        return notificationService.searchNotificationsByRecipient(userId, criteria);
     }
 
     @Override

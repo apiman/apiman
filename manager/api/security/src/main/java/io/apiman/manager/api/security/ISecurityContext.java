@@ -17,7 +17,7 @@ package io.apiman.manager.api.security;
 
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.security.beans.UserDto;
+import io.apiman.manager.api.beans.idm.UserDto;
 
 import java.util.List;
 import java.util.Set;
@@ -102,6 +102,17 @@ public interface ISecurityContext {
      * @throws NotAuthorizedException if the user is not authorized
      */
     void checkIfUserIsCurrentUser(String userId) throws NotAuthorizedException;
+
+
+    /**
+     * Find all users in an org who have a specific role.
+     * <p>
+     * This may interrogate a remote IDM (e.g. Keycloak), in which case the orgName may or may not be used.
+     * Users of this method should be aware that the user returned may not be stored in Apiman's user table
+     * (i.e. is in the IDM only).
+     */
+    List<UserDto> getRemoteUsersWithRole(String roleName);
+
 
     /**
      * Find all users in an org who have a specific role.

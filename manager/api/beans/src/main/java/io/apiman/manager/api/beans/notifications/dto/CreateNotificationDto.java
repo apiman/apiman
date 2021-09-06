@@ -4,6 +4,7 @@ import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
@@ -72,5 +73,17 @@ public class CreateNotificationDto {
     public CreateNotificationDto setPayload(IVersionedApimanEvent payload) {
         this.payload = payload;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", CreateNotificationDto.class.getSimpleName() + "[", "]")
+             .add("category=" + category)
+             .add("reason='" + reason + "'")
+             .add("reasonMessage='" + reasonMessage + "'")
+             .add("recipient=" + recipient)
+             .add("source='" + source + "'")
+             .add("payload=" + payload)
+             .toString();
     }
 }

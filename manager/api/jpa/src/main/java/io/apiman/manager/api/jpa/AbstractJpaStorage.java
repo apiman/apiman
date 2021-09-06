@@ -219,9 +219,7 @@ public abstract class AbstractJpaStorage {
             // Set some default in the case that paging information was not included in the request.
             PagingBean paging = criteria.getPaging();
             if (paging == null) {
-                paging = new PagingBean();
-                paging.setPage(1);
-                paging.setPageSize(20);
+                paging = PagingBean.create(1, 20);
             }
             int page = paging.getPage();
             int pageSize = paging.getPageSize();

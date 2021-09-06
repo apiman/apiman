@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.annotations.NaturalId;
+
 /**
  * Which type of notification does the user want to opt into, and for which types of notification.
  * <p>
@@ -40,10 +42,12 @@ public class NotificationPreferenceEntity {
 
     @Column(name = "userId", nullable = false)
     @NotBlank
+    @NaturalId
     private String userId;
 
     @Column(name = "notification_type", nullable = false)
     @NotBlank
+    @NaturalId
     private String notificationType;
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -57,6 +61,42 @@ public class NotificationPreferenceEntity {
     // @CollectionTable(name = "reason_notification_prefixes")
     // private Set<String> enabledForReasonPrefixes = new HashSet<>();
 
-    public NotificationPreferenceEntity() {
+    public NotificationPreferenceEntity() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    public NotificationPreferenceEntity setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public NotificationPreferenceEntity setUserId(String userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public String getNotificationType() {
+        return notificationType;
+    }
+
+    public NotificationPreferenceEntity setNotificationType(String notificationType) {
+        this.notificationType = notificationType;
+        return this;
+    }
+
+    public Set<NotificationCategory> getNotificationCategories() {
+        return notificationCategories;
+    }
+
+    public NotificationPreferenceEntity setNotificationCategories(
+         Set<NotificationCategory> notificationCategories) {
+        this.notificationCategories = notificationCategories;
+        return this;
     }
 }

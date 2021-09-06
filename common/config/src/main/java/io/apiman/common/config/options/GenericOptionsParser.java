@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -206,6 +207,33 @@ public class GenericOptionsParser extends AbstractOptions {
                 .constraintFailure(candidate.alias, "string", candidate.value, message);
         }
         return candidate.value;
+    }
+
+    public <E extends Enum<E>> E getEnum(List<String> keyAliases, E defaultValue,
+         Function<String, E> converter) {
+        AliasValueEntry candidate = getValue(keyAliases);
+        if (candidate == null || StringUtils.isBlank(candidate.value)) {
+            return defaultValue;
+        }
+
+        boolean notRecognised = false;
+        E convertedEnum = null;
+        try {
+            convertedEnum = converter.apply(candidate.value);
+        } catch (IllegalArgumentException iae) {
+            notRecognised = true;
+        }
+
+        if (notRecognised || convertedEnum == null) {
+            throw BadOptionConfigurationException.constraintFailure(
+                 candidate.alias,
+                 "enum",
+                 candidate.value,
+                 "Valid inputs are: " + Arrays.toString(defaultValue.getDeclaringClass().getEnumConstants())
+             );
+        } else {
+            return convertedEnum;
+        }
     }
 
     /**

@@ -136,13 +136,7 @@ public class PlanService implements DataAccessUtilMixin {
         throws PlanNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
 
-        final int finalPage = Math.max(page, 1);
-        final int finalPageSize = pageSize <= 0 ? 20 : pageSize;
-
-        PagingBean paging = new PagingBean();
-        paging.setPage(finalPage);
-        paging.setPageSize(finalPageSize);
-
+        PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, planId, null, PlanBean.class, paging));
     }
     
@@ -266,12 +260,7 @@ public class PlanService implements DataAccessUtilMixin {
         NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.planView, organizationId);
 
-        final int finalPage = Math.max(page, 1);
-        final int finalPageSize = pageSize == 0 ? 20 : pageSize;
-
-        PagingBean paging = new PagingBean();
-        paging.setPage(finalPage);
-        paging.setPageSize(finalPageSize);
+        PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, planId, version, PlanBean.class, paging));
     }
 

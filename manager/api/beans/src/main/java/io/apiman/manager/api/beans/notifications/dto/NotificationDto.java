@@ -1,24 +1,27 @@
 package io.apiman.manager.api.beans.notifications.dto;
 
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
+import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.StringJoiner;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class NotificationDto<P extends IVersionedApimanEvent> {
-    private Long id;
+    public Long id;
     private NotificationCategory category;
     private String reason;
     private String reasonMessage;
     private NotificationStatus notificationStatus;
-    private Date createdOn;
-    private Date modifiedOn;
-    private String recipient;
+    private OffsetDateTime createdOn;
+    private OffsetDateTime modifiedOn;
+    private UserDto recipient;
     private String source;
     private P payload;
 
@@ -71,29 +74,29 @@ public class NotificationDto<P extends IVersionedApimanEvent> {
         return this;
     }
 
-    public Date getCreatedOn() {
+    public OffsetDateTime getCreatedOn() {
         return createdOn;
     }
 
-    public NotificationDto<P> setCreatedOn(Date createdOn) {
+    public NotificationDto<P> setCreatedOn(OffsetDateTime createdOn) {
         this.createdOn = createdOn;
         return this;
     }
 
-    public Date getModifiedOn() {
+    public OffsetDateTime getModifiedOn() {
         return modifiedOn;
     }
 
-    public NotificationDto<P> setModifiedOn(Date modifiedOn) {
+    public NotificationDto<P> setModifiedOn(OffsetDateTime modifiedOn) {
         this.modifiedOn = modifiedOn;
         return this;
     }
 
-    public String getRecipient() {
+    public UserDto getRecipient() {
         return recipient;
     }
 
-    public NotificationDto<P> setRecipient(String recipient) {
+    public NotificationDto<P> setRecipient(UserDto recipient) {
         this.recipient = recipient;
         return this;
     }

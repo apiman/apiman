@@ -253,12 +253,7 @@ public class OrganizationService implements DataAccessUtilMixin {
             throw ExceptionFactory.notAuthorizedException();
         }
 
-        final int finalPage = Math.max(page, 1);
-        final int finalPageSize = pageSize <= 0 ? 20 : pageSize;
-
-        PagingBean paging = new PagingBean();
-        paging.setPage(finalPage);
-        paging.setPageSize(finalPageSize);
+        PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, null, null, null, paging));
     }
 
