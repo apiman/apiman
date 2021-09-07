@@ -33,14 +33,14 @@ public class EmailNotificationTemplate {
 
     public EmailNotificationTemplate() {
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    //
+    // public Long getId() {
+    //     return id;
+    // }
+    //
+    // public void setId(Long id) {
+    //     this.id = id;
+    // }
 
     public String getNotificationTemplateBody() {
         return notificationTemplateBody;
@@ -83,7 +83,7 @@ public class EmailNotificationTemplate {
     @Override
     public String toString() {
         return new StringJoiner(", ", EmailNotificationTemplate.class.getSimpleName() + "[", "]")
-             .add("id=" + id)
+             //.add("id=" + id)
              .add("notificationTemplateBody='" + notificationTemplateBody + "'")
              .add("notificationTemplateSubject='" + notificationTemplateSubject + "'")
              .add("notificationReason='" + notificationReason + "'")

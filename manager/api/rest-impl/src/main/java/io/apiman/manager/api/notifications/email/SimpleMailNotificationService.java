@@ -2,20 +2,27 @@ package io.apiman.manager.api.notifications.email;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.util.JsonUtil;
 import io.apiman.manager.api.beans.notifications.EmailNotificationTemplate;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
 import io.apiman.manager.api.core.config.ApiManagerConfig;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.SortedMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,13 +34,20 @@ import org.jetbrains.annotations.NotNull;
 @ApplicationScoped
 public class SimpleMailNotificationService {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SimpleMailNotificationService.class);
-    private final EmailSender emailSender;
+    private EmailSender emailSender;
+    private ApiManagerConfig config;
+    private PatriciaTrie<EmailNotificationTemplate> reasonTrie = new PatriciaTrie<>();
+    private MultiValuedMap<NotificationCategory, EmailNotificationTemplate> categoryToTemplateMap = new ArrayListValuedHashMap();
 
     @Inject
     public SimpleMailNotificationService(ApiManagerConfig config) {
+        this.config = config;
         var smtpConfig = new SmtpEmailConfiguration(config.getNotificationProperties());
         this.emailSender = new EmailSender(smtpConfig);
+        readEmailNotificationTemplatesFromFile();
     }
+
+    public SimpleMailNotificationService() {}
 
     /**
      * Send a plaintext email
@@ -70,6 +84,13 @@ public class SimpleMailNotificationService {
     }
 
     /**
+     * Find all valid email templates for a provided reason.
+     */
+    public SortedMap<String, EmailNotificationTemplate> findAllTemplatesFor(@NotNull String reasonKey) {
+        return reasonTrie.headMap(reasonKey + "*");
+    }
+
+    /**
      * Find an email template for a provided reason (longest match wins).
      *
      * <p>For example, if we have a template for both <code>a.b.c.d</code> and <code>a.b.c</code>, the former will be
@@ -79,27 +100,36 @@ public class SimpleMailNotificationService {
      * template is found, or we determine there is no suitable template. In the latter case, use of
      * {@link #findTemplateFor(NotificationCategory)} may provide a suitable alternative (or a very generic template).
      *
-     * @param reason the reason to find a template for
+     * @param reasonKey the reason to find a template for
      * @return template, if a suitable one is found, otherwise empty
      */
-    public Optional<EmailNotificationTemplate> findTemplateFor(@NotNull String reason) {
-        String[] splitReason = reason.split("\\.");
-        Deque<String> stack = new ArrayDeque<>(splitReason.length);
-        stack.addAll(Arrays.asList(splitReason));
-        // Start full path, try to find match, shorten with #pop, etc. Could be done more efficiently but this is fine for now.
-        while (!stack.isEmpty()) {
-            String candidate = String.join(".", stack);
-            LOGGER.trace("Searching for matching template for reason {0}. Trying substring candidate {1}",
-                 reason, candidate);
-
-            stack.pop();
+    public Optional<EmailNotificationTemplate> findTemplateFor(@NotNull String reasonKey) {
+        Entry<String, EmailNotificationTemplate> selected = reasonTrie.select(reasonKey);
+        if (selected == null || selected.getValue() == null) {
+            LOGGER.debug("Found template for reason {0} as {1}, shorter matching reasons templates "
+                              + "may also exist", selected.getKey(), reasonKey);
+            return Optional.empty();
+        } else {
+            LOGGER.debug("No email template found for reason {0}, including shorter paths", reasonKey);
+            return Optional.of(selected.getValue());
         }
-        LOGGER.debug("No email template found for {0}", reason);
-        return Optional.empty();
+
+        // String[] splitReason = reason.split("\\.");
+        // Deque<String> stack = new ArrayDeque<>(splitReason.length);
+        // stack.addAll(Arrays.asList(splitReason));
+        // // Start full path, try to find match, shorten with #pop, etc. Could be done more efficiently but this is fine for now.
+        // while (!stack.isEmpty()) {
+        //     String candidate = String.join(".", stack);
+        //     LOGGER.trace("Searching for matching template for reason {0}. Trying substring candidate {1}",
+        //          reason, candidate);
+        //
+        //     stack.pop();
+        // }
+        // return Optional.empty();
     }
 
     /**
-     * Get a template for a coarse reason category.
+     * Get a template for a reason category (generally more coarse-grained).
      *
      * @param category the category to get a template for
      * @return template, if a suitable one is found, otherwise empty
@@ -108,7 +138,23 @@ public class SimpleMailNotificationService {
         return Optional.empty();
     }
 
-    private Map<String, EmailNotificationTemplate> readEmailNotificationTemplates() {
-
+    private void readEmailNotificationTemplatesFromFile() {
+        Path file = config.getConfigDirectory().resolve("email-notification-templates.json");
+        if (Files.notExists(file)) {
+            LOGGER.warn("No email notification templates found at {0}", file);
+            return;
+        }
+        try {
+            List<EmailNotificationTemplate> tpls = JsonUtil.toPojo(Files.readString(file),
+                 EmailNotificationTemplate.class, List.class);
+            for (EmailNotificationTemplate tpl : tpls) {
+                reasonTrie.put(tpl.getNotificationReason(), tpl);
+                LOGGER.trace("Adding template: reason {0} -> {1}", tpl.getNotificationReason(), tpl);
+                LOGGER.trace("Adding template: category {0} -> {1}", tpl.getNotificationCategory(), tpl);
+                categoryToTemplateMap.put(tpl.getNotificationCategory(), tpl);
+            }
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
+        }
     }
 }

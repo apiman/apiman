@@ -16,11 +16,17 @@
 package io.apiman.manager.api.core.config;
 
 import io.apiman.common.config.ConfigFactory;
+import io.apiman.common.config.ConfigFileConfiguration;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -350,10 +356,75 @@ public abstract class ApiManagerConfig {
     /**
      * 'Simple', 'JSON' or FQDN with {@link IApimanLogger} implementation.
      *
+     * @deprecated set the system property <code>apiman.logger-delegate=name`</code> instead (e.g. log4j2).
+     * @see ApimanLoggerFactory Names are defined in <code>@ApimanLoggerFactory</code> annotations.
      * @return Logger name or FQDN
      */
+    @Deprecated(forRemoval = true)
     public String getLoggerName() {
         return config.getString(APIMAN_MANAGER_CONFIG_LOGGER);
+    }
+
+    /**
+     * Return the standard Apiman config directory.
+     *
+     * Following precedence is used:
+     * <ul>
+     *     <li><code>${apiman.config.dir}</code></li>
+     *     <li><code>${jboss.server.config.dir}</code></li>
+     *     <li><code>${catalina.home}/conf</code></li>
+     * </ul>
+     */
+    public Path getConfigDirectory() {
+        // Grand unified conf directory!
+        String confDir = config.getString("apiman.config.dir");
+        if (confDir != null) {
+            return Paths.get(confDir);
+        }
+
+        // If that wasn't set, then check to see if we're running in wildfly/eap
+        confDir = System.getProperty("jboss.server.config.dir");
+        if (confDir != null) {
+            return Paths.get(confDir);
+        }
+
+        // If that didn't work, try to locate a tomcat data directory
+        confDir = System.getProperty("catalina.home");
+        if (confDir != null) {
+            return Paths.get(confDir, "conf");
+        }
+        throw new IllegalStateException("No data directory has been set. Please set apiman.data.dir=<data dir>");
+    }
+
+    /**
+     * Return the standard Apiman data directory.
+     *
+     * Following precedence is used:
+     * <ul>
+     *     <li><code>${apiman.data.dir}</code></li>
+     *     <li><code>${jboss.server.data.dir}</code></li>
+     *     <li><code>${catalina.home}/data</code></li>
+     * </ul>
+     */
+    public Path getDataDirectory() {
+        // Grand unified data directory!
+        String dataDir = config.getString("apiman.data.dir");
+        if (dataDir != null) {
+            return Paths.get(dataDir);
+        }
+
+        // If that wasn't set, then check to see if we're running in wildfly/eap
+        dataDir = System.getProperty("jboss.server.data.dir");
+        if (dataDir != null) {
+            return Paths.get(dataDir, "apiman");
+        }
+
+        // If that didn't work, try to locate a tomcat data directory
+        dataDir = System.getProperty("catalina.home");
+        if (dataDir != null) {
+            return Paths.get(dataDir, "conf");
+        }
+        throw new IllegalStateException("No data directory has been set. Please set apiman.data.dir=<data dir>");
     }
 
 }

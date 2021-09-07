@@ -3,7 +3,6 @@ package io.apiman.manager.api.notifications.email.handlers;
 import io.apiman.manager.api.beans.events.AccountSignupEvent;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
-import io.apiman.manager.api.notifications.email.EmailSender;
 import io.apiman.manager.api.notifications.email.QteTemplateEngine;
 import io.apiman.manager.api.notifications.impl.NewAccountNotificationProducer;
 
@@ -21,7 +20,7 @@ public class AccountSignupApproval implements INotificationHandler {
     private static final String temp_msg = "Dear {notification.recipient}, an account needs your approval.";
 
     @Inject
-    public AccountSignupApproval(QteTemplateEngine templateEngine, EmailSender) {
+    public AccountSignupApproval(QteTemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
 
