@@ -84,10 +84,10 @@ public class SimpleMailNotificationService {
     }
 
     /**
-     * Find all valid email templates for a provided reason.
+     * Find all valid email templates for a provided reason. Empty if not matches are found.
      */
     public SortedMap<String, EmailNotificationTemplate> findAllTemplatesFor(@NotNull String reasonKey) {
-        return reasonTrie.headMap(reasonKey + "*");
+        return reasonTrie.headMap(reasonKey + "*"); // Add a character, as headMap only matches prefixes shorter
     }
 
     /**
@@ -113,19 +113,6 @@ public class SimpleMailNotificationService {
             LOGGER.debug("No email template found for reason {0}, including shorter paths", reasonKey);
             return Optional.of(selected.getValue());
         }
-
-        // String[] splitReason = reason.split("\\.");
-        // Deque<String> stack = new ArrayDeque<>(splitReason.length);
-        // stack.addAll(Arrays.asList(splitReason));
-        // // Start full path, try to find match, shorten with #pop, etc. Could be done more efficiently but this is fine for now.
-        // while (!stack.isEmpty()) {
-        //     String candidate = String.join(".", stack);
-        //     LOGGER.trace("Searching for matching template for reason {0}. Trying substring candidate {1}",
-        //          reason, candidate);
-        //
-        //     stack.pop();
-        // }
-        // return Optional.empty();
     }
 
     /**
@@ -145,8 +132,9 @@ public class SimpleMailNotificationService {
             return;
         }
         try {
-            List<EmailNotificationTemplate> tpls = JsonUtil.toPojo(Files.readString(file),
-                 EmailNotificationTemplate.class, List.class);
+            // So pithy!
+            List<EmailNotificationTemplate> tpls = JsonUtil.<EmailNotificationTemplate, List<EmailNotificationTemplate>>toPojo(Files.readString(file), EmailNotificationTemplate.class, List.class);
+            LOGGER.debug("{0} email notification templates read from {1}", tpls.size(), file.toAbsolutePath());
             for (EmailNotificationTemplate tpl : tpls) {
                 reasonTrie.put(tpl.getNotificationReason(), tpl);
                 LOGGER.trace("Adding template: reason {0} -> {1}", tpl.getNotificationReason(), tpl);

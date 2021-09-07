@@ -34,10 +34,10 @@ public class JsonUtil {
         }
     }
 
-    public static <T, C extends Collection<T>> C toPojo(String payload, Class<T> klazz, Class<C> collectionKlazz) {
+    public static <T, C extends Collection<T>> C toPojo(String payload, Class<T> klazz, Class<? extends Collection> collectionKlazz) {
         try {
             CollectionType type = OM.getTypeFactory().constructCollectionType(collectionKlazz, klazz);
-            return OM.readValue(payload, type);
+            return (C) OM.readValue(payload, type);
         } catch (JsonProcessingException e) {
             throw new UncheckedIOException(e);
         }
