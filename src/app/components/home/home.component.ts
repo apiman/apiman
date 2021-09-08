@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.hero.title = this.translater.instant(this.configService.config.hero.title);
     this.hero.subtitle = this.translater.instant(this.configService.config.hero.subtitle);
-    this.hero.large = true;
+    this.hero.large = this.hero.large;
     this.setUpHero();
   }
 
