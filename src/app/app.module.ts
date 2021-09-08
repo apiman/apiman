@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ApiCardComponent } from './components/api-card/api-card.component';
-import { CardListComponent } from './components/card-list/card-list.component';
 import { MarketplaceApiDetailsComponent } from './components/marketplace-api-details/marketplace-api-details.component';
 import { HomeComponent } from './components/home/home.component';
 import { MarketplaceApiTermsComponent } from './components/marketplace-api-terms/marketplace-api-terms.component';
@@ -29,6 +28,8 @@ import {ActivatedRoute, ActivationEnd, NavigationEnd, Router, RouterEvent} from 
 import {HeroService} from './services/hero/hero.service';
 import {ConfigService} from './services/config/config.service';
 import {NavigationComponent} from './components/navigation/navigation.component';
+import { ApiCardListComponent } from './components/api-card-list/api-card-list.component';
+import { PlanCardListComponent } from './components/plan-card-list/plan-card-list.component';
 
 export function initializeApp(configService: ConfigService,
                               devPortalInitializer: InitializerService): () => Promise<void> {
@@ -66,7 +67,6 @@ export function createTranslateLoader(http: HttpClient) {
     HeaderComponent,
     FooterComponent,
     ApiCardComponent,
-    CardListComponent,
     MarketplaceApiDetailsComponent,
     MarketplaceApiTermsComponent,
     MarketplaceSignupStepperComponent,
@@ -76,7 +76,9 @@ export function createTranslateLoader(http: HttpClient) {
     MarketplaceApiDescriptionComponent,
     PlanCardComponent,
     MarketplaceComponent,
-    NavigationComponent
+    NavigationComponent,
+    ApiCardListComponent,
+    PlanCardListComponent
   ],
   imports: [
     MaterialModule,

@@ -1,36 +1,28 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Plan} from "../../interfaces/plan";
-import { ApiService } from "../../services/api/api.service";
-import {PlanService} from "../../services/plan/plan.service";
 import {ApiSummaryBean} from "../../services/backend/backend.service";
+import {ApiService} from "../../services/api/api.service";
 import {PageEvent} from "@angular/material/paginator";
 
 @Component({
-  selector: 'app-card-list',
-  templateUrl: './card-list.component.html',
-  styleUrls: ['./card-list.component.sass']
+  selector: 'app-api-card-list',
+  templateUrl: './api-card-list.component.html',
+  styleUrls: ['./api-card-list.component.sass']
 })
-export class CardListComponent implements OnInit {
+export class ApiCardListComponent implements OnInit {
 
   apis: ApiSummaryBean[] = [];
-  plans: Plan[] = [];
-
 
   @Input() listType = "";
-  @Input() cardType = "";
   pageEvent: void;
   inputEvent: void;
 
-  constructor(public apiService: ApiService,
-              private planService: PlanService) { }
+  constructor(public apiService: ApiService) { }
 
   ngOnInit(): void {
     if (this.listType === "api") {
       this.getApis();
     } else if (this.listType === "featuredApi") {
       this.getFeaturedApis();
-    } else {
-      this.getPlans();
     }
   }
 
@@ -53,11 +45,5 @@ export class CardListComponent implements OnInit {
 
   getFeaturedApis(): void {
     this.apiService.getFeaturedApis();
-  }
-
-  // ToDo Change to backend call
-  getPlans(): void {
-    this.planService.getPlans()
-      .subscribe(plans => this.plans = plans);
   }
 }

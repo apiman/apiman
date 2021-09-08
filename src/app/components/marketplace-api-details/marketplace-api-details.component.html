@@ -1,5 +1,5 @@
 <ng-container *ngIf="apiService.currentApi">
   <app-marketplace-api-description [api]="apiService.currentApi"></app-marketplace-api-description>
   <h2>Plans</h2>
-  <app-card-list [cardType]="'plan'"></app-card-list>
+  <app-plan-card-list></app-plan-card-list>
 </ng-container>
