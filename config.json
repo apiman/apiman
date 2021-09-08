@@ -1,4 +1,32 @@
 {
-  "language": "en"
+  "language": "en",
+  "supportedLanguages": ["de", "en"],
+  "hero": {
+    "title": "HOME.TITLE",
+    "subtitle": "HOME.SUBTITLE",
+    "heroImgUrl": "https://www.gstatic.com/earth/social/00_generic_facebook-001.jpg",
+    "large": true,
+    "fontColor": "rgba(200, 200, 200, 1)",
+    "overlayColor": "rgba(20, 20, 20, 0.5)"
+  },
+  "footer": {
+    "links": [
+      {
+        "name": "Scheer PAS",
+        "link": "https://www.scheer-pas.com/"
+      },
+      {
+        "name": "Apiman",
+        "link": "https://www.apiman.io/"
+      },
+      {
+        "name": "Github",
+        "link": "https://www.github.com/"
+      },
+      {
+        "name": "Keybase",
+        "link": "https://keybase.io/"
+      }
+    ]
+  }
 }
-

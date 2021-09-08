@@ -28,9 +28,8 @@ export class ApiService {
     this.apis= this.apis.slice(0, 4);
   }
 
-  getApi(orgId: String, apiId: String): void {
-    this.backendService.getApi(orgId, apiId)
-      .then(response => this.currentApi = response.data)
+  getApi(orgId: String, apiId: String): Promise<any> {
+    return this.backendService.getApi(orgId, apiId);
   }
 
   searchApis(): void {

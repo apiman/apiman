@@ -5,7 +5,15 @@
     "YES": "Yes",
     "NO": "No"
   },
+  "HOME": {
+    "TITLE": "KoolBank Api Developer Portal",
+    "SUBTITLE": "Welcome"
+  },
   "MPLACE": {
-    "TITLE": "Marketplace"
+    "TITLE": "Marketplace",
+    "SUBTITLE": "Discover our APIs"
+  },
+  "API_SIGN_UP": {
+    "TITLE": "API Sign Up"
   }
 }

@@ -1,7 +1,7 @@
 <div class="footer">
-  <hr>
+  <mat-divider></mat-divider>
   <div class="row">
-    <div class="footer-links" *ngFor="let link of links; let last = last;">
+    <div class="footer-links" *ngFor="let link of footer.links; let last = last;">
       <a href={{link.link}} target="_blank">
         <span>{{link.name}}</span>
       </a>

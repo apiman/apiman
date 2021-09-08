@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Api} from "../../interfaces/api";
+import {HeroService} from '../../services/hero/hero.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
@@ -95,9 +97,16 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     'Inplevere maior. Ubi aut supplicium Averna, ciet percussis Praebuimus saepe\n' +
     'fugisse quae est: a.';
 
-  constructor() { }
+  constructor(private heroService: HeroService,
+              private translater: TranslateService) { }
 
   ngOnInit(): void {
+    this.setUpHero();
   }
 
+  private setUpHero() {
+    this.heroService.setUpHero({
+      title: this.translater.instant('API_SIGN_UP.TITLE')
+    });
+  }
 }

@@ -89,9 +89,9 @@ export class BackendService {
   constructor() { }
 
   // ToDo replace hard-coded URL with variable URL in config File
-  private apiMgmtUiRestUrl: string = 'https://dev1.scheer-group.com/pas-test/apiman';
+  private apiMgmtUiRestUrl: string = 'https://vagrantguest/pas/apiman';
   // ToDo remove credentials and use anonymous call
-  private credentials: string = '' // Format username:password
+  private credentials: string = 'test:test1234' // Format username:password
 
   /**
    * Searches apis

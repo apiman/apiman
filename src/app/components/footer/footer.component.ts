@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {ConfigService} from '../../services/config/config.service';
+import {IFooter, ILink} from '../../interfaces/IConfig';
 
 @Component({
   selector: 'app-footer',
@@ -6,27 +8,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./footer.component.sass']
 })
 export class FooterComponent implements OnInit {
+  footer: IFooter
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor(configService: ConfigService) {
+    this.footer = configService.getFooter();
   }
-  // To-Do replace hard-coded values with configurable variable
-  links = [
-    {
-      name: 'Scheer PAS',
-      link: 'https://www.scheer-pas.com/'
-    },
-    {
-      name: 'Apiman',
-      link: 'https://www.apiman.io/'
-    },
-    {
-      name: 'Github',
-      link: 'https://www.github.com/'
-    },
-    {
-      name: 'Keybase',
-      link: 'https://keybase.io/'
-    }];
+
+  ngOnInit(): void { }
 }

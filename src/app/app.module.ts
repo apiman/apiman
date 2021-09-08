@@ -25,8 +25,15 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {InitializerService} from './services/initializer/initializer.service';
 import config from './../../config.json';
 import {MaterialModule} from './material.module';
+import {ActivatedRoute, ActivationEnd, NavigationEnd, Router, RouterEvent} from '@angular/router';
+import {HeroService} from './services/hero/hero.service';
+import {ConfigService} from './services/config/config.service';
+import {NavigationComponent} from './components/navigation/navigation.component';
 
-export function initializeApp(devPortalInitializer: InitializerService): () => Promise<void> {
+export function initializeApp(configService: ConfigService,
+                              devPortalInitializer: InitializerService): () => Promise<void> {
+  configService.readAndEvaluateConfig();
+
   /* Define promisses needed for the app initialization */
   const initLanguagePromise: Promise<void> = new Promise((resolve, reject) => {
     devPortalInitializer.initLanguage(config.language).then(() => {
@@ -35,6 +42,7 @@ export function initializeApp(devPortalInitializer: InitializerService): () => P
       reject();
     });
   });
+
 
   return (): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -67,7 +75,8 @@ export function createTranslateLoader(http: HttpClient) {
     MarketplaceApiConfirmationComponent,
     MarketplaceApiDescriptionComponent,
     PlanCardComponent,
-    MarketplaceComponent
+    MarketplaceComponent,
+    NavigationComponent
   ],
   imports: [
     MaterialModule,
@@ -86,12 +95,14 @@ export function createTranslateLoader(http: HttpClient) {
       }
     })
   ],
-  providers: [{
-    provide: APP_INITIALIZER,
-    useFactory: initializeApp,
-    multi: true,
-    deps: [InitializerService]
-  }],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      multi: true,
+      deps: [ConfigService, InitializerService]
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -5,7 +5,15 @@
     "YES": "Ja",
     "NO": "Nein"
   },
+  "HOME": {
+    "TITLE": "KoolBank Api Entwickler Portal",
+    "SUBTITLE": "Willkommen"
+  },
   "MPLACE": {
-    "TITLE": "Marktplatz"
+    "TITLE": "Marktplatz",
+    "SUBTITLE": "Entdecken Sie unsere APIs"
+  },
+  "API_SIGN_UP": {
+    "TITLE": "API-Anmeldung"
   }
 }
