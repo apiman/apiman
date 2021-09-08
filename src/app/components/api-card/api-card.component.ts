@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Api} from "../../interfaces/api";
+import {ApiSummaryBean} from "../../services/backend/backend.service";
 
 @Component({
   selector: 'app-api-card',
@@ -12,12 +12,5 @@ export class ApiCardComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  @Input() api: Api = {
-    id: "",
-    title: "",
-    shortDescription: "",
-    longDescription: "",
-    featuredApi: false,
-    icon: ""
-  };
+  @Input() api: ApiSummaryBean = {};
 }

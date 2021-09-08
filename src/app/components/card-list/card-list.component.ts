@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { Api } from '../../interfaces/api'
 import {Plan} from "../../interfaces/plan";
 import { ApiService } from "../../services/api/api.service";
 import {PlanService} from "../../services/plan/plan.service";
+import {ApiSummaryBean} from "../../services/backend/backend.service";
+import {PageEvent} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-card-list',
@@ -11,13 +12,16 @@ import {PlanService} from "../../services/plan/plan.service";
 })
 export class CardListComponent implements OnInit {
 
-  apis: Api[] = [];
+  apis: ApiSummaryBean[] = [];
   plans: Plan[] = [];
+
 
   @Input() listType = "";
   @Input() cardType = "";
+  pageEvent: void;
+  inputEvent: void;
 
-  constructor(private apiService: ApiService,
+  constructor(public apiService: ApiService,
               private planService: PlanService) { }
 
   ngOnInit(): void {
@@ -30,16 +34,28 @@ export class CardListComponent implements OnInit {
     }
   }
 
+  OnInput(event:any){
+    this.apiService.searchCriteria.paging.page = 1;
+    this.apiService.searchCriteria.filters[0].value = '*' + event.target.value + '*';
+    this.getApis();
+  }
+
+  OnPageChange(event: PageEvent){
+    this.apiService.searchCriteria.paging.page = event.pageIndex + 1;
+    this.apiService.searchCriteria.paging.pageSize = event.pageSize;
+    this.getApis();
+  }
+
+
   getApis(): void {
-    this.apiService.getApis()
-      .subscribe(apis => this.apis = apis);
+    this.apiService.searchApis();
   }
 
   getFeaturedApis(): void {
-    this.apiService.getFeaturedApis()
-      .subscribe(apis => this.apis = apis);
+    this.apiService.getFeaturedApis();
   }
 
+  // ToDo Change to backend call
   getPlans(): void {
     this.planService.getPlans()
       .subscribe(plans => this.plans = plans);

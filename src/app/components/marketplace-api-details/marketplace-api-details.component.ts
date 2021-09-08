@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {ApiService} from "../../services/api/api.service";
-import {Api} from "../../interfaces/api";
+import {ApiBean} from "../../services/backend/backend.service";
 
 @Component({
   selector: 'app-marketplace-api-details',
@@ -12,27 +12,16 @@ export class MarketplaceApiDetailsComponent implements OnInit {
 
   @Input() id: string = "";
 
-  api: Api = {
-    id: "",
-    title: "",
-    shortDescription: "",
-    longDescription: "",
-    featuredApi: false,
-    icon: ""
-  };
+  api: ApiBean = {};
 
   constructor(private route: ActivatedRoute,
-              private apiService: ApiService) { }
+              public apiService: ApiService) { }
 
   ngOnInit(): void {
-    // this.getApi();
-    // console.log(this.api);
+    const orgId = this.route.snapshot.paramMap.get('orgId');
+    const apiId = this.route.snapshot.paramMap.get('apiId');
+    this.apiService.getApi(orgId!, apiId!);
+    console.log(this.apiService.currentApi);
   }
 
-  getApi(): Api {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.apiService.getApi(id)
-      .subscribe(api => this.api = api!);
-    return this.api
-  };
 }

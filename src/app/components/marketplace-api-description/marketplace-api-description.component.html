@@ -1,15 +1,15 @@
 <mat-card>
   <mat-card-header>
-    <img mat-card-avatar alt="Logo" src={{api.icon}}>
-    <mat-card-title>{{api.title}}</mat-card-title>
-    <mat-card-subtitle>{{api.shortDescription}}</mat-card-subtitle>
+    <img mat-card-avatar alt="Logo" src='https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png'>
+    <mat-card-title>{{api.name}}</mat-card-title>
+    <mat-card-subtitle>{{api.description}}</mat-card-subtitle>
   </mat-card-header>
 </mat-card>
 
 <mat-grid-list cols="3" rowHeight="1:1">
   <mat-grid-tile colspan="2" class="grid-content">
     <div class="box">
-      <markdown [data]="api.longDescription"></markdown>
+      <markdown [data]="markdown"></markdown>
     </div>
   </mat-grid-tile>
   <mat-grid-tile colspan="1" class="grid-content">

@@ -8,6 +8,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatInputModule} from '@angular/material/input';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   exports: [
@@ -19,7 +20,10 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatGridListModule,
     MatIconModule,
     MatInputModule,
-    MatListModule
+    MatListModule,
+    MatCheckboxModule,
+    MatInputModule,
+    MatPaginatorModule
   ]
 })
 export class MaterialModule {}

@@ -1,17 +1,17 @@
 <mat-card class="api-card" style="display: flex; flex-direction: column;">
   <mat-card-header class="api-card-header">
 <!--    TODO fix warning, maybe use sass for this-->
-    <div mat-card-avatar class="api-card-icon" style="background-image: url({{api.icon}})"></div>
-    <mat-card-title class="api-card-title">{{api.title}}</mat-card-title>
+    <div mat-card-avatar class="api-card-icon" style="background-image: url(https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png)"></div>
+    <mat-card-title class="api-card-title">{{api.name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content class="api-card-content">
     <p>
-      {{api.shortDescription}}
+      {{api.description}}
     </p>
   </mat-card-content>
   <mat-card-actions class="api-card-actions">
     <button mat-raised-button color="primary" class="api-card-button">API Docs</button>
-    <button mat-raised-button color="primary" class="api-card-button" [routerLink]="['/api-details', api.id]">Learn More</button>
+    <button mat-raised-button color="primary" class="api-card-button" [routerLink]="['/api-details', api.organizationId, api.id]">Learn More</button>
   </mat-card-actions>
 </mat-card>
 

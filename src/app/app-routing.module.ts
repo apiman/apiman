@@ -9,7 +9,7 @@ const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'home', component: HomeComponent},
   {path: 'marketplace', component: MarketplaceComponent},
-  {path: 'api-details/:id', component: MarketplaceApiDetailsComponent},
+  {path: 'api-details/:orgId/:apiId', component: MarketplaceApiDetailsComponent},
   {path: 'api-signup', component: MarketplaceSignupStepperComponent}
 ];
 
