@@ -25,8 +25,8 @@ import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
-import io.apiman.manager.api.security.beans.UserDto;
-import io.apiman.manager.api.security.beans.UserMapper;
+import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.security.i18n.Messages;
 
 import java.util.HashSet;

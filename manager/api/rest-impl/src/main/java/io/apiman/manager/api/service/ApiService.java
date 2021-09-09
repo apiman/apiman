@@ -238,18 +238,7 @@ public class ApiService implements DataAccessUtilMixin {
     public SearchResultsBean<AuditEntryBean> getApiActivity(String organizationId, String apiId,
         int page, int pageSize) throws ApiNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
-
-        if (page <= 1) {
-            page = 1;
-        }
-        if (pageSize == 0) {
-            pageSize = 20;
-        }
-
-        final PagingBean paging = new PagingBean();
-        paging.setPage(page);
-        paging.setPageSize(pageSize);
-
+        final PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, apiId, null, ApiBean.class, paging));
     }
     
@@ -585,16 +574,7 @@ public class ApiService implements DataAccessUtilMixin {
         NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
-        if (page <= 1) {
-            page = 1;
-        }
-        if (pageSize == 0) {
-            pageSize = 20;
-        }
-        PagingBean paging = new PagingBean();
-        paging.setPage(page);
-        paging.setPageSize(pageSize);
-
+        PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, apiId, version, ApiBean.class, paging));
     }
 

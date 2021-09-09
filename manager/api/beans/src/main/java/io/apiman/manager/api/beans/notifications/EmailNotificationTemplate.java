@@ -7,6 +7,9 @@ import java.util.StringJoiner;
  *
  * By notification reason or category. Category might be more useful for more generic notifications.
  *
+ * TODO: HTML + Plaintext
+ * TODO: Language-specific templates (need per-user language preference)
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 // @Entity
@@ -29,6 +32,7 @@ public class EmailNotificationTemplate {
     private String notificationReason;
 
     // @Column(name = "notification_category", nullable = true)
+    // @Enumerated(EnumType.STRING)
     private NotificationCategory notificationCategory;
 
     public EmailNotificationTemplate() {

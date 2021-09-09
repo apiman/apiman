@@ -4,6 +4,7 @@ import io.apiman.manager.api.beans.notifications.NotificationEntity;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 import io.apiman.manager.api.beans.search.PagingBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
@@ -20,7 +21,11 @@ public interface INotificationRepository {
 
     NotificationEntity getNotificationById(@NotNull Long notificationId) throws StorageException;
 
-    SearchResultsBean<NotificationEntity> getUnreadNotificationsByRecipientId(@NotNull String recipientUserId, @Nullable PagingBean pagingBean)
+    SearchResultsBean<NotificationEntity> searchNotificationsByUser(@NotNull String recipientUserId,
+         @Nullable SearchCriteriaBean searchCriteria)
+         throws StorageException;
+
+    SearchResultsBean<NotificationEntity> getLatestNotificationsByRecipientId(@NotNull String recipientUserId, @Nullable PagingBean pagingBean)
          throws StorageException;
 
     void create(@NotNull NotificationEntity bean) throws StorageException;

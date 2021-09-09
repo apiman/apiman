@@ -18,6 +18,8 @@ package io.apiman.manager.api.beans.search;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.QueryParam;
 
 /**
  * Generic search criteria used when searching for beans.
@@ -28,14 +30,20 @@ public class SearchCriteriaBean implements Serializable {
 
     private static final long serialVersionUID = 5103776179000907112L;
 
-    private List<SearchCriteriaFilterBean> filters = new ArrayList<>();
-    private OrderByBean orderBy;
-    private PagingBean paging;
+    protected List<SearchCriteriaFilterBean> filters = new ArrayList<>();
+    protected OrderByBean orderBy;
+    protected PagingBean paging;
 
     /**
      * Constructor.
      */
     public SearchCriteriaBean() {
+    }
+
+    public SearchCriteriaBean(SearchCriteriaBean bean) {
+        this.filters = bean.getFilters();
+        this.orderBy = bean.getOrderBy();
+        this.paging = bean.getPaging();
     }
 
     /**

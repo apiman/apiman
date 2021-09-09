@@ -17,7 +17,7 @@ import org.mapstruct.Mapper;
 public abstract class NotificationMapper {
     @Inject EventFactory eventFactory;
 
-    public abstract NotificationDto entityToDto(NotificationEntity entity);
+    public abstract NotificationDto<?> entityToDto(NotificationEntity entity);
 
     public IVersionedApimanEvent translatePayloadJsonToPojo(JsonNode event) {
         return eventFactory.toEventPojo(event);

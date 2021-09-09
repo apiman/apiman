@@ -41,7 +41,22 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public SearchResultsBean<NotificationEntity> getUnreadNotificationsByRecipientId(@NotNull String recipientUserId, @Nullable PagingBean paging)
+    public SearchResultsBean<NotificationEntity> searchNotificationsByUser(@NotNull String recipientUserId,
+         @Nullable SearchCriteriaBean searchCriteria)
+         throws StorageException {
+
+        var recipientFilter = new SearchCriteriaFilterBean()
+             .setName("recipient")
+             .setOperator(SearchCriteriaFilterOperator.eq)
+             .setValue(recipientUserId);
+
+        searchCriteria.getFilters().add(recipientFilter);
+
+        return super.find(searchCriteria, NotificationEntity.class);
+    }
+
+    @Override
+    public SearchResultsBean<NotificationEntity> getLatestNotificationsByRecipientId(@NotNull String recipientUserId, @Nullable PagingBean paging)
          throws StorageException {
         var filter = new SearchCriteriaFilterBean()
              .setName("recipient")

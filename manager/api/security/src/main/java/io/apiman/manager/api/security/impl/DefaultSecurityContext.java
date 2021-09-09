@@ -15,24 +15,15 @@
  */
 package io.apiman.manager.api.security.impl;
 
-import io.apiman.common.config.options.AbstractOptions;
-import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.core.IStorage;
-import io.apiman.manager.api.core.config.ApiManagerConfig;
-import io.apiman.manager.api.core.exceptions.StorageException;
-import io.apiman.manager.api.rest.exceptions.SystemErrorException;
-import io.apiman.manager.api.security.beans.UserDto;
+import io.apiman.manager.api.beans.idm.UserDto;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-
-import com.google.common.collect.Streams;
 
 /**
  * The basic/default implementation of a security context.

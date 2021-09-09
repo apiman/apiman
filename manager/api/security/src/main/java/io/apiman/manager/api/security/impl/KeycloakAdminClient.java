@@ -1,6 +1,6 @@
 package io.apiman.manager.api.security.impl;
 
-import io.apiman.manager.api.security.beans.UserDto;
+import io.apiman.manager.api.beans.idm.UserDto;
 
 import java.util.List;
 import java.util.Set;

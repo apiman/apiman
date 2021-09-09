@@ -1,0 +1,26 @@
+[
+  {
+    "notificationReason": "apiman.account.signup.approval.request",
+    "notificationTemplateSubject": "Action required: New account signup {event.userId} needs activation",
+    "notificationTemplateBody": "Hi {notification.recipient.fullName}",
+    "notificationCategory": "USER_ADMINISTRATION"
+  },
+  {
+    "notificationReason": "apiman.account.signup.notification",
+    "notificationTemplateSubject": "Info: A new account '{event.userId}' signed up to the developer portal",
+    "notificationTemplateBody": "Hi {notification.recipient.fullName}",
+    "notificationCategory": "USER_ADMINISTRATION"
+  },
+  {
+    "notificationReason": "apiman.api.signup.approval.request",
+    "notificationTemplateSubject": "Action required: A user requires approval to sign up to API {event.apiName} v{event.apiVersion}",
+    "notificationTemplateBody": "Hi {notification.recipient.fullName}",
+    "notificationCategory": "API_ADMINISTRATION"
+  },
+  {
+    "notificationReason": "apiman.api.signup.notification",
+    "notificationTemplateSubject": "Info: User {event.userId} signed up to {event.apiName} v{event.apiVersion}",
+    "notificationTemplateBody": "Hi {notification.recipient.fullName}",
+    "notificationCategory": "API_ADMINISTRATION"
+  }
+]

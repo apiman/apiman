@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,24 +19,32 @@ import java.util.SortedMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Send notification emails as configured via file in {@link ApiManagerConfig#getNotificationProperties()}.
- * @see SmtpEmailConfiguration
+ * Simple email related actions, with a focus on notifications.
  *
+ * <ul>
+ *     <li>Send notification emails as configured via file in {@link ApiManagerConfig#getNotificationProperties()}.</li>
+ *     <li>Get email notification templates (from a static file only, at present) by reason (or prefix thereof) or
+ *     category.</li>
+ * </ul>
+ *
+ * @see SmtpEmailConfiguration
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
 public class SimpleMailNotificationService {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SimpleMailNotificationService.class);
+    private static final Map DEFAULT_HEADERS = Map.of("X-Notification-Producer", "Apiman");
+
     private EmailSender emailSender;
     private ApiManagerConfig config;
+
     private PatriciaTrie<EmailNotificationTemplate> reasonTrie = new PatriciaTrie<>();
-    private MultiValuedMap<NotificationCategory, EmailNotificationTemplate> categoryToTemplateMap = new ArrayListValuedHashMap();
+    private ArrayListValuedHashMap<NotificationCategory, EmailNotificationTemplate> categoryToTemplateMap = new ArrayListValuedHashMap();
 
     @Inject
     public SimpleMailNotificationService(ApiManagerConfig config) {
@@ -53,7 +60,7 @@ public class SimpleMailNotificationService {
      * Send a plaintext email
      */
     public void sendPlaintext(@NotNull String to, @NotNull String subject, @NotNull String body) {
-        emailSender.sendPlaintext(to, subject, body, Collections.emptyMap());
+        emailSender.sendPlaintext(to, subject, body, DEFAULT_HEADERS);
     }
 
     /**
@@ -70,7 +77,7 @@ public class SimpleMailNotificationService {
      * Send an HTML email with a plaintext fallback/alternative.
      */
     public void sendHtml(@NotNull String to, @NotNull String subject, @NotNull String htmlBody, @NotNull String plainBody) {
-        emailSender.sendHtml(to, subject, htmlBody, plainBody, Collections.emptyMap());
+        emailSender.sendHtml(to, subject, htmlBody, plainBody, DEFAULT_HEADERS);
     }
 
     /**
@@ -84,17 +91,10 @@ public class SimpleMailNotificationService {
     }
 
     /**
-     * Find all valid email templates for a provided reason. Empty if not matches are found.
-     */
-    public SortedMap<String, EmailNotificationTemplate> findAllTemplatesFor(@NotNull String reasonKey) {
-        return reasonTrie.headMap(reasonKey + "*"); // Add a character, as headMap only matches prefixes shorter
-    }
-
-    /**
-     * Find an email template for a provided reason (longest match wins).
+     * Find an email template for a provided reason (longest prefix match wins).
      *
      * <p>For example, if we have a template for both <code>a.b.c.d</code> and <code>a.b.c</code>, the former will be
-     * returned.
+     * returned (it is the longest match).
      *
      * <p>Correspondingly, if an exact template match is not found, the prefix will be shortened until a matching
      * template is found, or we determine there is no suitable template. In the latter case, use of
@@ -106,23 +106,49 @@ public class SimpleMailNotificationService {
     public Optional<EmailNotificationTemplate> findTemplateFor(@NotNull String reasonKey) {
         Entry<String, EmailNotificationTemplate> selected = reasonTrie.select(reasonKey);
         if (selected == null || selected.getValue() == null) {
-            LOGGER.debug("Found template for reason {0} as {1}, shorter matching reasons templates "
-                              + "may also exist", selected.getKey(), reasonKey);
+            LOGGER.debug("No email template found for reason {0}, including shorter paths", reasonKey);
             return Optional.empty();
         } else {
-            LOGGER.debug("No email template found for reason {0}, including shorter paths", reasonKey);
+            LOGGER.debug("Found template for reason {0} as {1}, shorter matching reasons templates "
+                              + "may also exist", selected.getKey(), reasonKey);
             return Optional.of(selected.getValue());
         }
     }
 
     /**
-     * Get a template for a reason category (generally more coarse-grained).
+     * Find all valid email templates for a provided reason. This is a prefix search, so any smaller or equal matching
+     * prefix will be returned.
+     *
+     * <p>For example, if we have template mappings <code>a.b.c.d=tpl1</code> and <code>a.b.c=tpl2</code>, both
+     * templates will be returned with a reasonKey of <code>a.b.c.d</code> (common prefix).
+     *
+     * @return Sorted map of prefix and corresponding template. Empty if no matches are found.
+     */
+    public SortedMap<String, EmailNotificationTemplate> findAllTemplatesFor(@NotNull String reasonKey) {
+        return reasonTrie.headMap(reasonKey + "*"); // Add a character, as headMap only matches prefixes shorter
+    }
+
+    /**
+     * Get first template for a reason category (generally more coarse-grained).
      *
      * @param category the category to get a template for
      * @return template, if a suitable one is found, otherwise empty
      */
     public Optional<EmailNotificationTemplate> findTemplateFor(@NotNull NotificationCategory category) {
+        if (categoryToTemplateMap.containsKey(category)) {
+            return Optional.of(categoryToTemplateMap.get(category).get(0));
+        }
         return Optional.empty();
+    }
+
+    /**
+     * Get all templates for a reason category (generally more coarse-grained).
+     *
+     * @param category the category to get a template for
+     * @return template, if a suitable one is found, otherwise empty
+     */
+    public List<EmailNotificationTemplate> findAllTemplatesFor(@NotNull NotificationCategory category) {
+        return categoryToTemplateMap.get(category);
     }
 
     private void readEmailNotificationTemplatesFromFile() {

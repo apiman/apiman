@@ -21,6 +21,8 @@ import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
+import io.apiman.manager.api.beans.notifications.NotificationCriteriaBean;
+import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ClientSummaryBean;
@@ -202,7 +204,7 @@ public interface IUserResource {
             @QueryParam("page") int page, @QueryParam("count") int pageSize) throws NotAuthorizedException;
 
     /**
-     * This endpoint returns all of the permissions assigned to a specific user.
+     * This endpoint returns all the permissions assigned to a specific user.
      * @summary Get User's Permissions
      * @servicetag admin
      * @param userId The user's ID.
@@ -217,4 +219,20 @@ public interface IUserResource {
     public UserPermissionsBean getPermissionsForUser(@PathParam("userId") String userId)
             throws UserNotFoundException, NotAuthorizedException;
 
+
+    /**
+     * Provides the latest notifications for a user.
+     *
+     * @param userId The user ID.
+     * @param criteria The search & filter criteria.
+     * @return List of notifications.
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @POST
+    @Path("{userId}/notifications")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<NotificationDto<?>> searchLatestNotificationsForUser(@PathParam("userId") String userId, NotificationCriteriaBean criteria)
+         throws UserNotFoundException, NotAuthorizedException;
 }

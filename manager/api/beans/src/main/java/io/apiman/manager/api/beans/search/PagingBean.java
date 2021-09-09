@@ -38,6 +38,35 @@ public class PagingBean implements Serializable {
     }
 
     /**
+     * Constructor.
+     */
+    public PagingBean(int page, int pageSize) {
+        this.page = page;
+        this.pageSize = pageSize;
+    }
+
+    public static PagingBean create(int page) {
+        return new PagingBean(page, 20);
+    }
+
+    /**
+     * Create PagingBean with sensible defaults
+     *
+     * @param page page number
+     * @param pageSize page size
+     * @return a new paging bean with provided values or sensible defaults
+     */
+    public static PagingBean create(int page, int pageSize) {
+        if (page <= 1) {
+            page = 1;
+        }
+        if (pageSize == 0) {
+            pageSize = 20;
+        }
+        return new PagingBean(page, pageSize);
+    }
+
+    /**
      * @return the page
      */
     public int getPage() {

@@ -1,6 +1,4 @@
-package io.apiman.manager.api.security.beans;
-
-import io.apiman.manager.api.beans.idm.UserBean;
+package io.apiman.manager.api.beans.idm;
 
 import org.jetbrains.annotations.NotNull;
 

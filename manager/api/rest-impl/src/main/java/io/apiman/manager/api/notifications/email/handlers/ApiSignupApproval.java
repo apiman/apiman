@@ -5,10 +5,17 @@ import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.notifications.impl.ApiSignupNotificationProducer;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@ApplicationScoped
 public class ApiSignupApproval implements INotificationHandler  {
+
+    @Inject
+    public ApiSignupApproval() {}
 
     @Override
     public void handle(NotificationDto<? extends IVersionedApimanEvent> rawNotification) {

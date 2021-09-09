@@ -1,4 +1,4 @@
-package io.apiman.manager.api.security.beans;
+package io.apiman.manager.api.beans.idm;
 
 import java.util.Objects;
 

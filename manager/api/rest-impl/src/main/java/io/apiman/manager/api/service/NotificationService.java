@@ -4,22 +4,25 @@ import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.JsonUtil;
 import io.apiman.common.util.Preconditions;
+import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
+import io.apiman.manager.api.beans.notifications.NotificationCriteriaBean;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.search.PagingBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.INotificationRepository;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.notifications.mappers.NotificationMapper;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
-import io.apiman.manager.api.security.beans.UserDto;
-import io.apiman.manager.api.security.beans.UserMapper;
+import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.beans.idm.UserMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,13 +46,14 @@ import org.jetbrains.annotations.Nullable;
 @ApplicationScoped
 @Transactional
 public class NotificationService implements DataAccessUtilMixin {
+
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(NotificationService.class);
 
     private IStorage storage;
     private INotificationRepository notificationRepository;
     private NotificationMapper notificationMapper;
-    private Event<NotificationDto<?>> notificationDispatcher;
     private ISecurityContext securityContext;
+    private Event<NotificationDto<?>> notificationDispatcher;
 
     @Inject
     public NotificationService(
@@ -68,8 +72,31 @@ public class NotificationService implements DataAccessUtilMixin {
     public NotificationService() {
     }
 
-    public int unreadNotifications(@NotNull String userId) {
+    public int getUnreadNotificationsCount(@NotNull String userId) {
         return notificationRepository.countUnreadNotificationsByUserId(userId);
+    }
+
+    /**
+     * Search for any notification for a given user/recipient
+     *
+     * @param recipientId the user's ID
+     * @param searchCriteriaBeanIn the search criteria
+     * @return
+     */
+    public SearchResultsBean<NotificationDto<?>> searchNotificationsByRecipient(@NotNull String recipientId, SearchCriteriaBean searchCriteriaBeanIn) {
+        var searchCriteria = new SearchCriteriaBean(searchCriteriaBeanIn);
+        if (searchCriteriaBeanIn.getOrderBy() == null) {
+            searchCriteria.setOrder("id", false);
+        }
+        SearchResultsBean<NotificationEntity> results = tryAction(
+             () -> notificationRepository.searchNotificationsByUser(recipientId, searchCriteria)
+        );
+
+        List<NotificationDto<?>> dtos = results.getBeans().stream()
+                                               .map(notificationMapper::entityToDto)
+                                               .collect(Collectors.toList());
+
+        return new SearchResultsBean<NotificationDto<?>>(dtos, results.getTotalSize());
     }
 
     /**
@@ -79,8 +106,14 @@ public class NotificationService implements DataAccessUtilMixin {
      * @param paging pagination.
      * @return results with list of NotificationEntity and paging info.
      */
-    public SearchResultsBean<NotificationEntity> getLatestNotifications(@NotNull String recipientId, @Nullable PagingBean paging) {
-        return tryAction(() -> notificationRepository.getUnreadNotificationsByRecipientId(recipientId, paging));
+    public SearchResultsBean<NotificationDto<?>> getLatestNotificationsByRecipient(@NotNull String recipientId, @Nullable PagingBean paging) {
+        SearchResultsBean<NotificationEntity> results = tryAction(() -> notificationRepository.getLatestNotificationsByRecipientId(recipientId, paging));
+
+        List<NotificationDto<?>> dtos = results.getBeans().stream()
+                                        .map(notificationMapper::entityToDto)
+                                        .collect(Collectors.toList());
+
+        return new SearchResultsBean<NotificationDto<?>>(dtos, results.getTotalSize());
     }
 
     /**
@@ -103,14 +136,16 @@ public class NotificationService implements DataAccessUtilMixin {
                  .setSource(newNotification.getSource())
                  .setPayload(JsonUtil.toJsonTree(newNotification.getPayload()));
 
-            NotificationDto<?> dto = notificationMapper.entityToDto(notificationEntity);
-
             tryAction(() -> {
                 // 1. Save notification into notifications table.
                 LOGGER.trace("Creating notification entity in repository layer: {0}", notificationEntity);
                 notificationRepository.create(notificationEntity);
+
+                // Avoiding serializing and deserializing the payload immediately!
+                NotificationDto<?> dto = toDto(notificationEntity, newNotification.getPayload(), resolvedRecipient);
+
                 // 2. Emit notification onto notification bus.
-                LOGGER.trace("Firing notification event: {0}", dto);
+                LOGGER.trace("Firing notification: {0}", dto);
                 notificationDispatcher.fire(dto);
             });
         }
@@ -172,4 +207,18 @@ public class NotificationService implements DataAccessUtilMixin {
         }
     }
 
+    // TODO(msavy): can we change this to a mapper? Requires a bit of extra twiddling.
+    private NotificationDto<?> toDto(NotificationEntity newNotification, IVersionedApimanEvent event, UserDto user) {
+        return new NotificationDto<>()
+             .setId(newNotification.getId())
+             .setCategory(newNotification.getCategory())
+             .setReason(newNotification.getReason())
+             .setReasonMessage(newNotification.getReasonMessage())
+             .setNotificationStatus(NotificationStatus.OPEN)
+             .setCreatedOn(newNotification.getCreatedOn())
+             .setModifiedOn(newNotification.getModifiedOn())
+             .setRecipient(user)
+             .setSource(newNotification.getSource())
+             .setPayload(event);
+    }
 }

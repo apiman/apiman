@@ -17,7 +17,7 @@ package io.apiman.manager.api.security;
 
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
-import io.apiman.manager.api.security.beans.UserDto;
+import io.apiman.manager.api.beans.idm.UserDto;
 
 import java.util.List;
 import java.util.Set;

@@ -1,11 +1,14 @@
 package io.apiman.manager.api.beans.notifications.dto;
 
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
+import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 
 import java.time.OffsetDateTime;
 import java.util.StringJoiner;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
@@ -18,7 +21,7 @@ public class NotificationDto<P extends IVersionedApimanEvent> {
     private NotificationStatus notificationStatus;
     private OffsetDateTime createdOn;
     private OffsetDateTime modifiedOn;
-    private String recipient;
+    private UserDto recipient;
     private String source;
     private P payload;
 
@@ -89,11 +92,11 @@ public class NotificationDto<P extends IVersionedApimanEvent> {
         return this;
     }
 
-    public String getRecipient() {
+    public UserDto getRecipient() {
         return recipient;
     }
 
-    public NotificationDto<P> setRecipient(String recipient) {
+    public NotificationDto<P> setRecipient(UserDto recipient) {
         this.recipient = recipient;
         return this;
     }
