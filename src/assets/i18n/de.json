@@ -13,6 +13,14 @@
     "TITLE": "Marktplatz",
     "SUBTITLE": "Entdecken Sie unsere APIs"
   },
+  "ACCOUNT": {
+    "TITLE": "Benutzerkonto",
+    "SUBTITLE": "Verwalten Sie Ihre Einstellungen"
+  },
+  "APPS": {
+    "TITLE": "Meine Apps",
+    "SUBTITLE": "API-Gruppen"
+  },
   "API_SIGN_UP": {
     "TITLE": "API-Anmeldung"
   }

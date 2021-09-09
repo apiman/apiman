@@ -30,6 +30,8 @@ import {ConfigService} from './services/config/config.service';
 import {NavigationComponent} from './components/navigation/navigation.component';
 import { ApiCardListComponent } from './components/api-card-list/api-card-list.component';
 import { PlanCardListComponent } from './components/plan-card-list/plan-card-list.component';
+import {AccountComponent} from './components/account/account.component';
+import {MyAppsComponent} from './components/my-apps/my-apps.component';
 
 export function initializeApp(configService: ConfigService,
                               devPortalInitializer: InitializerService): () => Promise<void> {
@@ -78,7 +80,9 @@ export function createTranslateLoader(http: HttpClient) {
     MarketplaceComponent,
     NavigationComponent,
     ApiCardListComponent,
-    PlanCardListComponent
+    PlanCardListComponent,
+    AccountComponent,
+    MyAppsComponent
   ],
   imports: [
     MaterialModule,

@@ -2,6 +2,8 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivationEnd, Router} from '@angular/router';
 import {HeroService} from './services/hero/hero.service';
 import {IHero} from './interfaces/IHero';
+import {INavigation} from './interfaces/IConfig';
+import {NavigationService} from './services/navigation/navigation.service';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +15,13 @@ export class AppComponent implements OnInit{
   title = 'dev-portal2';
 
   constructor(private router: Router,
-              private heroService: HeroService) {
+              private heroService: HeroService,
+              private navigationService: NavigationService) {
   }
 
   ngOnInit() {
     this.initHeroEmitter();
+    this.initNavigationEmitter();
   }
 
   private initHeroEmitter() {
@@ -27,6 +31,12 @@ export class AppComponent implements OnInit{
       }else{
         this.content.nativeElement.classList.add('free-height');
       }
+    });
+  }
+
+  private initNavigationEmitter() {
+    this.navigationService.navigationChanged.subscribe((navigation: INavigation) => {
+
     });
   }
 }

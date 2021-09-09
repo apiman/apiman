@@ -9,24 +9,34 @@
     "fontColor": "rgba(200, 200, 200, 1)",
     "overlayColor": "rgba(20, 20, 20, 0.5)"
   },
+  "navigation": {
+    "links": [
+      {
+        "name": "External Puppy Link",
+        "link": "https://pbs.twimg.com/profile_images/704447240216051712/mTel0Q49_400x400.jpg",
+        "openInNewTab": true
+      }
+    ],
+    "seperator": ""
+  },
   "footer": {
     "links": [
       {
         "name": "Scheer PAS",
-        "link": "https://www.scheer-pas.com/"
-      },
-      {
-        "name": "Apiman",
-        "link": "https://www.apiman.io/"
+        "link": "https://www.scheer-pas.com/",
+        "openInNewTab": false
       },
       {
         "name": "Github",
-        "link": "https://www.github.com/"
+        "link": "https://www.github.com/",
+        "openInNewTab": true
       },
       {
         "name": "Keybase",
-        "link": "https://keybase.io/"
+        "link": "https://keybase.io/",
+        "openInNewTab": true
       }
-    ]
+    ],
+    "seperator": "|"
   }
 }

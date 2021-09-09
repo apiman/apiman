@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import config from './../../../../config.json';
-import {IConfig, IFooter} from '../../interfaces/IConfig';
+import {IConfig, IFooter, INavigation} from '../../interfaces/IConfig';
 import {IHero} from '../../interfaces/IHero';
 
 @Injectable({
@@ -29,5 +29,9 @@ export class ConfigService {
 
   getHero(): IHero {
     return {...this.config.hero};
+  }
+
+  getNavigation(): INavigation {
+    return {...this.config.navigation};
   }
 }

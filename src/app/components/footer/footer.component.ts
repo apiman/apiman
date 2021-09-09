@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import {ConfigService} from '../../services/config/config.service';
 import {IFooter, ILink} from '../../interfaces/IConfig';
+import {FooterService} from '../../services/footer.service';
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.sass']
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent {
   footer: IFooter
 
-  constructor(configService: ConfigService) {
-    this.footer = configService.getFooter();
+  constructor(private footerService: FooterService) {
+    this.footer = footerService.footer;
   }
-
-  ngOnInit(): void { }
 }

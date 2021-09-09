@@ -2,6 +2,7 @@ export interface IConfig {
   "language": string
   "supportedLanguages": string[],
   "hero": IHero,
+  "navigation": INavigation,
   "footer": IFooter
 }
 
@@ -14,13 +15,20 @@ export interface IHero {
   overlayColor: string;
 }
 
+export interface INavigation{
+  links: ILink[],
+  seperator: string
+}
+
 export interface IFooter{
-  links: ILink[]
+  links: ILink[],
+  seperator: string
 }
 
 export interface ILink{
   "name": string
-  "link": string
+  "link": string,
+  "openInNewTab": boolean
 }
 
 
