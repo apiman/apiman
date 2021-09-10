@@ -137,14 +137,14 @@
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.32</version.org.slf4j>
     <version.org.testcontainers>1.16.0</version.org.testcontainers>
-    <version.io.netty>4.1.67.Final</version.io.netty>
+    <version.io.netty>4.1.68.Final</version.io.netty>
     <version.io.swagger>1.6.2</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.8</version.io.vertx>
     <version.net.openhft>0.15</version.net.openhft>
     <version.com.ibm.icu4j>69.1</version.com.ibm.icu4j>
     <version.com.hazelcast>4.2.2</version.com.hazelcast>
-    <version.com.jcbai>1.17.6</version.com.jcbai>
+    <version.com.jcbai>1.18.1</version.com.jcbai>
     <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
     <version.org.redisson>3.15.6</version.org.redisson>
     <version.net.javacrumbs.json-unit>2.28.0</version.net.javacrumbs.json-unit>
