@@ -4,16 +4,16 @@
     <input matInput type="search"
            placeholder="search here"
            class="search-input"
-           (input)="inputEvent = OnInput($event)"  >
+           (input)="OnInput($event)"  >
   </mat-form-field>
 </ng-container>
 <ng-container class="api-card-list">
-  <app-api-card  *ngFor="let api of apiService.apis;" [api]="api" class="api-card"></app-api-card>
+  <app-api-card  *ngFor="let api of apis;" [api]="api" class="api-card"></app-api-card>
 </ng-container>
 <ng-container *ngIf="listType==='api'">
-  <mat-paginator [length]="apiService.totalSize"
-                 [pageSize]="apiService.searchCriteria.paging.pageSize"
+  <mat-paginator [length]="totalSize"
+                 [pageSize]="searchCriteria.paging.pageSize"
                  [pageSizeOptions]="[4, 8, 12, 16]"
-                 (page)="pageEvent = OnPageChange($event)">
+                 (page)="OnPageChange($event)">
   </mat-paginator>
 </ng-container>

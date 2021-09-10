@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ApiSummaryBean} from "../../services/backend/backend.service";
+import {ApiSummaryBean, SearchCriteriaBean} from "../../services/backend/backend.service";
 import {ApiService} from "../../services/api/api.service";
 import {PageEvent} from "@angular/material/paginator";
 
@@ -11,14 +11,25 @@ import {PageEvent} from "@angular/material/paginator";
 export class ApiCardListComponent implements OnInit {
 
   apis: ApiSummaryBean[] = [];
+  totalSize: number = 0;
+  searchCriteria: SearchCriteriaBean = {
+    filters: [{
+      name: "name",
+      value: "*",
+      operator: "like"
+    }],
+    paging: {
+      page: 1,
+      pageSize: 8
+    }
+  };
 
   @Input() listType = "";
-  pageEvent: void;
-  inputEvent: void;
 
   constructor(public apiService: ApiService) { }
 
   ngOnInit(): void {
+    this.apis = [];
     if (this.listType === "api") {
       this.getApis();
     } else if (this.listType === "featuredApi") {
@@ -27,23 +38,28 @@ export class ApiCardListComponent implements OnInit {
   }
 
   OnInput(event:any){
-    this.apiService.searchCriteria.paging.page = 1;
-    this.apiService.searchCriteria.filters[0].value = '*' + event.target.value + '*';
+    this.searchCriteria.paging.page = 1;
+    this.searchCriteria.filters[0].value = '*' + event.target.value + '*';
     this.getApis();
   }
 
   OnPageChange(event: PageEvent){
-    this.apiService.searchCriteria.paging.page = event.pageIndex + 1;
-    this.apiService.searchCriteria.paging.pageSize = event.pageSize;
+    this.searchCriteria.paging.page = event.pageIndex + 1;
+    this.searchCriteria.paging.pageSize = event.pageSize;
     this.getApis();
   }
 
 
   getApis(): void {
-    this.apiService.searchApis();
+    this.apiService.searchApis(this.searchCriteria).subscribe(searchResult => {
+      this.apis = searchResult.beans;
+      this.totalSize = searchResult.totalSize;
+    });
   }
 
   getFeaturedApis(): void {
-    this.apiService.getFeaturedApis();
+    this.apiService.getFeaturedApis(this.searchCriteria).subscribe(searchResult => {
+      this.apis = searchResult.beans;
+    });
   }
 }

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import Axios from 'axios';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 
 export interface ApiSummaryBean {
   organizationId?: string;
@@ -52,10 +54,10 @@ export interface OrganizationBean {
 }
 
 export interface SearchResultsBeanApiSummaryBean {
-  beans?: ApiSummaryBean[];
+  beans: ApiSummaryBean[];
 
   /** @format int32 */
-  totalSize?: number;
+  totalSize: number;
 }
 
 export interface SearchCriteriaBean {
@@ -86,46 +88,47 @@ export interface PagingBean {
 
 export class BackendService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   // ToDo replace hard-coded URL with variable URL in config File
   private apiMgmtUiRestUrl: string = 'https://vagrantguest/pas/apiman';
   // ToDo remove credentials and use anonymous call
   private credentials: string = 'test:test1234' // Format username:password
-
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type':  'application/json',
+      'Authorization': 'Basic ' + btoa(this.credentials)
+    })
+  };
   /**
    * Searches apis
    */
-  public async searchApis(searchCriteria: SearchCriteriaBean): Promise<any> {
+  public searchApis(searchCriteria: SearchCriteriaBean): Observable<SearchResultsBeanApiSummaryBean> {
     const url = this.apiMgmtUiRestUrl + '/search/apis';
-    return await Axios.post(url, searchCriteria,{
-      headers: {
-        'accept':  'application/json',
-        'Authorization': 'Basic ' + btoa(this.credentials)
-      }});
+    return this.http.post(url, searchCriteria, this.httpOptions) as Observable<SearchResultsBeanApiSummaryBean>;
   }
 
   /**
    * Get Api
    */
-  public async getApi(orgId: String, apiId: String): Promise<any> {
-    const url = this.apiMgmtUiRestUrl + '/organizations/' + orgId + '/apis/' + apiId
-    return await Axios.get(url,{
-      headers: {
-        'accept':  'application/json',
-        'Authorization': 'Basic ' + btoa(this.credentials)
-      }});
+  public getApi(orgId: String, apiId: String): Observable<ApiBean> {
+    const url = this.apiMgmtUiRestUrl + `/organizations/${orgId}/apis/${apiId}`;
+    return this.http.get(url, this.httpOptions) as Observable<ApiBean>;
   }
 
   /**
    * Get Api Versions
    */
-  public async getApiVersions(orgId: String, apiId: String): Promise<ApiVersionSummaryBean[]> {
-    const url = this.apiMgmtUiRestUrl + '/organizations/' + orgId + '/apis/' + apiId + '/versions'
-    return await Axios.get(url,{
-      headers: {
-        'accept':  'application/json',
-        'Authorization': 'Basic ' + btoa(this.credentials)
-      }});
+  public getApiVersions(orgId: String, apiId: String): Observable<ApiVersionSummaryBean[]> {
+    const url = this.apiMgmtUiRestUrl + `/organizations/${orgId}/apis/${apiId}/versions`
+    return this.http.get<ApiVersionSummaryBean[]>(url, this.httpOptions).pipe(
+      map(apiVersions => {
+        apiVersions.sort((a, b) => {
+          // @ts-ignore
+          return a.version > b.version ? -1 : 1;
+        })
+        return apiVersions
+      })
+    );
   }
 }

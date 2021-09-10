@@ -24,8 +24,6 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {InitializerService} from './services/initializer/initializer.service';
 import config from './../../config.json';
 import {MaterialModule} from './material.module';
-import {ActivatedRoute, ActivationEnd, NavigationEnd, Router, RouterEvent} from '@angular/router';
-import {HeroService} from './services/hero/hero.service';
 import {ConfigService} from './services/config/config.service';
 import {NavigationComponent} from './components/navigation/navigation.component';
 import { ApiCardListComponent } from './components/api-card-list/api-card-list.component';

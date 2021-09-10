@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Plan} from "../../interfaces/plan";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-plan-card',
@@ -8,9 +9,13 @@ import {Plan} from "../../interfaces/plan";
 })
 export class PlanCardComponent implements OnInit {
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) { }
+  orgId: String = '';
+  apiId: String = '';
 
   ngOnInit(): void {
+    this.orgId = this.route.snapshot.paramMap.get('orgId')!;
+    this.apiId = this.route.snapshot.paramMap.get('apiId')!;
   }
   @Input() plan: Plan = {
     id: "",
