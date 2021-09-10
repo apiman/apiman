@@ -28,9 +28,9 @@ public class BlobEntity {
     @NotBlank
     private String name;
 
-    @Column(name = "file_ext", nullable = false)
+    @Column(name = "mime_type", nullable = false)
     @NotBlank
-    private String fileExt;
+    private String mimeType;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -70,12 +70,12 @@ public class BlobEntity {
         return this;
     }
 
-    public String getFileExt() {
-        return fileExt;
+    public String getMimeType() {
+        return mimeType;
     }
 
-    public BlobEntity setFileExt(String fileExt) {
-        this.fileExt = fileExt;
+    public BlobEntity setMimeType(String mimeType) {
+        this.mimeType = mimeType;
         return this;
     }
 
@@ -111,7 +111,7 @@ public class BlobEntity {
         return new StringJoiner(", ", BlobEntity.class.getSimpleName() + "[", "]")
              .add("id='" + id + "'")
              .add("name='" + name + "'")
-             .add("fileExt='" + fileExt + "'")
+             .add("mimeType='" + mimeType + "'")
              .add("createdOn=" + createdOn)
              .add("modifiedOn=" + modifiedOn)
              .add("blob=<binary>")

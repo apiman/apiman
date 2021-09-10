@@ -22,8 +22,7 @@ public class SqlBlobStoreService implements IBlobStore<SqlBlobStoreService> {
     private BlobMapper mapper;
 
     @Inject
-    public SqlBlobStoreService(BlobStoreRepository blobStoreRepository,
-         BlobMapper mapper) {
+    public SqlBlobStoreService(BlobStoreRepository blobStoreRepository, BlobMapper mapper) {
         this.blobStoreRepository = blobStoreRepository;
         this.mapper = mapper;
     }
@@ -31,13 +30,13 @@ public class SqlBlobStoreService implements IBlobStore<SqlBlobStoreService> {
     public SqlBlobStoreService() {}
 
     @Override
-    public String storeBlob(String name, String fileExt, FileBackedOutputStream fbos) {
+    public String storeBlob(String name, String mimeType, FileBackedOutputStream fbos) {
         String resourceId = UUID.randomUUID().toString();
         try {
         BlobEntity blobEntity = new BlobEntity()
              .setId(resourceId)
              .setName(name)
-             .setFileExt(fileExt)
+             .setMimeType(mimeType)
              .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()));
             blobStoreRepository.create(blobEntity);
         } catch (StorageException e) {
@@ -49,12 +48,12 @@ public class SqlBlobStoreService implements IBlobStore<SqlBlobStoreService> {
     }
 
     @Override
-    public String storeBlob(String name, String fileExt, byte[] bytes) {
+    public String storeBlob(String name, String mimeType, byte[] bytes) {
         String resourceId = UUID.randomUUID().toString();
         BlobEntity blobEntity = new BlobEntity()
              .setId(resourceId)
              .setName(name)
-             .setFileExt(fileExt)
+             .setMimeType(mimeType)
              .setBlob(BlobProxy.generateProxy(bytes));
         try {
             blobStoreRepository.create(blobEntity);

@@ -13,7 +13,7 @@ import com.google.common.io.FileBackedOutputStream;
 public class BlobDto {
     private String id;
     private String name;
-    private String fileExt;
+    private String mimeType;
     private OffsetDateTime createdOn;
     private OffsetDateTime modifiedOn;
     private FileBackedOutputStream blob;
@@ -36,12 +36,12 @@ public class BlobDto {
         return this;
     }
 
-    public String getFileExt() {
-        return fileExt;
+    public String getMimeType() {
+        return mimeType;
     }
 
-    public BlobDto setFileExt(String fileExt) {
-        this.fileExt = fileExt;
+    public BlobDto setMimeType(String mimeType) {
+        this.mimeType = mimeType;
         return this;
     }
 
@@ -77,7 +77,7 @@ public class BlobDto {
         return new StringJoiner(", ", BlobDto.class.getSimpleName() + "[", "]")
              .add("id='" + id + "'")
              .add("name='" + name + "'")
-             .add("fileExt='" + fileExt + "'")
+             .add("mimeType='" + mimeType + "'")
              .add("createdOn=" + createdOn)
              .add("modifiedOn=" + modifiedOn)
              .add("blob=<binary>")

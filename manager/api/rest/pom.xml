@@ -50,6 +50,7 @@
           <plugin>
             <groupId>com.qmino</groupId>
             <artifactId>miredot-plugin</artifactId>
+            <version>${version.com.qmino.miredot-plugin}</version>
             <executions>
               <execution>
                 <goals>
