@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ConfigService} from '../../services/config/config.service';
 import {IFooter, ILink} from '../../interfaces/IConfig';
-import {FooterService} from '../../services/footer.service';
+import {FooterService} from '../../services/footer/footer.service';
 
 @Component({
   selector: 'app-footer',

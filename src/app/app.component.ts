@@ -1,8 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivationEnd, Router} from '@angular/router';
 import {HeroService} from './services/hero/hero.service';
-import {IHero} from './interfaces/IHero';
-import {INavigation} from './interfaces/IConfig';
+import {IHero, INavigation} from './interfaces/IConfig';
 import {NavigationService} from './services/navigation/navigation.service';
 
 @Component({

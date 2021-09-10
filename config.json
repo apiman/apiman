@@ -1,13 +1,17 @@
 {
-  "language": "en",
+  "language": "de",
   "supportedLanguages": ["de", "en"],
+  "theme": "default-theme",
   "hero": {
     "title": "HOME.TITLE",
     "subtitle": "HOME.SUBTITLE",
     "heroImgUrl": "https://www.gstatic.com/earth/social/00_generic_facebook-001.jpg",
     "large": true,
-    "fontColor": "rgba(200, 200, 200, 1)",
-    "overlayColor": "rgba(20, 20, 20, 0.5)"
+    "fontColor": {
+      "title": "orange",
+      "subtitle": "green"
+    },
+    "overlayColor": "rgba(200, 200, 200, 0.4)"
   },
   "navigation": {
     "links": [
@@ -37,6 +41,6 @@
         "openInNewTab": true
       }
     ],
-    "seperator": "|"
+    "seperator": "•"
   }
 }

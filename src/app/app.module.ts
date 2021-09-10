@@ -22,7 +22,6 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {InitializerService} from './services/initializer/initializer.service';
-import config from './../../config.json';
 import {MaterialModule} from './material.module';
 import {ConfigService} from './services/config/config.service';
 import {NavigationComponent} from './components/navigation/navigation.component';
@@ -30,20 +29,22 @@ import { ApiCardListComponent } from './components/api-card-list/api-card-list.c
 import { PlanCardListComponent } from './components/plan-card-list/plan-card-list.component';
 import {AccountComponent} from './components/account/account.component';
 import {MyAppsComponent} from './components/my-apps/my-apps.component';
+import {ThemeService} from './services/theme/theme.service';
 
 export function initializeApp(configService: ConfigService,
-                              devPortalInitializer: InitializerService): () => Promise<void> {
+                              devPortalInitializer: InitializerService,
+                              themeService: ThemeService): () => Promise<void> {
   configService.readAndEvaluateConfig();
+  themeService.setTheme(configService.getTheme());
 
   /* Define promisses needed for the app initialization */
   const initLanguagePromise: Promise<void> = new Promise((resolve, reject) => {
-    devPortalInitializer.initLanguage(config.language).then(() => {
+    devPortalInitializer.initLanguage(configService.getLanguage()).then(() => {
       resolve();
     }).catch(() => {
       reject();
     });
   });
-
 
   return (): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -104,7 +105,7 @@ export function createTranslateLoader(http: HttpClient) {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       multi: true,
-      deps: [ConfigService, InitializerService]
+      deps: [ConfigService, InitializerService, ThemeService]
     }
   ],
   bootstrap: [AppComponent]

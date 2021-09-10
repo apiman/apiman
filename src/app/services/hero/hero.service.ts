@@ -1,7 +1,7 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {Data} from '@angular/router';
-import {IHero} from '../../interfaces/IHero';
 import {ConfigService} from '../config/config.service';
+import {IHero} from '../../interfaces/IConfig';
 
 @Injectable({
   providedIn: 'root'

@@ -1,25 +1,40 @@
 .api-card
-  text-align: center
-  box-shadow: 0px 1px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.18), 0px 1px 2px 0px rgba(0, 0, 0, 0.3)
-  border-radius: 1px
-  border: 2px solid #eee
-  float: right
-  height: 20vh
-
-.api-card-title
-  padding-top: 5px
+  border-radius: 2px
+  min-width: 24%
+  height: 30%
 
 .api-card-header
   padding-left: 3%
 
+::ng-deep .mat-card-header-text
+  margin: 0 10px !important
+
 .api-card-icon
   background-size: cover
 
+.api-card-title
+  margin-top: 5px
+  font-size: 1.2rem
+  text-overflow: ellipsis
+  overflow: hidden
+  white-space: nowrap
+  font-weight: 500
+
 .api-card-content
-  align-items: center
   padding: 16px
-  background-size: cover
-  height: 5vh
+  height: 4em
+
+.content-text
+  display: -webkit-box
+  -webkit-line-clamp: 4
+  -webkit-box-orient: vertical
+  overflow: hidden
 
 .api-card-button
-  width: 30%
+  width: 32%
+
+.api-card-actions
+  text-align: center
+  margin-top: 1.6rem
+  margin-bottom: unset
+

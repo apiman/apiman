@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {ConfigService} from './config/config.service';
-import {IFooter, ILink} from '../interfaces/IConfig';
+import {ConfigService} from '../config/config.service';
+import {IFooter, ILink} from '../../interfaces/IConfig';
 import {TranslationBundle} from '@angular/compiler/src/i18n/translation_bundle';
 import {TranslateService} from '@ngx-translate/core';
 

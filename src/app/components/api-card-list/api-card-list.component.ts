@@ -55,6 +55,8 @@ export class ApiCardListComponent implements OnInit {
       this.apis = searchResult.beans;
       this.totalSize = searchResult.totalSize;
     });
+
+
   }
 
   getFeaturedApis(): void {

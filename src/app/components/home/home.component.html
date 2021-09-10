@@ -1,6 +1,8 @@
 <div class="home-container">
   <h2>Featured APIs</h2>
   <app-api-card-list [listType]="'featuredApi'"></app-api-card-list>
-  <button id="show-all-btn" mat-raised-button color="primary" [routerLink]="['/marketplace']">Show All</button>
+  <div>
+    <button id="show-all-btn" mat-raised-button color="primary" [routerLink]="['/marketplace']">{{'HOME.SHOW_ALL' | translate}}</button>
+  </div>
   <br>
 </div>

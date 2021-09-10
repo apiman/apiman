@@ -1,9 +1,11 @@
 <div #heroImage id="hero-image" [ngClass]="{'hero-large' : heroService.hero.large}">
-  <div id="hero-content">
-    <div id="hero-text">
-      <h1>{{heroService.hero.title}}</h1>
-      <p>{{heroService.hero.subtitle}}</p>
+  <div id="hero-overlay">
+    <div #heroOverlay id="hero-text">
+      <h1 #heroTitle>{{heroService.hero.title}}</h1>
+      <p #heroSubtitle>{{heroService.hero.subtitle}}</p>
     </div>
-    <button [ngClass]="{'mt-6em' : heroService.hero.large}" mat-raised-button color="primary">Register / Login</button>
+    <div id="hero-btn">
+      <button mat-raised-button color="primary">Register / Login</button>
+    </div>
   </div>
 </div>

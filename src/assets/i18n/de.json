@@ -3,15 +3,19 @@
     "OKAY": "Okay",
     "CANCEL": "Abbrechen",
     "YES": "Ja",
-    "NO": "Nein"
+    "NO": "Nein",
+    "SEARCH": "Suchen"
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",
-    "SUBTITLE": "Willkommen"
+    "SUBTITLE": "Willkommen",
+    "SHOW_ALL": "Zeige alles"
   },
   "MPLACE": {
     "TITLE": "Marktplatz",
-    "SUBTITLE": "Entdecken Sie unsere APIs"
+    "SUBTITLE": "Entdecken Sie unsere APIs",
+    "SEARCH": "APIs und Tags suchen",
+    "LEARN_MORE": "Mehr"
   },
   "ACCOUNT": {
     "TITLE": "Benutzerkonto",

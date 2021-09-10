@@ -7,6 +7,7 @@ import {ApiSummaryBean} from "../../services/backend/backend.service";
   styleUrls: ['./api-card.component.sass']
 })
 export class ApiCardComponent implements OnInit {
+  tmpUrl ='https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png';
 
   constructor() { }
 

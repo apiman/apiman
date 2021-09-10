@@ -1,9 +1,9 @@
 import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {HeroService} from '../../services/hero/hero.service';
 import config from './../../../../config.json';
-import {IHero} from '../../interfaces/IHero';
 import {TranslateService} from '@ngx-translate/core';
 import {ConfigService} from '../../services/config/config.service';
+import {IHero} from '../../interfaces/IConfig';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +22,6 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.hero.title = this.translater.instant(this.configService.config.hero.title);
     this.hero.subtitle = this.translater.instant(this.configService.config.hero.subtitle);
-    this.hero.large = this.hero.large;
     this.setUpHero();
   }
 

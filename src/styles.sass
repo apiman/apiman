@@ -1,10 +1,50 @@
-/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming'
+@import './themes/default'
+// @import './themes/custom'
+@include mat-core()
+
+/* Theme Classes */
+.default-theme
+  @include angular-material-theme($default-theme)
+
+//.custom-theme
+//  @include angular-material-theme($custom-theme)
+
+html
+  font-size: 100%
 
 body
   font-family: 'Open Sans', sans-serif
   margin: 0
+  line-height: 1.6
 
 a
   text-decoration: none
   &:visited
-    color: rgb(63, 81, 181)
+    color: map-get($primary-palette, 500)
+
+/** Font **/
+h1
+  font-size: 2rem
+
+h2
+  font-size: 1.4rem
+
+h3
+  font-size: 1.2rem
+
+h4
+  font-size: 1.1rem
+
+
+
+/** Style of Material **/
+.mat-form-field-appearance-legacy
+  .mat-form-field-prefix, .mat-form-field-suffix
+    align-self: flex-end
+
+.mat-form-field-prefix
+  margin-right: 10px
+
+.mat-form-field-suffix
+  margin-left: 10px

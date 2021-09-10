@@ -1,6 +1,7 @@
 export interface IConfig {
-  "language": string
+  "language": string,
   "supportedLanguages": string[],
+  "theme": string,
   "hero": IHero,
   "navigation": INavigation,
   "footer": IFooter
@@ -11,7 +12,10 @@ export interface IHero {
   subtitle: string;
   heroImgUrl: string;
   large: boolean;
-  fontColor: string;
+  fontColor: {
+    title: string;
+    subtitle: string;
+  }
   overlayColor: string;
 }
 

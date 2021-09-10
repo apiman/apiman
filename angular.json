@@ -35,7 +35,8 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.sass"
+              "src/styles.sass",
+              "src/themes/default.sass"
             ],
             "scripts": [
               "node_modules/marked/lib/marked.js"
@@ -106,7 +107,8 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.sass"
+              "src/styles.sass",
+              "src/themes/default.sass"
             ],
             "scripts": []
           }

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import config from './../../../../config.json';
-import {IConfig, IFooter, INavigation} from '../../interfaces/IConfig';
-import {IHero} from '../../interfaces/IHero';
+import {IConfig, IFooter, IHero, INavigation} from '../../interfaces/IConfig';
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +32,13 @@ export class ConfigService {
 
   getNavigation(): INavigation {
     return {...this.config.navigation};
+  }
+
+  getLanguage(): string {
+    return this.config.language;
+  }
+
+  getTheme(): string {
+    return this.config.theme;
   }
 }
