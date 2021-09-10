@@ -63,7 +63,11 @@
       <artifactId>hibernate-types-55</artifactId>
       <version>2.12.1</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.lz4</groupId>
+      <artifactId>lz4-java</artifactId>
+      <version>1.8.0</version>
+    </dependency>
     <!-- Commons -->
     <dependency>
       <groupId>commons-io</groupId>
@@ -78,4 +82,26 @@
       <artifactId>commons-dbutils</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${version.compiler.plugin}</version>
+        <configuration>
+          <source>11</source>
+          <source>11</source>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.mapstruct</groupId>
+              <artifactId>mapstruct-processor</artifactId>
+              <version>${version.org.mapstruct}</version>
+            </path>
+            <!-- other annotation processors -->
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

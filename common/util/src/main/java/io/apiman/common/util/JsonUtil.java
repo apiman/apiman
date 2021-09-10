@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 
 import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER;
 import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS;
@@ -24,6 +25,7 @@ import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNQUOTED_FIE
 public class JsonUtil {
     private static final ObjectMapper OM = JsonMapper
          .builder()
+         // (mostly) match the JSON5 spec.
          .enable(ALLOW_UNQUOTED_FIELD_NAMES)
          .enable(ALLOW_TRAILING_COMMA)
          .enable(ALLOW_SINGLE_QUOTES)
@@ -32,6 +34,7 @@ public class JsonUtil {
          .enable(ALLOW_JAVA_COMMENTS)
          .enable(ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS)
          .enable(ALLOW_UNESCAPED_CONTROL_CHARS)
+         .addModule(new GuavaModule())
          .build();
 
     public static JsonNode toJsonTree(Object o) {

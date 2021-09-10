@@ -1,20 +1,13 @@
 package io.apiman.manager.api.beans.notifications;
 
-import io.apiman.manager.api.beans.search.OrderByBean;
-import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import org.hibernate.Criteria;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}

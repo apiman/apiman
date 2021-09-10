@@ -128,7 +128,7 @@ public interface IOrganizationResource {
      * Delete a ClientApp
      * @summary Delete a client
      * @param organizationId The Organization ID the client exists within
-     * @param clientId The ClientApp ID to dlete
+     * @param clientId The ClientApp ID to delete
      * @statuscode 204 If the Organization was successfully deleted
      * @statuscode 409 If the delete preconditions have not been met (i.e. sub-elements are still active, such as still-registered ClientVersions).
      * @throws OrganizationNotFoundException when the specified organization does not exist.
@@ -173,7 +173,7 @@ public interface IOrganizationResource {
 
     /**
      * Returns audit activity information for a single Organization.  The audit
-     * information that is returned represents all of the activity associated
+     * information that is returned represents all the activity associated
      * with this Organization (i.e. an audit log for everything in the Organization).
      * @summary Get Organization Activity
      * @param organizationId The Organization ID.

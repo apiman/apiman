@@ -24,9 +24,9 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "notification_types")
 public class NotificationTypeEntity {
 
+    @Id
     @Column(name = "type", nullable = false)
     @NotBlank
-    @Id
     private String type; // e.g. email, SMS etc
 
     @Column(name = "description", nullable = false)

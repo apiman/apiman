@@ -14,7 +14,7 @@ import io.swagger.annotations.Api;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Path("notifications")
-@Api("Notifications")
+@Api(tags = "Notifications")
 public interface INotificationResource {
 
     // @GET

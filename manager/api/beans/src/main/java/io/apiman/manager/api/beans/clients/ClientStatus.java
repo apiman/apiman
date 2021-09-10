@@ -22,6 +22,34 @@ package io.apiman.manager.api.beans.clients;
  */
 public enum ClientStatus {
 
-    Created, Ready, Registered, Retired
+    /**
+     * Client has been created but is not yet fully configured.
+     */
+    Created,
+
+    /**
+     * Client has been created and configured, and is ready for publication.
+     */
+    Ready,
+
+    /**
+     * If approval is required, then the client must wait until someone with appropriate permissions promotes the client
+     * to the {@link #Registered} state.
+     * <p>
+     * How this state transition is achieved could vary considerably depending on how Apiman is configured (e.g. an out
+     * of band business process, a human interaction, etc.).
+     */
+    AwaitingApproval,
+
+    /**
+     * Client has been registered and its configuration has been pushed to a gateway. This means traffic can be routed
+     * via to the client's API key, for example.
+     */
+    Registered,
+
+    /**
+     * The client has been permanently withdrawn and traffic can no longer be routed.
+     */
+    Retired
 
 }

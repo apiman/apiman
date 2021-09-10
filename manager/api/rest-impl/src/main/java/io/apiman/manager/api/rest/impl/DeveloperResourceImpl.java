@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
@@ -53,6 +54,7 @@ import com.google.common.collect.ImmutableList;
  * Implementation of the Developer Portal API
  */
 @Transactional
+@ApplicationScoped
 public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DeveloperResourceImpl.class);

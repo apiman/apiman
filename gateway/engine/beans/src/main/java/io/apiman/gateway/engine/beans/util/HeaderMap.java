@@ -27,8 +27,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-@JsonSerialize(using=HeaderMapSerializer.class)
-@JsonDeserialize(using=HeaderMapDeserializer.class)
+@JsonSerialize(using = HeaderMapSerializer.class)
+@JsonDeserialize(using = HeaderMapDeserializer.class)
 public class HeaderMap extends CaseInsensitiveStringMultiMap implements Serializable {
     private static final long serialVersionUID = 5520378999006587108L;
 

@@ -21,7 +21,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Models the list of policies that would get applied if an API were invoked
@@ -29,7 +30,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class PolicyChainBean implements Serializable {
 
     private static final long serialVersionUID = -497197512733345793L;
