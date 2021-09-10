@@ -1,11 +1,11 @@
-package io.apiman.manager.api.jpa;
+package io.apiman.manager.api.jpa.model.outbox;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.events.ApimanEvent;
 import io.apiman.manager.api.beans.events.ApimanEventHeaders;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
-import io.apiman.manager.api.jpa.model.outbox.OutboxEventEntity;
+import io.apiman.manager.api.jpa.AbstractJpaStorage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;

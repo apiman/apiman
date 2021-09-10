@@ -32,6 +32,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToOne;
@@ -42,6 +43,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.Nationalized;
 
 /**
  * Models a single version of an API. Every API in APIMan has basic meta-data
@@ -88,15 +90,6 @@ public class ApiVersionBean implements Serializable, Cloneable {
     private Set<ApiGatewayBean> gateways;
     @Column(name = "public_api", updatable = true, nullable = false)
     private boolean publicAPI;
-    // @Column(name = "public_api", updatable=true, nullable=false)
-    // private boolean publish;
-    // @Column(name = "extended_description", updatable=true, nullable=false)
-    // @Nationalize
-    // @Lob // <-- may not be necessary?
-    // private String extendedDescription;
-    // @Lob
-    //
-
     @OneToOne(mappedBy = "apiVersion", orphanRemoval = true, cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     ApiDefinitionBean apiDefinition; // Deliberately no explicit getter/setter for this
     @ElementCollection(fetch = FetchType.EAGER)
@@ -125,6 +118,14 @@ public class ApiVersionBean implements Serializable, Cloneable {
     private boolean disableKeysStrip;
     @Column(name = "definition_url", updatable = true, nullable = true)
     private String definitionUrl;
+    @Column(name = "public_api", updatable = true, nullable = false)
+    private boolean publish;
+    @Column(name = "extended_description", updatable = true, nullable = true)
+    @Nationalized
+    @Lob // <-- may not be necessary?
+    private String extendedDescription; // Markdown extended description
+    @Column(name = "image_file_ref", updatable = true, nullable = true) // Reference to file storage (we'll ship with DB blob)
+    private String imageFileRef;
 
     /**
      * Constructor.

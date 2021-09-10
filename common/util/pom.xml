@@ -28,6 +28,12 @@
       <artifactId>jackson-databind</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-guava</artifactId>
+      <version>${version.com.fasterxml.jackson}</version>
+    </dependency>
+
     <!-- Tests -->
     <dependency>
       <groupId>junit</groupId>
