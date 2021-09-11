@@ -42,7 +42,7 @@ public class BlobResourceImpl {
         } else {
             try {
                 InputStream bis = blob.getBlob().asByteSource().openBufferedStream();
-                return Response.accepted()
+                return Response.ok()
                                .header("Content-Type", blob.getMimeType())
                                .entity(bis)
                                .build();
