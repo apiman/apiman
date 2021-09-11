@@ -6,7 +6,7 @@ import java.util.StringJoiner;
 import com.google.common.io.FileBackedOutputStream;
 
 /**
- * Blob store representation
+ * Blob store representation.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
@@ -17,6 +17,7 @@ public class BlobDto {
     private OffsetDateTime createdOn;
     private OffsetDateTime modifiedOn;
     private FileBackedOutputStream blob;
+    private long hash;
 
     public String getId() {
         return id;
@@ -72,6 +73,15 @@ public class BlobDto {
         return this;
     }
 
+    public long getHash() {
+        return hash;
+    }
+
+    public BlobDto setHash(long hash) {
+        this.hash = hash;
+        return this;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", BlobDto.class.getSimpleName() + "[", "]")
@@ -81,6 +91,7 @@ public class BlobDto {
              .add("createdOn=" + createdOn)
              .add("modifiedOn=" + modifiedOn)
              .add("blob=<binary>")
+             .add("hash=" + hash)
              .toString();
     }
 }

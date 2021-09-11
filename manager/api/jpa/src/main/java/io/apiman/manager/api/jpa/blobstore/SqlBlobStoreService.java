@@ -5,6 +5,7 @@ import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
@@ -12,6 +13,8 @@ import javax.inject.Inject;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.FileBackedOutputStream;
+import net.jpountz.xxhash.StreamingXXHash64;
+import net.jpountz.xxhash.XXHashFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +54,8 @@ public class SqlBlobStoreService implements IBlobStore {
              .setId(resourceId)
              .setName(name)
              .setMimeType(mimeType)
-             .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()));
+             .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()))
+             .setHash(hashBlob(fbos));
             blobStoreRepository.create(blobEntity);
         } catch (StorageException e) {
             throw new RuntimeException(e);
@@ -72,7 +76,8 @@ public class SqlBlobStoreService implements IBlobStore {
              .setId(resourceId)
              .setName(name)
              .setMimeType(mimeType)
-             .setBlob(BlobProxy.generateProxy(bytes));
+             .setBlob(BlobProxy.generateProxy(bytes))
+             .setHash(hashBlob(bytes));
         try {
             blobStoreRepository.create(blobEntity);
         } catch (StorageException e) {
@@ -112,5 +117,26 @@ public class SqlBlobStoreService implements IBlobStore {
     private String calculateOid(String name) {
         String safeName = name.replaceAll("[\\P{Print}\\W]+", "_");
         return UUID.randomUUID().toString().substring(14) + "/" + safeName;
+    }
+
+    // Doesn't seem to be a standardised way of doing a digest in SQL, unfortunately
+    private long hashBlob(byte[] bytes) {
+        return XXHashFactory.fastestInstance().hash64().hash(bytes, 0, bytes.length, 0);
+    }
+
+    private long hashBlob(FileBackedOutputStream fbos) {
+        try {
+            StreamingXXHash64 streamingHash = XXHashFactory.fastestInstance().newStreamingHash64(0);
+            InputStream fbosStream = fbos.asByteSource().openBufferedStream();
+            byte[] hashBuffer = new byte[8192];
+            int len;
+            while ((len = fbosStream.read(hashBuffer)) != -1) {
+                // Need len to ensure we don't read trash from previous iteration if it's less than full array size
+                streamingHash.update(hashBuffer, 0, len);
+            }
+            return streamingHash.getValue();
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
+        }
     }
 }

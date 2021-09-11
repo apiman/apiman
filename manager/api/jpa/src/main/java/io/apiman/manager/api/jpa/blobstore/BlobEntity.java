@@ -49,6 +49,10 @@ public class BlobEntity {
     @Column(name = "mrblobby", nullable = false)
     private Blob blob;
 
+    @NotNull
+    @Column(name = "hash", nullable = false)
+    private Long hash;
+
     public BlobEntity() {
     }
 
@@ -106,6 +110,15 @@ public class BlobEntity {
         return this;
     }
 
+    public Long getHash() {
+        return hash;
+    }
+
+    public BlobEntity setHash(Long hash) {
+        this.hash = hash;
+        return this;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", BlobEntity.class.getSimpleName() + "[", "]")
@@ -115,6 +128,7 @@ public class BlobEntity {
              .add("createdOn=" + createdOn)
              .add("modifiedOn=" + modifiedOn)
              .add("blob=<binary>")
+             .add("hash=" + hash)
              .toString();
     }
 }
