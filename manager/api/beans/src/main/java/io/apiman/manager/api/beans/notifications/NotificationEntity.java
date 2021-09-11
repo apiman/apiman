@@ -67,20 +67,20 @@ public class NotificationEntity {
     @CreationTimestamp
     @Column(name = "created_on", updatable = false)
     @NotNull
-    private OffsetDateTime createdOn; // TODO consider java.time.OffsetDateTime
+    private OffsetDateTime createdOn;
 
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     @Column(name = "modified_on")
     @NotNull
-    private OffsetDateTime modifiedOn; // TODO consider java.time.OffsetDateTime
+    private OffsetDateTime modifiedOn;
 
     @Column(name = "recipient", nullable = false)
-    @NotEmpty
+    @NotBlank
     private String recipient;
 
     @Column(name = "source", nullable = false)
-    @NotEmpty
+    @NotBlank
     private String source;
 
     @Type(type = "jsonb")
