@@ -22,7 +22,7 @@ import javax.persistence.Embeddable;
 
 /**
  * Models a plan+version that is available for use with a particular API.  This
- * makes the Plan available when forming a Contract between an app and a API.
+ * makes the Plan available when forming a Contract between an app and an API.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -31,10 +31,12 @@ public class ApiPlanBean implements Serializable {
 
     private static final long serialVersionUID = 7972763768594076697L;
 
-    @Column(name = "plan_id", nullable=false)
+    @Column(name = "plan_id", nullable = false)
     private String planId;
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String version;
+    @Column(name = "expose_in_portal", nullable = false)
+    private boolean exposeInPortal = false;
 
     /**
      * Constructor.

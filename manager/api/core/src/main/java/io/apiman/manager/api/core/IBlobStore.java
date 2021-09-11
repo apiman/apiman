@@ -3,6 +3,7 @@ package io.apiman.manager.api.core;
 import io.apiman.manager.api.beans.download.BlobDto;
 
 import com.google.common.io.FileBackedOutputStream;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Blob store for storing, well, blobs.
@@ -16,45 +17,45 @@ import com.google.common.io.FileBackedOutputStream;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public interface IBlobStore<SELF extends IBlobStore<SELF>> {
+public interface IBlobStore {
 
     /**
-     * Store blob, a UUID is returned that the caller should store to retrieve the file later.
+     * Store blob, a UID is returned that the caller should store to retrieve the file later.
      *
      * <p>Use this method if the file is large as it will spill over onto disk if the file is large.
      *
      * @param name descriptive name (not used for lookups)
      * @param mimeType mime type of the file (useful when serving externally)
      * @param blob the file to store
-     * @return the UUID of the file. Use it to look up the file.
+     * @return the UID of the file. Use it to look up the file.
      */
-    String storeBlob(String name, String mimeType, FileBackedOutputStream blob);
+    String storeBlob(@NotNull String name, @NotNull String mimeType, @NotNull FileBackedOutputStream blob);
 
     /**
-     * Store blob, a UUID is returned that the caller should store to retrieve the file later.
+     * Store blob, a UID is returned that the caller should store to retrieve the file later.
      *
      * <p>Use this method if the file is smaller.
      *
      * @param name descriptive name (not used for lookups)
      * @param mimeType mime type of the file (useful when serving externally)
      * @param blob the file to store
-     * @return the UUID of the file. Use it to look up the file.
+     * @return the UID of the file. Use it to look up the file.
      */
-    String storeBlob(String name, String mimeType, byte[] blob);
+    String storeBlob(@NotNull String name, @NotNull String mimeType, byte[] blob);
 
     /**
      * Get a blob by its ID (as provided when stored).
      *
-     * @param id the file's unique ID
-     * @return the blob.
+     * @param uid the file's UID
+     * @return the blob with metadata.
      */
-    BlobDto getBlob(String id);
+    BlobDto getBlob(@NotNull String uid);
 
     /**
-     * Remove a file by its unique ID
+     * Remove a file by its UID
      *
-     * @param id the file's unique ID
+     * @param uid the file's UID
      * @return this
      */
-    SELF remove(String id);
+    IBlobStore remove(@NotNull String uid);
 }

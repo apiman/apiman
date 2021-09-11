@@ -119,13 +119,11 @@ public class ApiVersionBean implements Serializable, Cloneable {
     @Column(name = "definition_url", updatable = true, nullable = true)
     private String definitionUrl;
     @Column(name = "public_api", updatable = true, nullable = false)
-    private boolean publish;
+    private boolean publishToDevPortal = false;
     @Column(name = "extended_description", updatable = true, nullable = true)
     @Nationalized
     @Lob // <-- may not be necessary?
     private String extendedDescription; // Markdown extended description
-    @Column(name = "image_file_ref", updatable = true, nullable = true) // Reference to file storage (we'll ship with DB blob)
-    private String imageFileRef;
 
     /**
      * Constructor.

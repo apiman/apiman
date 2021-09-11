@@ -10,14 +10,24 @@ import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.common.base.Preconditions;
 import com.google.common.io.FileBackedOutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.jdbc.BlobProxy;
+import org.jetbrains.annotations.NotNull;
 
 /**
+ * Stores blob data in a SQL database.
+ *
+ * This implementation returns an OID in the format: <samp>44cf-a164-607dd7fcd820/foo.jpeg</samp>
+ *
+ * This lets us preserve the filename and extension (if one is provided), whilst avoiding name collisions.
+ * Will make it easier to identify the type of file in certain situations (e.g. where MIME not available).
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped // TODO make @Alternative
-public class SqlBlobStoreService implements IBlobStore<SqlBlobStoreService> {
+public class SqlBlobStoreService implements IBlobStore {
     private BlobStoreRepository blobStoreRepository;
     private BlobMapper mapper;
 
@@ -29,9 +39,13 @@ public class SqlBlobStoreService implements IBlobStore<SqlBlobStoreService> {
 
     public SqlBlobStoreService() {}
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String storeBlob(String name, String mimeType, FileBackedOutputStream fbos) {
-        String resourceId = UUID.randomUUID().toString();
+    public String storeBlob(@NotNull String name, @NotNull String mimeType, @NotNull FileBackedOutputStream fbos) {
+        Preconditions.checkArgument(StringUtils.isNotBlank(name), "Blob name must not be blank");
+        String resourceId = calculateOid(name);
         try {
         BlobEntity blobEntity = new BlobEntity()
              .setId(resourceId)
@@ -47,9 +61,13 @@ public class SqlBlobStoreService implements IBlobStore<SqlBlobStoreService> {
         return resourceId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String storeBlob(String name, String mimeType, byte[] bytes) {
-        String resourceId = UUID.randomUUID().toString();
+    public String storeBlob(@NotNull String name, @NotNull String mimeType, byte[] bytes) {
+        Preconditions.checkArgument(StringUtils.isNotBlank(name), "Blob name must not be blank");
+        String resourceId = calculateOid(name);
         BlobEntity blobEntity = new BlobEntity()
              .setId(resourceId)
              .setName(name)
@@ -63,22 +81,36 @@ public class SqlBlobStoreService implements IBlobStore<SqlBlobStoreService> {
         return resourceId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public BlobDto getBlob(String id) {
+    public BlobDto getBlob(@NotNull String oid) {
         try {
-            return mapper.toDto(blobStoreRepository.getById(id));
+            return mapper.toDto(blobStoreRepository.getById(oid));
         } catch (StorageException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public SqlBlobStoreService remove(String fileUuid) {
+    public SqlBlobStoreService remove(@NotNull String oid) {
         try {
-            blobStoreRepository.deleteById(fileUuid);
+            blobStoreRepository.deleteById(oid);
             return this;
         } catch (StorageException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * OID for 'name' of foo.jpeg will be in format: <samp>44cf-a164-607dd7fcd820/foo.jpeg</samp>.
+     */
+    private String calculateOid(String name) {
+        String safeName = name.replaceAll("[\\P{Print}\\W]+", "_");
+        return UUID.randomUUID().toString().substring(14) + "/" + safeName;
     }
 }

@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import io.apiman.manager.api.beans.download.BlobReference;
 import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
@@ -63,6 +64,9 @@ public class ApiBean implements Serializable, Cloneable {
     private String id;
     @Column(nullable=false)
     private String name;
+    @Column(name = "image_file_ref", updatable = true, nullable = true) // Reference to file storage (we'll ship with DB blob)
+    @BlobReference
+    private String imageFileRef;
     @Column(updatable=true, nullable=true, length=512)
     private String description;
     @Column(name = "created_by", updatable=false, nullable=false)
@@ -177,6 +181,14 @@ public class ApiBean implements Serializable, Cloneable {
      */
     public void setNumPublished(Integer numPublished) {
         this.numPublished = numPublished;
+    }
+
+    public String getImageFileRef() {
+        return imageFileRef;
+    }
+
+    public void setImageFileRef(String imageFileRef) {
+        this.imageFileRef = imageFileRef;
     }
 
     /* (non-Javadoc)
