@@ -20,12 +20,12 @@ export interface IHero {
 
 export interface INavigation{
   links: ILink[],
-  seperator: string
+  separator: string
 }
 
 export interface IFooter{
   links: ILink[],
-  seperator: string
+  separator: string
 }
 
 export interface ILink{

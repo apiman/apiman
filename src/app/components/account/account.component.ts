@@ -5,7 +5,7 @@ import {TranslateService} from '@ngx-translate/core';
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
-  styleUrls: ['./account.component.sass']
+  styleUrls: ['./account.component.scss']
 })
 export class AccountComponent implements OnInit {
 

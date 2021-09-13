@@ -5,7 +5,7 @@ import {PlanService} from "../../services/plan/plan.service";
 @Component({
   selector: 'app-plan-card-list',
   templateUrl: './plan-card-list.component.html',
-  styleUrls: ['./plan-card-list.component.sass']
+  styleUrls: ['./plan-card-list.component.scss']
 })
 export class PlanCardListComponent implements OnInit {
 

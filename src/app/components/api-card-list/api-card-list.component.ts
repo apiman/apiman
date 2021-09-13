@@ -6,7 +6,7 @@ import {PageEvent} from "@angular/material/paginator";
 @Component({
   selector: 'app-api-card-list',
   templateUrl: './api-card-list.component.html',
-  styleUrls: ['./api-card-list.component.sass']
+  styleUrls: ['./api-card-list.component.scss']
 })
 export class ApiCardListComponent implements OnInit {
 

@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-marketplace-api-confirmation',
   templateUrl: './marketplace-api-confirmation.component.html',
-  styleUrls: ['./marketplace-api-confirmation.component.sass']
+  styleUrls: ['./marketplace-api-confirmation.component.scss']
 })
 export class MarketplaceApiConfirmationComponent implements OnInit {
 

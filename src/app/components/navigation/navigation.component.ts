@@ -7,7 +7,7 @@ import {NavigationService} from '../../services/navigation/navigation.service';
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.sass']
+  styleUrls: ['./navigation.component.scss']
 })
 export class NavigationComponent {
   navigation: INavigation;

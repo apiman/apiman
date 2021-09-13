@@ -8,7 +8,7 @@ import {ApiBean} from "../../services/backend/backend.service";
 @Component({
   selector: 'app-marketplace-signup-stepper',
   templateUrl: './marketplace-signup-stepper.component.html',
-  styleUrls: ['./marketplace-signup-stepper.component.sass']
+  styleUrls: ['./marketplace-signup-stepper.component.scss']
 })
 export class MarketplaceSignupStepperComponent implements OnInit {
 

@@ -1,0 +1,48 @@
+.api-card{
+  border-radius: 2px;
+  min-width: 24%;
+  height: 30%;
+}
+
+.api-card-header{
+  padding-left: 3% ;
+}
+
+::ng-deep .mat-card-header-text {
+  margin: 0 10px !important;
+}
+
+.api-card-icon {
+  background-size: cover;
+}
+
+.api-card-title {
+  margin-top: 5px;
+  font-size: 1.2rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.api-card-content {
+  padding: 16px;
+  height: 4em;
+}
+
+.content-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.api-card-button {
+  width: 32%;
+}
+
+.api-card-actions {
+  text-align: center;
+  margin-top: 1.6rem;
+  margin-bottom: unset;
+}

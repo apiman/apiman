@@ -7,7 +7,7 @@ import {HeroService} from '../../services/hero/hero.service';
 @Component({
   selector: 'app-marketplace-api-details',
   templateUrl: './marketplace-api-details.component.html',
-  styleUrls: ['./marketplace-api-details.component.sass']
+  styleUrls: ['./marketplace-api-details.component.scss']
 })
 export class MarketplaceApiDetailsComponent implements OnInit {
   constructor(private route: ActivatedRoute,

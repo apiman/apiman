@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-marketplace-api-policies',
   templateUrl: './marketplace-api-policies.component.html',
-  styleUrls: ['./marketplace-api-policies.component.sass']
+  styleUrls: ['./marketplace-api-policies.component.scss']
 })
 export class MarketplaceApiPoliciesComponent implements OnInit {
 

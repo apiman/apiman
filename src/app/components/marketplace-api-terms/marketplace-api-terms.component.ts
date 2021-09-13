@@ -3,7 +3,7 @@ import {Component, OnInit} from '@angular/core';
 @Component({
   selector: 'app-marketplace-api-terms',
   templateUrl: './marketplace-api-terms.component.html',
-  styleUrls: ['./marketplace-api-terms.component.sass']
+  styleUrls: ['./marketplace-api-terms.component.scss']
 })
 export class MarketplaceApiTermsComponent implements OnInit {
   agreed: boolean = false;

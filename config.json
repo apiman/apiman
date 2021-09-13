@@ -20,7 +20,7 @@
         "openInNewTab": true
       }
     ],
-    "seperator": ""
+    "separator": ""
   },
   "footer": {
     "links": [
@@ -40,6 +40,6 @@
         "openInNewTab": true
       }
     ],
-    "seperator": "•"
+    "separator": "•"
   }
 }

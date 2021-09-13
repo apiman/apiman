@@ -6,7 +6,7 @@ import {FooterService} from '../../services/footer/footer.service';
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.sass']
+  styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent {
   footer: IFooter

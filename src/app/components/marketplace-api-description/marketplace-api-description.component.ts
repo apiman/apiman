@@ -4,7 +4,7 @@ import {ApiBean} from "../../services/backend/backend.service";
 @Component({
   selector: 'app-marketplace-api-description',
   templateUrl: './marketplace-api-description.component.html',
-  styleUrls: ['./marketplace-api-description.component.sass']
+  styleUrls: ['./marketplace-api-description.component.scss']
 })
 export class MarketplaceApiDescriptionComponent implements OnInit {
 
