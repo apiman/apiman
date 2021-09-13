@@ -32,10 +32,8 @@ import {MyAppsComponent} from './components/my-apps/my-apps.component';
 import {ThemeService} from './services/theme/theme.service';
 
 export function initializeApp(configService: ConfigService,
-                              devPortalInitializer: InitializerService,
-                              themeService: ThemeService): () => Promise<void> {
+                              devPortalInitializer: InitializerService): () => Promise<void> {
   configService.readAndEvaluateConfig();
-  themeService.setTheme(configService.getTheme());
 
   /* Define promisses needed for the app initialization */
   const initLanguagePromise: Promise<void> = new Promise((resolve, reject) => {

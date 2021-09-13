@@ -37,8 +37,4 @@ export class ConfigService {
   getLanguage(): string {
     return this.config.language;
   }
-
-  getTheme(): string {
-    return this.config.theme;
-  }
 }

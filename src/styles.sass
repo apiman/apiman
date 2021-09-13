@@ -1,29 +1,55 @@
 @import '~@angular/material/theming'
-@import './themes/default'
-// @import './themes/custom'
+@import './themes/custom'
 @include mat-core()
 
-/* Theme Classes */
-.default-theme
-  @include angular-material-theme($default-theme)
+/***** THEMING *****/
+.theme
+ @include angular-material-theme($theme)
 
-//.custom-theme
-//  @include angular-material-theme($custom-theme)
+/***** DEFINITIONS *****/
+/** Font **/
+$default-font: 'Open Sans', sans-serif
 
+/** Paddings and Margins **/
+$sizes: 5, 10, 15, 20, 25, 30, 35, 40
+@each $size in $sizes
+  // Margins
+  .mt-#{$size}
+    margin-top: #{$size}px
+
+  .mr-#{$size}
+    margin-right: #{$size}px
+
+  .mb-#{$size}
+    margin-bottom: #{$size}px
+
+  .ml-#{$size}
+    margin-left: #{$size}px
+
+  // Paddings
+  .pt-#{$size}
+    padding-top: #{$size}px
+
+  .pr-#{$size}
+    padding-right: #{$size}px
+
+  .pb-#{$size}
+    padding-bottom: #{$size}px
+
+  .pl-#{$size}
+    padding-left: #{$size}px
+
+/***** DevPortal Default Styling *****/
+/** Main tags **/
 html
   font-size: 100%
 
 body
-  font-family: 'Open Sans', sans-serif
+  font-family: $default-font
   margin: 0
   line-height: 1.6
 
-a
-  text-decoration: none
-  &:visited
-    color: map-get($primary-palette, 500)
-
-/** Font **/
+/** h-tags **/
 h1
   font-size: 2rem
 
@@ -36,9 +62,14 @@ h3
 h4
   font-size: 1.1rem
 
+/** a-tags **/
+a
+  text-decoration: none
+  &:visited
+    color: $primary
 
-
-/** Style of Material **/
+/***** Material Styling *****/
+/** Form Field Pre- and Suffix **/
 .mat-form-field-appearance-legacy
   .mat-form-field-prefix, .mat-form-field-suffix
     align-self: flex-end

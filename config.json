@@ -1,15 +1,14 @@
 {
   "language": "de",
   "supportedLanguages": ["de", "en"],
-  "theme": "default-theme",
   "hero": {
     "title": "HOME.TITLE",
     "subtitle": "HOME.SUBTITLE",
     "heroImgUrl": "https://www.gstatic.com/earth/social/00_generic_facebook-001.jpg",
     "large": true,
     "fontColor": {
-      "title": "orange",
-      "subtitle": "green"
+      "title": "rgba(255, 255, 255, 1)",
+      "subtitle": "rgba(255, 255, 255, 1)"
     },
     "overlayColor": "rgba(200, 200, 200, 0.4)"
   },
