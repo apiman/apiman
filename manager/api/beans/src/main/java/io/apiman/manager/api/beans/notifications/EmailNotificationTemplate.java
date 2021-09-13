@@ -12,6 +12,7 @@ import java.util.StringJoiner;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+// This will be an entity later...
 // @Entity
 // @Table(name = "email_notification_templates")
 public class EmailNotificationTemplate {
