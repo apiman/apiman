@@ -67,7 +67,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   constructor(private heroService: HeroService,
               private apiService: ApiService,
               private route: ActivatedRoute,
-              private translater: TranslateService) { }
+              private translator: TranslateService) { }
 
   ngOnInit(): void {
     this.setUpHero();
@@ -76,7 +76,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   private setUpHero() {
     this.heroService.setUpHero({
-      title: this.translater.instant('API_SIGN_UP.TITLE')
+      title: this.translator.instant('API_SIGN_UP.TITLE')
     });
   }
 

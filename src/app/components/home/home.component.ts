@@ -15,13 +15,13 @@ export class HomeComponent implements OnInit {
 
   constructor(private configService: ConfigService,
               private heroService: HeroService,
-              private translater: TranslateService) {
+              private translator: TranslateService) {
     this.hero = configService.getHero();
   }
 
   ngOnInit(): void {
-    this.hero.title = this.translater.instant(this.configService.config.hero.title);
-    this.hero.subtitle = this.translater.instant(this.configService.config.hero.subtitle);
+    this.hero.title = this.translator.instant(this.configService.config.hero.title);
+    this.hero.subtitle = this.translator.instant(this.configService.config.hero.subtitle);
     this.setUpHero();
   }
 

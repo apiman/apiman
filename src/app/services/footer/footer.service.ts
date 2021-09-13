@@ -18,8 +18,7 @@ export class FooterService {
     }
   ]
 
-  constructor(private configService: ConfigService,
-              private translater: TranslateService) {
+  constructor(private configService: ConfigService) {
     this.footer = this.initLinks();
   }
 

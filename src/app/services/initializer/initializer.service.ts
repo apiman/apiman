@@ -6,7 +6,7 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class InitializerService {
 
-  constructor(private translater: TranslateService) { }
+  constructor(private translator: TranslateService) { }
 
   /**
    * The functions calls the ngx-translation service to load a language. If the language file can not be found the fallback language
@@ -15,11 +15,11 @@ export class InitializerService {
    */
   initLanguage(language: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.translater.use(language).toPromise().then(() => {
+      this.translator.use(language).toPromise().then(() => {
         resolve();
       }).catch(() => {
         console.warn('Could not load language: ' + language + '\nDefault language \'en\' will be used');
-        this.translater.use('en').toPromise().then(() => {
+        this.translator.use('en').toPromise().then(() => {
           resolve();
         });
       });

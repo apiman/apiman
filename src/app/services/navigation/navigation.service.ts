@@ -11,15 +11,15 @@ export class NavigationService {
 
   links: ILink[] = [
     {
-      name: this.translater.instant('MPLACE.TITLE'),
+      name: this.translator.instant('MPLACE.TITLE'),
       link: 'marketplace',
       openInNewTab: false
     }, {
-      name: this.translater.instant('APPS.TITLE'),
+      name: this.translator.instant('APPS.TITLE'),
       link: 'applications',
       openInNewTab: false
     }, {
-      name: this.translater.instant('ACCOUNT.TITLE'),
+      name: this.translator.instant('ACCOUNT.TITLE'),
       link: 'account',
       openInNewTab: false
     }
@@ -28,7 +28,7 @@ export class NavigationService {
   navigationChanged: EventEmitter<INavigation> = new EventEmitter<INavigation>();
 
   constructor(private configService: ConfigService,
-              private translater: TranslateService) {
+              private translator: TranslateService) {
     this.navigation = this.initLinks();
   }
 

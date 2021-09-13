@@ -10,7 +10,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class MarketplaceComponent implements OnInit {
 
   constructor(private heroService: HeroService,
-              private translater: TranslateService) { }
+              private translator: TranslateService) { }
 
   ngOnInit(): void {
     this.initHero();
@@ -18,8 +18,8 @@ export class MarketplaceComponent implements OnInit {
 
   private initHero(){
     this.heroService.setUpHero({
-      title: this.translater.instant('MPLACE.TITLE'),
-      subtitle: this.translater.instant('MPLACE.SUBTITLE')
+      title: this.translator.instant('MPLACE.TITLE'),
+      subtitle: this.translator.instant('MPLACE.SUBTITLE')
     });
   }
 }

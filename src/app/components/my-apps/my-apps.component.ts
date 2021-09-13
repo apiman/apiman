@@ -10,7 +10,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class MyAppsComponent implements OnInit {
 
   constructor(private heroService: HeroService,
-              private translater: TranslateService) { }
+              private translator: TranslateService) { }
 
   ngOnInit(): void {
     this.setUpHero();
@@ -18,8 +18,8 @@ export class MyAppsComponent implements OnInit {
 
   private setUpHero(){
     this.heroService.setUpHero({
-      title: this.translater.instant('APPS.TITLE'),
-      subtitle: this.translater.instant('APPS.SUBTITLE')
+      title: this.translator.instant('APPS.TITLE'),
+      subtitle: this.translator.instant('APPS.SUBTITLE')
     });
   }
 
