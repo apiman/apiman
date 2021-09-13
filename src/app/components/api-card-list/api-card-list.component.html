@@ -13,9 +13,9 @@
 </div>
 
 <div *ngIf="listType==='api'" class="align">
-  <mat-paginator [length]="apiService.totalSize"
-               [pageSize]="apiService.searchCriteria.paging.pageSize"
-               [pageSizeOptions]="[4, 8, 12, 16]"
+  <mat-paginator [length]="totalSize"
+               [pageSize]="searchCriteria.paging.pageSize"
+               [pageSizeOptions]="[4, 8, 12, 16, totalSize]"
                  (page)="OnPageChange($event)">
   </mat-paginator>
 </div>

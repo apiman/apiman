@@ -10,7 +10,7 @@ export class InitializerService {
 
   /**
    * The functions calls the ngx-translation service to load a language. If the language file can not be found the fallback language
-   * is englisch (loads the file en.json).
+   * is English (loads the file en.json).
    * @param language is the language identifier, e.g. 'en' for English or 'de' for German
    */
   initLanguage(language: string): Promise<void> {
