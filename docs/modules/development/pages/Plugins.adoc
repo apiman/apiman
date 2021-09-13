@@ -1326,7 +1326,7 @@ looks something like this:
 /**
  * A bean modeling an API available in one of the configured API catalogs.
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class AvailableApiBean implements Serializable {
 
     private String id;

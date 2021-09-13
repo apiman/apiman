@@ -10,6 +10,7 @@ import java.io.UncheckedIOException;
 import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.FileBackedOutputStream;
@@ -24,12 +25,13 @@ import org.jetbrains.annotations.NotNull;
  *
  * This implementation returns an OID in the format: <samp>44cf-a164-607dd7fcd820/foo.jpeg</samp>
  *
- * This lets us preserve the filename and extension (if one is provided), whilst avoiding name collisions.
+ * <p>This lets us preserve the filename and extension (if one is provided), whilst avoiding name collisions.
  * Will make it easier to identify the type of file in certain situations (e.g. where MIME not available).
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped // TODO make @Alternative
+@Transactional
 public class SqlBlobStoreService implements IBlobStore {
     private BlobStoreRepository blobStoreRepository;
     private BlobMapper mapper;

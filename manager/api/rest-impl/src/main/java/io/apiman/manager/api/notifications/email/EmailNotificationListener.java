@@ -8,8 +8,11 @@ import io.apiman.manager.api.notifications.email.handlers.INotificationHandler;
 import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 /**
@@ -22,9 +25,9 @@ public class EmailNotificationListener {
     private final NotificationService notificationService;
 
     @Inject
-    public EmailNotificationListener(List<INotificationHandler> handlers,
+    public EmailNotificationListener(@Any Instance<INotificationHandler> handlers,
          NotificationService notificationService) {
-        this.handlers = handlers;
+        this.handlers = handlers.stream().collect(Collectors.toList());
         this.notificationService = notificationService;
     }
 

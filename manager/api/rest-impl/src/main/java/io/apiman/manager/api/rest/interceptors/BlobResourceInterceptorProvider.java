@@ -3,12 +3,13 @@ package io.apiman.manager.api.rest.interceptors;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.download.BlobReference;
-import io.apiman.manager.api.rest.IDownloadResource;
+import io.apiman.manager.api.rest.IBlobResource;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Provider;
@@ -27,12 +28,12 @@ import org.reflections.Reflections;
  * <pre>
  * {@code
  *   @BlobReference
- *   String fileRef = "foo.jpeg"; // <-- Must be a plain blobstore UID
+ *   String fileRef = "a2321-4124-foo.jpeg"; // <-- Must be a plain blobstore UID
  *
  *   ... Interceptor rewrites reference to use JAX-RS download endpoint.
  *
  *   @BlobReference
- *   String fileRef = "/downloads/assets/foo.jpeg";
+ *   String fileRef = "/apiman/blobs/a2321-4124-foo.jpeg"; // <-- Resolved URL
  * }
  * </pre>
  *
@@ -43,19 +44,19 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(BlobResourceInterceptorProvider.class);
 
-    // @Inject
-    // public BlobResourceInterceptorProvider() {
-    // }
-
+    @Inject
     public BlobResourceInterceptorProvider() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
         try {
             rewrite(context);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
@@ -69,7 +70,7 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
 
         for (Field blobRef : blobRefs) {
             String existingValue = (String) blobRef.get(entity);
-            String resolvedRef = UriBuilder.fromResource(IDownloadResource.class).path(existingValue).build()
+            String resolvedRef = UriBuilder.fromResource(IBlobResource.class).path(existingValue).build()
                                            .toString();
             LOGGER.debug("Rewriting response POJO field annotated with resolved @BlobReference: {0} -> {1}",
                  existingValue, resolvedRef);

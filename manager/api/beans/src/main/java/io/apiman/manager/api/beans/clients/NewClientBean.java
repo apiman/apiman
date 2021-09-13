@@ -17,14 +17,15 @@ package io.apiman.manager.api.beans.clients;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Bean used when creating a client.
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class NewClientBean implements Serializable {
 
     private static final long serialVersionUID = 5833699118241379535L;

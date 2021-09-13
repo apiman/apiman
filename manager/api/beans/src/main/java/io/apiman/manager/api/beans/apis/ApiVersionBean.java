@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -118,11 +119,11 @@ public class ApiVersionBean implements Serializable, Cloneable {
     private boolean disableKeysStrip;
     @Column(name = "definition_url", updatable = true, nullable = true)
     private String definitionUrl;
-    @Column(name = "public_api", updatable = true, nullable = false)
-    private boolean publishToDevPortal = false;
+    @Column(name = "expose_in_portal", updatable = true, nullable = false)
+    private boolean exposeInPortal = false;
     @Column(name = "extended_description", updatable = true, nullable = true)
     @Nationalized
-    @Lob // <-- may not be necessary?
+    @Lob // <-- may not be necessary? // varchar -> nvarchar
     private String extendedDescription; // Markdown extended description
 
     /**
@@ -429,6 +430,24 @@ public class ApiVersionBean implements Serializable, Cloneable {
         this.definitionUrl = definitionUrl;
     }
 
+    public boolean isExposeInPortal() {
+        return exposeInPortal;
+    }
+
+    public ApiVersionBean setExposeInPortal(boolean exposeInPortal) {
+        this.exposeInPortal = exposeInPortal;
+        return this;
+    }
+
+    public String getExtendedDescription() {
+        return extendedDescription;
+    }
+
+    public ApiVersionBean setExtendedDescription(String extendedDescription) {
+        this.extendedDescription = extendedDescription;
+        return this;
+    }
+
     /**
      * @see java.lang.Object#hashCode()
      */
@@ -460,20 +479,34 @@ public class ApiVersionBean implements Serializable, Cloneable {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
-    @SuppressWarnings("nls")
     public String toString() {
-        return "APIVersionBean [id=" + id + ", api=" + api + ", status=" + status + ", endpoint="
-                + endpoint + ", endpointType=" + endpointType + ", gateways=" + gateways + ", publicAPI="
-                + publicAPI + ", plans=" + plans + ", version=" + version + ", createdBy=" + createdBy
-                + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy + ", modifiedOn=" + modifiedOn
-                + ", publishedOn=" + publishedOn + ", retiredOn=" + retiredOn + ", definitionType="
-                + definitionType + "]";
+        return new StringJoiner(", ", ApiVersionBean.class.getSimpleName() + "[", "]")
+             .add("id=" + id)
+             .add("api=" + api)
+             .add("status=" + status)
+             .add("endpoint='" + endpoint + "'")
+             .add("endpointType=" + endpointType)
+             .add("endpointContentType=" + endpointContentType)
+             .add("endpointProperties=" + endpointProperties)
+             .add("gateways=" + gateways)
+             .add("publicAPI=" + publicAPI)
+             .add("apiDefinition=" + apiDefinition)
+             .add("plans=" + plans)
+             .add("version='" + version + "'")
+             .add("createdBy='" + createdBy + "'")
+             .add("createdOn=" + createdOn)
+             .add("modifiedBy='" + modifiedBy + "'")
+             .add("modifiedOn=" + modifiedOn)
+             .add("publishedOn=" + publishedOn)
+             .add("retiredOn=" + retiredOn)
+             .add("definitionType=" + definitionType)
+             .add("parsePayload=" + parsePayload)
+             .add("exposeInPortal=" + exposeInPortal)
+             .add("extendedDescription='" + extendedDescription + "'")
+             .toString();
     }
-    
+
     /**
      * @see java.lang.Object#clone()
      */

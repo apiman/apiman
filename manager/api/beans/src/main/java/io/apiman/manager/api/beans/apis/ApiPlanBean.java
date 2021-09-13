@@ -16,6 +16,7 @@
 package io.apiman.manager.api.beans.apis;
 
 import java.io.Serializable;
+import java.util.StringJoiner;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -72,12 +73,22 @@ public class ApiPlanBean implements Serializable {
         this.version = version;
     }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
+    public boolean isExposeInPortal() {
+        return exposeInPortal;
+    }
+
+    public ApiPlanBean setExposeInPortal(boolean exposeInPortal) {
+        this.exposeInPortal = exposeInPortal;
+        return this;
+    }
+
     @Override
     public String toString() {
-        return planId + "(" + version + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        return new StringJoiner(", ", ApiPlanBean.class.getSimpleName() + "[", "]")
+             .add("planId='" + planId + "'")
+             .add("version='" + version + "'")
+             .add("exposeInPortal=" + exposeInPortal)
+             .toString();
     }
 
     /**

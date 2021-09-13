@@ -5,8 +5,11 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 /**
@@ -19,8 +22,8 @@ public class EventToNotificationDispatcher {
     private final List<INotificationProducer> notificationProducers;
 
     @Inject
-    public EventToNotificationDispatcher(List<INotificationProducer> notificationProducers) {
-        this.notificationProducers = notificationProducers;
+    public EventToNotificationDispatcher(@Any Instance<INotificationProducer> notificationProducers) {
+        this.notificationProducers = notificationProducers.stream().collect(Collectors.toList());
     }
 
     public void on(@Observes IVersionedApimanEvent event) {

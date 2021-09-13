@@ -4,10 +4,12 @@ import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.download.BlobDto;
 import io.apiman.manager.api.core.IBlobStore;
+import io.apiman.manager.api.rest.IBlobResource;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -21,9 +23,8 @@ import org.jboss.resteasy.annotations.cache.Cache;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@Path("blobs")
-@Api(tags = "Blobs")
-public class BlobResourceImpl {
+@ApplicationScoped
+public class BlobResourceImpl implements IBlobResource {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(BlobResourceImpl.class);
     private IBlobStore blobStore;
@@ -35,9 +36,8 @@ public class BlobResourceImpl {
 
     public BlobResourceImpl() {}
 
-    @GET
-    @Path("{uid}")
-    public Response getBlob(@PathParam("uid") String uid) {
+    @Override
+    public Response getBlob(String uid) {
         BlobDto blob = blobStore.getBlob(uid);
         if (blob == null) {
             LOGGER.trace("Blob requested but not found: {0}", uid);
