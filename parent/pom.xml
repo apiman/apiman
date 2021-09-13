@@ -77,7 +77,7 @@
     <version.surefire.plugin>3.0.0-M5</version.surefire.plugin>
     <version.surefire-report.plugin>3.0.0-M5</version.surefire-report.plugin>
     <version.failsafe.plugin>3.0.0-M5</version.failsafe.plugin>
-    <version.war.plugin>3.3.1</version.war.plugin>
+    <version.war.plugin>3.3.2</version.war.plugin>
     <version.exec.plugin>3.0.0</version.exec.plugin>
     <version.docker.plugin>0.37.0</version.docker.plugin>
     <version.frontend-maven.plugin>1.6</version.frontend-maven.plugin>
