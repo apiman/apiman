@@ -20,5 +20,5 @@ public enum RecipientType {
     /**
      * Users who have a particular attribute
      */
-    ATTRIBUTE
+    PERMISSION
 }

@@ -59,7 +59,7 @@ public interface IActionResource {
      * approved, then it will transition from {@link ClientStatus#AwaitingApproval} to {@link ClientStatus#Ready} and
      * hence can be published.
      * <p>
-     * Requires a user with {@link PermissionType#clientAdmin} permissions.
+     * Requires a user with {@link PermissionType#planAdmin} permissions.
      *
      * @param action The details about what action to execute.
      * @throws ActionException action is performed but an error occurs during processing
@@ -69,5 +69,5 @@ public interface IActionResource {
     @POST
     @Path("contracts")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void approveContract(ContractActionDto action) throws ActionException, NotAuthorizedException;
+    void approveContract(ContractActionDto action) throws ActionException, NotAuthorizedException;
 }

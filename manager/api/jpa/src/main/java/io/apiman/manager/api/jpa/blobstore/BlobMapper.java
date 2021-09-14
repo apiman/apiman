@@ -11,6 +11,8 @@ import com.google.common.io.FileBackedOutputStream;
 import org.mapstruct.Mapper;
 
 /**
+ * Map a blob JPA entity blob DTO
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Mapper(componentModel = "cdi")
