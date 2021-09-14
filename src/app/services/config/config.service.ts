@@ -37,4 +37,8 @@ export class ConfigService {
   getLanguage(): string {
     return this.config.language;
   }
+
+  getEndpoint(): string {
+    return this.config.endpoint;
+  }
 }

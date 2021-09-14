@@ -1,6 +1,7 @@
 {
   "language": "de",
   "supportedLanguages": ["de", "en"],
+  "endpoint": "https://vagrantguest/pas/apiman",
   "hero": {
     "title": "HOME.TITLE",
     "subtitle": "HOME.SUBTITLE",

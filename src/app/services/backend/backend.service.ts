@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
+import {ConfigService} from '../config/config.service';
 
 export interface ApiSummaryBean {
   organizationId?: string;
@@ -87,11 +88,13 @@ export interface PagingBean {
 })
 
 export class BackendService {
+  private endpoint: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private configService: ConfigService) {
+    this.endpoint = configService.getEndpoint();
+  }
 
-  // ToDo replace hard-coded URL with variable URL in config File
-  private apiMgmtUiRestUrl: string = 'https://vagrantguest/pas/apiman';
   // ToDo remove credentials and use anonymous call
   private credentials: string = 'test:test1234' // Format username:password
   private httpOptions = {
@@ -104,7 +107,7 @@ export class BackendService {
    * Searches apis
    */
   public searchApis(searchCriteria: SearchCriteriaBean): Observable<SearchResultsBeanApiSummaryBean> {
-    const url = this.apiMgmtUiRestUrl + '/search/apis';
+    const url = this.endpoint + '/search/apis';
     return this.http.post(url, searchCriteria, this.httpOptions) as Observable<SearchResultsBeanApiSummaryBean>;
   }
 
@@ -112,7 +115,7 @@ export class BackendService {
    * Get Api
    */
   public getApi(orgId: String, apiId: String): Observable<ApiBean> {
-    const url = this.apiMgmtUiRestUrl + `/organizations/${orgId}/apis/${apiId}`;
+    const url = this.endpoint + `/organizations/${orgId}/apis/${apiId}`;
     return this.http.get(url, this.httpOptions) as Observable<ApiBean>;
   }
 
@@ -120,7 +123,7 @@ export class BackendService {
    * Get Api Versions
    */
   public getApiVersions(orgId: String, apiId: String): Observable<ApiVersionSummaryBean[]> {
-    const url = this.apiMgmtUiRestUrl + `/organizations/${orgId}/apis/${apiId}/versions`
+    const url = this.endpoint + `/organizations/${orgId}/apis/${apiId}/versions`
     return this.http.get<ApiVersionSummaryBean[]>(url, this.httpOptions).pipe(
       map(apiVersions => {
         apiVersions.sort((a, b) => {

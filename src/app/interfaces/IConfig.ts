@@ -1,6 +1,7 @@
 export interface IConfig {
   "language": string,
   "supportedLanguages": string[],
+  "endpoint": string;
   "hero": IHero,
   "navigation": INavigation,
   "footer": IFooter
