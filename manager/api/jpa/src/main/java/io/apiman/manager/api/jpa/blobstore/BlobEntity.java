@@ -16,6 +16,11 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+/**
+ * A blob entity.
+ *
+ * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
+ */
 @Table(name = "blob_store")
 @Entity
 public class BlobEntity {

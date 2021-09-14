@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Store, retrieve, and delete blobs.
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped // TODO -- should be @Alternative?
@@ -19,7 +21,8 @@ public class BlobStoreRepository extends AbstractJpaStorage {
     }
 
     /**
-     * Create a blob. Caller <em>must</em> set ID themselves (UUID recommended).
+     * Create a blob. Caller <em>must</em> set ID themselves.
+     * UUID recommended as a component of ID to avoid collisions.
      */
     public void create(@NotNull BlobEntity bean) throws StorageException {
         if (StringUtils.isBlank(bean.getId())) {
@@ -31,17 +34,17 @@ public class BlobStoreRepository extends AbstractJpaStorage {
     /**
      * Get a blob by its ID (nb: not name, its ID set when stored)
      */
-    public BlobEntity getById(@NotNull String id) throws StorageException {
-        return super.get(id, BlobEntity.class);
+    public BlobEntity getById(@NotNull String uid) throws StorageException {
+        return super.get(uid, BlobEntity.class);
     }
 
     /**
      * Delete by provided ID (nb: not name, its ID set when stored)
      * @throws StorageException if entity not found
      */
-    public void deleteById(@NotNull String id) throws StorageException {
-        BlobEntity blob = Optional.ofNullable(getById(id))
-                                  .orElseThrow(() -> new StorageException("No blob found for id " + id));
+    public void deleteById(@NotNull String uid) throws StorageException {
+        BlobEntity blob = Optional.ofNullable(getById(uid))
+                                  .orElseThrow(() -> new StorageException("No blob found for id " + uid));
         super.delete(blob);
     }
 }

@@ -44,8 +44,8 @@ public class ContractApprovalRequestEvent implements IVersionedApimanEvent {
         this.approvalRequired = approvalRequired;
     }
 
-    // TODO do we need this empty constructor anymore for POJO serialization or can we get away with it? Experiment w/ JAX-RS/RESTEasy
-    ContractApprovalRequestEvent() {
+    // TODO(msavy): do we need this empty constructor anymore for POJO serialization or can we get away with it? Experiment w/ JAX-RS/RESTEasy
+    public ContractApprovalRequestEvent() {
     }
 
     /**

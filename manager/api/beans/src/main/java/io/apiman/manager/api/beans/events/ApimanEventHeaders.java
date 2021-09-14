@@ -19,8 +19,8 @@ import org.apache.commons.lang3.Validate;
 public class ApimanEventHeaders {
     private String id;
     private URI source;
-    private String type;
-    private String subject;
+    private String type; // FQCN
+    private String subject; // apiman.blah?
     private OffsetDateTime time;
     private long eventVersion;
     private Map<String, Object> otherProperties;

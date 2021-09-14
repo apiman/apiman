@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.apache.commons.lang3.Validate;
 
 /**
+ * Account signup event fired by an external SSO.
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @JsonDeserialize(builder = AccountSignupEvent.Builder.class)
