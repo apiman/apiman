@@ -150,8 +150,4 @@ $primary-palette: mat-palette($custom-blue);
 $accent-palette: mat-palette($custom-grey);
 $warn-palette: mat-palette($custom-red);
 
-$primary: var(--blue);
-$warn: var(--red);
-$accent: var(--grey);
-
 $theme: mat-light-theme($primary-palette,$accent-palette, $warn-palette);

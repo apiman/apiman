@@ -5,8 +5,4 @@ $primary-palette: mat-palette($mat-indigo);
 $accent-palette: mat-palette($mat-pink);
 $warn-palette: mat-palette($mat-lime);
 
-$primary: map-get($primary-palette, 500);
-$warn:  map-get($warn-palette, 500);
-$accent:  map-get($accent-palette, 500);
-
 $theme: mat-light-theme($primary-palette, $accent-palette, $warn-palette);

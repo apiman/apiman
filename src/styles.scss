@@ -1,11 +1,51 @@
+@use '~@angular/material' as mat;
+
 @import '~@angular/material/theming';
 @import './themes/custom';
 @include mat-core();
 
 /***** THEMING *****/
-.theme {
-  @include angular-material-theme($theme)
+@mixin app-color($config-or-theme) {
+  // Extract the color configuration in case a theme has been passed.
+  // This allows consumers to either pass a theme object or a color configuration.
+  $config: mat-get-color-config($config-or-theme);
+  // Extract the palettes you need from the theme definition.
+  $primary-palette: map-get($config, primary);
+  $accent-palette: map-get($config, accent);
+  $warn-palette: map-get($config, warn);
+
+  $primary: mat-color($primary-palette);
+
+  // CUSTOM SCSS
+  .active-link{
+    color: $primary;
+  }
 }
+
+@mixin app-theme($theme) {
+  // Extracts the color and typography configurations from the theme.
+  $color: mat-get-color-config($theme);
+  $typography: mat-get-typography-config($theme);
+
+  // Do not generate styles if configurations for individual theming
+  // systems have been explicitly set to `null`.
+  @if $color != null {
+    @include app-color($color);
+  }
+
+  // Include theme styles for core and each component used in your app.
+  // Alternatively, you can import and @include the theme mixins for each component
+  // that you are using.
+  @include angular-material-theme($theme);
+
+  // Include theme styles for components.
+}
+
+.theme {
+  @include app-theme($theme);
+}
+
+$config: mat.get-color-config($theme);
 
 /***** DEFINITIONS *****/
 /** Font **/
@@ -30,7 +70,7 @@ $sizes: 5, 10, 15, 20, 25, 30, 35, 40;
     margin-left: #{$size}px;
   }
 
-    // Paddings
+  // Paddings
   .pt-#{$size} {
     padding-top: #{$size}px;
   }
@@ -75,9 +115,10 @@ h4 {
 
 /** a-tags **/
 a {
+  color: black;
   text-decoration: none;
   &:visited {
-    color: $primary;
+    color: black;
   }
 }
 

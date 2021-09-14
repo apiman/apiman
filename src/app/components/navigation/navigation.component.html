@@ -3,7 +3,7 @@
     <a *ngIf="link.openInNewTab" [href]=link.link target="_blank">
       <span>{{link.name}}</span>
     </a>
-    <a *ngIf="!link.openInNewTab" [routerLink]="link.link">
+    <a *ngIf="!link.openInNewTab" [routerLink]="link.link" routerLinkActive="active-link">
       <span>{{link.name}}</span>
     </a>
     <span *ngIf="!last" class="navigation-separator">{{navigation.separator}}</span>
