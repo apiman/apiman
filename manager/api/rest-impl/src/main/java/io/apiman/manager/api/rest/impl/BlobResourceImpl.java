@@ -21,6 +21,8 @@ import io.swagger.annotations.Api;
 import org.jboss.resteasy.annotations.cache.Cache;
 
 /**
+ * Implementation of the Blob REST API.
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
@@ -36,6 +38,14 @@ public class BlobResourceImpl implements IBlobResource {
 
     public BlobResourceImpl() {}
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Serves the blob as a stream
+     *
+     * @param uid file's unique ID.
+     * @return the file in response.
+     */
     @Override
     public Response getBlob(String uid) {
         BlobDto blob = blobStore.getBlob(uid);

@@ -16,7 +16,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import static io.apiman.manager.api.notifications.impl.ContractApprovalRequestNotificationProducer.APIMAN_API_APPROVAL_REQUEST;
+import static io.apiman.manager.api.notifications.producers.ContractApprovalRequestNotificationProducer.APIMAN_API_APPROVAL_REQUEST;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}

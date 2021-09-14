@@ -8,13 +8,9 @@ import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.notifications.email.QteTemplateEngine;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
-import io.apiman.manager.api.notifications.impl.NewAccountNotificationProducer;
-import io.apiman.manager.api.service.NotificationService;
+import io.apiman.manager.api.notifications.producers.NewAccountNotificationProducer;
 
-import java.time.OffsetDateTime;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

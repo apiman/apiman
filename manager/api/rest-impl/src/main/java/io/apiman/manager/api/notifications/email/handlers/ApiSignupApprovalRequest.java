@@ -3,7 +3,7 @@ package io.apiman.manager.api.notifications.email.handlers;
 import io.apiman.manager.api.beans.events.ContractApprovalRequestEvent;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
-import io.apiman.manager.api.notifications.impl.ContractApprovalRequestNotificationProducer;
+import io.apiman.manager.api.notifications.producers.ContractApprovalRequestNotificationProducer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

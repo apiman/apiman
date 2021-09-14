@@ -1,9 +1,8 @@
-package io.apiman.manager.api.notifications.impl;
+package io.apiman.manager.api.notifications.producers;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.events.ContractApprovalRequestEvent;
-import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
 import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
@@ -13,13 +12,16 @@ import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 /**
+ * Accept a {@link ContractApprovalRequestEvent} and produce a {@link #APIMAN_API_APPROVAL_REQUEST} notification.
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
-public class ContractApprovalRequestNotificationProducer implements INotificationProducer  {
+public class ContractApprovalRequestNotificationProducer implements INotificationProducer {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalRequestNotificationProducer.class);
     public static final String APIMAN_API_APPROVAL_REQUEST = "apiman.api.approval.request";
@@ -32,14 +34,8 @@ public class ContractApprovalRequestNotificationProducer implements INotificatio
 
     public ContractApprovalRequestNotificationProducer() {}
 
-    @Override
-    public void processEvent(IVersionedApimanEvent event) {
-        if (!(event instanceof ContractApprovalRequestEvent)) {
-            return;
-        }
-
-        ContractApprovalRequestEvent signupEvent = (ContractApprovalRequestEvent) event;
-
+    public void processEvent(@Observes ContractApprovalRequestEvent signupEvent) {
+        LOGGER.debug("Processing signup event {0}", signupEvent);
         if (signupEvent.isApprovalRequired()) {
             CreateNotificationDto newNotification = new CreateNotificationDto();
             String orgId = signupEvent.getOrgId();
