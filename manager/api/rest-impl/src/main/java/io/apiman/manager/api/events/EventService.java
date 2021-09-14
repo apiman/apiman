@@ -37,12 +37,11 @@ public class EventService {
      * @return the event sent with event version, type, and time set.
      */
     public <E extends IVersionedApimanEvent> E fireEvent(E event) {
-        ApimanEventHeaders headers = ApimanEventHeaders
-             .builder(event.getHeaders())
+        // These fields may not be set.
+        event.getHeaders()
              .setEventVersion(getEventVersion(event))
              .setType(getType(event))
-             .setTime(OffsetDateTime.now())
-             .build();
+             .setTime(OffsetDateTime.now());
         eventDispatcher.fire(event);
         LOGGER.debug("Fired event: {0}", event);
         return event;

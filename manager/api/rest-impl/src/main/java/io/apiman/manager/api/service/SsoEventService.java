@@ -5,10 +5,12 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.events.AccountSignupEvent;
 import io.apiman.manager.api.beans.events.ApimanEventHeaders;
 import io.apiman.manager.api.beans.events.dto.NewAccountCreatedDto;
+import io.apiman.manager.api.events.EventService;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
@@ -16,17 +18,22 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class SsoEventService {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SsoEventService.class);
+    private EventService eventService;
+
+    @Inject
+    public SsoEventService(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     public SsoEventService() {
     }
 
     public void newAccountCreated(NewAccountCreatedDto newAccountCreatedDto) {
-
         ApimanEventHeaders headers = ApimanEventHeaders
              .builder()
              .setId(key(newAccountCreatedDto.getUserId(), newAccountCreatedDto.getTime()))
              .setSource(URI.create("http://replaceme.local/foo"))
-             .setSubject("SsoNewAccount")
+             .setSubject(NEW_ACCOUNT_)
              .build();
 
         AccountSignupEvent accountSignup = AccountSignupEvent
@@ -39,8 +46,10 @@ public class SsoEventService {
              .setSurname(newAccountCreatedDto.getSurname())
              .build();
 
-        LOGGER.debug("Received an account creation event (externally): {0}. \n "
-             + "Translated into: {1}", newAccountCreatedDto, accountSignup);
+        LOGGER.debug("Received an account creation event (externally): {0} => translated into: {1}",
+             newAccountCreatedDto, accountSignup);
+
+        eventService.fireEvent(accountSignup);
     }
 
     private static String key(String userId, OffsetDateTime createdOn) {

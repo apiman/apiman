@@ -37,7 +37,7 @@ public class ActionService implements DataAccessUtilMixin {
     public ActionService() {}
 
     public void sendContractApprovalRequest(String requestorId, String clientId, String apiId, Long contractId) {
-        UserDto requestor = UserMapper.toDto(tryAction(() -> storage.getUser(requestorId)));
+        UserDto requester = UserMapper.toDto(tryAction(() -> storage.getUser(requestorId)));
 
         ApimanEventHeaders headers = ApimanEventHeaders
              .builder()
@@ -50,13 +50,12 @@ public class ActionService implements DataAccessUtilMixin {
         var approvalRequestEvent = ContractApprovalRequestEvent
              .builder()
              .setHeaders(headers)
-             .setUser(requestor)
+             .setUser(requester)
              .setClientId(clientId)
              .setApiId(apiId)
              .setContractId(Long.toString(contractId))
              .setApprovalRequired(true)
              .build();
-
         LOGGER.debug("Sending approval request event {0}", approvalRequestEvent);
         eventService.fireEvent(approvalRequestEvent);
     }

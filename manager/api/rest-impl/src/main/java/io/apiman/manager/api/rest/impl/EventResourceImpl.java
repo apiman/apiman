@@ -29,9 +29,8 @@ public class EventResourceImpl implements IEventResource {
 
     // TODO: permissions check?
     @Override
-    public Response newAccountCreated(NewAccountCreatedDto newAccountCreatedDto) {
+    public void newAccountCreated(NewAccountCreatedDto newAccountCreatedDto) {
         LOGGER.debug("Received new account event via HTTP");
         ssoEventService.newAccountCreated(newAccountCreatedDto);
-        return Response.accepted().build();
     }
 }
