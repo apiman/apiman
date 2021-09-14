@@ -3,12 +3,16 @@ package io.apiman.manager.api.beans.notifications.dto;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class RecipientDto {
     private RecipientType recipientType;
     private String recipient;
+    @Nullable
+    private String orgId;
 
     public RecipientDto() {
     }
@@ -28,6 +32,15 @@ public class RecipientDto {
 
     public RecipientDto setRecipient(String recipient) {
         this.recipient = recipient;
+        return this;
+    }
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public RecipientDto setOrgId(String orgId) {
+        this.orgId = orgId;
         return this;
     }
 

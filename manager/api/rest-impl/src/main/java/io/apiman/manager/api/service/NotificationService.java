@@ -5,6 +5,7 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.JsonUtil;
 import io.apiman.common.util.Preconditions;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
@@ -81,7 +82,6 @@ public class NotificationService implements DataAccessUtilMixin {
      *
      * @param recipientId the user's ID
      * @param searchCriteriaBeanIn the search criteria
-     * @return
      */
     public SearchResultsBean<NotificationDto<?>> searchNotificationsByRecipient(@NotNull String recipientId, SearchCriteriaBean searchCriteriaBeanIn) {
         var searchCriteria = new SearchCriteriaBean(searchCriteriaBeanIn);
@@ -115,6 +115,36 @@ public class NotificationService implements DataAccessUtilMixin {
 
         return new SearchResultsBean<NotificationDto<?>>(dtos, results.getTotalSize());
     }
+
+    // public void sendNotification(@NotNull CreateNotificationDto newNotification, String organization) {
+    //     LOGGER.debug("Creating new notification(s): {0}", newNotification);
+    //
+    //     List<UserDto> resolvedRecipients = calculateRecipients(newNotification.getRecipient(), organization);
+    //
+    //     for (UserDto resolvedRecipient : resolvedRecipients) {
+    //         NotificationEntity notificationEntity = new NotificationEntity()
+    //              .setCategory(newNotification.getCategory())
+    //              .setReason(newNotification.getReason())
+    //              .setReasonMessage(newNotification.getReasonMessage())
+    //              .setNotificationStatus(NotificationStatus.OPEN)
+    //              .setRecipient(resolvedRecipient.getUsername())
+    //              .setSource(newNotification.getSource())
+    //              .setPayload(JsonUtil.toJsonTree(newNotification.getPayload()));
+    //
+    //         tryAction(() -> {
+    //             // 1. Save notification into notifications table.
+    //             LOGGER.trace("Creating notification entity in repository layer: {0}", notificationEntity);
+    //             notificationRepository.create(notificationEntity);
+    //
+    //             // Avoiding serializing and deserializing the payload immediately!
+    //             NotificationDto<?> dto = toDto(notificationEntity, newNotification.getPayload(), resolvedRecipient);
+    //
+    //             // 2. Emit notification onto notification bus.
+    //             LOGGER.trace("Firing notification: {0}", dto);
+    //             notificationDispatcher.fire(dto);
+    //         });
+    //     }
+    // }
 
     /**
      * Send a new notification to a specified recipient (userId)
@@ -192,18 +222,24 @@ public class NotificationService implements DataAccessUtilMixin {
                            .collect(Collectors.toList());
     }
 
-    private List<UserDto> calculateRecipient(RecipientDto singleRecipient) {
-        switch (singleRecipient.getRecipientType()) {
+    private List<UserDto> calculateRecipient(RecipientDto recipient) {
+        switch (recipient.getRecipientType()) {
             case INDIVIDUAL:
-                UserBean result = tryAction(() -> storage.getUser(singleRecipient.getRecipient()));
-                if (result == null) {
-                    return Collections.emptyList();
-                }
-                return List.of(UserMapper.toDto(result));
+                return Optional
+                     .ofNullable(tryAction(() -> storage.getUser(recipient.getRecipient())))
+                     .map(user ->  List.of(UserMapper.toDto(user)))
+                     .orElse(Collections.emptyList());
             case ROLE:
-                return securityContext.getRemoteUsersWithRole(singleRecipient.getRecipient());
+                if (recipient.getOrgId() != null) {
+                    return securityContext.getUsersWithRole(recipient.getRecipient(), recipient.getOrgId());
+                } else {
+                    return securityContext.getRemoteUsersWithRole(recipient.getRecipient());
+                }
+            case PERMISSION:
+                PermissionType pType = PermissionType.valueOf(recipient.getRecipient());
+                return securityContext.getUsersWithPermission(pType, recipient.getOrgId());
             default:
-                throw new IllegalStateException("Unexpected value: " + singleRecipient.getRecipientType());
+                throw new IllegalStateException("Unexpected value: " + recipient.getRecipientType());
         }
     }
 

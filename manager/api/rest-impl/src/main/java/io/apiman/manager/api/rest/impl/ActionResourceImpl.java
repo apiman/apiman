@@ -48,6 +48,7 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
+import io.apiman.manager.api.notifications.email.handlers.ApiSignupApprovalRequest;
 import io.apiman.manager.api.rest.IActionResource;
 import io.apiman.manager.api.rest.IOrganizationResource;
 import io.apiman.manager.api.rest.exceptions.ActionException;
@@ -166,19 +167,19 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
         if (contract == null) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ContractDoesNotExist"));
         }
-        // TODO(msavy): Make a specific query to reduce this mess down.
+
         ClientVersionBean cvb = contract.getClient();
         ApiVersionBean avb = contract.getApi();
         OrganizationBean org = avb.getApi().getOrganization();
-        securityContext.checkPermissions(PermissionType.clientAdmin, org.getId());
+        securityContext.checkPermissions(PermissionType.planAdmin, org.getId());
 
-        LOGGER.debug("Approving a contract: {0}", action);
+        LOGGER.debug("Approving a contract: {0} -> {1}", contract, action);
         contract.setStatus(ContractStatus.Created);
         tryAction(() -> storage.updateContract(contract));
 
         // If all contracts are now good, then ready to register?
-        List<ContractBean> contracts = tryAction(() -> Streams.stream((
-             storage.getAllContracts(org.getId(), cvb.getClient().getId(), cvb.getVersion())
+        List<ContractBean> contracts = tryAction(
+             () -> Streams.stream((storage.getAllContracts(org.getId(), cvb.getClient().getId(), cvb.getVersion())
         ))).collect(Collectors.toList());
 
         List<ContractBean> awaitingApprovalList = contracts
@@ -664,4 +665,6 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
         LOGGER.debug(String.format("Successfully locked Plan %s: %s", //$NON-NLS-1$
                 versionBean.getPlan().getName(), versionBean.getPlan()));
     }
+
+    private ApiSignupApprovalRequest
 }

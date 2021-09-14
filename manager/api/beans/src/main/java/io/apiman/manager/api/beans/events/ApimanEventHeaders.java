@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.apache.commons.lang3.Validate;
 
 /**
- * Uses cloud events-style fields
+ * Uses cloud events-style fields.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
@@ -64,6 +64,21 @@ public class ApimanEventHeaders {
 
     public Map<String, Object> getOtherProperties() {
         return otherProperties;
+    }
+
+    public ApimanEventHeaders setEventVersion(long eventVersion) {
+        this.eventVersion = eventVersion;
+        return this;
+    }
+
+    public ApimanEventHeaders setTime(OffsetDateTime time) {
+        this.time = time;
+        return this;
+    }
+
+    public ApimanEventHeaders setType(String type) {
+        this.type = type;
+        return this;
     }
 
     public static Builder builder() {

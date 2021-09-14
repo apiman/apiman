@@ -23,12 +23,14 @@ public class NewAccountNotificationProducer implements INotificationProducer {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(NewAccountNotificationProducer.class);
     public static final String APIMAN_ACCOUNT_APPROVAL_REQUEST = "apiman.account.approval.request";
-    private final NotificationService notificationService;
+    private NotificationService notificationService;
 
     @Inject
     public NewAccountNotificationProducer(NotificationService notificationService) {
         this.notificationService = notificationService;
     }
+
+    public NewAccountNotificationProducer() {}
 
     @Override
     public void processEvent(IVersionedApimanEvent event) {

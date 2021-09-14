@@ -1,15 +1,20 @@
 package io.apiman.manager.api.beans.idm;
 
 import java.util.Objects;
+import java.util.StringJoiner;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class UserDto {
-
+    @NotBlank
     private String id;
+    @NotBlank
     private String username;
+    @NotBlank
     private String fullName;
+    @NotBlank
     private String email;
 
     public UserDto() {
@@ -66,5 +71,15 @@ public class UserDto {
     @Override
     public int hashCode() {
         return Objects.hash(id, username);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", UserDto.class.getSimpleName() + "[", "]")
+             .add("id='" + id + "'")
+             .add("username='" + username + "'")
+             .add("fullName='" + fullName + "'")
+             .add("email='" + email + "'")
+             .toString();
     }
 }

@@ -72,11 +72,10 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
      */
     public void onEvent(@Observes IVersionedApimanEvent apimanEvent) {
         ApimanEventHeaders headers = apimanEvent.getHeaders();
-        long eventVersion = getEventVersion(apimanEvent, headers);
         String eventType = getType(apimanEvent);
 
         OutboxEventEntity outboxEvent = new OutboxEventEntity()
-             .setEventVersion(eventVersion)
+             .setEventVersion(headers.getEventVersion())
              .setType(eventType)
              .setSource(headers.getSource().toString())
              .setSubject(headers.getSubject())
@@ -96,34 +95,15 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
         return OM.valueToTree(apimanEvent);
     }
 
-    // Use value set in headers or canonical class name
+    /**
+     * Use value set in headers or canonical class name
+     */
     private String getType(IVersionedApimanEvent apimanEvent) {
         String currentValue = apimanEvent.getHeaders().getType();
         if (StringUtils.isEmpty(currentValue)) {
             return apimanEvent.getClass().getCanonicalName();
         } else {
             return currentValue;
-        }
-    }
-
-    /**
-     * Use version number in priority: (1) provided in headers, (2) in @EventVersion annotation.
-     * If no version number is provided, then a default value of 0 is used and a warning emitted.
-     * Could consider upgrading this to an exception?
-     */
-    private long getEventVersion(IVersionedApimanEvent event, ApimanEventHeaders headers) {
-        // Version was not set, get it from the annotation if possible.
-        if (headers.getEventVersion() <= 0) {
-            if (headers.getClass().isAnnotationPresent(ApimanEvent.class)) {
-                ApimanEvent ev = headers.getClass().getAnnotation(ApimanEvent.class);
-                return ev.version();
-            } else {
-                LOGGER.warn("No event version set for {0}, defaulting to 1. "
-                     + "This may cause unintended effects.", event.getClass().getCanonicalName());
-                return 1;
-            }
-        } else {
-            return headers.getEventVersion();
         }
     }
 
