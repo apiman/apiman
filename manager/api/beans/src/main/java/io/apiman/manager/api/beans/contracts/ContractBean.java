@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.StringJoiner;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +32,8 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A Contract links a client version to a API version through
@@ -69,6 +72,9 @@ public class ContractBean implements Serializable, Cloneable {
     private String createdBy;
     @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
+    @Column(name = "status", nullable = false)
+    @NotNull
+    private ContractStatus status = ContractStatus.Created; // For backwards compat?
 
     /**
      * Constructor.
@@ -160,16 +166,31 @@ public class ContractBean implements Serializable, Cloneable {
         this.createdOn = createdOn;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     *
+     * @return
      */
-    @Override
-    @SuppressWarnings("nls")
-    public String toString() {
-        return "ContractBean [id=" + id + ", client=" + client + ", api=" + api + ", plan="
-                + plan + ", createdBy=" + createdBy + ", createdOn=" + createdOn + "]";
+    public ContractStatus getStatus() {
+        return status;
     }
-    
+
+    /**
+     *
+     * @return
+     */
+    public ContractBean setStatus(ContractStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ContractBean.class.getSimpleName() + "[", "]")
+             .add("id=" + id).add("client=" + client).add("api=" + api).add("plan=" + plan)
+             .add("createdBy='" + createdBy + "'").add("createdOn=" + createdOn).add("status=" + status)
+             .toString();
+    }
+
     /**
      * @see java.lang.Object#clone()
      */

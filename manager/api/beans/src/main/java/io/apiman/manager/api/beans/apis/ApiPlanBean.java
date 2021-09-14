@@ -34,10 +34,12 @@ public class ApiPlanBean implements Serializable {
 
     @Column(name = "plan_id", nullable = false)
     private String planId;
-    @Column(nullable = false)
+    @Column(name = "version", nullable = false)
     private String version;
     @Column(name = "expose_in_portal", nullable = false)
-    private boolean exposeInPortal = false;
+    private Boolean exposeInPortal = false;
+    @Column(name = "requires_approval", nullable = false)
+    private Boolean requiresApproval = false;
 
     /**
      * Constructor.
@@ -73,12 +75,22 @@ public class ApiPlanBean implements Serializable {
         this.version = version;
     }
 
-    public boolean isExposeInPortal() {
+
+    public Boolean isExposeInPortal() {
         return exposeInPortal;
     }
 
-    public ApiPlanBean setExposeInPortal(boolean exposeInPortal) {
+    public ApiPlanBean setExposeInPortal(Boolean exposeInPortal) {
         this.exposeInPortal = exposeInPortal;
+        return this;
+    }
+
+    public Boolean isRequiresApproval() {
+        return requiresApproval;
+    }
+
+    public ApiPlanBean setRequiresApproval(Boolean requiresApproval) {
+        this.requiresApproval = requiresApproval;
         return this;
     }
 
@@ -88,6 +100,7 @@ public class ApiPlanBean implements Serializable {
              .add("planId='" + planId + "'")
              .add("version='" + version + "'")
              .add("exposeInPortal=" + exposeInPortal)
+             .add("requiresApproval=" + requiresApproval)
              .toString();
     }
 

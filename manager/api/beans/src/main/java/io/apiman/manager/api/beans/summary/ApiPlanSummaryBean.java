@@ -31,6 +31,7 @@ public class ApiPlanSummaryBean implements Serializable {
     private String planName;
     private String planDescription;
     private String version;
+    private Boolean requiresApproval;
 
     /**
      * Constructor.
@@ -78,6 +79,23 @@ public class ApiPlanSummaryBean implements Serializable {
      */
     public void setPlanName(String planName) {
         this.planName = planName;
+    }
+
+    /**
+     * @return true if the API plan requires approval
+     */
+    public Boolean isRequiresApproval() {
+        return requiresApproval;
+    }
+
+    /**
+     * Set whether the API Plan requires approval
+     *
+     * @param requiresApproval true if requires approval
+     */
+    public ApiPlanSummaryBean setRequiresApproval(Boolean requiresApproval) {
+        this.requiresApproval = requiresApproval;
+        return this;
     }
 
     /**

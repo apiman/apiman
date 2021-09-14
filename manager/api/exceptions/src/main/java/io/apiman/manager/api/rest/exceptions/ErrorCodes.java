@@ -74,6 +74,7 @@ public final class ErrorCodes {
     public static final int CONTRACT_ALREADY_EXISTS         = 4005;
     public static final int CLIENT_STATUS_ERROR                = 4006;
     public static final int CLIENT_VERSION_ALREADY_EXISTS      = 4007;
+    public static final int CONTRACT_STATUS_ERROR              = 4008;
 
     public static final String CLIENT_ALREADY_EXISTS_INFO      = null;
     public static final String CLIENT_NOT_FOUND_INFO           = null;
@@ -82,6 +83,7 @@ public final class ErrorCodes {
     public static final String CONTRACT_ALREADY_EXISTS_INFO = null;
     public static final String CLIENT_STATUS_ERROR_INFO        = null;
     public static final String CLIENT_VERSION_ALREADY_EXISTS_INFO = null;
+    public static final String CONTRACT_STATUS_ERROR_INFO = null;
 
 
     //

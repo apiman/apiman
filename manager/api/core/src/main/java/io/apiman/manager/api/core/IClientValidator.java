@@ -35,9 +35,9 @@ public interface IClientValidator {
      *   <li>At least one Contract exists for the client</li>
      * </ul>
      *
-     * @param client
+     * @param client the client
      * @return true if ready, else false
-     * @throws Exception
+     * @throws Exception exception
      */
     boolean isReady(ClientVersionBean client) throws Exception;
 
@@ -58,10 +58,10 @@ public interface IClientValidator {
      * contract is being created.
      * </p>
      *
-     * @param client
-     * @param hasContracts
+     * @param client the clients
+     * @param hasContracts whether the client has contracts
      * @return true if ready, else false
-     * @throws Exception
+     * @throws Exception exception
      */
     boolean isReady(ClientVersionBean client, boolean hasContracts) throws Exception;
 

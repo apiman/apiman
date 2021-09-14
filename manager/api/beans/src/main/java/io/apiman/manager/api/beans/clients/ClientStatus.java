@@ -28,18 +28,18 @@ public enum ClientStatus {
     Created,
 
     /**
-     * Client has been created and configured, and is ready for publication.
-     */
-    Ready,
-
-    /**
-     * If approval is required, then the client must wait until someone with appropriate permissions promotes the client
-     * to the {@link #Registered} state.
+     * Client has been created and configured but approval is required. The client must wait until someone with
+     * appropriate permissions promotes the client to the {@link #Ready} state.
      * <p>
      * How this state transition is achieved could vary considerably depending on how Apiman is configured (e.g. an out
      * of band business process, a human interaction, etc.).
      */
     AwaitingApproval,
+
+    /**
+     * Client has been created and configured, and is ready for publication.
+     */
+    Ready,
 
     /**
      * Client has been registered and its configuration has been pushed to a gateway. This means traffic can be routed

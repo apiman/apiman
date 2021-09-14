@@ -24,20 +24,25 @@ import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.manager.api.beans.actions.ActionBean;
+import io.apiman.manager.api.beans.actions.ContractActionDto;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
+import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.contracts.ContractStatus;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+import io.apiman.manager.api.core.IClientValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -54,7 +59,9 @@ import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.i18n.Messages;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
+import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.service.ContractService;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,9 +71,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import com.google.common.collect.Streams;
 
 /**
  * Implementation of the Action API.
@@ -75,15 +85,17 @@ import javax.transaction.Transactional;
  */
 @ApplicationScoped
 @Transactional
-public class ActionResourceImpl implements IActionResource {
+public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin {
 
-    private final IApimanLogger log = ApimanLoggerFactory.getLogger(ActionResourceImpl.class);
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ActionResourceImpl.class);
 
     private IStorage storage;
+    private ContractService contractService;
     private IStorageQuery query;
     private IGatewayLinkFactory gatewayLinkFactory;
     private IOrganizationResource orgs;
 
+    private IClientValidator clientValidator;
     private ISecurityContext securityContext;
 
     /**
@@ -92,15 +104,19 @@ public class ActionResourceImpl implements IActionResource {
     @Inject
     public ActionResourceImpl(
         IStorage storage,
+        ContractService contractService,
         IStorageQuery query,
         IGatewayLinkFactory gatewayLinkFactory,
         IOrganizationResource orgs,
+        IClientValidator clientValidator,
         ISecurityContext securityContext
     ) {
         this.storage = storage;
+        this.contractService = contractService;
         this.query = query;
         this.gatewayLinkFactory = gatewayLinkFactory;
         this.orgs = orgs;
+        this.clientValidator = clientValidator;
         this.securityContext = securityContext;
     }
 
@@ -134,6 +150,61 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * Workflow:
+     * <ol>
+     *     <li>Get specified contract.</li>
+     *     <li>Verify if any other contracts still need approving:</li>
+     *     <li>- If all approved, move to 'ready' state (or should we publish?).</li>
+     *     <li>- If not all approved, leave in 'needs approval' state.</li>
+     * </ol>
+     */
+    @Override
+    public void approveContract(ContractActionDto action) throws ActionException, NotAuthorizedException {
+        ContractBean contract = tryAction(() -> storage.getContract(action.getContractId()));
+        if (contract == null) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ContractDoesNotExist"));
+        }
+        // TODO(msavy): Make a specific query to reduce this mess down.
+        ClientVersionBean cvb = contract.getClient();
+        ApiVersionBean avb = contract.getApi();
+        OrganizationBean org = avb.getApi().getOrganization();
+        securityContext.checkPermissions(PermissionType.clientAdmin, org.getId());
+
+        LOGGER.debug("Approving a contract: {0}", action);
+        contract.setStatus(ContractStatus.Created);
+        tryAction(() -> storage.updateContract(contract));
+
+        // If all contracts are now good, then ready to register?
+        List<ContractBean> contracts = tryAction(() -> Streams.stream((
+             storage.getAllContracts(org.getId(), cvb.getClient().getId(), cvb.getVersion())
+        ))).collect(Collectors.toList());
+
+        List<ContractBean> awaitingApprovalList = contracts
+             .stream()
+             .filter(c -> c.getStatus().equals(ContractStatus.AwaitingApproval))
+             .collect(Collectors.toList());
+
+        if (awaitingApprovalList.size() > 0) {
+            LOGGER.debug("A contract was approved, but {0} other contracts are still awaiting approval, "
+                              + "so client version {1} will remain in its pending state until the remaining contract approvals "
+                              + "are granted: {2}.", awaitingApprovalList.size(), cvb.getVersion(),
+                 awaitingApprovalList);
+        } else {
+            LOGGER.debug("All contracts for {0} have been approved", cvb.getVersion());
+            // Send message to say 'ready to register!'
+            // Send notification
+            tryAction(() -> {
+                if (clientValidator.isReady(cvb)) {
+                    LOGGER.debug("Client set to ready as all contracts have been approved");
+                    avb.setStatus(ApiStatus.Ready);
+                }
+            });
+        }
+    }
+
+    /**
      * Publishes an API to the gateway.
      * @param action
      */
@@ -151,6 +222,7 @@ public class ActionResourceImpl implements IActionResource {
         if (!versionBean.isPublicAPI() && versionBean.getStatus() != ApiStatus.Ready) {
             throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApiStatus")); //$NON-NLS-1$
         }
+
         if (versionBean.isPublicAPI()) {
             if (versionBean.getStatus() == ApiStatus.Retired || versionBean.getStatus() == ApiStatus.Created) {
                 throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApiStatus")); //$NON-NLS-1$
@@ -230,7 +302,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully published API %s on specified gateways: %s", //$NON-NLS-1$
+        LOGGER.debug(String.format("Successfully published API %s on specified gateways: %s", //$NON-NLS-1$
                 versionBean.getApi().getName(), versionBean.getApi()));
     }
 
@@ -309,7 +381,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("RetireError"), e); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully retired API %s on specified gateways: %s", //$NON-NLS-1$
+        LOGGER.debug(String.format("Successfully retired API %s on specified gateways: %s", //$NON-NLS-1$
                 versionBean.getApi().getName(), versionBean.getApi()));
     }
 
@@ -329,6 +401,13 @@ public class ActionResourceImpl implements IActionResource {
         }
         try {
             contractBeans = query.getClientContracts(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+            List<ContractSummaryBean> contractsAwaitingApproval = contractBeans
+                 .stream()
+                 .filter(f -> f.getStatus().equals(ContractStatus.AwaitingApproval))
+                 .collect(Collectors.toList());
+            if (!contractsAwaitingApproval.isEmpty()) {
+                throw ExceptionFactory.contractNotYetApprovedException(contractsAwaitingApproval);
+            }
         } catch (StorageException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound"), e); //$NON-NLS-1$
         }
@@ -426,7 +505,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("RegisterError"), e); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully registered Client %s on specified gateways: %s", //$NON-NLS-1$
+        LOGGER.debug(String.format("Successfully registered Client %s on specified gateways: %s", //$NON-NLS-1$
                 versionBean.getClient().getName(), versionBean.getClient()));
     }
 
@@ -549,7 +628,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("UnregisterError"), e); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully registered Client %s on specified gateways: %s", //$NON-NLS-1$
+        LOGGER.debug(String.format("Successfully registered Client %s on specified gateways: %s", //$NON-NLS-1$
                 versionBean.getClient().getName(), versionBean.getClient()));
     }
 
@@ -582,7 +661,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("LockError"), e); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully locked Plan %s: %s", //$NON-NLS-1$
+        LOGGER.debug(String.format("Successfully locked Plan %s: %s", //$NON-NLS-1$
                 versionBean.getPlan().getName(), versionBean.getPlan()));
     }
 }
