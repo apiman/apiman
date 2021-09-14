@@ -270,7 +270,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void updateClientVersion(ClientVersionBean version) throws StorageException {
+        LOGGER.debug("Updating client version: {0}", version);
         super.update(version);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateContract(ContractBean contract) throws StorageException {
+        super.update(contract);
     }
 
     /**
@@ -1154,6 +1163,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     summary.setPlanName(planVersion.getPlan().getName());
                     summary.setPlanDescription(planVersion.getPlan().getDescription());
                     summary.setVersion(spb.getVersion());
+                    summary.setRequiresApproval(spb.isRequiresApproval());
                     plans.add(summary);
                 }
             }

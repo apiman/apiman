@@ -89,6 +89,7 @@ public interface IStorage {
     public void updateOrganization(OrganizationBean organization) throws StorageException;
     public void updateClient(ClientBean client) throws StorageException;
     public void updateClientVersion(ClientVersionBean version) throws StorageException;
+    public void updateContract(ContractBean contract) throws StorageException;
     public void updateApi(ApiBean api) throws StorageException;
     public void updateApiVersion(ApiVersionBean version) throws StorageException;
     public void updateApiDefinition(ApiVersionBean version, InputStream definitionStream) throws StorageException;

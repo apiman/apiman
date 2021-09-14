@@ -69,7 +69,6 @@ public class PlanVersionBean implements Serializable, Cloneable {
     private Date modifiedOn;
     @Column(name = "locked_on")
     private Date lockedOn;
-    @Column
 
     /**
      * Constructor.

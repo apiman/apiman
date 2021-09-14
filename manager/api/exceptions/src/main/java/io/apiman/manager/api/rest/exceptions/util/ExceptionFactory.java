@@ -19,6 +19,7 @@ import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.rest.exceptions.*;
 import io.apiman.manager.api.rest.exceptions.i18n.Messages;
@@ -27,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import org.jetbrains.annotations.Contract;
 
 /**
  * Simple factory for creating REST exceptions.
@@ -136,6 +139,10 @@ public final class ExceptionFactory {
         return new ContractNotFoundException(Messages.i18n.format("ContractDoesNotExist", contractId)); //$NON-NLS-1$
     }
 
+    public static InvalidContractStatusException contractNotYetApprovedException(List<ContractSummaryBean> contracts) {
+        return new InvalidContractStatusException(Messages.i18n.format("ContractNotYetApproved", contracts)); //$NON-NLS-1$
+    }
+
     /**
      * Creates an exception from an client id and version.
      * @param clientId the client id
@@ -152,6 +159,10 @@ public final class ExceptionFactory {
      */
     public static final InvalidClientStatusException invalidClientStatusException() {
         return new InvalidClientStatusException(Messages.i18n.format("InvalidClientStatus")); //$NON-NLS-1$
+    }
+
+    public static InvalidClientStatusException clientAwaitingApprovalException() {
+        return new InvalidClientStatusException(Messages.i18n.format("ClientAwaitingApproval")); //$NON-NLS-1$
     }
 
     /**
@@ -443,6 +454,7 @@ public final class ExceptionFactory {
     public static EntityStillActiveException entityStillActiveExceptionApiVersions(Iterator<ApiVersionBean> apis) {
         return new EntityStillActiveException(Messages.i18n.format("EntityStillActiveApis", joinIter(apis))); //$NON-NLS-1$
     }
+
 
     private static <T> String joinList(List<T> items) {
         return items.stream()

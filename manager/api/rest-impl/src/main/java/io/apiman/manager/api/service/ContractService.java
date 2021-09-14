@@ -8,6 +8,7 @@ import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.contracts.ContractStatus;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.plans.PlanStatus;
@@ -32,12 +33,16 @@ import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import static io.apiman.manager.api.beans.idm.PermissionType.planAdmin;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
@@ -80,7 +85,7 @@ public class ContractService implements DataAccessUtilMixin {
 
         try {
             ContractBean contract = createContractInternal(organizationId, clientId, version, bean);
-            LOGGER.debug(String.format("Created new contract %s: %s", contract.getId(), contract)); //$NON-NLS-1$
+            LOGGER.debug("Created new contract {0}: {1}", contract.getId(), contract); //$NON-NLS-1$
             return contract;
         } catch (AbstractRestException e) {
             throw e;
@@ -114,19 +119,15 @@ public class ContractService implements DataAccessUtilMixin {
         if (avb.getStatus() != ApiStatus.Published) {
             throw ExceptionFactory.invalidApiStatusException();
         }
-        Set<ApiPlanBean> plans = avb.getPlans();
-        String planVersion = null;
-        if (plans != null) {
-            for (ApiPlanBean apiPlanBean : plans) {
-                if (apiPlanBean.getPlanId().equals(bean.getPlanId())) {
-                    planVersion = apiPlanBean.getVersion();
-                }
-            }
-        }
-        if (planVersion == null) {
-            throw ExceptionFactory.planNotFoundException(bean.getPlanId());
-        }
-        PlanVersionBean pvb = planService.getPlanVersion(bean.getApiOrgId(), bean.getPlanId(), planVersion);
+        Set<ApiPlanBean> plans = Optional.ofNullable(avb.getPlans())
+                                         .orElse(Collections.emptySet());
+
+        ApiPlanBean apiPlanBean = plans.stream()
+             .filter(apb -> apb.getPlanId().equals(bean.getPlanId()))
+             .findFirst()
+             .orElseThrow(() -> ExceptionFactory.planNotFoundException(bean.getPlanId()));
+
+        PlanVersionBean pvb = planService.getPlanVersion(bean.getApiOrgId(), bean.getPlanId(), apiPlanBean.getVersion());
         if (pvb.getStatus() != PlanStatus.Locked) {
             throw ExceptionFactory.invalidPlanStatusException();
         }
@@ -138,9 +139,26 @@ public class ContractService implements DataAccessUtilMixin {
         contract.setCreatedBy(securityContext.getCurrentUser());
         contract.setCreatedOn(new Date());
 
+        boolean approvalRequired = false;
+
+        if (!apiPlanBean.isRequiresApproval()
+                 || securityContext.isAdmin()
+                 || securityContext.hasPermission(planAdmin, organizationId)) {
+            LOGGER.debug("Contract valid immediately ✅: {0}", contract);
+            contract.setStatus(ContractStatus.Created);
+        } else {
+            LOGGER.debug("Contract requires approval ✋: {0}", contract);
+            contract.setStatus(ContractStatus.AwaitingApproval);
+            approvalRequired = true;
+        }
+
         // Move the client to the "Ready" state if necessary.
         if (cvb.getStatus() == ClientStatus.Created && clientValidator.isReady(cvb, true)) {
-            cvb.setStatus(ClientStatus.Ready);
+            if (approvalRequired) {
+                cvb.setStatus(ClientStatus.AwaitingApproval);
+            } else {
+                cvb.setStatus(ClientStatus.Ready);
+            }
         }
 
         storage.createContract(contract);
@@ -178,9 +196,13 @@ public class ContractService implements DataAccessUtilMixin {
         }
     }
 
+    public List<ContractSummaryBean> getClientContractSummaries(String orgId, String clientId, String version)
+         throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException, StorageException {
+        return query.getClientContracts(orgId, clientId, version);
+    }
+
     @Transactional
-    public ContractBean getContract(String organizationId, String clientId, String version,
-        Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
+    public ContractBean getContract(String organizationId, Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
         return tryAction(() -> {
