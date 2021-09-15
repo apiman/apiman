@@ -729,6 +729,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             summary.setId(client.getId());
             summary.setName(client.getName());
             summary.setDescription(client.getDescription());
+            summary.setImage(client.getImage());
             // TODO find the number of contracts - probably need native SQL for that
             summary.setNumContracts(0);
             summary.setOrganizationId(client.getOrganization().getId());
@@ -754,6 +755,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             OrganizationBean organization = api.getOrganization();
             summary.setId(api.getId());
             summary.setName(api.getName());
+            summary.setImage(api.getImage());
             summary.setDescription(api.getDescription());
             summary.setCreatedOn(api.getCreatedOn());
             summary.setOrganizationId(api.getOrganization().getId());

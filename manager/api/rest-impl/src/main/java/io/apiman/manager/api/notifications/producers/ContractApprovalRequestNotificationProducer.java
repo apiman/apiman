@@ -16,7 +16,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 /**
- * Accept a {@link ContractApprovalRequestEvent} and produce a {@link #APIMAN_API_APPROVAL_REQUEST} notification.
+ * Accept a {@link ContractApprovalRequestEvent} and produce a {@link #APIMAN_CLIENT_CONTRACT_REASON} notification.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
@@ -24,7 +24,7 @@ import javax.inject.Inject;
 public class ContractApprovalRequestNotificationProducer implements INotificationProducer {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalRequestNotificationProducer.class);
-    public static final String APIMAN_API_APPROVAL_REQUEST = "apiman.api.approval.request";
+    public static final String APIMAN_CLIENT_CONTRACT_REASON = "apiman.client.contract.approval.request";
     private NotificationService notificationService;
 
     @Inject
@@ -46,7 +46,7 @@ public class ContractApprovalRequestNotificationProducer implements INotificatio
                  .setRecipientType(RecipientType.PERMISSION);
 
             newNotification.setRecipient(List.of(planAdmins))
-                           .setReason(APIMAN_API_APPROVAL_REQUEST)
+                           .setReason(APIMAN_CLIENT_CONTRACT_REASON)
                            .setReasonMessage("Signup request for API")
                            .setCategory(NotificationCategory.API_ADMINISTRATION)
                            .setPayload(signupEvent);

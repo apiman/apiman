@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import io.swagger.annotations.Api;
 
 /**
- * An event receiving API.
+ * An event receiving REST API.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
@@ -19,7 +19,7 @@ import io.swagger.annotations.Api;
 public interface IEventResource {
 
     /**
-     * For SSO to push new events
+     * For SSO to push new account events
      */
     @POST
     @Path("sso/users")

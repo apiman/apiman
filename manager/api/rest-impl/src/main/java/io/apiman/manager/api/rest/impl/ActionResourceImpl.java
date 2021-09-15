@@ -48,7 +48,6 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
-import io.apiman.manager.api.notifications.email.handlers.ApiSignupApprovalRequest;
 import io.apiman.manager.api.rest.IActionResource;
 import io.apiman.manager.api.rest.IOrganizationResource;
 import io.apiman.manager.api.rest.exceptions.ActionException;
@@ -62,6 +61,7 @@ import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.service.ActionService;
 import io.apiman.manager.api.service.ContractService;
 
 import java.util.ArrayList;
@@ -98,6 +98,7 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
 
     private IClientValidator clientValidator;
     private ISecurityContext securityContext;
+    private ActionService actionService;
 
     /**
      * Constructor.
@@ -110,7 +111,8 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
         IGatewayLinkFactory gatewayLinkFactory,
         IOrganizationResource orgs,
         IClientValidator clientValidator,
-        ISecurityContext securityContext
+        ISecurityContext securityContext,
+        ActionService actionService
     ) {
         this.storage = storage;
         this.contractService = contractService;
@@ -119,6 +121,7 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
         this.orgs = orgs;
         this.clientValidator = clientValidator;
         this.securityContext = securityContext;
+        this.actionService = actionService;
     }
 
     public ActionResourceImpl() {
@@ -665,6 +668,4 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
         LOGGER.debug(String.format("Successfully locked Plan %s: %s", //$NON-NLS-1$
                 versionBean.getPlan().getName(), versionBean.getPlan()));
     }
-
-    private ApiSignupApprovalRequest
 }

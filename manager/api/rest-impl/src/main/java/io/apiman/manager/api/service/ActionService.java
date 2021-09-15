@@ -16,7 +16,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import static io.apiman.manager.api.notifications.producers.ContractApprovalRequestNotificationProducer.APIMAN_API_APPROVAL_REQUEST;
+import static io.apiman.manager.api.notifications.producers.ContractApprovalRequestNotificationProducer.APIMAN_CLIENT_CONTRACT_REASON;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
@@ -43,7 +43,7 @@ public class ActionService implements DataAccessUtilMixin {
              .builder()
              .setId(UUID.randomUUID().toString())
              .setSource(URI.create("/a/b/c"))
-             .setSubject(APIMAN_API_APPROVAL_REQUEST)
+             .setSubject(APIMAN_CLIENT_CONTRACT_REASON)
              .setTime(OffsetDateTime.now())
              .build();
 
@@ -58,9 +58,5 @@ public class ActionService implements DataAccessUtilMixin {
              .build();
         LOGGER.debug("Sending approval request event {0}", approvalRequestEvent);
         eventService.fireEvent(approvalRequestEvent);
-    }
-
-    public void sendContractApproval(String userId, String clientId, String apiId, Long contractId) {
-
     }
 }

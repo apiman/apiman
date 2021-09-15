@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.summary;
 
+import io.apiman.manager.api.beans.download.BlobReference;
+
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -33,6 +35,8 @@ public class ClientSummaryBean implements Serializable {
 
     private String organizationId;
     private String organizationName;
+    @BlobReference
+    private String imageFileRef;
     private String id;
     private String name;
     private String description;
@@ -133,6 +137,15 @@ public class ClientSummaryBean implements Serializable {
      */
     public static long getSerialversionuid() {
         return serialVersionUID;
+    }
+
+    public String getImageFileRef() {
+        return imageFileRef;
+    }
+
+    public ClientSummaryBean setImage(String imageFileRef) {
+        this.imageFileRef = imageFileRef;
+        return this;
     }
 
     /**

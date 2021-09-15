@@ -44,8 +44,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig> {
 
-    protected static final String NO_USER_AVAILABLE = new String();
-    protected static final String NO_CLIENT_AVAILABLE = new String();
+    protected static final String NO_USER_AVAILABLE = "";
+    protected static final String NO_CLIENT_AVAILABLE = "";
 
     private static final String DEFAULT_LIMIT_HEADER = "X-RateLimit-Limit"; //$NON-NLS-1$
     private static final String DEFAULT_REMAINING_HEADER = "X-RateLimit-Remaining"; //$NON-NLS-1$

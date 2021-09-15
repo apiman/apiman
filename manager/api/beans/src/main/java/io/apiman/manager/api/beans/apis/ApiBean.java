@@ -66,7 +66,7 @@ public class ApiBean implements Serializable, Cloneable {
     private String name;
     @Column(name = "image_file_ref", updatable = true, nullable = true) // Reference to file storage (we'll ship with DB blob)
     @BlobReference
-    private String imageFileRef;
+    private String image;
     @Column(updatable=true, nullable=true, length=512)
     private String description;
     @Column(name = "created_by", updatable=false, nullable=false)
@@ -183,12 +183,12 @@ public class ApiBean implements Serializable, Cloneable {
         this.numPublished = numPublished;
     }
 
-    public String getImageFileRef() {
-        return imageFileRef;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageFileRef(String imageFileRef) {
-        this.imageFileRef = imageFileRef;
+    public void setImage(String imageFileRef) {
+        this.image = imageFileRef;
     }
 
     /* (non-Javadoc)

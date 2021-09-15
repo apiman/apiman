@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.summary;
 
+import io.apiman.manager.api.beans.download.BlobReference;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -35,6 +37,8 @@ public class ApiSummaryBean implements Serializable {
 
     private String organizationId;
     private String organizationName;
+    @BlobReference
+    private String image;
     private String id;
     private String name;
     private String description;
@@ -128,6 +132,15 @@ public class ApiSummaryBean implements Serializable {
      */
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public ApiSummaryBean setImage(String imageFileRef) {
+        this.image = imageFileRef;
+        return this;
     }
 
     /**
