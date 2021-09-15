@@ -6,6 +6,7 @@ import {MarketplaceSignupStepperComponent} from "./components/marketplace-signup
 import {MarketplaceComponent} from "./components/marketplace/marketplace.component";
 import {AccountComponent} from './components/account/account.component';
 import {MyAppsComponent} from './components/my-apps/my-apps.component';
+import {AuthGuard} from "./guards/auth.guard";
 
 const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -13,7 +14,7 @@ const routes: Routes = [
   {path: 'marketplace', component: MarketplaceComponent},
   {path: 'api-details/:orgId/:apiId', component: MarketplaceApiDetailsComponent},
   {path: 'api-signup/:orgId/:apiId', component: MarketplaceSignupStepperComponent},
-  {path: 'account', component: AccountComponent},
+  {path: 'account', component: AccountComponent, canActivate: [AuthGuard]},
   {path: 'applications', component: MyAppsComponent},
 ];
 

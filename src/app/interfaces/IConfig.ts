@@ -4,7 +4,8 @@ export interface IConfig {
   "endpoint": string;
   "hero": IHero,
   "navigation": INavigation,
-  "footer": IFooter
+  "footer": IFooter,
+  "auth": IAuthProvider
 }
 
 export interface IHero {
@@ -35,4 +36,9 @@ export interface ILink{
   "openInNewTab": boolean
 }
 
+export interface IAuthProvider {
+  "url": string,
+  "realm": string,
+  "clientId": string
+}
 

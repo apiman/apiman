@@ -42,5 +42,10 @@
       }
     ],
     "separator": "•"
+  },
+  "auth": {
+    "url": "https://vagrantguest/pas/keycloak",
+    "realm": "PAS",
+    "clientId": "devportal"
   }
 }

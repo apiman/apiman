@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import config from './../../../../config.json';
-import {IConfig, IFooter, IHero, INavigation} from '../../interfaces/IConfig';
+import {IAuthProvider, IConfig, IFooter, IHero, INavigation} from '../../interfaces/IConfig';
 
 @Injectable({
   providedIn: 'root'
@@ -8,17 +8,17 @@ import {IConfig, IFooter, IHero, INavigation} from '../../interfaces/IConfig';
 export class ConfigService {
   config!: IConfig;
 
-  constructor() { }
+  constructor() {
+  }
 
-  readAndEvaluateConfig(): boolean{
+  readAndEvaluateConfig(): boolean {
     this.config = config;
 
-    try{
+    try {
       JSON.stringify(this.config);
-    }catch (e) {
+    } catch (e) {
       throw Error('Invalid Config File');
     }
-
     return true;
   }
 
@@ -40,5 +40,9 @@ export class ConfigService {
 
   getEndpoint(): string {
     return this.config.endpoint;
+  }
+
+  getAuth(): IAuthProvider {
+    return {...this.config.auth};
   }
 }

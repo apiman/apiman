@@ -30,12 +30,14 @@ import { PlanCardListComponent } from './components/plan-card-list/plan-card-lis
 import {AccountComponent} from './components/account/account.component';
 import {MyAppsComponent} from './components/my-apps/my-apps.component';
 import {ThemeService} from './services/theme/theme.service';
+import {KeycloakAngularModule} from "keycloak-angular";
+import {KeycloakHelperService} from "./services/keycloak-helper/keycloak-helper.service";
 
 export function initializeApp(configService: ConfigService,
                               devPortalInitializer: InitializerService): () => Promise<void> {
   configService.readAndEvaluateConfig();
 
-  /* Define promisses needed for the app initialization */
+  /* Define promises needed for the app initialization */
   const initLanguagePromise: Promise<void> = new Promise((resolve, reject) => {
     devPortalInitializer.initLanguage(configService.getLanguage()).then(() => {
       resolve();
@@ -46,7 +48,7 @@ export function initializeApp(configService: ConfigService,
 
   return (): Promise<void> => {
     return new Promise((resolve, reject) => {
-      /* Insert defined promisses */
+      /* Insert defined promises */
       Promise.all([initLanguagePromise]).then(() => {
         resolve();
       }).catch((e) => {
@@ -58,6 +60,10 @@ export function initializeApp(configService: ConfigService,
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './../assets/i18n/', '.json');
+}
+
+function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
+  return async () => await keycloakHelper.initKeycloak();
 }
 
 @NgModule({
@@ -82,6 +88,7 @@ export function createTranslateLoader(http: HttpClient) {
     MyAppsComponent
   ],
   imports: [
+    KeycloakAngularModule,
     MaterialModule,
     BrowserModule,
     AppRoutingModule,
@@ -104,6 +111,12 @@ export function createTranslateLoader(http: HttpClient) {
       useFactory: initializeApp,
       multi: true,
       deps: [ConfigService, InitializerService, ThemeService]
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakHelperService]
     }
   ],
   bootstrap: [AppComponent]

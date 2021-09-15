@@ -23,6 +23,8 @@
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "axios": "^0.21.1",
+    "keycloak-angular": "^8.4.0",
+    "keycloak-js": "^15.0.2",
     "ngx-markdown": "^12.0.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",

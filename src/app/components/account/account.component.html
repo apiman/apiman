@@ -1,1 +1,29 @@
 <p>account works!</p>
+
+<ng-container *ngIf="userProfile">
+  <h2>User information</h2>
+  <table>
+    <tr *ngIf="userProfile.username">
+      <th scope="row">Username</th>
+      <td>{{ userProfile.username }}</td>
+    </tr>
+    <tr *ngIf="userProfile.firstName">
+      <th scope="row">First name</th>
+      <td>{{ userProfile.firstName }}</td>
+    </tr>
+    <tr *ngIf="userProfile.lastName">
+      <th scope="row">First name</th>
+      <td>{{ userProfile.lastName }}</td>
+    </tr>
+    <tr *ngIf="userProfile.email">
+      <th scope="row">E-mail</th>
+      <td>{{ userProfile.email }}</td>
+    </tr>
+    <tr>
+      <th scope="row">E-mail verified</th>
+      <td>{{ userProfile.emailVerified ? 'Yes' : 'No' }}</td>
+    </tr>
+  </table>
+</ng-container>
+
+<button mat-raised-button (click)="logout()" >Log-Out</button>
