@@ -1214,6 +1214,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 OrganizationBean apiOrg = entityManager.find(OrganizationBean.class, api.getOrganization().getId());
 
                 ContractSummaryBean csb = new ContractSummaryBean();
+                csb.setStatus(contractBean.getStatus());
                 csb.setClientId(client.getId());
                 csb.setClientOrganizationId(client.getOrganization().getId());
                 csb.setClientOrganizationName(clientOrg.getName());
@@ -1354,6 +1355,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             OrganizationBean apiOrg = entityManager.find(OrganizationBean.class, api.getOrganization().getId());
 
             ContractSummaryBean csb = new ContractSummaryBean();
+            csb.setStatus(contractBean.getStatus());
             csb.setClientId(client.getId());
             csb.setClientOrganizationId(client.getOrganization().getId());
             csb.setClientOrganizationName(clientOrg.getName());
