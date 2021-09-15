@@ -12,10 +12,10 @@ import javax.inject.Inject;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
-public class ApiSignupApprovalRequest implements INotificationHandler  {
+public class ContractApprovalRequest implements INotificationHandler  {
 
     @Inject
-    public ApiSignupApprovalRequest() {}
+    public ContractApprovalRequest() {}
 
     @Override
     public void handle(NotificationDto<? extends IVersionedApimanEvent> rawNotification) {
@@ -27,7 +27,7 @@ public class ApiSignupApprovalRequest implements INotificationHandler  {
 
     @Override
     public boolean wants(NotificationDto<? extends IVersionedApimanEvent> notification) {
-        if (notification.getReason().equals(ContractApprovalRequestNotificationProducer.APIMAN_API_APPROVAL_REQUEST)) {
+        if (notification.getReason().equals(ContractApprovalRequestNotificationProducer.APIMAN_CLIENT_CONTRACT_REASON)) {
             return true;
         }
         return false;

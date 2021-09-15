@@ -63,6 +63,7 @@ public final class RestHelper {
             apiSummary.setId(apiSummaryBean.getId());
             apiSummary.setName(apiSummaryBean.getName());
             apiSummary.setDescription(apiSummaryBean.getDescription());
+            apiSummary.setImage(apiSummaryBean.getImage());
             apis.add(apiSummary);
         }
         return apis;
