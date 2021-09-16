@@ -4,8 +4,8 @@
       <h1 class="mt-40" #heroTitle>{{heroService.hero.title}}</h1>
       <p #heroSubtitle>{{heroService.hero.subtitle}}</p>
     </div>
-    <div id="hero-btn">
-      <button mat-raised-button color="primary">Register / Login</button>
+    <div id="hero-btn" *ngIf="!loggedIn">
+      <button mat-raised-button color="primary" routerLink="/account">Register / Login</button>
     </div>
   </div>
 </div>

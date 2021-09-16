@@ -2,6 +2,7 @@ import {AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Renderer2, V
 import config from './../../../../config.json';
 import {HeroService} from '../../services/hero/hero.service';
 import {Data} from '@angular/router';
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-header',
@@ -14,13 +15,18 @@ export class HeaderComponent implements AfterViewInit {
   @ViewChild('heroSubtitle') heroSubtitle!: ElementRef;
   @ViewChild('heroOverlay') heroOverlay!: ElementRef;
 
-  constructor(private renderer: Renderer2,
-              public heroService: HeroService) { }
+  loggedIn = false;
 
-  ngAfterViewInit(): void {
+  constructor(private renderer: Renderer2,
+              public heroService: HeroService,
+              private keycloak: KeycloakService) { }
+
+  async ngAfterViewInit() {
     this.renderer.setStyle(this.heroImageDiv.nativeElement, 'background-image', 'url(\"' + this.heroService.hero.heroImgUrl + '\")');
     this.renderer.setStyle(this.heroTitle.nativeElement, 'color', this.heroService.hero.fontColor.title);
     this.renderer.setStyle(this.heroSubtitle.nativeElement, 'color', this.heroService.hero.fontColor.subtitle);
     this.renderer.setStyle(this.heroOverlay.nativeElement, 'background-color', this.heroService.hero.overlayColor);
+
+    this.loggedIn = await this.keycloak.isLoggedIn();
   }
 }
