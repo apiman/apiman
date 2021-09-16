@@ -1,22 +1,22 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {HeroService} from '../../services/hero/hero.service';
-import {TranslateService} from '@ngx-translate/core';
-import {ApiService} from "../../services/api/api.service";
-import {ApiBean} from "../../services/backend/backend.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { HeroService } from '../../services/hero/hero.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ApiService } from '../../services/api/api.service';
+import { ApiBean } from '../../services/backend/backend.service';
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
   templateUrl: './marketplace-signup-stepper.component.html',
-  styleUrls: ['./marketplace-signup-stepper.component.scss']
+  styleUrls: ['./marketplace-signup-stepper.component.scss'],
 })
 export class MarketplaceSignupStepperComponent implements OnInit {
-
   // ToDo replace fixed api mockData with backendCall
   api!: ApiBean;
 
   features: string[] = ['fast', 'free', 'fancy features'];
-  markdown: string = '# In inmotae messes et tamen sustinuit fieri\n' +
+  markdown: string =
+    '# In inmotae messes et tamen sustinuit fieri\n' +
     '\n' +
     '## Iam nataque prospexit\n' +
     '\n' +
@@ -64,10 +64,12 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     'Inplevere maior. Ubi aut supplicium Averna, ciet percussis Praebuimus saepe\n' +
     'fugisse quae est: a.';
 
-  constructor(private heroService: HeroService,
-              private apiService: ApiService,
-              private route: ActivatedRoute,
-              private translator: TranslateService) { }
+  constructor(
+    private heroService: HeroService,
+    private apiService: ApiService,
+    private route: ActivatedRoute,
+    private translator: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.setUpHero();
@@ -76,7 +78,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   private setUpHero() {
     this.heroService.setUpHero({
-      title: this.translator.instant('API_SIGN_UP.TITLE')
+      title: this.translator.instant('API_SIGN_UP.TITLE'),
     });
   }
 
@@ -86,9 +88,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
     this.apiService.getApi(orgId, apiId);
 
-    this.apiService.currentApi.subscribe(
-      api => {
-        this.api = api;
-      });
+    this.apiService.currentApi.subscribe((api) => {
+      this.api = api;
+    });
   }
 }

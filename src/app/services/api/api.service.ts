@@ -4,66 +4,69 @@ import {
   ApiSummaryBean,
   ApiVersionSummaryBean,
   BackendService,
-  SearchCriteriaBean, SearchResultsBeanApiSummaryBean
-} from "../backend/backend.service";
-import {Observable, throwError} from "rxjs";
-import {catchError, map, retry} from "rxjs/operators";
+  SearchCriteriaBean,
+  SearchResultsBeanApiSummaryBean,
+} from '../backend/backend.service';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map, retry } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
-
   apis: ApiSummaryBean[] = [];
   currentApi!: Observable<ApiBean>;
-  currentApiVersions!: Observable<ApiVersionSummaryBean[]>
-  totalSize: number = 0;
+  currentApiVersions!: Observable<ApiVersionSummaryBean[]>;
+  totalSize = 0;
   searchCriteria: SearchCriteriaBean = {
-    filters: [{
-      name: "name",
-      value: "*",
-      operator: "like"
-    }],
+    filters: [
+      {
+        name: 'name',
+        value: '*',
+        operator: 'like',
+      },
+    ],
     paging: {
       page: 1,
-      pageSize: 8
-    }
+      pageSize: 8,
+    },
   };
 
-  constructor(private backendService: BackendService) { }
+  constructor(private backendService: BackendService) {}
 
-  getFeaturedApis(searchCriteria: SearchCriteriaBean): Observable<SearchResultsBeanApiSummaryBean> {
+  getFeaturedApis(
+    searchCriteria: SearchCriteriaBean
+  ): Observable<SearchResultsBeanApiSummaryBean> {
     return this.searchApis(searchCriteria).pipe(
-      map( searchResult => {
-        searchResult.beans = searchResult.beans.slice(0,4)
-        return searchResult
+      map((searchResult) => {
+        searchResult.beans = searchResult.beans.slice(0, 4);
+        return searchResult;
       })
-     );
-  }
-
-  getApi(orgId: String, apiId: String): Observable<ApiBean> {
-    return this.currentApi = this.backendService.getApi(orgId, apiId).pipe(
-      retry(1),
-      catchError(this.handleError)
     );
   }
 
-  getApiVersions(orgId: String, apiId: String): Observable<ApiVersionSummaryBean[]> {
-    return this.currentApiVersions = this.backendService.getApiVersions(orgId, apiId).pipe(
-      retry(1),
-      catchError(this.handleError)
-    );
+  getApi(orgId: string, apiId: string): Observable<ApiBean> {
+    return (this.currentApi = this.backendService
+      .getApi(orgId, apiId)
+      .pipe(retry(1), catchError(this.handleError)));
   }
 
-
-
-  searchApis(searchCriteria: SearchCriteriaBean): Observable<SearchResultsBeanApiSummaryBean> {
-    return this.backendService.searchApis(searchCriteria).pipe(
-      retry(1),
-      catchError(this.handleError)
-    );
+  getApiVersions(
+    orgId: string,
+    apiId: string
+  ): Observable<ApiVersionSummaryBean[]> {
+    return (this.currentApiVersions = this.backendService
+      .getApiVersions(orgId, apiId)
+      .pipe(retry(1), catchError(this.handleError)));
   }
 
+  searchApis(
+    searchCriteria: SearchCriteriaBean
+  ): Observable<SearchResultsBeanApiSummaryBean> {
+    return this.backendService
+      .searchApis(searchCriteria)
+      .pipe(retry(1), catchError(this.handleError));
+  }
 
   handleError(error: any) {
     let errorMessage = '';

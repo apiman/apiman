@@ -8,9 +8,8 @@ describe('ApiCardListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ApiCardListComponent ]
-    })
-    .compileComponents();
+      declarations: [ApiCardListComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

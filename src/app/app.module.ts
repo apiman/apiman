@@ -1,9 +1,9 @@
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MarkdownModule} from 'ngx-markdown';
-import {FormsModule} from '@angular/forms';
+import { MarkdownModule } from 'ngx-markdown';
+import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -14,48 +14,55 @@ import { MarketplaceApiTermsComponent } from './components/marketplace-api-terms
 import { MarketplaceSignupStepperComponent } from './components/marketplace-signup-stepper/marketplace-signup-stepper.component';
 import { MarketplaceApiPoliciesComponent } from './components/marketplace-api-policies/marketplace-api-policies.component';
 import { MarketplaceApiConfirmationComponent } from './components/marketplace-api-confirmation/marketplace-api-confirmation.component';
-import {ClipboardModule} from '@angular/cdk/clipboard';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MarketplaceApiDescriptionComponent } from './components/marketplace-api-description/marketplace-api-description.component';
 import { PlanCardComponent } from './components/plan-card/plan-card.component';
 import { MarketplaceComponent } from './components/marketplace/marketplace.component';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {InitializerService} from './services/initializer/initializer.service';
-import {MaterialModule} from './material.module';
-import {ConfigService} from './services/config/config.service';
-import {NavigationComponent} from './components/navigation/navigation.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { InitializerService } from './services/initializer/initializer.service';
+import { MaterialModule } from './material.module';
+import { ConfigService } from './services/config/config.service';
+import { NavigationComponent } from './components/navigation/navigation.component';
 import { ApiCardListComponent } from './components/api-card-list/api-card-list.component';
 import { PlanCardListComponent } from './components/plan-card-list/plan-card-list.component';
-import {AccountComponent} from './components/account/account.component';
-import {MyAppsComponent} from './components/my-apps/my-apps.component';
-import {ThemeService} from './services/theme/theme.service';
-import {KeycloakAngularModule} from "keycloak-angular";
-import {KeycloakHelperService} from "./services/keycloak-helper/keycloak-helper.service";
+import { AccountComponent } from './components/account/account.component';
+import { MyAppsComponent } from './components/my-apps/my-apps.component';
+import { ThemeService } from './services/theme/theme.service';
+import { KeycloakAngularModule } from 'keycloak-angular';
+import { KeycloakHelperService } from './services/keycloak-helper/keycloak-helper.service';
 
-export function initializeApp(configService: ConfigService,
-                              devPortalInitializer: InitializerService): () => Promise<void> {
+export function initializeApp(
+  configService: ConfigService,
+  devPortalInitializer: InitializerService
+): () => Promise<void> {
   configService.readAndEvaluateConfig();
 
   /* Define promises needed for the app initialization */
   const initLanguagePromise: Promise<void> = new Promise((resolve, reject) => {
-    devPortalInitializer.initLanguage(configService.getLanguage()).then(() => {
-      resolve();
-    }).catch(() => {
-      reject();
-    });
+    devPortalInitializer
+      .initLanguage(configService.getLanguage())
+      .then(() => {
+        resolve();
+      })
+      .catch(() => {
+        reject();
+      });
   });
 
   return (): Promise<void> => {
     return new Promise((resolve, reject) => {
       /* Insert defined promises */
-      Promise.all([initLanguagePromise]).then(() => {
-        resolve();
-      }).catch((e) => {
-        reject(e);
-      });
+      Promise.all([initLanguagePromise])
+        .then(() => {
+          resolve();
+        })
+        .catch((e) => {
+          reject(e);
+        });
     });
-  }
+  };
 }
 
 export function createTranslateLoader(http: HttpClient) {
@@ -85,7 +92,7 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     ApiCardListComponent,
     PlanCardListComponent,
     AccountComponent,
-    MyAppsComponent
+    MyAppsComponent,
   ],
   imports: [
     KeycloakAngularModule,
@@ -102,23 +109,23 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
         deps: [HttpClient],
-      }
-    })
+      },
+    }),
   ],
   providers: [
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       multi: true,
-      deps: [ConfigService, InitializerService, ThemeService]
+      deps: [ConfigService, InitializerService, ThemeService],
     },
     {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,
       multi: true,
-      deps: [KeycloakHelperService]
-    }
+      deps: [KeycloakHelperService],
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

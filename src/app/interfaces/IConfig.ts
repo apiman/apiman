@@ -1,11 +1,11 @@
 export interface IConfig {
-  "language": string,
-  "supportedLanguages": string[],
-  "endpoint": string;
-  "hero": IHero,
-  "navigation": INavigation,
-  "footer": IFooter,
-  "auth": IAuthProvider
+  language: string;
+  supportedLanguages: string[];
+  endpoint: string;
+  hero: IHero;
+  navigation: INavigation;
+  footer: IFooter;
+  auth: IAuthProvider;
 }
 
 export interface IHero {
@@ -16,29 +16,28 @@ export interface IHero {
   fontColor: {
     title: string;
     subtitle: string;
-  }
+  };
   overlayColor: string;
 }
 
-export interface INavigation{
-  links: ILink[],
-  separator: string
+export interface INavigation {
+  links: ILink[];
+  separator: string;
 }
 
-export interface IFooter{
-  links: ILink[],
-  separator: string
+export interface IFooter {
+  links: ILink[];
+  separator: string;
 }
 
-export interface ILink{
-  "name": string
-  "link": string,
-  "openInNewTab": boolean
+export interface ILink {
+  name: string;
+  link: string;
+  openInNewTab: boolean;
 }
 
 export interface IAuthProvider {
-  "url": string,
-  "realm": string,
-  "clientId": string
+  url: string;
+  realm: string;
+  clientId: string;
 }
-

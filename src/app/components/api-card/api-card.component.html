@@ -1,16 +1,28 @@
 <mat-card class="api-card">
   <mat-card-header class="api-card-header">
-    <div mat-card-avatar class="api-card-icon" [style]="'background-image: url(' + tmpUrl + ')'"></div>
-    <div class="api-card-title">{{api.name}}</div>
+    <div
+      mat-card-avatar
+      class="api-card-icon"
+      [style]="'background-image: url(' + tmpUrl + ')'"
+    ></div>
+    <div class="api-card-title">{{ api.name }}</div>
   </mat-card-header>
   <mat-card-content class="api-card-content">
-    <p class="content-text">{{api.description}}</p>
+    <p class="content-text">{{ api.description }}</p>
   </mat-card-content>
   <div>
     <mat-card-actions class="api-card-actions">
-      <button mat-raised-button color="primary" class="api-card-button">API Docs</button>
-      <button mat-raised-button color="primary" class="api-card-button" [routerLink]="['/api-details', api.organizationId, api.id]">{{'MPLACE.LEARN_MORE' | translate}}</button>
+      <button mat-raised-button color="primary" class="api-card-button">
+        API Docs
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="api-card-button"
+        [routerLink]="['/api-details', api.organizationId, api.id]"
+      >
+        {{ "MPLACE.LEARN_MORE" | translate }}
+      </button>
     </mat-card-actions>
   </div>
 </mat-card>
-

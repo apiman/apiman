@@ -1,8 +1,12 @@
 <mat-card>
   <mat-card-header>
-    <img mat-card-avatar alt="Logo" src='https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png'>
-    <mat-card-title>{{api.name}}</mat-card-title>
-    <mat-card-subtitle>{{api.description}}</mat-card-subtitle>
+    <img
+      mat-card-avatar
+      alt="Logo"
+      src="https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png"
+    />
+    <mat-card-title>{{ api.name }}</mat-card-title>
+    <mat-card-subtitle>{{ api.description }}</mat-card-subtitle>
   </mat-card-header>
 </mat-card>
 
@@ -21,7 +25,7 @@
         <!--Use features of API instead of hard-coded value-->
         <mat-list-item *ngFor="let feature of features">
           <mat-icon matListIcon>folder</mat-icon>
-          <span>{{feature}}</span>
+          <span>{{ feature }}</span>
         </mat-list-item>
       </mat-list>
       <button mat-raised-button id="docs-button">API Docs</button>

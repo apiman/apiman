@@ -1,11 +1,17 @@
-<div #heroImage id="hero-image" [ngClass]="{'hero-large' : heroService.hero.large}">
+<div
+  #heroImage
+  id="hero-image"
+  [ngClass]="{ 'hero-large': heroService.hero.large }"
+>
   <div id="hero-overlay">
     <div #heroOverlay id="hero-text">
-      <h1 class="mt-40" #heroTitle>{{heroService.hero.title}}</h1>
-      <p #heroSubtitle>{{heroService.hero.subtitle}}</p>
+      <h1 class="mt-40" #heroTitle>{{ heroService.hero.title }}</h1>
+      <p #heroSubtitle>{{ heroService.hero.subtitle }}</p>
     </div>
     <div id="hero-btn" *ngIf="!loggedIn">
-      <button mat-raised-button color="primary" routerLink="/account">Register / Login</button>
+      <button mat-raised-button color="primary" routerLink="/account">
+        Register / Login
+      </button>
     </div>
   </div>
 </div>

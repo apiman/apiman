@@ -1,41 +1,49 @@
-import {Injectable} from '@angular/core';
-import {KeycloakService} from "keycloak-angular";
-import {KeycloakInstance} from "keycloak-js";
-import {ConfigService} from "../config/config.service";
+import { Injectable } from '@angular/core';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakInstance } from 'keycloak-js';
+import { ConfigService } from '../config/config.service';
 
 @Injectable({
   providedIn: 'root',
-  deps: [KeycloakService]
+  deps: [KeycloakService],
 })
 export class KeycloakHelperService {
   private isLoggedIn = false;
   private executed = false;
 
-  constructor(private readonly keycloak: KeycloakService, private configService: ConfigService) {
-  }
+  constructor(
+    private readonly keycloak: KeycloakService,
+    private configService: ConfigService
+  ) {}
 
   /**
    * Init keycloak setting, this is called via APP Initializer
    */
   public async initKeycloak(): Promise<any> {
-    return this.keycloak.init({
-      config: {
-        url: this.configService.getAuth().url,
-        realm: this.configService.getAuth().realm,
-        clientId: this.configService.getAuth().clientId
-      },
-      initOptions: {
-        onLoad: 'check-sso',
-        checkLoginIframe: false,
-        token: window.sessionStorage.getItem('KEYCLOAK_SESSION_STORAGE_TOKEN')!,
-        refreshToken: window.sessionStorage.getItem('KEYCLOAK_SESSION_STORAGE_REFRESH_TOKEN')!,
-      },
-      loadUserProfileAtStartUp: true, // because of https://github.com/mauriciovigolo/keycloak-angular/pull/269
-      enableBearerInterceptor: true,
-      bearerExcludedUrls: ['/assets', '/clients/public'] //TODO
-    }).then(response => {
-      console.log(response);
-    })
+    return this.keycloak
+      .init({
+        config: {
+          url: this.configService.getAuth().url,
+          realm: this.configService.getAuth().realm,
+          clientId: this.configService.getAuth().clientId,
+        },
+        initOptions: {
+          onLoad: 'check-sso',
+          checkLoginIframe: false,
+          token: window.sessionStorage.getItem(
+            'KEYCLOAK_SESSION_STORAGE_TOKEN'
+          )!,
+          refreshToken: window.sessionStorage.getItem(
+            'KEYCLOAK_SESSION_STORAGE_REFRESH_TOKEN'
+          )!,
+        },
+        loadUserProfileAtStartUp: true, // because of https://github.com/mauriciovigolo/keycloak-angular/pull/269
+        enableBearerInterceptor: true,
+        bearerExcludedUrls: ['/assets', '/clients/public'], //TODO
+      })
+      .then((response) => {
+        console.log(response);
+      });
   }
 
   public async getUserProfile() {
@@ -58,15 +66,22 @@ export class KeycloakHelperService {
    */
   public setAndUpdateTokens() {
     if (!this.executed) {
-      KeycloakHelperService.setTokensToSessionStorage(this.keycloak.getKeycloakInstance());
+      KeycloakHelperService.setTokensToSessionStorage(
+        this.keycloak.getKeycloakInstance()
+      );
       setInterval(() => {
-        this.keycloak.updateToken().then(() => {
-          console.log("Token successfully refreshed", new Date());
-          KeycloakHelperService.setTokensToSessionStorage(this.keycloak.getKeycloakInstance());
-        }).catch(() => {
-          console.log("Error refreshing token", new Date())
-          KeycloakHelperService.clearTokensFromSessionStorage();
-        });
+        this.keycloak
+          .updateToken()
+          .then(() => {
+            console.log('Token successfully refreshed', new Date());
+            KeycloakHelperService.setTokensToSessionStorage(
+              this.keycloak.getKeycloakInstance()
+            );
+          })
+          .catch(() => {
+            console.log('Error refreshing token', new Date());
+            KeycloakHelperService.clearTokensFromSessionStorage();
+          });
       }, Math.min((this.keycloak.getKeycloakInstance().tokenParsed!.exp! - 60) * 1000, 4 * 60 * 1000)); // refresh token minimum every 4 minutes)
     }
     this.executed = true;
@@ -74,8 +89,14 @@ export class KeycloakHelperService {
 
   private static setTokensToSessionStorage(keycloakInstance: KeycloakInstance) {
     console.log('Set token:' + keycloakInstance.token);
-    window.sessionStorage.setItem('KEYCLOAK_SESSION_STORAGE_TOKEN', keycloakInstance.token!);
-    window.sessionStorage.setItem('KEYCLOAK_SESSION_STORAGE_REFRESH_TOKEN', keycloakInstance.refreshToken!);
+    window.sessionStorage.setItem(
+      'KEYCLOAK_SESSION_STORAGE_TOKEN',
+      keycloakInstance.token!
+    );
+    window.sessionStorage.setItem(
+      'KEYCLOAK_SESSION_STORAGE_REFRESH_TOKEN',
+      keycloakInstance.refreshToken!
+    );
   }
 
   private static clearTokensFromSessionStorage() {

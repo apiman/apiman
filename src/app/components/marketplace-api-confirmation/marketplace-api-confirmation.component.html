@@ -11,7 +11,7 @@
     <mat-divider [vertical]="true"></mat-divider>
     <div class="box">
       <p>You will be provided with an API-Key...</p>
-      <input value="{{apiKey}}">
+      <input value="{{ apiKey }}" />
       <button mat-icon-button [cdkCopyToClipboard]="apiKey">
         <mat-icon>content_copy</mat-icon>
       </button>
@@ -27,7 +27,7 @@
     <mat-divider [vertical]="true"></mat-divider>
     <div class="box">
       <p>You will be provided with an endpoint...</p>
-      <input value="{{apiEndpoint}}">
+      <input value="{{ apiEndpoint }}" />
       <button mat-icon-button [cdkCopyToClipboard]="apiEndpoint">
         <mat-icon>content_copy</mat-icon>
       </button>
@@ -43,7 +43,7 @@
     <mat-divider [vertical]="true"></mat-divider>
     <div class="box">
       <p>You will be provided with OAuth credentials...</p>
-      <input value="{{apiEndpoint}}">
+      <input value="{{ apiEndpoint }}" />
       <button mat-icon-button [cdkCopyToClipboard]="apiEndpoint">
         <mat-icon>content_copy</mat-icon>
       </button>
@@ -62,6 +62,4 @@
       <button mat-raised-button>View API Docs &amp; Try It Now</button>
     </div>
   </mat-grid-tile>
-
 </mat-grid-list>
-

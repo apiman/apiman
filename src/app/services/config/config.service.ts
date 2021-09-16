@@ -1,15 +1,20 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import config from './../../../../config.json';
-import {IAuthProvider, IConfig, IFooter, IHero, INavigation} from '../../interfaces/IConfig';
+import {
+  IAuthProvider,
+  IConfig,
+  IFooter,
+  IHero,
+  INavigation,
+} from '../../interfaces/IConfig';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConfigService {
   config!: IConfig;
 
-  constructor() {
-  }
+  constructor() {}
 
   readAndEvaluateConfig(): boolean {
     this.config = config;
@@ -23,15 +28,15 @@ export class ConfigService {
   }
 
   getFooter(): IFooter {
-    return {...this.config.footer};
+    return { ...this.config.footer };
   }
 
   getHero(): IHero {
-    return {...this.config.hero};
+    return { ...this.config.hero };
   }
 
   getNavigation(): INavigation {
-    return {...this.config.navigation};
+    return { ...this.config.navigation };
   }
 
   getLanguage(): string {
@@ -43,6 +48,6 @@ export class ConfigService {
   }
 
   getAuth(): IAuthProvider {
-    return {...this.config.auth};
+    return { ...this.config.auth };
   }
 }

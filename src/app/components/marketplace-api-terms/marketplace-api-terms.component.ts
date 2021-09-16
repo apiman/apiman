@@ -1,18 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-marketplace-api-terms',
   templateUrl: './marketplace-api-terms.component.html',
-  styleUrls: ['./marketplace-api-terms.component.scss']
+  styleUrls: ['./marketplace-api-terms.component.scss'],
 })
 export class MarketplaceApiTermsComponent implements OnInit {
-  agreed: boolean = false;
-  accepted: boolean = false;
-  termsLink: string = 'https://www.apache.org/licenses/LICENSE-2.0';
-  privacyLink: string = 'https://www.apache.org/licenses/LICENSE-2.0';
+  agreed = false;
+  accepted = false;
+  termsLink = 'https://www.apache.org/licenses/LICENSE-2.0';
+  privacyLink = 'https://www.apache.org/licenses/LICENSE-2.0';
 
-
-  terms: string = 'Apache License\n' +
+  terms: string =
+    'Apache License\n' +
     'Version 2.0, January 2004\n' +
     'http://www.apache.org/licenses/\n' +
     '\n' +
@@ -62,12 +62,9 @@ export class MarketplaceApiTermsComponent implements OnInit {
     '\n' +
     '9. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.\n' +
     '\n' +
-    'END OF TERMS AND CONDITIONS'
+    'END OF TERMS AND CONDITIONS';
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

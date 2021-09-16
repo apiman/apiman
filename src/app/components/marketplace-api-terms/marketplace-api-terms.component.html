@@ -2,20 +2,29 @@
 
 <mat-form-field appearance="fill">
   <mat-label>Licence Type</mat-label>
-  <textarea cdkAutosizeMaxRows="20" cdkAutosizeMinRows="1"
-            cdkTextareaAutosize
-            disabled
-            matInput>{{terms}}</textarea>
+  <textarea
+    cdkAutosizeMaxRows="20"
+    cdkAutosizeMinRows="1"
+    cdkTextareaAutosize
+    disabled
+    matInput
+    >{{ terms }}</textarea
+  >
 </mat-form-field>
 
 <mat-card>
   <mat-card-title>Agreement</mat-card-title>
   <mat-card-content>
     <p>
-      <mat-checkbox [(ngModel)]="agreed">I agree to the <a [href]="termsLink">terms and conditions</a></mat-checkbox>
+      <mat-checkbox [(ngModel)]="agreed"
+        >I agree to the
+        <a [href]="termsLink">terms and conditions</a></mat-checkbox
+      >
     </p>
     <p>
-      <mat-checkbox [(ngModel)]="accepted">I accept the <a [href]="privacyLink">privacy policy</a></mat-checkbox>
+      <mat-checkbox [(ngModel)]="accepted"
+        >I accept the <a [href]="privacyLink">privacy policy</a></mat-checkbox
+      >
     </p>
   </mat-card-content>
   <mat-card-actions>

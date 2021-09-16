@@ -1,9 +1,9 @@
 export interface Plan {
-  id: string
-  title: string
-  subtitle: string
+  id: string;
+  title: string;
+  subtitle: string;
   policies: {
-    title: string
-    configuration: string
-  }[]
+    title: string;
+    configuration: string;
+  }[];
 }

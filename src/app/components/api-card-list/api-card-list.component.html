@@ -1,21 +1,30 @@
-<div *ngIf="listType==='api'" class="align">
-    <mat-form-field>
-      <mat-icon matPrefix color="primary">search</mat-icon>
-      <input matInput type="search"
-             [placeholder]="'MPLACE.SEARCH' | translate"
-             class="search-input"
-             (input)="OnInput($event)">
-    </mat-form-field>
-  </div>
-
-<div id="grid">
-  <app-api-card *ngFor="let api of apis;" [api]="api" class="api-card"></app-api-card>
+<div *ngIf="listType === 'api'" class="align">
+  <mat-form-field>
+    <mat-icon matPrefix color="primary">search</mat-icon>
+    <input
+      matInput
+      type="search"
+      [placeholder]="'MPLACE.SEARCH' | translate"
+      class="search-input"
+      (input)="OnInput($event)"
+    />
+  </mat-form-field>
 </div>
 
-<div *ngIf="listType==='api'" class="align">
-  <mat-paginator [length]="totalSize"
-               [pageSize]="searchCriteria.paging.pageSize"
-               [pageSizeOptions]="[4, 8, 12, 16, totalSize]"
-                 (page)="OnPageChange($event)">
+<div id="grid">
+  <app-api-card
+    *ngFor="let api of apis"
+    [api]="api"
+    class="api-card"
+  ></app-api-card>
+</div>
+
+<div *ngIf="listType === 'api'" class="align">
+  <mat-paginator
+    [length]="totalSize"
+    [pageSize]="searchCriteria.paging.pageSize"
+    [pageSizeOptions]="[4, 8, 12, 16, totalSize]"
+    (page)="OnPageChange($event)"
+  >
   </mat-paginator>
 </div>

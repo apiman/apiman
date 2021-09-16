@@ -1,17 +1,17 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ApiBean} from "../../services/backend/backend.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { ApiBean } from '../../services/backend/backend.service';
 
 @Component({
   selector: 'app-marketplace-api-description',
   templateUrl: './marketplace-api-description.component.html',
-  styleUrls: ['./marketplace-api-description.component.scss']
+  styleUrls: ['./marketplace-api-description.component.scss'],
 })
 export class MarketplaceApiDescriptionComponent implements OnInit {
-
   @Input() api: ApiBean = {};
 
-  features: string[] = ['fast', 'free', 'fancy features']
-  markdown: string = '# In inmotae messes et tamen sustinuit fieri\n' +
+  features: string[] = ['fast', 'free', 'fancy features'];
+  markdown: string =
+    '# In inmotae messes et tamen sustinuit fieri\n' +
     '\n' +
     '## Iam nataque prospexit\n' +
     '\n' +
@@ -59,9 +59,7 @@ export class MarketplaceApiDescriptionComponent implements OnInit {
     'Inplevere maior. Ubi aut supplicium Averna, ciet percussis Praebuimus saepe\n' +
     'fugisse quae est: a.';
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

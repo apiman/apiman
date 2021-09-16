@@ -8,9 +8,8 @@ describe('MarketplaceSignupStepperComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MarketplaceSignupStepperComponent ]
-    })
-    .compileComponents();
+      declarations: [MarketplaceSignupStepperComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

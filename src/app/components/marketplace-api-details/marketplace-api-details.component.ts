@@ -1,31 +1,32 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ApiService} from "../../services/api/api.service";
-import {ApiBean} from "../../services/backend/backend.service";
-import {HeroService} from '../../services/hero/hero.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ApiService } from '../../services/api/api.service';
+import { ApiBean } from '../../services/backend/backend.service';
+import { HeroService } from '../../services/hero/hero.service';
 
 @Component({
   selector: 'app-marketplace-api-details',
   templateUrl: './marketplace-api-details.component.html',
-  styleUrls: ['./marketplace-api-details.component.scss']
+  styleUrls: ['./marketplace-api-details.component.scss'],
 })
 export class MarketplaceApiDetailsComponent implements OnInit {
-  constructor(private route: ActivatedRoute,
-              public apiService: ApiService,
-              private heroService: HeroService,
-              private router: Router) {  }
+  constructor(
+    private route: ActivatedRoute,
+    public apiService: ApiService,
+    private heroService: HeroService,
+    private router: Router
+  ) {}
 
-  api!:ApiBean;
-
+  api!: ApiBean;
 
   ngOnInit(): void {
     this.getApi();
     this.setUpHero();
   }
 
-  private setUpHero(){
+  private setUpHero() {
     this.heroService.setUpHero({
-      title: this.route.snapshot.paramMap.get('apiId')
+      title: this.route.snapshot.paramMap.get('apiId'),
     });
   }
 
@@ -34,11 +35,13 @@ export class MarketplaceApiDetailsComponent implements OnInit {
     const apiId = this.route.snapshot.paramMap.get('apiId')!;
 
     this.apiService.getApi(orgId, apiId).subscribe(
-      api => {
+      (api) => {
         this.api = api;
-      }, error => {
+      },
+      (error) => {
         console.log(error.status);
-        this.router.navigate(['marketplace'])
-      });
-  };
+        this.router.navigate(['marketplace']);
+      }
+    );
+  }
 }

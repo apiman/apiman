@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
-import {ConfigService} from '../config/config.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ConfigService } from '../config/config.service';
 
 export interface ApiSummaryBean {
   organizationId?: string;
@@ -35,7 +35,7 @@ export interface ApiVersionSummaryBean {
   id?: string;
   name?: string;
   description?: string;
-  status?: "Created" | "Ready" | "Published" | "Retired";
+  status?: 'Created' | 'Ready' | 'Published' | 'Retired';
   version?: string;
   publicAPI?: boolean;
 }
@@ -70,7 +70,7 @@ export interface SearchCriteriaBean {
 export interface SearchCriteriaFilterBean {
   name?: string;
   value?: string;
-  operator?: "bool_eq" | "eq" | "neq" | "gt" | "gte" | "lt" | "lte" | "like";
+  operator?: 'bool_eq' | 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'like';
 }
 
 export interface OrderByBean {
@@ -84,37 +84,41 @@ export interface PagingBean {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class BackendService {
   private endpoint: string;
 
-  constructor(private http: HttpClient,
-              private configService: ConfigService) {
+  constructor(private http: HttpClient, private configService: ConfigService) {
     this.endpoint = configService.getEndpoint();
   }
 
   // ToDo remove credentials and use anonymous call
-  private credentials: string = 'test:test1234' // Format username:password
+  private credentials = 'test:test1234'; // Format username:password
   private httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type':  'application/json',
-      'Authorization': 'Basic ' + btoa(this.credentials)
-    })
+      'Content-Type': 'application/json',
+      Authorization: 'Basic ' + btoa(this.credentials),
+    }),
   };
   /**
    * Searches apis
    */
-  public searchApis(searchCriteria: SearchCriteriaBean): Observable<SearchResultsBeanApiSummaryBean> {
+  public searchApis(
+    searchCriteria: SearchCriteriaBean
+  ): Observable<SearchResultsBeanApiSummaryBean> {
     const url = this.endpoint + '/search/apis';
-    return this.http.post(url, searchCriteria, this.httpOptions) as Observable<SearchResultsBeanApiSummaryBean>;
+    return this.http.post(
+      url,
+      searchCriteria,
+      this.httpOptions
+    ) as Observable<SearchResultsBeanApiSummaryBean>;
   }
 
   /**
    * Get Api
    */
-  public getApi(orgId: String, apiId: String): Observable<ApiBean> {
+  public getApi(orgId: string, apiId: string): Observable<ApiBean> {
     const url = this.endpoint + `/organizations/${orgId}/apis/${apiId}`;
     return this.http.get(url, this.httpOptions) as Observable<ApiBean>;
   }
@@ -122,15 +126,19 @@ export class BackendService {
   /**
    * Get Api Versions
    */
-  public getApiVersions(orgId: String, apiId: String): Observable<ApiVersionSummaryBean[]> {
-    const url = this.endpoint + `/organizations/${orgId}/apis/${apiId}/versions`
+  public getApiVersions(
+    orgId: string,
+    apiId: string
+  ): Observable<ApiVersionSummaryBean[]> {
+    const url =
+      this.endpoint + `/organizations/${orgId}/apis/${apiId}/versions`;
     return this.http.get<ApiVersionSummaryBean[]>(url, this.httpOptions).pipe(
-      map(apiVersions => {
+      map((apiVersions) => {
         apiVersions.sort((a, b) => {
           // @ts-ignore
           return a.version > b.version ? -1 : 1;
-        })
-        return apiVersions
+        });
+        return apiVersions;
       })
     );
   }

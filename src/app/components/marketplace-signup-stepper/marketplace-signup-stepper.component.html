@@ -5,19 +5,18 @@
 <mat-stepper linear #stepper>
   <mat-step label="Select Version">
     <mat-accordion class="example-headers-align">
-
       <mat-expansion-panel [expanded]="true">
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            v3.0
-          </mat-panel-title>
+          <mat-panel-title> v3.0 </mat-panel-title>
           <mat-panel-description>
             Version 3 of this API!
           </mat-panel-description>
         </mat-expansion-panel-header>
 
         <!--        API-Details-->
-        <app-marketplace-api-description [api]="api"></app-marketplace-api-description>
+        <app-marketplace-api-description
+          [api]="api"
+        ></app-marketplace-api-description>
         <app-marketplace-api-policies></app-marketplace-api-policies>
 
         <mat-action-row>
@@ -27,9 +26,7 @@
 
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            v2.0
-          </mat-panel-title>
+          <mat-panel-title> v2.0 </mat-panel-title>
           <mat-panel-description>
             Version 2 of this API!
           </mat-panel-description>
@@ -41,9 +38,7 @@
 
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            v1.0
-          </mat-panel-title>
+          <mat-panel-title> v1.0 </mat-panel-title>
           <mat-panel-description>
             Version 1 of this API!
           </mat-panel-description>
@@ -52,9 +47,6 @@
           <button mat-button color="primary">Next</button>
         </mat-action-row>
       </mat-expansion-panel>
-
-
-
     </mat-accordion>
   </mat-step>
   <mat-step label="Agreement">
@@ -67,4 +59,3 @@
     <app-marketplace-api-confirmation></app-marketplace-api-confirmation>
   </mat-step>
 </mat-stepper>
-

@@ -1,10 +1,10 @@
-import {EventEmitter, Injectable} from '@angular/core';
-import {Data} from '@angular/router';
-import {ConfigService} from '../config/config.service';
-import {IHero} from '../../interfaces/IConfig';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Data } from '@angular/router';
+import { ConfigService } from '../config/config.service';
+import { IHero } from '../../interfaces/IConfig';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HeroService {
   hero!: IHero;
@@ -22,7 +22,7 @@ export class HeroService {
     this.heroChanged.emit(hero);
   }
 
-  private checkTitle(title: string){
+  private checkTitle(title: string) {
     return title !== '';
   }
 }
