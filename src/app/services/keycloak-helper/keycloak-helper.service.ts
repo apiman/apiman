@@ -41,7 +41,7 @@ export class KeycloakHelperService {
         enableBearerInterceptor: true,
         bearerExcludedUrls: ['/assets', '/clients/public'], //TODO
       })
-      .then((response) => {
+      .then((response: any) => {
         console.log(response);
       });
   }

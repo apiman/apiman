@@ -20,3 +20,9 @@
 #navigation{
   text-align: center;
 }
+
+mat-spinner {
+  position: fixed;
+  top: calc(50% - 25px);
+  left: calc(50% - 25px);
+}

@@ -1,6 +1,5 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HeroService } from '../../services/hero/hero.service';
-import config from './../../../../config.json';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '../../services/config/config.service';
 import { IHero } from '../../interfaces/IConfig';

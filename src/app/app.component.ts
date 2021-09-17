@@ -3,6 +3,7 @@ import { ActivationEnd, Router } from '@angular/router';
 import { HeroService } from './services/hero/hero.service';
 import { IHero, INavigation } from './interfaces/IConfig';
 import { NavigationService } from './services/navigation/navigation.service';
+import { SpinnerService } from './services/spinner/spinner.service';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,8 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private heroService: HeroService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    public loadingSpinnerService: SpinnerService
   ) {}
 
   ngOnInit() {

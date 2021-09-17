@@ -8,3 +8,7 @@
 </div>
 
 <app-footer></app-footer>
+
+<div id="spinner" [hidden]="!this.loadingSpinnerService.isWaiting()">
+  <mat-spinner strokeWidth="3" diameter="50"></mat-spinner>
+</div>

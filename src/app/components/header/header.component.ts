@@ -31,7 +31,7 @@ export class HeaderComponent implements AfterViewInit {
     private keycloak: KeycloakService
   ) {}
 
-  async ngAfterViewInit() {
+  async ngAfterViewInit(): Promise<void> {
     this.renderer.setStyle(
       this.heroImageDiv.nativeElement,
       'background-image',

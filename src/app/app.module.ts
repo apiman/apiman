@@ -32,6 +32,8 @@ import { MyAppsComponent } from './components/my-apps/my-apps.component';
 import { ThemeService } from './services/theme/theme.service';
 import { KeycloakAngularModule } from 'keycloak-angular';
 import { KeycloakHelperService } from './services/keycloak-helper/keycloak-helper.service';
+import { SwaggerComponent } from './components/swagger/swagger.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MarketplaceClientAppComponent } from './components/marketplace-client-app/marketplace-client-app.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
@@ -101,6 +103,7 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     PlanCardListComponent,
     AccountComponent,
     MyAppsComponent,
+    SwaggerComponent,
     MarketplaceClientAppComponent,
     MyAppsSummaryComponent,
     MyAppsUseApiComponent,
@@ -124,6 +127,7 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
         deps: [HttpClient],
       },
     }),
+    MatProgressSpinnerModule,
     MatSelectModule,
     MatTableModule,
     ReactiveFormsModule,

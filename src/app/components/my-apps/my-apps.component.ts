@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  BackendService,
-  SearchCriteriaBean,
-} from '../../services/backend/backend.service';
+import { BackendService } from '../../services/backend/backend.service';
 import { ISection } from '../../interfaces/ISection';
 import { statusColorMap } from '../../interfaces/IStatus';
-import { zip } from 'rxjs';
 
 @Component({
   selector: 'app-my-apps',

@@ -12,3 +12,9 @@ mat-divider {
 #docs-button{
   margin-top: 4em;
 }
+
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded:hover,
+.mat-expansion-panel-header.mat-expanded:focus {
+  background: rgba(106, 116, 127, .2);
+}

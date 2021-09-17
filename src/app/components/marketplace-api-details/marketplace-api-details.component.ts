@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api/api.service';
-import { ApiBean } from '../../services/backend/backend.service';
 import { HeroService } from '../../services/hero/hero.service';
+import { switchMap } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { IApi, IApiVersion } from '../../interfaces/ICommunication';
 
 @Component({
   selector: 'app-marketplace-api-details',
@@ -17,10 +19,11 @@ export class MarketplaceApiDetailsComponent implements OnInit {
     private router: Router
   ) {}
 
-  api!: ApiBean;
+  api!: IApi;
+  apis!: IApiVersion[];
 
   ngOnInit(): void {
-    this.getApi();
+    this.getApiVersions();
     this.setUpHero();
   }
 
@@ -30,18 +33,26 @@ export class MarketplaceApiDetailsComponent implements OnInit {
     });
   }
 
-  getApi() {
+  getApiVersions(): void {
     const orgId = this.route.snapshot.paramMap.get('orgId')!;
     const apiId = this.route.snapshot.paramMap.get('apiId')!;
-
-    this.apiService.getApi(orgId, apiId).subscribe(
-      (api) => {
-        this.api = api;
-      },
-      (error) => {
-        console.log(error.status);
-        this.router.navigate(['marketplace']);
-      }
-    );
+    const newVersions: Array<Observable<IApiVersion>> = [];
+    this.apiService
+      .getApiVersionSummaries(orgId, apiId)
+      .pipe(
+        switchMap((apiVersionSummarys) => {
+          for (const apiVersionSummary of apiVersionSummarys) {
+            newVersions.push(
+              this.apiService.getApiVersion(
+                apiVersionSummary.organizationId,
+                apiVersionSummary.id,
+                apiVersionSummary.version
+              )
+            );
+          }
+          return forkJoin(newVersions);
+        })
+      )
+      .subscribe((data) => (this.apis = data));
   }
 }

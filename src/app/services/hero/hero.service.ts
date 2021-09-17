@@ -1,5 +1,4 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Data } from '@angular/router';
 import { ConfigService } from '../config/config.service';
 import { IHero } from '../../interfaces/IConfig';
 
@@ -14,7 +13,7 @@ export class HeroService {
     this.hero = configService.getHero();
   }
 
-  setUpHero(hero: IHero | any) {
+  setUpHero(hero: IHero | any): void {
     this.hero.large = hero.large ? true : false;
     this.hero.title = this.checkTitle(hero.title) ? hero.title : '';
     this.hero.subtitle = this.checkTitle(hero.subtitle) ? hero.subtitle : '';
@@ -22,7 +21,7 @@ export class HeroService {
     this.heroChanged.emit(hero);
   }
 
-  private checkTitle(title: string) {
+  private checkTitle(title: string): boolean {
     return title !== '';
   }
 }

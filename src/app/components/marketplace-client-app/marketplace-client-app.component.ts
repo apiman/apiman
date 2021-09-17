@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { BackendService, Client } from '../../services/backend/backend.service';
+import { BackendService } from '../../services/backend/backend.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { switchMap } from 'rxjs/operators';
+import { IClient } from '../../interfaces/ICommunication';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -11,8 +12,8 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class MarketplaceClientAppComponent implements OnInit {
   displayedColumns: string[] = ['name'];
-  dataSource = new MatTableDataSource<Client>([]);
-  clickedRows = new Set<Client>();
+  dataSource = new MatTableDataSource<IClient>([]);
+  clickedRows = new Set<IClient>();
   clientName = '';
 
   constructor(
@@ -26,7 +27,7 @@ export class MarketplaceClientAppComponent implements OnInit {
     this.loadClients();
   }
 
-  public selectClient(client: Client): void {
+  public selectClient(client: IClient): void {
     // always clear, because at the moment we only allow one client to be selected
     this.clickedRows.clear();
     this.clickedRows.add(client);
@@ -56,7 +57,7 @@ export class MarketplaceClientAppComponent implements OnInit {
    */
   private loadClients() {
     this.backend.getClients().subscribe(
-      (clients: Client[]) => {
+      (clients: IClient[]) => {
         this.dataSource = new MatTableDataSource(clients);
       },
       (error) => {

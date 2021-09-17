@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../services/api/api.service';
-import { ApiBean } from '../../services/backend/backend.service';
+import { IApiVersion } from '../../interfaces/ICommunication';
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
@@ -12,7 +12,7 @@ import { ApiBean } from '../../services/backend/backend.service';
 })
 export class MarketplaceSignupStepperComponent implements OnInit {
   // ToDo replace fixed api mockData with backendCall
-  api!: ApiBean;
+  api!: IApiVersion;
 
   features: string[] = ['fast', 'free', 'fancy features'];
   markdown: string =
@@ -89,7 +89,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     this.apiService.getApi(orgId, apiId);
 
     this.apiService.currentApi.subscribe((api) => {
-      this.api = api;
+      //this.api = api;
     });
   }
 }
