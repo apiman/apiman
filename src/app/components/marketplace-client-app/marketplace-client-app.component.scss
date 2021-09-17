@@ -5,15 +5,12 @@
 
 .container {
   display: grid;
-  justify-items: start;
+  align-items: center;
+  grid-template-columns: 1fr 5fr;
+  width: 30%;
+  grid-column-gap: 1rem;
 }
 
 table {
-  min-width: 50%;
-  margin-top: 20px;
+  min-width: 30%;
 }
-
-
-//#add-button {
-//  margin-left: 20px;
-//}

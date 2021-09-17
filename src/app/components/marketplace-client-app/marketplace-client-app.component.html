@@ -2,28 +2,23 @@
 
 <div class="container">
   <form>
-    <mat-form-field appearance="fill">
-      <mat-label>Application Name</mat-label>
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
       <input
         matInput
-        placeholder="My-Application"
         [(ngModel)]="clientName"
         name="input"
         (keyup)="applyFilter($event)"
       />
     </mat-form-field>
   </form>
-  <button
-    mat-raised-button
-    color="primary"
-    id="add-button"
-    (click)="addClient()"
-  >
+  <button mat-raised-button color="primary" (click)="addClient()">
     Create
   </button>
 </div>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<p class="primary">Select from available Applications</p>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z2 mt-20">
   <!-- Name Column -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Application Name</th>

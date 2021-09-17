@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BackendService, Client } from '../../services/backend/backend.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { switchMap } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -14,7 +15,12 @@ export class MarketplaceClientAppComponent implements OnInit {
   clickedRows = new Set<Client>();
   clientName = '';
 
-  constructor(private backend: BackendService) {}
+  constructor(
+    private backend: BackendService,
+    private translator: TranslateService
+  ) {
+    console.log(translator.instant('MPLACE.TITLE'));
+  }
 
   ngOnInit(): void {
     this.loadClients();
@@ -24,6 +30,7 @@ export class MarketplaceClientAppComponent implements OnInit {
     // always clear, because at the moment we only allow one client to be selected
     this.clickedRows.clear();
     this.clickedRows.add(client);
+    this.clientName = client.name;
   }
 
   /**
