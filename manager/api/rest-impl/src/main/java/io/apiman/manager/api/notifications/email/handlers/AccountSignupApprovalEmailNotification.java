@@ -61,10 +61,7 @@ public class AccountSignupApprovalEmailNotification implements INotificationHand
 
     @Override
     public boolean wants(NotificationDto<? extends IVersionedApimanEvent> notification) {
-        if (notification.getReason().equals(NewAccountNotificationProducer.APIMAN_ACCOUNT_APPROVAL_REQUEST)) {
-            return true;
-        }
-        return false;
+        return notification.getReason().equals(NewAccountNotificationProducer.APIMAN_ACCOUNT_APPROVAL_REQUEST);
     }
 
     public Map<String, Object> buildTemplateMap(NotificationDto<AccountSignupEvent> notification) {
