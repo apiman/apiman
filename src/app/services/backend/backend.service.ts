@@ -3,6 +3,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
+import { KeycloakService } from 'keycloak-angular';
+
+/**
+ * Client
+ */
+export interface Client {
+  organizationId: string;
+  organizationName: string;
+  id: string;
+  name: string;
+  description: string;
+  numContracts: number;
+}
 
 export interface ApiSummaryBean {
   organizationId?: string;
@@ -54,6 +67,15 @@ export interface OrganizationBean {
   modifiedOn?: string;
 }
 
+export interface OrganizationSummaryBean {
+  id: string;
+  name: string;
+  description: string;
+  numClients: number;
+  numApis: number;
+  numMembers: number;
+}
+
 export interface SearchResultsBeanApiSummaryBean {
   beans: ApiSummaryBean[];
 
@@ -89,7 +111,11 @@ export interface PagingBean {
 export class BackendService {
   private readonly endpoint: string;
 
-  constructor(private http: HttpClient, private configService: ConfigService) {
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService,
+    private keycloak: KeycloakService
+  ) {
     this.endpoint = configService.getEndpoint();
   }
 
@@ -141,5 +167,26 @@ export class BackendService {
         return apiVersions;
       })
     );
+  }
+
+  public getClients() {
+    const username = this.keycloak.getKeycloakInstance().profile?.username;
+    const url = this.endpoint + `/users/${username}/editable-clients`;
+    return this.http.get(url) as Observable<Array<Client>>;
+  }
+
+  public getClientOrgs() {
+    const username = this.keycloak.getKeycloakInstance().profile?.username;
+    const url = this.endpoint + `/users/${username}/clientorgs`;
+    return this.http.get(url) as Observable<Array<OrganizationSummaryBean>>;
+  }
+
+  public createClient(orgId: string, clientName: string) {
+    const url = this.endpoint + `/organizations/${orgId}/clients`;
+    return this.http.post(url, {
+      name: clientName,
+      initialVersion: '1.0',
+      description: '',
+    }) as Observable<OrganizationBean>;
   }
 }

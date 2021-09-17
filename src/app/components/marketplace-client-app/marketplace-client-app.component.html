@@ -1,0 +1,40 @@
+<h2>Create or Select an Application</h2>
+
+<div class="container">
+  <form>
+    <mat-form-field appearance="fill">
+      <mat-label>Application Name</mat-label>
+      <input
+        matInput
+        placeholder="My-Application"
+        [(ngModel)]="clientName"
+        name="input"
+        (keyup)="applyFilter($event)"
+      />
+    </mat-form-field>
+  </form>
+  <button
+    mat-raised-button
+    color="primary"
+    id="add-button"
+    (click)="addClient()"
+  >
+    Create
+  </button>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Application Name</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    (click)="selectClient(row)"
+    [class.is-selected]="clickedRows.has(row)"
+  ></tr>
+</table>

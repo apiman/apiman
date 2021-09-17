@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MarkdownModule } from 'ngx-markdown';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -32,6 +32,10 @@ import { MyAppsComponent } from './components/my-apps/my-apps.component';
 import { ThemeService } from './services/theme/theme.service';
 import { KeycloakAngularModule } from 'keycloak-angular';
 import { KeycloakHelperService } from './services/keycloak-helper/keycloak-helper.service';
+import { MarketplaceClientAppComponent } from './components/marketplace-client-app/marketplace-client-app.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 import { MyAppsSummaryComponent } from './components/my-apps-summary/my-apps-summary.component';
 import { MyAppsUseApiComponent } from './components/my-apps-use-api/my-apps-use-api.component';
 import { MyAppsPoliciesComponent } from './components/my-apps-policies/my-apps-policies.component';
@@ -97,6 +101,7 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     PlanCardListComponent,
     AccountComponent,
     MyAppsComponent,
+    MarketplaceClientAppComponent,
     MyAppsSummaryComponent,
     MyAppsUseApiComponent,
     MyAppsPoliciesComponent,
@@ -119,6 +124,10 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
         deps: [HttpClient],
       },
     }),
+    MatSelectModule,
+    MatTableModule,
+    ReactiveFormsModule,
+    MatSortModule,
   ],
   providers: [
     {
