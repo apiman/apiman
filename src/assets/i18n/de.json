@@ -23,7 +23,21 @@
   },
   "APPS": {
     "TITLE": "Meine Apps",
-    "SUBTITLE": "API-Gruppen"
+    "SUBTITLE": "API-Gruppen",
+    "SUMMARY": "Überblick",
+    "USE_API": "API benutzen",
+    "POLICIES": "Regeln",
+    "MANAGE_API": "API verwalten",
+    "API_DOCS_TRY_NOW": "API Doku & Jetzt ausprobieren",
+    "VIEW_AND_TRY_NOW": "API Doku anschauen & ausprobieren",
+    "API_KEY": "API Key",
+    "ENDPOINT": "Endpoint",
+    "AUTHENTICATION": "Authentifizierung",
+    "DISABLE_THIS_API": "Diese API deaktivieren",
+    "DISABLE_API": "API deaktivieren",
+    "UNSUB_FROM_API": "Von der API abmelden",
+    "UNSUB_FROM_THIS_API": "Von dieser API abmelden",
+    "UNSUB": "Abmelden"
   },
   "API_SIGN_UP": {
     "TITLE": "API-Anmeldung"

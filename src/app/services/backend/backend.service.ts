@@ -87,7 +87,7 @@ export interface PagingBean {
   providedIn: 'root',
 })
 export class BackendService {
-  private endpoint: string;
+  private readonly endpoint: string;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
     this.endpoint = configService.getEndpoint();

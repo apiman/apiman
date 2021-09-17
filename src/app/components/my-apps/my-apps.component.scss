@@ -1,0 +1,94 @@
+.app-header{
+  margin-top: 1rem;
+  display: grid;
+  justify-content: space-between;
+  align-items: start;
+  grid-template-columns: 0.6fr 9.4fr;
+  grid-column-gap: 16px;
+  grid-row-gap: 32px;
+}
+
+.app-icon-wrapper {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.app-icon{
+  width: 100%;
+  border-radius: 50%;
+}
+
+.app-api{
+  margin-top: 3rem;
+  display: grid;
+  justify-content: space-between;
+  align-items: start;
+  grid-template-columns: 1.2fr 11fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 32px;
+}
+
+.app-api-menu{
+  margin-top: 1.6rem;
+  div{
+    padding: 8px;
+    margin-bottom: 1.4rem;
+    span{
+      cursor: pointer;
+    }
+  }
+}
+
+.active{
+  cursor: default !important;
+}
+
+.app-api-menu-entry{
+  // color: red;
+}
+
+.app-api-content{
+  margin-right: 1rem;
+  padding: 1rem 0;
+}
+
+.app-api-header{
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+  grid-template-columns: 1fr 16fr 5fr;
+  grid-column-gap: 16px;
+  grid-row-gap: 32px;
+  margin-bottom: 1rem;
+}
+
+.app-api-header-icon-wrapper{
+  justify-content: center;
+  margin-left: 1rem;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.app-api-header-icon{
+  width: 100%;
+  border-radius: 50%;
+}
+
+.app-api-header-title{
+
+}
+
+.app-api-header-labels{
+  margin-right: 3rem;
+  text-align: right;
+  span{
+    margin-right: 16px;
+    padding: 12px;
+    color: white;
+  }
+}
+
+.api-section{
+  margin-left: 2rem;
+  margin-right: 2rem;
+}

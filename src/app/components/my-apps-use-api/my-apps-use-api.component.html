@@ -1,0 +1,88 @@
+<!-- Try it now -->
+<div class="grid">
+  <div>
+    <h4>{{ "APPS.API_DOCS_TRY_NOW" | translate }}</h4>
+    <p>{{ mockText }}</p>
+  </div>
+  <div id="try-it-now-btn">
+    <button mat-raised-button color="primary">
+      {{ "APPS.VIEW_AND_TRY_NOW" | translate }}
+    </button>
+  </div>
+</div>
+
+<!-- API Endpoint -->
+<div class="grid">
+  <div>
+    <h4>{{ "APPS.ENDPOINT" | translate }}</h4>
+    <p>{{ mockText }}</p>
+  </div>
+  <div>
+    <mat-form-field>
+      <input matInput readonly value="https://localhost:4200/endpoint" />
+      <button
+        [cdkCopyToClipboard]="'test'"
+        mat-icon-button
+        matSuffix
+        class="input-icon-btn"
+      >
+        <mat-icon color="primary">content_copy</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+</div>
+
+<!-- Key -->
+<div class="grid">
+  <div>
+    <h4>{{ "APPS.API_KEY" | translate }}</h4>
+    <p>{{ mockText }}</p>
+  </div>
+  <div>
+    <mat-form-field>
+      <input matInput readonly value="hig&/(5$hdwheow" />
+      <button
+        [cdkCopyToClipboard]="''"
+        mat-icon-button
+        matSuffix
+        class="input-icon-btn"
+      >
+        <mat-icon class="input-icon-btn" color="primary">content_copy</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+</div>
+
+<!-- Authentication -->
+<div class="grid">
+  <div>
+    <h4>{{ "APPS.AUTHENTICATION" | translate }}</h4>
+    <p>{{ mockText }}</p>
+  </div>
+  <div>
+    <mat-form-field>
+      <mat-label>OAuth 2 Server URL</mat-label>
+      <input matInput readonly value="https://localhost:4200/authentication" />
+      <button
+        [cdkCopyToClipboard]="''"
+        mat-icon-button
+        matSuffix
+        class="input-icon-btn"
+      >
+        <mat-icon class="input-icon-btn" color="primary">content_copy</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>OAuth 2 Client Secret</mat-label>
+      <input matInput readonly value="fer87)/9&9gdea" />
+      <button
+        [cdkCopyToClipboard]="''"
+        mat-icon-button
+        matSuffix
+        class="input-icon-btn"
+      >
+        <mat-icon class="input-icon-btn" color="primary">content_copy</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+</div>

@@ -23,7 +23,21 @@
   },
   "APPS": {
     "TITLE": "My Applications",
-    "SUBTITLE": "Groups of APIs"
+    "SUBTITLE": "Groups of APIs",
+    "SUMMARY": "Summary",
+    "USE_API": "Use API",
+    "POLICIES": "Policies",
+    "MANAGE_API": "API managen",
+    "API_DOCS_TRY_NOW": "API Docs & Try it now",
+    "VIEW_AND_TRY_NOW": "View API Docs & Try now",
+    "API_KEY": "API Key",
+    "ENDPOINT": "Endpoint",
+    "AUTHENTICATION": "Authentication",
+    "DISABLE_THIS_API": "Disable this API",
+    "DISABLE_API": "Disable API",
+    "UNSUB_FROM_API": "Unsubscribe from API",
+    "UNSUB_FROM_THIS_API": "Unsubscribe from this API",
+    "UNSUB": "UNSUBSCRIBE"
   },
   "API_SIGN_UP": {
     "TITLE": "API Sign Up"

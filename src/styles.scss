@@ -1,5 +1,4 @@
 @use '~@angular/material' as mat;
-
 @import '~@angular/material/theming';
 @import './themes/custom';
 @include mat-core();
@@ -15,10 +14,36 @@
   $warn-palette: map-get($config, warn);
 
   $primary: mat-color($primary-palette);
+  $accent: mat-color($accent-palette);
+  $warn: mat-color($warn-palette);
+
 
   // CUSTOM SCSS
   .active-link{
     color: $primary;
+  }
+
+  .primary, .active{
+    color: $primary;
+  }
+
+  .accent {
+    color: $accent;
+  }
+
+  .warn {
+    color: $warn;
+  }
+
+  .form-field-pre-icon{
+    min-width: 40px;
+  }
+
+  $directions: top, right, bottom, left;
+  @each $dir in $directions{
+    .divider-#{$dir}{
+      border-#{$dir}: 2px solid $primary;
+    }
   }
 }
 
@@ -110,7 +135,7 @@ h3 {
 }
 
 h4 {
-  font-size: 1.1rem;
+  font-size: 1.0rem;
 }
 
 /** a-tags **/
@@ -120,6 +145,14 @@ a {
   &:visited {
     color: black;
   }
+}
+
+.pointer{
+  cursor: pointer;
+}
+
+.input-icon-btn{
+  font-size: 22px !important;
 }
 
 /***** Material Styling *****/

@@ -1,0 +1,105 @@
+<div class="summary">
+  <div class="endpoints divider-right">
+    <div class="api-endpoint">
+      <div>
+        <mat-icon class="form-field-pre-icon" color="primary">public</mat-icon>
+      </div>
+      <div>
+        <mat-form-field>
+          <input matInput readonly value="https://localhost:4200/endpoint" />
+          <button
+            [cdkCopyToClipboard]="'test'"
+            mat-icon-button
+            matSuffix
+            class="input-icon-btn"
+          >
+            <mat-icon color="primary">content_copy</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="api-key">
+      <div>
+        <mat-icon class="form-field-pre-icon" color="primary">vpn_key</mat-icon>
+      </div>
+      <div>
+        <mat-form-field>
+          <input matInput readonly value="hig&/(5$hdwheow" />
+          <button
+            [cdkCopyToClipboard]="''"
+            mat-icon-button
+            matSuffix
+            class="input-icon-btn"
+          >
+            <mat-icon class="input-icon-btn" color="primary"
+              >content_copy</mat-icon
+            >
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="auth-endpoint">
+      <div>
+        <mat-icon class="form-field-pre-icon" color="primary">public</mat-icon>
+      </div>
+      <div>
+        <mat-form-field>
+          <input
+            matInput
+            readonly
+            value="https://localhost:4200/authentication"
+          />
+          <button
+            [cdkCopyToClipboard]="''"
+            mat-icon-button
+            matSuffix
+            class="input-icon-btn"
+          >
+            <mat-icon class="input-icon-btn" color="primary"
+              >content_copy</mat-icon
+            >
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="auth-key">
+      <div>
+        <mat-icon class="form-field-pre-icon" color="primary">vpn_key</mat-icon>
+      </div>
+      <div>
+        <mat-form-field>
+          <input matInput readonly value="fer87)/9&9gdea" />
+          <button
+            [cdkCopyToClipboard]="''"
+            mat-icon-button
+            matSuffix
+            class="input-icon-btn"
+          >
+            <mat-icon class="input-icon-btn" color="primary"
+              >content_copy</mat-icon
+            >
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="view-docs">
+      <button mat-raised-button color="primary">
+        View API Docs and try it now
+      </button>
+    </div>
+  </div>
+  <div class="policies">
+    <mat-card *ngFor="let policy of api.policies" class="example-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>analytics</mat-icon>
+        <mat-card-title>Shiba Inu</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          The Shiba Inu is the smallest of the six original and distinct spitz
+          breeds of dog from Japan
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

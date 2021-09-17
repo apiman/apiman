@@ -1,0 +1,22 @@
+.grid{
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+  grid-template-columns: 7fr 4fr;
+  grid-column-gap: 8px;
+  grid-row-gap: 32px;
+}
+
+p{
+  padding-right: 24px;
+}
+
+.mat-form-field{
+  margin-left: 16px;
+  width: 92%;
+}
+
+#try-it-now-btn{
+  margin-right: 32px;
+  text-align: center;
+}

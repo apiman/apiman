@@ -1,0 +1,45 @@
+.grid{
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+  grid-template-columns: 6fr 5fr;
+  grid-column-gap: 8px;
+  margin-bottom: 2rem;
+}
+
+.card{
+  width: 100%;
+  text-align: -webkit-center;
+}
+
+.card-content{
+  width: 60%;
+  padding: 0px;
+  border-collapse: collapse;
+  border-radius: 4px;
+}
+
+.card-header{
+  border-collapse: collapse;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  text-align: left;
+}
+
+.bg-color-coral{
+  background-color: coral;
+}
+
+.bg-color-darkred{
+  background-color: darkred;
+}
+
+.card-title{
+  padding: 16px 12px;
+  color: white;
+}
+
+.disable-btn{
+  color: white;
+  margin-bottom: 1rem;
+}

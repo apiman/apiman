@@ -32,6 +32,10 @@ import { MyAppsComponent } from './components/my-apps/my-apps.component';
 import { ThemeService } from './services/theme/theme.service';
 import { KeycloakAngularModule } from 'keycloak-angular';
 import { KeycloakHelperService } from './services/keycloak-helper/keycloak-helper.service';
+import { MyAppsSummaryComponent } from './components/my-apps-summary/my-apps-summary.component';
+import { MyAppsUseApiComponent } from './components/my-apps-use-api/my-apps-use-api.component';
+import { MyAppsPoliciesComponent } from './components/my-apps-policies/my-apps-policies.component';
+import { MyAppsManageApiComponent } from './components/my-apps-manage-api/my-apps-manage-api.component';
 
 export function initializeApp(
   configService: ConfigService,
@@ -93,6 +97,10 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     PlanCardListComponent,
     AccountComponent,
     MyAppsComponent,
+    MyAppsSummaryComponent,
+    MyAppsUseApiComponent,
+    MyAppsPoliciesComponent,
+    MyAppsManageApiComponent,
   ],
   imports: [
     KeycloakAngularModule,

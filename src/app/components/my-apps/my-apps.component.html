@@ -1,1 +1,81 @@
-<p>my-apps works!</p>
+<mat-tab-group dynamicHeight>
+  <mat-tab *ngFor="let app of apps" [label]="app.name">
+    <div class="app-header">
+      <div class="app-icon-wrapper">
+        <img class="app-icon" [src]="tmpUrl" alt="app-icon" />
+      </div>
+      <div class="content-text">{{ app.description }}</div>
+    </div>
+
+    <div *ngFor="let api of app.apis" class="app-api">
+      <div class="app-api-menu">
+        <div>
+          <span
+            (click)="setSection(api, 'summary')"
+            [ngClass]="{ active: api.section === 'summary' }"
+            >{{ "APPS.SUMMARY" | translate }}</span
+          >
+        </div>
+        <div>
+          <span
+            (click)="setSection(api, 'use-api')"
+            [ngClass]="{ active: api.section === 'use-api' }"
+            >{{ "APPS.USE_API" | translate }}</span
+          >
+        </div>
+        <div>
+          <span
+            (click)="setSection(api, 'policies')"
+            [ngClass]="{ active: api.section === 'policies' }"
+            >{{ "APPS.POLICIES" | translate }}</span
+          >
+        </div>
+        <div>
+          <span
+            (click)="setSection(api, 'manage-api')"
+            [ngClass]="{ active: api.section === 'manage-api' }"
+            >{{ "APPS.MANAGE_API" | translate }}</span
+          >
+        </div>
+      </div>
+      <div class="app-api-content mat-elevation-z2">
+        <div class="app-api-header">
+          <div class="app-api-header-icon-wrapper">
+            <img class="app-api-header-icon" [src]="tmpUrl2" alt="app-icon" />
+          </div>
+          <div class="app-api-header-title">
+            <h3 class="primary">
+              {{ api.name }} {{ api.version }} - {{ api.plan }}
+            </h3>
+          </div>
+          <div class="app-api-header-labels">
+            <span
+              *ngFor="let label of api.labels"
+              [style]="'background-color: ' + label.color"
+              >{{ label.name }}</span
+            >
+          </div>
+        </div>
+        <div class="api-section">
+          <app-my-apps-summary
+            *ngIf="api.section === 'summary'"
+            [api]="api"
+          ></app-my-apps-summary>
+          <app-my-apps-use-api
+            *ngIf="api.section === 'use-api'"
+            [api]="api"
+          ></app-my-apps-use-api>
+          <app-my-apps-policies
+            *ngIf="api.section === 'policies'"
+            [api]="api"
+          ></app-my-apps-policies>
+          <app-my-apps-manage-api
+            *ngIf="api.section === 'manage-api'"
+            [api]="api"
+          ></app-my-apps-manage-api>
+        </div>
+        <!-- TODO Components for summary, use api, policies, manage api -->
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
