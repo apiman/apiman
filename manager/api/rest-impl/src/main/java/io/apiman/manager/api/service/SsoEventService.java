@@ -33,7 +33,7 @@ public class SsoEventService {
              .builder()
              .setId(key(newAccountCreatedDto.getUserId(), newAccountCreatedDto.getTime()))
              .setSource(URI.create("http://replaceme.local/foo"))
-             .setSubject(NEW_ACCOUNT_)
+             .setSubject("new.account")
              .build();
 
         AccountSignupEvent accountSignup = AccountSignupEvent

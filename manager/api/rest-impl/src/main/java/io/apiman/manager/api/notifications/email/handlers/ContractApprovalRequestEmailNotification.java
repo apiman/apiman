@@ -59,10 +59,7 @@ public class ContractApprovalRequestEmailNotification implements INotificationHa
 
     @Override
     public boolean wants(NotificationDto<? extends IVersionedApimanEvent> notification) {
-        if (notification.getReason().equals(ContractApprovalRequestNotificationProducer.APIMAN_CLIENT_CONTRACT_REASON)) {
-            return true;
-        }
-        return false;
+        return notification.getReason().equals(ContractApprovalRequestNotificationProducer.APIMAN_CLIENT_CONTRACT_REASON);
     }
 
     public Map<String, Object> buildTemplateMap(NotificationDto<ContractCreatedEvent> notification) {

@@ -1,15 +1,15 @@
 package io.apiman.manager.api.notifications.email.handlers;
 
-import io.apiman.common.logging.ApimanLoggerFactory;
-import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.beans.events.ClientVersionStatusEvent;
 import io.apiman.manager.api.beans.events.ContractApprovalEvent;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.notifications.EmailNotificationTemplate;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
+import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.notifications.email.QteTemplateEngine;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
-import io.apiman.manager.api.notifications.producers.ContractApprovalNotificationProducer;
+import io.apiman.manager.api.notifications.producers.ClientAppStatusNotificationProducer;
 
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
@@ -19,22 +19,27 @@ import javax.inject.Inject;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
-public class ContractApprovalEmailNotification implements INotificationHandler {
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalEmailNotification.class);
-    private final QteTemplateEngine templateEngine;
-    private final SimpleMailNotificationService mailNotificationService;
+public class ClientAppRegisteredEmailNotification implements INotificationHandler {
+
+    private IStorage storage;
+    private SimpleMailNotificationService mailNotificationService;
+    private QteTemplateEngine templateEngine;
 
     @Inject
-    public ContractApprovalEmailNotification(QteTemplateEngine templateEngine,
-         SimpleMailNotificationService mailNotificationService) {
+    public ClientAppRegisteredEmailNotification(QteTemplateEngine templateEngine,
+         SimpleMailNotificationService mailNotificationService,
+         IStorage storage
+    ) {
         this.templateEngine = templateEngine;
         this.mailNotificationService = mailNotificationService;
+        this.storage = storage;
     }
 
+    public ClientAppRegisteredEmailNotification() {}
+
     @Override
-    public void handle(NotificationDto<? extends IVersionedApimanEvent> notif) {
-        NotificationDto<ContractApprovalEvent> notification = (NotificationDto<ContractApprovalEvent>) notif;
-        Map<String, Object> templateMap = buildTemplateMap(notification);
+    public void handle(NotificationDto<? extends IVersionedApimanEvent> raw) {
+        NotificationDto<ClientVersionStatusEvent> notification = (NotificationDto<ClientVersionStatusEvent>) raw;
 
         EmailNotificationTemplate template = mailNotificationService
              .findTemplateFor(notification.getReason())
@@ -51,9 +56,7 @@ public class ContractApprovalEmailNotification implements INotificationHandler {
 
     @Override
     public boolean wants(NotificationDto<? extends IVersionedApimanEvent> notification) {
-        String reason = notification.getReason();
-        return reason.equals(ContractApprovalNotificationProducer.APIMAN_CONTRACT_APPROVED_REASON)
-                    || reason.equals(ContractApprovalNotificationProducer.APIMAN_CONTRACT_REJECTED_REASON);
+        return notification.getReason().equals(ClientAppStatusNotificationProducer.APIMAN_CLIENT_STATUS_CHANGE);
     }
 
     public Map<String, Object> buildTemplateMap(NotificationDto<ContractApprovalEvent> notification) {

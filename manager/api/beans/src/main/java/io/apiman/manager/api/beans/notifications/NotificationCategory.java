@@ -20,6 +20,11 @@ public enum NotificationCategory {
     API_ADMINISTRATION,
 
     /**
+     * Something relating to the API lifecycle (register, etc).
+     */
+    API_LIFECYCLE,
+
+    /**
      * Some other category that isn't captured (yet).
      */
     OTHER
