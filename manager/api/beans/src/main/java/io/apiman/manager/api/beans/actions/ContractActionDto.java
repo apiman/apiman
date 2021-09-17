@@ -8,6 +8,7 @@ import io.apiman.manager.api.beans.contracts.ContractStatus;
 public class ContractActionDto {
     private Long contractId;
     private ContractStatus statusBean;
+    private boolean autoPromote = false;
 
     public Long getContractId() {
         return contractId;
@@ -24,6 +25,15 @@ public class ContractActionDto {
 
     public ContractActionDto setStatusBean(ContractStatus statusBean) {
         this.statusBean = statusBean;
+        return this;
+    }
+
+    public boolean isAutoPromote() {
+        return autoPromote;
+    }
+
+    public ContractActionDto setAutoPromote(boolean autoPromote) {
+        this.autoPromote = autoPromote;
         return this;
     }
 }

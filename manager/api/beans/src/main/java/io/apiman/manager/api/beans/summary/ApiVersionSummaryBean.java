@@ -37,6 +37,7 @@ public class ApiVersionSummaryBean implements Serializable {
     private ApiStatus status;
     private String version;
     private boolean publicAPI;
+    private boolean exposeInPortal;
 
     /**
      * Constructor.
@@ -154,6 +155,14 @@ public class ApiVersionSummaryBean implements Serializable {
      */
     public void setPublicAPI(boolean publicAPI) {
         this.publicAPI = publicAPI;
+    }
+
+    public Boolean getExposeInPortal() {
+        return exposeInPortal;
+    }
+
+    public void setExposeInPortal(Boolean exposeInPortal) {
+        this.exposeInPortal = exposeInPortal;
     }
 
     /* (non-Javadoc)

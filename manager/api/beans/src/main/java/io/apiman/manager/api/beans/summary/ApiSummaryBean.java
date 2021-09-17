@@ -190,5 +190,4 @@ public class ApiSummaryBean implements Serializable {
                 + organizationName + ", id=" + id + ", name=" + name + ", description=" + description
                 + ", createdOn=" + createdOn + "]";
     }
-
 }

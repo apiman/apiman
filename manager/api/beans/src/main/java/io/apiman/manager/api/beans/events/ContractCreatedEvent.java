@@ -2,7 +2,8 @@ package io.apiman.manager.api.beans.events;
 
 import io.apiman.manager.api.beans.idm.UserDto;
 
-import java.util.Objects;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -12,15 +13,16 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@JsonDeserialize(builder = ContractApprovalRequestEvent.Builder.class)
+@JsonDeserialize(builder = ContractCreatedEvent.Builder.class)
 @ApimanEvent(version = 1)
-public class ContractApprovalRequestEvent implements IVersionedApimanEvent {
+public class ContractCreatedEvent implements IVersionedApimanEvent {
 
     private ApimanEventHeaders headers;
     private UserDto user;
-    private String orgId;
+    private String clientOrgId;
     private String clientId;
     private String clientVersion;
+    private String apiOrgId;
     private String apiId;
     private String apiVersion;
     private String contractId;
@@ -28,14 +30,16 @@ public class ContractApprovalRequestEvent implements IVersionedApimanEvent {
     private String planVersion;
     private boolean approvalRequired;
 
-    public ContractApprovalRequestEvent(ApimanEventHeaders headers, UserDto user, String orgId, String clientId,
-         String clientVersion, String apiId, String apiVersion, String contractId, String planId, String planVersion,
+    ContractCreatedEvent(ApimanEventHeaders headers, UserDto user, String clientOrgId, String clientId,
+         String clientVersion, String apiOrgId, String apiId, String apiVersion, String contractId, String planId,
+         String planVersion,
          boolean approvalRequired) {
         this.headers = headers;
         this.user = user;
-        this.orgId = orgId;
+        this.clientOrgId = clientOrgId;
         this.clientId = clientId;
         this.clientVersion = clientVersion;
+        this.apiOrgId = apiOrgId;
         this.apiId = apiId;
         this.apiVersion = apiVersion;
         this.contractId = contractId;
@@ -45,7 +49,11 @@ public class ContractApprovalRequestEvent implements IVersionedApimanEvent {
     }
 
     // TODO(msavy): do we need this empty constructor anymore for POJO serialization or can we get away with it? Experiment w/ JAX-RS/RESTEasy
-    public ContractApprovalRequestEvent() {
+    public ContractCreatedEvent() {
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -60,8 +68,8 @@ public class ContractApprovalRequestEvent implements IVersionedApimanEvent {
         return user;
     }
 
-    public String getOrgId() {
-        return orgId;
+    public String getClientOrgId() {
+        return clientOrgId;
     }
 
     public String getClientId() {
@@ -70,6 +78,10 @@ public class ContractApprovalRequestEvent implements IVersionedApimanEvent {
 
     public String getClientVersion() {
         return clientVersion;
+    }
+
+    public String getApiOrgId() {
+        return apiOrgId;
     }
 
     public String getApiId() {
@@ -96,23 +108,31 @@ public class ContractApprovalRequestEvent implements IVersionedApimanEvent {
         return approvalRequired;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     @JsonPOJOBuilder(withPrefix = "set")
-    public static class Builder {
-
+    public static class Builder implements ApimanEventBuilderMixin {
+        @NotNull
         private ApimanEventHeaders headers;
+        @NotNull
         private UserDto user;
-        private String orgId;
+        @NotBlank
+        private String clientOrgId;
+        @NotBlank
         private String clientId;
+        @NotBlank
         private String clientVersion;
+        @NotBlank
+        private String apiOrgId;
+        @NotBlank
         private String apiId;
+        @NotBlank
         private String apiVersion;
+        @NotBlank
         private String contractId;
+        @NotBlank
         private String planId;
+        @NotBlank
         private String planVersion;
+        @NotBlank
         private Boolean approvalRequired;
 
         public Builder() {
@@ -132,8 +152,8 @@ public class ContractApprovalRequestEvent implements IVersionedApimanEvent {
             return this;
         }
 
-        public Builder setOrgId(String orgId) {
-            this.orgId = orgId;
+        public Builder setClientOrgId(String clientOrgId) {
+            this.clientOrgId = clientOrgId;
             return this;
         }
 
@@ -142,28 +162,28 @@ public class ContractApprovalRequestEvent implements IVersionedApimanEvent {
             return this;
         }
 
-        public Builder setApiId(String apiId) {
-            this.apiId = apiId;
-            return this;
-        }
-
-        public Builder setContractId(String contractId) {
-            this.contractId = contractId;
-            return this;
-        }
-
-        public Builder setApprovalRequired(Boolean approvalRequired) {
-            this.approvalRequired = approvalRequired;
-            return this;
-        }
-
         public Builder setClientVersion(String clientVersion) {
             this.clientVersion = clientVersion;
             return this;
         }
 
+        public Builder setApiOrgId(String apiOrgId) {
+            this.apiOrgId = apiOrgId;
+            return this;
+        }
+
+        public Builder setApiId(String apiId) {
+            this.apiId = apiId;
+            return this;
+        }
+
         public Builder setApiVersion(String apiVersion) {
             this.apiVersion = apiVersion;
+            return this;
+        }
+
+        public Builder setContractId(String contractId) {
+            this.contractId = contractId;
             return this;
         }
 
@@ -177,20 +197,26 @@ public class ContractApprovalRequestEvent implements IVersionedApimanEvent {
             return this;
         }
 
-        public ContractApprovalRequestEvent build() {
-            Objects.requireNonNull(headers, "Must provider headers");
-            Objects.requireNonNull(user, "Must provide user info");
-            Objects.requireNonNull(orgId, "Must provide org");
-            Objects.requireNonNull(contractId, "Must provide contractId");
-            Objects.requireNonNull(clientId, "Must provide clientId");
-            Objects.requireNonNull(clientVersion, "Must provide clientVersion");
-            Objects.requireNonNull(apiId, "Must provide apiId");
-            Objects.requireNonNull(apiVersion, "Must provide apiVersion");
-            Objects.requireNonNull(planId, "Must provide planId");
-            Objects.requireNonNull(planVersion, "Must provide planVersion");
-            Objects.requireNonNull(approvalRequired, "Must explicitly set whether approval is required");
-            return new ContractApprovalRequestEvent(headers, user, orgId, clientId, clientVersion, apiId, apiVersion,
-                 contractId, planId, planVersion, approvalRequired);
+        public Builder setApprovalRequired(Boolean approvalRequired) {
+            this.approvalRequired = approvalRequired;
+            return this;
+        }
+
+        public ContractCreatedEvent build() {
+            beanValidate(this);
+            // Objects.requireNonNull(headers, "Must provider headers");
+            // Objects.requireNonNull(user, "Must provide user info");
+            // Objects.requireNonNull(orgId, "Must provide org");
+            // Objects.requireNonNull(contractId, "Must provide contractId");
+            // Objects.requireNonNull(clientId, "Must provide clientId");
+            // Objects.requireNonNull(clientVersion, "Must provide clientVersion");
+            // Objects.requireNonNull(apiId, "Must provide apiId");
+            // Objects.requireNonNull(apiVersion, "Must provide apiVersion");
+            // Objects.requireNonNull(planId, "Must provide planId");
+            // Objects.requireNonNull(planVersion, "Must provide planVersion");
+            // Objects.requireNonNull(approvalRequired, "Must explicitly set whether approval is required");
+            return new ContractCreatedEvent(headers, user, clientOrgId, clientId, clientVersion, apiOrgId, apiId,
+                 apiVersion, contractId, planId, planVersion, approvalRequired);
         }
     }
 }

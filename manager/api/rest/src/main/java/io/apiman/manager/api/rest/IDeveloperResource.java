@@ -26,17 +26,26 @@ import io.apiman.manager.api.rest.exceptions.DeveloperAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.DeveloperNotFoundException;
 import io.apiman.manager.api.rest.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
-import io.swagger.annotations.Api;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
 import java.util.List;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import io.swagger.annotations.Api;
 
 /**
  * A interface for REST calls for the Developer Portal
  */
 @Path("/developers")
 @Api(tags = "Developers")
+@Deprecated(forRemoval = true)
 public interface IDeveloperResource {
 
     /**

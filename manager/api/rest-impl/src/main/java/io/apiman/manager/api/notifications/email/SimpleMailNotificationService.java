@@ -59,35 +59,35 @@ public class SimpleMailNotificationService {
     /**
      * Send a plaintext email
      */
-    public void sendPlaintext(@NotNull String to, @NotNull String subject, @NotNull String body) {
-        emailSender.sendPlaintext(to, subject, body, DEFAULT_HEADERS);
+    public void sendPlaintext(@NotNull String toEmail, @NotNull String toName, @NotNull String subject, @NotNull String body) {
+        emailSender.sendPlaintext(toEmail, toName, subject, body, DEFAULT_HEADERS);
     }
 
     /**
      * Send a plaintext email
      */
-    public void sendPlaintext(@NotNull  String to, @NotNull  String subject, @NotNull  String body, @NotNull Map<String, String> headers) {
+    public void sendPlaintext(@NotNull String toEmail, @NotNull String toName, @NotNull  String subject, @NotNull  String body, @NotNull Map<String, String> headers) {
         LOGGER.debug("Sending plaintext email. To: {0}, Subject: {1}, Body: {2}, Extra headers: {3}.",
-             to, subject, body, headers);
+             toEmail, subject, body, headers);
         LOGGER.debug("Sender settings: {0}", emailSender);
-        emailSender.sendPlaintext(to, subject, body, headers);
+        emailSender.sendPlaintext(toEmail, toName, subject, body, headers);
     }
 
     /**
      * Send an HTML email with a plaintext fallback/alternative.
      */
-    public void sendHtml(@NotNull String to, @NotNull String subject, @NotNull String htmlBody, @NotNull String plainBody) {
-        emailSender.sendHtml(to, subject, htmlBody, plainBody, DEFAULT_HEADERS);
+    public void sendHtml(@NotNull String toEmail, @NotNull String toName, @NotNull String subject, @NotNull String htmlBody, @NotNull String plainBody) {
+        emailSender.sendHtml(toEmail, toName, subject, htmlBody, plainBody, DEFAULT_HEADERS);
     }
 
     /**
      * Send an HTML email with a plaintext fallback/alternative.
      */
-    public void sendHtml(@NotNull String to, @NotNull String subject, @NotNull String htmlBody, @NotNull String plainBody, @NotNull Map<String, String> headers) {
+    public void sendHtml(@NotNull String toEmail, @NotNull String toName, @NotNull String subject, @NotNull String htmlBody, @NotNull String plainBody, @NotNull Map<String, String> headers) {
         LOGGER.debug("Sending HTML email. To: {0}, Subject: {1}, HTML body: {2}, Plaintext Body: {3}, "
-                          + "Extra headers: {4}.", to, subject, htmlBody, plainBody, headers);
+                          + "Extra headers: {4}.", toEmail, subject, htmlBody, plainBody, headers);
         LOGGER.debug("Sender settings: {0}", emailSender);
-        emailSender.sendHtml(to, subject, htmlBody, plainBody, headers);
+        emailSender.sendHtml(toEmail, toName, subject, htmlBody, plainBody, headers);
     }
 
     /**
