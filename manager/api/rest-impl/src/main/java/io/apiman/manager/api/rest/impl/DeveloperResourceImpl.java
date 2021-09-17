@@ -55,6 +55,7 @@ import com.google.common.collect.ImmutableList;
  */
 @Transactional
 @ApplicationScoped
+@Deprecated(forRemoval = true)
 public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DeveloperResourceImpl.class);

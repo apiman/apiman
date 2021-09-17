@@ -2,7 +2,8 @@ package io.apiman.manager.api.notifications.producers;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.manager.api.beans.events.ContractApprovalRequestEvent;
+import io.apiman.manager.api.beans.events.ContractCreatedEvent;
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
 import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
@@ -16,7 +17,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 /**
- * Accept a {@link ContractApprovalRequestEvent} and produce a {@link #APIMAN_CLIENT_CONTRACT_REASON} notification.
+ * Accept a {@link ContractCreatedEvent} and produce a {@link #APIMAN_CLIENT_CONTRACT_REASON} notification.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
@@ -34,14 +35,14 @@ public class ContractApprovalRequestNotificationProducer implements INotificatio
 
     public ContractApprovalRequestNotificationProducer() {}
 
-    public void processEvent(@Observes ContractApprovalRequestEvent signupEvent) {
+    public void processEvent(@Observes ContractCreatedEvent signupEvent) {
         LOGGER.debug("Processing signup event {0}", signupEvent);
         if (signupEvent.isApprovalRequired()) {
             CreateNotificationDto newNotification = new CreateNotificationDto();
-            String orgId = signupEvent.getOrgId();
+            String orgId = signupEvent.getApiOrgId();
 
             RecipientDto planAdmins = new RecipientDto()
-                 .setRecipient("planAdmin")
+                 .setRecipient(PermissionType.planAdmin.name())
                  .setOrgId(orgId)
                  .setRecipientType(RecipientType.PERMISSION);
 
@@ -49,6 +50,7 @@ public class ContractApprovalRequestNotificationProducer implements INotificatio
                            .setReason(APIMAN_CLIENT_CONTRACT_REASON)
                            .setReasonMessage("Signup request for API")
                            .setCategory(NotificationCategory.API_ADMINISTRATION)
+                           .setSource("http://somepage/here/")
                            .setPayload(signupEvent);
 
             LOGGER.debug("Sending notification for approval of contract {0} from client {1} version {2}",

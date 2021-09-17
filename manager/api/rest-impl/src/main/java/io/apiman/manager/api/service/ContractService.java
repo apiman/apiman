@@ -10,7 +10,12 @@ import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.ContractStatus;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
+import io.apiman.manager.api.beans.events.ApimanEventHeaders;
+import io.apiman.manager.api.beans.events.ContractCreatedEvent;
 import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.beans.idm.UserMapper;
+import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
@@ -18,6 +23,7 @@ import io.apiman.manager.api.core.IClientValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.events.EventService;
 import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.exceptions.ApiNotFoundException;
 import io.apiman.manager.api.rest.exceptions.ClientNotFoundException;
@@ -33,11 +39,13 @@ import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -54,6 +62,7 @@ public class ContractService implements DataAccessUtilMixin {
 
     private IStorage storage;
     private IStorageQuery query;
+    private EventService eventService;
     private ClientAppService clientAppService;
     private PlanService planService;
     private ISecurityContext securityContext;
@@ -62,12 +71,14 @@ public class ContractService implements DataAccessUtilMixin {
     @Inject
     public ContractService(IStorage storage,
         IStorageQuery query,
+        EventService eventService,
         ClientAppService clientAppService,
         PlanService planService,
         ISecurityContext securityContext,
         IClientValidator clientValidator) {
         this.storage = storage;
         this.query = query;
+        this.eventService = eventService;
         this.clientAppService = clientAppService;
         this.planService = planService;
         this.securityContext = securityContext;
@@ -154,11 +165,14 @@ public class ContractService implements DataAccessUtilMixin {
 
         // Move the client to the "Ready" state if necessary.
         if (cvb.getStatus() == ClientStatus.Created && clientValidator.isReady(cvb, true)) {
+            ClientStatus oldStatus = cvb.getStatus();
             if (approvalRequired) {
                 cvb.setStatus(ClientStatus.AwaitingApproval);
+                fireContractApprovalRequest(securityContext.getCurrentUser(), contract);
             } else {
                 cvb.setStatus(ClientStatus.Ready);
             }
+            clientAppService.fireClientStatusChangeEvent(cvb, oldStatus);
         }
 
         storage.createContract(contract);
@@ -202,9 +216,7 @@ public class ContractService implements DataAccessUtilMixin {
     }
 
     @Transactional
-    public ContractBean getContract(String organizationId, Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
-
+    public ContractBean getContract(Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
         return tryAction(() -> {
             ContractBean contract = storage.getContract(contractId);
             if (contract == null)
@@ -261,5 +273,41 @@ public class ContractService implements DataAccessUtilMixin {
 
             LOGGER.debug(String.format("Deleted contract: %s", contract)); //$NON-NLS-1$
         });
+    }
+
+    private void fireContractApprovalRequest(String requesterId, ContractBean contract) {
+        UserDto requester = UserMapper.toDto(tryAction(() -> storage.getUser(requesterId)));
+
+        ApimanEventHeaders headers = ApimanEventHeaders
+             .builder()
+             .setId(UUID.randomUUID().toString())
+             .setSource(URI.create("/a/b/c"))
+             .setSubject("request")
+             .build();
+
+        PlanVersionBean plan = contract.getPlan();
+        ClientVersionBean cvb = contract.getClient();
+        ApiVersionBean avb = contract.getApi();
+        OrganizationBean orgA = avb.getApi().getOrganization();
+        OrganizationBean orgC = cvb.getClient().getOrganization();
+
+        var approvalRequestEvent = ContractCreatedEvent
+             .builder()
+             .setHeaders(headers)
+             .setUser(requester)
+             .setClientOrgId(orgC.getId())
+             .setClientId(cvb.getClient().getId())
+             .setClientVersion(cvb.getVersion())
+             .setApiOrgId(orgA.getId())
+             .setApiId(avb.getApi().getId())
+             .setApiVersion(avb.getVersion())
+             .setContractId(String.valueOf(contract.getId()))
+             .setPlanId(plan.getPlan().getId())
+             .setPlanVersion(plan.getVersion())
+             .setApprovalRequired(true)
+             .build();
+
+        LOGGER.debug("Sending approval request event {0}", approvalRequestEvent);
+        eventService.fireEvent(approvalRequestEvent);
     }
 }

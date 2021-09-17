@@ -62,6 +62,7 @@ import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.ActionService;
+import io.apiman.manager.api.service.ClientAppService;
 import io.apiman.manager.api.service.ContractService;
 
 import java.util.ArrayList;
@@ -76,8 +77,6 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
-import com.google.common.collect.Streams;
 
 /**
  * Implementation of the Action API.
@@ -99,6 +98,7 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
     private IClientValidator clientValidator;
     private ISecurityContext securityContext;
     private ActionService actionService;
+    private ClientAppService clientService;
 
     /**
      * Constructor.
@@ -112,7 +112,8 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
         IOrganizationResource orgs,
         IClientValidator clientValidator,
         ISecurityContext securityContext,
-        ActionService actionService
+        ActionService actionService,
+         ClientAppService clientService
     ) {
         this.storage = storage;
         this.contractService = contractService;
@@ -122,6 +123,7 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
         this.clientValidator = clientValidator;
         this.securityContext = securityContext;
         this.actionService = actionService;
+        this.clientService = clientService;
     }
 
     public ActionResourceImpl() {
@@ -167,45 +169,9 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
     @Override
     public void approveContract(ContractActionDto action) throws ActionException, NotAuthorizedException {
         ContractBean contract = tryAction(() -> storage.getContract(action.getContractId()));
-        if (contract == null) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("ContractDoesNotExist"));
-        }
-
-        ClientVersionBean cvb = contract.getClient();
-        ApiVersionBean avb = contract.getApi();
-        OrganizationBean org = avb.getApi().getOrganization();
+        OrganizationBean org = contract.getPlan().getPlan().getOrganization();
         securityContext.checkPermissions(PermissionType.planAdmin, org.getId());
-
-        LOGGER.debug("Approving a contract: {0} -> {1}", contract, action);
-        contract.setStatus(ContractStatus.Created);
-        tryAction(() -> storage.updateContract(contract));
-
-        // If all contracts are now good, then ready to register?
-        List<ContractBean> contracts = tryAction(
-             () -> Streams.stream((storage.getAllContracts(org.getId(), cvb.getClient().getId(), cvb.getVersion())
-        ))).collect(Collectors.toList());
-
-        List<ContractBean> awaitingApprovalList = contracts
-             .stream()
-             .filter(c -> c.getStatus().equals(ContractStatus.AwaitingApproval))
-             .collect(Collectors.toList());
-
-        if (awaitingApprovalList.size() > 0) {
-            LOGGER.debug("A contract was approved, but {0} other contracts are still awaiting approval, "
-                              + "so client version {1} will remain in its pending state until the remaining contract approvals "
-                              + "are granted: {2}.", awaitingApprovalList.size(), cvb.getVersion(),
-                 awaitingApprovalList);
-        } else {
-            LOGGER.debug("All contracts for {0} have been approved", cvb.getVersion());
-            // Send message to say 'ready to register!'
-            // Send notification
-            tryAction(() -> {
-                if (clientValidator.isReady(cvb)) {
-                    LOGGER.debug("Client set to ready as all contracts have been approved");
-                    avb.setStatus(ApiStatus.Ready);
-                }
-            });
-        }
+        actionService.approveContract(action, securityContext.getCurrentUser());
     }
 
     /**
@@ -499,12 +465,15 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
             throw ExceptionFactory.actionException(Messages.i18n.format("RegisterError"), e); //$NON-NLS-1$
         }
 
+        ClientStatus oldStatus = versionBean.getStatus();
         versionBean.setStatus(ClientStatus.Registered);
         versionBean.setPublishedOn(new Date());
 
         try {
             storage.updateClientVersion(versionBean);
             storage.createAuditEntry(AuditUtils.clientRegistered(versionBean, securityContext));
+            // TODO pull into service
+            clientService.fireClientStatusChangeEvent(versionBean, oldStatus);
         } catch (Exception e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("RegisterError"), e); //$NON-NLS-1$
         }
@@ -622,8 +591,10 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
             throw ExceptionFactory.actionException(Messages.i18n.format("UnregisterError"), e); //$NON-NLS-1$
         }
 
+        ClientStatus oldStatus = versionBean.getStatus();
         versionBean.setStatus(ClientStatus.Retired);
         versionBean.setRetiredOn(new Date());
+        clientService.fireClientStatusChangeEvent(versionBean, oldStatus);
 
         try {
             storage.updateClientVersion(versionBean);

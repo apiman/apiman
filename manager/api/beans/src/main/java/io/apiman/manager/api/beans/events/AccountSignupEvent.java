@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.apache.commons.lang3.Validate;
 
 /**
- * Account signup event
+ * Account signup event.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */

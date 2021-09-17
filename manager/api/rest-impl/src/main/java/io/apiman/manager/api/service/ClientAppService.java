@@ -13,6 +13,8 @@ import io.apiman.manager.api.beans.clients.NewClientBean;
 import io.apiman.manager.api.beans.clients.NewClientVersionBean;
 import io.apiman.manager.api.beans.clients.UpdateClientBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
+import io.apiman.manager.api.beans.events.ApimanEventHeaders;
+import io.apiman.manager.api.beans.events.ClientVersionStatusEvent;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.policies.NewPolicyBean;
@@ -30,6 +32,7 @@ import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.events.EventService;
 import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.exceptions.ClientAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.ClientNotFoundException;
@@ -49,10 +52,12 @@ import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.rest.impl.util.FieldValidator;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -78,15 +83,18 @@ public class ClientAppService implements DataAccessUtilMixin {
     private ContractService contractService;
     private PolicyService policyService;
     private IApiKeyGenerator apiKeyGenerator;
+    private EventService eventService;
 
     @Inject
     public ClientAppService(
-        IStorage storage,
-        IStorageQuery query,
-        ISecurityContext securityContext,
-        OrganizationService organizationService,
-        ContractService contractService,
-        PolicyService policyService, IApiKeyGenerator apiKeyGenerator
+         IStorage storage,
+         IStorageQuery query,
+         ISecurityContext securityContext,
+         OrganizationService organizationService,
+         ContractService contractService,
+         PolicyService policyService,
+         IApiKeyGenerator apiKeyGenerator,
+         EventService eventService
     ) {
         this.storage = storage;
         this.query = query;
@@ -95,6 +103,7 @@ public class ClientAppService implements DataAccessUtilMixin {
         this.contractService = contractService;
         this.policyService = policyService;
         this.apiKeyGenerator = apiKeyGenerator;
+        this.eventService = eventService;
     }
 
     public ClientAppService() {
@@ -494,6 +503,13 @@ public class ClientAppService implements DataAccessUtilMixin {
         });
     }
 
+    public void changeStatus(ClientVersionBean cvb, ClientStatus newStatus) {
+        ClientStatus oldStatus = cvb.getStatus();
+        cvb.setStatus(newStatus);
+        fireClientStatusChangeEvent(cvb, oldStatus);
+        LOGGER.debug("Change status of client version {0} -> {1}: {2}", oldStatus, newStatus, cvb);
+        tryAction(() -> storage.updateClientVersion(cvb));
+    }
 
     private ClientBean getClientFromStorage(String organizationId, String clientId) throws StorageException {
         ClientBean client = storage.getClient(organizationId, clientId);
@@ -501,5 +517,33 @@ public class ClientAppService implements DataAccessUtilMixin {
             throw ExceptionFactory.clientNotFoundException(clientId);
         }
         return client;
+    }
+
+    // TODO: make private at some point
+    public void fireClientStatusChangeEvent(ClientVersionBean cvb, ClientStatus oldStatus) {
+        if (oldStatus == cvb.getStatus()) {
+            LOGGER.debug("Old status and new status same {0} => {1}", cvb.getId(), cvb.getStatus());
+            return;
+        }
+
+        ClientBean cb = cvb.getClient();
+        ApimanEventHeaders headers = ApimanEventHeaders
+             .builder()
+             .setId(UUID.randomUUID().toString().substring(8))
+             .setSource(URI.create("/a/b/c"))
+             .setSubject("status.change")
+             .build();
+
+        var event = ClientVersionStatusEvent
+             .builder()
+             .setClientOrgId(cb.getOrganization().getId())
+             .setClientId(cvb.getClient().getId())
+             .setClientVersion(cvb.getVersion())
+             .setPreviousStatus(oldStatus)
+             .setNewStatus(cvb.getStatus())
+             .build();
+
+        eventService.fireEvent(event);
+        LOGGER.debug("Sending client status change event: {0}");
     }
 }

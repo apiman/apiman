@@ -315,7 +315,8 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public ContractBean getContract(String organizationId, String clientId, String version,
         Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
-        return contractService.getContract(organizationId, clientId, version, contractId);
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+        return contractService.getContract(contractId);
     }
 
     @Override

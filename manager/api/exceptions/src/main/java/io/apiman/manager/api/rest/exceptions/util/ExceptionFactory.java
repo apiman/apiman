@@ -19,6 +19,7 @@ import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.contracts.ContractStatus;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.rest.exceptions.*;
@@ -141,6 +142,10 @@ public final class ExceptionFactory {
 
     public static InvalidContractStatusException contractNotYetApprovedException(List<ContractSummaryBean> contracts) {
         return new InvalidContractStatusException(Messages.i18n.format("ContractNotYetApproved", contracts)); //$NON-NLS-1$
+    }
+
+    public static InvalidContractStatusException invalidContractStatus(ContractStatus expected, ContractStatus actual) {
+        return new InvalidContractStatusException(Messages.i18n.format("ContractWrongState", expected, actual)); //$NON-NLS-1$
     }
 
     /**

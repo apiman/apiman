@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 /**
- * A new account has been created
+ * A new account has been created.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */

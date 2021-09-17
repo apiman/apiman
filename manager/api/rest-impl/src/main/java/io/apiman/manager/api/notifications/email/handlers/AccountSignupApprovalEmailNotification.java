@@ -18,7 +18,7 @@ import javax.inject.Inject;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
-public class AccountSignupApproval implements INotificationHandler {
+public class AccountSignupApprovalEmailNotification implements INotificationHandler {
 
     private static final EmailNotificationTemplate DEFAULT_TEMPLATE = new EmailNotificationTemplate(); // TODO make a sensible default?
     private QteTemplateEngine templateEngine;
@@ -26,7 +26,7 @@ public class AccountSignupApproval implements INotificationHandler {
     private IStorage storage;
 
     @Inject
-    public AccountSignupApproval(QteTemplateEngine templateEngine,
+    public AccountSignupApprovalEmailNotification(QteTemplateEngine templateEngine,
          SimpleMailNotificationService mailNotificationService,
          IStorage storage
     ) {
@@ -35,7 +35,8 @@ public class AccountSignupApproval implements INotificationHandler {
         this.storage = storage;
     }
 
-    public AccountSignupApproval() {}
+    public AccountSignupApprovalEmailNotification() {
+    }
 
     @Override
     public void handle(NotificationDto<? extends IVersionedApimanEvent> rawNotification) {
@@ -54,7 +55,8 @@ public class AccountSignupApproval implements INotificationHandler {
         // Beware, for this instance, the user might not actually exist in Apiman (yet or at all) as it could have come
         // from the underlying IDM -- be careful if calling for Apiman's members, etc.
         UserDto recipient = rawNotification.getRecipient();
-        mailNotificationService.sendHtml(recipient.getFullName(), renderedSubject, renderedBody, renderedSubject);
+        mailNotificationService.sendHtml(recipient.getEmail(), recipient.getFullName(), renderedSubject, renderedBody,
+             "");
     }
 
     @Override
@@ -67,8 +69,8 @@ public class AccountSignupApproval implements INotificationHandler {
 
     public Map<String, Object> buildTemplateMap(NotificationDto<AccountSignupEvent> notification) {
         return Map.of(
-                "notification", notification,
-                "event", notification.getPayload()
+             "notification", notification,
+             "event", notification.getPayload()
         );
     }
 }
