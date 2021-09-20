@@ -13,7 +13,6 @@ import { HomeComponent } from './components/home/home.component';
 import { MarketplaceApiTermsComponent } from './components/marketplace-api-terms/marketplace-api-terms.component';
 import { MarketplaceSignupStepperComponent } from './components/marketplace-signup-stepper/marketplace-signup-stepper.component';
 import { MarketplaceApiPoliciesComponent } from './components/marketplace-api-policies/marketplace-api-policies.component';
-import { MarketplaceApiConfirmationComponent } from './components/marketplace-api-confirmation/marketplace-api-confirmation.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MarketplaceApiDescriptionComponent } from './components/marketplace-api-description/marketplace-api-description.component';
 import { PlanCardComponent } from './components/plan-card/plan-card.component';
@@ -94,7 +93,6 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     MarketplaceSignupStepperComponent,
     HomeComponent,
     MarketplaceApiPoliciesComponent,
-    MarketplaceApiConfirmationComponent,
     MarketplaceApiDescriptionComponent,
     PlanCardComponent,
     MarketplaceComponent,
