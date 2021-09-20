@@ -182,7 +182,9 @@ public class JsonCompare {
     public void assertJson(JsonNode expectedJson, JsonNode actualJson) {
         try {
             String expectedS = jacksonParser.writeValueAsString(expectedJson);
+            System.out.println("expected:" + expectedS);
             String actualS = jacksonParser.writeValueAsString(actualJson);
+            System.out.println("actual:" + actualS);
             JSONAssert.assertEquals(expectedS, actualS, new WildcardComparator(JSONCompareMode.LENIENT));
         } catch (JsonProcessingException | JSONException e1) {
             throw new RuntimeException(e1);

@@ -16,7 +16,7 @@ public interface DataAccessUtilMixin {
             return supplier.get();
         } catch (AbstractRestException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new SystemErrorException(e);
         }
     }
@@ -29,7 +29,7 @@ public interface DataAccessUtilMixin {
             supplier.call();
         } catch (AbstractRestException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new SystemErrorException(e);
         }
     }

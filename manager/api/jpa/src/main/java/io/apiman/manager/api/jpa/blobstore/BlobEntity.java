@@ -37,13 +37,13 @@ public class BlobEntity {
     @NotBlank
     private String mimeType;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    // @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     @Column(name = "created_on", nullable = false)
     @NotNull
     private OffsetDateTime createdOn;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    // @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     @Column(name = "modified_on", nullable = false)
     @NotNull

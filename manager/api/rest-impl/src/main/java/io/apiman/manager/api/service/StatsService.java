@@ -53,7 +53,6 @@ public class StatsService {
 
     public UsagePerClientBean getUsagePerClient(String organizationId, String apiId, String version,
         String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(
@@ -73,7 +72,6 @@ public class StatsService {
     public ClientUsagePerApiBean getClientUsagePerApi(String organizationId, String clientId,
         String version, String fromDate, String toDate) throws NotAuthorizedException,
         InvalidMetricCriteriaException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(
@@ -93,7 +91,6 @@ public class StatsService {
 
     public UsageHistogramBean getUsage(String organizationId, String apiId, String version,
         HistogramIntervalType interval, String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -116,7 +113,6 @@ public class StatsService {
 
     public UsagePerPlanBean getUsagePerPlan(String organizationId, String apiId, String version,
         String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -135,7 +131,6 @@ public class StatsService {
     public ResponseStatsHistogramBean getResponseStats(String organizationId, String apiId,
         String version, HistogramIntervalType interval, String fromDate, String toDate)
         throws NotAuthorizedException, InvalidMetricCriteriaException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -158,7 +153,6 @@ public class StatsService {
     public ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String apiId,
         String version, String fromDate, String toDate) throws NotAuthorizedException,
         InvalidMetricCriteriaException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -177,7 +171,6 @@ public class StatsService {
     public ResponseStatsPerClientBean getResponseStatsPerClient(String organizationId, String apiId,
         String version, String fromDate, String toDate) throws NotAuthorizedException,
         InvalidMetricCriteriaException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("MissingOrInvalidParam", "fromDate")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -196,7 +189,6 @@ public class StatsService {
     public ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String apiId,
         String version, String fromDate, String toDate) throws NotAuthorizedException,
         InvalidMetricCriteriaException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         if (fromDate == null) {
             throw ExceptionFactory.invalidMetricCriteriaException(

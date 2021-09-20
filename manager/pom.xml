@@ -10,13 +10,13 @@
   <packaging>pom</packaging>
   <name>apiman-manager</name>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
+<!--  <dependencies>-->
+<!--    <dependency>-->
+<!--      <groupId>org.slf4j</groupId>-->
+<!--      <artifactId>slf4j-api</artifactId>-->
+<!--      <scope>provided</scope>-->
+<!--    </dependency>-->
+<!--  </dependencies>-->
   <modules>
     <module>sso</module>
     <module>api</module>

@@ -42,9 +42,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
-      <scope>provided</scope>
+      <groupId>javax.persistence</groupId>
+      <artifactId>javax.persistence-api</artifactId>
+<!--      <scope>provided</scope>-->
     </dependency>
 
     <!-- Hibernate -->
@@ -52,6 +52,9 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <scope>provided</scope>
+      <exclusions>
+
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>

@@ -117,9 +117,6 @@ public class OrganizationService implements DataAccessUtilMixin {
 
     public OrganizationBean createOrg(
         NewOrganizationBean bean) throws OrganizationAlreadyExistsException, InvalidNameException {
-        if (config.isAdminOnlyOrgCreationEnabled()) {
-            securityContext.checkAdminPermissions();
-        }
 
         FieldValidator.validateName(bean.getName());
 
@@ -175,7 +172,6 @@ public class OrganizationService implements DataAccessUtilMixin {
 
     public void deleteOrg(String organizationId)
         throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
-        securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
 
         tryAction(() -> {
             OrganizationBean organizationBean = getOrganizationFromStorage(organizationId);
@@ -215,21 +211,12 @@ public class OrganizationService implements DataAccessUtilMixin {
     public OrganizationBean getOrg(String organizationId) throws OrganizationNotFoundException {
         // No permission check is needed, because this would break All Organizations UI
         OrganizationBean organizationBean = tryAction(() -> getOrganizationFromStorage(organizationId));
-
-        LOGGER.debug(String.format("Got organization %s: %s", organizationBean.getName(), organizationBean)); //$NON-NLS-1$
-
-        // Hide sensitive data and set only needed data for the UI
-        if (securityContext.hasPermission(PermissionType.orgView, organizationId)){
-            return organizationBean;
-        } else {
-            return RestHelper.hideSensitiveDataFromOrganizationBean(organizationBean);
-        }
+        LOGGER.debug("Got organization {0}: {1}", organizationBean.getName(), organizationBean); //$NON-NLS-1$
+        return organizationBean;
     }
 
     public void updateOrg(String organizationId, UpdateOrganizationBean bean)
         throws OrganizationNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.orgEdit, organizationId);
-
         OrganizationBean orgForUpdate = tryAction(() -> getOrganizationFromStorage(organizationId));
 
         EntityUpdatedData auditData = new EntityUpdatedData();
@@ -248,11 +235,6 @@ public class OrganizationService implements DataAccessUtilMixin {
     
     public SearchResultsBean<AuditEntryBean> activity(String organizationId, int page, int pageSize)
         throws OrganizationNotFoundException, NotAuthorizedException {
-        // Only members are allowed to see this
-        if (!securityContext.isMemberOf(organizationId)) {
-            throw ExceptionFactory.notAuthorizedException();
-        }
-
         PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, null, null, null, paging));
     }
@@ -306,7 +288,6 @@ public class OrganizationService implements DataAccessUtilMixin {
 
     public void grant(String organizationId, GrantRolesBean bean) throws OrganizationNotFoundException,
         RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
 
         // Verify that the references are valid.
         getOrg(organizationId);
@@ -335,7 +316,6 @@ public class OrganizationService implements DataAccessUtilMixin {
     public void revoke(String organizationId, String roleId, String userId)
         throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException,
         NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
 
         getOrg(organizationId);
         users.get(userId);
@@ -354,7 +334,6 @@ public class OrganizationService implements DataAccessUtilMixin {
 
     public void revokeAll(String organizationId, String userId) throws OrganizationNotFoundException,
         RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.orgAdmin, organizationId);
 
         getOrg(organizationId);
         users.get(userId);
@@ -370,10 +349,6 @@ public class OrganizationService implements DataAccessUtilMixin {
 
     public List<MemberBean> listMembers(String organizationId) throws OrganizationNotFoundException,
         NotAuthorizedException {
-        // Only members are allowed to see other members
-        if (!securityContext.isMemberOf(organizationId)) {
-            throw ExceptionFactory.notAuthorizedException();
-        }
 
         getOrg(organizationId);
 

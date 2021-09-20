@@ -1,7 +1,7 @@
 package io.apiman.manager.api.notifications.email.handlers;
 
+import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.events.ClientVersionStatusEvent;
-import io.apiman.manager.api.beans.events.ContractApprovalEvent;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.notifications.EmailNotificationTemplate;
@@ -41,6 +41,9 @@ public class ClientAppRegisteredEmailNotification implements INotificationHandle
     public void handle(NotificationDto<? extends IVersionedApimanEvent> raw) {
         NotificationDto<ClientVersionStatusEvent> notification = (NotificationDto<ClientVersionStatusEvent>) raw;
 
+        Map<String, Object> templateMap = buildTemplateMap(notification);
+        ClientVersionStatusEvent event = notification.getPayload();
+
         EmailNotificationTemplate template = mailNotificationService
              .findTemplateFor(notification.getReason())
              .or(() -> mailNotificationService.findTemplateFor(notification.getCategory()))
@@ -54,12 +57,22 @@ public class ClientAppRegisteredEmailNotification implements INotificationHandle
              "");
     }
 
+    /**
+     * If a status change event && has transitioned into 'registered' state.
+     */
     @Override
-    public boolean wants(NotificationDto<? extends IVersionedApimanEvent> notification) {
-        return notification.getReason().equals(ClientAppStatusNotificationProducer.APIMAN_CLIENT_STATUS_CHANGE);
+    public boolean wants(NotificationDto<? extends IVersionedApimanEvent> raw) {
+        if (raw.getReason().equals(ClientAppStatusNotificationProducer.APIMAN_CLIENT_STATUS_CHANGE)) {
+            // Get the event payload
+            NotificationDto<ClientVersionStatusEvent> notification = (NotificationDto<ClientVersionStatusEvent>) raw.getPayload();
+            ClientVersionStatusEvent event = notification.getPayload();
+            // We only want to send a notification if the previous state was unregistered, and new state is registered (for now).
+            return (event.getNewStatus() == ClientStatus.Registered && event.getPreviousStatus() == ClientStatus.AwaitingApproval);
+        }
+        return false;
     }
 
-    public Map<String, Object> buildTemplateMap(NotificationDto<ContractApprovalEvent> notification) {
+    public Map<String, Object> buildTemplateMap(NotificationDto<ClientVersionStatusEvent> notification) {
         return Map.of(
              "notification", notification,
              "event", notification.getPayload()

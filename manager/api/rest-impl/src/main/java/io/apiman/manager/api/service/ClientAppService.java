@@ -112,7 +112,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     public ClientBean createClient(String organizationId, NewClientBean bean)
         throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException,
         InvalidNameException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         FieldValidator.validateName(bean.getName());
 
@@ -148,7 +147,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     
     public ClientBean getClient(String organizationId, String clientId)
         throws ClientNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
         ClientBean clientBean = tryAction(() -> getClientFromStorage(organizationId, clientId));
         LOGGER.debug(String.format("Got client %s: %s", clientBean.getName(), clientBean)); //$NON-NLS-1$
         return clientBean;
@@ -156,7 +154,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     
     public void deleteClient(String organizationId, String clientId)
         throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
-        securityContext.checkPermissions(PermissionType.clientAdmin, organizationId);
 
         tryAction(() -> {
             ClientBean client = getClientFromStorage(organizationId, clientId);
@@ -179,13 +176,11 @@ public class ClientAppService implements DataAccessUtilMixin {
     
     public List<ClientSummaryBean> listClients(String organizationId) throws OrganizationNotFoundException,
         NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.orgView, organizationId);
         return tryAction(() -> query.getClientsInOrg(organizationId));
     }
     
     public void updateClient(String organizationId, String clientId, UpdateClientBean bean)
         throws ClientNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         tryAction(() -> {
             ClientBean clientForUpdate = getClientFromStorage(organizationId, clientId);
@@ -204,7 +199,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     public ClientVersionBean createClientVersion(String organizationId, String clientId,
         NewClientVersionBean bean) throws ClientNotFoundException, NotAuthorizedException,
         InvalidVersionException, ClientVersionAlreadyExistsException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         FieldValidator.validateVersion(bean.getVersion());
 
@@ -251,7 +245,6 @@ public class ClientAppService implements DataAccessUtilMixin {
 
     public ApiKeyBean getClientApiKey(String organizationId, String clientId, String version)
         throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
         ClientVersionBean client = tryAction(() -> getClientVersionInternal(organizationId, clientId, version));
         ApiKeyBean apiKeyBean = new ApiKeyBean();
@@ -262,8 +255,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     public ApiKeyBean updateClientApiKey(String organizationId, String clientId, String version, ApiKeyBean bean)
         throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException,
         InvalidClientStatusException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
-
 
         ClientVersionBean clientVersion = tryAction(() -> getClientVersionInternal(organizationId, clientId, version));
 
@@ -323,7 +314,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     
     public ClientVersionBean getClientVersion(String organizationId, String clientId, String version)
         throws ClientVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
         return getClientVersionInternal(organizationId, clientId, version);
     }
 
@@ -354,7 +344,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     public SearchResultsBean<AuditEntryBean> getClientVersionActivity(String organizationId,
         String clientId, String version, int page, int pageSize)
         throws ClientVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
         PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, clientId, version, ClientBean.class, paging));
@@ -362,7 +351,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     
     public SearchResultsBean<AuditEntryBean> getClientActivity(String organizationId, String clientId,
         int page, int pageSize) throws ClientNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
         PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, clientId, null, ClientBean.class, paging));
@@ -370,7 +358,6 @@ public class ClientAppService implements DataAccessUtilMixin {
 
     public List<ClientVersionSummaryBean> listClientVersions(String organizationId, String clientId)
         throws ClientNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
         // Try to get the client first - will throw a ClientNotFoundException if not found.
         getClient(organizationId, clientId);
 
@@ -380,7 +367,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     public List<ContractSummaryBean> getClientVersionContracts(String organizationId, String clientId, String version)
         throws ClientNotFoundException, NotAuthorizedException {
 
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
         // Try to get the client first - will throw a ClientNotFoundException if not found.
         getClientVersionInternal(organizationId, clientId, version);
 
@@ -391,7 +377,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     public PolicyBean createClientPolicy(String organizationId, String clientId, String version,
         NewPolicyBean bean) throws OrganizationNotFoundException, ClientVersionNotFoundException,
         NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         return tryAction(() -> {
             // Make sure the Client exists
@@ -410,7 +395,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     public PolicyBean getClientPolicy(String organizationId, String clientId, String version, long policyId)
         throws OrganizationNotFoundException, ClientVersionNotFoundException,
         PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
         // Make sure the client version exists
         getClientVersionInternal(organizationId, clientId, version);
@@ -422,7 +406,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     public void updateClientPolicy(String organizationId, String clientId, String version,
         long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
         ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         // Make sure the client version exists.
         ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
@@ -451,7 +434,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     public void deleteClientPolicy(String organizationId, String clientId, String version, long policyId)
         throws OrganizationNotFoundException, ClientVersionNotFoundException,
         PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         // Make sure the client version exists;
         ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
@@ -473,7 +455,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     @Transactional
     public List<PolicySummaryBean> listClientPolicies(String organizationId, String clientId, String version)
         throws OrganizationNotFoundException, ClientVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
         // Try to get the client version first - will throw an exception if not found.
         getClientVersionInternal(organizationId, clientId, version);
 
@@ -484,7 +465,6 @@ public class ClientAppService implements DataAccessUtilMixin {
     public void reorderClientPolicies(String organizationId, String clientId, String version,
         PolicyChainBean policyChain) throws OrganizationNotFoundException,
         ClientVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         // Make sure the client version exists.
         ClientVersionBean cvb = getClientVersionInternal(organizationId, clientId, version);
@@ -536,6 +516,7 @@ public class ClientAppService implements DataAccessUtilMixin {
 
         var event = ClientVersionStatusEvent
              .builder()
+             .setHeaders(headers)
              .setClientOrgId(cb.getOrganization().getId())
              .setClientId(cvb.getClient().getId())
              .setClientVersion(cvb.getVersion())

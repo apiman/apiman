@@ -121,7 +121,6 @@ public class PlanService implements DataAccessUtilMixin {
     
     public PlanBean getPlan(String organizationId, String planId)
         throws PlanNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
         return tryAction(() -> {
             PlanBean bean = storage.getPlan(organizationId, planId);
             if (bean == null) {
@@ -134,7 +133,6 @@ public class PlanService implements DataAccessUtilMixin {
     
     public SearchResultsBean<AuditEntryBean> getPlanActivity(String organizationId, String planId, int page, int pageSize)
         throws PlanNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, planId, null, PlanBean.class, paging));
@@ -142,7 +140,6 @@ public class PlanService implements DataAccessUtilMixin {
     
     public List<PlanSummaryBean> listPlans(String organizationId) throws OrganizationNotFoundException,
         NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.orgView, organizationId);
 
         organizationService.getOrg(organizationId);
 
@@ -151,7 +148,6 @@ public class PlanService implements DataAccessUtilMixin {
     
     public void updatePlan(String organizationId, String planId, UpdatePlanBean bean)
         throws PlanNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         EntityUpdatedData auditData = new EntityUpdatedData();
 
@@ -173,7 +169,6 @@ public class PlanService implements DataAccessUtilMixin {
     public PlanVersionBean createPlanVersion(String organizationId, String planId, NewPlanVersionBean bean)
         throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException,
         PlanVersionAlreadyExistsException {
-        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         FieldValidator.validateVersion(bean.getVersion());
 
@@ -234,7 +229,6 @@ public class PlanService implements DataAccessUtilMixin {
     
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
         throws PlanVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         return getPlanVersionInternal(organizationId, planId, version);
     }
@@ -258,7 +252,6 @@ public class PlanService implements DataAccessUtilMixin {
     public SearchResultsBean<AuditEntryBean> getPlanVersionActivity(String organizationId, String planId,
         String version, int page, int pageSize) throws PlanVersionNotFoundException,
         NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, planId, version, PlanBean.class, paging));
@@ -266,7 +259,6 @@ public class PlanService implements DataAccessUtilMixin {
 
     public List<PlanVersionSummaryBean> listPlanVersions(String organizationId, String planId)
         throws PlanNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         // Try to get the plan first - will throw a PlanNotFoundException if not found.
         getPlan(organizationId, planId);
@@ -277,7 +269,6 @@ public class PlanService implements DataAccessUtilMixin {
     public PolicyBean createPlanPolicy(String organizationId, String planId, String version,
         NewPolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
         NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists and is in the right state
         PlanVersionBean pvb = getPlanVersionInternal(organizationId, planId, version);
@@ -297,7 +288,6 @@ public class PlanService implements DataAccessUtilMixin {
     public PolicyBean getPlanPolicy(String organizationId, String planId, String version, long policyId)
         throws OrganizationNotFoundException, PlanVersionNotFoundException,
         PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         // Make sure the plan version exists
         getPlanVersionInternal(organizationId, planId, version);
@@ -311,7 +301,6 @@ public class PlanService implements DataAccessUtilMixin {
     public void updatePlanPolicy(String organizationId, String planId, String version,
         long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
         PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists
         PlanVersionBean pvb = getPlanVersionInternal(organizationId, planId, version);
@@ -341,7 +330,6 @@ public class PlanService implements DataAccessUtilMixin {
     public void deletePlanPolicy(String organizationId, String planId, String version, long policyId)
         throws OrganizationNotFoundException, PlanVersionNotFoundException,
         PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists
         PlanVersionBean pvb = getPlanVersionInternal(organizationId, planId, version);
@@ -367,7 +355,6 @@ public class PlanService implements DataAccessUtilMixin {
 
     public void deletePlan(String organizationId, String planId)
         throws ApiNotFoundException, NotAuthorizedException, InvalidPlanStatusException {
-        securityContext.checkPermissions(PermissionType.planAdmin, organizationId);
 
         List<PlanVersionSummaryBean> lockedPlans = listPlanVersions(organizationId, planId).stream()
             .filter(summary -> summary.getStatus() == PlanStatus.Locked).collect(toList());
@@ -383,7 +370,6 @@ public class PlanService implements DataAccessUtilMixin {
 
     public List<PolicySummaryBean> listPlanPolicies(String organizationId, String planId, String version)
         throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
 
         // Try to get the plan first - will throw an exception if not found.
         getPlanVersionInternal(organizationId, planId, version);
@@ -394,7 +380,6 @@ public class PlanService implements DataAccessUtilMixin {
     public void reorderPlanPolicies(String organizationId, String planId, String version,
         PolicyChainBean policyChain) throws OrganizationNotFoundException,
         PlanVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planEdit, organizationId);
 
         // Make sure the plan version exists
         PlanVersionBean pvb = getPlanVersionInternal(organizationId, planId, version);

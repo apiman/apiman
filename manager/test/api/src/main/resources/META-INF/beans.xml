@@ -5,4 +5,7 @@
        http://xmlns.jcp.org/xml/ns/javaee/beans_2_0.xsd" 
        bean-discovery-mode="all" 
        version="2.0">
+<!--  <interceptors>-->
+<!--    <class>io.apiman.manager.test.server.JettyTransactionalInterceptor</class>-->
+<!--  </interceptors>-->
 </beans>

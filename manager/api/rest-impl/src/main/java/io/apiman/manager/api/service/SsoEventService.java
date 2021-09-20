@@ -11,11 +11,13 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
+@Transactional
 public class SsoEventService {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SsoEventService.class);
     private EventService eventService;

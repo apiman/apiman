@@ -56,6 +56,7 @@ import static io.apiman.manager.api.beans.idm.PermissionType.planAdmin;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
+@Transactional
 public class ContractService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractService.class);
@@ -92,7 +93,6 @@ public class ContractService implements DataAccessUtilMixin {
         NewContractBean bean) throws OrganizationNotFoundException, ClientNotFoundException,
         ApiNotFoundException, PlanNotFoundException, ContractAlreadyExistsException,
         NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         try {
             ContractBean contract = createContractInternal(organizationId, clientId, version, bean);
@@ -230,7 +230,6 @@ public class ContractService implements DataAccessUtilMixin {
     @Transactional
     public void deleteAllContracts(String organizationId, String clientId, String version)
         throws ClientNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         List<ContractSummaryBean> contracts = clientAppService.getClientVersionContracts(organizationId, clientId, version);
         for (ContractSummaryBean contract : contracts) {
@@ -242,7 +241,6 @@ public class ContractService implements DataAccessUtilMixin {
     public void deleteContract(String organizationId, String clientId, String version, Long contractId)
         throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException,
         InvalidClientStatusException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
 
         tryAction(() -> {
             ContractBean contract = storage.getContract(contractId);

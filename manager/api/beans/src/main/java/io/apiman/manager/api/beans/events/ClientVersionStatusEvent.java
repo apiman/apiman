@@ -22,7 +22,7 @@ public class ClientVersionStatusEvent implements IVersionedApimanEvent {
     private ClientStatus previousStatus;
     private ClientStatus newStatus;
 
-    ClientVersionStatusEvent(ApimanEventHeaders headers, String clientOrgId, String clientId,
+    public ClientVersionStatusEvent(ApimanEventHeaders headers, String clientOrgId, String clientId,
          String clientVersion, ClientStatus previousStatus, ClientStatus newStatus) {
         this.headers = headers;
         this.clientOrgId = clientOrgId;

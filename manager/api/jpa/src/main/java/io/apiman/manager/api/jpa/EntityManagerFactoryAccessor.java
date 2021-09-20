@@ -23,6 +23,10 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.jpa.HibernatePersistenceProvider;
 
 /**
  * Produces an instance of {@link EntityManagerFactory}.
@@ -36,6 +40,9 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
     private IJpaProperties jpaProperties;
 
     private EntityManagerFactory emf;
+
+    @PersistenceContext(unitName = "apiman-manager-api-jpa")
+    private EntityManager pcEm;
 
     /**
      * Constructor.
@@ -66,19 +73,26 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         String dialect = System.getProperty("apiman.hibernate.dialect", s); //$NON-NLS-1$
         properties.put("hibernate.hbm2ddl.auto", autoValue); //$NON-NLS-1$
         properties.put("hibernate.dialect", dialect); //$NON-NLS-1$
+        properties.put("hibernate.connection.handling_mode", "DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT");
+        properties.put("hibernate.transaction.jta.platform", "com.atomikos.icatch.jta.hibernate4.AtomikosPlatform");
 
         // First try using standard JPA to load the persistence unit.  If that fails, then
         // try using hibernate directly in a couple ways (depends on hibernate version and
         // platform we're running on).
-        // try {
-        //     emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
-        // } catch (Throwable t1) {
-        //     try {
-        //         emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
-        //     } catch (Throwable t3) {
-        //         throw t1;
-        //     }
-        // }
+
+        if (pcEm != null) {
+            return;
+        }
+
+        try {
+            emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+        } catch (Throwable t1) {
+            try {
+                emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+            } catch (Throwable t3) {
+                throw t1;
+            }
+        }
 
         System.out.println("Hibernate properties init");
         //Persistence.getPersistenceUtil().
@@ -93,9 +107,24 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         return emf;
     }
 
+    ThreadLocal<EntityManager> threadLocal = new ThreadLocal<>();
+
     @Produces
     public EntityManager getEntityManager() {
-        return emf.createEntityManager();
+        if (pcEm != null) {
+            System.out.println("Using persistent context entity manager");
+            return pcEm;
+        }
+        EntityManager threadLocalEm = threadLocal.get();
+        if (threadLocalEm != null && threadLocalEm.isOpen()) {
+            System.out.println("Return thread local em");
+            return threadLocalEm;
+        } else {
+            System.out.println("Return new em");
+            EntityManager newEm = emf.createEntityManager();
+            threadLocal.set(newEm);
+            return newEm;
+        }
     }
 
 }

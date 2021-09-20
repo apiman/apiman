@@ -88,14 +88,14 @@ public class ApiVersionBean implements Serializable, Cloneable {
     private Map<String, String> endpointProperties = new HashMap<>();
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "api_gateways", joinColumns = @JoinColumn(name = "api_version_id"))
-    private Set<ApiGatewayBean> gateways;
+    private Set<ApiGatewayBean> gateways; // set
     @Column(name = "public_api", updatable = true, nullable = false)
     private boolean publicAPI;
-    @OneToOne(mappedBy = "apiVersion", orphanRemoval = true, cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "apiVersion", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     ApiDefinitionBean apiDefinition; // Deliberately no explicit getter/setter for this
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "api_plans", joinColumns = @JoinColumn(name = "api_version_id"))
-    private Set<ApiPlanBean> plans;
+    private Set<ApiPlanBean> plans; // set
     @Column(updatable = false)
     private String version;
     @Column(name = "created_by", updatable = false, nullable = false)
@@ -481,30 +481,12 @@ public class ApiVersionBean implements Serializable, Cloneable {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", ApiVersionBean.class.getSimpleName() + "[", "]")
-             .add("id=" + id)
-             .add("api=" + api)
-             .add("status=" + status)
-             .add("endpoint='" + endpoint + "'")
-             .add("endpointType=" + endpointType)
-             .add("endpointContentType=" + endpointContentType)
-             .add("endpointProperties=" + endpointProperties)
-             .add("gateways=" + gateways)
-             .add("publicAPI=" + publicAPI)
-             .add("apiDefinition=" + apiDefinition)
-             .add("plans=" + plans)
-             .add("version='" + version + "'")
-             .add("createdBy='" + createdBy + "'")
-             .add("createdOn=" + createdOn)
-             .add("modifiedBy='" + modifiedBy + "'")
-             .add("modifiedOn=" + modifiedOn)
-             .add("publishedOn=" + publishedOn)
-             .add("retiredOn=" + retiredOn)
-             .add("definitionType=" + definitionType)
-             .add("parsePayload=" + parsePayload)
-             .add("exposeInPortal=" + exposeInPortal)
-             .add("extendedDescription='" + extendedDescription + "'")
-             .toString();
+        return "APIVersionBean [id=" + id + ", api=" + api + ", status=" + status + ", endpoint="
+                    + endpoint + ", endpointType=" + endpointType + ", gateways=" + gateways + ", publicAPI="
+                    + publicAPI + ", plans=" + plans + ", version=" + version + ", createdBy=" + createdBy
+                    + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy + ", modifiedOn=" + modifiedOn
+                    + ", publishedOn=" + publishedOn + ", retiredOn=" + retiredOn + ", definitionType="
+                    + definitionType + "]";
     }
 
     /**
@@ -513,5 +495,9 @@ public class ApiVersionBean implements Serializable, Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    public void setDefinition(ApiDefinitionBean d) {
+        this.apiDefinition = d;
     }
 }

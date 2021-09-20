@@ -303,7 +303,12 @@ public class GatewayResourceImpl implements IGatewayResource {
         }
         try {
             if (gateway.getType() == GatewayType.REST) {
-                RestGatewayConfigBean config = MAPPER.readValue(gateway.getConfiguration(), RestGatewayConfigBean.class);
+                // TODO(msavy): how was this ever working?
+                String workingConf = gateway.getConfiguration();
+                if (gateway.getConfiguration().startsWith("$CRYPT::")) {
+                    workingConf = encrypter.decrypt(gateway.getConfiguration(), new DataEncryptionContext());
+                }
+                RestGatewayConfigBean config = MAPPER.readValue(workingConf, RestGatewayConfigBean.class);
                 config.setPassword(encrypter.decrypt(config.getPassword(), new DataEncryptionContext()));
                 gateway.setConfiguration(MAPPER.writeValueAsString(config));
             }
