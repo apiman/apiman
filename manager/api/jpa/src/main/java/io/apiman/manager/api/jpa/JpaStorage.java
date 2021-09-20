@@ -88,12 +88,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
 
@@ -103,7 +105,7 @@ import org.apache.commons.io.IOUtils;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-@ApplicationScoped @Alternative
+@ApplicationScoped @Alternative @Transactional
 public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JpaStorage.class);
@@ -982,14 +984,17 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
         try {
             String sql =
-                 "SELECT client.*, "
-                 + "       ( " // Add extra column with count of number of contracts for given client.
-                 + "           SELECT COUNT(*) FROM CONTRACTS contract "
-                 + "           JOIN CLIENT_VERSIONS clientVersion on contract.CLIENTV_ID = clientVersion.ID "
-                 + "           WHERE clientVersion.CLIENT_ID = client.ID "
-                 + "       ) AS NUM_CONTRACTS "
-                 + "FROM CLIENTS client "
-                 + "WHERE client.ORGANIZATION_ID IN (<orgIds>) ORDER BY client.ID ASC";
+                 "SELECT client.*, " // All client fields
+                  + "       (SELECT COUNT(*) " // numContracts
+                  + "        FROM CONTRACTS contract "
+                  + "                 JOIN CLIENT_VERSIONS clientVersion on contract.CLIENTV_ID = clientVersion.ID "
+                  + "        WHERE clientVersion.CLIENT_ID = client.ID) AS NUM_CONTRACTS, "
+                  + "       (SELECT NAME " // OrganizationName
+                  + "        FROM ORGANIZATIONS org "
+                  + "        WHERE client.ORGANIZATION_ID = org.ID)     AS ORGANIZATION_NAME "
+                  + "FROM CLIENTS client "
+                  + "WHERE client.ORGANIZATION_ID IN (<orgIds>) "
+                  + "ORDER BY client.ID ASC";
 
             return getJdbi().withHandle(handle ->
                  handle.createQuery(sql)
@@ -1008,9 +1013,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public List<ApiSummaryBean> getApisInOrg(String orgId) throws StorageException {
-        Set<String> orgIds = new HashSet<>(1);
-        orgIds.add(orgId);
-        return getApisInOrgs(orgIds);
+        return getApisInOrgs(Set.of(orgId));
     }
 
     /**
@@ -2321,6 +2324,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
               .mapToBean(UserBean.class)
               .list()
         );
+    }
+
+    @Override
+    public void flush() {
+        getActiveEntityManager().flush();
     }
 
     private void deleteAllPolicies(OrganizationBean organizationBean) throws StorageException {

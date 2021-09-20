@@ -18,8 +18,8 @@
 
     <!-- Third Party Dependencies -->
     <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <groupId>javax.persistence</groupId>
+      <artifactId>javax.persistence-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -67,13 +67,13 @@
       <artifactId>mapstruct</artifactId>
     </dependency>
     <dependency>
-      <groupId>jakarta.validation</groupId>
-      <artifactId>jakarta.validation-api</artifactId>
-      <version>2.0.2</version>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>2.0.1.Final</version>
     </dependency>
     <dependency>
       <groupId>com.vladmihalcea</groupId>
-      <artifactId>hibernate-types-55</artifactId>
+      <artifactId>hibernate-types-52</artifactId>
       <version>2.12.1</version>
     </dependency>
     <dependency>

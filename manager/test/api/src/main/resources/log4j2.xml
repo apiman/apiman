@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
+<Configuration status="DEBUG">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%t]: %m%n"/>
+            <PatternLayout pattern="x %d{HH:mm:ss.SSS} %-5p [%t]: %m%n"/>
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="info">
+        <Root level="DEBUG">
             <AppenderRef ref="Console"/>
         </Root>
+        <logger name="org.hibernate.engine.transaction.internal.jta.JtaTransaction">
+            <level value="DEBUG"/>
+        </logger>
     </Loggers>
 </Configuration>

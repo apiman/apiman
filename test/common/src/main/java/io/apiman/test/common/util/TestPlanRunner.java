@@ -48,6 +48,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.DifferenceListener;
@@ -59,7 +61,6 @@ import org.mvel2.MVEL;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.integration.VariableResolverFactory;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -74,7 +75,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings({ "nls", "javadoc" })
 public class TestPlanRunner {
 
-    private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
+    //private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
+    private static Logger logger = LogManager.getLogger(TestPlanRunner.class);
     private final CaseInsensitiveStringMultiMap testMetaHeaders = new CaseInsensitiveStringMultiMap();
 
     /**

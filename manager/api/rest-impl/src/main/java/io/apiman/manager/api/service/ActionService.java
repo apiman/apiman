@@ -58,6 +58,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -71,6 +72,7 @@ import com.google.common.collect.Streams;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Transactional
+@ApplicationScoped
 public class ActionService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ActionService.class);
@@ -379,14 +381,18 @@ public class ActionService implements DataAccessUtilMixin {
         List<ContractSummaryBean> contractBeans;
         try {
             versionBean = clientAppService.getClientVersion(orgId, clientId, clientVersion);
-            if (versionBean.getStatus() != ClientStatus.Ready) {
-                throw ExceptionFactory.invalidClientStatusException();
-            }
         } catch (ClientVersionNotFoundException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("clientVersionDoesNotExist", clientId, clientVersion)); //$NON-NLS-1$
         }
         try {
             contractBeans = query.getClientContracts(orgId, clientId, clientVersion);
+            // Any awaiting approval then don't let them republish.
+            List<ContractSummaryBean> awaitingApproval = contractBeans.stream()
+                         .filter(f -> f.getStatus() == ContractStatus.AwaitingApproval)
+                         .collect(Collectors.toList());
+            if (!awaitingApproval.isEmpty()) {
+                throw ExceptionFactory.contractNotYetApprovedException(awaitingApproval);
+            }
         } catch (StorageException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound"), e); //$NON-NLS-1$
         }

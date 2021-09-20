@@ -10,7 +10,6 @@ import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientType;
 import io.apiman.manager.api.notifications.INotificationProducer;
-import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;

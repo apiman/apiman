@@ -15,7 +15,6 @@
  */
 package io.apiman.manager.api.rest.impl.audit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiPlanBean;
@@ -43,6 +42,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -804,6 +805,9 @@ public class AuditUtils {
      * @return the plans as a string
      */
     public static String asString_ApiPlanBeans(Set<ApiPlanBean> plans) {
+        if (plans == null || plans.isEmpty()) {
+            return "";
+        }
         TreeSet<ApiPlanBean> sortedPlans = new TreeSet<>(new Comparator<ApiPlanBean>() {
             @Override
             public int compare(ApiPlanBean o1, ApiPlanBean o2) {

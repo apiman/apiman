@@ -46,6 +46,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import javax.transaction.Transactional;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -60,6 +62,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
+@Transactional
 public class JsonImportReader extends AbstractJsonReader implements IImportReader {
 
     private IApimanLogger logger;

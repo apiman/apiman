@@ -27,24 +27,19 @@ import io.apiman.manager.api.core.IDownloadManager;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.json.JsonExportWriter;
-import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageExporter;
-import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
-import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
-import io.apiman.manager.api.migrator.DataMigrator;
 import io.apiman.manager.api.rest.ISystemResource;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.service.ImportExportService;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.UncheckedIOException;
 import java.text.MessageFormat;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -56,7 +51,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 /**
@@ -72,9 +66,8 @@ public class SystemResourceImpl implements ISystemResource {
     private ISecurityContext securityContext;
     private Version version;
     private StorageExporter exporter;
-    private StorageImportDispatcher importer;
-    private DataMigrator migrator;
     private IDownloadManager downloadManager;
+    private ImportExportService importExportService;
 
     @Context
     private HttpServletRequest request;
@@ -84,21 +77,19 @@ public class SystemResourceImpl implements ISystemResource {
      */
     @Inject
     public SystemResourceImpl(
-        IStorage storage,
-        ISecurityContext securityContext,
-        Version version,
-        StorageExporter exporter,
-        StorageImportDispatcher importer,
-        DataMigrator migrator,
-        IDownloadManager downloadManager
+         IStorage storage,
+         ISecurityContext securityContext,
+         Version version,
+         StorageExporter exporter,
+         IDownloadManager downloadManager,
+         ImportExportService importExportService
     ) {
         this.storage = storage;
         this.securityContext = securityContext;
         this.version = version;
         this.exporter = exporter;
-        this.importer = importer;
-        this.migrator = migrator;
         this.downloadManager = downloadManager;
+        this.importExportService = importExportService;
     }
 
     public SystemResourceImpl() {
@@ -191,6 +182,7 @@ public class SystemResourceImpl implements ISystemResource {
         // the HTTP response output stream.
         StreamingOutput stream = new StreamingOutput() {
             @Override
+            @Transactional
             public void write(final OutputStream output) throws IOException, WebApplicationException {
                 final PrintWriter writer = new PrintWriter(output);
                 IApimanLogger logger = new IApimanLogger() {
@@ -257,35 +249,9 @@ public class SystemResourceImpl implements ISystemResource {
                         debug(MessageFormat.format(message, args));
                     }
                 };
-
-                File migratedImportFile = File.createTempFile("apiman_import_migrated", ".json"); //$NON-NLS-1$ //$NON-NLS-2$
-                migratedImportFile.deleteOnExit();
-
-                // Migrate the data (if necessary)
-                migrator.migrate(importFile, migratedImportFile, logger);
-
-                // Now import the migrated data
-                InputStream importData = null;
-                IImportReader reader;
-                try {
-                    importData = new FileInputStream(migratedImportFile);
-                    reader = new JsonImportReader(logger, importData);
-                } catch (IOException e) {
-                    IOUtils.closeQuietly(importData);
-                    throw new UncheckedIOException(e);
-                }
-
-                try {
-                    importer.start(migratedImportFile.getAbsolutePath(), logger);
-                    reader.setDispatcher(importer);
-                    reader.read();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                } finally {
-                    IOUtils.closeQuietly(importData);
-                    FileUtils.deleteQuietly(importFile);
-                    FileUtils.deleteQuietly(migratedImportFile);
-                }
+                // Make sure we call through a managed service as the other `Stream` takes us out the managed context
+                // which can mess with our CDI interceptors.
+                importExportService.fullImport(importFile, logger);
             }
         };
 

@@ -63,13 +63,13 @@ public class NotificationEntity {
 
     // TODO(msavy): consider tracking dismissal reason? for example, old or irrelevant, etc?
 
-    @Temporal(TemporalType.TIMESTAMP)
+    // @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     @Column(name = "created_on", updatable = false)
     @NotNull
     private OffsetDateTime createdOn;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    // @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     @Column(name = "modified_on")
     @NotNull

@@ -50,13 +50,13 @@ public class OutboxEventEntity {
     @NotBlank
     private String subject;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    // @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "time", nullable = false)
-    @NotBlank
+    @NotNull
     private OffsetDateTime time;
 
     @Column(name = "event_version", nullable = false)
-    @NotBlank
+    @NotNull
     private Long eventVersion;
 
     @Type(type = "jsonb")

@@ -28,6 +28,19 @@ import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 import io.apiman.test.common.es.EsTestUtil;
 import io.apiman.test.common.util.TestUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+import javax.naming.InitialContext;
+import javax.servlet.DispatcherType;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
@@ -48,15 +61,6 @@ import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
-
-import javax.naming.InitialContext;
-import javax.servlet.DispatcherType;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.SQLException;
-import java.util.*;
 
 /**
  * This class starts up an embedded Jetty test server so that integration tests
@@ -134,7 +138,8 @@ public class ManagerApiTestServer {
         if (ds != null) {
             ds.close();
             InitialContext ctx = TestUtil.initialContext();
-            ctx.unbind("java:comp/env/jdbc/ApiManagerDS");
+            // ctx.unbind("java:comp/env/jdbc/ApiManagerDS"); 
+            ctx.unbind("java:/apiman/datasources/apiman-manager"); 
         }
     }
 
@@ -151,18 +156,23 @@ public class ManagerApiTestServer {
     protected void preStart() throws Exception {
         if (ManagerTestUtils.getTestType() == TestType.jpa) {
             TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
-            TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/comp/env/jdbc/ApiManagerDS");
+            // TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/comp/env/jdbc/ApiManagerDS");
+            TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");
+
             try {
                 InitialContext ctx = TestUtil.initialContext();
-                TestUtil.ensureCtx(ctx, "java:/comp/env");
-                TestUtil.ensureCtx(ctx, "java:/comp/env/jdbc");
+                // TestUtil.ensureCtx(ctx, "java:/comp/env");
+                // TestUtil.ensureCtx(ctx, "java:/comp/env/jdbc");
+                TestUtil.ensureCtx(ctx, "java:/apiman");
+                TestUtil.ensureCtx(ctx, "java:/apiman/datasources");
                 String dbOutputPath = System.getProperty("apiman.test.h2-output-dir", null);
                 if (dbOutputPath != null) {
                     ds = createFileDatasource(new File(dbOutputPath));
                 } else {
                     ds = createInMemoryDatasource();
                 }
-                ctx.bind("java:/comp/env/jdbc/ApiManagerDS", ds);
+                // ctx.bind("java:/comp/env/jdbc/ApiManagerDS", ds);
+                ctx.bind("java:/apiman/datasources/apiman-manager", ds);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -206,7 +216,7 @@ public class ManagerApiTestServer {
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
         ds.setPassword("");
-        ds.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        ds.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;");
         Connection connection = ds.getConnection();
         connection.close();
         System.out.println("DataSource created and bound to JNDI.");

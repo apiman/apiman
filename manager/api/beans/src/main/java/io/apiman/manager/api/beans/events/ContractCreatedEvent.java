@@ -132,7 +132,7 @@ public class ContractCreatedEvent implements IVersionedApimanEvent {
         private String planId;
         @NotBlank
         private String planVersion;
-        @NotBlank
+        @NotNull
         private Boolean approvalRequired;
 
         public Builder() {

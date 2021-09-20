@@ -22,7 +22,6 @@ import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.exportimport.read.IImportReader;
-import io.apiman.manager.api.jpa.EntityManagerFactoryAccessor;
 import io.apiman.manager.api.jpa.JpaStorageInitializer;
 
 import java.io.File;
@@ -60,8 +59,8 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     @Inject
     private ApiManagerConfig config2;
 
-    @Inject
-    private EntityManagerFactoryAccessor emf;
+    // @Inject
+    // private EntityManagerFactoryAccessor emf;
 
     // @Inject
     // private DataSource ds;

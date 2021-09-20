@@ -26,8 +26,15 @@
     <class>io.apiman.manager.api.beans.plugins.PluginBean</class>
     <class>io.apiman.manager.api.beans.download.DownloadBean</class>
     <class>io.apiman.manager.api.beans.system.MetadataBean</class>
+    <class>io.apiman.manager.api.beans.developers.DeveloperBean</class>
+    <class>io.apiman.manager.api.beans.developers.DeveloperMappingBean</class>
+    <class>io.apiman.manager.api.jpa.blobstore.BlobEntity</class>
+    <class>io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity</class>
+    <class>io.apiman.manager.api.beans.notifications.NotificationTypeEntity</class>
 
-    <properties>
+
+
+  <properties>
       <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.id.new_generator_mappings" value="true" />
       <property name="hibernate.order_updates" value="true"/>

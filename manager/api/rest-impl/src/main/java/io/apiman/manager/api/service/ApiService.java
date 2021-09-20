@@ -137,7 +137,6 @@ public class ApiService implements DataAccessUtilMixin {
 
     public void deleteApi(String organizationId, String apiId)
         throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException {
-        securityContext.checkPermissions(PermissionType.apiAdmin, organizationId);
         tryAction(() -> {
             ApiBean api = getApiFromStorage(organizationId, apiId);
 
@@ -172,7 +171,6 @@ public class ApiService implements DataAccessUtilMixin {
     public ApiBean createApi(String organizationId, NewApiBean bean)
         throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException,
         InvalidNameException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         FieldValidator.validateName(bean.getName());
 
@@ -216,7 +214,6 @@ public class ApiService implements DataAccessUtilMixin {
     
     public ApiBean getApi(String organizationId, String apiId)
         throws ApiNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
         return getApiFromStorage(organizationId, apiId);
     }
 
@@ -237,21 +234,20 @@ public class ApiService implements DataAccessUtilMixin {
     
     public SearchResultsBean<AuditEntryBean> getApiActivity(String organizationId, String apiId,
         int page, int pageSize) throws ApiNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
         final PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, apiId, null, ApiBean.class, paging));
     }
     
     public List<ApiSummaryBean> listApis(String organizationId) throws OrganizationNotFoundException {
-        // No permission check is needed, because this would break All Organizations UI
-
         // make sure the org exists
         organizationService.getOrg(organizationId);
 
         return tryAction(() -> {
             // Hide sensitive data and set only needed data for the UI
             if (securityContext.hasPermission(PermissionType.orgView, organizationId)) {
-                return query.getApisInOrg(organizationId);
+                List<ApiSummaryBean> r = query.getApisInOrg(organizationId);
+                System.out.println("End list APIs");
+                return r;
             } else {
                 return RestHelper.hideSensitiveDataFromApiSummaryBeanList(query.getApisInOrg(organizationId));
             }
@@ -260,7 +256,6 @@ public class ApiService implements DataAccessUtilMixin {
     
     public void updateApi(String organizationId, String apiId, UpdateApiBean bean)
         throws ApiNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         tryAction(() -> {
             ApiBean apiForUpdate = getApiFromStorage(organizationId, apiId);
@@ -277,7 +272,6 @@ public class ApiService implements DataAccessUtilMixin {
     public ApiVersionBean createApiVersion(String organizationId, String apiId,
         NewApiVersionBean bean) throws ApiNotFoundException, NotAuthorizedException,
         InvalidVersionException, ApiVersionAlreadyExistsException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         FieldValidator.validateVersion(bean.getVersion());
 
@@ -293,9 +287,12 @@ public class ApiService implements DataAccessUtilMixin {
             return createApiVersionInternal(bean, api, gateway);
         });
 
+        //storage.flush();
+
         if (bean.isClone() && bean.getCloneVersion() != null) {
             try {
                 ApiVersionBean cloneSource = getApiVersion(organizationId, apiId, bean.getCloneVersion());
+                //storage.flush();
 
                 // Clone primary attributes of the API version unless those attributes
                 // were included in the NewApiVersionBean.  In other words, information
@@ -322,7 +319,8 @@ public class ApiService implements DataAccessUtilMixin {
                 if (bean.getParsePayload() == null) {
                     updatedApi.setParsePayload(bean.getParsePayload());
                 }
-                newVersion = updateApiVersion(organizationId, apiId, bean.getVersion(), updatedApi);
+                newVersion = updateApiVersion(newVersion, updatedApi);
+                //storage.flush();
 
                 if (bean.getDefinitionUrl() == null) {
                     // Clone the API definition document
@@ -350,6 +348,7 @@ public class ApiService implements DataAccessUtilMixin {
                     createApiPolicy(organizationId, apiId, newVersion.getVersion(), npb);
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 // TODO it's ok if the clone fails - we did our best
                 if (e != null) {
                     Throwable t = e;
@@ -467,8 +466,6 @@ public class ApiService implements DataAccessUtilMixin {
     
     public ApiVersionStatusBean getApiVersionStatus(String organizationId, String apiId,
         String version) throws ApiVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
-
         ApiVersionBean versionBean = getApiVersion(organizationId, apiId, version);
         List<PolicySummaryBean> policies = listApiPolicies(organizationId, apiId, version);
         return apiValidator.getStatus(versionBean, policies);
@@ -477,9 +474,6 @@ public class ApiService implements DataAccessUtilMixin {
     // TODO do not return response from service layer, only presentation layer.
     public ApiDefinitionStream getApiDefinition(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
-        // No permission check is needed, because this would break All APIs UI
-        // Allow the user to view a definition
-
        return tryAction(() -> {
             ApiVersionBean apiVersion = getApiVersion(organizationId, apiId, version);
 
@@ -539,7 +533,6 @@ public class ApiService implements DataAccessUtilMixin {
 
     public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException, InvalidApiStatusException {
-        // No permission check is needed, because this would break All APIs UI
         return tryAction(() -> {
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             if (apiVersion.getStatus() != ApiStatus.Published) {
@@ -572,17 +565,20 @@ public class ApiService implements DataAccessUtilMixin {
     public SearchResultsBean<AuditEntryBean> getApiVersionActivity(String organizationId,
         String apiId, String version, int page, int pageSize) throws ApiVersionNotFoundException,
         NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, apiId, version, ApiBean.class, paging));
     }
 
-    public ApiVersionBean updateApiVersion(String organizationId, String apiId, String version,
-        UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
+    public ApiVersionBean updateApiVersion(String organizationId, String apiId, String version,
+         UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException {
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+        return updateApiVersion(avb, bean);
+    }
+
+    public ApiVersionBean updateApiVersion(ApiVersionBean avb,
+         UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException {
 
         if (avb.isPublicAPI()) {
             if (avb.getStatus() == ApiStatus.Retired) {
@@ -593,6 +589,7 @@ public class ApiService implements DataAccessUtilMixin {
                 throw ExceptionFactory.invalidApiStatusException();
             }
         }
+        //storage.flush();
 
         avb.setModifiedBy(securityContext.getCurrentUser());
         avb.setModifiedOn(new Date());
@@ -745,8 +742,6 @@ public class ApiService implements DataAccessUtilMixin {
     
     public List<ApiPlanSummaryBean> getApiVersionPlans(String organizationId, String apiId,
         String version) throws ApiVersionNotFoundException, NotAuthorizedException {
-        // No permission check is needed, because this would break All APIs UI
-        // Ensure the version exists first.
         getApiVersion(organizationId, apiId, version);
 
         return tryAction(() -> query.getApiVersionPlans(organizationId, apiId, version));
@@ -755,8 +750,6 @@ public class ApiService implements DataAccessUtilMixin {
     public PolicyBean createApiPolicy(String organizationId, String apiId, String version,
         NewPolicyBean bean) throws OrganizationNotFoundException, ApiVersionNotFoundException,
         NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
-
         // Make sure the API exists
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
 
@@ -784,7 +777,6 @@ public class ApiService implements DataAccessUtilMixin {
     public PolicyBean getApiPolicy(String organizationId, String apiId, String version, long policyId)
         throws OrganizationNotFoundException, ApiVersionNotFoundException,
         PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         // Make sure the API exists
         getApiVersion(organizationId, apiId, version);
@@ -795,7 +787,6 @@ public class ApiService implements DataAccessUtilMixin {
     public void updateApiPolicy(String organizationId, String apiId, String version,
         long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
         ApiVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
@@ -825,7 +816,6 @@ public class ApiService implements DataAccessUtilMixin {
     public void deleteApiPolicy(String organizationId, String apiId, String version, long policyId)
         throws OrganizationNotFoundException, ApiVersionNotFoundException,
         PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists and is in the right status.
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
@@ -853,29 +843,28 @@ public class ApiService implements DataAccessUtilMixin {
             avb.setModifiedOn(new Date());
             storage.updateApiVersion(avb);
 
-            LOGGER.debug(String.format("Deleted API %s policy: %s", apiId, policy)); //$NON-NLS-1$
+            LOGGER.debug("Deleted API {0} policy: {1}", apiId, policy); //$NON-NLS-1$
         });
     }
     
     public void deleteApiDefinition(String organizationId, String apiId, String version)
         throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         tryAction(() -> {
             ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
             apiVersion.setDefinitionType(ApiDefinitionType.None);
             apiVersion.setModifiedBy(securityContext.getCurrentUser());
             apiVersion.setModifiedOn(new Date());
+            apiVersion.setDefinition(null);
             storage.createAuditEntry(AuditUtils.apiDefinitionDeleted(apiVersion, securityContext));
             storage.deleteApiDefinition(apiVersion);
             storage.updateApiVersion(apiVersion);
-            LOGGER.debug(String.format("Deleted API %s definition %s", apiId, apiVersion)); //$NON-NLS-1$
+            LOGGER.debug("Deleted API {0} definition {1}", apiId, apiVersion); //$NON-NLS-1$
         });
     }
 
     public List<PolicySummaryBean> listApiPolicies(String organizationId, String apiId, String version)
         throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         // Try to get the API first - will throw an exception if not found.
         getApiVersion(organizationId, apiId, version);
@@ -885,7 +874,6 @@ public class ApiService implements DataAccessUtilMixin {
     public void reorderApiPolicies(String organizationId, String apiId, String version,
         PolicyChainBean policyChain) throws OrganizationNotFoundException,
         ApiVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
 
         // Make sure the API exists
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
@@ -906,7 +894,6 @@ public class ApiService implements DataAccessUtilMixin {
 
     public PolicyChainBean getApiPolicyChain(String organizationId, String apiId, String version,
         String planId) throws ApiVersionNotFoundException, PlanNotFoundException {
-        // No permission check is needed, because this would break All APIs UI
 
         // Try to get the API first - will throw an exception if not found.
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
@@ -943,7 +930,6 @@ public class ApiService implements DataAccessUtilMixin {
     public List<ContractSummaryBean> getApiVersionContracts(String organizationId,
         String apiId, String version, int page, int pageSize) throws ApiVersionNotFoundException,
         NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
 
         // Try to get the API first - will throw an exception if not found.
         getApiVersion(organizationId, apiId, version);

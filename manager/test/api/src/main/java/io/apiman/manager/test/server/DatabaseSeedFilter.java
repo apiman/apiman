@@ -18,7 +18,6 @@ package io.apiman.manager.test.server;
 import io.apiman.manager.api.core.IStorage;
 
 import java.io.IOException;
-
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
