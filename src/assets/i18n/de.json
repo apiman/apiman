@@ -4,7 +4,10 @@
     "CANCEL": "Abbrechen",
     "YES": "Ja",
     "NO": "Nein",
-    "SEARCH": "Suchen"
+    "SEARCH": "Suchen",
+    "CREATE": "Erstellen",
+    "NEXT": "Weiter",
+    "FINISH": "Fertig"
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",
@@ -41,5 +44,18 @@
   },
   "API_SIGN_UP": {
     "TITLE": "API-Anmeldung"
+  },
+  "CLIENT_CREATE" : {
+    "SELECT": "Aus vorhandenen Anwendugen auswählen"
+  },
+  "WIZARD": {
+    "FIRST_STEP_LABEL": "Anwendung auswählen/erstellen",
+    "SECOND_STEP_LABEL": "Lizenz",
+    "THIRD_STEP_LABEL": "Zusammenfassung",
+    "FORTH_STEP_LABEL": "Bestätigung",
+    "FIRST_STEP_TITLE": "Anwendung auswählen oder neue erstellen",
+    "SECOND_STEP_TITLE": "Lizenzvereinbarung",
+    "THIRD_STEP_TITLE": "Zusammenfassung",
+    "FORTH_STEP_TITLE": "Bestätigung"
   }
 }

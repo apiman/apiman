@@ -1,62 +1,76 @@
 <h1>Signup Stepper</h1>
 
-<!--TODO each step should go into single component?-->
-
-<mat-stepper linear #stepper>
-  <mat-step label="Select Version">
-    <mat-accordion class="example-headers-align">
-      <mat-expansion-panel [expanded]="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title> v3.0 </mat-panel-title>
-          <mat-panel-description>
-            Version 3 of this API!
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
-        <!--        API-Details-->
-        <!--        <app-marketplace-api-description [api]="api"></app-marketplace-api-description>-->
-        <app-marketplace-api-description
-          [api]="api"
-        ></app-marketplace-api-description>
-        <app-marketplace-api-policies></app-marketplace-api-policies>
-
-        <mat-action-row>
-          <button mat-button color="primary">Next</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> v2.0 </mat-panel-title>
-          <mat-panel-description>
-            Version 2 of this API!
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <mat-action-row>
-          <button mat-button color="primary">Next</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> v1.0 </mat-panel-title>
-          <mat-panel-description>
-            Version 1 of this API!
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <mat-action-row>
-          <button mat-button color="primary">Next</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-    </mat-accordion>
+<mat-stepper linear>
+  <mat-step label="{{ 'WIZARD.FIRST_STEP_LABEL' | translate }}">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{
+          "WIZARD.FIRST_STEP_TITLE" | translate
+        }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="mat-card-header-text">
+        <app-marketplace-client-app></app-marketplace-client-app>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions class="right">
+        <button mat-raised-button matStepperNext color="primary">
+          {{ "COMMON.NEXT" | translate }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </mat-step>
-  <mat-step label="Agreement">
-    <app-marketplace-api-terms></app-marketplace-api-terms>
+  <mat-step label="{{ 'WIZARD.SECOND_STEP_LABEL' | translate }}">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{
+          "WIZARD.SECOND_STEP_TITLE" | translate
+        }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="mat-card-header-text">
+        <app-marketplace-api-terms></app-marketplace-api-terms>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions class="right">
+        <button mat-raised-button matStepperNext color="primary">
+          {{ "COMMON.NEXT" | translate }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </mat-step>
-  <mat-step label="Summary">
-    <app-marketplace-api-confirmation></app-marketplace-api-confirmation>
+  <mat-step label="{{ 'WIZARD.THIRD_STEP_LABEL' | translate }}">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{
+          "WIZARD.THIRD_STEP_TITLE" | translate
+        }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="mat-card-header-text">
+        <app-my-apps-use-api></app-my-apps-use-api>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions class="right">
+        <button mat-raised-button matStepperNext color="primary">
+          {{ "COMMON.NEXT" | translate }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </mat-step>
-  <mat-step label="Confirmation">
-    <app-marketplace-api-confirmation></app-marketplace-api-confirmation>
+  <mat-step label="{{ 'WIZARD.FORTH_STEP_LABEL' | translate }}">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{
+          "WIZARD.FORTH_STEP_TITLE" | translate
+        }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="mat-card-header-text">
+        <app-my-apps-use-api></app-my-apps-use-api>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions class="right">
+        <button mat-raised-button matStepperNext color="primary">
+          {{ "COMMON.FINISH" | translate }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </mat-step>
 </mat-stepper>

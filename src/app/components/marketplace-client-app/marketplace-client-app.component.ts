@@ -3,7 +3,6 @@ import { BackendService } from '../../services/backend/backend.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { switchMap } from 'rxjs/operators';
 import { IClient } from '../../interfaces/ICommunication';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -16,12 +15,7 @@ export class MarketplaceClientAppComponent implements OnInit {
   clickedRows = new Set<IClient>();
   clientName = '';
 
-  constructor(
-    private backend: BackendService,
-    private translator: TranslateService
-  ) {
-    console.log(translator.instant('MPLACE.TITLE'));
-  }
+  constructor(private backend: BackendService) {}
 
   ngOnInit(): void {
     this.loadClients();

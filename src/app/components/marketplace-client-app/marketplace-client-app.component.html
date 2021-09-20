@@ -1,9 +1,7 @@
-<h2>Create or Select an Application</h2>
-
 <div class="container">
   <form>
     <mat-form-field>
-      <mat-label>Filter</mat-label>
+      <mat-label>{{ "COMMON.SEARCH" | translate }}</mat-label>
       <input
         matInput
         [(ngModel)]="clientName"
@@ -12,13 +10,13 @@
       />
     </mat-form-field>
   </form>
-  <button mat-raised-button color="primary" (click)="addClient()">
-    Create
+  <button mat-raised-button color="primary" class="ml-20" (click)="addClient()">
+    {{ "COMMON.CREATE" | translate }}
   </button>
 </div>
 
-<p class="primary">Select from available Applications</p>
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z2 mt-20">
+<p class="primary">{{ "CLIENT_CREATE.SELECT" | translate }}</p>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z2 mt-20 mb-20">
   <!-- Name Column -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Application Name</th>
