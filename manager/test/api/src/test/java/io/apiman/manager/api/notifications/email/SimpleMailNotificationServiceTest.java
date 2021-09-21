@@ -32,12 +32,10 @@ import static org.assertj.core.api.Assertions.tuple;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class SimpleMailNotificationServiceTest {
+    // Pull templates from resources
+    File file = new File(getClass().getClassLoader().getResource("apiman/config/email-notification-templates.json").getFile());
 
-    @Rule
-    public final GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP);
-
-    ClassLoader classLoader = getClass().getClassLoader();
-    File file = new File(classLoader.getResource("apiman/config/email-notification-templates.json").getFile());
+    // Override default config with our test config
     ApiManagerConfig config = new WarApiManagerConfig() {
         public Path getConfigDirectory() {
             return file.getParentFile().toPath();
@@ -45,11 +43,11 @@ public class SimpleMailNotificationServiceTest {
 
         @Override
         public Map<String, String> getEmailNotificationProperties() {
-            return MOCK_CONFIG;
+            return TEST_CONFIG;
         }
     };
 
-    Map<String, String> MOCK_CONFIG = Map.of(
+    Map<String, String> TEST_CONFIG = Map.of(
          "smtp.mock", "false",
          "smtp.ssl", "false",
          "smtp.startTLSMode", "DISABLED",
@@ -60,6 +58,9 @@ public class SimpleMailNotificationServiceTest {
          "smtp.username", "marc",
          "smtp.password", "don't_look!"
      );
+
+    @Rule
+    public final GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP);
 
     @Before
     public void beforeEach() throws Exception {
@@ -202,16 +203,16 @@ public class SimpleMailNotificationServiceTest {
     @Test
     public void All_templates_matching_reason_prefix_are_returned_in_order() {
         SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
-        SortedMap<String, EmailNotificationTemplate> allTemplates = service.findAllTemplatesFor("test.notification.reason");
+        List<EmailNotificationTemplate> allTemplates = service.findAllTemplatesFor("test.notification.reason");
 
         assertThat(allTemplates)
-             .containsOnlyKeys("test.notification", "test.notification.reason")
-             .extractingFromEntries(
-                  e -> e.getValue().getNotificationReason(),
-                  e -> e.getValue().getSubject(),
-                  e -> e.getValue().getHtmlBody(),
-                  e -> e.getValue().getPlainBody(),
-                  e -> e.getValue().getCategory()
+             //.containsOnlyKeys("test.notification", "test.notification.reason")
+             .extracting(
+                  e -> e.getNotificationReason(),
+                  e -> e.getSubject(),
+                  e -> e.getHtmlBody(),
+                  e -> e.getPlainBody(),
+                  e -> e.getCategory()
              )
              .containsOnly(
                   tuple(
