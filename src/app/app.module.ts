@@ -15,7 +15,6 @@ import { MarketplaceSignupStepperComponent } from './components/marketplace-sign
 import { MarketplaceApiPoliciesComponent } from './components/marketplace-api-policies/marketplace-api-policies.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MarketplaceApiDescriptionComponent } from './components/marketplace-api-description/marketplace-api-description.component';
-import { PlanCardComponent } from './components/plan-card/plan-card.component';
 import { MarketplaceComponent } from './components/marketplace/marketplace.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -32,16 +31,11 @@ import { ThemeService } from './services/theme/theme.service';
 import { KeycloakAngularModule } from 'keycloak-angular';
 import { KeycloakHelperService } from './services/keycloak-helper/keycloak-helper.service';
 import { SwaggerComponent } from './components/swagger/swagger.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MarketplaceClientAppComponent } from './components/marketplace-client-app/marketplace-client-app.component';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
 import { MyAppsSummaryComponent } from './components/my-apps-summary/my-apps-summary.component';
 import { MyAppsUseApiComponent } from './components/my-apps-use-api/my-apps-use-api.component';
 import { MyAppsPoliciesComponent } from './components/my-apps-policies/my-apps-policies.component';
 import { MyAppsManageApiComponent } from './components/my-apps-manage-api/my-apps-manage-api.component';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export function initializeApp(
   configService: ConfigService,
@@ -95,7 +89,6 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     HomeComponent,
     MarketplaceApiPoliciesComponent,
     MarketplaceApiDescriptionComponent,
-    PlanCardComponent,
     MarketplaceComponent,
     NavigationComponent,
     ApiCardListComponent,
@@ -128,12 +121,7 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
         deps: [HttpClient],
       },
     }),
-    MatProgressSpinnerModule,
-    MatSelectModule,
-    MatTableModule,
     ReactiveFormsModule,
-    MatSortModule,
-    MatSnackBarModule,
   ],
   providers: [
     {

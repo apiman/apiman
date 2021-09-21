@@ -88,7 +88,7 @@ $config: mat.get-color-config($theme);
 $default-font: 'Open Sans', sans-serif;
 
 /** Paddings and Margins **/
-$sizes: 5, 10, 15, 20, 25, 30, 35, 40;
+$sizes: 5, 8, 10, 15, 20, 25, 30, 35, 40;
 @each $size in $sizes {
   // Margins
   .mt-#{$size} {

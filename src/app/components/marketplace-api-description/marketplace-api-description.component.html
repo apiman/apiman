@@ -1,8 +1,26 @@
 <mat-expansion-panel [expanded]="isLatest">
   <mat-expansion-panel-header>
     <mat-panel-title>
-      Version {{ api.version }} of {{ api.api.name }}
-      <strong *ngIf="isLatest" class="latest">[latest]</strong>
+      <div id="version-info">
+        Version {{ api.version }} of {{ api.api.name }}
+        <strong *ngIf="isLatest" id="latest-tag" class="primary">[latest]</strong>
+      </div>
+      <button
+        mat-raised-button
+        id="docs-button"
+        color="primary"
+        [disabled]="
+            !(api.definitionType !== null && api.definitionType !== 'None')
+          "
+        [routerLink]="[
+            '/swagger',
+            api.api.organization!.id,
+            api.api.id,
+            api.version
+          ]"
+      >
+        API Documentation
+      </button>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div id="content-header">
@@ -24,33 +42,19 @@
     </mat-grid-tile>
     <mat-grid-tile colspan="1">
       <div class="box" id="key-features">
-        <h1>Key Features</h1>
+        <h1 class="primary">Key Features</h1>
         <mat-list>
           <!--To-Do-->
           <!--Use features of API instead of hard-coded value-->
           <mat-list-item *ngFor="let feature of features">
-            <mat-icon matListIcon>folder</mat-icon>
+            <mat-icon matListIcon class="primary material-icons-outlined mr-8">folder_outline</mat-icon>
             <span>{{ feature }}</span>
           </mat-list-item>
         </mat-list>
-        <button
-          mat-raised-button
-          id="docs-button"
-          [disabled]="
-            !(api.definitionType !== null && api.definitionType !== 'None')
-          "
-          [routerLink]="[
-            '/swagger',
-            api.api.organization!.id,
-            api.api.id,
-            api.version
-          ]"
-        >
-          API Docs
-        </button>
+
       </div>
     </mat-grid-tile>
   </mat-grid-list>
-  <h2 id="plans-header">Plans</h2>
-  <app-plan-card-list></app-plan-card-list>
+  <h2 id="plans-header" class="primary">Plans</h2>
+  <app-plan-card-list [apiVersion]="api"></app-plan-card-list>
 </mat-expansion-panel>

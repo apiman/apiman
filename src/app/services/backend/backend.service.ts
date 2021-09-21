@@ -116,7 +116,7 @@ export class BackendService {
   private httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: 'Basic ' + btoa(this.credentials),
+      // Authorization: 'Basic ' + btoa(this.credentials),
     }),
   };
   /**

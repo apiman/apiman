@@ -6,6 +6,7 @@ import { IClientSummary } from '../../interfaces/ICommunication';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatStepper } from '@angular/material/stepper';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import {SignUpService} from "../../services/sign-up/sign-up.service";
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
@@ -26,7 +27,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     private heroService: HeroService,
     private route: ActivatedRoute,
     private translator: TranslateService,
-    private snackbar: SnackbarService
+    private snackbar: SnackbarService,
+    private signUpService: SignUpService
   ) {}
 
   ngOnInit(): void {

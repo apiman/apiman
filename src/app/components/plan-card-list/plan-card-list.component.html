@@ -1,3 +1,28 @@
 <div id="plan-grid">
-  <app-plan-card *ngFor="let plan of plans" [plan]="plan"></app-plan-card>
+  <ng-container *ngFor="let plan of plans">
+    <mat-card class="plan-card">
+      <mat-card-header class="card-header">
+        <mat-card-title class="card-header-content">{{ plan.title }}</mat-card-title>
+        <mat-card-subtitle class="card-header-content">{{ plan.subtitle }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <ng-container *ngFor="let policy of plan.policies">
+            <mat-list-item>
+              <p>
+                {{ policy.title }}
+                <span class="right">{{ policy.configuration }}</span>
+              </p>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          </ng-container>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-actions id="plan-card-actions">
+        <button id="sign-up-button" mat-raised-button color="primary" (click)="onSignUp(plan)">
+          SIGN UP
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </ng-container>
 </div>
