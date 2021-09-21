@@ -7,7 +7,7 @@ import {
   IApi,
   IApiVersion,
   IApiVersionSummary,
-  IClient, IContract, IContractSummary,
+  IClient, IClientSummary, IContract, IContractSummary,
   IOrganization,
   IOrganizationSummary,
   ISearchCriteria,
@@ -165,12 +165,6 @@ export class BackendService {
       this.endpoint +
       `/organizations/${orgId}/apis/${apiId}/versions/${version}`;
     return this.http.get<IApiVersion>(url, this.httpOptions);
-  }
-
-  public getClients(): Observable<Array<IClient>> {
-    const username = this.keycloak.getKeycloakInstance().profile?.username;
-    const url = this.endpoint + `/users/${username}/editable-clients`;
-    return this.http.get(url) as Observable<Array<IClient>>;
   }
 
   public getClientOrgs(): Observable<Array<IOrganizationSummary>> {

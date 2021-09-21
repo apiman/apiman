@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { BackendService } from '../../services/backend/backend.service';
 import { MatTableDataSource } from '@angular/material/table';
-import { IClient, IOrganizationSummary } from '../../interfaces/ICommunication';
+import { IClientSummary, IOrganizationSummary } from '../../interfaces/ICommunication';
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -10,13 +10,13 @@ import { IClient, IOrganizationSummary } from '../../interfaces/ICommunication';
 })
 export class MarketplaceClientAppComponent implements OnInit {
   displayedColumns: string[] = ['name'];
-  dataSource = new MatTableDataSource<IClient>([]);
-  clickedRows = new Set<IClient>();
+  dataSource = new MatTableDataSource<IClientSummary>([]);
+  clickedRows = new Set<IClientSummary>();
   clientName = '';
   organizationId = '';
   organizations: IOrganizationSummary[] = [];
 
-  @Output() selectedClients = new EventEmitter<Set<IClient>>();
+  @Output() selectedClients = new EventEmitter<Set<IClientSummary>>();
 
   constructor(private backend: BackendService) {}
 
@@ -24,11 +24,12 @@ export class MarketplaceClientAppComponent implements OnInit {
     this.loadClients();
   }
 
-  public selectClient(client: IClient): void {
+  public selectClient(client: IClientSummary): void {
     // always clear, because at the moment we only allow one client to be selected
     this.clickedRows.clear();
     this.clickedRows.add(client);
     this.clientName = client.name;
+    this.organizationId = client.organizationId;
     this.selectedClients.emit(this.clickedRows);
   }
 
@@ -36,7 +37,6 @@ export class MarketplaceClientAppComponent implements OnInit {
    * Add a new client
    */
   public addClient(): void {
-    console.log(this.organizations);
     const orgId: string =
       this.organizations.length > 1
         ? this.organizationId
@@ -62,8 +62,8 @@ export class MarketplaceClientAppComponent implements OnInit {
       (error) => console.error(error)
     );
 
-    this.backend.getClients().subscribe(
-      (clients: IClient[]) => {
+    this.backend.getEditableClients().subscribe(
+      (clients: IClientSummary[]) => {
         this.dataSource = new MatTableDataSource(clients);
       },
       (error) => console.error(error)

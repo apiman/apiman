@@ -1,9 +1,8 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ApiService } from '../../services/api/api.service';
-import { IApiVersion, IClient } from '../../interfaces/ICommunication';
+import { IClientSummary } from '../../interfaces/ICommunication';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatStepper } from '@angular/material/stepper';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
@@ -20,7 +19,7 @@ import { SnackbarService } from '../../services/snackbar/snackbar.service';
   ],
 })
 export class MarketplaceSignupStepperComponent implements OnInit {
-  selectedClients = new Set<IClient>();
+  selectedClients = new Set<IClientSummary>();
   agreedTermsAndPrivacy: boolean | undefined;
 
   constructor(
@@ -40,7 +39,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     });
   }
 
-  checkApplications($event: Set<IClient>) {
+  checkApplications($event: Set<IClientSummary>) {
     this.selectedClients = $event;
   }
 
@@ -50,7 +49,6 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   nextStep1(stepper: MatStepper) {
     if (this.selectedClients.size == 0) {
-      // TODO translate
       this.snackbar.showErrorSnackBar(
         this.translator.instant('WIZARD.APPLICATION_ERROR')
       );

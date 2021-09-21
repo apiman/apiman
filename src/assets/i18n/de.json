@@ -7,7 +7,10 @@
     "SEARCH": "Suchen oder erstellen",
     "CREATE": "Erstellen",
     "NEXT": "Weiter",
-    "FINISH": "Fertig"
+    "FINISH": "Fertig",
+    "ORGANIZATION": "Organisation",
+    "APPLICATION": "Applikation",
+    "NO_DATA_FOUND": "Keine Einträge gefunden"
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",

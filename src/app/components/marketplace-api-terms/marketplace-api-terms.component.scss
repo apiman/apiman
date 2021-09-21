@@ -2,10 +2,10 @@ mat-form-field {
   width: 100%;
 }
 
-mat-card {
-  width: 25%;
-}
-
 .mat-input-element:disabled{
   color: black;
+}
+
+#terms-card{
+  width: fit-content;
 }

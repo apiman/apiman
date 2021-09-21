@@ -10,17 +10,17 @@
   >
 </mat-form-field>
 
-<mat-card class="mb-20">
+<mat-card class="mb-20" id="terms-card">
   <mat-card-title>Agreement</mat-card-title>
   <mat-card-content>
     <p>
-      <mat-checkbox [(ngModel)]="acceptedTerms" (change)="onClick()"
+      <mat-checkbox color="primary" [(ngModel)]="acceptedTerms" (change)="onClick()"
         >I agree to the
         <a [href]="termsLink">terms and conditions</a></mat-checkbox
       >
     </p>
     <p>
-      <mat-checkbox [(ngModel)]="acceptedPrivacyTerms" (change)="onClick()"
+      <mat-checkbox color="primary" [(ngModel)]="acceptedPrivacyTerms" (change)="onClick()"
         >I accept the <a [href]="privacyLink">privacy policy</a></mat-checkbox
       >
     </p>
