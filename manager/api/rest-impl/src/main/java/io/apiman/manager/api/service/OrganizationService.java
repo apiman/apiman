@@ -14,7 +14,6 @@ import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
-import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
@@ -54,7 +53,6 @@ import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.rest.impl.util.FieldValidator;
-import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.ArrayList;
@@ -94,15 +92,14 @@ public class OrganizationService implements DataAccessUtilMixin {
      */
     @Inject
     public OrganizationService(
-        ApiManagerConfig config,
-        IStorage storage,
-        IStorageQuery query,
-        IUserResource users,
-        IRoleResource roles,
-        ISecurityContext securityContext,
-        IGatewayLinkFactory gatewayLinkFactory,
-        ClientAppService clientService,
-         SimpleMailNotificationService smns
+         ApiManagerConfig config,
+         IStorage storage,
+         IStorageQuery query,
+         IUserResource users,
+         IRoleResource roles,
+         ISecurityContext securityContext,
+         IGatewayLinkFactory gatewayLinkFactory,
+         ClientAppService clientService
     ) {
         this.config = config;
         this.storage = storage;
@@ -112,7 +109,6 @@ public class OrganizationService implements DataAccessUtilMixin {
         this.securityContext = securityContext;
         this.gatewayLinkFactory = gatewayLinkFactory;
         this.clientService = clientService;
-        smns.isConfigured();
     }
 
     public OrganizationService() {

@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -32,9 +31,11 @@ import org.jetbrains.annotations.NotNull;
  *     <li>Send notification emails as configured via file in {@link ApiManagerConfig#getEmailNotificationProperties()} ()}.</li>
  *     <li>Get email notification templates (from a static file only, at present) by reason (or prefix thereof) or
  *     category.</li>
+ *     <li>A convenient builder is available with {@link SimpleEmail#builder()}.</li>
  * </ul>
  *
  * @see SmtpEmailConfiguration
+ * @see SimpleEmail
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
@@ -71,15 +72,6 @@ public class SimpleMailNotificationService {
 
     public SimpleMailNotificationService() {}
 
-    @PostConstruct
-    public void post() {
-        System.out.println("hello");
-    }
-
-    public boolean isConfigured() {
-        return isConfigured;
-    }
-
     /**
      * Send an email
      */
@@ -109,6 +101,7 @@ public class SimpleMailNotificationService {
             sendHtml(email.getToEmail(), email.getToName(), subject, html, plain, email.getHeaders());
         }
     }
+
     /**
      * Send a plaintext email
      */
