@@ -1,5 +1,13 @@
 <div class="container">
   <form>
+    <mat-form-field *ngIf="organizations.length > 1" class="mr-20">
+      <mat-label>Organization</mat-label>
+      <mat-select [(ngModel)]="organizationId" name="orgSelect">
+        <mat-option *ngFor="let org of organizations" [value]="org.id">
+          {{ org.name }}
+        </mat-option>
+      </mat-select></mat-form-field
+    >
     <mat-form-field>
       <mat-label>{{ "COMMON.SEARCH" | translate }}</mat-label>
       <input
@@ -17,6 +25,12 @@
 
 <p class="primary">{{ "CLIENT_CREATE.SELECT" | translate }}</p>
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z2 mt-20 mb-20">
+  <!-- Org Name Column - only displayed if user has more than 1 -->
+  <ng-container matColumnDef="org-name">
+    <th mat-header-cell *matHeaderCellDef>Organization Name</th>
+    <td mat-cell *matCellDef="let element">{{ element.organizationName }}</td>
+  </ng-container>
+
   <!-- Name Column -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Application Name</th>

@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { BackendService } from '../../services/backend/backend.service';
 import { MatTableDataSource } from '@angular/material/table';
-import { switchMap } from 'rxjs/operators';
-import { IClient } from '../../interfaces/ICommunication';
+import { IClient, IOrganizationSummary } from '../../interfaces/ICommunication';
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -14,6 +13,8 @@ export class MarketplaceClientAppComponent implements OnInit {
   dataSource = new MatTableDataSource<IClient>([]);
   clickedRows = new Set<IClient>();
   clientName = '';
+  organizationId = '';
+  organizations: IOrganizationSummary[] = [];
 
   @Output() selectedClients = new EventEmitter<Set<IClient>>();
 
@@ -35,35 +36,42 @@ export class MarketplaceClientAppComponent implements OnInit {
    * Add a new client
    */
   public addClient(): void {
-    this.backend
-      .getClientOrgs()
-      .pipe(
-        switchMap((orgs) => {
-          return this.backend.createClient(orgs[0].id, this.clientName);
-        })
-      )
-      .subscribe(
-        () => this.loadClients(),
-        (error) => console.error(error)
-      );
+    console.log(this.organizations);
+    const orgId: string =
+      this.organizations.length > 1
+        ? this.organizationId
+        : this.organizations[0].id;
+    this.backend.createClient(orgId, this.clientName).subscribe(
+      () => this.loadClients(),
+      (error) => console.error(error)
+    );
   }
 
   /**
    * Refresh list of clients
    * @private
    */
-  private loadClients() {
+  private loadClients(): void {
+    this.backend.getClientOrgs().subscribe(
+      (orgs: IOrganizationSummary[]) => {
+        this.organizations = orgs;
+        if (orgs.length > 1) {
+          this.displayedColumns = ['org-name', 'name'];
+        }
+      },
+      (error) => console.error(error)
+    );
+
     this.backend.getClients().subscribe(
       (clients: IClient[]) => {
         this.dataSource = new MatTableDataSource(clients);
       },
-      (error) => {
-        console.error(error);
-      }
+      (error) => console.error(error)
     );
   }
 
-  public applyFilter(event: Event) {
+  public applyFilter(event: Event): void {
+    this.clickedRows.clear();
     // https://material.angular.io/components/table/examples
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
