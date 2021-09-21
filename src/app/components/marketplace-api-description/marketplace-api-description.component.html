@@ -2,30 +2,28 @@
   <mat-expansion-panel-header>
     <mat-panel-title>
       Version {{ api.version }} of {{ api.api.name }}
-      <strong *ngIf="isLatest">[latest]</strong>
+      <strong *ngIf="isLatest" class="latest">[latest]</strong>
     </mat-panel-title>
   </mat-expansion-panel-header>
-  <mat-card>
-    <mat-card-header>
+  <div id="content-header">
+    <span id="icon">
       <img
         mat-card-avatar
         alt="Logo"
         src="https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png"
       />
-      <mat-card-title>{{ api.api.name }}</mat-card-title>
-      <mat-card-subtitle>{{ api.api.description }}</mat-card-subtitle>
-    </mat-card-header>
-  </mat-card>
+    </span>
+    <p id="shortDescription">{{ markdown.substr(0,240) }}</p>
+  </div>
 
-  <mat-grid-list cols="3" rowHeight="1:1">
-    <mat-grid-tile colspan="2" class="grid-content">
-      <div class="box">
+  <mat-grid-list cols="4" rowHeight="1:1">
+    <mat-grid-tile colspan="3" id="long-description-tile">
+      <div class="box" data-simplebar>
         <markdown [data]="markdown"></markdown>
       </div>
     </mat-grid-tile>
-    <mat-grid-tile colspan="1" class="grid-content">
-      <mat-divider [vertical]="true"></mat-divider>
-      <div class="box">
+    <mat-grid-tile colspan="1">
+      <div class="box" id="key-features">
         <h1>Key Features</h1>
         <mat-list>
           <!--To-Do-->
@@ -53,6 +51,6 @@
       </div>
     </mat-grid-tile>
   </mat-grid-list>
-  <h2>Plans</h2>
+  <h2 id="plans-header">Plans</h2>
   <app-plan-card-list></app-plan-card-list>
 </mat-expansion-panel>

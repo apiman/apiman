@@ -1,0 +1,21 @@
+#plan-grid {
+  margin-right: 2%;
+  display: grid;
+  justify-content: space-between;
+  align-items: flex-start;
+  grid-template-columns: repeat(auto-fit, 420px);
+  grid-column-gap: 16px;
+  grid-row-gap: 32px;
+}
+
+@media screen and (max-width: 1745px) {
+  #grid {
+    grid-template-columns: repeat(auto-fit, 370px);
+  }
+}
+
+@media screen and (max-width: 1495px) {
+  #grid {
+    grid-template-columns: repeat(auto-fit, 350px);
+  }
+}

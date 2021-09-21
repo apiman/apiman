@@ -1,7 +1,7 @@
 <mat-card class="plan-card">
-  <mat-card-header>
-    <mat-card-title>{{ plan.title }}</mat-card-title>
-    <mat-card-subtitle>{{ plan.subtitle }}</mat-card-subtitle>
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-header-content">{{ plan.title }}</mat-card-title>
+    <mat-card-subtitle class="card-header-content">{{ plan.subtitle }}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <mat-list>
@@ -16,8 +16,8 @@
       </ng-container>
     </mat-list>
   </mat-card-content>
-  <mat-card-actions>
-    <button mat-raised-button [routerLink]="['/api-signup', orgId, apiId]">
+  <mat-card-actions id="plan-card-actions">
+    <button id="sign-up-button" mat-raised-button color="primary" [routerLink]="['/api-signup', orgId, apiId]">
       SIGN UP
     </button>
   </mat-card-actions>

@@ -9,12 +9,59 @@ mat-divider {
   margin-right: 2em;
 }
 
+mat-panel-title {
+  font-size: 1.3em;
+
+  .latest {
+    margin-left: 1em;
+  }
+}
+
+#content-header {
+  display: flex;
+  margin-bottom: 1em;
+  width: 75%;
+
+  #icon {
+    margin: 2em 2em 0 2em;
+  }
+
+  #shortDescription {
+    margin-top: 2em;
+  }
+}
+
+mat-grid-list {
+  margin-bottom: 2em;
+}
+
+#long-description-tile {
+  border: 1px solid rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.02)
+}
+
+.box {
+  padding-left: 1%;
+  padding-right: 1%
+}
+
+#key-features {
+  margin-left: 2em;
+}
+
 #docs-button{
   margin-top: 4em;
+  width: 50%;
+}
+
+#plans-header {
+  margin: unset;
 }
 
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:hover,
 .mat-expansion-panel-header.mat-expanded:focus {
-  background: rgba(106, 116, 127, .2);
+  border-bottom: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(0,0,0,0.12);
 }

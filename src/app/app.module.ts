@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import {APP_INITIALIZER, NgModule, SecurityContext} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -115,7 +115,9 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MarkdownModule.forRoot(),
+    MarkdownModule.forRoot({
+      sanitize: SecurityContext.NONE
+    }),
     FormsModule,
     HttpClientModule,
     ClipboardModule,
