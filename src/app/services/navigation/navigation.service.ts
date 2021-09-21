@@ -20,11 +20,14 @@ export class NavigationService {
       link: 'applications',
       openInNewTab: false,
     },
-    {
-      name: this.translator.instant('ACCOUNT.TITLE'),
-      link: 'account',
-      openInNewTab: false,
-    },
+    // To-Do
+    // Show account link again once the account page is implemented correctly
+    // {
+    //   name: this.translator.instant('ACCOUNT.TITLE'),
+    //   link: 'account',
+    //   openInNewTab: false,
+    // },
+
   ];
 
   navigationChanged: EventEmitter<INavigation> =

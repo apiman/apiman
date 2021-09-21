@@ -2,15 +2,12 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
-  OnInit,
   Renderer2,
   ViewChild,
 } from '@angular/core';
-import config from './../../../../config.json';
 import { HeroService } from '../../services/hero/hero.service';
-import { Data } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
+import {KeycloakHelperService} from "../../services/keycloak-helper/keycloak-helper.service";
 
 @Component({
   selector: 'app-header',
@@ -28,7 +25,8 @@ export class HeaderComponent implements AfterViewInit {
   constructor(
     private renderer: Renderer2,
     public heroService: HeroService,
-    private keycloak: KeycloakService
+    private keycloak: KeycloakService,
+    private keycloakHelper: KeycloakHelperService
   ) {}
 
   async ngAfterViewInit(): Promise<void> {
@@ -54,5 +52,13 @@ export class HeaderComponent implements AfterViewInit {
     );
 
     this.loggedIn = await this.keycloak.isLoggedIn();
+  }
+
+  public login() {
+    this.keycloakHelper.login();
+  }
+
+  public logout(): void {
+    this.keycloakHelper.logout();
   }
 }

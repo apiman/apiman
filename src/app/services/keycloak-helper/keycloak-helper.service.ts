@@ -54,6 +54,10 @@ export class KeycloakHelperService {
     return null;
   }
 
+  public login(): void {
+    this.keycloak.login();
+  }
+
   public logout(): void {
     // TODO bring you home
     KeycloakHelperService.clearTokensFromSessionStorage();

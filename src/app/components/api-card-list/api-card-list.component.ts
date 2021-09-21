@@ -43,11 +43,7 @@ export class ApiCardListComponent implements OnInit {
 
   ngOnInit(): void {
     this.apis = [];
-    if (this.listType === 'api') {
-      this.getApiList();
-    } else if (this.listType === 'featuredApi') {
-      this.getFeaturedApis();
-    }
+    this.getApiList();
   }
 
   OnInput(event: any): void {
@@ -94,7 +90,11 @@ export class ApiCardListComponent implements OnInit {
         })
       )
       .subscribe((searchResult) => {
-        this.apis = searchResult.apis;
+        if (this.listType === 'api') {
+          this.apis = searchResult.apis;
+        } else if (this.listType === 'featuredApi') {
+          this.apis = searchResult.apis.slice(0,4);
+        }
         this.totalSize = searchResult.totalSize;
       });
   }
