@@ -28,6 +28,20 @@
     "category": "API_ADMINISTRATION"
   },
   {
+    "notificationReason": "test.notification.reasob", // Should not match
+    "subject": "Pay attention!",
+    "htmlBody": "Salut {name}",
+    "plainBody": "Hola {name}",
+    "category": "OTHER"
+  },
+  {
+    "notificationReason": "test.notification.reasonn", // Should not match
+    "subject": "Pay attention!",
+    "htmlBody": "Salut {name}",
+    "plainBody": "Hola {name}",
+    "category": "OTHER"
+  },
+  {
     "notificationReason": "test.notification.reason",
     "subject": "Pay attention!",
     "htmlBody": "Salut {name}",

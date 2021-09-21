@@ -11,12 +11,11 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.SortedMap;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -32,9 +31,11 @@ import org.jetbrains.annotations.NotNull;
  *     <li>Send notification emails as configured via file in {@link ApiManagerConfig#getEmailNotificationProperties()} ()}.</li>
  *     <li>Get email notification templates (from a static file only, at present) by reason (or prefix thereof) or
  *     category.</li>
+ *     <li>A convenient builder is available with {@link SimpleEmail#builder()}.</li>
  * </ul>
  *
  * @see SmtpEmailConfiguration
+ * @see SimpleEmail
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
@@ -71,15 +72,6 @@ public class SimpleMailNotificationService {
 
     public SimpleMailNotificationService() {}
 
-    @PostConstruct
-    public void post() {
-        System.out.println("hello");
-    }
-
-    public boolean isConfigured() {
-        return isConfigured;
-    }
-
     /**
      * Send an email
      */
@@ -109,6 +101,7 @@ public class SimpleMailNotificationService {
             sendHtml(email.getToEmail(), email.getToName(), subject, html, plain, email.getHeaders());
         }
     }
+
     /**
      * Send a plaintext email
      */
@@ -175,8 +168,18 @@ public class SimpleMailNotificationService {
      *
      * @return Sorted map of prefix and corresponding template. Empty if no matches are found.
      */
-    public SortedMap<String, EmailNotificationTemplate> findAllTemplatesFor(@NotNull String reasonKey) {
-        return reasonTrie.subMap(reasonKey.substring(0, 1), reasonKey + "*"); // Add a character, as headMap only matches prefixes shorter
+    public List<EmailNotificationTemplate> findAllTemplatesFor(@NotNull String reasonKey) {
+        String fromKey = null;
+        String[] elems = reasonKey.split("\\.");
+        if (elems.length == 1) {
+            fromKey = reasonKey.substring(0, 1);
+        } else {
+            fromKey = elems[0];
+        }
+
+        List<EmailNotificationTemplate> list = new ArrayList<>(reasonTrie.subMap(fromKey, reasonKey.substring(0, reasonKey.length()-1)).values());
+        list.add(reasonTrie.select(reasonKey).getValue());
+        return list;
     }
 
     /**
