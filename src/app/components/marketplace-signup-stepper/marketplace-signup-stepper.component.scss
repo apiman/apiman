@@ -1,4 +1,15 @@
-.right{
+.right {
   display: flex;
   justify-content: flex-end;
+}
+
+mat-stepper {
+  min-width: 30vw;
+  max-width: 50vw;
+}
+
+#center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -56,6 +56,8 @@
     "FIRST_STEP_TITLE": "Select or create an new application",
     "SECOND_STEP_TITLE": "Terms and Conditions",
     "THIRD_STEP_TITLE": "Summary",
-    "FORTH_STEP_TITLE": "Confirmation"
+    "FORTH_STEP_TITLE": "Confirmation",
+    "APPLICATION_ERROR": "You have to select one application first",
+    "TERMS_ERROR": "You have to accept the service terms"
   }
 }

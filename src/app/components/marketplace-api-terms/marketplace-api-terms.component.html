@@ -14,13 +14,13 @@
   <mat-card-title>Agreement</mat-card-title>
   <mat-card-content>
     <p>
-      <mat-checkbox [(ngModel)]="agreed"
+      <mat-checkbox [(ngModel)]="acceptedTerms" (change)="onClick()"
         >I agree to the
         <a [href]="termsLink">terms and conditions</a></mat-checkbox
       >
     </p>
     <p>
-      <mat-checkbox [(ngModel)]="accepted"
+      <mat-checkbox [(ngModel)]="acceptedPrivacyTerms" (change)="onClick()"
         >I accept the <a [href]="privacyLink">privacy policy</a></mat-checkbox
       >
     </p>

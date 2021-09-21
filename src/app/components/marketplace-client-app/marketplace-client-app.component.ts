@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { BackendService } from '../../services/backend/backend.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { switchMap } from 'rxjs/operators';
@@ -15,6 +15,8 @@ export class MarketplaceClientAppComponent implements OnInit {
   clickedRows = new Set<IClient>();
   clientName = '';
 
+  @Output() selectedClients = new EventEmitter<Set<IClient>>();
+
   constructor(private backend: BackendService) {}
 
   ngOnInit(): void {
@@ -26,6 +28,7 @@ export class MarketplaceClientAppComponent implements OnInit {
     this.clickedRows.clear();
     this.clickedRows.add(client);
     this.clientName = client.name;
+    this.selectedClients.emit(this.clickedRows);
   }
 
   /**

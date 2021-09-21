@@ -56,6 +56,8 @@
     "FIRST_STEP_TITLE": "Anwendung auswählen oder neue erstellen",
     "SECOND_STEP_TITLE": "Lizenzvereinbarung",
     "THIRD_STEP_TITLE": "Zusammenfassung",
-    "FORTH_STEP_TITLE": "Bestätigung"
+    "FORTH_STEP_TITLE": "Bestätigung,",
+    "APPLICATION_ERROR": "Sie müssen zuerst eine Anwendung auswählen",
+    "TERMS_ERROR": "Sie müssen den Lizenzvereinbarungen zustimmen"
   }
 }
