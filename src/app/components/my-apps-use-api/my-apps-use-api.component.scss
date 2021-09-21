@@ -5,6 +5,7 @@
   grid-template-columns: 7fr 4fr;
   grid-column-gap: 8px;
   grid-row-gap: 32px;
+  margin-bottom: 2.2rem;
 }
 
 p{
@@ -19,4 +20,10 @@ p{
 #try-it-now-btn{
   margin-right: 32px;
   text-align: center;
+}
+
+.mat-divider-horizontal{
+  position: unset;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }

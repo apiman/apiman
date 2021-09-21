@@ -1,5 +1,4 @@
 .app-header{
-  margin-top: 1rem;
   display: grid;
   justify-content: space-between;
   align-items: start;
@@ -16,6 +15,10 @@
 .app-icon{
   width: 100%;
   border-radius: 50%;
+}
+
+.app-title{
+  margin: 0;
 }
 
 .app-api{
@@ -56,7 +59,7 @@
   display: grid;
   justify-content: space-between;
   align-items: center;
-  grid-template-columns: 1fr 16fr 5fr;
+  grid-template-columns: 0.85fr 8fr 8fr;
   grid-column-gap: 16px;
   grid-row-gap: 32px;
   margin-bottom: 1rem;
@@ -79,6 +82,7 @@
 }
 
 .app-api-header-labels{
+  white-space: nowrap;
   margin-right: 3rem;
   text-align: right;
   span{

@@ -7,25 +7,108 @@ import {
   IApi,
   IApiVersion,
   IApiVersionSummary,
-  IClient,
+  IClient, IContract, IContractSummary,
   IOrganization,
   IOrganizationSummary,
   ISearchCriteria,
   ISearchResultsApiSummary,
 } from '../../interfaces/ICommunication';
+import {
+  IClientSummaryBean,
+  IClientVersionSummaryBean
+} from '../../interfaces/ICommunication';
+
+export interface ApiSummaryBean {
+  organizationId?: string;
+  organizationName?: string;
+  id?: string;
+  name?: string;
+  description?: string;
+
+  /** @format date-time */
+  createdOn?: string;
+}
+
+export interface ApiBean {
+  organization?: OrganizationBean;
+  id?: string;
+  name?: string;
+  description?: string;
+  createdBy?: string;
+
+  /** @format date-time */
+  createdOn?: string;
+
+  /** @format int32 */
+  numPublished?: number;
+}
+
+export interface ApiVersionSummaryBean {
+  organizationId?: string;
+  organizationName?: string;
+  id?: string;
+  name?: string;
+  description?: string;
+  status?: 'Created' | 'Ready' | 'Published' | 'Retired';
+  version?: string;
+  publicAPI?: boolean;
+}
+
+export interface OrganizationBean {
+  id?: string;
+  name?: string;
+  description?: string;
+  createdBy?: string;
+
+  /** @format date-time */
+  createdOn?: string;
+  modifiedBy?: string;
+
+  /** @format date-time */
+  modifiedOn?: string;
+}
+
+export interface SearchResultsBeanApiSummaryBean {
+  beans: ApiSummaryBean[];
+
+  /** @format int32 */
+  totalSize: number;
+}
+
+export interface SearchCriteriaBean {
+  filters: SearchCriteriaFilterBean[];
+  orderBy?: OrderByBean;
+  paging: PagingBean;
+}
+
+export interface SearchCriteriaFilterBean {
+  name?: string;
+  value?: string;
+  operator?: 'bool_eq' | 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'like';
+}
+
+export interface OrderByBean {
+  ascending?: boolean;
+  name?: string;
+}
+
+export interface PagingBean {
+  page?: number;
+  pageSize?: number;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class BackendService {
   private readonly endpoint: string;
+  userName: string;
 
-  constructor(
-    private http: HttpClient,
-    private configService: ConfigService,
-    private keycloak: KeycloakService
-  ) {
+  constructor(private http: HttpClient,
+              private configService: ConfigService,
+              private keycloak: KeycloakService) {
     this.endpoint = configService.getEndpoint();
+    this.userName = this.keycloak.getKeycloakInstance().profile?.username!;
   }
 
   // ToDo remove credentials and use anonymous call
@@ -107,4 +190,30 @@ export class BackendService {
       description: '',
     }) as Observable<IOrganization>;
   }
+
+  public getEditableClients(): Observable<Array<IClientSummaryBean>> {
+    const path = `users/${this.userName}/editable-clients`;
+    return this.http.get(this.generateUrl(path)) as Observable<Array<IClientSummaryBean>>;
+  }
+
+  public getClientVersions(organizationId: string, clientId: string): Observable<Array<IClientVersionSummaryBean>> {
+    const path = `/organizations/${organizationId}/clients/${clientId}/versions`;
+    return this.http.get(this.generateUrl(path)) as Observable<Array<IClientVersionSummaryBean>>;
+  }
+
+  public getContracts(organizationId: string, clientId: string, versionName: string): Observable<IContractSummary[]>  {
+    const path = `/organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts`;
+    return this.http.get(this.generateUrl(path)) as Observable<IContractSummary[]>;
+  }
+
+  public getContract(organizationId: string, clientId: string, versionName: string, contractId: number): Observable<Array<IContract>>  {
+    const path = `/organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts/${contractId}`;
+    return this.http.get(this.generateUrl(path)) as Observable<Array<IContract>>;
+  }
+
+  /********* Helper **********/
+  private generateUrl(path: string){
+    return `${this.endpoint}/${path}`;
+  }
+
 }

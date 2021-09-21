@@ -1,4 +1,4 @@
-export type IStatus = 'Created' | 'Ready' | 'Retired' | 'Published';
+export type IApiStatus = 'Created' | 'Ready' | 'Retired' | 'Published';
 export type IClientStatus =
   | 'Created'
   | 'Ready'
@@ -7,10 +7,10 @@ export type IClientStatus =
   | 'Registered';
 export type IStatusColors = 'mediumseagreen' | 'darkred' | 'coral';
 
-export type ApiStatusColorMap = Map<IStatus | IClientStatus, IStatusColors>;
+export type ApiStatusColorMap = Map<IApiStatus | IClientStatus, IStatusColors>;
 
 export const statusColorMap: ApiStatusColorMap = new Map<
-  IStatus | IClientStatus,
+  IApiStatus | IClientStatus,
   IStatusColors
 >([
   ['Created', 'coral'],

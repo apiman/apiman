@@ -11,27 +11,6 @@
   </div>
 </div>
 
-<!-- API Endpoint -->
-<div class="grid">
-  <div>
-    <h4>{{ "APPS.ENDPOINT" | translate }}</h4>
-    <p>{{ mockText }}</p>
-  </div>
-  <div>
-    <mat-form-field>
-      <input matInput readonly value="https://localhost:4200/endpoint" />
-      <button
-        [cdkCopyToClipboard]="'test'"
-        mat-icon-button
-        matSuffix
-        class="input-icon-btn"
-      >
-        <mat-icon color="primary">content_copy</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
-</div>
-
 <!-- Key -->
 <div class="grid">
   <div>
@@ -40,7 +19,7 @@
   </div>
   <div>
     <mat-form-field>
-      <input matInput readonly value="hig&/(5$hdwheow" />
+      <input matInput readonly value="{{apiKey}}" />
       <button
         [cdkCopyToClipboard]="''"
         mat-icon-button
@@ -48,6 +27,27 @@
         class="input-icon-btn"
       >
         <mat-icon class="input-icon-btn" color="primary">content_copy</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+</div>
+
+<!-- API Endpoint -->
+<div class="grid">
+  <div>
+    <h4>{{ "APPS.ENDPOINT" | translate }}</h4>
+    <p>{{ mockText }}</p>
+  </div>
+  <div>
+    <mat-form-field>
+      <input matInput readonly value="{{endpoint}}" />
+      <button
+        [cdkCopyToClipboard]="'test'"
+        mat-icon-button
+        matSuffix
+        class="input-icon-btn"
+      >
+        <mat-icon color="primary">content_copy</mat-icon>
       </button>
     </mat-form-field>
   </div>

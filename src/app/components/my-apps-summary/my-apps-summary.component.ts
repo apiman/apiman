@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import {IContractExt} from '../../interfaces/IContractExt';
 
 @Component({
   selector: 'app-my-apps-summary',
@@ -6,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./my-apps-summary.component.scss'],
 })
 export class MyAppsSummaryComponent implements OnInit {
-  @Input() api: any;
+  @Input() contract?: IContractExt;
 
   constructor() {}
 
