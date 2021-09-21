@@ -20,7 +20,6 @@ import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
-import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
@@ -39,25 +38,25 @@ import io.apiman.manager.api.rest.IUserResource;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
-import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.NotificationService;
+import io.apiman.manager.api.service.UserService;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
 
 /**
  * Implementation of the User API.
  *
- * TODO(msavy): Extract into service fully
- * 
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
@@ -66,6 +65,7 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
 
     private IStorage storage;
     private NotificationService notificationService;
+    private UserService userService;
     private ISecurityContext securityContext;
     private IStorageQuery query;
     private INewUserBootstrapper userBootstrapper;
@@ -75,12 +75,14 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
      */
     @Inject
     public UserResourceImpl(IStorage storage,
-        NotificationService notificationService,
-        ISecurityContext securityContext,
-        IStorageQuery query,
-        INewUserBootstrapper userBootstrapper) {
+         NotificationService notificationService,
+         UserService userService,
+         ISecurityContext securityContext,
+         IStorageQuery query,
+         INewUserBootstrapper userBootstrapper) {
         this.storage = storage;
         this.notificationService = notificationService;
+        this.userService = userService;
         this.securityContext = securityContext;
         this.query = query;
         this.userBootstrapper = userBootstrapper;
@@ -89,19 +91,25 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
     public UserResourceImpl() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserBean get(String userId) throws UserNotFoundException {
         securityContext.checkIfUserIsCurrentUser(userId);
-        return getUserInternal(userId);
+        return userService.getUserById(userId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CurrentUserBean getInfo() {
         String userId = securityContext.getCurrentUser();
 
         return tryAction(() -> {
             CurrentUserBean currentUser = new CurrentUserBean();
-            UserBean user = getUserInternal(userId);
+            UserBean user = userService.getUserById(userId);
             if (user == null) {
                 user = new UserBean();
                 user.setUsername(userId);
@@ -131,41 +139,29 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(String userId, UpdateUserBean user) throws UserNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
-        tryAction(() -> {
-            UserBean updatedUser = tryAction(() -> storage.getUser(userId));
-            if (updatedUser == null) {
-                throw ExceptionFactory.userNotFoundException(userId);
-            }
-            if (user.getEmail() != null) {
-                updatedUser.setEmail(user.getEmail());
-            }
-            if (user.getFullName() != null) {
-                updatedUser.setFullName(user.getFullName());
-            }
-
-            storage.updateUser(updatedUser);
-        });
+        userService.update(userId, user);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<OrganizationSummaryBean> getOrganizations(String userId) throws NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
-        Set<String> permittedOrganizations = new HashSet<>();
-
-        return tryAction(() -> {
-            Set<RoleMembershipBean> memberships = query.getUserMemberships(userId);
-            for (RoleMembershipBean membership : memberships) {
-                permittedOrganizations.add(membership.getOrganizationId());
-            }
-            return query.getOrgs(permittedOrganizations);
-        });
+        return userService.getPermittedOrgs(userId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ClientSummaryBean> getClients(String userId) throws NotAuthorizedException, SystemErrorException {
         securityContext.checkIfUserIsCurrentUser(userId);
@@ -173,13 +169,20 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         return getClientsInternal(userId, PermissionType.clientView);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<ClientSummaryBean> getEditableClients(String userId) throws NotAuthorizedException, SystemErrorException {
+    public List<ClientSummaryBean> getEditableClients(String userId)
+         throws NotAuthorizedException, SystemErrorException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
         return getClientsInternal(userId, PermissionType.clientEdit);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ApiSummaryBean> getApis(String userId) throws NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
@@ -188,8 +191,12 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         return tryAction(() -> query.getApisInOrgs(permittedOrganizations));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public SearchResultsBean<AuditEntryBean> getActivity(String userId, int page, int pageSize) throws NotAuthorizedException {
+    public SearchResultsBean<AuditEntryBean> getActivity(String userId, int page, int pageSize)
+         throws NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
         try {
@@ -200,8 +207,12 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public UserPermissionsBean getPermissionsForUser(String userId) throws UserNotFoundException, NotAuthorizedException {
+    public UserPermissionsBean getPermissionsForUser(String userId)
+         throws UserNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
 
         return tryAction(() -> {
@@ -212,14 +223,32 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public SearchResultsBean<NotificationDto<?>> searchLatestNotificationsForUser(String userId, NotificationCriteriaBean criteria)
+    public SearchResultsBean<NotificationDto<?>> getNotificationsForUser(String userId,
+         NotificationCriteriaBean criteria)
          throws UserNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return notificationService.searchNotificationsByRecipient(userId, criteria);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Response getNotificationCountForUser(String userId, boolean unreadOnly)
+         throws UserNotFoundException, NotAuthorizedException {
+        securityContext.checkIfUserIsCurrentUser(userId);
+        int notificationCount = notificationService.getNotificationsCount(userId, unreadOnly);
+        return Response.noContent().header("X-Total-Count", notificationCount).build();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<OrganizationSummaryBean> getClientOrganizations(String userId) throws SystemErrorException {
         securityContext.checkIfUserIsCurrentUser(userId);
@@ -227,6 +256,9 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         return getOrganizationsInternal(userId, PermissionType.clientEdit);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<OrganizationSummaryBean> getApiOrganizations(String userId) throws SystemErrorException {
         securityContext.checkIfUserIsCurrentUser(userId);
@@ -234,6 +266,9 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         return getOrganizationsInternal(userId, PermissionType.apiEdit);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<OrganizationSummaryBean> getPlanOrganizations(String userId) throws SystemErrorException {
         securityContext.checkIfUserIsCurrentUser(userId);
@@ -241,27 +276,26 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         return getOrganizationsInternal(userId, PermissionType.planEdit);
     }
 
-    private Set<String> getPermittedOrganizations(String userId, PermissionType permissionType) throws SystemErrorException {
-        Set<String> permittedOrganizations = new HashSet<>();
-
-        Set<PermissionBean> permissions = tryAction(() -> query.getPermissions(userId));
-        for (PermissionBean permission : permissions) {
-            if (permission.getName() == permissionType) {
-                permittedOrganizations.add(permission.getOrganizationId());
-            }
-        }
-        return permittedOrganizations;
+    private Set<String> getPermittedOrganizations(String userId, PermissionType permissionType) {
+        return userService.getPermissions(userId)
+                   .stream()
+                   .filter(permissionBean -> permissionBean.getName().equals(permissionType))
+                   .map(PermissionBean::getOrganizationId)
+                   .collect(Collectors.toSet());
     }
 
-    private List<OrganizationSummaryBean> getOrganizationsInternal(String userId, PermissionType permissionType) throws SystemErrorException {
+    // TODO move to service
+    private List<OrganizationSummaryBean> getOrganizationsInternal(String userId, PermissionType permissionType)
+         throws SystemErrorException {
         return tryAction(() -> query.getOrgs(getPermittedOrganizations(userId, permissionType)));
     }
 
-    private UserBean getUserInternal(String id) {
-        return tryAction(() -> storage.getUser(id));
-    }
-
+    // TODO move to service
     private List<ClientSummaryBean> getClientsInternal(String userId, PermissionType permissionType) throws SystemErrorException {
-        return tryAction(() -> query.getClientsInOrgs(getPermittedOrganizations(userId, permissionType)));
+        try {
+            return query.getClientsInOrgs(getPermittedOrganizations(userId, permissionType));
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
     }
 }

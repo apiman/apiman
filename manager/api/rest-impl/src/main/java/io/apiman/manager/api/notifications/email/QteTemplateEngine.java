@@ -11,6 +11,8 @@ import io.quarkus.qute.Engine;
 import io.quarkus.qute.ReflectionValueResolver;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
+import org.apache.logging.log4j.util.Strings;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
@@ -32,7 +34,10 @@ public class QteTemplateEngine {
         return engine;
     }
 
-    public String applyTemplate(String rawTemplate, Map<String, Object> values) {
+    public String applyTemplate(@NotNull String rawTemplate, @NotNull Map<String, Object> values) {
+        if (Strings.isBlank(rawTemplate)) {
+            return "";
+        }
         LOGGER.trace("Applying template {0} with values {1}", rawTemplate, values);
         String result = doApplyTemplate(rawTemplate, values);
         LOGGER.trace("Rendered result: {0}", result);

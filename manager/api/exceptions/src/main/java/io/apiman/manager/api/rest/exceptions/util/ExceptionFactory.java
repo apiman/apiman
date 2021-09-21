@@ -141,7 +141,11 @@ public final class ExceptionFactory {
     }
 
     public static InvalidContractStatusException contractNotYetApprovedException(List<ContractSummaryBean> contracts) {
-        return new InvalidContractStatusException(Messages.i18n.format("ContractNotYetApproved", contracts)); //$NON-NLS-1$
+        return new InvalidContractStatusException(Messages.i18n.format("ContractNotYetApproved",
+             contracts.stream()
+                      .filter(c -> c.getStatus() == ContractStatus.AwaitingApproval)
+                      .map(ContractSummaryBean::getContractId)
+                      .collect(Collectors.toList())));
     }
 
     public static InvalidContractStatusException invalidContractStatus(ContractStatus expected, ContractStatus actual) {

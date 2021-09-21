@@ -2302,7 +2302,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                   + "INNER JOIN USERS ON u.USERNAME = m.USER_ID "
                   + "WHERE p.PERMISSIONS = :permissionType "
                   + "AND m.ORG_ID = :orgName")
-               .bind("permissionType", permission)
+               .bind("permissionType", permission.ordinal())
                .bind("orgName", orgName)
                .mapToBean(UserBean.class)
                .list()

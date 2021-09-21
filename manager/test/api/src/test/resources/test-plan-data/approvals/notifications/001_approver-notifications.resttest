@@ -1,0 +1,89 @@
+POST /users/admin/notifications admin/admin
+Content-Type: application/json
+
+{
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : false
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+	"beans": [{
+		"category": "API_ADMINISTRATION",
+		"reason": "apiman.client.contract.approval.request",
+		"reasonMessage": "Signup request for API",
+		"notificationStatus": "OPEN",
+		"recipient": {
+			"id": "admin",
+			"username": "admin",
+			"fullName": "Admin",
+			"email": "admin@example.org"
+		},
+		"source": "http://somepage/here/",
+		"payload": {
+			"headers": {
+				"source": "/a/b/c",
+				"type": "io.apiman.manager.api.beans.events.ContractCreatedEvent",
+				"subject": "request",
+				"eventVersion": 1,
+				"otherProperties": {}
+			},
+			"user": {
+				"id": "bwayne",
+				"username": "bwayne",
+				"fullName": "Bruce Wayne",
+				"email": "bwayne@wayne-enterprises.com"
+			},
+			"clientOrgId": "Organization1",
+			"clientId": "Client1",
+			"clientVersion": "1.0",
+			"apiOrgId": "Organization2",
+			"apiId": "API2",
+			"apiVersion": "1.5",
+			"planId": "PlanA",
+			"planVersion": "2.0",
+			"approvalRequired": true
+		}
+	}, {
+		"category": "API_ADMINISTRATION",
+		"reason": "apiman.client.contract.approval.request",
+		"reasonMessage": "Signup request for API",
+		"notificationStatus": "OPEN",
+		"recipient": {
+			"id": "admin",
+			"username": "admin",
+			"fullName": "Admin",
+			"email": "admin@example.org"
+		},
+		"source": "http://somepage/here/",
+		"payload": {
+			"headers": {
+				"source": "/a/b/c",
+				"type": "io.apiman.manager.api.beans.events.ContractCreatedEvent",
+				"subject": "request",
+				"eventVersion": 1,
+				"otherProperties": {}
+			},
+			"user": {
+				"id": "bwayne",
+				"username": "bwayne",
+				"fullName": "Bruce Wayne",
+				"email": "bwayne@wayne-enterprises.com"
+			},
+			"clientOrgId": "Organization1",
+			"clientId": "Client1",
+			"clientVersion": "1.0",
+			"apiOrgId": "Organization1",
+			"apiId": "API1",
+			"apiVersion": "1.0",
+			"planId": "Plan1",
+			"planVersion": "1.0",
+			"approvalRequired": true
+		}
+	}],
+	"totalSize": 2
+}

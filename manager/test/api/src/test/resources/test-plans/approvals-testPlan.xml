@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" name="notifications tests">
+
+  <testGroup name="Initial Creates">
+    <test name="Create Gateway">test-plan-data/approvals/create/000_create-gateway.resttest</test>
+    <test name="Create Organization 1">test-plan-data/approvals/create/001_create-org1.resttest</test>
+
+    <test name="Create client role (i.e. needs approval)">test-plan-data/approvals/create/001_2.5_add-role-app-dev.resttest</test>
+    <test name="Create plan manager role (i.e. approver)">test-plan-data/approvals/create/001_2.5_add-role-api-publisher.resttest</test>
+
+    <test name="Grant bwayne (normal user) clientapp rights (org1)">test-plan-data/approvals/create/001_5_add-bwayne-user.resttest</test>
+    <test name="Grant approver all plan rights (org1)">test-plan-data/approvals/create/001_5_add-plan-manager.resttest</test>
+
+    <test name="Create Client 1">test-plan-data/approvals/create/002_create-client1.resttest</test>
+    <test name="Create Client Version 1.0">test-plan-data/approvals/create/003_create-client-version-1.0.resttest</test>
+    <test name="Create Plan 1">test-plan-data/approvals/create/004_create-plan1.resttest</test>
+    <test name="Create Plan Version 1.0">test-plan-data/approvals/create/005_create-plan-version-1.0.resttest</test>
+
+    <test name="Lock Plan Version 1.0">test-plan-data/approvals/publish/003_lock-plan-version-1.0.resttest</test>
+
+    <test name="Create API 1">test-plan-data/approvals/create/006_create-api1.resttest</test>
+    <test name="Create API Version 1.0">test-plan-data/approvals/create/007_create-api-version-1.0.resttest</test>
+    <test name="Update API Version 1.0">test-plan-data/approvals/create/007.5_update-api1-version-1.0.resttest</test>
+    <test name="Create Org 2">test-plan-data/approvals/create/008_create-org2.resttest</test>
+    <test name="Grant approver all plan rights (org2)">test-plan-data/approvals/create/008_5_add-plan-manager.resttest</test>
+    <test name="Create Org 2 / API 2">test-plan-data/approvals/create/009_create-api2.resttest</test>
+    <test name="Create API 2 / Version 1.0">test-plan-data/approvals/create/010_create-api-2-version-1.0.resttest</test>
+    <test name="Create API 2 / Version 1.5">test-plan-data/approvals/create/011_create-api-2-version-1.5.resttest</test>
+    <test name="Create Org 2 / Plan A">test-plan-data/approvals/create/012_create-planA.resttest</test>
+    <test name="Create Org 2 / Plan B">test-plan-data/approvals/create/013_create-planB.resttest</test>
+    <test name="Create Plan A / Version 1.0">test-plan-data/approvals/create/014_create-plan-A-version-1.0.resttest</test>
+    <test name="Create Plan A / Version 2.0">test-plan-data/approvals/create/015_create-plan-A-version-2.0.resttest</test>
+    <test name="Create Plan B / Version 1.0">test-plan-data/approvals/create/016_create-plan-B-version-1.0.resttest</test>
+
+    <test name="Lock Plan A / Version 1.0">test-plan-data/approvals/publish/004_lock-plan-a-version-1.0.resttest</test>
+    <test name="Lock Plan A / Version 2.0">test-plan-data/approvals/publish/005_lock-plan-a-version-2.0.resttest</test>
+    <test name="Lock Plan B / Version 1.0">test-plan-data/approvals/publish/006_lock-plan-b-version-1.0.resttest</test>
+
+    <test name="Update API 2 Plans">test-plan-data/approvals/create/017_update-api2-version-1.5-plans.resttest</test>
+    <test name="Create API 2 / Version 2.0">test-plan-data/approvals/create/018_create-api-2-version-2.0.resttest</test>
+  </testGroup>
+
+  <testGroup name="Create contracts and approve">
+    <test name="Publish API 1">test-plan-data/approvals/publish/001_publish-api-1.resttest</test>
+    <test name="Publish API 2">test-plan-data/approvals/publish/002_publish-api-2.resttest</test>
+
+    <test name="Create Contract to API 1 (approval required)">test-plan-data/approvals/contracts/003_create-contract1.resttest</test>
+    <test name="List Contracts for Client 1 [1]">test-plan-data/approvals/contracts/004_get-contracts.resttest</test>
+
+    <test name="Create Contract to API 2 (approval required)">test-plan-data/approvals/contracts/005_create-contract2.resttest</test>
+    <test name="List Contracts for Client 1 [2]">test-plan-data/approvals/contracts/006_get-contracts.resttest</test>
+
+    <test name="Try to register client before approval(s) granted (should fail)">test-plan-data/approvals/contracts/006.5_try-to-register-client1-fail.resttest</test>
+
+    <test name="Admin approves contract 1">test-plan-data/approvals/contracts/007_approve-contract1.resttest</test>
+    <test name="Try to register client before all approval(s) granted (should fail)">test-plan-data/approvals/contracts/007.5_try-to-register-client1-again-fail.resttest</test>
+
+    <test name="Admin approves contract 2">test-plan-data/approvals/contracts/008_approve-contract2.resttest</test>
+    <test name="Successfully register client1 (all approved)">test-plan-data/approvals/contracts/009_register-client1.resttest</test>
+
+    <test name="Approver receives notification about contract signup request">test-plan-data/approvals/notifications/001_approver-notifications.resttest</test>
+    <test name="User bwayne receives notifications about approvals">test-plan-data/approvals/notifications/002_bwayne-notifications.resttest</test>
+  </testGroup>
+
+</testPlan>

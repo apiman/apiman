@@ -325,8 +325,8 @@ public abstract class ApiManagerConfig {
         return getPrefixedProperties("apiman.encrypter."); //$NON-NLS-1$
     }
 
-    public Map<String, String> getNotificationProperties() {
-        return getPrefixedProperties("apiman-manager.notifications.");
+    public Map<String, String> getEmailNotificationProperties() {
+        return getPrefixedProperties("apiman-manager.notifications.email.");
     }
 
     /**
@@ -377,7 +377,7 @@ public abstract class ApiManagerConfig {
      */
     public Path getConfigDirectory() {
         // Grand unified conf directory!
-        String confDir = config.getString("apiman.config.dir");
+        String confDir = System.getProperty("apiman.config.dir");
         if (confDir != null) {
             return Paths.get(confDir);
         }
@@ -393,7 +393,7 @@ public abstract class ApiManagerConfig {
         if (confDir != null) {
             return Paths.get(confDir, "conf");
         }
-        throw new IllegalStateException("No data directory has been set. Please set apiman.data.dir=<data dir>");
+        throw new IllegalStateException("No config directory has been set. Please set apiman.config.dir=<data dir>");
     }
 
     /**
@@ -408,7 +408,7 @@ public abstract class ApiManagerConfig {
      */
     public Path getDataDirectory() {
         // Grand unified data directory!
-        String dataDir = config.getString("apiman.data.dir");
+        String dataDir = System.getProperty("apiman.data.dir");
         if (dataDir != null) {
             return Paths.get(dataDir);
         }

@@ -23,5 +23,5 @@ public @interface ApimanEvent {
     /**
      * Version of the event
      */
-    int version();
+    long version();
 }

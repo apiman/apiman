@@ -1,0 +1,11 @@
+POST /actions admin/admin
+Content-Type: application/json
+
+{
+  "type" : "publishAPI",
+  "organizationId" : "Organization2",
+  "entityId" : "API2",
+  "entityVersion" : "1.5"
+}
+----
+204

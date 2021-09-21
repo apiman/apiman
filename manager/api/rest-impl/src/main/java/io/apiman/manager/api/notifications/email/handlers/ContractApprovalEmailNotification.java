@@ -1,13 +1,11 @@
 package io.apiman.manager.api.notifications.email.handlers;
 
-import io.apiman.common.logging.ApimanLoggerFactory;
-import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.events.ContractApprovalEvent;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.notifications.EmailNotificationTemplate;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
-import io.apiman.manager.api.notifications.email.QteTemplateEngine;
+import io.apiman.manager.api.notifications.email.SimpleEmail;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.notifications.producers.ContractApprovalNotificationProducer;
 
@@ -20,14 +18,11 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 public class ContractApprovalEmailNotification implements INotificationHandler {
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalEmailNotification.class);
-    private final QteTemplateEngine templateEngine;
+
     private final SimpleMailNotificationService mailNotificationService;
 
     @Inject
-    public ContractApprovalEmailNotification(QteTemplateEngine templateEngine,
-         SimpleMailNotificationService mailNotificationService) {
-        this.templateEngine = templateEngine;
+    public ContractApprovalEmailNotification(SimpleMailNotificationService mailNotificationService) {
         this.mailNotificationService = mailNotificationService;
     }
 
@@ -41,12 +36,14 @@ public class ContractApprovalEmailNotification implements INotificationHandler {
              .or(() -> mailNotificationService.findTemplateFor(notification.getCategory()))
              .orElseThrow();
 
-        String renderedBody = templateEngine.applyTemplate(template.getNotificationTemplateBody(), templateMap);
-        String renderedSubject = templateEngine.applyTemplate(template.getNotificationTemplateSubject(), templateMap);
-
         UserDto recipient = notification.getRecipient();
-        mailNotificationService.sendHtml(recipient.getEmail(), recipient.getFullName(), renderedSubject, renderedBody,
-             "");
+        var mail = SimpleEmail
+             .builder()
+             .setRecipient(recipient)
+             .setTemplate(template)
+             .setTemplateVariables(templateMap)
+             .build();
+        mailNotificationService.send(mail);
     }
 
     @Override

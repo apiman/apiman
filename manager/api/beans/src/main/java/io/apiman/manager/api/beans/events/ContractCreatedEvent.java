@@ -109,7 +109,7 @@ public class ContractCreatedEvent implements IVersionedApimanEvent {
     }
 
     @JsonPOJOBuilder(withPrefix = "set")
-    public static class Builder implements ApimanEventBuilderMixin {
+    public static class Builder implements ApimanBuilderMixin {
         @NotNull
         private ApimanEventHeaders headers;
         @NotNull

@@ -18,7 +18,7 @@ import javax.transaction.Transactional;
 /**
  *
  */
-@Priority(Interceptor.Priority.LIBRARY_BEFORE)
+@Priority(Interceptor.Priority.LIBRARY_AFTER)
 @Interceptor
 @Transactional
 public class JettyTransactionalInterceptor implements DataAccessUtilMixin {

@@ -134,7 +134,6 @@ public class ActionService implements DataAccessUtilMixin {
 
         // Set the contract to approved state and send approved event.
         contract.setStatus(ContractStatus.Created);
-        fireContractApprovedEvent(approver, contract, orgC, cvb, orgA, avb, plan);
         LOGGER.debug("{0} approved a contract: {1} -> {2}", approverId, contract, action);
 
         // In the second phase we need to check the other contracts to see whether they are all in the 'ready' state
@@ -168,6 +167,8 @@ public class ActionService implements DataAccessUtilMixin {
                 }
             });
         }
+        //storage.flush();
+        fireContractApprovedEvent(approver, contract, orgC, cvb, orgA, avb, plan);
     }
 
     private void fireContractApprovedEvent(UserBean approver, ContractBean contract, OrganizationBean orgC,

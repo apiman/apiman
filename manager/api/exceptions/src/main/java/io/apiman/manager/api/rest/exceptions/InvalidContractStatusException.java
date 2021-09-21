@@ -1,11 +1,11 @@
 package io.apiman.manager.api.rest.exceptions;
 
-import io.apiman.manager.api.rest.exceptions.ContractNotFoundException;
-
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class InvalidContractStatusException extends AbstractUserException {
+
+    private static final long serialVersionUID = -5204892141429625L;
 
     public InvalidContractStatusException(String message) {
         super(message);

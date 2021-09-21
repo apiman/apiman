@@ -37,6 +37,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
+import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.rest.IRoleResource;
 import io.apiman.manager.api.rest.IUserResource;
 import io.apiman.manager.api.rest.exceptions.ClientVersionNotFoundException;
@@ -100,7 +101,8 @@ public class OrganizationService implements DataAccessUtilMixin {
         IRoleResource roles,
         ISecurityContext securityContext,
         IGatewayLinkFactory gatewayLinkFactory,
-        ClientAppService clientService
+        ClientAppService clientService,
+         SimpleMailNotificationService smns
     ) {
         this.config = config;
         this.storage = storage;
@@ -110,6 +112,7 @@ public class OrganizationService implements DataAccessUtilMixin {
         this.securityContext = securityContext;
         this.gatewayLinkFactory = gatewayLinkFactory;
         this.clientService = clientService;
+        smns.isConfigured();
     }
 
     public OrganizationService() {

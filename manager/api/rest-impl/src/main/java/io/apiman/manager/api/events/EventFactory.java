@@ -79,7 +79,7 @@ public class EventFactory {
         JsonNode possibleHeaders = payload.at("/headers");
         if (!possibleHeaders.isMissingNode() && possibleHeaders.isObject()) {
             String type = possibleHeaders.get("type").asText();
-            int version = possibleHeaders.get("version").asInt();
+            long version = possibleHeaders.get("eventVersion").asLong();
             if (StringUtils.isBlank(type)) {
                 throw new IllegalStateException("'type' field missing from headers");
             }

@@ -16,9 +16,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.SortedMap;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.common.collect.Maps;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * Simple email related actions, with a focus on notifications.
  *
  * <ul>
- *     <li>Send notification emails as configured via file in {@link ApiManagerConfig#getNotificationProperties()}.</li>
+ *     <li>Send notification emails as configured via file in {@link ApiManagerConfig#getEmailNotificationProperties()} ()}.</li>
  *     <li>Get email notification templates (from a static file only, at present) by reason (or prefix thereof) or
  *     category.</li>
  * </ul>
@@ -37,25 +39,76 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApplicationScoped
 public class SimpleMailNotificationService {
+
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SimpleMailNotificationService.class);
-    private static final Map DEFAULT_HEADERS = Map.of("X-Notification-Producer", "Apiman");
+    private static final Map<String, String> DEFAULT_HEADERS = Map.of("X-Notification-Producer", "Apiman");
 
-    private EmailSender emailSender;
+    private IEmailSender emailSender;
     private ApiManagerConfig config;
+    private QteTemplateEngine templateEngine;
+    private boolean isConfigured;
 
-    private PatriciaTrie<EmailNotificationTemplate> reasonTrie = new PatriciaTrie<>();
-    private ArrayListValuedHashMap<NotificationCategory, EmailNotificationTemplate> categoryToTemplateMap = new ArrayListValuedHashMap();
+    private final PatriciaTrie<EmailNotificationTemplate> reasonTrie = new PatriciaTrie<>();
+    private final ArrayListValuedHashMap<NotificationCategory, EmailNotificationTemplate> categoryToTemplateMap = new ArrayListValuedHashMap<>();
 
     @Inject
-    public SimpleMailNotificationService(ApiManagerConfig config) {
+    public SimpleMailNotificationService(ApiManagerConfig config, QteTemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
         this.config = config;
-        var smtpConfig = new SmtpEmailConfiguration(config.getNotificationProperties());
-        this.emailSender = new EmailSender(smtpConfig);
+        if (!config.getEmailNotificationProperties().isEmpty()) {
+            var smtpConfig = new SmtpEmailConfiguration(config.getEmailNotificationProperties());
+            this.emailSender = new EmailSender(smtpConfig);
+            if (smtpConfig.isMock()) {
+                emailSender = new MockEmailSender();
+            }
+            isConfigured = true;
+        } else {
+            isConfigured = false;
+            emailSender = new MockEmailSender();
+        }
         readEmailNotificationTemplatesFromFile();
     }
 
     public SimpleMailNotificationService() {}
 
+    @PostConstruct
+    public void post() {
+        System.out.println("hello");
+    }
+
+    public boolean isConfigured() {
+        return isConfigured;
+    }
+
+    /**
+     * Send an email
+     */
+    public void send(SimpleEmail email) {
+        LOGGER.debug("Sending email: {0}", email);
+        EmailNotificationTemplate template = email.getTemplate();
+
+        String html = templateEngine.applyTemplate(template.getHtmlBody(), email.getTemplateVariables());
+        boolean htmlBlank = html.isBlank();
+
+        String plain = templateEngine.applyTemplate(template.getPlainBody(), email.getTemplateVariables());
+        boolean plainBlank = html.isBlank();
+
+        String subject = templateEngine.applyTemplate(template.getSubject(), email.getTemplateVariables());
+        boolean subjectBlank = subject.isBlank();
+
+        if (subjectBlank) {
+            throw new IllegalArgumentException("Non-blank subject is required for notification emails " + email);
+        } else if (htmlBlank && plainBlank) {
+            throw new IllegalArgumentException("Both HTML and plain templates are blank in notification mail " + email);
+        } else if (htmlBlank) {
+            sendPlaintext(email.getToEmail(), email.getToName(), subject, plain, email.getHeaders());
+        } else if (plainBlank) {
+            LOGGER.warn("Sending an HTML mail without a plaintext version is not recommended: {0}", email);
+            sendHtml(email.getToEmail(), email.getToName(), subject, html, "", email.getHeaders());
+        } else {
+            sendHtml(email.getToEmail(), email.getToName(), subject, html, plain, email.getHeaders());
+        }
+    }
     /**
      * Send a plaintext email
      */
@@ -67,10 +120,9 @@ public class SimpleMailNotificationService {
      * Send a plaintext email
      */
     public void sendPlaintext(@NotNull String toEmail, @NotNull String toName, @NotNull  String subject, @NotNull  String body, @NotNull Map<String, String> headers) {
-        LOGGER.debug("Sending plaintext email. To: {0}, Subject: {1}, Body: {2}, Extra headers: {3}.",
-             toEmail, subject, body, headers);
-        LOGGER.debug("Sender settings: {0}", emailSender);
-        emailSender.sendPlaintext(toEmail, toName, subject, body, headers);
+        var copy = Maps.newHashMap(headers);
+        copy.putAll(DEFAULT_HEADERS);
+        emailSender.sendPlaintext(toEmail, toName, subject, body, copy);
     }
 
     /**
@@ -84,9 +136,8 @@ public class SimpleMailNotificationService {
      * Send an HTML email with a plaintext fallback/alternative.
      */
     public void sendHtml(@NotNull String toEmail, @NotNull String toName, @NotNull String subject, @NotNull String htmlBody, @NotNull String plainBody, @NotNull Map<String, String> headers) {
-        LOGGER.debug("Sending HTML email. To: {0}, Subject: {1}, HTML body: {2}, Plaintext Body: {3}, "
-                          + "Extra headers: {4}.", toEmail, subject, htmlBody, plainBody, headers);
-        LOGGER.debug("Sender settings: {0}", emailSender);
+        var copy = Maps.newHashMap(headers);
+        copy.putAll(DEFAULT_HEADERS);
         emailSender.sendHtml(toEmail, toName, subject, htmlBody, plainBody, headers);
     }
 
@@ -125,7 +176,7 @@ public class SimpleMailNotificationService {
      * @return Sorted map of prefix and corresponding template. Empty if no matches are found.
      */
     public SortedMap<String, EmailNotificationTemplate> findAllTemplatesFor(@NotNull String reasonKey) {
-        return reasonTrie.headMap(reasonKey + "*"); // Add a character, as headMap only matches prefixes shorter
+        return reasonTrie.subMap(reasonKey.substring(0, 1), reasonKey + "*"); // Add a character, as headMap only matches prefixes shorter
     }
 
     /**
@@ -164,8 +215,8 @@ public class SimpleMailNotificationService {
             for (EmailNotificationTemplate tpl : tpls) {
                 reasonTrie.put(tpl.getNotificationReason(), tpl);
                 LOGGER.trace("Adding template: reason {0} -> {1}", tpl.getNotificationReason(), tpl);
-                LOGGER.trace("Adding template: category {0} -> {1}", tpl.getNotificationCategory(), tpl);
-                categoryToTemplateMap.put(tpl.getNotificationCategory(), tpl);
+                LOGGER.trace("Adding template: category {0} -> {1}", tpl.getCategory(), tpl);
+                categoryToTemplateMap.put(tpl.getCategory(), tpl);
             }
         } catch (IOException ioe) {
             throw new UncheckedIOException(ioe);

@@ -380,6 +380,11 @@
       <artifactId>hibernate-validator-cdi</artifactId> <!-- probably needed on test only -->
       <version>6.0.22.Final</version>
     </dependency>
-
+    <dependency>
+      <groupId>com.icegreen</groupId>
+      <artifactId>greenmail-junit4</artifactId>
+      <version>1.6.5</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
