@@ -22,7 +22,7 @@ const routes: Routes = [
     component: MarketplaceSignupStepperComponent,
   },
   { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
-  { path: 'applications', component: MyAppsComponent },
+  { path: 'applications', component: MyAppsComponent, canActivate: [AuthGuard] },
   { path: 'swagger/:orgId/:apiId/:apiVersion', component: SwaggerComponent },
 ];
 
