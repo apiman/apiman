@@ -7,6 +7,7 @@ import io.apiman.manager.api.beans.events.ApimanEventHeaders;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -70,12 +71,11 @@ public class EventService {
         if (StringUtils.isEmpty(currentValue)) {
             if (event.getClass().isAnnotationPresent(ApimanEvent.class)) {
                 ApimanEvent ev = event.getClass().getAnnotation(ApimanEvent.class);
-                return ev.name();
-            } else {
-                return event.getClass().getCanonicalName();
+                currentValue = ev.name();
             }
-        } else {
-            return currentValue;
         }
+        return Optional.ofNullable(currentValue)
+                       .filter(s -> !s.isBlank())
+                       .orElse(event.getClass().getCanonicalName());
     }
 }

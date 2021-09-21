@@ -16,18 +16,19 @@ import static io.apiman.common.config.options.Predicates.greaterThanZeroMsg;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class SmtpEmailConfiguration extends GenericOptionsParser {
-    public static final String PREFIX = "email.smtp.";
-    private boolean mock = false;
-    private boolean ssl = true;
+    public static final String PREFIX = "smtp.";
+    private boolean mock;
+    private boolean ssl;
     private StartTLSEnum startTLSMode = StartTLSEnum.OPTIONAL;
-    private String from;
+    private String fromName;
+    private String fromEmail;
     private String host;
     private int port;
     private String[] authMethods;
     private String username;
     private String password;
 
-    // TODO trust store and keystore
+    // TODO trust store and keystore?
     public SmtpEmailConfiguration(Map<String, String> options) {
         super(options);
     }
@@ -38,7 +39,8 @@ public class SmtpEmailConfiguration extends GenericOptionsParser {
         this.mock = getBool(keys(PREFIX + "mock"), false);
         this.ssl = getBool(keys(PREFIX + "ssl"), true);
         this.startTLSMode = getEnum(keys(PREFIX + "startTLSMode"), StartTLSEnum.OPTIONAL, StartTLSEnum::toValue);
-        this.from = getRequiredString(keys(PREFIX + "from"), anyOk(), "");
+        this.fromName = getRequiredString(keys(PREFIX + "fromName"), anyOk(), "");
+        this.fromEmail = getRequiredString(keys(PREFIX + "fromEmail"), anyOk(), "");
         this.host = getRequiredString(keys(PREFIX + "host"), anyOk(), "");
         this.port = getInt(keys(PREFIX + "port"), 587, greaterThanZeroInt(), greaterThanZeroMsg());
         this.username = getString(keys(PREFIX + "username"), null, Predicates.anyOk(), "");
@@ -49,82 +51,40 @@ public class SmtpEmailConfiguration extends GenericOptionsParser {
         return mock;
     }
 
-    public SmtpEmailConfiguration setMock(boolean mock) {
-        this.mock = mock;
-        return this;
-    }
-
     public boolean isSsl() {
         return ssl;
-    }
-
-    public SmtpEmailConfiguration setSsl(boolean ssl) {
-        this.ssl = ssl;
-        return this;
     }
 
     public StartTLSEnum getStartTLSMode() {
         return startTLSMode;
     }
 
-    public SmtpEmailConfiguration setStartTLSMode(
-         StartTLSEnum startTLSMode) {
-        this.startTLSMode = startTLSMode;
-        return this;
+    public String getFromName() {
+        return fromName;
     }
 
-    public String getFrom() {
-        return from;
-    }
-
-    public SmtpEmailConfiguration setFrom(String from) {
-        this.from = from;
-        return this;
+    public String getFromEmail() {
+        return fromEmail;
     }
 
     public String getHost() {
         return host;
     }
 
-    public SmtpEmailConfiguration setHost(String host) {
-        this.host = host;
-        return this;
-    }
-
     public int getPort() {
         return port;
-    }
-
-    public SmtpEmailConfiguration setPort(int port) {
-        this.port = port;
-        return this;
     }
 
     public String[] getAuthMethods() {
         return authMethods;
     }
 
-    public SmtpEmailConfiguration setAuthMethods(String[] authMethods) {
-        this.authMethods = authMethods;
-        return this;
-    }
-
     public String getUsername() {
         return username;
     }
 
-    public SmtpEmailConfiguration setUsername(String username) {
-        this.username = username;
-        return this;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public SmtpEmailConfiguration setPassword(String password) {
-        this.password = password;
-        return this;
     }
 
     public enum StartTLSEnum {
@@ -147,7 +107,8 @@ public class SmtpEmailConfiguration extends GenericOptionsParser {
              .add("mock=" + mock)
              .add("ssl=" + ssl)
              .add("startTLSMode=" + startTLSMode)
-             .add("from='" + from + "'")
+             .add("fromName='" + fromName + "'")
+             .add("fromEmail='" + fromEmail + "'")
              .add("host='" + host + "'")
              .add("port=" + port)
              .add("authMethods=" + Arrays.toString(authMethods))

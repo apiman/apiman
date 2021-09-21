@@ -6,8 +6,7 @@ import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.notifications.EmailNotificationTemplate;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
-import io.apiman.manager.api.core.IStorage;
-import io.apiman.manager.api.notifications.email.QteTemplateEngine;
+import io.apiman.manager.api.notifications.email.SimpleEmail;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.notifications.producers.ClientAppStatusNotificationProducer;
 
@@ -21,18 +20,11 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class ClientAppRegisteredEmailNotification implements INotificationHandler {
 
-    private IStorage storage;
     private SimpleMailNotificationService mailNotificationService;
-    private QteTemplateEngine templateEngine;
 
     @Inject
-    public ClientAppRegisteredEmailNotification(QteTemplateEngine templateEngine,
-         SimpleMailNotificationService mailNotificationService,
-         IStorage storage
-    ) {
-        this.templateEngine = templateEngine;
+    public ClientAppRegisteredEmailNotification(SimpleMailNotificationService mailNotificationService) {
         this.mailNotificationService = mailNotificationService;
-        this.storage = storage;
     }
 
     public ClientAppRegisteredEmailNotification() {}
@@ -49,12 +41,14 @@ public class ClientAppRegisteredEmailNotification implements INotificationHandle
              .or(() -> mailNotificationService.findTemplateFor(notification.getCategory()))
              .orElseThrow();
 
-        String renderedBody = templateEngine.applyTemplate(template.getNotificationTemplateBody(), templateMap);
-        String renderedSubject = templateEngine.applyTemplate(template.getNotificationTemplateSubject(), templateMap);
-
         UserDto recipient = notification.getRecipient();
-        mailNotificationService.sendHtml(recipient.getEmail(), recipient.getFullName(), renderedSubject, renderedBody,
-             "");
+        var mail = SimpleEmail
+             .builder()
+             .setRecipient(recipient)
+             .setTemplate(template)
+             .setTemplateVariables(templateMap)
+             .build();
+        mailNotificationService.send(mail);
     }
 
     /**

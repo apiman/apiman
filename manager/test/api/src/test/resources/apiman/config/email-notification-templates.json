@@ -1,0 +1,44 @@
+[
+  {
+    "notificationReason": "apiman.account.signup.approval.request",
+    "subject": "Action required: New account signup {event.userId} needs activation",
+    "htmlBody": "Hi {notification.recipient.fullName}",
+    "plainBody": "Hi {notification.recipient.fullName}",
+    "category": "USER_ADMINISTRATION"
+  },
+  {
+    "notificationReason": "apiman.account.signup.notification",
+    "subject": "Info: A new account '{event.userId}' signed up to the developer portal",
+    "htmlBody": "Hi {notification.recipient.fullName}",
+    "plainBody": "Hi {notification.recipient.fullName}",
+    "category": "USER_ADMINISTRATION"
+  },
+  {
+    "notificationReason": "apiman.api.signup.approval.request",
+    "subject": "Action required: A user requires approval to sign up to API {event.apiName} v{event.apiVersion}",
+    "htmlBody": "Hi {notification.recipient.fullName}",
+    "plainBody": "Hi {notification.recipient.fullName}",
+    "category": "API_ADMINISTRATION"
+  },
+  {
+    "notificationReason": "apiman.api.signup.notification",
+    "subject": "Info: User {event.userId} signed up to {event.apiName} v{event.apiVersion}",
+    "htmlBody": "Hi {notification.recipient.fullName}",
+    "plainBody": "Hi {notification.recipient.fullName}",
+    "category": "API_ADMINISTRATION"
+  },
+  {
+    "notificationReason": "test.notification.reason",
+    "subject": "Pay attention!",
+    "htmlBody": "Salut {name}",
+    "plainBody": "Hola {name}",
+    "category": "OTHER"
+  },
+  {
+    "notificationReason": "test.notification",
+    "subject": "Victoria, Mahe",
+    "htmlBody": "Hi html {name}",
+    "plainBody": "Hi plain {name}",
+    "category": "OTHER"
+  }
+]

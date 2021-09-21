@@ -6,10 +6,10 @@ import io.apiman.common.util.JsonUtil;
 import io.apiman.common.util.Preconditions;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.idm.PermissionType;
-import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
-import io.apiman.manager.api.beans.notifications.NotificationCriteriaBean;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
@@ -22,8 +22,6 @@ import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.notifications.mappers.NotificationMapper;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
-import io.apiman.manager.api.beans.idm.UserDto;
-import io.apiman.manager.api.beans.idm.UserMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -73,12 +71,25 @@ public class NotificationService implements DataAccessUtilMixin {
     public NotificationService() {
     }
 
-    public int getUnreadNotificationsCount(@NotNull String userId) {
-        return notificationRepository.countUnreadNotificationsByUserId(userId);
+    /**
+     * Get the number of notifications for a given user.
+     *
+     * @param recipientId the user's ID
+     * @param unreadOnly true if only unread notifications should be counted
+     * @return the count of notifications
+     */
+    public int getNotificationsCount(@NotNull String recipientId, boolean unreadOnly) {
+        if (unreadOnly) {
+            LOGGER.debug("Getting unread notifications count for {0}", recipientId);
+            return notificationRepository.countNotificationsByUserId(recipientId, List.of(NotificationStatus.OPEN));
+        } else {
+            LOGGER.debug("Getting all notifications count for {0}", recipientId);
+            return notificationRepository.countNotificationsByUserId(recipientId, List.of(NotificationStatus.values()));
+        }
     }
 
     /**
-     * Search for any notification for a given user/recipient
+     * Search for any notification for a given user/recipient.
      *
      * @param recipientId the user's ID
      * @param searchCriteriaBeanIn the search criteria
@@ -257,4 +268,5 @@ public class NotificationService implements DataAccessUtilMixin {
              .setSource(newNotification.getSource())
              .setPayload(event);
     }
+
 }

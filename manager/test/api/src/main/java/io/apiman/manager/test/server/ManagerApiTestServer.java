@@ -26,11 +26,11 @@ import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.api.war.TransactionWatchdogFilter;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
-import io.apiman.test.common.es.EsTestUtil;
 import io.apiman.test.common.util.TestUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -159,6 +159,16 @@ public class ManagerApiTestServer {
             // TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/comp/env/jdbc/ApiManagerDS");
             TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");
 
+            // Set data directory to be test data dir
+            File apimanConfigDir = new File("src/test/resources/apiman/config");
+            if (!apimanConfigDir.exists()) {
+                throw new NoSuchFileException("src/test/resources/apiman/config not found. If you are using Eclipse you may need "
+                   + "to set the working directory manually (works automatically on all other platforms)");
+            }
+            TestUtil.setProperty("apiman.config.dir", apimanConfigDir.getAbsolutePath());
+            var apimanDataDir = new File("src/test/resources/apiman/data");
+            TestUtil.setProperty("apiman.data.dir", apimanDataDir.getAbsolutePath());
+
             try {
                 InitialContext ctx = TestUtil.initialContext();
                 // TestUtil.ensureCtx(ctx, "java:/comp/env");
@@ -177,17 +187,17 @@ public class ManagerApiTestServer {
                 throw new RuntimeException(e);
             }
         }
-        if (ManagerTestUtils.getTestType() == TestType.es) {
-            if (node == null) {
-                node = EsTestUtil.provideElasticsearchContainer();
-            }
-            if (!node.isRunning()) {
-                // We have to start the test container here manually but it is stopped automatically from the test container library
-                // For performance reasons we do not stop the elasticsearch container between test runs
-                node.start();
-            }
-            ES_CLIENT = createEsClient();
-        }
+        // if (ManagerTestUtils.getTestType() == TestType.es) {
+        //     if (node == null) {
+        //         node = EsTestUtil.provideElasticsearchContainer();
+        //     }
+        //     if (!node.isRunning()) {
+        //         // We have to start the test container here manually but it is stopped automatically from the test container library
+        //         // For performance reasons we do not stop the elasticsearch container between test runs
+        //         node.start();
+        //     }
+        //     ES_CLIENT = createEsClient();
+        // }
     }
 
     private static RestHighLevelClient createEsClient() {
@@ -270,6 +280,7 @@ public class ManagerApiTestServer {
         apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
         apiManServer.setInitParameter("resteasy.scan", "true");
         apiManServer.setInitParameter("resteasy.servlet.mapping.prefix", "");
+        apiManServer.setInitParameter("resteasy.providers", "io.apiman.manager.api.providers.JacksonObjectMapperProvider");
 
         // Add the web contexts to jetty
         handlers.addHandler(apiManServer);

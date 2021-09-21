@@ -7,7 +7,7 @@ import io.apiman.manager.api.beans.contracts.ContractStatus;
  */
 public class ContractActionDto {
     private Long contractId;
-    private ContractStatus statusBean;
+    private ContractStatus status;
     private boolean autoPromote = false;
 
     public Long getContractId() {
@@ -19,12 +19,12 @@ public class ContractActionDto {
         return this;
     }
 
-    public ContractStatus getStatusBean() {
-        return statusBean;
+    public ContractStatus getStatus() {
+        return status;
     }
 
-    public ContractActionDto setStatusBean(ContractStatus statusBean) {
-        this.statusBean = statusBean;
+    public ContractActionDto setStatus(ContractStatus status) {
+        this.status = status;
         return this;
     }
 

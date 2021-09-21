@@ -16,8 +16,10 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.Query;
+import javax.validation.constraints.NotEmpty;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -108,13 +110,15 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public int countUnreadNotificationsByUserId(@NotNull String recipientUserId) {
+    public int countNotificationsByUserId(@NotNull String recipientUserId, @NotNull List<NotificationStatus> notificationStatus) {
+        List<String> statusNames = notificationStatus.stream().map(Enum::name).collect(Collectors.toList());
         return getJdbi().withHandle(jdbi ->
              jdbi.createQuery("SELECT COUNT(n.id) "
                       + "FROM NOTIFICATIONS n "
                       + "WHERE n.recipient = :userId "
-                      + "AND n.notification_status = 'OPEN'")
+                      + "AND n.notification_status IN (<status>)")
                  .bind("userId", recipientUserId)
+                 .bindList("status", statusNames)
                  .mapTo(int.class)
                  .one()
         );
@@ -157,14 +161,16 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(String userId, String notificationType) {
+    public Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(@NotNull String userId, @NotNull String notificationType) {
         Query query = getActiveEntityManager()
              .createQuery(
-                  "SELECT NotificationPreferenceEntity "
+                  "SELECT pref "
                        + "FROM NotificationPreferenceEntity pref "
                        + "WHERE pref.userId = :userId "
                        + "AND pref.notificationType = :notificationType"
-             );
+             )
+             .setParameter("userId", userId)
+             .setParameter("notificationType", notificationType);
         return super.getOne(query);
     }
 }

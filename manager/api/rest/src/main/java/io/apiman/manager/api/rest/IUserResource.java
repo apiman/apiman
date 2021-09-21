@@ -29,11 +29,22 @@ import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
-import io.swagger.annotations.Api;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import io.swagger.annotations.Api;
 
 /**
  * The User API.
@@ -219,9 +230,9 @@ public interface IUserResource {
     public UserPermissionsBean getPermissionsForUser(@PathParam("userId") String userId)
             throws UserNotFoundException, NotAuthorizedException;
 
-
     /**
-     * Provides the latest notifications for a user.
+     * Search and filter user notifications.
+     * <p>By default, this returns a paged list sorted in descending order (i.e. the latest notification first).
      *
      * @param userId The user ID.
      * @param criteria The search & filter criteria.
@@ -233,6 +244,11 @@ public interface IUserResource {
     @Path("{userId}/notifications")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<NotificationDto<?>> searchLatestNotificationsForUser(@PathParam("userId") String userId, NotificationCriteriaBean criteria)
+    public SearchResultsBean<NotificationDto<?>> getNotificationsForUser(@PathParam("userId") String userId, NotificationCriteriaBean criteria)
+         throws UserNotFoundException, NotAuthorizedException;
+
+    @HEAD
+    @Path("{userId}/notifications")
+    public Response getNotificationCountForUser(@PathParam("userId") String userId, @DefaultValue("true") @QueryParam("unread") boolean unread)
          throws UserNotFoundException, NotAuthorizedException;
 }

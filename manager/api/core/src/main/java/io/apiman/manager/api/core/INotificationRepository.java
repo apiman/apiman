@@ -40,11 +40,11 @@ public interface INotificationRepository {
 
     void deleteByUserId(@NotNull String recipientUserId);
 
-    int countUnreadNotificationsByUserId(@NotNull String recipientUserId);
+    int countNotificationsByUserId(@NotNull String recipientUserId, List<NotificationStatus> notificationStatus);
 
     void markNotificationsReadById(@NotNull String recipientUserId, @NotNull List<Long> idList, @NotNull NotificationStatus status) throws StorageException;
 
     void markAllNotificationsReadByUserId(@NotNull String recipientUserId, @NotNull NotificationStatus status);
 
-    Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(String userId, String notificationType);
+    Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(@NotNull String userId, @NotNull String notificationType);
 }

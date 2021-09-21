@@ -127,6 +127,7 @@ public class ManagerApiMicroService {
         apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
         apiManServer.setInitParameter("resteasy.scan", "true");
         apiManServer.setInitParameter("resteasy.servlet.mapping.prefix", "");
+        apiManServer.setInitParameter("resteasy.providers", "io.apiman.manager.api.providers.JacksonObjectMapperProvider");
 
         handlers.addHandler(apiManServer);
 

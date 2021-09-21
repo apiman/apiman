@@ -1,0 +1,10 @@
+POST /actions/contracts admin/admin
+Content-Type: application/json
+
+{
+    "contractId": ${contract2Id},
+    "status": "Created",
+    "autoPromote": false
+}
+----
+204

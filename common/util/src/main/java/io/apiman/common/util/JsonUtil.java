@@ -6,9 +6,13 @@ import java.util.Collection;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER;
 import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS;
@@ -34,6 +38,12 @@ public class JsonUtil {
          .enable(ALLOW_JAVA_COMMENTS)
          .enable(ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS)
          .enable(ALLOW_UNESCAPED_CONTROL_CHARS)
+         // Avoid weird floating point timestamps
+         .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+         // Enable various Java 8 and library data structures to be serialized
+         .addModule(new JavaTimeModule())
+         .addModule(new ParameterNamesModule())
+         .addModule(new Jdk8Module())
          .addModule(new GuavaModule())
          .build();
 
@@ -65,5 +75,9 @@ public class JsonUtil {
         } catch (JsonProcessingException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    public static ObjectMapper getObjectMapper() {
+        return OM;
     }
 }

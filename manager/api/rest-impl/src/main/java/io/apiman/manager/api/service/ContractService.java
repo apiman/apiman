@@ -97,6 +97,9 @@ public class ContractService implements DataAccessUtilMixin {
         try {
             ContractBean contract = createContractInternal(organizationId, clientId, version, bean);
             LOGGER.debug("Created new contract {0}: {1}", contract.getId(), contract); //$NON-NLS-1$
+            if (contract.getStatus() == ContractStatus.AwaitingApproval) {
+                fireContractApprovalRequest(securityContext.getCurrentUser(), contract);
+            }
             return contract;
         } catch (AbstractRestException e) {
             throw e;
@@ -152,9 +155,7 @@ public class ContractService implements DataAccessUtilMixin {
 
         boolean approvalRequired = false;
 
-        if (!apiPlanBean.isRequiresApproval()
-                 || securityContext.isAdmin()
-                 || securityContext.hasPermission(planAdmin, organizationId)) {
+        if (!apiPlanBean.isRequiresApproval() || securityContext.hasPermission(planAdmin, organizationId)) {
             LOGGER.debug("Contract valid immediately ✅: {0}", contract);
             contract.setStatus(ContractStatus.Created);
         } else {
@@ -168,7 +169,6 @@ public class ContractService implements DataAccessUtilMixin {
             ClientStatus oldStatus = cvb.getStatus();
             if (approvalRequired) {
                 cvb.setStatus(ClientStatus.AwaitingApproval);
-                fireContractApprovalRequest(securityContext.getCurrentUser(), contract);
             } else {
                 cvb.setStatus(ClientStatus.Ready);
             }
@@ -183,7 +183,6 @@ public class ContractService implements DataAccessUtilMixin {
         cvb.setModifiedBy(securityContext.getCurrentUser());
         cvb.setModifiedOn(new Date());
         storage.updateClientVersion(cvb);
-
         return contract;
     }
 
@@ -274,6 +273,7 @@ public class ContractService implements DataAccessUtilMixin {
     }
 
     private void fireContractApprovalRequest(String requesterId, ContractBean contract) {
+        LOGGER.debug("Firing contract approval request from requester {0} on contract {1}", requesterId, contract);
         UserDto requester = UserMapper.toDto(tryAction(() -> storage.getUser(requesterId)));
 
         ApimanEventHeaders headers = ApimanEventHeaders

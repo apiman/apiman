@@ -23,18 +23,20 @@ public class EmailNotificationTemplate {
 
     // @Column(name = "notification_template_body", nullable = false, length = 10000)
     // @NotBlank
-    private String notificationTemplateBody;
+    private String htmlBody;
+
+    private String plainBody;
 
     // @Column(name = "notification_template_subject", nullable = false)
     // @NotBlank
-    private String notificationTemplateSubject;
+    private String subject;
 
     // @Column(name = "notification_reason", nullable = true)
     private String notificationReason;
 
     // @Column(name = "notification_category", nullable = true)
     // @Enumerated(EnumType.STRING)
-    private NotificationCategory notificationCategory;
+    private NotificationCategory category;
 
     public EmailNotificationTemplate() {
     }
@@ -47,22 +49,31 @@ public class EmailNotificationTemplate {
     //     this.id = id;
     // }
 
-    public String getNotificationTemplateBody() {
-        return notificationTemplateBody;
+
+    public String getHtmlBody() {
+        return htmlBody;
     }
 
-    public EmailNotificationTemplate setNotificationTemplateBody(String notificationTemplateBody) {
-        this.notificationTemplateBody = notificationTemplateBody;
+    public EmailNotificationTemplate setHtmlBody(String htmlBody) {
+        this.htmlBody = htmlBody;
         return this;
     }
 
-    public String getNotificationTemplateSubject() {
-        return notificationTemplateSubject;
+    public String getPlainBody() {
+        return plainBody;
     }
 
-    public EmailNotificationTemplate setNotificationTemplateSubject(
-         String notificationTemplateSubject) {
-        this.notificationTemplateSubject = notificationTemplateSubject;
+    public EmailNotificationTemplate setPlainBody(String plainBody) {
+        this.plainBody = plainBody;
+        return this;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public EmailNotificationTemplate setSubject(String subject) {
+        this.subject = subject;
         return this;
     }
 
@@ -70,29 +81,29 @@ public class EmailNotificationTemplate {
         return notificationReason;
     }
 
-    public EmailNotificationTemplate setNotificationReason(String notificationType) {
-        this.notificationReason = notificationType;
+    public EmailNotificationTemplate setNotificationReason(String notificationReason) {
+        this.notificationReason = notificationReason;
         return this;
     }
 
-    public NotificationCategory getNotificationCategory() {
-        return notificationCategory;
+    public NotificationCategory getCategory() {
+        return category;
     }
 
-    public EmailNotificationTemplate setNotificationCategory(
-         NotificationCategory notificationCategory) {
-        this.notificationCategory = notificationCategory;
+    public EmailNotificationTemplate setCategory(
+         NotificationCategory category) {
+        this.category = category;
         return this;
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", EmailNotificationTemplate.class.getSimpleName() + "[", "]")
-             //.add("id=" + id)
-             .add("notificationTemplateBody='" + notificationTemplateBody + "'")
-             .add("notificationTemplateSubject='" + notificationTemplateSubject + "'")
+             .add("htmlBody='" + htmlBody + "'")
+             .add("plainBody='" + plainBody + "'")
+             .add("subject='" + subject + "'")
              .add("notificationReason='" + notificationReason + "'")
-             .add("notificationCategory=" + notificationCategory)
+             .add("category=" + category)
              .toString();
     }
 }

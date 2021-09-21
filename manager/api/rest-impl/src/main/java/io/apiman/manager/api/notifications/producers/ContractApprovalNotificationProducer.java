@@ -54,6 +54,7 @@ public class ContractApprovalNotificationProducer implements INotificationProduc
 
         if (approvalEvent.isApproved()) {
             newNotification.setReason(APIMAN_CONTRACT_APPROVED_REASON);
+            newNotification.setReasonMessage("Signup was approved!");
         } else {
             newNotification.setReason(APIMAN_CONTRACT_REJECTED_REASON);
             newNotification.setReasonMessage("Signup was rejected: " + approvalEvent.getRejectionReason());

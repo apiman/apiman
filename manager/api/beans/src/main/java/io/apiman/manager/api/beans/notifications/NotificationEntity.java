@@ -14,18 +14,16 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.annotations.UpdateTimestamp;
 
 /**
@@ -34,8 +32,9 @@ import org.hibernate.annotations.UpdateTimestamp;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Entity
-@TypeDef(name = "jsonb", typeClass = JsonNodeBinaryType.class)
-@Table(name = "notifications")
+@TypeDefs({
+     @TypeDef(name = "json", typeClass = JsonType.class)
+})@Table(name = "notifications")
 public class NotificationEntity {
 
     @Id
@@ -62,17 +61,12 @@ public class NotificationEntity {
     private NotificationStatus notificationStatus;
 
     // TODO(msavy): consider tracking dismissal reason? for example, old or irrelevant, etc?
-
-    // @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     @Column(name = "created_on", updatable = false)
-    @NotNull
     private OffsetDateTime createdOn;
 
-    // @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     @Column(name = "modified_on")
-    @NotNull
     private OffsetDateTime modifiedOn;
 
     @Column(name = "recipient", nullable = false)
@@ -83,8 +77,8 @@ public class NotificationEntity {
     @NotBlank
     private String source;
 
-    @Type(type = "jsonb")
-    @Column(name = "payload", columnDefinition = "binary", nullable = false)
+    @Type(type = "json")
+    @Column(name = "payload", columnDefinition = "json", nullable = false)
     @NotNull
     private JsonNode payload;
 

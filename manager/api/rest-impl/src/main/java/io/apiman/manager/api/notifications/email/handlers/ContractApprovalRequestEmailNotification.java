@@ -1,13 +1,11 @@
 package io.apiman.manager.api.notifications.email.handlers;
 
-import io.apiman.common.logging.ApimanLoggerFactory;
-import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.events.ContractCreatedEvent;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.notifications.EmailNotificationTemplate;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
-import io.apiman.manager.api.notifications.email.QteTemplateEngine;
+import io.apiman.manager.api.notifications.email.SimpleEmail;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.notifications.producers.ContractApprovalRequestNotificationProducer;
 
@@ -20,16 +18,15 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 public class ContractApprovalRequestEmailNotification implements INotificationHandler  {
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalRequestEmailNotification.class);
-    private final QteTemplateEngine templateEngine;
-    private final SimpleMailNotificationService mailNotificationService;
+
+    private SimpleMailNotificationService mailNotificationService;
 
     @Inject
-    public ContractApprovalRequestEmailNotification(QteTemplateEngine templateEngine,
-         SimpleMailNotificationService mailNotificationService
-    ) {
-        this.templateEngine = templateEngine;
+    public ContractApprovalRequestEmailNotification(SimpleMailNotificationService mailNotificationService) {
         this.mailNotificationService = mailNotificationService;
+    }
+
+    public ContractApprovalRequestEmailNotification() {
     }
 
     @Override
@@ -43,18 +40,22 @@ public class ContractApprovalRequestEmailNotification implements INotificationHa
     }
 
     private void approvalRequiredNotification(NotificationDto<ContractCreatedEvent> signupNotification) {
-        Map<String, Object> templateMap = buildTemplateMap(signupNotification);
-
         EmailNotificationTemplate template = mailNotificationService
              .findTemplateFor(signupNotification.getReason())
              .or(() -> mailNotificationService.findTemplateFor(signupNotification.getCategory()))
              .orElseThrow();
 
-        String renderedBody = templateEngine.applyTemplate(template.getNotificationTemplateBody(), templateMap);
-        String renderedSubject = templateEngine.applyTemplate(template.getNotificationTemplateSubject(), templateMap);
-
+        Map<String, Object> templateMap = buildTemplateMap(signupNotification);
         UserDto recipient = signupNotification.getRecipient();
-        mailNotificationService.sendHtml(recipient.getEmail(), recipient.getFullName(), renderedSubject, renderedBody, renderedSubject);
+
+        var mail = SimpleEmail
+             .builder()
+             .setRecipient(signupNotification.getRecipient()) // Or can set each field manually
+             .setTemplate(template)
+             .setTemplateVariables(templateMap)
+             .build();
+
+        mailNotificationService.send(mail);
     }
 
     @Override

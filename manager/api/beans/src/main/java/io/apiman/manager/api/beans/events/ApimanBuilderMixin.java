@@ -9,7 +9,7 @@ import javax.validation.Validator;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public interface ApimanEventBuilderMixin {
+public interface ApimanBuilderMixin {
     Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
 
     default <T> void beanValidate(T target) {

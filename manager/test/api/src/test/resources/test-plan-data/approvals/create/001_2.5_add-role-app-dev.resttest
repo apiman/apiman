@@ -1,0 +1,21 @@
+POST /roles admin/admin
+Content-Type: application/json
+
+{
+  "name" : "DevPortalClientDev",
+  "autoGrant" : false,
+  "description" : "Developer portal dev.",
+  "permissions" : [ "clientEdit", "apiView", "clientView", "clientAdmin"]
+}
+----
+200
+Content-Type: application/json
+X-RestTest-ArrayOrdering: any
+
+{
+  "id" : "DevPortalClientDev",
+  "name" : "DevPortalClientDev",
+  "autoGrant" : false,
+  "description" : "Developer portal dev.",
+  "permissions" : [ "clientEdit", "apiView", "clientView", "clientAdmin"]
+}

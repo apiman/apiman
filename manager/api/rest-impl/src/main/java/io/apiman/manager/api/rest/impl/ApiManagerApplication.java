@@ -18,6 +18,8 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
+import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
+import io.apiman.manager.api.providers.JacksonObjectMapperProvider;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.service.ApiService;
 import io.apiman.manager.api.service.ClientAppService;
@@ -57,6 +59,7 @@ public class ApiManagerApplication extends Application {
      * Constructor.
      */
     public ApiManagerApplication() {
+        System.setProperty("org.jboss.weld.construction.relaxed", "true");
 
         //add swagger 2.0 config
         BeanConfig beanConfig = new BeanConfig();
@@ -79,22 +82,28 @@ public class ApiManagerApplication extends Application {
         classes.add(DownloadResourceImpl.class);
         classes.add(DeveloperResourceImpl.class);
 
-        classes.add(ApiService.class);
-        classes.add(ClientAppService.class);
-        classes.add(ContractService.class);
-        classes.add(DevPortalService.class);
-        classes.add(OrganizationService.class);
-        classes.add(PlanService.class);
-        classes.add(PolicyService.class);
-        classes.add(StatsService.class);
+        classes.add(SimpleMailNotificationService.class);
+
+        //
+        // classes.add(ApiService.class);
+        // classes.add(ClientAppService.class);
+        // classes.add(ContractService.class);
+        // classes.add(DevPortalService.class);
+        // classes.add(OrganizationService.class);
+        // classes.add(PlanService.class);
+        // classes.add(PolicyService.class);
+        // classes.add(StatsService.class);
+
+        classes.add(BlobResourceImpl.class);
+        classes.add(EventResourceImpl.class);
+        classes.add(NotificationResourceImpl.class);
 
         //add swagger 2.0 resource
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
         classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
         classes.add(RestExceptionMapper.class);
-
-
+        classes.add(JacksonObjectMapperProvider.class);
     }
     
     @PostConstruct

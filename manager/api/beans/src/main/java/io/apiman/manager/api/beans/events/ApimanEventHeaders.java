@@ -2,10 +2,15 @@ package io.apiman.manager.api.beans.events;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.apache.commons.lang3.Validate;
@@ -23,7 +28,7 @@ public class ApimanEventHeaders {
     private String subject; // apiman.blah?
     private OffsetDateTime time;
     private long eventVersion;
-    private Map<String, Object> otherProperties;
+    private Map<String, Object> otherProperties = Collections.emptyMap();
 
     ApimanEventHeaders(String id, URI source, String type, String subject, OffsetDateTime time,
          long eventVersion, Map<String, Object> otherProperties) {
@@ -149,13 +154,13 @@ public class ApimanEventHeaders {
             return this;
         }
 
-        public Builder addProperty(String key, String value) {
+        public Builder addOtherProperty(String key, String value) {
             Objects.requireNonNull(key, "Header property key must not be null");
             this.otherProperties.put(key, value);
             return this;
         }
 
-        public Builder setProperties(Map<String, Object> propertiesIn) {
+        public Builder setOtherProperties(Map<String, Object> propertiesIn) {
             Objects.requireNonNull(propertiesIn);
             if (propertiesIn.containsKey(null)) {
                 throw new IllegalArgumentException("Header property key must not be null");
