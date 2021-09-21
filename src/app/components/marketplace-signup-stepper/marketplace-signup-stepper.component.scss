@@ -4,8 +4,8 @@
 }
 
 mat-stepper {
-  min-width: 30vw;
-  max-width: 50vw;
+  // TODO: Media Query for small screens
+  width: 62vw;
 }
 
 #center {
