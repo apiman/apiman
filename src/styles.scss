@@ -17,8 +17,19 @@
   $accent: mat-color($accent-palette);
   $warn: mat-color($warn-palette);
 
-
   // CUSTOM SCSS
+  .primary-bg{
+    background: $primary !important;
+  }
+
+  .warn-bg{
+    background: $warn !important;
+  }
+
+  .accent-bg{
+    background: $accent !important;
+  }
+
   .active-link{
     color: $primary;
   }
