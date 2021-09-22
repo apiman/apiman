@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
  *     <li>A convenient builder is available with {@link SimpleEmail#builder()}.</li>
  * </ul>
  *
+ * TODO(msavy): consider refactoring to allow only full word matches on keys
+ *
  * @see SmtpEmailConfiguration
  * @see SimpleEmail
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
@@ -47,7 +49,6 @@ public class SimpleMailNotificationService {
     private IEmailSender emailSender;
     private ApiManagerConfig config;
     private QteTemplateEngine templateEngine;
-    private boolean isConfigured;
 
     private final PatriciaTrie<EmailNotificationTemplate> reasonTrie = new PatriciaTrie<>();
     private final ArrayListValuedHashMap<NotificationCategory, EmailNotificationTemplate> categoryToTemplateMap = new ArrayListValuedHashMap<>();
@@ -62,9 +63,7 @@ public class SimpleMailNotificationService {
             if (smtpConfig.isMock()) {
                 emailSender = new MockEmailSender();
             }
-            isConfigured = true;
         } else {
-            isConfigured = false;
             emailSender = new MockEmailSender();
         }
         readEmailNotificationTemplatesFromFile();

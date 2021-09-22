@@ -14,6 +14,32 @@ Content-Type: application/json
 {
 	"beans": [{
 		"category": "API_ADMINISTRATION",
+		"reason": "apiman.client.status_change",
+		"reasonMessage": "Client was published",
+		"notificationStatus": "OPEN",
+		"recipient": {
+			"id": "bwayne",
+			"username": "bwayne",
+			"fullName": "Bruce Wayne",
+			"email": "bwayne@wayne-enterprises.com"
+		},
+		"source": "/resources/something/here/",
+		"payload": {
+			"headers": {
+				"source": "/a/b/c",
+				"type": "io.apiman.manager.api.beans.events.ClientVersionStatusEvent",
+				"subject": "status.change",
+				"eventVersion": 1,
+				"otherProperties": {}
+			},
+			"clientOrgId": "Organization1",
+			"clientId": "Client1",
+			"clientVersion": "1.0",
+			"previousStatus": "Ready",
+			"newStatus": "Registered"
+		}
+	}, {
+		"category": "API_ADMINISTRATION",
 		"reason": "apiman.client.contract.approval.granted",
 		"reasonMessage": "Signup was approved!",
 		"notificationStatus": "OPEN",
@@ -81,11 +107,12 @@ Content-Type: application/json
 			"apiOrgId": "Organization1",
 			"apiId": "API1",
 			"apiVersion": "1.0",
+			"contractId": "43",
 			"planId": "Plan1",
 			"planVersion": "1.0",
 			"approved": true,
 			"rejectionReason": null
 		}
 	}],
-	"totalSize": 2
+	"totalSize": 3
 }

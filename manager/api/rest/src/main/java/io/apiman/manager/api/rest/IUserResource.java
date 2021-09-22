@@ -22,6 +22,7 @@ import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
 import io.apiman.manager.api.beans.notifications.NotificationCriteriaBean;
+import io.apiman.manager.api.beans.notifications.dto.NotificationActionDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
@@ -31,6 +32,7 @@ import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 
 import java.util.List;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -250,5 +252,10 @@ public interface IUserResource {
     @HEAD
     @Path("{userId}/notifications")
     public Response getNotificationCountForUser(@PathParam("userId") String userId, @DefaultValue("true") @QueryParam("unread") boolean unread)
+         throws UserNotFoundException, NotAuthorizedException;
+
+    @POST
+    @Path("{userId}/notifications")
+    public Response markNotifications(@PathParam("userId") String userId, @NotNull NotificationActionDto notificationAction)
          throws UserNotFoundException, NotAuthorizedException;
 }

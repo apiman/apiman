@@ -125,7 +125,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public void markNotificationsReadById(@NotNull String recipientUserId, @NotNull List<Long> idList, @NotNull NotificationStatus status) throws StorageException {
+    public void markNotificationsWithStatusById(@NotNull String recipientUserId, @NotNull List<Long> idList, @NotNull NotificationStatus status) throws StorageException {
         int n = getActiveEntityManager()
              .createQuery(
                   "UPDATE NotificationEntity n "

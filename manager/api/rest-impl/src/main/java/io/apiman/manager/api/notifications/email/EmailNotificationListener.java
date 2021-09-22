@@ -5,6 +5,7 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.notifications.email.handlers.INotificationHandler;
+import io.apiman.manager.api.providers.eager.EagerLoaded;
 import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;

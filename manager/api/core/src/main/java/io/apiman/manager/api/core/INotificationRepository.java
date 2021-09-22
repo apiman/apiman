@@ -42,7 +42,7 @@ public interface INotificationRepository {
 
     int countNotificationsByUserId(@NotNull String recipientUserId, List<NotificationStatus> notificationStatus);
 
-    void markNotificationsReadById(@NotNull String recipientUserId, @NotNull List<Long> idList, @NotNull NotificationStatus status) throws StorageException;
+    void markNotificationsWithStatusById(@NotNull String recipientUserId, @NotNull List<Long> idList, @NotNull NotificationStatus status) throws StorageException;
 
     void markAllNotificationsReadByUserId(@NotNull String recipientUserId, @NotNull NotificationStatus status);
 

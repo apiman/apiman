@@ -10,9 +10,11 @@ import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientType;
 import io.apiman.manager.api.notifications.INotificationProducer;
+import io.apiman.manager.api.providers.eager.EagerLoaded;
 import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -21,6 +23,8 @@ import javax.inject.Inject;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@EagerLoaded
+@ApplicationScoped
 public class ClientAppStatusNotificationProducer implements INotificationProducer {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalNotificationProducer.class);

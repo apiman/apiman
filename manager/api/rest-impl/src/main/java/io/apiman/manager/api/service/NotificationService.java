@@ -195,13 +195,10 @@ public class NotificationService implements DataAccessUtilMixin {
     /**
      * Mark a list of notifications as read. They must be owned by the same recipient.
      *
-     * <p>Any attempt by a user to mark the notifications that do not actually belong to them will result in
-     * nothing happening (i.e. silently failing in some way).
+     * <p>Any attempt by a user to mark the notifications that do not actually belong to them will be silently ignored.
      *
      * <p>You may want to take the userId from the security context when executing on behalf of an external entity to
-     * ensure that the user is actually who they claim to be.
-     *
-     * <p>An exception will be thrown if an attempt to mark as read is made using {@link NotificationStatus#OPEN}.
+     * ensure that the user is actually who they claim to be. This implementation does not check.
      *
      * @throws IllegalArgumentException if status argument is {@link NotificationStatus#OPEN}.
      *
@@ -210,17 +207,30 @@ public class NotificationService implements DataAccessUtilMixin {
      * @param notificationIds list of notification IDs
      * @param status          status to set (e.g. system read, user read)
      */
-    public void markNotificationsAsRead(@NotNull String recipientId, @NotNull List<Long> notificationIds, @NotNull NotificationStatus status) {
+    public void markNotificationsWithStatus(@NotNull String recipientId, @NotNull List<Long> notificationIds, @NotNull NotificationStatus status) {
         if (notificationIds.isEmpty()) {
             return;
         }
 
+        LOGGER.trace("Marking recipient {0} notifications {1} as {2}", recipientId, notificationIds, status);
+
+        tryAction(() -> notificationRepository.markNotificationsWithStatusById(recipientId, notificationIds, status));
+    }
+
+    /**
+     * As {@link #markNotificationsWithStatus(String, List, NotificationStatus)}, but only accepts non-OPEN status.
+     *
+     * <p>An exception will be thrown if an attempt to mark as read is made using {@link NotificationStatus#OPEN}.
+     *
+     * @see #markNotificationsWithStatus
+     */
+    public void markAllNotificationsReadByUserId(@NotNull String recipientId, @NotNull NotificationStatus status) {
         Preconditions.checkArgument(status != NotificationStatus.OPEN,
-             "When marking a notification as read a non-OPEN status must be provided: " + status);
+             "When marking all notifications as read a non-OPEN status must be provided: " + status);
 
-        LOGGER.trace("Marking recipient {0} notifications {1} as read {2}", recipientId, notificationIds, status);
+        LOGGER.trace("Marking all recipient {0} notifications as read {1}");
 
-        tryAction(() -> notificationRepository.markNotificationsReadById(recipientId, notificationIds, status));
+        tryAction(() -> notificationRepository.markAllNotificationsReadByUserId(recipientId, status));
     }
 
     public Optional<NotificationPreferenceEntity> getNotificationPreference(String userId, String notificationType) {

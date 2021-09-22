@@ -9,6 +9,7 @@ import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.notifications.email.SimpleEmail;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.notifications.producers.ClientAppStatusNotificationProducer;
+import io.apiman.manager.api.providers.eager.EagerLoaded;
 
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@EagerLoaded
 @ApplicationScoped
 public class ClientAppRegisteredEmailNotification implements INotificationHandler {
 

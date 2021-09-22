@@ -59,7 +59,7 @@ Content-Type: application/json
 			"fullName": "Admin",
 			"email": "admin@example.org"
 		},
-		"source": "http://somepage/here/",
+		"source": "/action/approval-request",
 		"payload": {
 			"headers": {
 				"source": "/a/b/c",
