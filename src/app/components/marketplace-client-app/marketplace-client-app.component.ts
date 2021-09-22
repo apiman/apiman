@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { BackendService } from '../../services/backend/backend.service';
 import { MatTableDataSource } from '@angular/material/table';
-import { IClientSummary, IOrganizationSummary } from '../../interfaces/ICommunication';
+import {
+  IClientSummary,
+  IOrganizationSummary,
+} from '../../interfaces/ICommunication';
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -65,6 +68,10 @@ export class MarketplaceClientAppComponent implements OnInit {
     this.backend.getEditableClients().subscribe(
       (clients: IClientSummary[]) => {
         this.dataSource = new MatTableDataSource(clients);
+        if (clients.length === 1) {
+          // if we only have one client we can select it automatically
+          this.selectClient(clients[0]);
+        }
       },
       (error) => console.error(error)
     );
