@@ -230,8 +230,7 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
      * {@inheritDoc}
      */
     @Override
-    public SearchResultsBean<NotificationDto<?>> getNotificationsForUser(String userId,
-         NotificationCriteriaBean criteria)
+    public SearchResultsBean<NotificationDto<?>> getNotificationsForUser(String userId, NotificationCriteriaBean criteria)
          throws UserNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
         SearchCriteriaUtil.validateSearchCriteria(criteria);
@@ -249,6 +248,9 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         return Response.noContent().header("X-Total-Count", notificationCount).build();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Response markNotifications(String userId, NotificationActionDto notificationAction)
          throws UserNotFoundException, NotAuthorizedException {
@@ -260,7 +262,7 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         } else {
             notificationService.markNotificationsWithStatus(userId, notificationAction.getNotificationIds(), notificationAction.getStatus());
         }
-        return Response.accepted().build();
+        return Response.noContent().build();
     }
 
     /**

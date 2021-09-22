@@ -8,8 +8,6 @@ import io.apiman.manager.api.beans.notifications.NotificationStatus;
 import java.time.OffsetDateTime;
 import java.util.StringJoiner;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
@@ -18,7 +16,7 @@ public class NotificationDto<P extends IVersionedApimanEvent> {
     private NotificationCategory category;
     private String reason;
     private String reasonMessage;
-    private NotificationStatus notificationStatus;
+    private NotificationStatus status;
     private OffsetDateTime createdOn;
     private OffsetDateTime modifiedOn;
     private UserDto recipient;
@@ -64,13 +62,13 @@ public class NotificationDto<P extends IVersionedApimanEvent> {
         return this;
     }
 
-    public NotificationStatus getNotificationStatus() {
-        return notificationStatus;
+    public NotificationStatus getStatus() {
+        return status;
     }
 
-    public NotificationDto<P> setNotificationStatus(
-         NotificationStatus notificationStatus) {
-        this.notificationStatus = notificationStatus;
+    public NotificationDto<P> setStatus(
+         NotificationStatus status) {
+        this.status = status;
         return this;
     }
 
@@ -126,7 +124,7 @@ public class NotificationDto<P extends IVersionedApimanEvent> {
              .add("category=" + category)
              .add("reason='" + reason + "'")
              .add("reasonMessage='" + reasonMessage + "'")
-             .add("notificationStatus=" + notificationStatus)
+             .add("notificationStatus=" + status)
              .add("createdOn=" + createdOn)
              .add("modifiedOn=" + modifiedOn)
              .add("recipient='" + recipient + "'")

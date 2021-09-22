@@ -60,6 +60,12 @@
 
     <test name="Approver receives notification about contract signup request">test-plan-data/approvals/notifications/001_approver-notifications.resttest</test>
     <test name="User bwayne receives notifications about approvals">test-plan-data/approvals/notifications/002_bwayne-notifications.resttest</test>
+
+    <test name="bwayne mark all notifications read">test-plan-data/approvals/notifications/003_bwayne-mark-all-read.resttest</test>
+    <test name="bwayne list notifications (all read)">test-plan-data/approvals/notifications/004_bwayne-list-notifications-all-read.resttest</test>
+    <test name="bwayne list unread notifications (empty)">test-plan-data/approvals/notifications/005_bwayne-list-unread-notifications-empty.resttest</test>
+
+
   </testGroup>
 
 </testPlan>

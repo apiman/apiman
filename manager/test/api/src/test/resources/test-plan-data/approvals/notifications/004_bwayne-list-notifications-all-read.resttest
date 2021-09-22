@@ -1,0 +1,32 @@
+POST /users/bwayne/notifications bwayne/bwayne
+Content-Type: application/json
+
+{
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : false
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+	"beans": [{
+		"category": "API_ADMINISTRATION",
+		"reason": "apiman.client.status_change",
+		"reasonMessage": "Client was published",
+		"status": "USER_DISMISSED"
+	}, {
+		"category": "API_ADMINISTRATION",
+		"reason": "apiman.client.contract.approval.granted",
+		"reasonMessage": "Signup was approved!",
+		"status": "USER_DISMISSED"
+	}, {
+		"category": "API_ADMINISTRATION",
+		"reason": "apiman.client.contract.approval.granted",
+		"reasonMessage": "Signup was approved!",
+		"status": "USER_DISMISSED"
+	}],
+	"totalSize": 3
+}

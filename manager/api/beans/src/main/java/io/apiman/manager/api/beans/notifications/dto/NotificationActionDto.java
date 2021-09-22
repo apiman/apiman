@@ -5,9 +5,13 @@ import io.apiman.manager.api.beans.notifications.NotificationStatus;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@JsonInclude(Include.NON_NULL)
 public class NotificationActionDto {
     private boolean markAll = false;
     private List<Long> notificationIds;

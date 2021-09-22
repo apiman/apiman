@@ -249,13 +249,37 @@ public interface IUserResource {
     public SearchResultsBean<NotificationDto<?>> getNotificationsForUser(@PathParam("userId") String userId, NotificationCriteriaBean criteria)
          throws UserNotFoundException, NotAuthorizedException;
 
+    /**
+     * Get the number of notifications for a given user. Inspect the <sample>X-Total-Count</sample> header.
+     *
+     * <p>Users are only able to get information about their own notifications.
+     *
+     * @param userId the user ID.
+     * @param unread whether to only count unread notifications (default: true).
+     * @return X-Total-Count header with the number of unread notifications.
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
     @HEAD
     @Path("{userId}/notifications")
     public Response getNotificationCountForUser(@PathParam("userId") String userId, @DefaultValue("true") @QueryParam("unread") boolean unread)
          throws UserNotFoundException, NotAuthorizedException;
 
-    @POST
+    /**
+     * Mark a user's notifications with a specific state by ID (or all, if desired).
+     *
+     * <p>Users are only able to operate on their own notifications. Any attempt to operate on unowned
+     * notifications will either be rejected or silently ignored.
+     *
+     * @param userId the user ID.
+     * @param notificationAction the action to take on the notifications.
+     * @return X-Total-Count header with the number of unread notifications.
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @PUT
     @Path("{userId}/notifications")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response markNotifications(@PathParam("userId") String userId, @NotNull NotificationActionDto notificationAction)
          throws UserNotFoundException, NotAuthorizedException;
 }
