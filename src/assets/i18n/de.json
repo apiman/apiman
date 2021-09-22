@@ -10,7 +10,8 @@
     "FINISH": "Fertig",
     "ORGANIZATION": "Organisation",
     "APPLICATION": "Applikation",
-    "NO_DATA_FOUND": "Keine Einträge gefunden"
+    "NO_DATA_FOUND": "Keine Einträge gefunden",
+    "CONFIRM": "Bestätigen"
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",
@@ -40,7 +41,7 @@
     "ENDPOINT": "Endpoint",
     "AUTHENTICATION": "Authentifizierung",
     "DISABLE_THIS_API": "Diese API deaktivieren",
-    "DISABLE_API": "API deaktivieren",
+    "DISABLE_API": "Deaktivieren",
     "UNSUB_FROM_API": "Von der API abmelden",
     "UNSUB_FROM_THIS_API": "Von dieser API abmelden",
     "UNSUB": "Abmelden"
@@ -61,6 +62,8 @@
     "THIRD_STEP_TITLE": "Zusammenfassung",
     "FORTH_STEP_TITLE": "Bestätigung,",
     "APPLICATION_ERROR": "Sie müssen zuerst eine Anwendung auswählen",
-    "TERMS_ERROR": "Sie müssen den Lizenzvereinbarungen zustimmen"
+    "TERMS_ERROR": "Sie müssen den Lizenzvereinbarungen zustimmen",
+    "REDIRECT": "Sie werden wegen einer ungültigen URL umgeleitet",
+    "SUCCESS": "Ein Vertrag wurde erfolgreich erstellt"
   }
 }

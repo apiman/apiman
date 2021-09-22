@@ -10,7 +10,8 @@
     "FINISH": "Finish",
     "ORGANIZATION": "Organization",
     "APPLICATION": "Application",
-    "NO_DATA_FOUND": "Keine Einträge gefunden"
+    "NO_DATA_FOUND": "No data found",
+    "CONFIRM": "Confirm"
   },
   "HOME": {
     "TITLE": "KoolBank Api Developer Portal",
@@ -40,10 +41,10 @@
     "ENDPOINT": "Endpoint",
     "AUTHENTICATION": "Authentication",
     "DISABLE_THIS_API": "Disable this API",
-    "DISABLE_API": "Disable API",
+    "DISABLE_API": "Disable",
     "UNSUB_FROM_API": "Unsubscribe from API",
     "UNSUB_FROM_THIS_API": "Unsubscribe from this API",
-    "UNSUB": "UNSUBSCRIBE"
+    "UNSUB": "Unsubscribe"
   },
   "API_SIGN_UP": {
     "TITLE": "API Sign Up"
@@ -61,6 +62,8 @@
     "THIRD_STEP_TITLE": "Summary",
     "FORTH_STEP_TITLE": "Confirmation",
     "APPLICATION_ERROR": "You have to select one application first",
-    "TERMS_ERROR": "You have to accept the service terms"
+    "TERMS_ERROR": "You have to accept the service terms",
+    "REDIRECT": "You will be redirected because of an invalid URL",
+    "SUCCESS": "A contract has been successfully created"
   }
 }

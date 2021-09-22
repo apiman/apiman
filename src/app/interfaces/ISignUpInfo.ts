@@ -1,8 +1,8 @@
-import {IApiVersion} from "./ICommunication";
-import {Plan} from "./plan";
+import { IApiVersion } from './ICommunication';
+import { Plan } from './plan';
 
 export interface ISignUpInfo {
-  api: IApiVersion;
+  apiVersion: IApiVersion;
   plan: Plan;
   organizationId: string;
 }

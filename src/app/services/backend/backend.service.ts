@@ -7,7 +7,11 @@ import {
   IApi,
   IApiVersion,
   IApiVersionSummary,
-  IClient, IClientSummary, IContract, IContractSummary,
+  IClient,
+  IClientSummary,
+  IContract,
+  IContractSummary,
+  INewContract,
   IOrganization,
   IOrganizationSummary,
   ISearchCriteria,
@@ -15,7 +19,7 @@ import {
 } from '../../interfaces/ICommunication';
 import {
   IClientSummaryBean,
-  IClientVersionSummaryBean
+  IClientVersionSummaryBean,
 } from '../../interfaces/ICommunication';
 
 export interface ApiSummaryBean {
@@ -104,9 +108,11 @@ export class BackendService {
   private readonly endpoint: string;
   userName: string;
 
-  constructor(private http: HttpClient,
-              private configService: ConfigService,
-              private keycloak: KeycloakService) {
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService,
+    private keycloak: KeycloakService
+  ) {
     this.endpoint = configService.getEndpoint();
     this.userName = this.keycloak.getKeycloakInstance().profile?.username!;
   }
@@ -125,9 +131,9 @@ export class BackendService {
   public searchApis(
     searchCriteria: ISearchCriteria
   ): Observable<ISearchResultsApiSummary> {
-    const url = this.endpoint + '/search/apis';
+    const path = '/search/apis';
     return this.http.post(
-      url,
+      this.generateUrl(path),
       searchCriteria,
       this.httpOptions
     ) as Observable<ISearchResultsApiSummary>;
@@ -137,8 +143,11 @@ export class BackendService {
    * Get Api
    */
   public getApi(orgId: string, apiId: string): Observable<IApi> {
-    const url = this.endpoint + `/organizations/${orgId}/apis/${apiId}`;
-    return this.http.get(url, this.httpOptions) as Observable<IApi>;
+    const path = `/organizations/${orgId}/apis/${apiId}`;
+    return this.http.get(
+      this.generateUrl(path),
+      this.httpOptions
+    ) as Observable<IApi>;
   }
 
   /**
@@ -148,9 +157,11 @@ export class BackendService {
     orgId: string,
     apiId: string
   ): Observable<IApiVersionSummary[]> {
-    const url =
-      this.endpoint + `/organizations/${orgId}/apis/${apiId}/versions`;
-    return this.http.get<IApiVersionSummary[]>(url, this.httpOptions);
+    const path = `/organizations/${orgId}/apis/${apiId}/versions`;
+    return this.http.get<IApiVersionSummary[]>(
+      this.generateUrl(path),
+      this.httpOptions
+    );
   }
 
   /**
@@ -161,53 +172,85 @@ export class BackendService {
     apiId: string,
     version: string
   ): Observable<IApiVersion> {
-    const url =
-      this.endpoint +
-      `/organizations/${orgId}/apis/${apiId}/versions/${version}`;
-    return this.http.get<IApiVersion>(url, this.httpOptions);
+    const path = `organizations/${orgId}/apis/${apiId}/versions/${version}`;
+    return this.http.get<IApiVersion>(this.generateUrl(path), this.httpOptions);
   }
 
   public getClientOrgs(): Observable<Array<IOrganizationSummary>> {
     const username = this.keycloak.getKeycloakInstance().profile?.username;
-    const url = this.endpoint + `/users/${username}/clientorgs`;
-    return this.http.get(url) as Observable<Array<IOrganizationSummary>>;
+    const path = `users/${username}/clientorgs`;
+    return this.http.get(this.generateUrl(path)) as Observable<
+      Array<IOrganizationSummary>
+    >;
   }
 
   public createClient(
     orgId: string,
     clientName: string
   ): Observable<IOrganization> {
-    const url = this.endpoint + `/organizations/${orgId}/clients`;
-    return this.http.post(url, {
+    const path = `organizations/${orgId}/clients`;
+    return this.http.post(this.generateUrl(path), {
       name: clientName,
       initialVersion: '1.0',
       description: '',
     }) as Observable<IOrganization>;
   }
 
+  public createContract(
+    organizationId: string,
+    clientId: string,
+    versionName: string,
+    contract: INewContract
+  ): Observable<IContract> {
+    const path = `organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts`;
+    return this.http.post(
+      this.generateUrl(path),
+      contract
+    ) as Observable<IContract>;
+  }
+
   public getEditableClients(): Observable<Array<IClientSummaryBean>> {
     const path = `users/${this.userName}/editable-clients`;
-    return this.http.get(this.generateUrl(path)) as Observable<Array<IClientSummaryBean>>;
+    return this.http.get(this.generateUrl(path)) as Observable<
+      Array<IClientSummaryBean>
+    >;
   }
 
-  public getClientVersions(organizationId: string, clientId: string): Observable<Array<IClientVersionSummaryBean>> {
-    const path = `/organizations/${organizationId}/clients/${clientId}/versions`;
-    return this.http.get(this.generateUrl(path)) as Observable<Array<IClientVersionSummaryBean>>;
+  public getClientVersions(
+    organizationId: string,
+    clientId: string
+  ): Observable<Array<IClientVersionSummaryBean>> {
+    const path = `organizations/${organizationId}/clients/${clientId}/versions`;
+    return this.http.get(this.generateUrl(path)) as Observable<
+      Array<IClientVersionSummaryBean>
+    >;
   }
 
-  public getContracts(organizationId: string, clientId: string, versionName: string): Observable<IContractSummary[]>  {
-    const path = `/organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts`;
-    return this.http.get(this.generateUrl(path)) as Observable<IContractSummary[]>;
+  public getContracts(
+    organizationId: string,
+    clientId: string,
+    versionName: string
+  ): Observable<IContractSummary[]> {
+    const path = `organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts`;
+    return this.http.get(this.generateUrl(path)) as Observable<
+      IContractSummary[]
+    >;
   }
 
-  public getContract(organizationId: string, clientId: string, versionName: string, contractId: number): Observable<Array<IContract>>  {
+  public getContract(
+    organizationId: string,
+    clientId: string,
+    versionName: string,
+    contractId: number
+  ): Observable<Array<IContract>> {
     const path = `/organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts/${contractId}`;
-    return this.http.get(this.generateUrl(path)) as Observable<Array<IContract>>;
+    return this.http.get(this.generateUrl(path)) as Observable<
+      Array<IContract>
+    >;
   }
 
   /********* Helper **********/
-  private generateUrl(path: string){
+  private generateUrl(path: string) {
     return `${this.endpoint}/${path}`;
   }
-
 }

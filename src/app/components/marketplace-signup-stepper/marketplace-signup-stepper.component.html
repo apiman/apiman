@@ -69,13 +69,17 @@
         </mat-card-content>
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
-          <button mat-raised-button matStepperNext color="primary">
-            {{ "COMMON.NEXT" | translate }}
+          <button
+            mat-raised-button
+            (click)="createContract(stepper)"
+            color="primary"
+          >
+            {{ "COMMON.CONFIRM" | translate }}
           </button>
         </mat-card-actions>
       </mat-card>
     </mat-step>
-    <mat-step label="{{ 'WIZARD.FORTH_STEP_LABEL' | translate }}" state="phone">
+    <mat-step label="{{ 'WIZARD.FORTH_STEP_LABEL' | translate }}">
       <mat-card>
         <mat-card-header>
           <mat-card-title>{{

@@ -1,10 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
-import { IClientSummary } from '../../interfaces/ICommunication';
+import {
+  IClientSummary,
+  IContract,
+  INewContract,
+} from '../../interfaces/ICommunication';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ConfigService } from '../../services/config/config.service';
+import { SignUpService } from '../../services/sign-up/sign-up.service';
+import { ISignUpInfo } from '../../interfaces/ISignUpInfo';
+import { BackendService } from '../../services/backend/backend.service';
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
@@ -15,19 +23,25 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   selectedClients = new Set<IClientSummary>();
   agreedTermsAndPrivacy: boolean | undefined;
   termsEnabled: boolean;
+  infos: ISignUpInfo;
 
   constructor(
     private heroService: HeroService,
     private route: ActivatedRoute,
     private translator: TranslateService,
     private snackbar: SnackbarService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private signUpService: SignUpService,
+    private router: Router,
+    private backend: BackendService
   ) {
     this.termsEnabled = this.configService.getTerms().enabled;
+    this.infos = this.signUpService.getSignUpInfo();
   }
 
   ngOnInit(): void {
     this.setUpHero();
+    this.checkNavigationAllowed();
   }
 
   private setUpHero() {
@@ -56,6 +70,42 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     if (!this.agreedTermsAndPrivacy)
       this.snackbar.showErrorSnackBar(
         this.translator.instant('WIZARD.TERMS_ERROR')
+      );
+  }
+
+  private checkNavigationAllowed() {
+    if (!this.infos) {
+      this.snackbar.showErrorSnackBar(
+        this.translator.instant('WIZARD.REDIRECT')
+      );
+      void this.router.navigate(['home']);
+    }
+  }
+
+  createContract(stepper: MatStepper): void {
+    const client: IClientSummary = this.selectedClients.values().next().value;
+
+    const contract: INewContract = {
+      apiOrgId: this.infos.organizationId,
+      apiId: this.infos.apiVersion.api.id,
+      apiVersion: this.infos.apiVersion.version,
+      // planId: this.infos.plan.id,
+      planId: 'Petstore',
+    };
+
+    this.backend
+      .createContract(client.organizationId, client.id, '1.0', contract)
+      .subscribe(
+        (contract: IContract) => {
+          this.snackbar.showPrimarySnackBar(
+            this.translator.instant('WIZARD.SUCCESS')
+          );
+          stepper.next();
+        },
+        (error) => {
+          this.snackbar.showErrorSnackBar(error.message);
+          console.error(error);
+        }
       );
   }
 }
