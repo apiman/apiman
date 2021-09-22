@@ -10,6 +10,7 @@ import {
   ISearchCriteria,
   ISearchResult,
 } from '../../interfaces/ICommunication';
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-api-card-list',
@@ -38,24 +39,50 @@ export class ApiCardListComponent implements OnInit {
 
   constructor(
     public apiService: ApiService,
-    public loadingSpinnerService: SpinnerService
+    public loadingSpinnerService: SpinnerService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.apis = [];
-    this.getApiList();
+    this.handleQueryParams();
+  }
+
+  handleQueryParams(): void {
+    this.route.queryParams
+      .subscribe((params) => {
+        if (params.page) {
+          this.searchCriteria.paging.page = params.page;
+        }
+        if (params.pageSize) {
+          this.searchCriteria.paging.pageSize = params.pageSize;
+        }
+        if (params.searchTerm) {
+          this.searchCriteria.filters[0].value = params.searchTerm;
+        }
+        this.getApiList();
+      })
   }
 
   OnInput(event: any): void {
-    this.searchCriteria.paging.page = 1;
-    this.searchCriteria.filters[0].value = '*' + event.target.value + '*';
-    this.getApiList();
+    this.router.navigate(['/marketplace'],
+      {
+        queryParams: {
+          page: 1,
+          pageSize: this.searchCriteria.paging.pageSize,
+          searchTerm: `*${event.target.value}*`
+      }});
   }
 
   OnPageChange(event: PageEvent): void {
-    this.searchCriteria.paging.page = event.pageIndex + 1;
-    this.searchCriteria.paging.pageSize = event.pageSize;
-    this.getApiList();
+    this.router.navigate(['/marketplace'],
+      {
+        queryParams: {
+          page: event.pageIndex + 1,
+          pageSize: event.pageSize,
+          searchTerm: this.searchCriteria.filters[0].value
+        }});
   }
 
   getApiList(): void {
