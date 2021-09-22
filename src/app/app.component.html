@@ -9,6 +9,6 @@
 
 <app-footer></app-footer>
 
-<div id="spinner" [hidden]="!this.loadingSpinnerService.isWaiting()">
+<div id="spinner" *ngIf="this.showSpinner">
   <mat-spinner strokeWidth="3" diameter="50"></mat-spinner>
 </div>
