@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.util.Preconditions;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.PermissionBean;
@@ -24,6 +25,8 @@ import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
 import io.apiman.manager.api.beans.notifications.NotificationCriteriaBean;
+import io.apiman.manager.api.beans.notifications.NotificationStatus;
+import io.apiman.manager.api.beans.notifications.dto.NotificationActionDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
@@ -244,6 +247,20 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
         securityContext.checkIfUserIsCurrentUser(userId);
         int notificationCount = notificationService.getNotificationsCount(userId, unreadOnly);
         return Response.noContent().header("X-Total-Count", notificationCount).build();
+    }
+
+    @Override
+    public Response markNotifications(String userId, NotificationActionDto notificationAction)
+         throws UserNotFoundException, NotAuthorizedException {
+        securityContext.checkIfUserIsCurrentUser(userId);
+        if (notificationAction.isMarkAll()) {
+            Preconditions.checkArgument(notificationAction.getStatus() != NotificationStatus.OPEN,
+                 "When using markAll a non-OPEN status must be used: " + notificationAction.getStatus());
+            notificationService.markAllNotificationsReadByUserId(userId, notificationAction.getStatus());
+        } else {
+            notificationService.markNotificationsWithStatus(userId, notificationAction.getNotificationIds(), notificationAction.getStatus());
+        }
+        return Response.accepted().build();
     }
 
     /**

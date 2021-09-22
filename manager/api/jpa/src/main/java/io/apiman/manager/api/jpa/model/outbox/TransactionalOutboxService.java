@@ -50,10 +50,7 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(TransactionalOutboxService.class);
     private static final ObjectMapper OM = new ObjectMapper();
 
-    @Inject
-    public TransactionalOutboxService() {
-
-    }
+    public TransactionalOutboxService() {}
 
     /**
      * Anything event fired that uses the {@link IVersionedApimanEvent} interface will be stored in the outbox.

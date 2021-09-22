@@ -39,6 +39,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import javax.naming.InitialContext;
+import javax.naming.NameAlreadyBoundException;
 import javax.servlet.DispatcherType;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -183,8 +184,8 @@ public class ManagerApiTestServer {
                 }
                 // ctx.bind("java:/comp/env/jdbc/ApiManagerDS", ds);
                 ctx.bind("java:/apiman/datasources/apiman-manager", ds);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (NameAlreadyBoundException nbe) {
+                nbe.printStackTrace();
             }
         }
         // if (ManagerTestUtils.getTestType() == TestType.es) {

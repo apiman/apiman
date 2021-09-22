@@ -59,8 +59,6 @@ public class ApiManagerApplication extends Application {
      * Constructor.
      */
     public ApiManagerApplication() {
-        System.setProperty("org.jboss.weld.construction.relaxed", "true");
-
         //add swagger 2.0 config
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion(new Version().getVersionString());

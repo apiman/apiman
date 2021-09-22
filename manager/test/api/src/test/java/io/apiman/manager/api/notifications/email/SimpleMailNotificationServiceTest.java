@@ -207,11 +207,11 @@ public class SimpleMailNotificationServiceTest {
         assertThat(allTemplates)
              //.containsOnlyKeys("test.notification", "test.notification.reason")
              .extracting(
-                  e -> e.getNotificationReason(),
-                  e -> e.getSubject(),
-                  e -> e.getHtmlBody(),
-                  e -> e.getPlainBody(),
-                  e -> e.getCategory()
+                  EmailNotificationTemplate::getNotificationReason,
+                  EmailNotificationTemplate::getSubject,
+                  EmailNotificationTemplate::getHtmlBody,
+                  EmailNotificationTemplate::getPlainBody,
+                  EmailNotificationTemplate::getCategory
              )
              .containsOnly(
                   tuple(
@@ -224,8 +224,8 @@ public class SimpleMailNotificationServiceTest {
                   tuple(
                        "test.notification.reason",
                        "Pay attention!",
-                       "Salut {name}",
-                       "Hola {name}",
+                       "Salut, {name}",
+                       "¡Hola, {name}!",
                        NotificationCategory.OTHER
                   )
              );
