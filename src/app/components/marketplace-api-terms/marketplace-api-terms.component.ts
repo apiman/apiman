@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ConfigService } from '../../services/config/config.service';
 
 @Component({
   selector: 'app-marketplace-api-terms',
@@ -9,8 +10,8 @@ export class MarketplaceApiTermsComponent implements OnInit {
   @Output() agreedTermsAndPrivacy = new EventEmitter<boolean>();
   acceptedTerms = false;
   acceptedPrivacyTerms = false;
-  termsLink = 'https://www.apache.org/licenses/LICENSE-2.0';
-  privacyLink = 'https://www.apache.org/licenses/LICENSE-2.0';
+  termsLink: string;
+  privacyLink: string;
 
   terms: string =
     'Apache License\n' +
@@ -65,7 +66,10 @@ export class MarketplaceApiTermsComponent implements OnInit {
     '\n' +
     'END OF TERMS AND CONDITIONS';
 
-  constructor() {}
+  constructor(private configService: ConfigService) {
+    this.termsLink = this.configService.getTerms().termsLink;
+    this.privacyLink = this.configService.getTerms().privacyLink;
+  }
 
   ngOnInit(): void {}
 

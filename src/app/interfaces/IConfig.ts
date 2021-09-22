@@ -6,6 +6,7 @@ export interface IConfig {
   navigation: INavigation;
   footer: IFooter;
   auth: IAuthProvider;
+  terms: ITerms;
 }
 
 export interface IHero {
@@ -40,4 +41,10 @@ export interface IAuthProvider {
   url: string;
   realm: string;
   clientId: string;
+}
+
+export interface ITerms {
+  enabled: boolean;
+  termsLink: string;
+  privacyLink: string;
 }

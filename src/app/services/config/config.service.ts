@@ -6,6 +6,7 @@ import {
   IFooter,
   IHero,
   INavigation,
+  ITerms,
 } from '../../interfaces/IConfig';
 
 @Injectable({
@@ -49,5 +50,9 @@ export class ConfigService {
 
   getAuth(): IAuthProvider {
     return { ...this.config.auth };
+  }
+
+  getTerms(): ITerms {
+    return { ...this.config.terms };
   }
 }

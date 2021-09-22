@@ -20,7 +20,8 @@
           <button
             mat-raised-button
             color="primary"
-            (click)="nextStep1(stepper)"
+            matStepperNext
+            (click)="nextAfterClientSelect()"
           >
             {{ "COMMON.NEXT" | translate }}
           </button>
@@ -28,6 +29,7 @@
       </mat-card>
     </mat-step>
     <mat-step
+      *ngIf="termsEnabled"
       label="{{ 'WIZARD.SECOND_STEP_LABEL' | translate }}"
       [completed]="agreedTermsAndPrivacy"
     >
@@ -48,7 +50,7 @@
             mat-raised-button
             matStepperNext
             color="primary"
-            (click)="nextStep2()"
+            (click)="nextAfterTermsAgreed()"
           >
             {{ "COMMON.NEXT" | translate }}
           </button>

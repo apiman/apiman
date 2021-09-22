@@ -3,33 +3,28 @@ import { ActivatedRoute } from '@angular/router';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IClientSummary } from '../../interfaces/ICommunication';
-import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { MatStepper } from '@angular/material/stepper';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
-import {SignUpService} from "../../services/sign-up/sign-up.service";
+import { ConfigService } from '../../services/config/config.service';
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
   templateUrl: './marketplace-signup-stepper.component.html',
   styleUrls: ['./marketplace-signup-stepper.component.scss'],
-  providers: [
-    {
-      provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: { showError: true },
-    },
-  ],
 })
 export class MarketplaceSignupStepperComponent implements OnInit {
   selectedClients = new Set<IClientSummary>();
   agreedTermsAndPrivacy: boolean | undefined;
+  termsEnabled: boolean;
 
   constructor(
     private heroService: HeroService,
     private route: ActivatedRoute,
     private translator: TranslateService,
     private snackbar: SnackbarService,
-    private signUpService: SignUpService
-  ) {}
+    private configService: ConfigService
+  ) {
+    this.termsEnabled = this.configService.getTerms().enabled;
+  }
 
   ngOnInit(): void {
     this.setUpHero();
@@ -49,16 +44,15 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     this.agreedTermsAndPrivacy = $event;
   }
 
-  nextStep1(stepper: MatStepper) {
+  nextAfterClientSelect() {
     if (this.selectedClients.size == 0) {
       this.snackbar.showErrorSnackBar(
         this.translator.instant('WIZARD.APPLICATION_ERROR')
       );
     }
-    stepper.next();
   }
 
-  nextStep2() {
+  nextAfterTermsAgreed() {
     if (!this.agreedTermsAndPrivacy)
       this.snackbar.showErrorSnackBar(
         this.translator.instant('WIZARD.TERMS_ERROR')

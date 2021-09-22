@@ -1,5 +1,5 @@
 {
-  "language": "de",
+  "language": "en",
   "supportedLanguages": ["de", "en"],
   "endpoint": "https://vagrantguest/pas/apiman",
   "hero": {
@@ -47,5 +47,10 @@
     "url": "https://vagrantguest/pas/keycloak",
     "realm": "PAS",
     "clientId": "devportal"
+  },
+  "terms": {
+    "enabled": true,
+    "termsLink": "https://www.apache.org/licenses/LICENSE-2.0",
+    "privacyLink": "https://www.apache.org/licenses/LICENSE-2.0"
   }
 }

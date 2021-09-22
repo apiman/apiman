@@ -1,3 +1,4 @@
+<script src="marketplace-api-terms.component.ts"></script>
 <mat-form-field appearance="fill">
   <mat-label>Licence Type</mat-label>
   <textarea
@@ -14,14 +15,23 @@
   <mat-card-title>Agreement</mat-card-title>
   <mat-card-content>
     <p>
-      <mat-checkbox color="primary" [(ngModel)]="acceptedTerms" (change)="onClick()"
+      <mat-checkbox
+        color="primary"
+        [(ngModel)]="acceptedTerms"
+        (change)="onClick()"
         >I agree to the
-        <a [href]="termsLink">terms and conditions</a></mat-checkbox
+        <a [href]="termsLink" class="primary"
+          >terms and conditions</a
+        ></mat-checkbox
       >
     </p>
     <p>
-      <mat-checkbox color="primary" [(ngModel)]="acceptedPrivacyTerms" (change)="onClick()"
-        >I accept the <a [href]="privacyLink">privacy policy</a></mat-checkbox
+      <mat-checkbox
+        color="primary"
+        [(ngModel)]="acceptedPrivacyTerms"
+        (change)="onClick()"
+        >I accept the
+        <a [href]="privacyLink" class="primary">privacy policy</a></mat-checkbox
       >
     </p>
   </mat-card-content>
