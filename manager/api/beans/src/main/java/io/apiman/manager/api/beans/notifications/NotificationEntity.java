@@ -56,9 +56,9 @@ public class NotificationEntity {
     private String reasonMessage;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "notification_status", nullable = false)
+    @Column(name = "status", nullable = false)
     @NotNull
-    private NotificationStatus notificationStatus;
+    private NotificationStatus status;
 
     // TODO(msavy): consider tracking dismissal reason? for example, old or irrelevant, etc?
     @CreationTimestamp
@@ -121,13 +121,12 @@ public class NotificationEntity {
         return this;
     }
 
-    public NotificationStatus getNotificationStatus() {
-        return notificationStatus;
+    public NotificationStatus getStatus() {
+        return status;
     }
 
-    public NotificationEntity setNotificationStatus(
-         NotificationStatus notificationStatus) {
-        this.notificationStatus = notificationStatus;
+    public NotificationEntity setStatus(NotificationStatus status) {
+        this.status = status;
         return this;
     }
 
@@ -213,7 +212,7 @@ public class NotificationEntity {
              .add("category=" + category)
              .add("reason='" + reason + "'")
              .add("reasonMessage='" + reasonMessage + "'")
-             .add("notificationStatus=" + notificationStatus)
+             .add("status=" + status)
              .add("createdOn=" + createdOn)
              .add("modifiedOn=" + modifiedOn)
              .add("recipient='" + recipient + "'")

@@ -18,7 +18,7 @@ public class NotificationCriteriaBean extends SearchCriteriaBean {
          "category",
          "reason",
          "reasonMessage",
-         "notificationStatus",
+         "status",
          "createdOn",
          "modifiedOn",
          "source"

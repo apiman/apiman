@@ -172,7 +172,7 @@ public class NotificationService implements DataAccessUtilMixin {
                  .setCategory(newNotification.getCategory())
                  .setReason(newNotification.getReason())
                  .setReasonMessage(newNotification.getReasonMessage())
-                 .setNotificationStatus(NotificationStatus.OPEN)
+                 .setStatus(NotificationStatus.OPEN)
                  .setRecipient(resolvedRecipient.getUsername())
                  .setSource(newNotification.getSource())
                  .setPayload(JsonUtil.toJsonTree(newNotification.getPayload()));
@@ -271,7 +271,7 @@ public class NotificationService implements DataAccessUtilMixin {
              .setCategory(newNotification.getCategory())
              .setReason(newNotification.getReason())
              .setReasonMessage(newNotification.getReasonMessage())
-             .setNotificationStatus(NotificationStatus.OPEN)
+             .setStatus(NotificationStatus.OPEN)
              .setCreatedOn(newNotification.getCreatedOn())
              .setModifiedOn(newNotification.getModifiedOn())
              .setRecipient(user)

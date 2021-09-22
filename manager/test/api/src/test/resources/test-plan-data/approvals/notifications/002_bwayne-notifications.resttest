@@ -16,7 +16,7 @@ Content-Type: application/json
 		"category": "API_ADMINISTRATION",
 		"reason": "apiman.client.status_change",
 		"reasonMessage": "Client was published",
-		"notificationStatus": "OPEN",
+		"status": "OPEN",
 		"recipient": {
 			"id": "bwayne",
 			"username": "bwayne",
@@ -42,7 +42,7 @@ Content-Type: application/json
 		"category": "API_ADMINISTRATION",
 		"reason": "apiman.client.contract.approval.granted",
 		"reasonMessage": "Signup was approved!",
-		"notificationStatus": "OPEN",
+		"status": "OPEN",
 		"recipient": {
 			"id": "bwayne",
 			"username": "bwayne",
@@ -79,7 +79,7 @@ Content-Type: application/json
 		"category": "API_ADMINISTRATION",
 		"reason": "apiman.client.contract.approval.granted",
 		"reasonMessage": "Signup was approved!",
-		"notificationStatus": "OPEN",
+		"status": "OPEN",
 		"recipient": {
 			"id": "bwayne",
 			"username": "bwayne",

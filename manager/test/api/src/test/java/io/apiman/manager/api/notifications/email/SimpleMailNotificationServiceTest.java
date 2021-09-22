@@ -224,7 +224,7 @@ public class SimpleMailNotificationServiceTest {
                   tuple(
                        "test.notification.reason",
                        "Pay attention!",
-                       "Salut, {name}",
+                       "Salut {name}",
                        "¡Hola, {name}!",
                        NotificationCategory.OTHER
                   )

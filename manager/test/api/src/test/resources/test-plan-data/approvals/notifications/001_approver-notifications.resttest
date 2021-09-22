@@ -16,7 +16,7 @@ Content-Type: application/json
 		"category": "API_ADMINISTRATION",
 		"reason": "apiman.client.contract.approval.request",
 		"reasonMessage": "Signup request for API",
-		"notificationStatus": "OPEN",
+		"status": "OPEN",
 		"recipient": {
 			"id": "admin",
 			"username": "admin",
@@ -52,14 +52,14 @@ Content-Type: application/json
 		"category": "API_ADMINISTRATION",
 		"reason": "apiman.client.contract.approval.request",
 		"reasonMessage": "Signup request for API",
-		"notificationStatus": "OPEN",
+		"status": "OPEN",
 		"recipient": {
 			"id": "admin",
 			"username": "admin",
 			"fullName": "Admin",
 			"email": "admin@example.org"
 		},
-		"source": "/action/approval-request",
+		"source": "http://somepage/here/",
 		"payload": {
 			"headers": {
 				"source": "/a/b/c",

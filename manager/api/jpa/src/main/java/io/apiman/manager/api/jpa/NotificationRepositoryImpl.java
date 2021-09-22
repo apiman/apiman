@@ -129,7 +129,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
         int n = getActiveEntityManager()
              .createQuery(
                   "UPDATE NotificationEntity n "
-                       + "SET n.notificationStatus = :newStatus, "
+                       + "SET n.status = :newStatus, "
                        + "    n.modifiedOn = :now "
                        + "WHERE n.recipient = :recipientId "
                        + "AND n.id IN :idList"
@@ -148,9 +148,9 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
         int n = getActiveEntityManager()
              .createQuery(
                   "UPDATE NotificationEntity n "
-                       + "SET n.notificationStatus = :newStatus, "
+                       + "SET n.status = :newStatus, "
                        + "    n.modifiedOn = :now "
-                       + "WHERE n.recipient = :recipientId AND n.notificationStatus = 'OPEN'"
+                       + "WHERE n.recipient = :recipientId AND n.status = 'OPEN'"
              )
              .setParameter("newStatus", status)
              .setParameter("recipientId", recipientUserId)
