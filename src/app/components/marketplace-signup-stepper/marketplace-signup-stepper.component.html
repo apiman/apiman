@@ -87,11 +87,11 @@
           }}</mat-card-title>
         </mat-card-header>
         <mat-card-content class="mat-card-header-text">
-          <app-my-apps-use-api></app-my-apps-use-api>
+          <app-my-apps-use-api [contract]="contract"></app-my-apps-use-api>
         </mat-card-content>
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
-          <button mat-raised-button matStepperNext color="primary">
+          <button mat-raised-button color="primary" (click)="finish()">
             {{ "COMMON.FINISH" | translate }}
           </button>
         </mat-card-actions>

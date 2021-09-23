@@ -5,7 +5,7 @@
     <p>{{ mockText }}</p>
   </div>
   <div id="try-it-now-btn">
-    <button mat-raised-button color="primary">
+    <button mat-raised-button color="primary" [disabled]="disableButtons">
       {{ "APPS.VIEW_AND_TRY_NOW" | translate }}
     </button>
   </div>
@@ -19,9 +19,10 @@
   </div>
   <div>
     <mat-form-field>
-      <input matInput readonly value="{{apiKey}}" />
+      <input matInput readonly value="{{ apiKey }}" />
       <button
-        [cdkCopyToClipboard]="''"
+        [disabled]="disableButtons"
+        [cdkCopyToClipboard]="apiKey"
         mat-icon-button
         matSuffix
         class="input-icon-btn"
@@ -40,9 +41,10 @@
   </div>
   <div>
     <mat-form-field>
-      <input matInput readonly value="{{endpoint}}" />
+      <input matInput readonly value="{{ endpoint }}" />
       <button
-        [cdkCopyToClipboard]="'test'"
+        [disabled]="disableButtons"
+        [cdkCopyToClipboard]="endpoint"
         mat-icon-button
         matSuffix
         class="input-icon-btn"
@@ -54,7 +56,7 @@
 </div>
 
 <!-- Authentication -->
-<div class="grid">
+<div class="grid" *ngIf="hasOAuth">
   <div>
     <h4>{{ "APPS.AUTHENTICATION" | translate }}</h4>
     <p>{{ mockText }}</p>
@@ -64,18 +66,22 @@
       <mat-label>OAuth 2 Server URL</mat-label>
       <input matInput readonly value="https://localhost:4200/authentication" />
       <button
+        [disabled]="disableButtons"
         [cdkCopyToClipboard]="''"
         mat-icon-button
         matSuffix
         class="input-icon-btn"
       >
-        <mat-icon class="input-icon-btn" color="primary">content_copy</mat-icon>
+        <mat-icon class="input-icon-btn" color="primary" [class.disabled]=""
+          >content_copy</mat-icon
+        >
       </button>
     </mat-form-field>
     <mat-form-field>
       <mat-label>OAuth 2 Client Secret</mat-label>
       <input matInput readonly value="fer87)/9&9gdea" />
       <button
+        [disabled]="disableButtons"
         [cdkCopyToClipboard]="''"
         mat-icon-button
         matSuffix

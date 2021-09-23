@@ -24,6 +24,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   agreedTermsAndPrivacy: boolean | undefined;
   termsEnabled: boolean;
   infos: ISignUpInfo;
+  contract: IContract | undefined;
 
   constructor(
     private heroService: HeroService,
@@ -73,7 +74,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       );
   }
 
-  private checkNavigationAllowed() {
+  private checkNavigationAllowed(): void {
     if (!this.infos) {
       this.snackbar.showErrorSnackBar(
         this.translator.instant('WIZARD.REDIRECT')
@@ -89,8 +90,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       apiOrgId: this.infos.organizationId,
       apiId: this.infos.apiVersion.api.id,
       apiVersion: this.infos.apiVersion.version,
-      // planId: this.infos.plan.id,
-      planId: 'Petstore',
+      planId: this.infos.plan.id,
     };
 
     this.backend
@@ -100,12 +100,14 @@ export class MarketplaceSignupStepperComponent implements OnInit {
           this.snackbar.showPrimarySnackBar(
             this.translator.instant('WIZARD.SUCCESS')
           );
+          this.contract = contract;
           stepper.next();
         },
-        (error) => {
-          this.snackbar.showErrorSnackBar(error.message);
-          console.error(error);
-        }
+        (error) => this.snackbar.showErrorSnackBar(error.message, error)
       );
+  }
+
+  finish(): void {
+    void this.router.navigate(['applications']);
   }
 }

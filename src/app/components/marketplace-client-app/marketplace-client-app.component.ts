@@ -5,6 +5,7 @@ import {
   IClientSummary,
   IOrganizationSummary,
 } from '../../interfaces/ICommunication';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -21,7 +22,10 @@ export class MarketplaceClientAppComponent implements OnInit {
 
   @Output() selectedClients = new EventEmitter<Set<IClientSummary>>();
 
-  constructor(private backend: BackendService) {}
+  constructor(
+    private backend: BackendService,
+    private snackbar: SnackbarService
+  ) {}
 
   ngOnInit(): void {
     this.loadClients();
@@ -46,7 +50,7 @@ export class MarketplaceClientAppComponent implements OnInit {
         : this.organizations[0].id;
     this.backend.createClient(orgId, this.clientName).subscribe(
       () => this.loadClients(),
-      (error) => console.error(error)
+      (error) => this.snackbar.showErrorSnackBar(error.message, error)
     );
   }
 
@@ -62,7 +66,7 @@ export class MarketplaceClientAppComponent implements OnInit {
           this.displayedColumns = ['org-name', 'name'];
         }
       },
-      (error) => console.error(error)
+      (error) => this.snackbar.showErrorSnackBar(error.message, error)
     );
 
     this.backend.getEditableClients().subscribe(
@@ -73,7 +77,7 @@ export class MarketplaceClientAppComponent implements OnInit {
           this.selectClient(clients[0]);
         }
       },
-      (error) => console.error(error)
+      (error) => this.snackbar.showErrorSnackBar(error.message)
     );
   }
 

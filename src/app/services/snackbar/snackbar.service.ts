@@ -13,7 +13,8 @@ export class SnackbarService {
     this.showCustomSnackBar(msg, action);
   }
 
-  public showErrorSnackBar(msg: string, action?: string) {
+  public showErrorSnackBar(msg: string, error?: any, action?: string) {
+    console.error(error);
     this.showCustomSnackBar(msg, action, {
       duration: this.snackbarDuration,
       panelClass: ['warn-bg'],

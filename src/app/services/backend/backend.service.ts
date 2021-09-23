@@ -6,6 +6,7 @@ import { KeycloakService } from 'keycloak-angular';
 import {
   IApi,
   IApiVersion,
+  IApiVersionEndpointSummary,
   IApiVersionSummary,
   IClient,
   IClientSummary,
@@ -247,6 +248,17 @@ export class BackendService {
     return this.http.get(this.generateUrl(path)) as Observable<
       Array<IContract>
     >;
+  }
+
+  public getManagedApiEndpoint(
+    organizationId: string,
+    apiId: string,
+    versionName: string
+  ): Observable<IApiVersionEndpointSummary> {
+    const path = `/organizations/${organizationId}/apis/${apiId}/versions/${versionName}/endpoint`;
+    return this.http.get(
+      this.generateUrl(path)
+    ) as Observable<IApiVersionEndpointSummary>;
   }
 
   /********* Helper **********/
