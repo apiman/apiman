@@ -65,5 +65,23 @@
     "TERMS_ERROR": "You have to accept the service terms",
     "REDIRECT": "You will be redirected because of an invalid URL",
     "SUCCESS": "A contract has been successfully created"
+  },
+  "POLICIES": {
+    "RATE_LIMIT": {
+      "TITLE": "Rate Limiting Policy",
+      "DESCRIPTION": "You will be rate limited to <strong>{{limit}}</strong> requests per <strong>{{timeUnit}}</strong>",
+      "MORE_INFO": "The following headers in the response contain useful information relating to rate limit,",
+      "LIMIT": "Rate limit allowance (per time period)",
+      "REMAINING": "Rate limit allowance remaining",
+      "RESET": "Rate limit allowance remaining"
+    },
+    "QUOTA": {
+      "TITLE": "Quota Policy",
+      "DESCRIPTION": "You can transfer a maximum of {{limit}} {{unit}} of data {{timeUnit}}",
+      "MORE_INFO": "The following headers in the response contain useful information relating to quota limit,",
+      "LIMIT": "Quota limit allowance (per time period)",
+      "REMAINING": "Quota limit allowance remaining",
+      "RESET": "Quota limit allowance remaining"
+    }
   }
 }

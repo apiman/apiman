@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, NgModule, SecurityContext} from '@angular/core';
+import { APP_INITIALIZER, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,7 +12,6 @@ import { MarketplaceApiDetailsComponent } from './components/marketplace-api-det
 import { HomeComponent } from './components/home/home.component';
 import { MarketplaceApiTermsComponent } from './components/marketplace-api-terms/marketplace-api-terms.component';
 import { MarketplaceSignupStepperComponent } from './components/marketplace-signup-stepper/marketplace-signup-stepper.component';
-import { MarketplaceApiPoliciesComponent } from './components/marketplace-api-policies/marketplace-api-policies.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MarketplaceApiDescriptionComponent } from './components/marketplace-api-description/marketplace-api-description.component';
 import { MarketplaceComponent } from './components/marketplace/marketplace.component';
@@ -36,6 +35,7 @@ import { MyAppsSummaryComponent } from './components/my-apps-summary/my-apps-sum
 import { MyAppsUseApiComponent } from './components/my-apps-use-api/my-apps-use-api.component';
 import { MyAppsPoliciesComponent } from './components/my-apps-policies/my-apps-policies.component';
 import { MyAppsManageApiComponent } from './components/my-apps-manage-api/my-apps-manage-api.component';
+import { PolicyCardComponent } from './components/policy-card/policy-card.component';
 
 export function initializeApp(
   configService: ConfigService,
@@ -87,7 +87,6 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     MarketplaceApiTermsComponent,
     MarketplaceSignupStepperComponent,
     HomeComponent,
-    MarketplaceApiPoliciesComponent,
     MarketplaceApiDescriptionComponent,
     MarketplaceComponent,
     NavigationComponent,
@@ -101,6 +100,7 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     MyAppsUseApiComponent,
     MyAppsPoliciesComponent,
     MyAppsManageApiComponent,
+    PolicyCardComponent,
   ],
   imports: [
     KeycloakAngularModule,
@@ -109,7 +109,7 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     AppRoutingModule,
     BrowserAnimationsModule,
     MarkdownModule.forRoot({
-      sanitize: SecurityContext.NONE
+      sanitize: SecurityContext.NONE,
     }),
     FormsModule,
     HttpClientModule,

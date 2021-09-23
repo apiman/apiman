@@ -1,0 +1,31 @@
+<mat-card>
+  <mat-card-header>
+    <mat-icon mat-card-avatar color="primary">{{ icon }}</mat-icon>
+    <mat-card-title>{{
+      "POLICIES." + policyIdentifier + ".TITLE" | translate
+    }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p
+      [innerHTML]="
+        'POLICIES.' + policyIdentifier + '.DESCRIPTION'
+          | translate: policyConfig
+      "
+    ></p>
+    <p>{{ "POLICIES." + policyIdentifier + ".MORE_INFO" | translate }}</p>
+    <ul>
+      <li>
+        <strong>{{ headers.headerLimit }}:</strong>
+        {{ "POLICIES." + policyIdentifier + ".LIMIT" | translate }}
+      </li>
+      <li>
+        <strong>{{ headers.headerRemaining }}:</strong>
+        {{ "POLICIES." + policyIdentifier + ".REMAINING" | translate }}
+      </li>
+      <li>
+        <strong>{{ headers.headerReset }}:</strong>
+        {{ "POLICIES." + policyIdentifier + ".RESET" | translate }}
+      </li>
+    </ul>
+  </mat-card-content>
+</mat-card>

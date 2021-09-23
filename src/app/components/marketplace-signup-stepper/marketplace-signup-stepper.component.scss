@@ -13,3 +13,16 @@ mat-stepper {
   justify-content: center;
   align-items: center;
 }
+
+.policies {
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 8px;
+  grid-row-gap: 32px;
+}
+
+.mat-card-content>:last-child:not(.mat-card-footer) {
+  margin-bottom: 2.2rem;
+}
