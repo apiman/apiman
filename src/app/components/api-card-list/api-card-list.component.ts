@@ -21,6 +21,7 @@ export class ApiCardListComponent implements OnInit {
   apis: IApiSummary[] = [];
   totalSize = 0;
   ready = false;
+  searchTerm = '';
   searchCriteria: ISearchCriteria = {
     filters: [
       {
@@ -46,6 +47,7 @@ export class ApiCardListComponent implements OnInit {
 
   ngOnInit(): void {
     this.apis = [];
+    this.searchTerm = '';
     this.handleQueryParams();
   }
 
@@ -54,18 +56,27 @@ export class ApiCardListComponent implements OnInit {
       .subscribe((params) => {
         if (params.page) {
           this.searchCriteria.paging.page = params.page;
+        } else {
+          this.searchCriteria.paging.page = 1;
         }
         if (params.pageSize) {
           this.searchCriteria.paging.pageSize = params.pageSize;
+        } else {
+          this.searchCriteria.paging.pageSize = 8;
         }
         if (params.searchTerm) {
+          this.searchTerm = params.searchTerm.replaceAll('*', '');
           this.searchCriteria.filters[0].value = params.searchTerm;
+        } else{
+          this.searchTerm = '';
+          this.searchCriteria.filters[0].value = '*';
         }
         this.getApiList();
       })
   }
 
   OnInput(event: any): void {
+    this.searchTerm = event.target.value;
     this.router.navigate(['/marketplace'],
       {
         queryParams: {
@@ -131,7 +142,6 @@ export class ApiCardListComponent implements OnInit {
       tap((apiVersion) => (api.latestVersion = apiVersion.version)),
       switchMap((apiVersion) => {
         return of(
-          apiVersion.status === 'Published' &&
             apiVersion.definitionType !== null &&
             apiVersion.definitionType !== 'None'
         );

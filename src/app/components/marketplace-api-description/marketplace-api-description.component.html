@@ -11,8 +11,8 @@
         mat-raised-button
         id="docs-button"
         color="primary"
-        [disabled]="
-          !(api.definitionType !== null && api.definitionType !== 'None')
+        *ngIf="
+          (api.definitionType !== null && api.definitionType !== 'None')
         "
         [routerLink]="[
           '/swagger',

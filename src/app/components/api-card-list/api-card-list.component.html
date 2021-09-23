@@ -6,10 +6,16 @@
       type="search"
       [placeholder]="'MPLACE.SEARCH' | translate"
       class="search-input"
+      value="{{this.searchTerm}}"
       (input)="OnInput($event)"
     />
   </mat-form-field>
 </div>
+<ng-container *ngIf="totalSize === 0">
+  <h2 class="align">
+    {{'COMMON.NO_DATA_FOUND' | translate}}
+  </h2>
+</ng-container>
 <ng-container *ngIf="ready">
   <div id="grid">
     <app-api-card
@@ -19,7 +25,7 @@
     ></app-api-card>
   </div>
 </ng-container>
-<div *ngIf="listType === 'api'" class="align">
+<div *ngIf="listType === 'api' && totalSize > searchCriteria.paging.pageSize" class="align">
   <mat-paginator
     [length]="totalSize"
     [pageSize]="searchCriteria.paging.pageSize"
