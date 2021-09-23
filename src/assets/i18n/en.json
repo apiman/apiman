@@ -11,7 +11,8 @@
     "ORGANIZATION": "Organization",
     "APPLICATION": "Application",
     "NO_DATA_FOUND": "No data found",
-    "CONFIRM": "Confirm"
+    "CONFIRM": "Confirm",
+    "SIGNUP": "Signup"
   },
   "HOME": {
     "TITLE": "KoolBank Api Developer Portal",
@@ -46,14 +47,11 @@
     "UNSUB_FROM_THIS_API": "Unsubscribe from this API",
     "UNSUB": "Unsubscribe"
   },
-  "API_SIGN_UP": {
-    "TITLE": "API Sign Up"
-  },
   "CLIENT_CREATE" : {
     "SELECT": "Select from available Applications"
   },
   "WIZARD": {
-    "FIRST_STEP_LABEL": "Select/create Client",
+    "FIRST_STEP_LABEL": "Select/create Application",
     "SECOND_STEP_LABEL": "Agreement",
     "THIRD_STEP_LABEL": "Summary",
     "FORTH_STEP_LABEL": "Confirmation",

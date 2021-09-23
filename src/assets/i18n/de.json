@@ -11,7 +11,8 @@
     "ORGANIZATION": "Organisation",
     "APPLICATION": "Applikation",
     "NO_DATA_FOUND": "Keine Einträge gefunden",
-    "CONFIRM": "Bestätigen"
+    "CONFIRM": "Bestätigen",
+    "SIGNUP": "Anmeldung"
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",
@@ -45,9 +46,6 @@
     "UNSUB_FROM_API": "Von der API abmelden",
     "UNSUB_FROM_THIS_API": "Von dieser API abmelden",
     "UNSUB": "Abmelden"
-  },
-  "API_SIGN_UP": {
-    "TITLE": "API-Anmeldung"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Aus vorhandenen Anwendugen auswählen"

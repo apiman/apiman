@@ -47,7 +47,10 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   private setUpHero() {
     this.heroService.setUpHero({
-      title: this.translator.instant('API_SIGN_UP.TITLE'),
+      title: this.infos.apiVersion.api.name,
+      // subtitle:
+      //   this.infos.plan.name + ' ' + this.translator.instant('COMMON.SIGNUP'),
+      subtitle: 'Test ' + this.translator.instant('COMMON.SIGNUP'),
     });
   }
 

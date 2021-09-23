@@ -1,16 +1,16 @@
-.api-card{
+.api-card {
   border-radius: 2px;
   min-width: 24%;
   height: 30%;
   border: 1px solid rgba(0,0,0,0.1);
 }
 
-.api-card-header{
+.api-card-header {
   padding-left: 3% ;
 }
 
-::ng-deep .mat-card-header-text {
-  margin: 0 10px !important;
+.api-card-title {
+  margin-left: -10px;
 }
 
 .api-card-icon {
