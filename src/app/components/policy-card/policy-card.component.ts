@@ -37,50 +37,12 @@ export class PolicyCardComponent implements OnInit {
     timeUnit: '',
   };
 
-  test = {
-    id: 1632404307877124,
-    type: 'Api',
-    organizationId: 'Petstore',
-    entityId: 'Petstore',
-    entityVersion: '1.0',
-    name: 'Transfer Quota Policy',
-    description:
-      'Consumers are limited to transferring 536870912000 bytes per Client per Minute.',
-    //prettier-ignore
-    configuration:
-      "{\"limit\":314572800,\"direction\":\"upload\",\"granularity\":\"Client\",\"period\":\"Minute\"}",
-    createdBy: 'support.is',
-    createdOn: 1632404307840,
-    modifiedBy: 'support.is',
-    modifiedOn: 1632404307840,
-    definition: {
-      id: 'TransferQuotaPolicy',
-      policyImpl: 'class:io.apiman.gateway.engine.policies.TransferQuotaPolicy',
-      name: 'Transfer Quota Policy',
-      description:
-        'Provides a way to limit the total number of bytes that can be transferred from (or to) an API.',
-      icon: 'download',
-      templates: [
-        {
-          language: null,
-          template:
-            'Consumers are limited to transferring ${limit} bytes per ${granularity} per ${period}.',
-        },
-      ],
-      formType: 'Default',
-      deleted: false,
-    },
-    orderIndex: 3,
-  };
-
   ngOnInit(): void {
-    const config = JSON.parse(this.test.configuration);
-    // const config = JSON.parse(this.policy?.configuration);
+    const config = JSON.parse(this.policy?.configuration);
     const timeUnit = config.period;
     let limit = '';
 
-    const policyId = this.test?.definition.id;
-    // const policyId = this.policy?.definition.id;
+    const policyId = this.policy?.definition.id;
     switch (policyId) {
       case 'RateLimitingPolicy': {
         this.checkHeaders(config, this.rateLimitPolicyHeaders);
