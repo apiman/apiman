@@ -38,7 +38,7 @@ export class PolicyCardComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    const config = JSON.parse(this.policy?.configuration);
+    const config = JSON.parse(<string>this.policy?.configuration);
     const timeUnit = config.period;
     let limit = '';
 
