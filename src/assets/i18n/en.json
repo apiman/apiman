@@ -75,7 +75,7 @@
     },
     "QUOTA": {
       "TITLE": "Quota Policy",
-      "DESCRIPTION": "You can transfer a maximum of {{limit}} {{unit}} of data {{timeUnit}}",
+      "DESCRIPTION": "You can transfer a maximum of {{limit}} of data per {{timeUnit}}",
       "MORE_INFO": "The following headers in the response contain useful information relating to quota limit,",
       "LIMIT": "Quota limit allowance (per time period)",
       "REMAINING": "Quota limit allowance remaining",

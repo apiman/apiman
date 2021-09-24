@@ -23,7 +23,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   selectedClients = new Set<IClientSummary>();
   agreedTermsAndPrivacy: boolean | undefined;
   termsEnabled: boolean;
-  infos: ISignUpInfo;
+  newContractDetails: ISignUpInfo;
   contract: IContract | undefined;
 
   constructor(
@@ -37,7 +37,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     private backend: BackendService
   ) {
     this.termsEnabled = this.configService.getTerms().enabled;
-    this.infos = this.signUpService.getSignUpInfo();
+    this.newContractDetails = this.signUpService.getSignUpInfo();
   }
 
   ngOnInit(): void {
@@ -47,7 +47,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   private setUpHero() {
     this.heroService.setUpHero({
-      title: this.infos.apiVersion.api.name,
+      title: this.newContractDetails.apiVersion.api.name,
       // subtitle:
       //   this.infos.plan.name + ' ' + this.translator.instant('COMMON.SIGNUP'),
       subtitle: 'Test ' + this.translator.instant('COMMON.SIGNUP'),
@@ -78,7 +78,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   }
 
   private checkNavigationAllowed(): void {
-    if (!this.infos) {
+    if (!this.newContractDetails) {
       this.snackbar.showErrorSnackBar(
         this.translator.instant('WIZARD.REDIRECT')
       );
@@ -90,10 +90,10 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     const client: IClientSummary = this.selectedClients.values().next().value;
 
     const contract: INewContract = {
-      apiOrgId: this.infos.organizationId,
-      apiId: this.infos.apiVersion.api.id,
-      apiVersion: this.infos.apiVersion.version,
-      planId: this.infos.plan.id,
+      apiOrgId: this.newContractDetails.organizationId,
+      apiId: this.newContractDetails.apiVersion.api.id,
+      apiVersion: this.newContractDetails.apiVersion.version,
+      planId: this.newContractDetails.plan.id,
     };
 
     this.backend
