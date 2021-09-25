@@ -65,7 +65,8 @@
     <test name="bwayne list notifications (all read)">test-plan-data/approvals/notifications/004_bwayne-list-notifications-all-read.resttest</test>
     <test name="bwayne list unread notifications (empty)">test-plan-data/approvals/notifications/005_bwayne-list-unread-notifications-empty.resttest</test>
 
-
+    <test name="bwayne count all notifications">test-plan-data/approvals/notifications/006_bwayne-count-all-notifications.resttest</test>
+    <test name="bwayne count unread notifications (zero)">test-plan-data/approvals/notifications/007_bwayne-count-unread-notifications.resttest</test>
   </testGroup>
 
 </testPlan>

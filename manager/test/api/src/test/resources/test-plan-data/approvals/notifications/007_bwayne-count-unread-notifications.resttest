@@ -1,0 +1,7 @@
+HEAD /users/bwayne/notifications bwayne/bwayne
+Content-Type: application/json
+
+----
+204
+X-Total-Count: 0
+Total-Count: 0

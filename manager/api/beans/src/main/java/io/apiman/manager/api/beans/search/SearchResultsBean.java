@@ -25,7 +25,7 @@ import java.util.List;
  * @author eric.wittmann@redhat.com
  * @param <T> the bean type
  */
-public class SearchResultsBean<T> implements Serializable {
+public class SearchResultsBean<T> implements Serializable, ITotalSize {
 
     private static final long serialVersionUID = -1672829715471947181L;
 

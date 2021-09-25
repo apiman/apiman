@@ -21,6 +21,8 @@ import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.providers.JacksonObjectMapperProvider;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
+import io.apiman.manager.api.rest.interceptors.BlobResourceInterceptorProvider;
+import io.apiman.manager.api.rest.interceptors.TotalCountInterceptorProvider;
 import io.apiman.manager.api.service.ApiService;
 import io.apiman.manager.api.service.ClientAppService;
 import io.apiman.manager.api.service.ContractService;
@@ -39,6 +41,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import io.swagger.jaxrs.config.BeanConfig;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 
 /**
@@ -79,19 +82,6 @@ public class ApiManagerApplication extends Application {
         classes.add(ActionResourceImpl.class);
         classes.add(DownloadResourceImpl.class);
         classes.add(DeveloperResourceImpl.class);
-
-        classes.add(SimpleMailNotificationService.class);
-
-        //
-        // classes.add(ApiService.class);
-        // classes.add(ClientAppService.class);
-        // classes.add(ContractService.class);
-        // classes.add(DevPortalService.class);
-        // classes.add(OrganizationService.class);
-        // classes.add(PlanService.class);
-        // classes.add(PolicyService.class);
-        // classes.add(StatsService.class);
-
         classes.add(BlobResourceImpl.class);
         classes.add(EventResourceImpl.class);
         classes.add(NotificationResourceImpl.class);
@@ -101,7 +91,19 @@ public class ApiManagerApplication extends Application {
         classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
         classes.add(RestExceptionMapper.class);
-        classes.add(JacksonObjectMapperProvider.class);
+
+        registerProviders(
+             JacksonObjectMapperProvider.class,
+             BlobResourceInterceptorProvider.class,
+             TotalCountInterceptorProvider.class,
+             RestExceptionMapper.class
+        );
+    }
+
+    private void registerProviders(Class<?>... classes) {
+        for (Class<?> klazz : classes) {
+            ResteasyProviderFactory.getInstance().register(klazz);
+        }
     }
     
     @PostConstruct

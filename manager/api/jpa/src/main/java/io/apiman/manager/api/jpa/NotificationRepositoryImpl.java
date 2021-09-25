@@ -116,7 +116,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
              jdbi.createQuery("SELECT COUNT(n.id) "
                       + "FROM NOTIFICATIONS n "
                       + "WHERE n.recipient = :userId "
-                      + "AND n.notification_status IN (<status>)")
+                      + "AND n.status IN (<status>)")
                  .bind("userId", recipientUserId)
                  .bindList("status", statusNames)
                  .mapTo(int.class)

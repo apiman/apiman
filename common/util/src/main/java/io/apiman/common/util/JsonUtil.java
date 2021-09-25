@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER;
@@ -45,6 +46,7 @@ public class JsonUtil {
          .addModule(new ParameterNamesModule())
          .addModule(new Jdk8Module())
          .addModule(new GuavaModule())
+         .addModule(new JaxbAnnotationModule())
          .build();
 
     public static JsonNode toJsonTree(Object o) {

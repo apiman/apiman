@@ -258,7 +258,7 @@ public class TestPlanRunner {
             List<String> headers = response.headers().get(expectedHeaderName);
 
             Assert.assertNotNull("Expected header to exist but was not found: " + expectedHeaderName, headers);
-            Assert.assertEquals(expectedHeaderValue, headers.get(0));
+            Assert.assertEquals("For response header " + expectedHeaderName, expectedHeaderValue, headers.get(0));
         }
         List<String> ctValueList = response.headers().get("Content-Type");
         if (ctValueList == null) {
