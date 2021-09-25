@@ -1,0 +1,8 @@
+HEAD /users/bwayne/notifications?includeDismissed=true bwayne/bwayne
+Content-Type: application/json
+
+----
+204
+X-Total-Count: 3
+Total-Count: 3
+

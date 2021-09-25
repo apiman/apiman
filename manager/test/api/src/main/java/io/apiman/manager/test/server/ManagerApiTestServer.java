@@ -274,14 +274,18 @@ public class ManagerApiTestServer {
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(TransactionWatchdogFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(RootResourceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+
+
+        apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
+        // apiManServer.setInitParameter("resteasy.scan", "true");
+        apiManServer.setInitParameter("resteasy.scan.providers", "true");
+        apiManServer.setInitParameter("resteasy.scan.resources", "true");
+        apiManServer.setInitParameter("resteasy.servlet.mapping.prefix", "");
+        //apiManServer.setInitParameter("resteasy.providers", "io.apiman.manager.api.providers.JacksonObjectMapperProvider");
+
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", TestManagerApiApplication.class.getName());
         apiManServer.addServlet(resteasyServlet, "/*");
-
-        apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
-        apiManServer.setInitParameter("resteasy.scan", "true");
-        apiManServer.setInitParameter("resteasy.servlet.mapping.prefix", "");
-        apiManServer.setInitParameter("resteasy.providers", "io.apiman.manager.api.providers.JacksonObjectMapperProvider");
 
         // Add the web contexts to jetty
         handlers.addHandler(apiManServer);

@@ -241,11 +241,16 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
      * {@inheritDoc}
      */
     @Override
-    public Response getNotificationCountForUser(String userId, boolean unreadOnly)
+    public Response getNotificationCountForUser(String userId, boolean includeDismissed)
          throws UserNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(userId);
+        // notificationService uses "unreadOnly" for boolean, but REST is "includeDismissed", so we need to invert.
+        boolean unreadOnly = !includeDismissed;
         int notificationCount = notificationService.getNotificationsCount(userId, unreadOnly);
-        return Response.noContent().header("X-Total-Count", notificationCount).build();
+        return Response.noContent()
+                       .header("X-Total-Count", notificationCount)
+                       .header("Total-Count", notificationCount)
+                       .build();
     }
 
     /**

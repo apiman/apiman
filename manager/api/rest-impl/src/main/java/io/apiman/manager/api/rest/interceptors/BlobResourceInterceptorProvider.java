@@ -9,14 +9,14 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
-import org.reflections.Reflections;
+import org.jboss.resteasy.annotations.interception.ServerInterceptor;
+import org.reflections.ReflectionUtils;
 
 /**
  * Rewrites a blob's UID into a URL that can be resolved by the browser.
@@ -40,13 +40,12 @@ import org.reflections.Reflections;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Provider
+@ServerInterceptor
 public class BlobResourceInterceptorProvider implements WriterInterceptor {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(BlobResourceInterceptorProvider.class);
 
-    @Inject
-    public BlobResourceInterceptorProvider() {
-    }
+    public BlobResourceInterceptorProvider() {}
 
     /**
      * {@inheritDoc}
@@ -55,6 +54,7 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
         try {
             rewrite(context);
+            context.proceed();
         } catch (IllegalAccessException e) {
             throw new IOException(e);
         }
@@ -62,19 +62,22 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
 
     private void rewrite(WriterInterceptorContext context) throws IllegalAccessException {
         Object entity = context.getEntity();
-        List<Field> blobRefs = new Reflections(entity.getClass())
-             .getFieldsAnnotatedWith(BlobReference.class)
+        List<Field> blobRefs = ReflectionUtils.getAllFields(entity.getClass(), f -> f.isAnnotationPresent(BlobReference.class))
              .stream()
              .filter(f -> f.getType().equals(String.class))
              .collect(Collectors.toList());
-
         for (Field blobRef : blobRefs) {
+            blobRef.setAccessible(true);
             String existingValue = (String) blobRef.get(entity);
-            String resolvedRef = UriBuilder.fromResource(IBlobResource.class).path(existingValue).build()
-                                           .toString();
-            LOGGER.debug("Rewriting response POJO field annotated with resolved @BlobReference: {0} -> {1}",
-                 existingValue, resolvedRef);
-            blobRef.set(entity, resolvedRef);
+            if (existingValue != null) {
+                String resolvedRef = UriBuilder.fromResource(IBlobResource.class).path(existingValue).build()
+                                               .toString();
+                LOGGER.debug("Rewriting response POJO field annotated with resolved @BlobReference: {0} -> {1}",
+                     existingValue, resolvedRef);
+                blobRef.set(entity, resolvedRef);
+            } else {
+                LOGGER.debug("Null @BlobRef {0}@{1}", blobRef.getName(), entity.getClass().getCanonicalName());
+            }
         }
     }
 }

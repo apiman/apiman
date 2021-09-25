@@ -21,7 +21,9 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 @Produces({"application/json", "application/*+json", "text/json"})
 public class JacksonObjectMapperProvider extends JacksonJsonProvider {
 
-    public JacksonObjectMapperProvider() {}
+    public JacksonObjectMapperProvider() {
+
+    }
 
     @Override
     public ObjectMapper locateMapper(Class<?> type, MediaType mediaType) {

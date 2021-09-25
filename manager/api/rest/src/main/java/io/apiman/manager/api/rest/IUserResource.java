@@ -255,14 +255,14 @@ public interface IUserResource {
      * <p>Users are only able to get information about their own notifications.
      *
      * @param userId the user ID.
-     * @param unread whether to only count unread notifications (default: true).
+     * @param includeDismissed whether to only count unread notifications (default: true).
      * @return X-Total-Count header with the number of unread notifications.
      * @throws UserNotFoundException when a request is sent for a user who does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @HEAD
     @Path("{userId}/notifications")
-    public Response getNotificationCountForUser(@PathParam("userId") String userId, @DefaultValue("true") @QueryParam("unread") boolean unread)
+    public Response getNotificationCountForUser(@PathParam("userId") String userId, @DefaultValue("false") @QueryParam("includeDismissed") boolean includeDismissed)
          throws UserNotFoundException, NotAuthorizedException;
 
     /**
