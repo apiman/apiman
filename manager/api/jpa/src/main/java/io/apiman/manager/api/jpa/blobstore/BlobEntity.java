@@ -14,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.UpdateTimestamp;
 
 /**
@@ -31,10 +32,12 @@ public class BlobEntity {
 
     @Column(name = "name", nullable = false)
     @NotBlank
+    @NaturalId
     private String name;
 
     @Column(name = "mime_type", nullable = false)
     @NotBlank
+    @NaturalId
     private String mimeType;
 
     // @Temporal(TemporalType.TIMESTAMP)
@@ -56,7 +59,11 @@ public class BlobEntity {
 
     @Column(name = "hash", nullable = false)
     @NotNull
+    @NaturalId
     private Long hash;
+
+    @Column(name = "references", nullable = false)
+    private int references = 1;
 
     public BlobEntity() {
     }
@@ -121,6 +128,15 @@ public class BlobEntity {
 
     public BlobEntity setHash(Long hash) {
         this.hash = hash;
+        return this;
+    }
+
+    public int getReferences() {
+        return references;
+    }
+
+    public BlobEntity setReferences(int references) {
+        this.references = references;
         return this;
     }
 

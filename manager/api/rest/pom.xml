@@ -40,6 +40,11 @@
       <artifactId>javax.persistence-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-multipart-provider</artifactId>
+      <version>${version.org.jboss.resteasy}</version>
+    </dependency>
   </dependencies>
 
   <profiles>

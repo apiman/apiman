@@ -18,6 +18,7 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.util.Preconditions;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiDefinitionType;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
@@ -74,6 +75,7 @@ import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.IDownloadManager;
 import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.rest.IOrganizationResource;
@@ -109,6 +111,8 @@ import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.exceptions.i18n.Messages;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
+import io.apiman.manager.api.rest.impl.util.MultipartHelper;
+import io.apiman.manager.api.rest.impl.util.MultipartHelper.MultipartUploadHolder;
 import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.ApiService;
@@ -132,6 +136,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  * REST layer for Organization
@@ -154,20 +160,22 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     private StatsService statsService;
     private IDownloadManager downloadManager;
     private ISecurityContext securityContext;
+    private IBlobStore blobStore;
     private HttpServletRequest request;
 
 
     @Inject
     public OrganizationResourceImpl(
          ApiManagerConfig config,
-        OrganizationService organizationService,
-        ApiService apiService, PlanService planService,
-        ClientAppService clientService,
-        ContractService contractService,
-        StatsService statsService,
-        IDownloadManager downloadManager,
-        ISecurityContext securityContext,
-        @Context HttpServletRequest request
+         OrganizationService organizationService,
+         ApiService apiService, PlanService planService,
+         ClientAppService clientService,
+         ContractService contractService,
+         StatsService statsService,
+         IDownloadManager downloadManager,
+         ISecurityContext securityContext,
+         IBlobStore blobStore,
+         @Context HttpServletRequest request
     ) {
         this.config = config;
         this.organizationService = organizationService;
@@ -178,6 +186,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         this.statsService = statsService;
         this.downloadManager = downloadManager;
         this.securityContext = securityContext;
+        this.blobStore = blobStore;
         this.request = request;
     }
 
@@ -467,6 +476,24 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
+    public ApiBean createApi(String organizationId, MultipartFormDataInput multipartInput)
+         throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+        Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'api' and 'image'");
+
+        // Try to do image first as it is probably more likely to fail.
+        MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
+        String blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
+
+        // Simply convert to NewApiBean and store reference.
+        InputPart apiPart = MultipartHelper.getRequiredPart(multipartInput, "api", MediaType.APPLICATION_JSON_TYPE);
+        // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
+        NewApiBean api = apiPart.getBody(NewApiBean.class, null);
+        api.setImage(blobRef);
+        return apiService.createApi(organizationId, api);
+    }
+
+    @Override
     public List<ApiSummaryBean> listApis(String organizationId) throws OrganizationNotFoundException {
         // No permission check is needed, because this would break All Organizations UI
         return apiService.listApis(organizationId);
@@ -484,6 +511,25 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         throws ApiNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
         apiService.updateApi(organizationId, apiId, bean);
+    }
+
+    @Override
+    public void updateApi(String organizationId, String apiId, MultipartFormDataInput multipartInput)
+         throws ApiNotFoundException, NotAuthorizedException, IOException {
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+
+        Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'api' and 'image'");
+
+        // Try to do image first as it is probably more likely to fail.
+        MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
+        String blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
+
+        // Simply convert to NewApiBean and store reference.
+        InputPart apiPart = MultipartHelper.getRequiredPart(multipartInput, "api", MediaType.APPLICATION_JSON_TYPE);
+        // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
+        UpdateApiBean update = apiPart.getBody(UpdateApiBean.class, null);
+        update.setImage(blobRef);
+        apiService.updateApi(organizationId, apiId, update);
     }
 
     @Override

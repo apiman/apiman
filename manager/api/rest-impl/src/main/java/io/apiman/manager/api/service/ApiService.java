@@ -41,6 +41,7 @@ import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IApiValidator;
+import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -112,16 +113,18 @@ public class ApiService implements DataAccessUtilMixin {
     private IDataEncrypter encrypter;
     private IGatewayLinkFactory gatewayLinkFactory;
     private PolicyService policyService;
+    private IBlobStore blobStore;
 
     @Inject
     public ApiService(IStorage storage,
-        IStorageQuery query,
-        OrganizationService organizationService,
-        IApiValidator apiValidator,
-        ISecurityContext securityContext,
-        IDataEncrypter encrypter,
-        IGatewayLinkFactory gatewayLinkFactory,
-        PolicyService policyService) {
+         IStorageQuery query,
+         OrganizationService organizationService,
+         IApiValidator apiValidator,
+         ISecurityContext securityContext,
+         IDataEncrypter encrypter,
+         IGatewayLinkFactory gatewayLinkFactory,
+         PolicyService policyService,
+         IBlobStore blobStore) {
         this.storage = storage;
         this.query = query;
         this.organizationService = organizationService;
@@ -130,6 +133,7 @@ public class ApiService implements DataAccessUtilMixin {
         this.encrypter = encrypter;
         this.gatewayLinkFactory = gatewayLinkFactory;
         this.policyService = policyService;
+        this.blobStore = blobStore;
     }
 
     public ApiService() {
@@ -162,8 +166,8 @@ public class ApiService implements DataAccessUtilMixin {
                     storage.deleteApiDefinition(apiVersion);
                 }
             }
-
             storage.deleteApi(api);
+            blobStore.remove(api.getImage());
             LOGGER.debug("Deleted API: {0}", api.getName()); //$NON-NLS-1$
         });
     }
@@ -180,6 +184,7 @@ public class ApiService implements DataAccessUtilMixin {
         newApi.setId(BeanUtils.idFromName(bean.getName()));
         newApi.setCreatedOn(new Date());
         newApi.setCreatedBy(securityContext.getCurrentUser());
+        newApi.setImage(bean.getImage());
 
         return tryAction(() -> {
             GatewaySummaryBean gateway = getSingularGateway();
@@ -245,9 +250,7 @@ public class ApiService implements DataAccessUtilMixin {
         return tryAction(() -> {
             // Hide sensitive data and set only needed data for the UI
             if (securityContext.hasPermission(PermissionType.orgView, organizationId)) {
-                List<ApiSummaryBean> r = query.getApisInOrg(organizationId);
-                System.out.println("End list APIs");
-                return r;
+                return query.getApisInOrg(organizationId);
             } else {
                 return RestHelper.hideSensitiveDataFromApiSummaryBeanList(query.getApisInOrg(organizationId));
             }
@@ -263,6 +266,10 @@ public class ApiService implements DataAccessUtilMixin {
             if (AuditUtils.valueChanged(apiForUpdate.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", apiForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
                 apiForUpdate.setDescription(bean.getDescription());
+            }
+            if (AuditUtils.valueChanged(apiForUpdate.getImage(), bean.getImage())) {
+                auditData.addChange("image", apiForUpdate.getImage(), bean.getImage());
+                apiForUpdate.setImage(bean.getImage());
             }
             storage.updateApi(apiForUpdate);
             storage.createAuditEntry(AuditUtils.apiUpdated(apiForUpdate, auditData, securityContext));
@@ -589,7 +596,6 @@ public class ApiService implements DataAccessUtilMixin {
                 throw ExceptionFactory.invalidApiStatusException();
             }
         }
-        //storage.flush();
 
         avb.setModifiedBy(securityContext.getCurrentUser());
         avb.setModifiedOn(new Date());

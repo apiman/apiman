@@ -1,12 +1,14 @@
 package io.apiman.manager.api.jpa.blobstore;
 
+import io.apiman.common.util.Preconditions;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.AbstractJpaStorage;
 
+import java.util.Objects;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,26 +27,60 @@ public class BlobStoreRepository extends AbstractJpaStorage {
      * UUID recommended as a component of ID to avoid collisions.
      */
     public void create(@NotNull BlobEntity bean) throws StorageException {
-        if (StringUtils.isBlank(bean.getId())) {
-            throw new StorageException("Caller must set ID for blob before storing to ensure they are able to look it up");
-        }
+        Preconditions.requireNonBlank(bean.getId(),
+             "Caller must set ID for blob before storing to ensure they are able to look it up");
         super.create(bean);
     }
 
     /**
-     * Get a blob by its ID (nb: not name, its ID set when stored)
+     * Get a blob by its ID (nb: not name, its ID set when stored).
      */
     public BlobEntity getById(@NotNull String uid) throws StorageException {
+        Preconditions.requireNonBlank(uid, "uid must be non-blank");
         return super.get(uid, BlobEntity.class);
     }
 
     /**
-     * Delete by provided ID (nb: not name, its ID set when stored)
-     * @throws StorageException if entity not found
+     * Delete by provided ID (nb: not name, its ID set when stored).
+     *
+     * <p>Does not truly delete the file if there are other (i.e. deduplicated) references to this blob. In this case
+     * the reference counter is decremented.
      */
     public void deleteById(@NotNull String uid) throws StorageException {
-        BlobEntity blob = Optional.ofNullable(getById(uid))
-                                  .orElseThrow(() -> new StorageException("No blob found for id " + uid));
-        super.delete(blob);
+        Preconditions.requireNonBlank(uid, "uid must be non-blank");
+        EntityManager em = super.getActiveEntityManager();
+        em.createQuery("DELETE "
+                            + "FROM BlobEntity b "
+                            + "WHERE b.references <= 1 "
+                            + "AND b.id = :uid")
+          .setParameter("uid", uid)
+          .executeUpdate();
+
+        em.createQuery("UPDATE BlobEntity b "
+                            + "SET b.references = b.references-1"
+                            + "WHERE b.id = :uid")
+          .setParameter("uid", uid)
+          .executeUpdate();
+    }
+
+    public BlobEntity getByHash(@NotNull String hash) {
+        Preconditions.requireNonBlank(hash, "hash must be non-blank");
+        return getActiveEntityManager()
+             .createQuery("SELECT b "
+                               + "FROM BlobEntity b "
+                               + "WHERE b.hash = :hashCode", BlobEntity.class)
+             .setParameter("hashCode", hash)
+             .getSingleResult();
+    }
+
+    public BlobEntity getByNaturalId(@NotNull String name, @NotNull String mimeType, @NotNull Long hash) {
+        Preconditions.requireNonBlank(name, "name must be non-blank");
+        Preconditions.requireNonBlank(mimeType, "mimeType must be non-blank");
+        Objects.requireNonNull(hash, "hash must be non-null");
+        return getSession().byNaturalId(BlobEntity.class)
+                           .using("hash", hash)
+                           .using("name", name)
+                           .using("mimeType", mimeType)
+                           .load();
     }
 }

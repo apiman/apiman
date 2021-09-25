@@ -1303,4 +1303,14 @@ public final class Preconditions {
 
     return builder.toString();
   }
+
+  public static void hasText(String input, String desc) {
+    if (input == null || input.isBlank()) {
+      throw new IllegalArgumentException(format(desc));
+    }
+  }
+
+  public static void requireNonBlank(String input, String desc) {
+    hasText(input, desc);
+  }
 }

@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 @ApplicationScoped // TODO make @Alternative
 @Transactional
 public class SqlBlobStoreService implements IBlobStore {
+
     private BlobStoreRepository blobStoreRepository;
     private BlobMapper mapper;
 
@@ -42,7 +43,8 @@ public class SqlBlobStoreService implements IBlobStore {
         this.mapper = mapper;
     }
 
-    public SqlBlobStoreService() {}
+    public SqlBlobStoreService() {
+    }
 
     /**
      * {@inheritDoc}
@@ -52,19 +54,21 @@ public class SqlBlobStoreService implements IBlobStore {
         Preconditions.checkArgument(StringUtils.isNotBlank(name), "Blob name must not be blank");
         String resourceId = calculateOid(name);
         try {
-        BlobEntity blobEntity = new BlobEntity()
-             .setId(resourceId)
-             .setName(name)
-             .setMimeType(mimeType)
-             .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()))
-             .setHash(hashBlob(fbos));
-            blobStoreRepository.create(blobEntity);
+            long hash = hashBlob(fbos);
+
+            BlobEntity blobEntity = new BlobEntity()
+                 .setId(resourceId)
+                 .setName(name)
+                 .setMimeType(mimeType)
+                 .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()))
+                 .setHash(hash);
+            // Returned ID might be different to the one we generated if we found a duplicate.
+            return deduplicateOrStore(name, mimeType, hash, blobEntity).getId();
         } catch (StorageException e) {
             throw new RuntimeException(e);
         } catch (IOException ioe) {
             throw new UncheckedIOException(ioe);
         }
-        return resourceId;
     }
 
     /**
@@ -74,18 +78,19 @@ public class SqlBlobStoreService implements IBlobStore {
     public String storeBlob(@NotNull String name, @NotNull String mimeType, byte[] bytes) {
         Preconditions.checkArgument(StringUtils.isNotBlank(name), "Blob name must not be blank");
         String resourceId = calculateOid(name);
+        long hash = hashBlob(bytes);
         BlobEntity blobEntity = new BlobEntity()
              .setId(resourceId)
              .setName(name)
              .setMimeType(mimeType)
              .setBlob(BlobProxy.generateProxy(bytes))
-             .setHash(hashBlob(bytes));
+             .setHash(hash);
         try {
-            blobStoreRepository.create(blobEntity);
+            // Returned ID might be different to the one we generated if we found a duplicate.
+            return deduplicateOrStore(name, mimeType, hash, blobEntity).getId();
         } catch (StorageException e) {
             throw new RuntimeException(e);
         }
-        return resourceId;
     }
 
     /**
@@ -139,6 +144,17 @@ public class SqlBlobStoreService implements IBlobStore {
             return streamingHash.getValue();
         } catch (IOException ioe) {
             throw new UncheckedIOException(ioe);
+        }
+    }
+
+    private BlobEntity deduplicateOrStore(String name, String mimeType, long hash, BlobEntity candidate)
+         throws StorageException {
+        var duplicate = blobStoreRepository.getByNaturalId(name, mimeType, hash);
+        if (duplicate == null) {
+            blobStoreRepository.create(candidate);
+            return candidate;
+        } else {
+            return duplicate;
         }
     }
 }
