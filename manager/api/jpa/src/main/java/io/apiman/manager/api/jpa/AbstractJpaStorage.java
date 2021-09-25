@@ -44,6 +44,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
 
+import org.hibernate.Session;
 import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,8 +86,12 @@ public abstract class AbstractJpaStorage {
      */
     public EntityManager getActiveEntityManager() {
         EntityManager em = emf.getEntityManager();
-        System.out.println("em(jpa)=" + em.hashCode());
+        // System.out.println("em(jpa)=" + em.hashCode());
         return em;
+    }
+
+    public Session getSession() {
+        return getActiveEntityManager().unwrap(Session.class);
     }
 
     private static javax.sql.DataSource lookupDS(String dsJndiLocation) {

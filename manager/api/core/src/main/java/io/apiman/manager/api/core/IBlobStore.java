@@ -22,7 +22,9 @@ public interface IBlobStore {
     /**
      * Store blob, a UID is returned that the caller should store to retrieve the file later.
      *
-     * <p>Use this method if the file is large as it will spill over onto disk if the file is large.
+     * <p>Use this method if the file is large as it will spill over onto disk when it exceeds a reasonable threshold.
+     *
+     * <p>Any upload that is hash, name, and mime identical will be deduplicated.
      *
      * @param name descriptive name (not used for lookups)
      * @param mimeType mime type of the file (useful when serving externally)
@@ -35,6 +37,8 @@ public interface IBlobStore {
      * Store blob, a UID is returned that the caller should store to retrieve the file later.
      *
      * <p>Use this method if the file is smaller.
+     *
+     * <p>Any upload that is hash, name, and mime identical will be deduplicated.
      *
      * @param name descriptive name (not used for lookups)
      * @param mimeType mime type of the file (useful when serving externally)
@@ -52,7 +56,10 @@ public interface IBlobStore {
     BlobDto getBlob(@NotNull String uid);
 
     /**
-     * Remove a file by its UID
+     * Remove a file by its UID.
+     *
+     * <p>As blobs are deduplicated, the file may still exist after deletion because the reference counter has not
+     * been decremented to zero (which triggers actual DB deletion).
      *
      * @param uid the file's UID
      * @return this

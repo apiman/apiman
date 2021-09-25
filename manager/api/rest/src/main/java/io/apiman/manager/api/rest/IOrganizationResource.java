@@ -67,11 +67,39 @@ import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
-import io.apiman.manager.api.rest.exceptions.*;
-import io.swagger.annotations.Api;
+import io.apiman.manager.api.rest.exceptions.ApiAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.ApiNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ApiVersionAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ClientAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.ClientNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ClientVersionAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.ClientVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ContractAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.ContractNotFoundException;
+import io.apiman.manager.api.rest.exceptions.EntityStillActiveException;
+import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.exceptions.InvalidApiStatusException;
+import io.apiman.manager.api.rest.exceptions.InvalidClientStatusException;
+import io.apiman.manager.api.rest.exceptions.InvalidMetricCriteriaException;
+import io.apiman.manager.api.rest.exceptions.InvalidNameException;
+import io.apiman.manager.api.rest.exceptions.InvalidPlanStatusException;
+import io.apiman.manager.api.rest.exceptions.InvalidVersionException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.OrganizationAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PlanAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PlanNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PlanVersionAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
+import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
+import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 
+import java.io.IOException;
 import java.util.List;
-
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -83,6 +111,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import io.swagger.annotations.Api;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  * The Organization API.
@@ -805,9 +837,16 @@ public interface IOrganizationResource {
     @Path("{organizationId}/apis")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiBean createApi(@PathParam("organizationId") String organizationId, NewApiBean bean)
+    public ApiBean createApi(@PathParam("organizationId") String organizationId, @Valid @NotNull NewApiBean bean)
             throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException,
             InvalidNameException;
+
+    @POST
+    @Path("{organizationId}/apis")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiBean createApi(@PathParam("organizationId") String organizationId, @Valid @NotNull @MultipartForm MultipartFormDataInput multipartInput)
+         throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException;
 
     /**
      * Use this endpoint to get a list of all APIs in the Organization.
@@ -863,6 +902,17 @@ public interface IOrganizationResource {
     public void updateApi(@PathParam("organizationId") String organizationId,
             @PathParam("apiId") String apiId, UpdateApiBean bean)
             throws ApiNotFoundException, NotAuthorizedException;
+
+    /**
+     * As {@link #updateApi(String, String, UpdateApiBean)}, but with an image to represent the API.
+     */
+    @PUT
+    @Path("{organizationId}/apis/{apiId}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public void updateApi(@PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
+         @NotNull @MultipartForm MultipartFormDataInput multipartInput)
+         throws ApiNotFoundException, NotAuthorizedException, IOException;
 
     /**
      * Use this endpoint to delete an API.  There are multiple restrictions on this capability.  Specifically,

@@ -15,8 +15,11 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import io.apiman.manager.api.beans.download.BlobReference;
+
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -32,6 +35,9 @@ public class UpdateApiBean implements Serializable {
     private static final long serialVersionUID = 8811488441452291116L;
 
     private String description;
+    @JsonIgnore
+    @BlobReference
+    private String image;
 
     /**
      * Constructor.
@@ -51,6 +57,15 @@ public class UpdateApiBean implements Serializable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public UpdateApiBean setImage(String imageRef) {
+        this.image = imageRef;
+        return this;
     }
 
     /* (non-Javadoc)
