@@ -11,6 +11,7 @@ import java.util.StringJoiner;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.io.FileBackedOutputStream;
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jetbrains.annotations.NotNull;
@@ -73,16 +74,18 @@ public class MultipartHelper {
                 }
             }
         } catch (IOException ioe) {
+            IOUtils.closeQuietly(os);
             throw new UncheckedIOException(ioe);
         }
     }
 
-    public class MultipartUploadHolder {
-        private String filename;
-        private FileBackedOutputStream fileBackedOutputStream;
-        private MediaType mediaType;
+    public static final class MultipartUploadHolder {
+        private final String filename;
+        private final FileBackedOutputStream fileBackedOutputStream;
+        private final MediaType mediaType;
 
-        public MultipartUploadHolder(String filename, FileBackedOutputStream fileBackedOutputStream, MediaType mediaType) {
+        public MultipartUploadHolder(final String filename, final FileBackedOutputStream fileBackedOutputStream,
+             final MediaType mediaType) {
             this.filename = filename;
             this.fileBackedOutputStream = fileBackedOutputStream;
             this.mediaType = mediaType;

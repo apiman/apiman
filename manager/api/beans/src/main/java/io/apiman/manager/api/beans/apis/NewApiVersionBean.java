@@ -44,6 +44,7 @@ public class NewApiVersionBean implements Serializable {
     private Set<ApiPlanBean> plans;
     private String definitionUrl;
     private ApiDefinitionType definitionType;
+    private String extendedDescription;
 
     /**
      * Constructor.
@@ -215,4 +216,12 @@ public class NewApiVersionBean implements Serializable {
      */
     public void setDisableKeysStrip(Boolean disableKeysStrip) { this.disableKeysStrip = disableKeysStrip; }
 
+    public String getExtendedDescription() {
+        return extendedDescription;
+    }
+
+    public NewApiVersionBean setExtendedDescription(String extendedDescription) {
+        this.extendedDescription = extendedDescription;
+        return this;
+    }
 }

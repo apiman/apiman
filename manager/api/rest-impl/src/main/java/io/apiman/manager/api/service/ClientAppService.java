@@ -15,7 +15,6 @@ import io.apiman.manager.api.beans.clients.UpdateClientBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.events.ApimanEventHeaders;
 import io.apiman.manager.api.beans.events.ClientVersionStatusEvent;
-import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
@@ -29,6 +28,7 @@ import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
+import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -84,6 +84,7 @@ public class ClientAppService implements DataAccessUtilMixin {
     private PolicyService policyService;
     private IApiKeyGenerator apiKeyGenerator;
     private EventService eventService;
+    private IBlobStore blobstore;
 
     @Inject
     public ClientAppService(
@@ -94,7 +95,8 @@ public class ClientAppService implements DataAccessUtilMixin {
          ContractService contractService,
          PolicyService policyService,
          IApiKeyGenerator apiKeyGenerator,
-         EventService eventService
+         EventService eventService,
+         IBlobStore blobstore
     ) {
         this.storage = storage;
         this.query = query;
@@ -104,6 +106,7 @@ public class ClientAppService implements DataAccessUtilMixin {
         this.policyService = policyService;
         this.apiKeyGenerator = apiKeyGenerator;
         this.eventService = eventService;
+        this.blobstore = blobstore;
     }
 
     public ClientAppService() {
@@ -121,6 +124,7 @@ public class ClientAppService implements DataAccessUtilMixin {
         newClient.setDescription(bean.getDescription());
         newClient.setCreatedBy(securityContext.getCurrentUser());
         newClient.setCreatedOn(new Date());
+        newClient.setImage(bean.getImage());
 
         tryAction(() -> {
             // Store/persist the new client
@@ -141,14 +145,14 @@ public class ClientAppService implements DataAccessUtilMixin {
             }
         });
 
-        LOGGER.debug(String.format("Created client %s: %s", newClient.getName(), newClient)); //$NON-NLS-1$
+        LOGGER.debug("Created client {0}: {1}", newClient.getName(), newClient); //$NON-NLS-1$
         return newClient;
     }
     
     public ClientBean getClient(String organizationId, String clientId)
         throws ClientNotFoundException, NotAuthorizedException {
         ClientBean clientBean = tryAction(() -> getClientFromStorage(organizationId, clientId));
-        LOGGER.debug(String.format("Got client %s: %s", clientBean.getName(), clientBean)); //$NON-NLS-1$
+        LOGGER.debug("Got client {0}: {1}", clientBean.getName(), clientBean); //$NON-NLS-1$
         return clientBean;
     }
     
@@ -170,6 +174,9 @@ public class ClientAppService implements DataAccessUtilMixin {
             }
 
             storage.deleteClient(client);
+            if (client.getImage() != null) {
+                blobstore.remove(client.getImage());
+            }
             LOGGER.debug("Deleted ClientApp: {0}", client.getName()); //$NON-NLS-1$
         });
     }
@@ -189,10 +196,14 @@ public class ClientAppService implements DataAccessUtilMixin {
                 auditData.addChange("description", clientForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
                 clientForUpdate.setDescription(bean.getDescription());
             }
+            if (AuditUtils.valueChanged(clientForUpdate.getImage(), bean.getImage())) {
+                auditData.addChange("image", clientForUpdate.getImage(), bean.getImage()); //$NON-NLS-1$
+                clientForUpdate.setImage(bean.getImage());
+            }
             storage.updateClient(clientForUpdate);
             storage.createAuditEntry(AuditUtils.clientUpdated(clientForUpdate, auditData, securityContext));
 
-            LOGGER.debug(String.format("Updated client %s: %s", clientForUpdate.getName(), clientForUpdate)); //$NON-NLS-1$
+            LOGGER.debug("Updated client {0}: {1}", clientForUpdate.getName(), clientForUpdate); //$NON-NLS-1$
         });
     }
 
@@ -273,7 +284,7 @@ public class ClientAppService implements DataAccessUtilMixin {
 
         tryAction(() -> storage.updateClientVersion(clientVersion));
 
-        LOGGER.debug(String.format("Updated an API Key for client %s version %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
+        LOGGER.debug("Updated an API Key for client {0} version {1}", clientVersion.getClient().getName(), clientVersion); //$NON-NLS-1$
         ApiKeyBean rval = new ApiKeyBean();
         rval.setApiKey(newApiKey);
         return rval;
@@ -307,7 +318,7 @@ public class ClientAppService implements DataAccessUtilMixin {
         storage.createClientVersion(newVersion);
         storage.createAuditEntry(AuditUtils.clientVersionCreated(newVersion, securityContext));
 
-        LOGGER.debug(String.format("Created new client version %s: %s", newVersion.getClient().getName(), newVersion)); //$NON-NLS-1$
+        LOGGER.debug("Created new client version {0}: {1}", newVersion.getClient().getName(), newVersion); //$NON-NLS-1$
         return newVersion;
     }
 
@@ -329,7 +340,7 @@ public class ClientAppService implements DataAccessUtilMixin {
     protected ClientVersionBean getClientVersionInternal(String organizationId, String clientId, String version)
         throws ClientVersionNotFoundException {
         ClientVersionBean clientVersion = tryAction(() -> getClientVersionFromStorage(organizationId, clientId, version));
-        LOGGER.debug(String.format("Got new client version %s: %s", clientVersion.getClient().getName(), clientVersion)); //$NON-NLS-1$
+        LOGGER.debug("Got new client version {0}: {1}", clientVersion.getClient().getName(), clientVersion); //$NON-NLS-1$
         return clientVersion;
     }
 

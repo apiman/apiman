@@ -34,6 +34,7 @@ public class ApiVersionSummaryBean implements Serializable {
     private String id;
     private String name;
     private String description;
+    private String extendedDescription;
     private ApiStatus status;
     private String version;
     private boolean publicAPI;
@@ -163,6 +164,24 @@ public class ApiVersionSummaryBean implements Serializable {
 
     public void setExposeInPortal(Boolean exposeInPortal) {
         this.exposeInPortal = exposeInPortal;
+    }
+
+    public String getExtendedDescription() {
+        return extendedDescription;
+    }
+
+    public ApiVersionSummaryBean setExtendedDescription(String extendedDescription) {
+        this.extendedDescription = extendedDescription;
+        return this;
+    }
+
+    public boolean isExposeInPortal() {
+        return exposeInPortal;
+    }
+
+    public ApiVersionSummaryBean setExposeInPortal(boolean exposeInPortal) {
+        this.exposeInPortal = exposeInPortal;
+        return this;
     }
 
     /* (non-Javadoc)

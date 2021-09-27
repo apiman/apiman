@@ -36,7 +36,7 @@ public class ClientSummaryBean implements Serializable {
     private String organizationId;
     private String organizationName;
     @BlobReference
-    private String imageFileRef;
+    private String image;
     private String id;
     private String name;
     private String description;
@@ -139,12 +139,12 @@ public class ClientSummaryBean implements Serializable {
         return serialVersionUID;
     }
 
-    public String getImageFileRef() {
-        return imageFileRef;
+    public String getImage() {
+        return image;
     }
 
     public ClientSummaryBean setImage(String imageFileRef) {
-        this.imageFileRef = imageFileRef;
+        this.image = imageFileRef;
         return this;
     }
 

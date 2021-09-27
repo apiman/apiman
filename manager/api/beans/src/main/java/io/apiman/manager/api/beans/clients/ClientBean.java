@@ -65,7 +65,7 @@ public class ClientBean implements Serializable, Cloneable {
     private String name;
     @Column(name = "image_file_ref", updatable = true, nullable = true) // Reference to file storage (we'll ship with DB blob)
     @BlobReference
-    private String imageFileRef;
+    private String image;
     @Column(updatable=true, nullable=true, length=512)
     private String description;
     @Column(name = "created_by", updatable=false, nullable=false)
@@ -161,11 +161,11 @@ public class ClientBean implements Serializable, Cloneable {
     }
 
     public String getImage() {
-        return imageFileRef;
+        return image;
     }
 
-    public ClientBean setImageFileRef(String imageFileRef) {
-        this.imageFileRef = imageFileRef;
+    public ClientBean setImage(String image) {
+        this.image = image;
         return this;
     }
 

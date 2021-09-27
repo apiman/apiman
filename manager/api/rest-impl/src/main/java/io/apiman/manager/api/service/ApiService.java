@@ -167,7 +167,9 @@ public class ApiService implements DataAccessUtilMixin {
                 }
             }
             storage.deleteApi(api);
-            blobStore.remove(api.getImage());
+            if (api.getImage() != null) {
+                blobStore.remove(api.getImage());
+            }
             LOGGER.debug("Deleted API: {0}", api.getName()); //$NON-NLS-1$
         });
     }
@@ -210,6 +212,7 @@ public class ApiService implements DataAccessUtilMixin {
                 newApiVersion.setVersion(bean.getInitialVersion());
                 newApiVersion.setDefinitionUrl(bean.getDefinitionUrl());
                 newApiVersion.setDefinitionType(bean.getDefinitionType());
+                newApiVersion.setExtendedDescription(bean.getExtendedDescription());
                 createApiVersionInternal(newApiVersion, newApi, gateway);
             }
 
@@ -294,8 +297,6 @@ public class ApiService implements DataAccessUtilMixin {
             return createApiVersionInternal(bean, api, gateway);
         });
 
-        //storage.flush();
-
         if (bean.isClone() && bean.getCloneVersion() != null) {
             try {
                 ApiVersionBean cloneSource = getApiVersion(organizationId, apiId, bean.getCloneVersion());
@@ -324,10 +325,12 @@ public class ApiService implements DataAccessUtilMixin {
                     updatedApi.setPublicAPI(cloneSource.isPublicAPI());
                 }
                 if (bean.getParsePayload() == null) {
-                    updatedApi.setParsePayload(bean.getParsePayload());
+                    updatedApi.setParsePayload(cloneSource.isParsePayload());
+                }
+                if (bean.getExtendedDescription() == null) {
+                    updatedApi.setExtendedDescription(cloneSource.getExtendedDescription());
                 }
                 newVersion = updateApiVersion(newVersion, updatedApi);
-                //storage.flush();
 
                 if (bean.getDefinitionUrl() == null) {
                     // Clone the API definition document
@@ -388,6 +391,7 @@ public class ApiService implements DataAccessUtilMixin {
         newVersion.setEndpointType(bean.getEndpointType());
         newVersion.setEndpointContentType(bean.getEndpointContentType());
         newVersion.setDefinitionUrl(bean.getDefinitionUrl());
+        newVersion.setExtendedDescription(bean.getExtendedDescription());
         if (bean.getPublicAPI() != null) {
             newVersion.setPublicAPI(bean.getPublicAPI());
         }
