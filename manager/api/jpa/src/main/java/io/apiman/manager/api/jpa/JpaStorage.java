@@ -1039,6 +1039,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 summary.setName(bean.getName());
                 summary.setDescription(bean.getDescription());
                 summary.setCreatedOn(bean.getCreatedOn());
+                summary.setImage(bean.getImage());
                 OrganizationBean org = bean.getOrganization();
                 summary.setOrganizationId(org.getId());
                 summary.setOrganizationName(org.getName());
@@ -1141,6 +1142,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 svsb.setStatus(apiVersion.getStatus());
                 svsb.setPublicAPI(apiVersion.isPublicAPI());
                 svsb.setExposeInPortal(apiVersion.isExposeInPortal());
+                svsb.setExtendedDescription(apiVersion.getExtendedDescription());
                 rval.add(svsb);
             }
             return rval;

@@ -254,6 +254,25 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
+    public ClientBean createClient(String organizationId, MultipartFormDataInput multipartInput)
+         throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
+
+        Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'client' and 'image'");
+
+        // Try to do image first as it is probably more likely to fail.
+        MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
+        String blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
+
+        // Simply convert to NewApiBean and store reference.
+        InputPart clientPart = MultipartHelper.getRequiredPart(multipartInput, "client", MediaType.APPLICATION_JSON_TYPE);
+        // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
+        NewClientBean clientBean = clientPart.getBody(NewClientBean.class, null);
+        clientBean.setImage(blobRef);
+        return clientService.createClient(organizationId, clientBean);
+    }
+
+    @Override
     public ClientBean getClient(String organizationId, String clientId)
         throws ClientNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
@@ -268,6 +287,25 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         LOGGER.debug("Attempting to update client {0} in org {1} with {2}", clientId, organizationId, bean);
         clientService.updateClient(organizationId, clientId, bean);
     }
+
+    @Override
+    public void updateClient(String organizationId, String clientId, MultipartFormDataInput multipartInput)
+         throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
+        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
+
+        Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'client' and 'image'");
+        // Try to do image first as it is probably more likely to fail.
+        MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
+        String blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
+
+        InputPart clientPart = MultipartHelper.getRequiredPart(multipartInput, "client", MediaType.APPLICATION_JSON_TYPE);
+        UpdateClientBean bean = clientPart.getBody(UpdateClientBean.class, null);
+        bean.setImage(blobRef);
+
+        LOGGER.debug("Attempting to update client {0} in org {1} with {2}", clientId, organizationId, bean);
+        clientService.updateClient(organizationId, clientId, bean);
+    }
+
 
     @Override
     public void deleteClient(String organizationId, String clientId)

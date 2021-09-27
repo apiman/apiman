@@ -39,6 +39,7 @@ public class NewApiBean implements Serializable {
     @JsonIgnore
     @BlobReference
     private String image;
+    private String extendedDescription;
 
     private String initialVersion;
 
@@ -238,6 +239,15 @@ public class NewApiBean implements Serializable {
 
     public NewApiBean setImage(String image) {
         this.image = image;
+        return this;
+    }
+
+    public String getExtendedDescription() {
+        return extendedDescription;
+    }
+
+    public NewApiBean setExtendedDescription(String extendedDescription) {
+        this.extendedDescription = extendedDescription;
         return this;
     }
 }

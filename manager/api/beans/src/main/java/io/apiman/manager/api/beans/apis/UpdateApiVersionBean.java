@@ -43,6 +43,7 @@ public class UpdateApiVersionBean implements Serializable {
     private Boolean publicAPI;
     private Boolean disableKeysStrip;
     private Set<ApiPlanBean> plans;
+    private String extendedDescription;
 
     /**
      * Constructor.
@@ -171,6 +172,15 @@ public class UpdateApiVersionBean implements Serializable {
      * @param disableKeysStrip the disableKeysStrip to set
      */
     public void setDisableKeysStrip(Boolean disableKeysStrip) { this.disableKeysStrip = disableKeysStrip; }
+
+    public String getExtendedDescription() {
+        return extendedDescription;
+    }
+
+    public UpdateApiVersionBean setExtendedDescription(String extendedDescription) {
+        this.extendedDescription = extendedDescription;
+        return this;
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
