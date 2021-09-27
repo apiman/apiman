@@ -15,7 +15,7 @@ include:
       # TODO to enable an npm ci:doc and properly npm run ci:cover must be present
       # - '/templates/doc.yml'
       # - '/templates/coverage.yml'
-      # - '/templates/build.yml'  
+      # - '/templates/build.yml'
 
 # overwrite the necessary variables so the docker images fit the actual ones:
 .docker-builds:
@@ -33,7 +33,7 @@ workflow:
 
 stages:
   - test
-  - build    
+  - build
 
 test:
   script:
@@ -42,7 +42,7 @@ test:
     - npm build
     - npm test
   artifacts:
-    reports: 
+    reports:
       junit: 'junit/api-mgmt-dev-portal/*.xml*'
     expire_in: 1 week
-      
+

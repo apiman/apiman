@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# Check if a prefix exists
+if [ -n "$BASE_PATH" ]
+then
+  # If a prefix is set we will replace the base path in index.html before starting the application
+  # Replace existing base tag with base tag containing system prefix src e.g. "/pas/devportal/"
+  sed -i "s|<base.*>|<base href=\"$BASE_PATH\">|g" "/usr/share/nginx/html/index.html"
+fi
+
+
 # replace all occurences of placeholders with environment variables
 # see https://blog.codecentric.de/en/2019/03/docker-angular-dockerize-app-easily/
 
