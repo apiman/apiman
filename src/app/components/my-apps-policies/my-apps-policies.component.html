@@ -1,5 +1,8 @@
-<!--In this version we will not have more than 2 policies-->
-<div class="policies">
-  <app-policy-card></app-policy-card>
-  <app-policy-card></app-policy-card>
+<div class="summary mb-40" *ngFor="let policy of policies">
+  <div class="policies divider-right" *ngIf="policies">
+    <app-policy-card [policy]="policy"></app-policy-card>
+  </div>
+  <div>
+    <p>Hello</p>
+  </div>
 </div>

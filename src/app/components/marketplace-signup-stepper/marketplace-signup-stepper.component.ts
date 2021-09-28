@@ -6,6 +6,7 @@ import {
   IClientSummary,
   IContract,
   INewContract,
+  IPolicy,
 } from '../../interfaces/ICommunication';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ConfigService } from '../../services/config/config.service';
@@ -25,6 +26,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   termsEnabled: boolean;
   newContractDetails: ISignUpInfo;
   contract: IContract | undefined;
+  policies: IPolicy[] = [];
 
   constructor(
     private heroService: HeroService,
@@ -41,8 +43,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.setUpHero();
     this.checkNavigationAllowed();
+    this.setUpHero();
   }
 
   private setUpHero() {
@@ -78,7 +80,12 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   }
 
   private checkNavigationAllowed(): void {
-    if (!this.newContractDetails) {
+    if (
+      !this.newContractDetails ||
+      !this.newContractDetails.organizationId ||
+      !this.newContractDetails.apiVersion ||
+      !this.newContractDetails.plan
+    ) {
       this.snackbar.showErrorSnackBar(
         this.translator.instant('WIZARD.REDIRECT')
       );
@@ -112,5 +119,13 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   finish(): void {
     void this.router.navigate(['applications']);
+  }
+
+  private getPolicies() {
+    // this.policies = this.newContractDetails.apiVersion.plans.filter(
+    //   (value) =>
+    //     value.planId === 'RateLimitingPolicy' ||
+    //     value.planId === 'TransferQuotaPolicy'
+    // );
   }
 }

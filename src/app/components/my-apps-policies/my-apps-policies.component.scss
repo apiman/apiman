@@ -1,0 +1,12 @@
+.summary {
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+  grid-template-columns: 1fr 1fr;
+}
+
+.policies {
+  display: grid;
+  justify-content: space-around;
+  gap: 20px;
+}

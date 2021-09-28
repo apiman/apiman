@@ -96,8 +96,11 @@
           <app-my-apps-use-api [contract]="contract"></app-my-apps-use-api>
           <h3>Policies</h3>
           <!--In this version we will not have more than 2 policies-->
-          <div class="policies">
-            <app-policy-card></app-policy-card>
+          <div class="policies" *ngIf="policies">
+            <app-policy-card
+              *ngFor="let policy of policies"
+              [policy]="policy"
+            ></app-policy-card>
             <app-policy-card></app-policy-card>
           </div>
         </mat-card-content>

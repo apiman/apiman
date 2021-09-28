@@ -28,7 +28,11 @@ export class PolicyCardComponent implements OnInit {
     headerReset: 'X-TransferQuota-Reset',
   };
 
-  headers: PolicyHeaders = this.rateLimitPolicyHeaders;
+  headers: PolicyHeaders = {
+    headerLimit: '',
+    headerReset: '',
+    headerRemaining: '',
+  };
   icon: string | undefined;
   policyIdentifier: string | undefined;
 
@@ -38,31 +42,33 @@ export class PolicyCardComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    const config = JSON.parse(<string>this.policy?.configuration);
-    const timeUnit = config.period;
-    let limit = '';
+    if (this.policy) {
+      const config = JSON.parse(this.policy?.configuration);
+      const timeUnit = config.period;
+      let limit = '';
 
-    const policyId = this.policy?.definition.id;
-    switch (policyId) {
-      case 'RateLimitingPolicy': {
-        this.checkHeaders(config, this.rateLimitPolicyHeaders);
-        this.icon = 'tune';
-        this.policyIdentifier = 'RATE_LIMIT';
-        limit = config.limit;
-        break;
+      const policyId = this.policy?.definition.id;
+      switch (policyId) {
+        case 'RateLimitingPolicy': {
+          this.checkHeaders(config, this.rateLimitPolicyHeaders);
+          this.icon = 'tune';
+          this.policyIdentifier = 'RATE_LIMIT';
+          limit = config.limit;
+          break;
+        }
+        case 'TransferQuotaPolicy': {
+          this.checkHeaders(config, this.transferQuotaPolicyHeaders);
+          this.icon = 'import_export';
+          this.policyIdentifier = 'QUOTA';
+          limit = this.formatBytes(config.limit);
+          break;
+        }
       }
-      case 'TransferQuotaPolicy': {
-        this.checkHeaders(config, this.transferQuotaPolicyHeaders);
-        this.icon = 'import_export';
-        this.policyIdentifier = 'QUOTA';
-        limit = this.formatBytes(config.limit);
-        break;
-      }
+      this.policyConfig = {
+        limit: limit,
+        timeUnit: timeUnit,
+      };
     }
-    this.policyConfig = {
-      limit: limit,
-      timeUnit: timeUnit,
-    };
   }
 
   private checkHeaders(config: any, defaultHeaders: PolicyHeaders) {

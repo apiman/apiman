@@ -4,7 +4,7 @@
       <img class="app-icon" [src]="tmpUrl" alt="app-icon" />
     </div>
     <div class="content-text">
-      <h3 class="primary app-title">{{cliCon.key.replace(':', ' - ')}}</h3>
+      <h3 class="primary app-title">{{ cliCon.key.replace(":", " - ") }}</h3>
       {{ cliCon.value[0].client.client.description }}
     </div>
   </div>
@@ -47,14 +47,25 @@
         </div>
         <div class="app-api-header-title">
           <h3 class="primary">
-            {{ contract.api.api.name }} {{ contract.api.version }} - {{ contract.plan.plan.name }}
+            {{ contract.api.api.name }} {{ contract.api.version }} -
+            {{ contract.plan.plan.name }}
           </h3>
         </div>
         <div class="app-api-header-labels">
-          <span matTooltip="API Status" [style]="'background-color: ' + getColorForLabel(contract.api.status)">
+          <span
+            matTooltip="API Status"
+            [style]="
+              'background-color: ' + getColorForLabel(contract.api.status)
+            "
+          >
             {{ contract.api.status }}
           </span>
-          <span matTooltip="Client Status"[style]="'background-color: ' + getColorForLabel(contract.client.status)">
+          <span
+            matTooltip="Client Status"
+            [style]="
+              'background-color: ' + getColorForLabel(contract.client.status)
+            "
+          >
             {{ contract.client.status }}
           </span>
         </div>
@@ -70,7 +81,7 @@
         ></app-my-apps-use-api>
         <app-my-apps-policies
           *ngIf="contract.section === 'policies'"
-          [api]="contract"
+          [contract]="contract"
         ></app-my-apps-policies>
         <app-my-apps-manage-api
           *ngIf="contract.section === 'manage-api'"

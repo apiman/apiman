@@ -1,4 +1,4 @@
-import {statusColorMap} from './IStatus';
+import { statusColorMap } from './IStatus';
 
 export interface IClientSummaryBean {
   organizationId: string;
@@ -273,11 +273,11 @@ export interface IPolicy {
   createdBy: string;
 
   /** @format date-time */
-  createdOn: string;
+  createdOn: string | number;
   modifiedBy: string;
 
   /** @format date-time */
-  modifiedOn: string;
+  modifiedOn: string | number;
   definition: IPolicyDefinition;
 
   /** @format int32 */
@@ -293,14 +293,14 @@ export interface IPolicyDefinition {
   templates: IPolicyDefinitionTemplate[];
 
   /** @format int64 */
-  pluginId: number;
+  pluginId?: number;
   formType: 'Default' | 'JsonSchema';
-  form: string;
+  form?: string;
   deleted: boolean;
 }
 
 export interface IPolicyDefinitionTemplate {
-  language: string;
+  language: string | null;
   template: string;
 }
 
@@ -975,26 +975,26 @@ export interface IUpdateUser {
   email: string;
 }
 
-export interface IOrganizationBean{
-  id: string
-  name: string
-  description: string
-  createdBy: string
-  createdOn: string
-  modifiedBy: string
-  modifiedOn: string
+export interface IOrganizationBean {
+  id: string;
+  name: string;
+  description: string;
+  createdBy: string;
+  createdOn: string;
+  modifiedBy: string;
+  modifiedOn: string;
 }
 
-export interface IClientBean{
-  organization: IOrganizationBean
-  id: string
-  name: string
-  description: string
-  createdBy: string
-  createdOn: string
+export interface IClientBean {
+  organization: IOrganizationBean;
+  id: string;
+  name: string;
+  description: string;
+  createdBy: string;
+  createdOn: string;
 }
 
-export interface IClientVersionSummaryBean{
+export interface IClientVersionSummaryBean {
   name: string;
   id: string;
   version: string;
