@@ -44,6 +44,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the persistent storage interface for Apiman DT.
@@ -135,6 +136,7 @@ public interface IStorage {
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException;
     public PolicyBean getPolicy(PolicyType type, String organizationId, String entityId, String version, Long id) throws StorageException;
     public GatewayBean getGateway(String id) throws StorageException;
+    public List<GatewayBean> getGateways(Set<String> id) throws StorageException;
     public PluginBean getPlugin(long id) throws StorageException;
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException;
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException;

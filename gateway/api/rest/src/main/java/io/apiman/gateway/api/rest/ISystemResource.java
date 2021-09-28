@@ -17,11 +17,9 @@
 package io.apiman.gateway.api.rest;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
-import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.common.logging.change.LoggingChangeRequest;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.engine.beans.SystemStatus;
-
-import io.swagger.annotations.Api;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -29,6 +27,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import io.swagger.annotations.Api;
 
 /**
  * The System API.

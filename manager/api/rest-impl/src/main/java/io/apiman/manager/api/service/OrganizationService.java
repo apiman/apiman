@@ -36,7 +36,6 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
-import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.rest.IRoleResource;
 import io.apiman.manager.api.rest.IUserResource;
 import io.apiman.manager.api.rest.exceptions.ClientVersionNotFoundException;
@@ -244,17 +243,15 @@ public class OrganizationService implements DataAccessUtilMixin {
     public ApiRegistryBean getApiRegistry(String organizationId, String clientId, String version) throws ClientVersionNotFoundException {
         // Try to get the client first - will throw a ClientVersionNotFoundException if not found.
         ClientVersionBean clientVersion = clientService.getClientVersion(organizationId, clientId, version);
-
+        // TODO need to be careful with null on setGatewayId below
         Map<String, IGatewayLink> gatewayLinks = new HashMap<>();
         Map<String, GatewayBean> gateways = new HashMap<>();
-        boolean txStarted = false;
         try {
             ApiRegistryBean apiRegistry = query.getApiRegistry(organizationId, clientId, version);
             apiRegistry.setApiKey(clientVersion.getApikey());
 
             List<ApiEntryBean> apis = apiRegistry.getApis();
 
-            txStarted = true;
             for (ApiEntryBean api : apis) {
                 String gatewayId = api.getGatewayId();
                 // Don't return the gateway id.

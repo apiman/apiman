@@ -35,8 +35,8 @@ import java.util.Map;
 public class PolicyFactoryImpl implements IPolicyFactory {
 
     private IPluginRegistry pluginRegistry;
-    private Map<String, IPolicy> policyCache = new HashMap<>();
-    private Map<String, Object> policyConfigCache = new HashMap<>();
+    private final Map<String, IPolicy> policyCache = new HashMap<>();
+    private final Map<String, Object> policyConfigCache = new HashMap<>();
 
     /**
      * Constructor.

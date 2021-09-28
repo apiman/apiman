@@ -1,6 +1,7 @@
 package io.apiman.manager.api.jpa.model.outbox;
 
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.StringJoiner;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 

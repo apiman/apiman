@@ -2,6 +2,9 @@ package io.apiman.manager.api.service;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
+import io.apiman.gateway.engine.beans.Policy;
+import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiPlanBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
@@ -12,18 +15,24 @@ import io.apiman.manager.api.beans.contracts.ContractStatus;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.events.ApimanEventHeaders;
 import io.apiman.manager.api.beans.events.ContractCreatedEvent;
-import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IClientValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.events.EventService;
+import io.apiman.manager.api.gateway.GatewayAuthenticationException;
+import io.apiman.manager.api.gateway.IGatewayLink;
+import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.exceptions.ApiNotFoundException;
 import io.apiman.manager.api.rest.exceptions.ClientNotFoundException;
@@ -34,18 +43,21 @@ import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PlanNotFoundException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.exceptions.i18n.Messages;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -68,15 +80,17 @@ public class ContractService implements DataAccessUtilMixin {
     private PlanService planService;
     private ISecurityContext securityContext;
     private IClientValidator clientValidator;
+    private IGatewayLinkFactory gatewayLinkFactory;
 
     @Inject
     public ContractService(IStorage storage,
-        IStorageQuery query,
-        EventService eventService,
-        ClientAppService clientAppService,
-        PlanService planService,
-        ISecurityContext securityContext,
-        IClientValidator clientValidator) {
+           IStorageQuery query,
+           EventService eventService,
+           ClientAppService clientAppService,
+           PlanService planService,
+           ISecurityContext securityContext,
+           IClientValidator clientValidator,
+           IGatewayLinkFactory gatewayLinkFactory) {
         this.storage = storage;
         this.query = query;
         this.eventService = eventService;
@@ -84,6 +98,7 @@ public class ContractService implements DataAccessUtilMixin {
         this.planService = planService;
         this.securityContext = securityContext;
         this.clientValidator = clientValidator;
+        this.gatewayLinkFactory = gatewayLinkFactory;
     }
 
     public ContractService() {
@@ -270,6 +285,146 @@ public class ContractService implements DataAccessUtilMixin {
 
             LOGGER.debug(String.format("Deleted contract: %s", contract)); //$NON-NLS-1$
         });
+    }
+
+    // TODO make properly optimised query for this
+    public List<IPolicyProbeResponse> probePolicy(Long contractId, long policyId)
+            throws ClientNotFoundException, ContractNotFoundException {
+        ContractBean contract = getContract(contractId);
+        ApiVersionBean avb = contract.getApi();
+        OrganizationBean apiOrg = avb.getApi().getOrganization();
+        String apiKey = contract.getClient().getApikey();
+        Set<String> gatewayIds = contract.getApi()
+                .getGateways()
+                .stream()
+                .map(ApiGatewayBean::getGatewayId)
+                .collect(Collectors.toSet());
+        if (gatewayIds.size() == 0) {
+            return List.of();
+        }
+
+        List<PolicyBean> policyChain = aggregateContractPolicies(contract);
+
+        int idxFound = -1;
+        for (int i = 0, policyChainSize = policyChain.size(); i < policyChainSize; i++) {
+            PolicyBean policy = policyChain.get(i);
+            if (policy.getId().equals(policyId)) {
+                idxFound = i;
+            }
+        }
+        if (idxFound == -1) {
+            throw new IllegalArgumentException("Provided policy ID not found in contract " + policyId);
+        }
+
+        List<GatewayBean> gateways = tryAction(() -> storage.getGateways(gatewayIds));
+        LOGGER.debug("Gateways for contract {0}: {1}", contractId, gateways);
+
+        List<IPolicyProbeResponse> probeResponses = new ArrayList<>(gateways.size());
+        for (GatewayBean gateway : gateways) {
+            IGatewayLink link = gatewayLinkFactory.create(gateway);
+            try {
+                probeResponses.add(link.probe(apiOrg.getId(), avb.getApi().getId(), avb.getVersion(), idxFound, apiKey));
+            } catch (GatewayAuthenticationException e) {
+                throw new SystemErrorException(e);
+            }
+        }
+        LOGGER.debug("Probe responses for contract {0}: {1}", contractId, probeResponses);
+        return probeResponses;
+    }
+
+    public List<PolicyBean> aggregateContractPolicies(ContractBean contractBean) {
+        try {
+            List<PolicyBean> policies = new ArrayList<>();
+            PolicyType [] types = new PolicyType[] {
+                    PolicyType.Client, PolicyType.Plan, PolicyType.Api
+            };
+            for (PolicyType policyType : types) {
+                String org, id, ver;
+                switch (policyType) {
+                    case Client: {
+                        org = contractBean.getClient().getClient().getOrganization().getId();
+                        id = contractBean.getClient().getClient().getId();
+                        ver = contractBean.getClient().getVersion();
+                        break;
+                    }
+                    case Plan: {
+                        org = contractBean.getPlan().getPlan().getOrganization().getId();
+                        id = contractBean.getPlan().getPlan().getId();
+                        ver = contractBean.getPlan().getVersion();
+                        break;
+                    }
+                    case Api: {
+                        org = contractBean.getApi().getApi().getOrganization().getId();
+                        id = contractBean.getApi().getApi().getId();
+                        ver = contractBean.getApi().getVersion();
+                        break;
+                    }
+                    default: {
+                        throw new RuntimeException("Missing case for switch!"); //$NON-NLS-1$
+                    }
+                }
+
+                List<PolicySummaryBean> clientPolicies = query.getPolicies(org, id, ver, policyType);
+                for (PolicySummaryBean policySummaryBean : clientPolicies) {
+                    policies.add(storage.getPolicy(policyType, org, id, ver, policySummaryBean.getId()));
+                }
+            }
+            return policies;
+        } catch (Exception e) {
+            throw ExceptionFactory.actionException(
+                    Messages.i18n.format("ErrorAggregatingPolicies", e)); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+    }
+
+    /**
+     * Aggregates the API, client, and plan policies into a single ordered list.
+     */
+    public List<Policy> aggregateContractPolicies(ContractSummaryBean contractBean) {
+        try {
+            List<Policy> policies = new ArrayList<>();
+            PolicyType [] types = new PolicyType[] {
+                    PolicyType.Client, PolicyType.Plan, PolicyType.Api
+            };
+            for (PolicyType policyType : types) {
+                String org, id, ver;
+                switch (policyType) {
+                    case Client: {
+                        org = contractBean.getClientOrganizationId();
+                        id = contractBean.getClientId();
+                        ver = contractBean.getClientVersion();
+                        break;
+                    }
+                    case Plan: {
+                        org = contractBean.getApiOrganizationId();
+                        id = contractBean.getPlanId();
+                        ver = contractBean.getPlanVersion();
+                        break;
+                    }
+                    case Api: {
+                        org = contractBean.getApiOrganizationId();
+                        id = contractBean.getApiId();
+                        ver = contractBean.getApiVersion();
+                        break;
+                    }
+                    default: {
+                        throw new RuntimeException("Missing case for switch!"); //$NON-NLS-1$
+                    }
+                }
+
+                List<PolicySummaryBean> clientPolicies = query.getPolicies(org, id, ver, policyType);
+                for (PolicySummaryBean policySummaryBean : clientPolicies) {
+                    PolicyBean policyBean = storage.getPolicy(policyType, org, id, ver, policySummaryBean.getId());
+                    Policy policy = new Policy();
+                    policy.setPolicyJsonConfig(policyBean.getConfiguration());
+                    policy.setPolicyImpl(policyBean.getDefinition().getPolicyImpl());
+                    policies.add(policy);
+                }
+            }
+            return policies;
+        } catch (Exception e) {
+            throw ExceptionFactory.actionException(
+                    Messages.i18n.format("ErrorAggregatingPolicies", contractBean.getClientId() + "->" + contractBean.getApiDescription()), e); //$NON-NLS-1$ //$NON-NLS-2$
+        }
     }
 
     private void fireContractApprovalRequest(String requesterId, ContractBean contract) {

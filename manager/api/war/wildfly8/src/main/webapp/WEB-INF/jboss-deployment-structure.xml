@@ -3,12 +3,19 @@
     <dependencies>
       <module name="org.infinispan" />
       <module name="org.hibernate" />
-      <module name="org.apache.log4j" />
       <module name="org.slf4j" />
       <module name="org.picketbox" />
+      <module name="org.hibernate.commons-annotations" />
+      <module name="org.jboss.logging" services="import"/>
+      <module name="org.jboss.resteasy.resteasy-jaxrs"/>
+<!--      <module name="org.jboss.weld.core" services="import"/>-->
+<!--      <module name="org.jboss.weld.spi" services="import"/>-->
     </dependencies>
     <exclude-subsystems>
       <subsystem name="webservices" />
     </exclude-subsystems>
+    <exclusions>
+      <module name="org.jboss.resteasy.resteasy-jackson-provider"/>
+    </exclusions>
   </deployment>
 </jboss-deployment-structure>

@@ -59,12 +59,6 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     @Inject
     private ApiManagerConfig config2;
 
-    // @Inject
-    // private EntityManagerFactoryAccessor emf;
-
-    // @Inject
-    // private DataSource ds;
-
     /**
      * @see javax.servlet.GenericServlet#init()
      */

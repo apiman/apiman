@@ -26,7 +26,7 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class ContractApprovalRequestNotificationProducer implements INotificationProducer {
 
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalRequestNotificationProducer.class);
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalRequestNotificationProducer.class);
     public static final String APIMAN_CLIENT_CONTRACT_REASON = "apiman.client.contract.approval.request";
     private NotificationService notificationService;
 

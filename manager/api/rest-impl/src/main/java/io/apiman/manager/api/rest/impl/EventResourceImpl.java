@@ -20,11 +20,14 @@ import javax.ws.rs.core.Response;
 public class EventResourceImpl implements IEventResource {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(EventResourceImpl.class);
 
-    private final SsoEventService ssoEventService;
+    private SsoEventService ssoEventService;
 
     @Inject
     public EventResourceImpl(SsoEventService ssoEventService) {
         this.ssoEventService = ssoEventService;
+    }
+
+    public EventResourceImpl() {
     }
 
     // TODO: permissions check?

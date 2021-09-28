@@ -74,12 +74,8 @@ public class QuotaPolicy extends RateLimitingPolicy {
         return DEFAULT_RESET_HEADER;
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.RateLimitingPolicy#createBucketId(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policies.config.RateLimitingConfig)
-     */
-    @Override
     protected String createBucketId(ApiRequest request, RateLimitingConfig config) {
-        return "QUOTA||" + super.createBucketId(request, config); //$NON-NLS-1$
+        return "QUOTA||" + bucketId(request, config); //$NON-NLS-1$
     }
 
 }

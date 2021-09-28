@@ -58,17 +58,11 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
     public TransferQuotaPolicy() {
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
-     */
     @Override
-    protected Class<TransferQuotaConfig> getConfigurationClass() {
+    public Class<TransferQuotaConfig> getConfigurationClass() {
         return TransferQuotaConfig.class;
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
-     */
     @Override
     protected void doApply(final ApiRequest request, final IPolicyContext context, final TransferQuotaConfig config,
             final IPolicyChain<ApiRequest> chain) {
@@ -114,9 +108,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         });
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#requestDataHandler(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
-     */
     @Override
     protected IReadWriteStream<ApiRequest> requestDataHandler(final ApiRequest request,
             final IPolicyContext context, final TransferQuotaConfig config) {
@@ -150,9 +141,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         }
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
-     */
     @Override
     protected void doApply(final ApiResponse response, final IPolicyContext context, final TransferQuotaConfig config,
             final IPolicyChain<ApiResponse> chain) {
@@ -195,9 +183,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         }
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#responseDataHandler(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
-     */
     @Override
     protected IReadWriteStream<ApiResponse> responseDataHandler(final ApiResponse response,
             final IPolicyContext context, final TransferQuotaConfig config) {

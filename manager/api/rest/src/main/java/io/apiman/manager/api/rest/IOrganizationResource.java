@@ -56,6 +56,7 @@ import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
+import io.apiman.manager.api.beans.probes.ProbeBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
@@ -559,6 +560,16 @@ public interface IOrganizationResource {
             @PathParam("clientId") String clientId, @PathParam("version") String version,
             @PathParam("contractId") Long contractId) throws ClientNotFoundException,
             ContractNotFoundException, NotAuthorizedException;
+
+    /**
+     * Probe a specific contract's policy state
+     */
+    @GET
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts/{contractId}/policies/{policyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response probeContractPolicy(@PathParam("organizationId") String organizationId,
+                                    @PathParam("clientId") String clientId, @PathParam("version") String version,
+                                    @PathParam("contractId") Long contractId, @PathParam("policyId") long policyId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get a list of all Contracts for an Client.

@@ -22,16 +22,17 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.util.CaseInsensitiveStringMultiMap;
 import io.apiman.gateway.engine.beans.util.HeaderMap;
-import io.vertx.core.MultiMap;
-import io.vertx.core.http.HttpClientResponse;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.http.HttpVersion;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import io.vertx.core.MultiMap;
+import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.http.HttpVersion;
 
 /**
  * Construct {@link ApiRequest} and {@link ApiResponse} objects from {@link HttpServerRequest},
@@ -109,7 +110,7 @@ public class HttpApiFactory {
 
     private static void multimapToMap(CaseInsensitiveStringMultiMap map, MultiMap multimap, Set<String> suppressHeaders) {
         for (Map.Entry<String, String> entry : multimap) {
-            if(!suppressHeaders.contains(entry.getKey())) {
+            if (!suppressHeaders.contains(entry.getKey())) {
                 String key = entry.getKey();
                 String val = entry.getValue();
 

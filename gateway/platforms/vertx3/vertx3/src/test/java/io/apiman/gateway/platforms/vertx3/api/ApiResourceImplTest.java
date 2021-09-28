@@ -4,12 +4,13 @@ import io.apiman.gateway.engine.*;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.vertx.core.json.JsonObject;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ApiRessourceImplTest {
+public class ApiResourceImplTest {
 
     private static String config = "{\n" +
             "  \"publicEndpoint\": \"https://gateway.acme-corp.com\",\n" +
@@ -94,7 +95,7 @@ public class ApiRessourceImplTest {
     }
 
 
-    public class DummyEngine implements IEngine {
+    public static class DummyEngine implements IEngine {
         @Override
         public String getVersion() {
             return null;
@@ -117,6 +118,16 @@ public class ApiRessourceImplTest {
 
         @Override
         public IApiRequestPathParser getApiRequestPathParser() {
+            return null;
+        }
+
+        @Override
+        public IPolicyFactory getPolicyFactory() {
+            return null;
+        }
+
+        @Override
+        public IComponentRegistry getComponentRegistry() {
             return null;
         }
     }

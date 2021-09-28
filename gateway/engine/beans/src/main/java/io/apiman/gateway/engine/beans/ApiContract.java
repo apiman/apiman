@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Internal representation of a API contract.  Ties together a API and
+ * Internal representation of an API contract.  Ties together an API and
  * a client by its contract (api key).
  *
  * @author eric.wittmann@redhat.com

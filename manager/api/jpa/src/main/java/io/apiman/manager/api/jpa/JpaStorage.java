@@ -88,7 +88,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -599,13 +598,20 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
         return policyBean;
     }
-
     /**
      * {@inheritDoc}
      */
     @Override
     public GatewayBean getGateway(String id) throws StorageException {
         return super.get(id, GatewayBean.class);
+    }
+
+    @Override
+    public List<GatewayBean> getGateways(Set<String> ids) throws StorageException {
+        return getActiveEntityManager()
+                .createQuery("SELECT g FROM GatewayBean g WHERE g.id IN (:ids)", GatewayBean.class)
+                .setParameter("ids", ids)
+                .getResultList();
     }
 
     /**

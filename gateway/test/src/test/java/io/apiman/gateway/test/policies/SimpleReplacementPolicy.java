@@ -36,7 +36,7 @@ public class SimpleReplacementPolicy extends AbstractMappedPolicy<SimpleReplacem
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<SimpleReplacementBean> getConfigurationClass() {
+    public Class<SimpleReplacementBean> getConfigurationClass() {
         return SimpleReplacementBean.class;
     }
 
