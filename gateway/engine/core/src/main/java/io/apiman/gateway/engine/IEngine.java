@@ -18,6 +18,7 @@ package io.apiman.gateway.engine;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.impl.EngineResultImpl;
+import io.apiman.gateway.engine.policy.IPolicyFactory;
 
 /**
  * The API Management runtime engine.  This engine can either be embedded or used as part
@@ -38,8 +39,7 @@ public interface IEngine {
      * of the policy chain invocation.
      *
      * @param request a request for a managed API
-     * @param resultHandler
-     * @param handler an async handler called when a response is returned or an
+     * @param resultHandler an async handler called when a response is returned or an
      *            exception is captured.
      * @return a API request executor
      */
@@ -63,5 +63,13 @@ public interface IEngine {
      * @return the API request path parser
      */
     IApiRequestPathParser getApiRequestPathParser();
+
+    /**
+     * Get the policy factory
+     * @return the policy factory
+     */
+    IPolicyFactory getPolicyFactory();
+
+    IComponentRegistry getComponentRegistry();
 
 }

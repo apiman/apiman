@@ -55,7 +55,7 @@ public class AuthorizationPolicy extends AbstractMappedPolicy<AuthorizationConfi
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
+     * {@inheritDoc}
      */
     @Override
     protected Class<AuthorizationConfig> getConfigurationClass() {

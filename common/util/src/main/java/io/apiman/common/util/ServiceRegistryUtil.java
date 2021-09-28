@@ -29,7 +29,7 @@ import java.util.Set;
  */
 public class ServiceRegistryUtil {
 
-    private static Map<Class<?>, Set<?>> servicesCache = new HashMap<>();
+    private static final Map<Class<?>, Set<?>> servicesCache = new HashMap<>();
 
     private ServiceRegistryUtil() {
     }

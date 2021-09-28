@@ -55,7 +55,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
+     * {@inheritDoc}
      */
     @Override
     protected Class<BasicAuthenticationConfig> getConfigurationClass() {

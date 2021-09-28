@@ -33,22 +33,23 @@ public interface IPolicyContext {
     /**
      * Sets a conversation-scoped attribute, allowing policies to pass interesting
      * information to each other and to themselves.
-     * @param name
-     * @param value
+     * @param name name of attribute
+     * @param value attribute to set
      */
     void setAttribute(String name, Object value);
 
     /**
      * Fetches an attribute value from the conversation.
-     * @param name
-     * @param defaultValue
+     * @param name name of attribute to get
+     * @param defaultValue a default value
      * @return attribute if present, else default value
      */
     <T> T getAttribute(String name, T defaultValue);
 
     /**
      * Removes an attribute from the conversation.
-     * @param name
+     *
+     * @param name name of attribute to remove
      * @return whether attribute was removed
      */
     boolean removeAttribute(String name);
@@ -57,9 +58,10 @@ public interface IPolicyContext {
      * Gets a component by type.  Components are provided by the APIMan system for
      * use by policies during their execution.  Examples of components include the
      * Shared State Component and the HTTP Client Component.
-     * @param componentClass
+     *
+     * @param componentClass the component to load
      * @return the component of type T
-     * @throws ComponentNotFoundException
+     * @throws ComponentNotFoundException if the component is not found
      */
     <T extends IComponent> T getComponent(Class<T> componentClass) throws ComponentNotFoundException;
 
@@ -77,16 +79,23 @@ public interface IPolicyContext {
     IConnectorInterceptor getConnectorInterceptor();
 
     /**
+     * Use <samp>ApimanLoggerFactory.getLogger([clazz or name])</samp>.
+     * <p>
+     * For example:
+     * <sample>static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(Foo.class)</sample>
+     *
      * @param klazz the class
      * @return A logger associated with the conversation.
+     * @see ApimanLoggerFactory
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     default IApimanLogger getLogger(Class<?> klazz) {
         return ApimanLoggerFactory.getLogger(klazz);
     }
 
     /**
-     * Mutate connector attributes
+     * Mutate connector attributes.
+     *
      * @return the connector configuration
      */
     IConnectorConfig getConnectorConfiguration();
@@ -94,7 +103,7 @@ public interface IPolicyContext {
     /**
      * Set the connector configuration.
      *
-     * Most usecases should simply mutate the existing configuration via
+     * Most use cases should simply mutate the existing configuration via
      * {@link #getConnectorConfiguration()}.
      *
      * @param config the configuration

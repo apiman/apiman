@@ -16,6 +16,7 @@
 package io.apiman.gateway.engine.policies;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.IPolicyProbeRequest;
 import io.apiman.gateway.engine.policies.config.IPListConfig;
 
 
@@ -25,7 +26,7 @@ import io.apiman.gateway.engine.policies.config.IPListConfig;
  * @author eric.wittmann@redhat.com
  * @param <C> the config type
  */
-public abstract class AbstractIPListPolicy<C> extends AbstractMappedPolicy<C> {
+public abstract class AbstractIPListPolicy<C, P extends IPolicyProbeRequest> extends AbstractMappedPolicy<C, P> {
 
     /**
      * Gets the remote address for comparison.

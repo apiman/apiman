@@ -222,12 +222,11 @@ public class InMemoryRegistry implements IRegistry {
     @Override
     public void listClients(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
         // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
-        List<String> res = map.entrySet().stream()
-                .map(Map.Entry::getValue)
+        List<String> res = map.values().stream()
                 .filter(entity -> entity instanceof Client)
                 .map(entity -> (Client) entity)
                 .filter(client -> client.getOrganizationId().equals(organizationId))
-                .map(client -> client.getClientId())
+                .map(Client::getClientId)
                 .distinct()
                 .collect(Collectors.toList());
         handler.handle(AsyncResultImpl.create(res));
@@ -236,12 +235,11 @@ public class InMemoryRegistry implements IRegistry {
     @Override
     public void listClientVersions(String organizationId, String clientId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
         // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
-        List<String> res = map.entrySet().stream()
-                .map(Map.Entry::getValue)
+        List<String> res = map.values().stream()
                 .filter(entity -> entity instanceof Client)
                 .map(entity -> (Client) entity)
                 .filter(client -> client.getOrganizationId().equals(organizationId) && client.getClientId().equals(clientId))
-                .map(client -> client.getVersion())
+                .map(Client::getVersion)
                 .distinct()
                 .collect(Collectors.toList());
         handler.handle(AsyncResultImpl.create(res));
@@ -250,12 +248,11 @@ public class InMemoryRegistry implements IRegistry {
     @Override
     public void listApis(String organizationId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
         // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
-        List<String> res = map.entrySet().stream()
-                .map(Map.Entry::getValue)
+        List<String> res = map.values().stream()
                 .filter(entity -> entity instanceof Api)
                 .map(entity -> (Api) entity)
                 .filter(api -> api.getOrganizationId().equals(organizationId))
-                .map(api -> api.getApiId())
+                .map(Api::getApiId)
                 .distinct()
                 .collect(Collectors.toList());
         handler.handle(AsyncResultImpl.create(res));
@@ -264,12 +261,11 @@ public class InMemoryRegistry implements IRegistry {
     @Override
     public void listApiVersions(String organizationId, String apiId, int page, int pageSize, IAsyncResultHandler<List<String>> handler) {
         // For now, ignore paging, but it's there for future. Would need to ensure stable ordering.
-        List<String> res = map.entrySet().stream()
-                .map(Map.Entry::getValue)
+        List<String> res = map.values().stream()
                 .filter(entity -> entity instanceof Api)
                 .map(entity -> (Api) entity)
                 .filter(api -> api.getOrganizationId().equals(organizationId) && api.getApiId().equals(apiId))
-                .map(api -> api.getVersion())
+                .map(Api::getVersion)
                 .distinct()
                 .collect(Collectors.toList());
         handler.handle(AsyncResultImpl.create(res));
@@ -278,8 +274,7 @@ public class InMemoryRegistry implements IRegistry {
     @Override
     public void listOrgs(IAsyncResultHandler<List<String>> handler) {
         // TODO: We should track set of OrgId -> AtomicCounter if this API has meaningfully high usage.
-        List<String> res = map.entrySet().stream()
-                .map(Map.Entry::getValue)
+        List<String> res = map.values().stream()
                 .map(elem -> {
                     if (elem instanceof Api) {
                         return ((Api) elem).getOrganizationId();

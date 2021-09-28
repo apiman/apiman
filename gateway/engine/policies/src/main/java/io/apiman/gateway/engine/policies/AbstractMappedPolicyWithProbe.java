@@ -22,7 +22,6 @@ import io.apiman.gateway.engine.beans.IPolicyProbeRequest;
 import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
-import io.apiman.gateway.engine.policies.probe.PlaceholderProbeResponse;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -51,8 +50,9 @@ import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNQUOTED_FIE
  * @author eric.wittmann@redhat.com
  * @author marc@blackparrotlabs.io
  * @param <C> the config type
+ * @param <P> the probe request type
  */
-public abstract class AbstractMappedPolicy<C> implements IPolicy {
+public abstract class AbstractMappedPolicyWithProbe<C, P extends IPolicyProbeRequest> implements IPolicy {
 
     private static final ObjectMapper mapper = JsonMapper
          .builder()
@@ -77,7 +77,7 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
     /**
      * Constructor.
      */
-    public AbstractMappedPolicy() {
+    public AbstractMappedPolicyWithProbe() {
     }
 
     /**
@@ -169,7 +169,7 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
      * <p>
      * For compatibility reasons this is not abstract, but all classes who provide probe capabilities should implement it.
      */
-    protected Class<PlaceholderProbeResponse> getProbeRequestClass() {
+    protected Class<P> getProbeRequestClass() {
         return null;
     }
 
@@ -185,6 +185,19 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
      */
     @Override
     public void probe(String probeRequestRaw, String policyConfigRaw, IPolicyContext context, IAsyncResultHandler<IPolicyProbeResponse> resultHandler) {
-        resultHandler.handle(null);
+        try {
+            P probeConfig = mapper.readValue(probeRequestRaw, getProbeRequestClass());
+            C policyConfig = mapper.readValue(policyConfigRaw, getConfigurationClass());
+            doProbe(probeConfig, policyConfig, context, resultHandler);
+        } catch (Exception e) {
+            throw new ConfigurationParseException(e);
+        }
     }
+
+    /**
+     * Override this method to provide a state probe for your policy implementation.
+     *
+     * @see IPolicy#probe(String, String, IPolicyContext, IAsyncResultHandler)
+     */
+    protected abstract void doProbe(P probeRequest, C policyConfig, IPolicyContext context, IAsyncResultHandler<IPolicyProbeResponse> resultHandler);
 }

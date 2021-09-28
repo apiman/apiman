@@ -79,18 +79,18 @@ public final class RestHelper {
     public static List<PolicySummaryBean> hideSensitiveDataFromPolicySummaryBeanList(ISecurityContext securityContext, List<PolicySummaryBean> policySummaryBeans) {
         List<PolicySummaryBean> policies = new ArrayList<>();
         for (PolicySummaryBean policySummaryBean : policySummaryBeans) {
-            PolicySummaryBean policySumarry = new PolicySummaryBean();
-            policySumarry.setId(policySummaryBean.getId());
-            policySumarry.setPolicyDefinitionId(policySummaryBean.getPolicyDefinitionId());
-            policySumarry.setName(policySummaryBean.getName());
-            policySumarry.setDescription(policySummaryBean.getDescription());
-            policySumarry.setIcon(policySummaryBean.getIcon());
+            PolicySummaryBean policySummary = new PolicySummaryBean();
+            policySummary.setId(policySummaryBean.getId());
+            policySummary.setPolicyDefinitionId(policySummaryBean.getPolicyDefinitionId());
+            policySummary.setName(policySummaryBean.getName());
+            policySummary.setDescription(policySummaryBean.getDescription());
+            policySummary.setIcon(policySummaryBean.getIcon());
             // check if the role was created by the current user
             if (securityContext.getCurrentUser().equals(policySummaryBean.getCreatedBy())) {
-                policySumarry.setCreatedBy(policySummaryBean.getCreatedBy());
-                policySumarry.setCreatedOn(policySummaryBean.getCreatedOn());
+                policySummary.setCreatedBy(policySummaryBean.getCreatedBy());
+                policySummary.setCreatedOn(policySummaryBean.getCreatedOn());
             }
-            policies.add(policySumarry);
+            policies.add(policySummary);
         }
         return policies;
     }
