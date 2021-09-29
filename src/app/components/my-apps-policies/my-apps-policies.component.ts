@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IPolicy } from '../../interfaces/ICommunication';
 import { IContractExt } from '../../interfaces/IContractExt';
+import { IGaugeChartData } from '../../interfaces/IGaugeChartData';
 
 @Component({
   selector: 'app-my-apps-policies',
@@ -10,6 +11,7 @@ import { IContractExt } from '../../interfaces/IContractExt';
 export class MyAppsPoliciesComponent implements OnInit {
   @Input() contract?: IContractExt;
   policies: IPolicy[] | undefined;
+  gaugeData: IGaugeChartData | undefined;
 
   ngOnInit(): void {
     this.getAllPolicies();
@@ -55,5 +57,11 @@ export class MyAppsPoliciesComponent implements OnInit {
       this.policies = this.contract.policies;
     }
     this.policies = [policy, policy];
+    this.gaugeData = {
+      name: 'Rate Limit Usage',
+      limit: 500,
+      period: 'Seconds',
+      currentValue: 250,
+    };
   }
 }

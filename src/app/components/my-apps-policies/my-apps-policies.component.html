@@ -1,8 +1,15 @@
 <div class="summary mb-40" *ngFor="let policy of policies">
-  <div class="policies divider-right" *ngIf="policies">
+  <div class="policies mr-40" *ngIf="policies">
     <app-policy-card [policy]="policy"></app-policy-card>
   </div>
-  <div>
-    <p>Hello</p>
+  <div class="divider-left">
+    <mat-grid-list cols="2" rowHeight="1:1" class="grid">
+      <mat-grid-tile colspan="1">
+        <app-gauge-chart [gaugeData]="gaugeData"></app-gauge-chart>
+      </mat-grid-tile>
+      <mat-grid-tile colspan="1">
+        <app-gauge-chart [gaugeData]="gaugeData"></app-gauge-chart>
+      </mat-grid-tile>
+    </mat-grid-list>
   </div>
 </div>

@@ -1,0 +1,21 @@
+<div class="chart-container">
+  <h2>{{ name }}</h2>
+  <div class="chart">
+    <ngx-charts-gauge
+      class="second"
+      [results]="data"
+      [legend]="legend"
+      [max]="limit"
+      [legendPosition]="legendPosition"
+      [scheme]="colorScheme"
+    >
+    </ngx-charts-gauge>
+  </div>
+  <div class="infos">
+    <h4>Usage ({{ period }})</h4>
+    <h2>
+      {{ currentValue }} <span class="primary">/ {{ limit }}</span>
+    </h2>
+    <h3>{{ percentage }}% used</h3>
+  </div>
+</div>

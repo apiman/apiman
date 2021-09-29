@@ -2,11 +2,19 @@
   display: grid;
   justify-content: space-between;
   align-items: center;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 2fr;
 }
 
 .policies {
   display: grid;
   justify-content: space-around;
   gap: 20px;
+}
+
+h2, h3 {
+  text-align: center;
+}
+
+.grid .divider-left {
+  margin-bottom: -4rem;
 }

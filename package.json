@@ -24,6 +24,7 @@
     "@angular/router": "~12.2.7",
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
+    "@swimlane/ngx-charts": "^19.0.1",
     "keycloak-angular": "^8.4.0",
     "keycloak-js": "^15.0.2",
     "ngx-markdown": "^12.0.1",

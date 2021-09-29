@@ -36,6 +36,8 @@ import { MyAppsUseApiComponent } from './components/my-apps-use-api/my-apps-use-
 import { MyAppsPoliciesComponent } from './components/my-apps-policies/my-apps-policies.component';
 import { MyAppsManageApiComponent } from './components/my-apps-manage-api/my-apps-manage-api.component';
 import { PolicyCardComponent } from './components/policy-card/policy-card.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { GaugeChartComponent } from './components/charts/gauge-chart/gauge-chart.component';
 
 export function initializeApp(
   configService: ConfigService,
@@ -101,6 +103,7 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
     MyAppsPoliciesComponent,
     MyAppsManageApiComponent,
     PolicyCardComponent,
+    GaugeChartComponent,
   ],
   imports: [
     KeycloakAngularModule,
@@ -122,6 +125,7 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
       },
     }),
     ReactiveFormsModule,
+    NgxChartsModule,
   ],
   providers: [
     {
