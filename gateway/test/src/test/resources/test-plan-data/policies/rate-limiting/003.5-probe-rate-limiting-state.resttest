@@ -1,0 +1,30 @@
+GET /organizations/Policy_RateLimitingTest/apis/echo/versions/1.0.0/policies/0?apiKey=12345 admin/admin
+Content-Type: application/json
+X-API-Key: 12345
+
+{
+    "user": "msavy",
+    "apiKey": "12345",
+    "callerIp": "10.1.1.1"
+}
+
+----
+200
+Content-Type: application/json
+
+{
+	"probeType": "RateLimitingProbeResponse",
+	"rateLimitConfig": {
+		"limit": 5,
+		"granularity": "Client",
+		"period": "Hour",
+		"userHeader": null,
+		"headerRemaining": null,
+		"headerLimit": null,
+		"headerReset": null
+	},
+	"rateLimitResponse": {
+		"accepted": true,
+		"remaining": 1
+	}
+}

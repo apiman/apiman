@@ -1,9 +1,5 @@
 package io.apiman.gateway.engine.policies;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
@@ -14,14 +10,23 @@ import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.impl.CachedResponse;
 import io.apiman.gateway.engine.io.AbstractStream;
 import io.apiman.gateway.engine.io.IApimanBuffer;
+import io.apiman.gateway.engine.io.IPayloadIO;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.policies.caching.CacheConnectorInterceptor;
 import io.apiman.gateway.engine.policies.config.CachingResourcesConfig;
 import io.apiman.gateway.engine.policies.config.CachingResourcesSettingsEntry;
-import io.apiman.gateway.engine.io.IPayloadIO;
-import io.apiman.gateway.engine.policy.*;
+import io.apiman.gateway.engine.policy.IConnectorInterceptor;
+import io.apiman.gateway.engine.policy.IDataPolicy;
+import io.apiman.gateway.engine.policy.IPolicyChain;
+import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.policy.PolicyContextKeys;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
@@ -48,7 +53,7 @@ public class CachingResourcesPolicy extends AbstractMappedDataPolicy<CachingReso
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<CachingResourcesConfig> getConfigurationClass() {
+    public Class<CachingResourcesConfig> getConfigurationClass() {
         return CachingResourcesConfig.class;
     }
 

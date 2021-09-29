@@ -58,7 +58,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
      * {@inheritDoc}
      */
     @Override
-    protected Class<BasicAuthenticationConfig> getConfigurationClass() {
+    public Class<BasicAuthenticationConfig> getConfigurationClass() {
         return BasicAuthenticationConfig.class;
     }
 

@@ -82,7 +82,7 @@ public interface IPolicyContext {
      * Use <samp>ApimanLoggerFactory.getLogger([clazz or name])</samp>.
      * <p>
      * For example:
-     * <sample>static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(Foo.class)</sample>
+     * <sample>static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(MyPolicy.class)</sample>
      *
      * @param klazz the class
      * @return A logger associated with the conversation.

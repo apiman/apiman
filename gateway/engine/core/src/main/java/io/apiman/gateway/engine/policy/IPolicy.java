@@ -82,11 +82,4 @@ public interface IPolicy {
         chain.doFailure(failure);
     }
 
-    /**
-     * Probe the current state of a policy.
-     */
-    default void probe(String probeConfiguration, String policyConfiguration, IPolicyContext context, IAsyncResultHandler<IPolicyProbeResponse> resultHandler) {
-        throw new NotImplementedException("This policy does not implement a state probe :-(");
-    }
-
 }

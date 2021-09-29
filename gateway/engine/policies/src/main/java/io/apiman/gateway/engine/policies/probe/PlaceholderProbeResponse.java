@@ -21,4 +21,9 @@ public class PlaceholderProbeResponse implements IPolicyProbeResponse {
     public RateLimitResponse getRateLimitResponse() {
         return rateLimitResponse;
     }
+
+    @Override
+    public String getProbeType() {
+        return PlaceholderProbeResponse.class.getName();
+    }
 }

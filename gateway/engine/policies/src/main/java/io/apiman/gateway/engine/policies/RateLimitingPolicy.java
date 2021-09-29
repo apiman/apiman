@@ -23,7 +23,6 @@ import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.Client;
-import io.apiman.gateway.engine.beans.IPolicyProbeRequest;
 import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
@@ -38,6 +37,8 @@ import io.apiman.gateway.engine.policies.probe.RateLimitingProbeConfig;
 import io.apiman.gateway.engine.policies.probe.RateLimitingProbeResponse;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.policy.IPolicyProbe;
+import io.apiman.gateway.engine.policy.ProbeContext;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 
 import java.util.HashMap;
@@ -51,7 +52,8 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig, RateLimitingProbeConfig> {
+public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
+     implements IPolicyProbe<RateLimitingConfig, RateLimitingProbeConfig> {
 
     protected static final String NO_USER_AVAILABLE = "";
     protected static final String NO_CLIENT_AVAILABLE = "";
@@ -67,7 +69,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig,
     }
 
     @Override
-    protected Class<RateLimitingConfig> getConfigurationClass() {
+    public Class<RateLimitingConfig> getConfigurationClass() {
         return RateLimitingConfig.class;
     }
 
@@ -77,7 +79,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig,
     @Override
     protected void doApply(final ApiRequest request, final IPolicyContext context, final RateLimitingConfig config,
             final IPolicyChain<ApiRequest> chain) {
-        String bucketId = createBucketId(request, config);
+        String bucketId = bucketId(request, config);
         final RateBucketPeriod period = getPeriod(config);
 
         if (bucketId == NO_USER_AVAILABLE) {
@@ -119,7 +121,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig,
         });
     }
 
-    protected String createBucketId(ApiRequest request, RateLimitingConfig config) {
+    protected static String bucketId(ApiRequest request, RateLimitingConfig config) {
         BucketIdBuilderContext bucketInfo = new BucketIdBuilderContext()
              .setRateLimitingConfig(config)
              .setApi(request.getApi())
@@ -135,11 +137,11 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig,
         return bucketId(config, bucketInfo);
     }
 
-    protected String createBucketId(RateLimitingProbeConfig probeConfig, RateLimitingConfig config) {
+    protected static String bucketId(RateLimitingProbeConfig probeConfig, ProbeContext probeContext, RateLimitingConfig config) {
         BucketIdBuilderContext bucketInfo = new BucketIdBuilderContext()
              .setRateLimitingConfig(config)
-             .setApi(probeConfig.getApi())
-             .setContract(probeConfig.getContract())
+             .setApi(probeContext.getApi())
+             .setContract(probeContext.getContract())
              .setUserSupplier(probeConfig::getUser)
              .setRemoteAddr(probeConfig.getCallerIp());
         return bucketId(config, bucketInfo);
@@ -310,18 +312,20 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig,
 
 
     @Override
-    protected Class<RateLimitingProbeConfig> getProbeRequestClass() {
+    public Class<RateLimitingProbeConfig> getProbeRequestClass() {
         return RateLimitingProbeConfig.class;
     }
 
     @Override
-    protected void doProbe(RateLimitingProbeConfig probeRequest, RateLimitingConfig policyConfig,
+    public void probe(RateLimitingProbeConfig probeRequest, RateLimitingConfig policyConfig, ProbeContext probeContext,
          IPolicyContext context, IAsyncResultHandler<IPolicyProbeResponse> resultHandler) {
-        String bucketId = createBucketId(probeRequest, policyConfig);
+        String bucketId = bucketId(probeRequest, probeContext, policyConfig);
         IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class);
         rateLimiter.accept(bucketId, getPeriod(policyConfig), policyConfig.getLimit(), 0, rateLimResult -> {
             RateLimitResponse remaining = rateLimResult.getResult();
-            var probeResult = new RateLimitingProbeResponse().setRateLimitResponse(remaining);
+            var probeResult = new RateLimitingProbeResponse()
+                    .setRateLimitResponse(remaining)
+                    .setRateLimitConfig(policyConfig);
             resultHandler.handle(AsyncResultImpl.create(probeResult));
         });
     }

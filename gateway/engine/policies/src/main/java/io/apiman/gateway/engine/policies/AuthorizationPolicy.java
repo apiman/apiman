@@ -58,7 +58,7 @@ public class AuthorizationPolicy extends AbstractMappedPolicy<AuthorizationConfi
      * {@inheritDoc}
      */
     @Override
-    protected Class<AuthorizationConfig> getConfigurationClass() {
+    public Class<AuthorizationConfig> getConfigurationClass() {
         return AuthorizationConfig.class;
     }
 

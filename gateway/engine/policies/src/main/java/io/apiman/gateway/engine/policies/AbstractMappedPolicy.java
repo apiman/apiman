@@ -15,14 +15,10 @@
  */
 package io.apiman.gateway.engine.policies;
 
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
-import io.apiman.gateway.engine.beans.IPolicyProbeRequest;
-import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
-import io.apiman.gateway.engine.policies.probe.PlaceholderProbeResponse;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -102,7 +98,7 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
      *
      * @return the class
      */
-    protected abstract Class<C> getConfigurationClass();
+    public abstract Class<C> getConfigurationClass();
 
     /**
      * {@inheritDoc}
@@ -162,29 +158,5 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
      */
     protected void doProcessFailure(PolicyFailure failure, IPolicyContext context, C config, IPolicyFailureChain chain) {
         chain.doFailure(failure);
-    }
-
-    /**
-     * Return the class to unmarshall the raw probe request JSON configuration into.
-     * <p>
-     * For compatibility reasons this is not abstract, but all classes who provide probe capabilities should implement it.
-     */
-    protected Class<PlaceholderProbeResponse> getProbeRequestClass() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This version uses Jackson to parse the probe configuration into the class specified by
-     * {@link #getProbeRequestClass()}, and the policy config specified by {@link #getConfigurationClass()}.
-     * <p>
-     * Most implementors should override the abstract
-     * {@link #doProbe(IPolicyProbeRequest, Object, IPolicyContext, IAsyncResultHandler)} method rather than this one,
-     * unless they are doing something more exotic (e.g. not using JSON).
-     */
-    @Override
-    public void probe(String probeRequestRaw, String policyConfigRaw, IPolicyContext context, IAsyncResultHandler<IPolicyProbeResponse> resultHandler) {
-        resultHandler.handle(null);
     }
 }

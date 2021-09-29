@@ -41,7 +41,7 @@ public class IgnoredResourcesPolicy extends AbstractMappedPolicy<IgnoredResource
     }
 
     @Override
-    protected Class<IgnoredResourcesConfig> getConfigurationClass() {
+    public Class<IgnoredResourcesConfig> getConfigurationClass() {
         return IgnoredResourcesConfig.class;
     }
 

@@ -39,10 +39,10 @@ public class IPBlacklistPolicy extends AbstractIPListPolicy<IPListConfig> {
     }
     
     @Override
-    protected Class<IPListConfig> getConfigurationClass() {
+    public Class<IPListConfig> getConfigurationClass() {
         return IPListConfig.class;
     }
-    
+
     @Override
     protected void doApply(ApiRequest request, IPolicyContext context, IPListConfig config,
             IPolicyChain<ApiRequest> chain) {

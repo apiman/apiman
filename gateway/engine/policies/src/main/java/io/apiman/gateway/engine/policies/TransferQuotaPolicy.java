@@ -59,7 +59,7 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
     }
 
     @Override
-    protected Class<TransferQuotaConfig> getConfigurationClass() {
+    public Class<TransferQuotaConfig> getConfigurationClass() {
         return TransferQuotaConfig.class;
     }
 

@@ -125,5 +125,10 @@ public class ApiResourceImplTest {
         public IPolicyFactory getPolicyFactory() {
             return null;
         }
+
+        @Override
+        public IComponentRegistry getComponentRegistry() {
+            return null;
+        }
     }
 }

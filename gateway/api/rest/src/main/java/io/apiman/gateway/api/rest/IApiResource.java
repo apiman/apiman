@@ -124,10 +124,10 @@ public interface IApiResource {
     @GET
     @ApiOperation(value = "Probe the state of a policy")
     @ApiResponses(
-         @ApiResponse(code = 200, message = "OK", response = IPolicyProbeResponse.class)
+            @ApiResponse(code = 200, message = "OK", response = IPolicyProbeResponse.class)
     )
     @ApiImplicitParams(
-         @ApiImplicitParam(name = "request", dataTypeClass = IPolicyProbeRequest.class)
+            @ApiImplicitParam(name = "request", dataTypeClass = IPolicyProbeRequest.class)
     )
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -136,6 +136,7 @@ public interface IApiResource {
                           @PathParam("apiId") String apiId,
                           @PathParam("version") String version,
                           @PathParam("policyIdx") int policyIdx,
+                          @QueryParam("apiKey") String apiKey,
                           String probeConfigRaw,
                           @Suspended final AsyncResponse response) throws NotAuthorizedException;
 
