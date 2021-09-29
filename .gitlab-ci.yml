@@ -34,17 +34,4 @@ workflow:
     - if: $CI_COMMIT_BRANCH == "Dev-Portal-2.0"
 
 stages:
-  - test
   - build
-
-test:
-  script:
-    - apk update && apk add chromium
-    - npm install
-    - npm build
-    - npm test
-  artifacts:
-    reports:
-      junit: 'junit/api-mgmt-dev-portal/*.xml*'
-    expire_in: 1 week
-
