@@ -12,7 +12,7 @@ import { SpinnerService } from './services/spinner/spinner.service';
 })
 export class AppComponent implements OnInit {
   @ViewChild('content') content!: ElementRef;
-  title = 'dev-portal2';
+  title = 'devportal';
   showSpinner: boolean;
 
   constructor(

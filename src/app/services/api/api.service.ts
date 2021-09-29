@@ -89,7 +89,7 @@ export class ApiService {
       // ToDo do something meaningful with error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    window.alert(errorMessage);
+    console.warn(errorMessage);
     return throwError(errorMessage);
   }
 }

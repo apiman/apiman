@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakInstance } from 'keycloak-js';
 import { ConfigService } from '../config/config.service';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -13,15 +14,13 @@ export class KeycloakHelperService {
 
   constructor(
     private readonly keycloak: KeycloakService,
-    private configService: ConfigService
-  ) {}
+    private configService: ConfigService) {  }
 
   /**
    * Init keycloak setting, this is called via APP Initializer
    */
-  public async initKeycloak(): Promise<any> {
-    return this.keycloak
-      .init({
+  public initKeycloak(): Promise<any> {
+    return this.keycloak.init({
         config: {
           url: this.configService.getAuth().url,
           realm: this.configService.getAuth().realm,
@@ -39,11 +38,8 @@ export class KeycloakHelperService {
         },
         loadUserProfileAtStartUp: true, // because of https://github.com/mauriciovigolo/keycloak-angular/pull/269
         enableBearerInterceptor: true,
-        bearerExcludedUrls: ['/assets', '/clients/public'], //TODO
+        bearerExcludedUrls: ['/assets', '/clients/public'] //TODO
       })
-      .then((response: any) => {
-        console.log(response);
-      });
   }
 
   public async getUserProfile() {
@@ -59,9 +55,8 @@ export class KeycloakHelperService {
   }
 
   public logout(): void {
-    // TODO bring you home
     KeycloakHelperService.clearTokensFromSessionStorage();
-    this.keycloak.logout('http://localhost:4200/home');
+    this.keycloak.logout(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/home`)
   }
 
   /**

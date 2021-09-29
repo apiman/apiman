@@ -9,12 +9,14 @@
       <p #heroSubtitle>{{ heroService.hero.subtitle }}</p>
     </div>
     <div id="hero-btn">
-      <button mat-raised-button color="primary" (click)="login()" *ngIf="!loggedIn">
+      <button mat-raised-button color="primary" (click)="login()" *ngIf="!loggedIn; else logoutBtn">
         Register / Login
       </button>
-      <button mat-raised-button color="primary" (click)="logout()" *ngIf="loggedIn">
-        Log-Out
-      </button>
+      <ng-template #logoutBtn>
+        <button mat-raised-button color="primary" (click)="logout()">
+          Log-Out
+        </button>
+      </ng-template>
     </div>
   </div>
 </div>

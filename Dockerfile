@@ -20,7 +20,7 @@ EXPOSE 80 443
 # one of pas-service|pas-app|database|xuml-service|python-service|other
 LABEL com.scheer-pas.container-type="pas-app"
 
-COPY --from=base /usr/src/app/dist/*/* /usr/share/nginx/html/
+COPY --from=base /usr/src/app/dist/devportal /usr/share/nginx/html
 
 #copy ssl keys
 COPY docker/tls.crt /etc/ssl/certs/tls.crt

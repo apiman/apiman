@@ -118,21 +118,19 @@ export class BackendService {
     this.userName = this.keycloak.getKeycloakInstance().profile?.username!;
   }
 
-  // ToDo remove credentials and use anonymous call
-  private credentials = 'test:test1234'; // Format username:password
   private httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      // Authorization: 'Basic ' + btoa(this.credentials),
     }),
   };
+
   /**
    * Searches apis
    */
   public searchApis(
     searchCriteria: ISearchCriteria
   ): Observable<ISearchResultsApiSummary> {
-    const path = '/search/apis';
+    const path = 'search/apis';
     return this.http.post(
       this.generateUrl(path),
       searchCriteria,

@@ -9,7 +9,7 @@ then
 fi
 
 
-# replace all occurences of placeholders with environment variables
+# replace all occurrences of placeholders with environment variables
 # see https://blog.codecentric.de/en/2019/03/docker-angular-dockerize-app-easily/
 
 #for mainFileName in /usr/share/nginx/html/main*.js

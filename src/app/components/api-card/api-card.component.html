@@ -17,12 +17,7 @@
         color="primary"
         class="api-card-button"
         *ngIf="api.docsAvailable"
-        [routerLink]="[
-          '/swagger',
-          api.organizationId,
-          api.id,
-          api.latestVersion
-        ]"
+        [routerLink]="['/swagger', api.organizationId, api.id, api.latestVersion]"
       >
         API Docs
       </button>

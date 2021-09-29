@@ -26,7 +26,6 @@ import { ApiCardListComponent } from './components/api-card-list/api-card-list.c
 import { PlanCardListComponent } from './components/plan-card-list/plan-card-list.component';
 import { AccountComponent } from './components/account/account.component';
 import { MyAppsComponent } from './components/my-apps/my-apps.component';
-import { ThemeService } from './services/theme/theme.service';
 import { KeycloakAngularModule } from 'keycloak-angular';
 import { KeycloakHelperService } from './services/keycloak-helper/keycloak-helper.service';
 import { SwaggerComponent } from './components/swagger/swagger.component';
@@ -38,45 +37,25 @@ import { MyAppsManageApiComponent } from './components/my-apps-manage-api/my-app
 import { PolicyCardComponent } from './components/policy-card/policy-card.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { GaugeChartComponent } from './components/charts/gauge-chart/gauge-chart.component';
+import { IConfig } from './interfaces/IConfig';
 
-export function initializeApp(
-  configService: ConfigService,
-  devPortalInitializer: InitializerService
-): () => Promise<void> {
-  configService.readAndEvaluateConfig();
+export function initializeApp(configService: ConfigService, devPortalInitializer: InitializerService, keycloakHelper: KeycloakHelperService): () => Promise<any> {
+  return () => new Promise((resolve, reject) => {
+    /* At first fetch the configuration file */
+    configService.readAndEvaluateConfig().then((config: IConfig) => {
 
-  /* Define promises needed for the app initialization */
-  const initLanguagePromise: Promise<void> = new Promise((resolve, reject) => {
-    devPortalInitializer
-      .initLanguage(configService.getLanguage())
-      .then(() => {
-        resolve();
-      })
-      .catch(() => {
-        reject();
+      /* After you can list the promises, which depend on the config here */
+      return Promise.all([devPortalInitializer.initLanguage(), keycloakHelper.initKeycloak()]).then(() => {
+        resolve(true);
+      }).catch((e: Error) => {
+        reject(e);
       });
-  });
-
-  return (): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      /* Insert defined promises */
-      Promise.all([initLanguagePromise])
-        .then(() => {
-          resolve();
-        })
-        .catch((e) => {
-          reject(e);
-        });
     });
-  };
+  })
 }
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './../assets/i18n/', '.json');
-}
-
-function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
-  return async () => await keycloakHelper.initKeycloak();
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -132,13 +111,11 @@ function initializeKeycloak(keycloakHelper: KeycloakHelperService) {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       multi: true,
-      deps: [ConfigService, InitializerService, ThemeService],
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeKeycloak,
-      multi: true,
-      deps: [KeycloakHelperService],
+      deps: [
+        ConfigService,
+        InitializerService,
+        KeycloakHelperService
+      ],
     },
   ],
   bootstrap: [AppComponent],
