@@ -14,6 +14,9 @@
     <test name="Register Client With Ip policy" endpoint="api">test-plan-data/policies/rate-limiting/005-register-client-ip-policy.resttest</test>
     <test name="Success 6">test-plan-data/policies/rate-limiting/006-success-ip-address.resttest</test>
     <test name="Failure 2">test-plan-data/policies/rate-limiting/007-failure-ip-address.resttest</test>
+    <test name="Probe IP policy state" endpoint="api">test-plan-data/policies/rate-limiting/008-probe-ip-rate-limiting.resttest</test>
+
+
   </testGroup>
 
 </testPlan>

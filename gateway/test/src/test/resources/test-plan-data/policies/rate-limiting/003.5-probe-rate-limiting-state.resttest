@@ -13,18 +13,14 @@ X-API-Key: 12345
 Content-Type: application/json
 
 {
-	"probeType": "RateLimitingProbeResponse",
-	"rateLimitConfig": {
+	"config": {
 		"limit": 5,
 		"granularity": "Client",
-		"period": "Hour",
-		"userHeader": null,
-		"headerRemaining": null,
-		"headerLimit": null,
-		"headerReset": null
+		"period": "Hour"
 	},
-	"rateLimitResponse": {
+	"status": {
 		"accepted": true,
 		"remaining": 1
-	}
+	},
+	"probeType": "RateLimitingProbeResponse"
 }

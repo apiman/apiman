@@ -56,6 +56,7 @@ import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
+import io.apiman.manager.api.beans.probes.ProbeBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
@@ -731,6 +732,14 @@ public interface IOrganizationResource {
             @PathParam("clientId") String clientId, @PathParam("version") String version,
             @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ClientVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/policies/{policyId}/probe")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ProbeBean probeClientPolicy(@PathParam("organizationId") String organizationId,
+                                       @PathParam("clientId") String clientId, @PathParam("version") String version,
+                                       @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
+
 
     /**
      * Use this endpoint to update the meta-data or configuration of a single Client Policy.

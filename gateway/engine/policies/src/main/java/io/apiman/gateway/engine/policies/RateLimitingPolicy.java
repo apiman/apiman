@@ -324,8 +324,8 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
         rateLimiter.accept(bucketId, getPeriod(policyConfig), policyConfig.getLimit(), 0, rateLimResult -> {
             RateLimitResponse remaining = rateLimResult.getResult();
             var probeResult = new RateLimitingProbeResponse()
-                    .setRateLimitResponse(remaining)
-                    .setRateLimitConfig(policyConfig);
+                    .setStatus(remaining)
+                    .setConfig(policyConfig);
             resultHandler.handle(AsyncResultImpl.create(probeResult));
         });
     }

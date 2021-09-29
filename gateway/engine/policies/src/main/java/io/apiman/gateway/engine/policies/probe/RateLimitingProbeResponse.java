@@ -4,35 +4,33 @@ import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.policies.config.RateLimitingConfig;
 
-import com.fasterxml.jackson.annotation.JsonTypeId;
-
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class RateLimitingProbeResponse implements IPolicyProbeResponse {
 
-    private RateLimitingConfig rateLimitConfig;
-    private RateLimitResponse rateLimitResponse;
+    private RateLimitingConfig config;
+    private RateLimitResponse status;
 
     public RateLimitingProbeResponse() {
     }
 
-    public RateLimitingConfig getRateLimitConfig() {
-        return rateLimitConfig;
+    public RateLimitingConfig getConfig() {
+        return config;
     }
 
-    public RateLimitingProbeResponse setRateLimitConfig(RateLimitingConfig rateLimitConfig) {
-        this.rateLimitConfig = rateLimitConfig;
+    public RateLimitingProbeResponse setConfig(RateLimitingConfig config) {
+        this.config = config;
         return this;
     }
 
-    public RateLimitingProbeResponse setRateLimitResponse(RateLimitResponse rateLimitResponse) {
-        this.rateLimitResponse = rateLimitResponse;
-        return this;
+    public RateLimitResponse getStatus() {
+        return status;
     }
 
-    public RateLimitResponse getRateLimitResponse() {
-        return rateLimitResponse;
+    public RateLimitingProbeResponse setStatus(RateLimitResponse status) {
+        this.status = status;
+        return this;
     }
 
     @Override

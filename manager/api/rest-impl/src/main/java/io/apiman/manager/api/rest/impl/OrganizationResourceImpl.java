@@ -63,6 +63,7 @@ import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
+import io.apiman.manager.api.beans.probes.ProbeBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
@@ -476,6 +477,14 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         throws OrganizationNotFoundException, ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
         return clientService.getClientPolicy(organizationId, clientId, version, policyId);
+    }
+
+    @Override
+    public ProbeBean probeClientPolicy(String organizationId, String clientId, String version, long policyId)
+            throws OrganizationNotFoundException, ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+        PolicyBean policy = clientService.getClientPolicy(organizationId, clientId, version, policyId);
+
     }
 
     @Override
