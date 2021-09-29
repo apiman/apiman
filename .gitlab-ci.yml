@@ -11,7 +11,7 @@ include:
     file:
       # this is needed for al the other node templates to work
       - "/templates/base.yml"
-      # - "/templates/test.yml"
+      - "/templates/test.yml"
       # TODO to enable an npm ci:doc and properly npm run ci:cover must be present
       # - '/templates/doc.yml'
       # - '/templates/coverage.yml'
@@ -34,4 +34,9 @@ workflow:
     - if: $CI_COMMIT_BRANCH == "Dev-Portal-2.0"
 
 stages:
+  - test
   - build
+
+test:
+  script:
+    - ''
