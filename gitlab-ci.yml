@@ -20,7 +20,7 @@ include:
 # overwrite the necessary variables so the docker images fit the actual ones:
 .docker-builds:
   variables:
-    REGISTRY_IMAGE: "$DOCKER_REGISTRY/api-mgmt/devportal"
+    REGISTRY_IMAGE: "$DOCKER_REGISTRY/api-mgmt/devportal-v2"
 workflow:
   rules:
     # Merge requests runs in different context (detached context) and therefore need to specify extra
@@ -30,6 +30,8 @@ workflow:
     - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS == null
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH == "pas-release"
+      # Build v2 branch TODO remove
+    - if: $CI_COMMIT_BRANCH == "Dev-Portal-2.0"
 
 stages:
   - test
