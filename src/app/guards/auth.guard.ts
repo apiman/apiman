@@ -30,9 +30,9 @@ export class AuthGuard extends KeycloakAuthGuard {
     state: RouterStateSnapshot
   ): Promise<boolean | UrlTree> {
     if (!this.authenticated) {
-      console.log('Login required');
+      const url = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + state.url;
       await this.keycloakAngular.login({
-        redirectUri: window.location.origin + state.url,
+        redirectUri: url,
       });
     } else {
       // we are logged in and can set the tokens

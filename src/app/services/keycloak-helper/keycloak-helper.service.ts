@@ -56,7 +56,8 @@ export class KeycloakHelperService {
 
   public logout(): void {
     KeycloakHelperService.clearTokensFromSessionStorage();
-    this.keycloak.logout(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/home`)
+    const url = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/home';
+    this.keycloak.logout(url);
   }
 
   /**
