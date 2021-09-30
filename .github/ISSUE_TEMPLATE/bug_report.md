@@ -8,6 +8,8 @@ assignees: ''
 ---
 
 **Describe your setup**
+- Apiman version
+  - Post contents of http://localhost:8080/apimanui/api-manager/about (redact any sensitive information). 
 - Environment
   - Operating system (e.g. Linux, Docker, Windows)
   - Java version (e.g. 8, 11, 17)
