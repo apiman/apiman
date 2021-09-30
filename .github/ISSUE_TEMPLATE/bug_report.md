@@ -20,6 +20,9 @@ assignees: ''
   -  Component configuration (provide your redacted `conf.json`, `apiman.properties`, or describe your setup).
 - Any alterations to the standard setup (e.g. JVM configuration)
 
+- ❗ If your issue is with the UI, please post the contents of the Javascript developer console. You can use https://gist.github.com or a code block.
+- ❗ If your issue causes an exception, please post the exception text (**not just a screenshot**). You can use https://gist.github.com or a code block.
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
