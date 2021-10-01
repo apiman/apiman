@@ -21,11 +21,13 @@ import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
-import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.engine.beans.Client;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
+import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
@@ -33,10 +35,11 @@ import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.i18n.Messages;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.text.StrLookup;
 import org.apache.commons.lang3.text.StrSubstitutor;
@@ -51,9 +54,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * An implementation of a Gateway Link that uses the Gateway's simple REST
  * API to publish APIs.
@@ -62,14 +62,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class RestGatewayLink implements IGatewayLink {
 
-    private static StrLookup LOOKUP = new ApimanStrLookup();
-    private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
+    private static final StrLookup LOOKUP = new ApimanStrLookup();
+    private static final StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
     static {
         PROPERTY_SUBSTITUTOR.setValueDelimiter(':');
     }
 
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static SSLConnectionSocketFactory sslConnectionFactory;
+    private static final SSLConnectionSocketFactory sslConnectionFactory;
     static {
         try {
             SSLContextBuilder builder = new SSLContextBuilder();
@@ -87,7 +87,7 @@ public class RestGatewayLink implements IGatewayLink {
 
     @SuppressWarnings("unused")
     private GatewayBean gateway;
-    private CloseableHttpClient httpClient;
+    private final CloseableHttpClient httpClient;
     private GatewayClient gatewayClient;
     private RestGatewayConfigBean config;
 
@@ -113,8 +113,6 @@ public class RestGatewayLink implements IGatewayLink {
                             configureBasicAuth(request);
                         }
                     }).build();
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -208,21 +206,33 @@ public class RestGatewayLink implements IGatewayLink {
         getClient().unregister(client.getOrganizationId(), client.getClientId(), client.getVersion());
     }
 
+    @Override
+    public IPolicyProbeResponse probe(String orgId, String apiId, String apiVersion, int idx) throws RegistrationException, GatewayAuthenticationException {
+        if (!isGatewayUp()) {
+            throw new RegistrationException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
+        }
+        return getClient().probePolicy(orgId, apiId, apiVersion, idx);
+    }
+
+    @Override
+    public IPolicyProbeResponse probe(String orgId, String apiId, String apiVersion, int idx, String apiKey) throws RegistrationException, GatewayAuthenticationException {
+        if (!isGatewayUp()) {
+            throw new RegistrationException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
+        }
+        return getClient().probePolicy(orgId, apiId, apiVersion, idx, apiKey);
+    }
+
     /**
      * Configures BASIC authentication for the request.
      * @param request
      */
     protected void configureBasicAuth(HttpRequest request) {
-        try {
-            String username = getConfig().getUsername();
-            String password = getConfig().getPassword();
-            String up = username + ":" + password; //$NON-NLS-1$
-            String base64 = new String(Base64.encodeBase64(up.getBytes("UTF-8"))); //$NON-NLS-1$
-            String authHeader = "Basic " + base64; //$NON-NLS-1$
-            request.setHeader("Authorization", authHeader); //$NON-NLS-1$
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        String username = getConfig().getUsername();
+        String password = getConfig().getPassword();
+        String up = username + ":" + password; //$NON-NLS-1$
+        String base64 = new String(Base64.encodeBase64(up.getBytes(StandardCharsets.UTF_8))); //$NON-NLS-1$
+        String authHeader = "Basic " + base64; //$NON-NLS-1$
+        request.setHeader("Authorization", authHeader); //$NON-NLS-1$
     }
 
     /**

@@ -27,7 +27,7 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class ClientAppStatusNotificationProducer implements INotificationProducer {
 
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalNotificationProducer.class);
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalNotificationProducer.class);
     public static final String APIMAN_CLIENT_STATUS_CHANGE = "apiman.client.status_change";
     private NotificationService notificationService;
 

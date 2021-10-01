@@ -579,7 +579,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     @Override
     public void cancel() {
-        throw new RuntimeException("Stopped");
+       // throw new RuntimeException("Stopped");
         //this.storage.rollbackTx();
     }
 

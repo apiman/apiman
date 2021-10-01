@@ -6,6 +6,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.util.AnnotationLiteral;
+import javax.ws.rs.ext.Provider;
 
 /**
  * Thanks to Dan Allen <a href="https://gist.github.com/mojavelinux/635719#file-startupbeanextension-java-L19">
@@ -13,6 +14,7 @@ import javax.enterprise.util.AnnotationLiteral;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@Provider
 public class EagerProvider implements Extension {
 
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {

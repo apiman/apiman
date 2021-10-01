@@ -80,6 +80,7 @@ public class ActionService implements DataAccessUtilMixin {
     private ISecurityContext securityContext;
     private ApiService apiService;
     private PlanService planService;
+    private ContractService contractService;
     private IStorageQuery query;
     private EventService eventService;
     private ClientAppService clientAppService;
@@ -102,6 +103,7 @@ public class ActionService implements DataAccessUtilMixin {
         this.apiService = apiService;
         this.planService = planService;
         this.query = query;
+        this.contractService = contractService;
         this.eventService = eventService;
         this.clientAppService = clientAppService;
         this.clientValidator = clientValidator;
@@ -424,7 +426,7 @@ public class ActionService implements DataAccessUtilMixin {
             contract.setApiId(contractBean.getApiId());
             contract.setApiOrgId(contractBean.getApiOrganizationId());
             contract.setApiVersion(contractBean.getApiVersion());
-            contract.getPolicies().addAll(aggregateContractPolicies(contractBean));
+            contract.getPolicies().addAll(contractService.aggregateContractPolicies(contractBean));
             contracts.add(contract);
         }
         client.setContracts(contracts);
@@ -488,7 +490,6 @@ public class ActionService implements DataAccessUtilMixin {
         try {
             storage.updateClientVersion(versionBean);
             storage.createAuditEntry(AuditUtils.clientRegistered(versionBean, securityContext));
-            // TODO pull into service
             clientAppService.fireClientStatusChangeEvent(versionBean, oldStatus);
         } catch (Exception e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("RegisterError"), e); //$NON-NLS-1$
@@ -496,57 +497,6 @@ public class ActionService implements DataAccessUtilMixin {
 
         LOGGER.debug(String.format("Successfully registered Client %s on specified gateways: %s", //$NON-NLS-1$
              versionBean.getClient().getName(), versionBean.getClient()));
-    }
-
-    /**
-     * Aggregates the API, client, and plan policies into a single ordered list.
-     */
-    private List<Policy> aggregateContractPolicies(ContractSummaryBean contractBean) {
-        try {
-            List<Policy> policies = new ArrayList<>();
-            PolicyType [] types = new PolicyType[] {
-                 PolicyType.Client, PolicyType.Plan, PolicyType.Api
-            };
-            for (PolicyType policyType : types) {
-                String org, id, ver;
-                switch (policyType) {
-                    case Client: {
-                        org = contractBean.getClientOrganizationId();
-                        id = contractBean.getClientId();
-                        ver = contractBean.getClientVersion();
-                        break;
-                    }
-                    case Plan: {
-                        org = contractBean.getApiOrganizationId();
-                        id = contractBean.getPlanId();
-                        ver = contractBean.getPlanVersion();
-                        break;
-                    }
-                    case Api: {
-                        org = contractBean.getApiOrganizationId();
-                        id = contractBean.getApiId();
-                        ver = contractBean.getApiVersion();
-                        break;
-                    }
-                    default: {
-                        throw new RuntimeException("Missing case for switch!"); //$NON-NLS-1$
-                    }
-                }
-
-                List<PolicySummaryBean> clientPolicies = query.getPolicies(org, id, ver, policyType);
-                for (PolicySummaryBean policySummaryBean : clientPolicies) {
-                    PolicyBean policyBean = storage.getPolicy(policyType, org, id, ver, policySummaryBean.getId());
-                    Policy policy = new Policy();
-                    policy.setPolicyJsonConfig(policyBean.getConfiguration());
-                    policy.setPolicyImpl(policyBean.getDefinition().getPolicyImpl());
-                    policies.add(policy);
-                }
-            }
-            return policies;
-        } catch (Exception e) {
-            throw ExceptionFactory.actionException(
-                 Messages.i18n.format("ErrorAggregatingPolicies", contractBean.getClientId() + "->" + contractBean.getApiDescription()), e); //$NON-NLS-1$ //$NON-NLS-2$
-        }
     }
 
     /**

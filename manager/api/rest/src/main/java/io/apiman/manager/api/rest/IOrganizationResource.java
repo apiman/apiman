@@ -562,6 +562,16 @@ public interface IOrganizationResource {
             ContractNotFoundException, NotAuthorizedException;
 
     /**
+     * Probe a specific contract's policy state
+     */
+    @GET
+    @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts/{contractId}/policies/{policyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response probeContractPolicy(@PathParam("organizationId") String organizationId,
+                                    @PathParam("clientId") String clientId, @PathParam("version") String version,
+                                    @PathParam("contractId") Long contractId, @PathParam("policyId") long policyId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException;
+
+    /**
      * Use this endpoint to get a list of all Contracts for an Client.
      * @summary List All Contracts for an Client
      * @param organizationId The Organization ID.
@@ -732,14 +742,6 @@ public interface IOrganizationResource {
             @PathParam("clientId") String clientId, @PathParam("version") String version,
             @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ClientVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException;
-
-    @GET
-    @Path("{organizationId}/clients/{clientId}/versions/{version}/policies/{policyId}/probe")
-    @Produces(MediaType.APPLICATION_JSON)
-    public ProbeBean probeClientPolicy(@PathParam("organizationId") String organizationId,
-                                       @PathParam("clientId") String clientId, @PathParam("version") String version,
-                                       @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
-
 
     /**
      * Use this endpoint to update the meta-data or configuration of a single Client Policy.

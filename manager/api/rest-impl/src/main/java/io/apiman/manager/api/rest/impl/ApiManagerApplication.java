@@ -18,19 +18,11 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
-import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.providers.JacksonObjectMapperProvider;
+import io.apiman.manager.api.providers.eager.EagerProvider;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.rest.interceptors.BlobResourceInterceptorProvider;
 import io.apiman.manager.api.rest.interceptors.TotalCountInterceptorProvider;
-import io.apiman.manager.api.service.ApiService;
-import io.apiman.manager.api.service.ClientAppService;
-import io.apiman.manager.api.service.ContractService;
-import io.apiman.manager.api.service.DevPortalService;
-import io.apiman.manager.api.service.OrganizationService;
-import io.apiman.manager.api.service.PlanService;
-import io.apiman.manager.api.service.PolicyService;
-import io.apiman.manager.api.service.StatsService;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,7 +34,6 @@ import javax.ws.rs.core.Application;
 
 import io.swagger.jaxrs.config.BeanConfig;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-
 
 /**
  * The jax-rs application for the API Manager rest api.
@@ -84,7 +75,6 @@ public class ApiManagerApplication extends Application {
         classes.add(DeveloperResourceImpl.class);
         classes.add(BlobResourceImpl.class);
         classes.add(EventResourceImpl.class);
-        classes.add(NotificationResourceImpl.class);
 
         //add swagger 2.0 resource
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
@@ -93,15 +83,19 @@ public class ApiManagerApplication extends Application {
         classes.add(RestExceptionMapper.class);
 
         registerProviders(
-             JacksonObjectMapperProvider.class,
-             BlobResourceInterceptorProvider.class,
-             TotalCountInterceptorProvider.class,
-             RestExceptionMapper.class
+                JacksonObjectMapperProvider.class,
+                BlobResourceInterceptorProvider.class,
+                TotalCountInterceptorProvider.class,
+                RestExceptionMapper.class,
+                EagerProvider.class
         );
+
+        System.out.println("API Manager Application constructor end");
     }
 
     private void registerProviders(Class<?>... classes) {
         for (Class<?> klazz : classes) {
+            System.out.println("Registering provider: " + klazz);
             ResteasyProviderFactory.getInstance().register(klazz);
         }
     }

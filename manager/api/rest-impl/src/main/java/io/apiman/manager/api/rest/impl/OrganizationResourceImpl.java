@@ -19,6 +19,7 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.Preconditions;
+import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiDefinitionType;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
@@ -63,7 +64,6 @@ import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
-import io.apiman.manager.api.beans.probes.ProbeBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
@@ -401,6 +401,14 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
+    public Response probeContractPolicy(String organizationId, String clientId, String version, Long contractId, long policyId)
+            throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+        List<IPolicyProbeResponse> probeResponses = contractService.probePolicy(contractId, policyId);
+        return Response.ok(probeResponses).build();
+    }
+
+    @Override
     public List<ContractSummaryBean> getClientVersionContracts(String organizationId, String clientId, String version)
         throws ClientNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
@@ -477,14 +485,6 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         throws OrganizationNotFoundException, ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
         return clientService.getClientPolicy(organizationId, clientId, version, policyId);
-    }
-
-    @Override
-    public ProbeBean probeClientPolicy(String organizationId, String clientId, String version, long policyId)
-            throws OrganizationNotFoundException, ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
-        PolicyBean policy = clientService.getClientPolicy(organizationId, clientId, version, policyId);
-
     }
 
     @Override
@@ -762,6 +762,12 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         // No permission check is needed, because this would break All APIs UI
         return apiService.getApiPolicyChain(organizationId, apiId, version, planId);
     }
+
+    // @Override
+    // public Response probeApiPolicy(String organizationId, String apiId, String version, String planId) throws ApiVersionNotFoundException {
+    //     securityContext.checkPermissions(PermissionType.apiView, organizationId);
+    //     return apiService.probeApi()
+    // }
 
     @Override
     public List<ContractSummaryBean> getApiVersionContracts(String organizationId, String apiId,

@@ -321,6 +321,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
          IPolicyContext context, IAsyncResultHandler<IPolicyProbeResponse> resultHandler) {
         String bucketId = bucketId(probeRequest, probeContext, policyConfig);
         IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class);
+        // Ask for rate limit, but don't actually decrement the counter.
         rateLimiter.accept(bucketId, getPeriod(policyConfig), policyConfig.getLimit(), 0, rateLimResult -> {
             RateLimitResponse remaining = rateLimResult.getResult();
             var probeResult = new RateLimitingProbeResponse()

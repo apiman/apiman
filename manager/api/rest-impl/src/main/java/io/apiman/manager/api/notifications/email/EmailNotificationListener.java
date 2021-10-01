@@ -19,9 +19,10 @@ import javax.inject.Inject;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@EagerLoaded
 @ApplicationScoped
 public class EmailNotificationListener {
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(EmailNotificationListener.class);
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(EmailNotificationListener.class);
     private final List<INotificationHandler> handlers;
     private final NotificationService notificationService;
 

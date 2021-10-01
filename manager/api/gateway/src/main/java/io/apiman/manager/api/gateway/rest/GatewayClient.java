@@ -21,8 +21,9 @@ import io.apiman.gateway.api.rest.ISystemResource;
 import io.apiman.gateway.api.rest.exceptions.GatewayApiErrorBean;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
-import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.engine.beans.Client;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
+import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -35,7 +36,9 @@ import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.core.UriBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -45,8 +48,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A REST client for accessing the Gateway API.
@@ -77,6 +78,45 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
 
         if (this.endpoint.endsWith("/")) { //$NON-NLS-1$
             this.endpoint = this.endpoint.substring(0, this.endpoint.length() - 1);
+        }
+    }
+
+    public IPolicyProbeResponse probePolicy(String orgId, String apiId, String apiVersion, int idx) throws GatewayAuthenticationException {
+        return probePolicy(orgId, apiId, apiVersion, idx, "");
+    }
+
+    // organizations/{organizationId}/apis/{apiId}/versions/{version}/policies/{policyIdx}
+    public IPolicyProbeResponse probePolicy(String orgId, String apiId, String apiVersion, int idx, String apiKey) throws GatewayAuthenticationException {
+        InputStream is = null;
+        try {
+            UriBuilder probeUrl = UriBuilder.fromUri(endpoint)
+                    .path("organizations")
+                    .path(orgId)
+                    .path("apis")
+                    .path(apiId)
+                    .path("versions")
+                    .path(apiVersion)
+                    .path("policies")
+                    .path(String.valueOf(idx));
+            if (apiKey != null && !apiKey.isBlank()) {
+                probeUrl.queryParam("apiKey", apiKey);
+            }
+            HttpGet get = new HttpGet(probeUrl.build());
+            HttpResponse response = httpClient.execute(get);
+            int actualStatusCode = response.getStatusLine().getStatusCode();
+            if (actualStatusCode == 401 || actualStatusCode == 403) {
+                throw new GatewayAuthenticationException();
+            } else if (!(actualStatusCode / 100 == 2)) {
+                throw new RuntimeException("System status check failed: " + actualStatusCode); //$NON-NLS-1$
+            }
+            is = response.getEntity().getContent();
+            return mapper.reader(IPolicyProbeResponse.class).readValue(is);
+        } catch (GatewayAuthenticationException | RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
         }
     }
 

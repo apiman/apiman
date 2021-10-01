@@ -94,4 +94,7 @@ public interface IGatewayLink {
      */
     public void close();
 
+    IPolicyProbeResponse probe(String orgId, String apiId, String apiVersion, int idx) throws RegistrationException, GatewayAuthenticationException;
+
+    IPolicyProbeResponse probe(String orgId, String apiId, String apiVersion, int idx, String apiKey) throws RegistrationException, GatewayAuthenticationException;
 }

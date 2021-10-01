@@ -30,6 +30,7 @@ public class SystemOutLogger implements IApimanLogger {
      * Constructor.
      */
     public SystemOutLogger() {
+        System.err.println("Standard out logger was initialised. This probably means you didn't configure logging properly.");
     }
 
     /**
