@@ -4,17 +4,15 @@ import { Observable } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import { KeycloakService } from 'keycloak-angular';
 import {
-  IApi,
+  IApi, IApiPlanSummary,
   IApiVersion,
   IApiVersionEndpointSummary,
   IApiVersionSummary,
-  IClient,
-  IClientSummary,
   IContract,
   IContractSummary,
   INewContract,
   IOrganization,
-  IOrganizationSummary,
+  IOrganizationSummary, IPolicy, IPolicySummary,
   ISearchCriteria,
   ISearchResultsApiSummary,
 } from '../../interfaces/ICommunication';
@@ -22,6 +20,7 @@ import {
   IClientSummaryBean,
   IClientVersionSummaryBean,
 } from '../../interfaces/ICommunication';
+import {IPolicySummaryExt} from "../../interfaces/IPolicySummaryExt";
 
 export interface ApiSummaryBean {
   organizationId?: string;
@@ -257,6 +256,43 @@ export class BackendService {
     return this.http.get(
       this.generateUrl(path)
     ) as Observable<IApiVersionEndpointSummary>;
+  }
+
+  public getApiVersionPlans(organizationId: string,
+                     apiId: string,
+                     apiVersion: string): Observable<IApiPlanSummary[]> {
+    const path = `/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/plans`
+    return this.http.get<IApiPlanSummary[]>(this.generateUrl(path));
+  }
+
+  public getPlanPolicySummaries(organizationId: string,
+                         planId: string,
+                         planVersion: string): Observable<IPolicySummaryExt[]> {
+    const path = `/organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies`
+    return this.http.get<IPolicySummaryExt[]>(this.generateUrl(path))
+  }
+
+  public getPlanPolicy(organizationId: string,
+                       planId: string,
+                       planVersion: string,
+                       policyId: string): Observable<IPolicy> {
+    const path = `/organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies/${policyId}`
+    return this.http.get<IPolicy>(this.generateUrl(path))
+  }
+
+  public getApiPolicySummaries(organizationId: string,
+                               apiId: string,
+                               apiVersion: string): Observable<IPolicySummaryExt[]> {
+    const path = `/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/policies`
+    return this.http.get<IPolicySummary[]>(this.generateUrl(path)) as Observable<IPolicySummaryExt[]>
+  }
+
+  public getApiPolicy(organizationId: string,
+                       apiId: string,
+                       apiVersion: string,
+                       policyId: string): Observable<IPolicy> {
+    const path = `/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/policies/${policyId}`
+    return this.http.get<IPolicy>(this.generateUrl(path))
   }
 
   /********* Helper **********/
