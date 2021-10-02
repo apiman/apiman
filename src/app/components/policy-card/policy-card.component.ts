@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IPolicy } from '../../interfaces/ICommunication';
+import {IPolicyExt} from "../../interfaces/IPolicyExt";
 
 export interface PolicyHeaders {
   headerLimit: string;
@@ -13,7 +13,7 @@ export interface PolicyHeaders {
   styleUrls: ['./policy-card.component.scss'],
 })
 export class PolicyCardComponent implements OnInit {
-  @Input() policy?: IPolicy;
+  @Input() policy?: IPolicyExt;
 
   // Default Headers
   private rateLimitPolicyHeaders: PolicyHeaders = {

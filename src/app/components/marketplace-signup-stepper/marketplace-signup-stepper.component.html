@@ -69,8 +69,9 @@
           <h4>Policies</h4>
           <!--In this version we will not have more than 2 policies-->
           <div class="policies">
-            <app-policy-card></app-policy-card>
-            <app-policy-card></app-policy-card>
+            <ng-container *ngFor="let policy of newContractDetails.policies">
+              <app-policy-card [policy]="policy"></app-policy-card>
+            </ng-container>
           </div>
         </mat-card-content>
         <mat-divider></mat-divider>
@@ -96,12 +97,11 @@
           <app-my-apps-use-api [contract]="contract"></app-my-apps-use-api>
           <h3>Policies</h3>
           <!--In this version we will not have more than 2 policies-->
-          <div class="policies" *ngIf="policies">
+          <div class="policies" *ngIf="newContractDetails.policies">
             <app-policy-card
-              *ngFor="let policy of policies"
+              *ngFor="let policy of newContractDetails.policies"
               [policy]="policy"
             ></app-policy-card>
-            <app-policy-card></app-policy-card>
           </div>
         </mat-card-content>
         <mat-divider></mat-divider>

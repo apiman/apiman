@@ -6,7 +6,7 @@
       </div>
       <div>
         <mat-form-field>
-          <input matInput readonly value="https://localhost:4200/endpoint" />
+          <input matInput readonly value="{{managedEndpoint}}" />
           <button
             [cdkCopyToClipboard]="'test'"
             mat-icon-button
@@ -24,7 +24,7 @@
       </div>
       <div>
         <mat-form-field>
-          <input matInput readonly value="hig&/(5$hdwheow" />
+          <input matInput readonly value="{{contract ? contract.client.apikey : ''}}" />
           <button
             [cdkCopyToClipboard]="''"
             mat-icon-button

@@ -5,9 +5,26 @@
     <p>{{ mockText }}</p>
   </div>
   <div id="try-it-now-btn">
-    <button mat-raised-button color="primary" [disabled]="disableButtons">
-      {{ "APPS.VIEW_AND_TRY_NOW" | translate }}
-    </button>
+    <ng-container *ngIf="contract">
+      <button mat-raised-button color="primary" [disabled]="disableButtons" [routerLink]="[
+          '/swagger',
+          contract.client.client.organization.id,
+          contract.api.id,
+          contract.api.version
+        ]">
+        {{ "APPS.VIEW_AND_TRY_NOW" | translate }}
+      </button>
+    </ng-container>
+    <ng-container *ngIf="!contract">
+      <button mat-raised-button color="primary" [routerLink]="[
+          '/swagger',
+          newContractDetails.organizationId,
+          newContractDetails.apiVersion.id,
+          newContractDetails.apiVersion.version
+        ]">
+        {{ "APPS.VIEW_AND_TRY_NOW" | translate }}
+      </button>
+    </ng-container>
   </div>
 </div>
 

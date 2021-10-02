@@ -16,6 +16,8 @@ import {
 } from '../../interfaces/ICommunication';
 import { flatMap } from 'rxjs/internal/operators';
 import { IContractExt } from '../../interfaces/IContractExt';
+import {PolicyService} from "../../services/policy/policy.service";
+import {IPolicyExt} from "../../interfaces/IPolicyExt";
 
 @Component({
   selector: 'app-my-apps',
@@ -33,7 +35,8 @@ export class MyAppsComponent implements OnInit {
   constructor(
     private heroService: HeroService,
     private translator: TranslateService,
-    private backend: BackendService
+    private backend: BackendService,
+    private policyService: PolicyService,
   ) {}
 
   ngOnInit(): void {
@@ -114,9 +117,12 @@ export class MyAppsComponent implements OnInit {
         );
       } else {
         this.clientContractsMap.set(clientNameVersionMapped, [contract]);
+        console.log('test')
       }
     });
   }
+
+
 
   /**
    * Extends the ContractBean object with additional values
@@ -126,7 +132,7 @@ export class MyAppsComponent implements OnInit {
   private extendContract(contract: IContract): IContractExt {
     const contractExt = contract as IContractExt;
     contractExt.section = 'summary';
-    contractExt.policies = this.getPolicies();
+    contractExt.policies = this.getPolicies(contractExt);
     return contractExt;
   }
 
@@ -137,8 +143,19 @@ export class MyAppsComponent implements OnInit {
     });
   }
 
-  private getPolicies() {
-    return [];
+  private getPolicies(extendedContract: IContractExt): IPolicyExt[] {
+    const policies: IPolicyExt[] = [];
+    this.policyService.getPlanPolicies(extendedContract.plan.plan.organization.id,
+      extendedContract.plan.plan.id,
+      extendedContract.plan.version).subscribe((extendedPolicy: IPolicyExt) => {
+        policies.push(extendedPolicy);
+    });
+    this.policyService.getApiPolicies(extendedContract.api.api.organization.id,
+      extendedContract.api.api.id,
+      extendedContract.api.version).subscribe((extendedPolicy: IPolicyExt) => {
+        policies.push(extendedPolicy);
+    })
+    return policies;
   }
 
   setSection(api: any, sectionName: ISection) {

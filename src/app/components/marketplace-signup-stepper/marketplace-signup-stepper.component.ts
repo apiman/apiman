@@ -50,9 +50,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   private setUpHero() {
     this.heroService.setUpHero({
       title: this.newContractDetails.apiVersion.api.name,
-      // subtitle:
-      //   this.infos.plan.name + ' ' + this.translator.instant('COMMON.SIGNUP'),
-      subtitle: 'Test ' + this.translator.instant('COMMON.SIGNUP'),
+      subtitle: this.newContractDetails.plan.planName + ' ' + this.translator.instant('COMMON.SIGNUP'),
     });
   }
 
@@ -100,7 +98,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       apiOrgId: this.newContractDetails.organizationId,
       apiId: this.newContractDetails.apiVersion.api.id,
       apiVersion: this.newContractDetails.apiVersion.version,
-      planId: this.newContractDetails.plan.id,
+      planId: this.newContractDetails.plan.planId,
     };
 
     this.backend
@@ -119,13 +117,5 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   finish(): void {
     void this.router.navigate(['applications']);
-  }
-
-  private getPolicies() {
-    // this.policies = this.newContractDetails.apiVersion.plans.filter(
-    //   (value) =>
-    //     value.planId === 'RateLimitingPolicy' ||
-    //     value.planId === 'TransferQuotaPolicy'
-    // );
   }
 }

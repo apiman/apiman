@@ -5,6 +5,8 @@ import {
 } from '../../interfaces/ICommunication';
 import { BackendService } from '../../services/backend/backend.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import {ISignUpInfo} from "../../interfaces/ISignUpInfo";
+import {SignUpService} from "../../services/sign-up/sign-up.service";
 
 @Component({
   selector: 'app-my-apps-use-api',
@@ -13,6 +15,8 @@ import { SnackbarService } from '../../services/snackbar/snackbar.service';
 })
 export class MyAppsUseApiComponent implements OnInit, OnChanges {
   @Input() contract?: IContract;
+  newContractDetails: ISignUpInfo;
+
   mockText =
     'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et';
 
@@ -32,8 +36,11 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
 
   constructor(
     private backend: BackendService,
-    private snackbar: SnackbarService
-  ) {}
+    private snackbar: SnackbarService,
+    private signUpService: SignUpService,
+  ) {
+    this.newContractDetails = this.signUpService.getSignUpInfo();
+  }
 
   ngOnChanges(): void {
     this.initProperties();
@@ -46,7 +53,7 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
   private initProperties() {
     if (this.contract) {
       this.disableButtons = false;
-      this.apiKey = this.contract.client.apikey;
+      this.apiKey = this.contract!.client.apikey;
       this.backend
         .getManagedApiEndpoint(
           this.contract.api.api.organization.id,

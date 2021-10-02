@@ -1,4 +1,5 @@
-import { IContract, IPolicy } from './ICommunication';
+import { IContract } from './ICommunication';
+import {IPolicyExt} from "./IPolicyExt";
 
 /**
  * Extends the Contract interface
@@ -7,5 +8,5 @@ import { IContract, IPolicy } from './ICommunication';
  */
 export interface IContractExt extends IContract {
   section: 'summary' | 'use-api' | 'policies' | 'manage-api';
-  policies: IPolicy[];
+  policies: IPolicyExt[];
 }
