@@ -8,12 +8,11 @@
   </parent>
   <artifactId>apiman-distro-ddl</artifactId>
   <name>apiman-distro-ddl</name>
-
   <properties>
-    <version.org.postgresql.jdbc.driver>9.4-1201-jdbc41</version.org.postgresql.jdbc.driver>
+    <version.org.postgresql.jdbc.driver>42.2.24</version.org.postgresql.jdbc.driver>
     <version.mysql.jdbc.driver>8.0.26</version.mysql.jdbc.driver>
-    <version.com.oracle.driver>12.1.0.2</version.com.oracle.driver>
-    <version.mssql.driver>4.2</version.mssql.driver>
+    <version.com.oracle.driver>21.3.0.0</version.com.oracle.driver>
+    <version.mssql.driver>9.4.0.jre11</version.mssql.driver>
 
     <version.liquibase>4.4.3</version.liquibase>
 
@@ -42,8 +41,19 @@
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-maven-plugin</artifactId>
         <version>${version.liquibase}</version>
+        <configuration>
+          <changeLogFile>${basedir}/src/main/liquibase/master.xml</changeLogFile>
+          <diffChangeLogFile>${basedir}/target/entities-diff.xml</diffChangeLogFile>
+          <outputFileEncoding>UTF-8</outputFileEncoding>
+          <diffIncludeCatalog>false</diffIncludeCatalog>
+        </configuration>
         <dependencies>
           <!-- Database drivers -->
+          <dependency>
+            <groupId>com.vladmihalcea</groupId>
+            <artifactId>hibernate-types-52</artifactId>
+            <version>2.12.1</version>
+          </dependency>
           <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -59,31 +69,22 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${version.mysql.jdbc.driver}</version>
           </dependency>
-          <!-- The Oracle dependency - uncomment to generate the Oracle DDL
           <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc7</artifactId>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc11</artifactId>
             <version>${version.com.oracle.driver}</version>
           </dependency>
-           -->
-          <!-- The MS SQL Server dependency - uncomment to generate the MS SQL Server DDL
           <dependency>
-            <groupId>com.microsoft</groupId>
-            <artifactId>sqljdbc42</artifactId>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
             <version>${version.mssql.driver}</version>
           </dependency>
-           -->
           <!-- Liquibase -->
           <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${version.liquibase}</version>
           </dependency>
-            <dependency>
-              <groupId>org.liquibase</groupId>
-              <artifactId>liquibase-core</artifactId>
-              <version>${version.liquibase}</version>
-            </dependency>
             <dependency>
               <groupId>org.liquibase.ext</groupId>
               <artifactId>liquibase-hibernate5</artifactId>
@@ -105,45 +106,49 @@
               <version>${version.javassist}</version>
             </dependency>
         </dependencies>
-        <configuration>
-          <changeLogFile>${basedir}/src/main/liquibase/master.xml</changeLogFile>
-          <diffChangeLogFile>${basedir}/target/entities-diff.xml</diffChangeLogFile>
-          <outputFileEncoding>UTF-8</outputFileEncoding>
-          <diffIncludeCatalog>false</diffIncludeCatalog>
-        </configuration>
         <executions>
           <execution>
-            <!-- This step is used to create the current database, based on the current changelogs -->
+
+            <!-- This step is used to create the current database, based on the *current* changelogs -->
             <id>h2-update</id>
-            <!--<phase>process-resources</phase> -->
+            <phase>process-resources</phase>
             <goals>
               <goal>update</goal>
             </goals>
             <configuration>
               <changeLogFile>/src/main/liquibase/master.xml</changeLogFile>
               <driver>org.h2.Driver</driver>
-              <url>jdbc:h2:${basedir}/target/apiman_manager_api;DATABASE_TO_UPPER=false;</url>
+              <url>jdbc:h2:${basedir}/target/apiman-manager-api;DATABASE_TO_UPPER=false;</url>
               <username>sa</username>
               <emptyPassword>true</emptyPassword>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
               <verbose>true</verbose>
+              <logging>debug</logging>
             </configuration>
           </execution>
+
+          <!-- Generate liquibase diff between existing and new schema by looking at Hibernate definitions: i.e. migration delta -->
           <execution>
             <id>h2-entities-diff</id>
-            <!--<phase>process-resources</phase> -->
+            <phase>process-resources</phase>
             <goals>
               <goal>diff</goal>
             </goals>
             <configuration>
-              <url>jdbc:h2:${basedir}/target/apiman_manager_api</url>
+              <driver>org.h2.Driver</driver>
+              <url>jdbc:h2:${basedir}/target/apiman-manager-api</url>
               <username>sa</username>
               <emptyPassword>true</emptyPassword>
+              <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
               <!-- May be a comma separated list of packages to scan -->
-              <referenceUrl>hibernate:spring:io.apiman.manager.api.beans?dialect=liquibase.ext.hibernate.database.HibernateGenericDialect</referenceUrl>
-              <verbose>true</verbose>
-            </configuration>
+              <referenceUrl><![CDATA[hibernate:spring:io.apiman.manager.api.beans,io.apiman.manager.api.jpa?dialect=org.hibernate.dialect.H2Dialect]]></referenceUrl>
+      				<verbose>true</verbose>
+  					  <logging>debug</logging>
+              <changeLogFile>${basedir}/src/main/liquibase/master.xml</changeLogFile>
+              <diffChangeLogFile>${basedir}/target/entities-diff.xml</diffChangeLogFile>
+           </configuration>
           </execution>
+          <!-- Generate H2 DDL -->
           <execution>
             <id>h2-ddl</id>
             <phase>compile</phase>
@@ -152,14 +157,17 @@
             </goals>
             <configuration>
               <migrationSqlOutputFile>${basedir}/target/apiman_h2.ddl</migrationSqlOutputFile>
-              <driver>org.h2.Driver</driver>
-              <url>offline:h2?version=1.3&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/h2/databasechangelog.csv</url>
+              <driver>org.h2.Driver</driver> <!-- For some reason, offline mode only supports CSV -->
+              <url>offline:h2?version=${version.com.h2database}&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/h2/databasechangelog.csv</url>
               <username>sa</username>
               <emptyPassword>true</emptyPassword>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
               <verbose>true</verbose>
+              <logging>debug</logging>
             </configuration>
           </execution>
+
+          <!-- Generate PostgreSQL DDL -->
           <execution>
             <id>postgresql-ddl</id>
             <phase>compile</phase>
@@ -169,37 +177,18 @@
             <configuration>
               <migrationSqlOutputFile>${basedir}/target/apiman_postgresql9.ddl</migrationSqlOutputFile>
               <driver>org.postgresql.Driver</driver>
-              <url>offline:postgresql?version=9.3&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/postgresql/databasechangelog.csv</url>
+              <url>offline:postgresql?version=9.6.23&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/postgresql/databasechangelog.csv</url>
               <username>apiman</username>
               <password>apiman</password>
-              <!-- Note: when upgrading from liquibase 3.3.5 -> 3.4.1, adding the defaultSchemaName below became 
+              <!-- Note: when upgrading from liquibase 3.3.5 -> 3.4.1, adding the defaultSchemaName below became
                 a requirement - otherwise this goal will fail. This setting only appears to be required for Postgres. -->
               <defaultSchemaName>public</defaultSchemaName>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
               <verbose>true</verbose>
             </configuration>
           </execution>
-          <execution>
-            <id>mysql-ddl</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>updateSQL</goal>
-            </goals>
-            <configuration>
-              <migrationSqlOutputFile>${basedir}/target/apiman_mysql5.ddl</migrationSqlOutputFile>
-              <driver>com.mysql.jdbc.Driver</driver>
-              <url>offline:mysql?version=5.1&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/mysql/databasechangelog.csv</url>
-              <username>apiman</username>
-              <password>apiman</password>
-              <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-              <verbose>true</verbose>
-            </configuration>
-          </execution>
-          <!-- Commented out because you need to manually install the Oracle JDBC driver JAR as a 
-               Maven dependency for this to work.  Here's how you do that:
-               
-               1) Download the oracle driver:  http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html
-               2) Install it:  mvn install:install-file -Dfile=ojdbc7.jar -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.2 -Dpackaging=jar
+
+          <!-- Generate Oracle DDL -->
           <execution>
             <id>oracle-ddl</id>
             <phase>compile</phase>
@@ -207,21 +196,17 @@
               <goal>updateSQL</goal>
             </goals>
             <configuration>
-              <migrationSqlOutputFile>${basedir}/target/apiman_oracle12.ddl</migrationSqlOutputFile>
+              <migrationSqlOutputFile>${basedir}/target/apiman_oracle19.ddl</migrationSqlOutputFile>
               <driver>oracle.jdbc.OracleDriver</driver>
-              <url>offline:oracle?version=12&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/oracle/databasechangelog.csv</url>
+              <url>offline:oracle?version=19&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/oracle/databasechangelog.csv</url>
               <username>apiman</username>
               <password>apiman</password>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
               <verbose>true</verbose>
             </configuration>
           </execution>
-           -->
-          <!-- Commented out because you need to manually install the MS SQL Server JDBC driver JAR as a
-               Maven dependency for this to work.  Here's how you do that:
 
-               1) Download the MS SQL Server driver:  https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=11774
-               2) Install it:  mvn install:install-file -Dfile=sqljdbc42.jar -DgroupId=com.microsoft -DartifactId=sqljdbc42 -Dversion=4.2 -Dpackaging=jar
+          <!-- Generate MSSQL DDL -->
           <execution>
             <id>mssql-ddl</id>
             <phase>compile</phase>
@@ -229,16 +214,15 @@
               <goal>updateSQL</goal>
             </goals>
             <configuration>
-              <migrationSqlOutputFile>${basedir}/target/apiman_mssql.ddl</migrationSqlOutputFile>
+              <migrationSqlOutputFile>${basedir}/target/apiman_mssql15.ddl</migrationSqlOutputFile>
               <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-              <url>offline:mssql?version=11.0&amp;caseSensitive=true&amp;catalog=apiman&amp;changeLogFile=${basedir}/target/changelog/mssql/databasechangelog.csv</url>
+              <url>offline:mssql?version=15&amp;caseSensitive=true&amp;catalog=apiman&amp;changeLogFile=${basedir}/target/changelog/mssql/databasechangelog.csv</url>
               <username>apiman</username>
               <password>apiman</password>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
               <verbose>true</verbose>
             </configuration>
           </execution>
-           -->
         </executions>
       </plugin>
     </plugins>

@@ -6,9 +6,12 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
@@ -29,7 +32,7 @@ import org.hibernate.annotations.NaturalId;
      uniqueConstraints = {
           @UniqueConstraint(
                name = "UserAllowedOnlyOneOfEachNotificationType",
-               columnNames = { "userId", "notification_type" }
+               columnNames = { "userId", "type" }
           )
      }
 )
@@ -45,14 +48,16 @@ public class NotificationPreferenceEntity {
     @NaturalId
     private String userId;
 
-    @Column(name = "notification_type", nullable = false)
+    @Column(name = "type", nullable = false)
     @NotBlank
     @NaturalId
     private String notificationType;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "notification_category_options")
-    private Set<NotificationCategory> notificationCategories;
+    @Column(name = "category")
+    @CollectionTable(name="notification_category_preferences")
+    @ElementCollection(fetch = FetchType.EAGER, targetClass = NotificationCategory.class)
+    @Enumerated(EnumType.STRING)
+    private Set<NotificationCategory> notificationCategories = new HashSet<>();
 
     // TODO(msavy): allow enable/disable for specific notification reasons
     // Allow prefixes for more fine-grained filtering

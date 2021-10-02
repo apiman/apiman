@@ -51,6 +51,8 @@
         <property name="keycloak.migration.provider" value="singleFile"/>
         <property name="keycloak.migration.strategy" value="IGNORE_EXISTING"/>
         <property name="keycloak.migration.file" value="${jboss.home.dir}/apiman/data/apiman-realm-for-keycloak.json"/>
+
+        <property name="hibernate.types.print.banner" value="false"/>
     </system-properties>
     <management>
         <security-realms>
