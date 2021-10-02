@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api/api.service';
 import { HeroService } from '../../services/hero/hero.service';
 import { switchMap } from 'rxjs/operators';
-import { forkJoin, Observable } from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import { IApi, IApiVersion } from '../../interfaces/ICommunication';
 
 @Component({
@@ -15,8 +15,7 @@ export class MarketplaceApiDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public apiService: ApiService,
-    private heroService: HeroService,
-    private router: Router
+    private heroService: HeroService
   ) {}
 
   api!: IApi;
@@ -53,6 +52,8 @@ export class MarketplaceApiDetailsComponent implements OnInit {
           return forkJoin(newVersions);
         })
       )
-      .subscribe((data) => (this.apis = data));
+      .subscribe((data) => {
+        this.apis = data
+      });
   }
 }

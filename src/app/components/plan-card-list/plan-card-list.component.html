@@ -1,20 +1,34 @@
+<ng-container *ngIf="plans.length > 0">
+  <h2 class="primary mt-40">Plans</h2>
+</ng-container>
 <div id="plan-grid">
   <ng-container *ngFor="let plan of plans">
     <mat-card class="plan-card">
       <mat-card-header class="card-header">
-        <mat-card-title class="card-header-content">{{ plan.title }}</mat-card-title>
-        <mat-card-subtitle class="card-header-content">{{ plan.subtitle }}</mat-card-subtitle>
+        <mat-card-title class="card-header-content">{{ plan.planName }}</mat-card-title>
+        <mat-card-subtitle class="card-header-content">{{ plan.planDescription }}</mat-card-subtitle>
       </mat-card-header>
-      <mat-card-content>
+      <mat-card-content [ngSwitch]="plan.planId + ':' + plan.version">
         <mat-list>
-          <ng-container *ngFor="let policy of plan.policies">
-            <mat-list-item>
+          <ng-container *ngIf="apiPolicies.length > 0">
+            <mat-list-item *ngFor="let policy of apiPolicies">
               <p>
-                {{ policy.title }}
-                <span class="right">{{ policy.configuration }}</span>
+                {{ policy.shortName }}
+                <span class="right">{{ policy.shortDescription }}</span>
               </p>
             </mat-list-item>
             <mat-divider></mat-divider>
+          </ng-container>
+          <ng-container *ngFor="let planPolicies of planPoliciesMap | keyvalue">
+            <ng-container *ngSwitchCase="planPolicies.key">
+              <mat-list-item *ngFor="let policy of planPolicies.value">
+                <p>
+                  {{ policy.shortName }}
+                  <span class="right">{{ policy.shortDescription }}</span>
+                </p>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+            </ng-container>
           </ng-container>
         </mat-list>
       </mat-card-content>
