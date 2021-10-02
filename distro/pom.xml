@@ -13,7 +13,6 @@
 
   <modules>
     <module>data</module>
-    <module>ddl</module>
     <module>tools</module>
   </modules>
 
@@ -29,6 +28,13 @@
         <module>wildfly</module>
         <module>vertx</module>
         <module>tomcat</module>
+      </modules>
+    </profile>
+    <!-- Don't generate DDL by default any more -->
+    <profile>
+      <id>ddl</id>
+      <modules>
+        <module>ddl</module>
       </modules>
     </profile>
   </profiles>

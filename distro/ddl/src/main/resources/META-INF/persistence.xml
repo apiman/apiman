@@ -6,6 +6,8 @@
     <persistence-unit name="apiman-distro-ddl" transaction-type="RESOURCE_LOCAL">
       <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name = "hibernate.connection.driver_class" value="org.postgresql.Driver"/>
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.id.new_generator_mappings" value="true"/>
             <property name="hbm2ddl.auto" value="create"/>
