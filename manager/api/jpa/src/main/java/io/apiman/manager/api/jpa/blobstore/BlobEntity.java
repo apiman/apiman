@@ -63,7 +63,7 @@ public class BlobEntity {
     private Long hash;
 
     @Column(name = "references", nullable = false)
-    private int references = 1;
+    private int references = -1;
 
     public BlobEntity() {
     }

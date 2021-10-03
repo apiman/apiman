@@ -67,7 +67,7 @@ public class ApiBean implements Serializable, Cloneable {
     @Column(name = "image_file_ref", updatable = true, nullable = true) // Reference to file storage (we'll ship with DB blob)
     @BlobReference
     private String image;
-    @Column(updatable=true, nullable=true, length=512)
+    @Column(name = "description", updatable=true, nullable=true, length=512)
     private String description;
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;

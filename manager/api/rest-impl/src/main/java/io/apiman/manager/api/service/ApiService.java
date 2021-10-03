@@ -330,6 +330,9 @@ public class ApiService implements DataAccessUtilMixin {
                 if (bean.getExtendedDescription() == null) {
                     updatedApi.setExtendedDescription(cloneSource.getExtendedDescription());
                 }
+                if (bean.getExposeInPortal() == null) {
+                    updatedApi.setExposeInPortal(cloneSource.isExposeInPortal());
+                }
                 newVersion = updateApiVersion(newVersion, updatedApi);
 
                 if (bean.getDefinitionUrl() == null) {
@@ -392,6 +395,7 @@ public class ApiService implements DataAccessUtilMixin {
         newVersion.setEndpointContentType(bean.getEndpointContentType());
         newVersion.setDefinitionUrl(bean.getDefinitionUrl());
         newVersion.setExtendedDescription(bean.getExtendedDescription());
+        newVersion.setExposeInPortal(bean.getExposeInPortal());
         if (bean.getPublicAPI() != null) {
             newVersion.setPublicAPI(bean.getPublicAPI());
         }

@@ -157,6 +157,7 @@ module Apiman {
                     name: api.name,
                     description: api.description,
                     initialVersion: '1.0',
+                    image: String,
                     endpoint: api.endpoint,
                     endpointType: (api.endpointType === 'ui') ? 'rest' : api.endpointType,
                     publicAPI: $scope.importInfo.isPublic,

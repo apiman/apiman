@@ -1166,25 +1166,22 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             String version) throws StorageException {
         List<ApiPlanSummaryBean> plans = new ArrayList<>();
 
-        try {
-            ApiVersionBean versionBean = getApiVersion(organizationId, apiId, version);
-            Set<ApiPlanBean> apiPlans = versionBean.getPlans();
-            if (apiPlans != null) {
-                for (ApiPlanBean spb : apiPlans) {
-                    PlanVersionBean planVersion = getPlanVersion(organizationId, spb.getPlanId(), spb.getVersion());
-                    ApiPlanSummaryBean summary = new ApiPlanSummaryBean();
-                    summary.setPlanId(planVersion.getPlan().getId());
-                    summary.setPlanName(planVersion.getPlan().getName());
-                    summary.setPlanDescription(planVersion.getPlan().getDescription());
-                    summary.setVersion(spb.getVersion());
-                    summary.setRequiresApproval(spb.isRequiresApproval());
-                    plans.add(summary);
-                }
+        ApiVersionBean versionBean = getApiVersion(organizationId, apiId, version);
+        Set<ApiPlanBean> apiPlans = versionBean.getPlans();
+        if (apiPlans != null) {
+            for (ApiPlanBean spb : apiPlans) {
+                PlanVersionBean planVersion = getPlanVersion(organizationId, spb.getPlanId(), spb.getVersion());
+                ApiPlanSummaryBean summary = new ApiPlanSummaryBean();
+                summary.setPlanId(planVersion.getPlan().getId());
+                summary.setPlanName(planVersion.getPlan().getName());
+                summary.setPlanDescription(planVersion.getPlan().getDescription());
+                summary.setVersion(spb.getVersion());
+                summary.setRequiresApproval(spb.isRequiresApproval());
+                summary.setExposeInPortal(spb.isExposeInPortal());
+                plans.add(summary);
             }
-            return plans;
-        } catch (StorageException e) {
-            throw e;
         }
+        return plans;
     }
 
     /**

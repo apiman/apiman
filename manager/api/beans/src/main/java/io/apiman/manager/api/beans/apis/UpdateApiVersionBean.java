@@ -44,6 +44,7 @@ public class UpdateApiVersionBean implements Serializable {
     private Boolean disableKeysStrip;
     private Set<ApiPlanBean> plans;
     private String extendedDescription;
+    private boolean exposeInPortal = false;
 
     /**
      * Constructor.
@@ -179,6 +180,15 @@ public class UpdateApiVersionBean implements Serializable {
 
     public UpdateApiVersionBean setExtendedDescription(String extendedDescription) {
         this.extendedDescription = extendedDescription;
+        return this;
+    }
+
+    public boolean isExposeInPortal() {
+        return exposeInPortal;
+    }
+
+    public UpdateApiVersionBean setExposeInPortal(boolean exposeInPortal) {
+        this.exposeInPortal = exposeInPortal;
         return this;
     }
 

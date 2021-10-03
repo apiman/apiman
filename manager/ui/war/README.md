@@ -1,17 +1,18 @@
-# APIMan UI
+# Apiman UI
 
-The APIMan frontend is built with TypeScript and AngularJS. NPM and TSD are used to manage dependencies.
+The Apiman frontend is built with TypeScript and AngularJS. Yarn/NPM and TSD are used to manage dependencies.
 
-#### Installation
+## Installation
 
 To install dependencies on the front-end, run the following:
- 
- `npm install`
- 
+
+`yarn install`
+
 This will install NPM dependencies and TS definitions (through an NPM `postinstall` script). No need to install any 
 dependencies globally!
 
-#### Configuration
+## Configuration
+
 * Make a copy of *apiman/config.js-SAMPLE* and name it *apiman/config.js*
 * Configure *config.js* to work with your API Manager
 
@@ -19,17 +20,16 @@ _Note_: when running the API Manager UI in gulp, we will use simple BASIC authen
 with the credentials configured in the *config.js* file you created above.  The *config.js*
 file is local to your machine and not checked into version control.
 
-#### Get Started
+## Get Started
 
 To build and run the app:
 
-`gulp`
+`npx gulp`
 
 The above script will also monitor for changes, and will rebuild the app accordingly. To see exactly which files are monitored, check the `watch` task in the Gulpfile, located in `/apiman/manager/ui/war/gulpfile.js`.
 
+## Contributing
 
-#### Contributing
+We gladly accept PRs and always appreciate it when community members want to contribute.
 
-We gladly accept PRs and always appreciate it when community members want to contribute. We use JIRA to track issues [here](https://issues.jboss.org/projects/APIMAN).
-
-If you'll be adding a new package to `package.json`, please note that we use a shrinkwrap file located at `./npm-shrinkwrap.json`. Add the package name and version to `package.json` using the exact version (i.e. `1.2.3` instead of `~1.2.3` or `^1.2.3`). You'll then need to rewrite the shrinkwrap file with `$ npm shrinkwrap` and commit the changes for **both** files. 
+If add a new package to `package.json`, ensure you update the yarn lock file.

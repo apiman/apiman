@@ -21,7 +21,7 @@ module Apiman {
         'ApimanTranslation',
         'ApimanPageLifecycle',
         'ApimanCurrentUser',
-        'ApimanModals'
+        'ApimanModals',
     ]);
 
     _module.config([
@@ -134,6 +134,9 @@ module Apiman {
                 })
                 .when(prefix + '/orgs/:org/apis/:api/:version/plans', {
                     templateUrl: path + 'api/api-plans.html'
+                })
+                .when(prefix + '/orgs/:org/apis/:api/:version/devportal', {
+                    templateUrl: path + 'api/api-devportal.html'
                 })
                 .when(prefix + '/orgs/:org/apis/:api/:version/policies', {
                     templateUrl: path + 'api/api-policies.html'

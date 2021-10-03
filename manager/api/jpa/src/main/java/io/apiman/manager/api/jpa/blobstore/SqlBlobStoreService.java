@@ -1,13 +1,21 @@
 package io.apiman.manager.api.jpa.blobstore;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.download.BlobDto;
+import io.apiman.manager.api.beans.download.BlobRef;
 import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.time.OffsetDateTime;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -34,6 +42,8 @@ import org.jetbrains.annotations.NotNull;
 @Transactional
 public class SqlBlobStoreService implements IBlobStore {
 
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SqlBlobStoreService.class);
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private BlobStoreRepository blobStoreRepository;
     private BlobMapper mapper;
 
@@ -46,12 +56,36 @@ public class SqlBlobStoreService implements IBlobStore {
     public SqlBlobStoreService() {
     }
 
+    @PostConstruct
+    public void runReaper() {
+        executor.scheduleAtFixedRate(() -> {
+            LOGGER.debug("Scheduled task reaping old unattached SQL blobs");
+            var anHourAgo = OffsetDateTime.now().minusHours(1);
+            blobStoreRepository.deleteUnattachedByAge(anHourAgo);
+        }, 1, 1, TimeUnit.HOURS);
+    }
+
+    @Override
+    public void attachToBlob(String id) {
+        if (id == null) {
+            return;
+        }
+        Preconditions.checkArgument(StringUtils.isNotBlank(id), "id name must not be blank");
+        blobStoreRepository.increaseRefCount(id);
+    }
+
+    @Override
+    public BlobRef storeBlob(@NotNull String name, @NotNull String mimeType, @NotNull FileBackedOutputStream fbos) {
+        return storeBlob(name, mimeType, fbos, 1);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public String storeBlob(@NotNull String name, @NotNull String mimeType, @NotNull FileBackedOutputStream fbos) {
+    public BlobRef storeBlob(@NotNull String name, @NotNull String mimeType, @NotNull FileBackedOutputStream fbos, int initRefCount) {
         Preconditions.checkArgument(StringUtils.isNotBlank(name), "Blob name must not be blank");
+        Preconditions.checkArgument(initRefCount >= 0, "Init ref count must be gte 0");
         String resourceId = calculateOid(name);
         try {
             long hash = hashBlob(fbos);
@@ -63,7 +97,7 @@ public class SqlBlobStoreService implements IBlobStore {
                  .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()))
                  .setHash(hash);
             // Returned ID might be different to the one we generated if we found a duplicate.
-            return deduplicateOrStore(name, mimeType, hash, blobEntity).getId();
+            return toBlobRef(deduplicateOrStore(name, mimeType, hash, blobEntity));
         } catch (StorageException e) {
             throw new RuntimeException(e);
         } catch (IOException ioe) {
@@ -75,7 +109,15 @@ public class SqlBlobStoreService implements IBlobStore {
      * {@inheritDoc}
      */
     @Override
-    public String storeBlob(@NotNull String name, @NotNull String mimeType, byte[] bytes) {
+    public BlobRef storeBlob(@NotNull String name, @NotNull String mimeType, byte[] bytes) {
+        return storeBlob(name, mimeType, bytes, 1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BlobRef storeBlob(@NotNull String name, @NotNull String mimeType, byte[] bytes, int initRefCount) {
         Preconditions.checkArgument(StringUtils.isNotBlank(name), "Blob name must not be blank");
         String resourceId = calculateOid(name);
         long hash = hashBlob(bytes);
@@ -87,7 +129,7 @@ public class SqlBlobStoreService implements IBlobStore {
              .setHash(hash);
         try {
             // Returned ID might be different to the one we generated if we found a duplicate.
-            return deduplicateOrStore(name, mimeType, hash, blobEntity).getId();
+            return toBlobRef(deduplicateOrStore(name, mimeType, hash, blobEntity));
         } catch (StorageException e) {
             throw new RuntimeException(e);
         }
@@ -154,7 +196,19 @@ public class SqlBlobStoreService implements IBlobStore {
             blobStoreRepository.create(candidate);
             return candidate;
         } else {
+            // Increase refcount, as we've "stored" this file again.
+            blobStoreRepository.increaseRefCount(duplicate.getId());
             return duplicate;
         }
+    }
+
+    private BlobRef toBlobRef(BlobEntity entity) {
+        return new BlobRef()
+                .setId(entity.getId())
+                .setName(entity.getName())
+                .setMimeType(entity.getMimeType())
+                .setHash(entity.getHash())
+                .setCreatedOn(entity.getCreatedOn())
+                .setModifiedOn(entity.getModifiedOn());
     }
 }

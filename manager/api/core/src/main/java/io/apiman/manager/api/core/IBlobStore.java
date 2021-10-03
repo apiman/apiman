@@ -1,6 +1,7 @@
 package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.download.BlobDto;
+import io.apiman.manager.api.beans.download.BlobRef;
 
 import com.google.common.io.FileBackedOutputStream;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,23 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface IBlobStore {
 
+    void attachToBlob(String id);
+
+    /**
+     * Store blob, a UID is returned that the caller should store to retrieve the file later.
+     *
+     * <p>Use this method if the file is large as it will spill over onto disk when it exceeds a reasonable threshold.
+     *
+     * <p>Any upload that is hash, name, and mime identical will be deduplicated.
+     *
+     * @param name descriptive name (not used for lookups)
+     * @param mimeType mime type of the file (useful when serving externally)
+     * @param blob the file to store
+     * @param initRefCount the initial reference counter value (0 refcount will be candidate for deletion)
+     * @return the UID of the file. Use it to look up the file.
+     */
+    BlobRef storeBlob(@NotNull String name, @NotNull String mimeType, @NotNull FileBackedOutputStream blob, int initRefCount);
+
     /**
      * Store blob, a UID is returned that the caller should store to retrieve the file later.
      *
@@ -31,7 +49,7 @@ public interface IBlobStore {
      * @param blob the file to store
      * @return the UID of the file. Use it to look up the file.
      */
-    String storeBlob(@NotNull String name, @NotNull String mimeType, @NotNull FileBackedOutputStream blob);
+    BlobRef storeBlob(@NotNull String name, @NotNull String mimeType, @NotNull FileBackedOutputStream blob);
 
     /**
      * Store blob, a UID is returned that the caller should store to retrieve the file later.
@@ -45,7 +63,22 @@ public interface IBlobStore {
      * @param blob the file to store
      * @return the UID of the file. Use it to look up the file.
      */
-    String storeBlob(@NotNull String name, @NotNull String mimeType, byte[] blob);
+    BlobRef storeBlob(@NotNull String name, @NotNull String mimeType, byte[] blob);
+
+    /**
+     * Store blob, a UID is returned that the caller should store to retrieve the file later.
+     *
+     * <p>Use this method if the file is smaller.
+     *
+     * <p>Any upload that is hash, name, and mime identical will be deduplicated.
+     *
+     * @param name descriptive name (not used for lookups)
+     * @param mimeType mime type of the file (useful when serving externally)
+     * @param blob the file to store
+     * @param initRefCount the initial reference counter value (0 refcount will be candidate for deletion)
+     * @return the UID of the file. Use it to look up the file.
+     */
+    BlobRef storeBlob(@NotNull String name, @NotNull String mimeType, byte[] blob, int initRefCount);
 
     /**
      * Get a blob by its ID (as provided when stored).

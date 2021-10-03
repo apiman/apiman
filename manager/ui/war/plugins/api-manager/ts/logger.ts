@@ -4,7 +4,7 @@ module ApimanLogger {
     export var _module = angular.module("ApimanLogger", []);
 
     var stringifyIfObject = function(candidate) {
-      return (typeof candidate === 'object') ? angular.toJson(candidate, true) : candidate;
+      return (typeof candidate === 'object' || Array.isArray(candidate) ) ? angular.toJson(candidate, true) : candidate;
     }
 
     var _formatMessage = function(theArgs) {
