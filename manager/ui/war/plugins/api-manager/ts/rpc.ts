@@ -49,6 +49,30 @@ module ApimanRPC {
                 });
         }]);
 
+    export interface ApiPlanSummaryBean {
+        planId: string;
+        planName: string;
+        planDescription: string;
+        version: string;
+        exposeInPortal: boolean;
+        requiresApproval: boolean;
+    }
+
+    export var OrgService2 = _module.factory('OrgService2', ['$http', 'Configuration', '$q',
+        ($http, Configuration, $q) => {
+            return {
+                getApiVersionPlans: (orgId: string, apiId: string, apiVersion: string): Promise<ApiPlanSummaryBean[]> => {
+                    return $http({
+                        method: 'GET',
+                        url: `${Configuration.api.endpoint}/organizations/${orgId}/apis/${apiId}/versions/${apiVersion}/plans`
+                    }).then(
+                        (success) => $q.resolve(success.data),
+                        (failure) => $q.reject(failure)
+                    );
+                }
+            }
+        }]);
+
     export var OrganizationSvcs = _module.factory('OrgSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/organizations/:organizationId/:entityType/:entityId/:versionsOrActivity/:version/:policiesOrActivity/:policyId/:policyChain';

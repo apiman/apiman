@@ -31,6 +31,7 @@ public class ApiPlanSummaryBean implements Serializable {
     private String planName;
     private String planDescription;
     private String version;
+    private Boolean exposeInPortal;
     private Boolean requiresApproval;
 
     /**
@@ -96,6 +97,19 @@ public class ApiPlanSummaryBean implements Serializable {
     public ApiPlanSummaryBean setRequiresApproval(Boolean requiresApproval) {
         this.requiresApproval = requiresApproval;
         return this;
+    }
+
+    public Boolean getExposeInPortal() {
+        return exposeInPortal;
+    }
+
+    public ApiPlanSummaryBean setExposeInPortal(Boolean exposeInPortal) {
+        this.exposeInPortal = exposeInPortal;
+        return this;
+    }
+
+    public Boolean getRequiresApproval() {
+        return requiresApproval;
     }
 
     /**

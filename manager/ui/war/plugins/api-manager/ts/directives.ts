@@ -1,4 +1,5 @@
 /// <reference path="../../includes.ts"/>
+/// <reference path="apimanPlugin.ts"/>
 
 module Apiman {
 
