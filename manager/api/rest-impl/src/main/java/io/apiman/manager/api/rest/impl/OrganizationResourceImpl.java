@@ -18,7 +18,6 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.util.Preconditions;
 import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiDefinitionType;
@@ -112,8 +111,6 @@ import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.exceptions.i18n.Messages;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
-import io.apiman.manager.api.rest.impl.util.MultipartHelper;
-import io.apiman.manager.api.rest.impl.util.MultipartHelper.MultipartUploadHolder;
 import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.ApiService;
@@ -137,8 +134,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  * REST layer for Organization
@@ -251,27 +246,30 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException {
         LOGGER.debug("Attempting to create client {0} in org {1}", bean, organizationId);
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
+        // TODO handle with interceptor?
+        // As an upload will have happened separately, we need to attach to the blob so that it doesn't get wiped out later.
+        blobStore.attachToBlob(bean.getImage());
         return clientService.createClient(organizationId, bean);
     }
 
-    @Override
-    public ClientBean createClient(String organizationId, MultipartFormDataInput multipartInput)
-         throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
-
-        Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'client' and 'image'");
-
-        // Try to do image first as it is probably more likely to fail.
-        MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
-        String blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
-
-        // Simply convert to NewApiBean and store reference.
-        InputPart clientPart = MultipartHelper.getRequiredPart(multipartInput, "client", MediaType.APPLICATION_JSON_TYPE);
-        // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
-        NewClientBean clientBean = clientPart.getBody(NewClientBean.class, null);
-        clientBean.setImage(blobRef);
-        return clientService.createClient(organizationId, clientBean);
-    }
+    // @Override
+    // public ClientBean createClient(String organizationId, MultipartFormDataInput multipartInput)
+    //      throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
+    //     securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
+    //
+    //     Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'client' and 'image'");
+    //
+    //     // Try to do image first as it is probably more likely to fail.
+    //     MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
+    //     BlobRef blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
+    //
+    //     // Simply convert to NewApiBean and store reference.
+    //     InputPart clientPart = MultipartHelper.getRequiredPart(multipartInput, "client", MediaType.APPLICATION_JSON_TYPE);
+    //     // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
+    //     NewClientBean clientBean = clientPart.getBody(NewClientBean.class, null);
+    //     clientBean.setImage(blobRef.getId());
+    //     return clientService.createClient(organizationId, clientBean);
+    // }
 
     @Override
     public ClientBean getClient(String organizationId, String clientId)
@@ -289,24 +287,23 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         clientService.updateClient(organizationId, clientId, bean);
     }
 
-    @Override
-    public void updateClient(String organizationId, String clientId, MultipartFormDataInput multipartInput)
-         throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
-        securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
-
-        Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'client' and 'image'");
-        // Try to do image first as it is probably more likely to fail.
-        MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
-        String blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
-
-        InputPart clientPart = MultipartHelper.getRequiredPart(multipartInput, "client", MediaType.APPLICATION_JSON_TYPE);
-        UpdateClientBean bean = clientPart.getBody(UpdateClientBean.class, null);
-        bean.setImage(blobRef);
-
-        LOGGER.debug("Attempting to update client {0} in org {1} with {2}", clientId, organizationId, bean);
-        clientService.updateClient(organizationId, clientId, bean);
-    }
-
+    // @Override
+    // public void updateClient(String organizationId, String clientId, MultipartFormDataInput multipartInput)
+    //      throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
+    //     securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
+    //
+    //     Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'client' and 'image'");
+    //     // Try to do image first as it is probably more likely to fail.
+    //     MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
+    //     BlobRef blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
+    //
+    //     InputPart clientPart = MultipartHelper.getRequiredPart(multipartInput, "client", MediaType.APPLICATION_JSON_TYPE);
+    //     UpdateClientBean bean = clientPart.getBody(UpdateClientBean.class, null);
+    //     bean.setImage(blobRef.getId());
+    //
+    //     LOGGER.debug("Attempting to update client {0} in org {1} with {2}", clientId, organizationId, bean);
+    //     clientService.updateClient(organizationId, clientId, bean);
+    // }
 
     @Override
     public void deleteClient(String organizationId, String clientId)
@@ -519,26 +516,28 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     public ApiBean createApi(String organizationId, NewApiBean bean)
         throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+        // As an upload will have happened separately, we need to attach to the blob so that it doesn't get wiped out later.
+        blobStore.attachToBlob(bean.getImage());
         return apiService.createApi(organizationId, bean);
     }
 
-    @Override
-    public ApiBean createApi(String organizationId, MultipartFormDataInput multipartInput)
-         throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
-        Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'api' and 'image'");
-
-        // Try to do image first as it is probably more likely to fail.
-        MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
-        String blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
-
-        // Simply convert to NewApiBean and store reference.
-        InputPart apiPart = MultipartHelper.getRequiredPart(multipartInput, "api", MediaType.APPLICATION_JSON_TYPE);
-        // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
-        NewApiBean api = apiPart.getBody(NewApiBean.class, null);
-        api.setImage(blobRef);
-        return apiService.createApi(organizationId, api);
-    }
+    // @Override
+    // public ApiBean createApi(String organizationId, MultipartFormDataInput multipartInput)
+    //      throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
+    //     securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+    //     Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'api' and 'image'");
+    //
+    //     // Try to do image first as it is probably more likely to fail.
+    //     MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
+    //     BlobRef blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
+    //
+    //     // Simply convert to NewApiBean and store reference.
+    //     InputPart apiPart = MultipartHelper.getRequiredPart(multipartInput, "api", MediaType.APPLICATION_JSON_TYPE);
+    //     // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
+    //     NewApiBean api = apiPart.getBody(NewApiBean.class, null);
+    //     api.setImage(blobRef.getId());
+    //     return apiService.createApi(organizationId, api);
+    // }
 
     @Override
     public List<ApiSummaryBean> listApis(String organizationId) throws OrganizationNotFoundException {
@@ -560,24 +559,24 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         apiService.updateApi(organizationId, apiId, bean);
     }
 
-    @Override
-    public void updateApi(String organizationId, String apiId, MultipartFormDataInput multipartInput)
-         throws ApiNotFoundException, NotAuthorizedException, IOException {
-        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
-
-        Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'api' and 'image'");
-
-        // Try to do image first as it is probably more likely to fail.
-        MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
-        String blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
-
-        // Simply convert to NewApiBean and store reference.
-        InputPart apiPart = MultipartHelper.getRequiredPart(multipartInput, "api", MediaType.APPLICATION_JSON_TYPE);
-        // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
-        UpdateApiBean update = apiPart.getBody(UpdateApiBean.class, null);
-        update.setImage(blobRef);
-        apiService.updateApi(organizationId, apiId, update);
-    }
+    // @Override
+    // public void updateApi(String organizationId, String apiId, MultipartFormDataInput multipartInput)
+    //      throws ApiNotFoundException, NotAuthorizedException, IOException {
+    //     securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+    //
+    //     Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'api' and 'image'");
+    //
+    //     // Try to do image first as it is probably more likely to fail.
+    //     MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
+    //     BlobRef blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
+    //
+    //     // Simply convert to NewApiBean and store reference.
+    //     InputPart apiPart = MultipartHelper.getRequiredPart(multipartInput, "api", MediaType.APPLICATION_JSON_TYPE);
+    //     // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
+    //     UpdateApiBean update = apiPart.getBody(UpdateApiBean.class, null);
+    //     update.setImage(blobRef.getId());
+    //     apiService.updateApi(organizationId, apiId, update);
+    // }
 
     @Override
     public void deleteApi(String organizationId, String apiId)

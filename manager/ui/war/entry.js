@@ -29,7 +29,7 @@ var angularScrollableTable = require('angular-scrollable-table/angular-scrollabl
 global.SwaggerUIBundle = require('swagger-ui-dist/swagger-ui-bundle.js');
 global.SwaggerClient = require('swagger-client');
 
-
 var sugar = require('sugar');
 var ngFileUpload = require('ng-file-upload');
 global.moment = require('moment/min/moment.min.js');
+global.editor = require('@toast-ui/editor'); // Markdown editor

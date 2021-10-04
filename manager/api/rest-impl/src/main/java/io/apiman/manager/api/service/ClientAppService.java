@@ -125,6 +125,8 @@ public class ClientAppService implements DataAccessUtilMixin {
         newClient.setCreatedBy(securityContext.getCurrentUser());
         newClient.setCreatedOn(new Date());
         newClient.setImage(bean.getImage());
+        // As an upload will have happened separately, we need to attach to the blob so that it doesn't get wiped out later.
+        blobstore.attachToBlob(bean.getImage());
 
         tryAction(() -> {
             // Store/persist the new client
@@ -199,6 +201,8 @@ public class ClientAppService implements DataAccessUtilMixin {
             if (AuditUtils.valueChanged(clientForUpdate.getImage(), bean.getImage())) {
                 auditData.addChange("image", clientForUpdate.getImage(), bean.getImage()); //$NON-NLS-1$
                 clientForUpdate.setImage(bean.getImage());
+                // As an upload will have happened separately, we need to attach to the blob so that it doesn't get wiped out later.
+                blobstore.attachToBlob(bean.getImage());
             }
             storage.updateClient(clientForUpdate);
             storage.createAuditEntry(AuditUtils.clientUpdated(clientForUpdate, auditData, securityContext));

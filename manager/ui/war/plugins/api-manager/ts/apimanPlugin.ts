@@ -21,7 +21,7 @@ module Apiman {
         'ApimanTranslation',
         'ApimanPageLifecycle',
         'ApimanCurrentUser',
-        'ApimanModals'
+        'ApimanModals',
     ]);
 
     _module.config([

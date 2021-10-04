@@ -4,10 +4,11 @@ import io.apiman.common.util.Preconditions;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.AbstractJpaStorage;
 
+import java.time.OffsetDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -82,5 +83,26 @@ public class BlobStoreRepository extends AbstractJpaStorage {
                            .using("name", name)
                            .using("mimeType", mimeType)
                            .load();
+    }
+
+    public void increaseRefCount(@NotNull String uid) {
+        Preconditions.requireNonBlank(uid, "uid must be non-blank");
+        getActiveEntityManager()
+            .createQuery("UPDATE BlobEntity b "
+                           + "SET b.references = b.references+1"
+                           + "WHERE b.id = :uid")
+            .setParameter("uid", uid)
+            .executeUpdate();
+    }
+
+    @Transactional // May be called by reapers running in pools, etc.
+    public void deleteUnattachedByAge(@NotNull OffsetDateTime timeThreshold) {
+        Objects.requireNonNull(timeThreshold, "time threshold must be non-null");
+        getActiveEntityManager()
+                .createQuery("DELETE FROM BlobEntity b "
+                                     + "WHERE b.createdOn < :timeThreshold "
+                                     + "AND b.references = 0")
+                .setParameter("timeThreshold", timeThreshold)
+                .executeUpdate();
     }
 }

@@ -56,7 +56,6 @@ import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
-import io.apiman.manager.api.beans.probes.ProbeBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
@@ -113,7 +112,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.swagger.annotations.Api;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
@@ -253,12 +251,12 @@ public interface IOrganizationResource {
             NewClientBean bean) throws OrganizationNotFoundException, ClientAlreadyExistsException,
             NotAuthorizedException, InvalidNameException;
 
-    @POST
-    @Path("{organizationId}/clients")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public ClientBean createClient(@PathParam("organizationId") String organizationId, @NotNull MultipartFormDataInput multipartInput)
-         throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException;
+    // @POST
+    // @Path("{organizationId}/clients")
+    // @Consumes(MediaType.MULTIPART_FORM_DATA)
+    // @Produces(MediaType.APPLICATION_JSON)
+    // public ClientBean createClient(@PathParam("organizationId") String organizationId, @NotNull MultipartFormDataInput multipartInput)
+    //      throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException;
 
 
     /**
@@ -339,14 +337,14 @@ public interface IOrganizationResource {
             @PathParam("clientId") String clientId, UpdateClientBean bean)
             throws ClientNotFoundException, NotAuthorizedException;
 
-    @PUT
-    @Path("{organizationId}/clients/{clientId}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public void updateClient(@PathParam("organizationId") String organizationId,
-         @PathParam("clientId") String clientId, @NotNull MultipartFormDataInput multipartInput)
-         throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException,
-                     InvalidNameException, IOException;
+    // @PUT
+    // @Path("{organizationId}/clients/{clientId}")
+    // @Consumes(MediaType.MULTIPART_FORM_DATA)
+    // @Produces(MediaType.APPLICATION_JSON)
+    // public void updateClient(@PathParam("organizationId") String organizationId,
+    //      @PathParam("clientId") String clientId, @NotNull MultipartFormDataInput multipartInput)
+    //      throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException,
+    //                  InvalidNameException, IOException;
     /**
      * Use this endpoint to create a new version of the Client.
      * @summary Create Client Version
@@ -558,8 +556,8 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ContractBean getContract(@PathParam("organizationId") String organizationId,
             @PathParam("clientId") String clientId, @PathParam("version") String version,
-            @PathParam("contractId") Long contractId) throws ClientNotFoundException,
-            ContractNotFoundException, NotAuthorizedException;
+            @PathParam("contractId") Long contractId)
+            throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException;
 
     /**
      * Probe a specific contract's policy state
@@ -569,7 +567,8 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response probeContractPolicy(@PathParam("organizationId") String organizationId,
                                     @PathParam("clientId") String clientId, @PathParam("version") String version,
-                                    @PathParam("contractId") Long contractId, @PathParam("policyId") long policyId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException;
+                                    @PathParam("contractId") Long contractId, @PathParam("policyId") long policyId)
+            throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get a list of all Contracts for an Client.
@@ -867,12 +866,12 @@ public interface IOrganizationResource {
             throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException,
             InvalidNameException;
 
-    @POST
-    @Path("{organizationId}/apis")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public ApiBean createApi(@PathParam("organizationId") String organizationId, @NotNull MultipartFormDataInput multipartInput)
-         throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException;
+    // @POST
+    // @Path("{organizationId}/apis")
+    // @Consumes(MediaType.MULTIPART_FORM_DATA)
+    // @Produces(MediaType.APPLICATION_JSON)
+    // public ApiBean createApi(@PathParam("organizationId") String organizationId, @NotNull MultipartFormDataInput multipartInput)
+    //      throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException;
 
     /**
      * Use this endpoint to get a list of all APIs in the Organization.
@@ -932,13 +931,13 @@ public interface IOrganizationResource {
     /**
      * As {@link #updateApi(String, String, UpdateApiBean)}, but with an image to represent the API.
      */
-    @PUT
-    @Path("{organizationId}/apis/{apiId}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public void updateApi(@PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
-         @NotNull @MultipartForm MultipartFormDataInput multipartInput)
-         throws ApiNotFoundException, NotAuthorizedException, IOException;
+    // @PUT
+    // @Path("{organizationId}/apis/{apiId}")
+    // @Consumes(MediaType.MULTIPART_FORM_DATA)
+    // @Produces(MediaType.APPLICATION_JSON)
+    // public void updateApi(@PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
+    //      @NotNull @MultipartForm MultipartFormDataInput multipartInput)
+    //      throws ApiNotFoundException, NotAuthorizedException, IOException;
 
     /**
      * Use this endpoint to delete an API.  There are multiple restrictions on this capability.  Specifically,

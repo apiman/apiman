@@ -125,7 +125,8 @@ public class ApiVersionBean implements Serializable, Cloneable {
     @Nationalized
     @Lob // <-- may not be necessary? // varchar -> nvarchar
     private String extendedDescription; // Markdown extended description
-
+    //@ElementCollection
+    //Set<ApiFeatureEntity> keyFeatures;
     /**
      * Constructor.
      */

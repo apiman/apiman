@@ -12,7 +12,6 @@ const pkg = require('./package.json');
 const s = require('underscore.string');
 const source = require('vinyl-source-stream');
 
-
 // ---------------------- Gulp Plugins ---->>
 const angularTemplatecache = require('gulp-angular-templatecache');
 const clean = require('gulp-clean');

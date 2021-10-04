@@ -45,6 +45,7 @@ public class NewApiVersionBean implements Serializable {
     private String definitionUrl;
     private ApiDefinitionType definitionType;
     private String extendedDescription;
+    private Boolean exposeInPortal;
 
     /**
      * Constructor.
@@ -222,6 +223,15 @@ public class NewApiVersionBean implements Serializable {
 
     public NewApiVersionBean setExtendedDescription(String extendedDescription) {
         this.extendedDescription = extendedDescription;
+        return this;
+    }
+
+    public Boolean getExposeInPortal() {
+        return exposeInPortal;
+    }
+
+    public NewApiVersionBean setExposeInPortal(Boolean exposeInPortal) {
+        this.exposeInPortal = exposeInPortal;
         return this;
     }
 }

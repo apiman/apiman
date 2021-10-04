@@ -2,7 +2,7 @@
 module ApimanRPC {
 
     export var _module = angular.module("ApimanRPC", ['ngResource', 'ApimanConfiguration']);
-    
+
     var formatEndpoint = function(endpoint, params) {
         return endpoint.replace(/:(\w+)/g, function(match, key) {
             return params[key] ? params[key] : (':' + key);
@@ -32,10 +32,10 @@ module ApimanRPC {
 
             return $resource(endpoint,
                 { entityType: '@entityType', secondaryType: '@secondaryType' }, {
-                update: {
-                  method: 'PUT'//, // this method issues a PUT request
-                    //interceptor : {responseError : resourceErrorResponseHandler }
-                }});
+                    update: {
+                        method: 'PUT'//, // this method issues a PUT request
+                        //interceptor : {responseError : resourceErrorResponseHandler }
+                    }});
         }]);
 
     export var UserSvcs = _module.factory('UserSvcs', ['$resource', 'Configuration',
@@ -58,9 +58,75 @@ module ApimanRPC {
         requiresApproval: boolean;
     }
 
-    export var OrgService2 = _module.factory('OrgService2', ['$http', 'Configuration', '$q',
+    export interface ApiGatewayBean {
+        gatewayId: string
+    }
+
+    export interface ApiPlanBean {
+        planId: string,
+        version: string,
+        exposeInPortal: boolean,
+        requiresApproval: boolean
+    }
+
+    export interface UpdateApiVersionBean {
+        endpoint: string;
+        endpointType: string; // enum EndpointType
+        endpointContentType: string // enum EndpointContentType;
+        endpointProperties: Map<string, string>,
+        gateways: ApiGatewayBean[], // Set<ApiGatewayBean>
+        parsePayload: boolean,
+        publicAPI: boolean,
+        disableKeysStrip: boolean,
+        plans: ApiPlanBean[],
+        extendedDescription: string,
+        exposeInPortal: boolean
+    }
+
+    export interface ApiVersionBean {
+        id: number,
+        //api: ApiBean,
+        status: string, // Enum ApiStatus
+        endpoint: string,
+        endpointType: string, //enum EndpointType
+        endpointContentType: string, // enum EndpointContentType
+        endpointProperties: Map<String, String>,
+        gateways: ApiGatewayBean[],
+        publicAPI: boolean,
+        //apiDefinition: ApiDefinitionBean
+        plans: ApiPlanBean[],
+        version: string,
+        createdBy: string,
+        createdOn: string,
+        modifiedBy: string,
+        modifiedOn: string,
+        publishedOn: string,
+        retiredOn: string,
+        definitionType: string // ApiDefinitionType
+        parsePayload: boolean,
+        disableKeysStrip: boolean,
+        definitionUrl: string,
+        exposeInPortal: boolean,
+        extendedDescription: string
+    }
+
+    export var DevPortalService = _module.factory('DevPortalService', ['$http', 'Configuration', '$q',
         ($http, Configuration, $q) => {
             return {
+                getApiVersion: (orgId: string, apiId: string, apiVersion: string):  Promise<ApiVersionBean> => {
+                    return $http.get(`${Configuration.api.endpoint}/organizations/${orgId}/apis/${apiId}/versions/${apiVersion}`)
+                    .then(
+                        (success) => $q.resolve(success.data),
+                        (failure) => $q.reject(failure)
+                    );
+                },
+                updateApiVersion: (orgId: string, apiId: string, apiVersion: string, bean: UpdateApiVersionBean): Promise<any> => {
+                    return $http({
+                        method: 'PUT',
+                        url: `${Configuration.api.endpoint}/organizations/${orgId}/apis/${apiId}/versions/${apiVersion}`,
+                        data: bean
+                    })
+                },
                 getApiVersionPlans: (orgId: string, apiId: string, apiVersion: string): Promise<ApiPlanSummaryBean[]> => {
                     return $http({
                         method: 'GET',
@@ -69,6 +135,13 @@ module ApimanRPC {
                         (success) => $q.resolve(success.data),
                         (failure) => $q.reject(failure)
                     );
+                },
+                updateApiVersionPlan: (orgId: string, apiId: string, apiVersion: string, update: ApiPlanBean): Promise<any> => {
+                    return $http({
+                        method: 'PUT',
+                        url: `${Configuration.api.endpoint}/organizations/${orgId}/apis/${apiId}/versions/${apiVersion}/plans`,
+                        data: update
+                    });
                 }
             }
         }]);
@@ -78,21 +151,21 @@ module ApimanRPC {
             var endpoint = Configuration.api.endpoint + '/organizations/:organizationId/:entityType/:entityId/:versionsOrActivity/:version/:policiesOrActivity/:policyId/:policyChain';
             return $resource(endpoint,
                 {
-                    organizationId: '@organizationId', 
-                    entityType: '@entityType', 
-                    entityId: '@entityId', 
-                    versionsOrActivity: '@versionsOrActivity', 
-                    version: '@version', 
-                    policiesOrActivity: '@policiesOrActivity', 
-                    policyId: '@policyId', 
+                    organizationId: '@organizationId',
+                    entityType: '@entityType',
+                    entityId: '@entityId',
+                    versionsOrActivity: '@versionsOrActivity',
+                    version: '@version',
+                    policiesOrActivity: '@policiesOrActivity',
+                    policyId: '@policyId',
                     chain: '@policyChain',
-                    
+
                     page: '@page',
                     count: '@count'
                 }, {
-                update: {
-                  method: 'PUT' // update issues a PUT request
-                }});
+                    update: {
+                        method: 'PUT' // update issues a PUT request
+                    }});
         }]);
 
     export var CurrentUserSvcs = _module.factory('CurrentUserSvcs', ['$resource', 'Configuration',
@@ -116,7 +189,7 @@ module ApimanRPC {
                     organizationId: '@organizationId',
                     entityType: '@entityType',
                     entityId: '@entityId',
-                    
+
                     page: '@page',
                     count: '@count'
                 });
@@ -128,20 +201,20 @@ module ApimanRPC {
             return $resource(endpoint,
                 {
                     user: '@user',
-                    
+
                     page: '@page',
                     count: '@count'
                 });
         }]);
 
-    
+
     export var PluginSvcs = _module.factory('PluginSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             return {
                 getPolicyForm: function(pluginId, policyDefId, handler, errorHandler) {
                     var endpoint = Configuration.api.endpoint + '/plugins/:pluginId/policyDefs/:policyDefId/form';
                     $resource(endpoint, { pluginId: '@pluginId', policyDefId: '@policyDefId' }).get(
-                        {pluginId: pluginId, policyDefId: policyDefId}, 
+                        {pluginId: pluginId, policyDefId: policyDefId},
                         handler, errorHandler);
                 }
             }
@@ -183,8 +256,8 @@ module ApimanRPC {
                         Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/definition',
                         { organizationId: orgId, apiId: apiId, version: version });
                     $http({
-                        method: 'GET', 
-                        url: endpoint, 
+                        method: 'GET',
+                        url: endpoint,
                         transformResponse: function(value) { return value; }
                     }).success(handler).error(errorHandler);
                 },
@@ -287,17 +360,17 @@ module ApimanRPC {
                     $resource(endpoint).get({}, handler, errorHandler);
                 },
                 importJson: function(file, progressHandler, handler, errorHandler) {
-	                var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/import', {});
-	                file.upload = Upload.http({
-	                    url: endpoint,
-	                    method: 'POST',
-	                    headers: {
-	                      'Content-Type': 'application/json',
-	                    },
-	                    data: file
-	                  });
-                  file.upload.then(handler, errorHandler);
-                  file.upload.progress(progressHandler);
+                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/import', {});
+                    file.upload = Upload.http({
+                        url: endpoint,
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        data: file
+                    });
+                    file.upload.then(handler, errorHandler);
+                    file.upload.progress(progressHandler);
                 }
             }
         }]);
@@ -307,7 +380,7 @@ module ApimanRPC {
             return {
                 getDownloadLink: function(downloadId) {
                     var endpoint = formatEndpoint(Configuration.api.endpoint + '/downloads/:downloadId', {
-                    	"downloadId" : downloadId
+                        "downloadId" : downloadId
                     });
                     return endpoint;
                 }
@@ -319,17 +392,17 @@ module ApimanRPC {
             return {
                 exportApiRegistryAsJson: function(orgId, clientId, version, handler, errorHandler) {
                     var endpoint = formatEndpoint(Configuration.api.endpoint + '/organizations/:organizationId/clients/:clientId/versions/:version/apiregistry/json?download=true', {
-                    	"organizationId" : orgId,
-                    	"clientId" : clientId,
-                    	"version" : version
+                        "organizationId" : orgId,
+                        "clientId" : clientId,
+                        "version" : version
                     });
                     $resource(endpoint).get({}, handler, errorHandler);
                 },
                 exportApiRegistryAsXml: function(orgId, clientId, version, handler, errorHandler) {
                     var endpoint = formatEndpoint(Configuration.api.endpoint + '/organizations/:organizationId/clients/:clientId/versions/:version/apiregistry/xml?download=true', {
-                    	"organizationId" : orgId,
-                    	"clientId" : clientId,
-                    	"version" : version
+                        "organizationId" : orgId,
+                        "clientId" : clientId,
+                        "version" : version
                     });
                     $resource(endpoint).get({}, handler, errorHandler);
                 }
