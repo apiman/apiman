@@ -10,7 +10,7 @@
   display: grid;
   justify-content: center;
   align-items: end;
-  grid-template-columns: repeat(auto-fit, 370px);
+  grid-template-columns: repeat(auto-fit, 360px);
   grid-column-gap: 32px;
   grid-row-gap: 32px;
 }
@@ -25,4 +25,8 @@
   #grid {
     grid-template-columns: repeat(auto-fit, 300px);
   }
+}
+
+#search-form-field{
+  width: 234px;
 }

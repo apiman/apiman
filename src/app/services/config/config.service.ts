@@ -18,7 +18,7 @@ export class ConfigService {
   constructor(private http: HttpClient) {}
 
   async readAndEvaluateConfig(): Promise<IConfig> {
-    this.config = <IConfig> await this.http.get('assets/config.json').toPromise();
+    this.config = <IConfig> (await this.http.get('assets/config.json').toPromise());
 
     try {
       JSON.stringify(this.config);

@@ -3,9 +3,7 @@
     <mat-panel-title>
       <div id="version-info">
         Version {{ api.version }} of {{ api.api.name }}
-        <strong *ngIf="isLatest" id="latest-tag" class="primary"
-          >[latest]</strong
-        >
+        <span *ngIf="isLatest" id="latest-tag" class="primary">[latest]</span>
       </div>
       <button
         mat-raised-button

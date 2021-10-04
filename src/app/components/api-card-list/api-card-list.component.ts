@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api/api.service';
 import { PageEvent } from '@angular/material/paginator';
-import {map, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { IApiSummary, ISearchCriteria } from '../../interfaces/ICommunication';
-import {ActivatedRoute, Router} from "@angular/router";
-import {IApiSummaryExt} from "../../interfaces/IApiSummaryExt";
-import {isApiDocAvailable} from "../../shared/utility";
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import { IApiSummaryExt } from '../../interfaces/IApiSummaryExt';
+import { isApiDocAvailable } from '../../shared/utility';
 
 @Component({
   selector: 'app-api-card-list',
@@ -49,38 +49,41 @@ export class ApiCardListComponent implements OnInit {
   }
 
   handleQueryParams(): void {
-    this.route.queryParams
-      .subscribe((params) => {
-        if (params.page) {
-          this.searchCriteria.paging.page = params.page;
-        } else {
-          this.searchCriteria.paging.page = 1;
-        }
-        if (params.pageSize) {
-          this.searchCriteria.paging.pageSize = params.pageSize;
-        } else {
-          this.searchCriteria.paging.pageSize = 8;
-        }
-        if (params.searchTerm) {
-          this.searchTerm = params.searchTerm.replaceAll('*', '');
-          this.searchCriteria.filters[0].value = params.searchTerm;
-        } else{
-          this.searchTerm = '';
-          this.searchCriteria.filters[0].value = '*';
-        }
-        this.getApiList();
-      })
+    this.route.queryParams.subscribe((params: Params) => {
+      if (params.page) {
+        this.searchCriteria.paging.page = params.page;
+      } else {
+        this.searchCriteria.paging.page = 1;
+      }
+      if (params.pageSize) {
+        this.searchCriteria.paging.pageSize = params.pageSize;
+      } else {
+        this.searchCriteria.paging.pageSize = 8;
+      }
+      if (params.searchTerm) {
+        this.searchTerm = params.searchTerm.replaceAll('*', '');
+        this.searchCriteria.filters[0].value = params.searchTerm;
+      } else {
+        this.searchTerm = '';
+        this.searchCriteria.filters[0].value = '*';
+      }
+      this.getApiList();
+    });
   }
 
   OnInput(event: any): void {
     this.searchTerm = event.target.value;
-    this.router.navigate(['/marketplace'],
-      {
-        queryParams: {
-          page: 1,
-          pageSize: this.searchCriteria.paging.pageSize,
-          searchTerm: `*${event.target.value}*`
-      }});
+    this.search(this.searchTerm);
+  }
+
+  public search(searchTerm: string) {
+    this.router.navigate(['/marketplace'], {
+      queryParams: {
+        page: 1,
+        pageSize: this.searchCriteria.paging.pageSize,
+        searchTerm: `*${searchTerm}*`
+      }
+    });
   }
 
   OnPageChange(event: PageEvent): void {

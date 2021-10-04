@@ -1,14 +1,17 @@
 <div *ngIf="listType === 'api'" class="align">
-  <mat-form-field>
+  <mat-form-field id="search-form-field">
     <mat-icon matPrefix color="primary">search</mat-icon>
     <input
       matInput
       type="search"
       [placeholder]="'MPLACE.SEARCH' | translate"
       class="search-input"
-      value="{{searchTerm}}"
+      [value]="searchTerm"
       (input)="OnInput($event)"
     />
+    <button *ngIf="searchTerm.length > 0" mat-button matSuffix mat-icon-button aria-label="Clear" color="primary" (click)="search('')">
+      <mat-icon>clear</mat-icon>
+    </button>
   </mat-form-field>
 </div>
 <ng-container *ngIf="apis.length > 0 && ready; else NoDataMsg">

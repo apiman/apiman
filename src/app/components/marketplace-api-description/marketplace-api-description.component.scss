@@ -14,12 +14,8 @@ mat-divider {
 mat-panel-title {
   font-size: 1.3em;
   justify-content: space-between;
-
-  #version-info {
-    margin-top: 0.3em;
-  }
   #latest-tag {
-    margin-left: 1em;
+    margin-left: 0.3rem;
   }
 }
 
@@ -71,4 +67,8 @@ mat-grid-list {
   border-bottom: 1px;
   border-bottom-style: solid;
   border-bottom-color: rgba(0,0,0,0.12);
+}
+
+.mat-expansion-panel-header.mat-expanded{
+  background-color: rgba(0, 0, 0, 0.02) !important;
 }
