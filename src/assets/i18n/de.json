@@ -12,7 +12,8 @@
     "APPLICATION": "Applikation",
     "NO_DATA_FOUND": "Keine Einträge gefunden",
     "CONFIRM": "Bestätigen",
-    "SIGNUP": "Anmeldung"
+    "SIGNUP": "Anmeldung",
+    "HOME": "Home"
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",

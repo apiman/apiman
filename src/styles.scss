@@ -1,6 +1,6 @@
 @use '~@angular/material' as mat;
 @import '~@angular/material/theming';
-@import './themes/custom';
+@import 'assets/themes/default';
 @include mat-core();
 
 /***** THEMING *****/

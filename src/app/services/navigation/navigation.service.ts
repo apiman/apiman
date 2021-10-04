@@ -41,6 +41,14 @@ export class NavigationService {
   }
 
   private initLinks(): INavigation {
+    if (this.configService.getShowHomeLink()) {
+      this.links.unshift({
+        name: this.translator.instant('COMMON.HOME'),
+        link: 'home',
+        openInNewTab: false,
+      });
+    }
+
     const navigationConfig = this.configService.getNavigation();
     navigationConfig.links = this.links.concat(navigationConfig.links);
 

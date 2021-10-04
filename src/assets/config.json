@@ -13,6 +13,7 @@
     "overlayColor": "rgba(200, 200, 200, 0.4)"
   },
   "navigation": {
+    "showHomeLink": true,
     "links": [
       {
         "name": "External Puppy Link",

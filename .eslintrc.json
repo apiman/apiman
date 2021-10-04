@@ -23,7 +23,9 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:prettier/recommended"
       ],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-unsafe-assignment": "off"
+      }
     },
     // NOTE: WE ARE NOT APPLYING PRETTIER IN THIS OVERRIDE, ONLY @ANGULAR-ESLINT/TEMPLATE
     {

@@ -8,10 +8,10 @@
   margin-top: 2%;
   margin-bottom: 2%;
   display: grid;
-  justify-content: space-around;
+  justify-content: center;
   align-items: end;
   grid-template-columns: repeat(auto-fit, 370px);
-  grid-column-gap: 16px;
+  grid-column-gap: 32px;
   grid-row-gap: 32px;
 }
 

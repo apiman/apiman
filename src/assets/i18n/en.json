@@ -12,7 +12,8 @@
     "APPLICATION": "Application",
     "NO_DATA_FOUND": "No data found",
     "CONFIRM": "Confirm",
-    "SIGNUP": "Signup"
+    "SIGNUP": "Signup",
+    "HOME": "Home"
   },
   "HOME": {
     "TITLE": "KoolBank Api Developer Portal",

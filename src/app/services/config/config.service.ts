@@ -13,12 +13,12 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class ConfigService {
-  config: any | IConfig;
+  config!: IConfig;
 
   constructor(private http: HttpClient) {}
 
-  async readAndEvaluateConfig(): Promise<any> {
-    this.config = await this.http.get('assets/config.json').toPromise();
+  async readAndEvaluateConfig(): Promise<IConfig> {
+    this.config = <IConfig> await this.http.get('assets/config.json').toPromise();
 
     try {
       JSON.stringify(this.config);
@@ -41,7 +41,7 @@ export class ConfigService {
     return { ...this.config.navigation };
   }
 
-  getAvailableLanguages(): string[]{
+  getAvailableLanguages(): string[] {
     return this.config.supportedLanguages;
   }
 
@@ -61,7 +61,11 @@ export class ConfigService {
     return { ...this.config.terms };
   }
 
-  setConfig(config: any) {
+  getShowHomeLink(): boolean {
+    return this.config.navigation.showHomeLink;
+  }
+
+  setConfig(config: IConfig) {
     this.config = config;
   }
 }

@@ -24,6 +24,7 @@ export interface IHero {
 export interface INavigation {
   links: ILink[];
   separator: string;
+  showHomeLink: boolean;
 }
 
 export interface IFooter {
