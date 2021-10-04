@@ -338,15 +338,9 @@ ALTER TABLE notification_category_preferences ADD CONSTRAINT FKaq4x0n83d83xevui0
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-27::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE developer_mappings ADD CONSTRAINT FKhl2dwc4m0kvisedxfb9crceqd FOREIGN KEY (developer_id) REFERENCES developers (id);
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-2::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_plans DROP PRIMARY KEY;
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-4::msavy (generated)
+CREATE TABLE KeyValueTag (id BIGINT AUTO_INCREMENT NOT NULL, key VARCHAR(255) NOT NULL, value VARCHAR(255) NOT NULL, CONSTRAINT KeyValueTagPK PRIMARY KEY (id));
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-3::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_plans ADD PRIMARY KEY (api_version_id, expose_in_portal, plan_id, requires_approval, version);
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-4::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE users DROP PRIMARY KEY;
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-5::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE users ADD CONSTRAINT usersPK PRIMARY KEY (username);
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-5::msavy (generated)
+CREATE TABLE api_tag (api_id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NOT NULL, tag_id BIGINT NOT NULL, CONSTRAINT PK_API_TAG PRIMARY KEY (api_id, org_id, tag_id));
 

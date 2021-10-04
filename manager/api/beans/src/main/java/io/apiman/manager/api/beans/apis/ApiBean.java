@@ -21,9 +21,9 @@ import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +32,8 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -69,6 +71,12 @@ public class ApiBean implements Serializable, Cloneable {
     private String image;
     @Column(name = "description", updatable=true, nullable=true, length=512)
     private String description;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "api_tag",
+            joinColumns = @JoinColumn(name = "api_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<KeyValueTag> tags = new HashSet<>();
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
     @Column(name = "created_on", updatable=false, nullable=false)
@@ -189,6 +197,23 @@ public class ApiBean implements Serializable, Cloneable {
 
     public void setImage(String imageFileRef) {
         this.image = imageFileRef;
+    }
+
+    public Set<KeyValueTag> getTags() {
+        return tags;
+    }
+
+    public ApiBean setTags(Set<KeyValueTag> tags) {
+        this.tags = tags;
+        return this;
+    }
+
+    public void addTag(KeyValueTag keyValueTag) {
+        this.tags.add(keyValueTag);
+    }
+
+    public void removeTagByKey(String key) {
+        this.tags.remove(new KeyValueTag().setKey(key));
     }
 
     /* (non-Javadoc)

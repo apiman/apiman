@@ -15,9 +15,11 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.download.BlobReference;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -38,6 +40,7 @@ public class UpdateApiBean implements Serializable {
     @JsonIgnore
     @BlobReference
     private String image;
+    private Set<KeyValueTagDto> tags;
 
     /**
      * Constructor.
@@ -65,6 +68,15 @@ public class UpdateApiBean implements Serializable {
 
     public UpdateApiBean setImage(String imageRef) {
         this.image = imageRef;
+        return this;
+    }
+
+    public Set<KeyValueTagDto> getTags() {
+        return tags;
+    }
+
+    public UpdateApiBean setTags(Set<KeyValueTagDto> tags) {
+        this.tags = tags;
         return this;
     }
 

@@ -157,16 +157,31 @@
     <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-27">
         <addForeignKeyConstraint baseColumnNames="developer_id" baseTableName="developer_mappings" constraintName="FKhl2dwc4m0kvisedxfb9crceqd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="developers" validate="true"/>
     </changeSet>
-    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-2">
-        <dropPrimaryKey tableName="api_plans"/>
+    <!-- tagging bits -->
+    <changeSet author="msavy (generated)" id="1633441143380-4">
+        <createTable tableName="KeyValueTag">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="KeyValueTagPK"/>
+            </column>
+            <column name="key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
-    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-3">
-        <addPrimaryKey columnNames="api_version_id, expose_in_portal, plan_id, requires_approval, version" tableName="api_plans"/>
-    </changeSet>
-    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-4">
-        <dropPrimaryKey tableName="users"/>
-    </changeSet>
-    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-5">
-        <addPrimaryKey columnNames="username" constraintName="usersPK" tableName="users"/>
+    <changeSet author="msavy (generated)" id="1633441143380-5">
+        <createTable tableName="api_tag">
+            <column name="api_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="org_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="tag_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

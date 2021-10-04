@@ -1,0 +1,38 @@
+package io.apiman.manager.api.beans.summary.mappers;
+
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
+
+/**
+ *
+ *
+ * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
+ */
+@Mapper
+public interface ApiMapper {
+    ApiMapper INSTANCE = Mappers.getMapper(ApiMapper.class);
+
+    @Mappings({
+        @Mapping(source = "organization.id", target = "organizationId"),
+        @Mapping(source = "organization.name", target = "organizationName")
+
+    })
+    ApiSummaryBean toSummary(ApiBean apiBean);
+
+    @Mappings({
+            @Mapping(source = "api.organization.id", target = "organizationId"),
+            @Mapping(source = "api.organization.name", target = "organizationName"),
+            @Mapping(source = "api.id", target = "id"),
+            @Mapping(source = "api.name", target = "name"),
+            @Mapping(source = "api.description", target = "description"),
+            @Mapping(source = "api.tags", target = "apiTags")
+    })
+    ApiVersionSummaryBean toSummary(ApiVersionBean apiBean);
+}

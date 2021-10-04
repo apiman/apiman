@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 02/10/2021, 18:24
+-- Ran at: 05/10/2021, 14:42
 -- Against: apiman@offline:postgresql?version=9.6.23&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/postgresql/databasechangelog.csv
 -- Liquibase version: 4.4.3
 -- *********************************************************************
@@ -334,31 +334,11 @@ ALTER TABLE notification_category_preferences ADD CONSTRAINT "FKaq4x0n83d83xevui
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-27::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE developer_mappings ADD CONSTRAINT "FKhl2dwc4m0kvisedxfb9crceqd" FOREIGN KEY (developer_id) REFERENCES developers (id);
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-2::msavy marc@blackparrotlabs.io (generated)
-DO $$ DECLARE constraint_name varchar;
-BEGIN
-  SELECT tc.CONSTRAINT_NAME into strict constraint_name
-    FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
-    WHERE CONSTRAINT_TYPE = 'PRIMARY KEY'
-      AND TABLE_NAME = 'api_plans' AND TABLE_SCHEMA = 'public';
-    EXECUTE 'alter table public.api_plans drop constraint ' || constraint_name;
-END $$;
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-4::msavy (generated)
+CREATE TABLE "KeyValueTag" (id BIGSERIAL NOT NULL, key VARCHAR(255) NOT NULL, value VARCHAR(255) NOT NULL, CONSTRAINT "KeyValueTagPK" PRIMARY KEY (id));
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-3::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_plans ADD PRIMARY KEY (api_version_id, expose_in_portal, plan_id, requires_approval, version);
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-4::msavy marc@blackparrotlabs.io (generated)
-DO $$ DECLARE constraint_name varchar;
-BEGIN
-  SELECT tc.CONSTRAINT_NAME into strict constraint_name
-    FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
-    WHERE CONSTRAINT_TYPE = 'PRIMARY KEY'
-      AND TABLE_NAME = 'users' AND TABLE_SCHEMA = 'public';
-    EXECUTE 'alter table public.users drop constraint ' || constraint_name;
-END $$;
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-5::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE users ADD CONSTRAINT "usersPK" PRIMARY KEY (username);
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-5::msavy (generated)
+CREATE TABLE api_tag (api_id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NOT NULL, tag_id BIGINT NOT NULL, CONSTRAINT api_tag_pkey PRIMARY KEY (api_id, org_id, tag_id));
 
 -- Manual bits
 CREATE OR REPLACE FUNCTION inttobool(num int, val bool) RETURNS bool AS '

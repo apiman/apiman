@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 02/10/2021, 18:24
+-- Ran at: 05/10/2021, 14:42
 -- Against: apiman@offline:mssql?version=15&caseSensitive=true&catalog=apiman&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/mssql/databasechangelog.csv
 -- Liquibase version: 4.4.3
 -- *********************************************************************
@@ -442,23 +442,11 @@ GO
 ALTER TABLE developer_mappings ADD CONSTRAINT FKhl2dwc4m0kvisedxfb9crceqd FOREIGN KEY (developer_id) REFERENCES developers (id)
 GO
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-2::msavy marc@blackparrotlabs.io (generated)
-DECLARE @sql [nvarchar](MAX)
-SELECT @sql = N'ALTER TABLE api_plans DROP CONSTRAINT ' + QUOTENAME([kc].[name]) FROM [sys].[key_constraints] AS [kc] WHERE [kc].[parent_object_id] = OBJECT_ID(N'api_plans') AND [kc].[type] = 'PK'
-EXEC sp_executesql @sql
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-4::msavy (generated)
+CREATE TABLE KeyValueTag (id bigint IDENTITY (1, 1) NOT NULL, [key] varchar(255) NOT NULL, value varchar(255) NOT NULL, CONSTRAINT KeyValueTagPK PRIMARY KEY (id))
 GO
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-3::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_plans ADD PRIMARY KEY (api_version_id, expose_in_portal, plan_id, requires_approval, version)
-GO
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-4::msavy marc@blackparrotlabs.io (generated)
-DECLARE @sql [nvarchar](MAX)
-SELECT @sql = N'ALTER TABLE users DROP CONSTRAINT ' + QUOTENAME([kc].[name]) FROM [sys].[key_constraints] AS [kc] WHERE [kc].[parent_object_id] = OBJECT_ID(N'users') AND [kc].[type] = 'PK'
-EXEC sp_executesql @sql
-GO
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-5::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE users ADD CONSTRAINT usersPK PRIMARY KEY (username)
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-5::msavy (generated)
+CREATE TABLE api_tag (api_id varchar(255) NOT NULL, org_id varchar(255) NOT NULL, tag_id bigint NOT NULL, CONSTRAINT PK_API_TAG PRIMARY KEY (api_id, org_id, tag_id))
 GO
 

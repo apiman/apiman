@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.download.BlobReference;
 
 import java.io.Serializable;
@@ -52,6 +53,7 @@ public class NewApiBean implements Serializable {
     private Set<ApiPlanBean> plans;
     private String definitionUrl;
     private ApiDefinitionType definitionType;
+    private Set<KeyValueTagDto> tags;
 
     /**
      * Constructor.
@@ -248,6 +250,15 @@ public class NewApiBean implements Serializable {
 
     public NewApiBean setExtendedDescription(String extendedDescription) {
         this.extendedDescription = extendedDescription;
+        return this;
+    }
+
+    public Set<KeyValueTagDto> getTags() {
+        return tags;
+    }
+
+    public NewApiBean setTags(Set<KeyValueTagDto> tags) {
+        this.tags = tags;
         return this;
     }
 }

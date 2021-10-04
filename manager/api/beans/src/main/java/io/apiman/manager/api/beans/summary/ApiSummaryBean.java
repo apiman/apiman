@@ -16,9 +16,11 @@
 package io.apiman.manager.api.beans.summary;
 
 import io.apiman.manager.api.beans.download.BlobReference;
+import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -43,6 +45,7 @@ public class ApiSummaryBean implements Serializable {
     private String name;
     private String description;
     private Date createdOn;
+    private Set<KeyValueTagDto> tags;
 
     /**
      * Constructor.
@@ -140,6 +143,15 @@ public class ApiSummaryBean implements Serializable {
 
     public ApiSummaryBean setImage(String imageFileRef) {
         this.image = imageFileRef;
+        return this;
+    }
+
+    public Set<KeyValueTagDto> getTags() {
+        return tags;
+    }
+
+    public ApiSummaryBean setTags(Set<KeyValueTagDto> tags) {
+        this.tags = tags;
         return this;
     }
 

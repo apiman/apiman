@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.core;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -201,6 +203,10 @@ public interface IStorageQuery {
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public List<ApiVersionSummaryBean> getApiVersions(String organizationId, String apiId) throws StorageException;
+
+    List<ApiBean> getApisByTagNameAndValue(String tagKey, String tagValue);
+
+    List<ApiBean> getApisByTagName(String tagKey);
 
     /**
      * Returns the API plans configured for the given API version.

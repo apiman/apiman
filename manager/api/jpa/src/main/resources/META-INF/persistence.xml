@@ -32,6 +32,7 @@
     <class>io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity</class>
     <class>io.apiman.manager.api.beans.notifications.NotificationTypeEntity</class>
     <class>io.apiman.manager.api.beans.notifications.NotificationEntity</class>
+    <class>io.apiman.manager.api.beans.apis.KeyValueTag</class>
 
   <properties>
       <property name="hibernate.show_sql" value="false" />

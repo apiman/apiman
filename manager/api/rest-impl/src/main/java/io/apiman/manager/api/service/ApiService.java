@@ -14,11 +14,14 @@ import io.apiman.manager.api.beans.apis.ApiPlanBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
+import io.apiman.manager.api.beans.apis.KeyValueTag;
 import io.apiman.manager.api.beans.apis.NewApiBean;
 import io.apiman.manager.api.beans.apis.NewApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
+import io.apiman.manager.api.beans.apis.dto.KeyValueTagMapper;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.audit.data.EntityUpdatedData;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
@@ -40,6 +43,7 @@ import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+import io.apiman.manager.api.beans.summary.mappers.ApiMapper;
 import io.apiman.manager.api.core.IApiValidator;
 import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.IStorage;
@@ -88,12 +92,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 
 import static java.util.stream.Collectors.toList;
 
@@ -114,17 +120,19 @@ public class ApiService implements DataAccessUtilMixin {
     private IGatewayLinkFactory gatewayLinkFactory;
     private PolicyService policyService;
     private IBlobStore blobStore;
+    private final ApiMapper apiMapper = ApiMapper.INSTANCE;
+    private final KeyValueTagMapper tagMapper = KeyValueTagMapper.INSTANCE;
 
     @Inject
     public ApiService(IStorage storage,
-         IStorageQuery query,
-         OrganizationService organizationService,
-         IApiValidator apiValidator,
-         ISecurityContext securityContext,
-         IDataEncrypter encrypter,
-         IGatewayLinkFactory gatewayLinkFactory,
-         PolicyService policyService,
-         IBlobStore blobStore) {
+                      IStorageQuery query,
+                      OrganizationService organizationService,
+                      IApiValidator apiValidator,
+                      ISecurityContext securityContext,
+                      IDataEncrypter encrypter,
+                      IGatewayLinkFactory gatewayLinkFactory,
+                      PolicyService policyService,
+                      IBlobStore blobStore) {
         this.storage = storage;
         this.query = query;
         this.organizationService = organizationService;
@@ -187,6 +195,7 @@ public class ApiService implements DataAccessUtilMixin {
         newApi.setCreatedOn(new Date());
         newApi.setCreatedBy(securityContext.getCurrentUser());
         newApi.setImage(bean.getImage());
+        newApi.setTags(tagMapper.toEntity(bean.getTags()));
 
         return tryAction(() -> {
             GatewaySummaryBean gateway = getSingularGateway();
@@ -273,6 +282,11 @@ public class ApiService implements DataAccessUtilMixin {
             if (AuditUtils.valueChanged(apiForUpdate.getImage(), bean.getImage())) {
                 auditData.addChange("image", apiForUpdate.getImage(), bean.getImage());
                 apiForUpdate.setImage(bean.getImage());
+            }
+            if (AuditUtils.valueChanged(tagMapper.toDto(apiForUpdate.getTags()), bean.getTags())) {
+                // TODO(msavy): add audit entry.
+                // auditData.addChange("tags", apiForUpdate.getTags(), bean.getTags());
+                apiForUpdate.setTags(tagMapper.toEntity(bean.getTags()));
             }
             storage.updateApi(apiForUpdate);
             storage.createAuditEntry(AuditUtils.apiUpdated(apiForUpdate, auditData, securityContext));
@@ -1036,6 +1050,36 @@ public class ApiService implements DataAccessUtilMixin {
                 entry.setValue(encrypter.encrypt(entry.getValue(), ctx));
             }
         }
+    }
+
+    /**
+     * Tag an API
+     */
+    public void addTag(@NotNull String orgId, @NotNull String apiId, @NotNull KeyValueTagDto tagDto) {
+        var kvTag = new KeyValueTag().setKey(tagDto.getKey()).setValue(tagDto.getValue());
+        ApiBean api = tryAction(() -> storage.getApi(orgId, apiId));
+        api.addTag(kvTag);
+        tryAction(() -> storage.updateApi(api));
+    }
+
+    /**
+     * Untag an API
+     */
+    public void removeTag(@NotNull String orgId, @NotNull String apiId, @NotNull String key) {
+        ApiBean api = tryAction(() -> storage.getApi(orgId, apiId));
+        api.removeTagByKey(key);
+        tryAction(() -> storage.updateApi(api));
+    }
+
+    /**
+     * Get the featured APIs
+     * @return list of featured ApiSummaries
+     */
+    public List<ApiSummaryBean> getFeaturedApis() {
+        return query.getApisByTagName("featured")
+                .stream()
+                .map(apiMapper::toSummary)
+                .collect(Collectors.toList());
     }
 
     // TODO(msavy): put with rest of DTOs when get to that phase
