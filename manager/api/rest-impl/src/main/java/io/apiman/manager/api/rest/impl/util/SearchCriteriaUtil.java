@@ -50,7 +50,7 @@ public final class SearchCriteriaUtil {
      * @param criteria the search criteria
      * @throws InvalidSearchCriteriaException when the search criteria is not valid
      */
-    public static final void validateSearchCriteria(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
+    public static void validateSearchCriteria(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
         if (criteria.getPaging() != null) {
             if (criteria.getPaging().getPage() < 1) {
                 throw new InvalidSearchCriteriaException(Messages.i18n.format("SearchCriteriaUtil.MissingPage")); //$NON-NLS-1$
