@@ -33,6 +33,10 @@ workflow:
       # Build v2 branch TODO remove
     - if: $CI_COMMIT_BRANCH == "Dev-Portal-2.0"
 
+docker build dev:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "Dev-Portal-2.0"'
+
 stages:
   - test
   - build
