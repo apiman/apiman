@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {IPolicyExt} from "../../interfaces/IPolicyExt";
+import {formatBytes} from "../../shared/utility";
 
 export interface PolicyHeaders {
   headerLimit: string;
@@ -60,7 +61,7 @@ export class PolicyCardComponent implements OnInit {
           this.checkHeaders(config, this.transferQuotaPolicyHeaders);
           this.icon = 'import_export';
           this.policyIdentifier = 'QUOTA';
-          limit = this.formatBytes(config.limit);
+          limit = formatBytes(config.limit);
           break;
         }
       }
@@ -76,24 +77,11 @@ export class PolicyCardComponent implements OnInit {
       defaultHeaders.headerLimit = config.headerLimit;
     }
     if (config.hasOwnProperty('headerRemaining')) {
-      defaultHeaders.headerLimit = config.headerRemaining;
+      defaultHeaders.headerRemaining = config.headerRemaining;
     }
     if (config.hasOwnProperty('headerReset')) {
-      defaultHeaders.headerLimit = config.headerReset;
+      defaultHeaders.headerReset = config.headerReset;
     }
     this.headers = defaultHeaders;
-  }
-
-  private formatBytes(bytes: number, decimals = 0): string {
-    // Thankfully taken from https://stackoverflow.com/a/18650828
-    if (bytes === 0) return '0 Bytes';
-
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 }

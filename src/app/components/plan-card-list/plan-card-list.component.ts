@@ -4,8 +4,10 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SignUpService } from "../../services/sign-up/sign-up.service";
 import {IApiPlanSummary, IApiVersion} from "../../interfaces/ICommunication";
 import {IPolicyExt} from "../../interfaces/IPolicyExt";
-import {flatMap} from "rxjs/internal/operators";
 import {PolicyService} from "../../services/policy/policy.service";
+import {switchMap} from "rxjs/operators";
+import {forkJoin} from "rxjs";
+import {flatArray} from "../../shared/utility";
 
 @Component({
   selector: 'app-plan-card-list',
@@ -52,28 +54,30 @@ export class PlanCardListComponent implements OnInit {
 
   private fetchPlansAndPolicies(): void {
     this.planService.getPlans(this.orgId, this.apiId, this.apiVersion.version).pipe(
-      flatMap((apiPlanSummaries: IApiPlanSummary[]) => {
+      switchMap((apiPlanSummaries: IApiPlanSummary[]) => {
         this.plans = apiPlanSummaries;
-        return apiPlanSummaries
-      }),
-      flatMap((apiPlanSummary: IApiPlanSummary) => {
-        return this.policyService.getPlanPolicies(this.orgId, apiPlanSummary.planId, apiPlanSummary.version)
+        return forkJoin(apiPlanSummaries.map(apiPlanSummary => {
+          return this.policyService.getPlanPolicies(this.orgId, apiPlanSummary.planId, apiPlanSummary.version)
+        }))
       })
-    ).subscribe((extendedPolicy: IPolicyExt) => {
-      this.extractPolicy(extendedPolicy);
+    ).subscribe((nestedExtendedPolicies: IPolicyExt[][]) => {
+      const extendedPolicies: IPolicyExt[] = flatArray(nestedExtendedPolicies);
+      this.extractPolicies(extendedPolicies);
     });
-    this.policyService.getApiPolicies(this.orgId, this.apiId, this.apiVersion.version).subscribe((extendedApiPolicy: IPolicyExt) => {
-      this.apiPolicies.push(extendedApiPolicy);
+    this.policyService.getApiPolicies(this.orgId, this.apiId, this.apiVersion.version).subscribe((extendedApiPolicies: IPolicyExt[]) => {
+      this.apiPolicies = this.apiPolicies.concat(extendedApiPolicies);
     })
   }
 
-  private extractPolicy(policyExt: IPolicyExt) {
-    const planIdVersionMapped = policyExt.planId + ':' + policyExt.planVersion;
-    const foundPolicies = this.planPoliciesMap.get(planIdVersionMapped);
-    if (foundPolicies) {
-      this.planPoliciesMap.set(planIdVersionMapped, foundPolicies.concat(policyExt))
-    } else {
-      this.planPoliciesMap.set(planIdVersionMapped, [policyExt]);
-    }
+  private extractPolicies(extendedPolicies: IPolicyExt[]) {
+    extendedPolicies.forEach(extendedPolicy => {
+      const planIdVersionMapped = extendedPolicy.planId + ':' + extendedPolicy.planVersion;
+      const foundPolicies = this.planPoliciesMap.get(planIdVersionMapped);
+      if (foundPolicies) {
+        this.planPoliciesMap.set(planIdVersionMapped, foundPolicies.concat(extendedPolicy))
+      } else {
+        this.planPoliciesMap.set(planIdVersionMapped, [extendedPolicy]);
+      }
+    })
   }
 }

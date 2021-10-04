@@ -1,12 +1,9 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import {
-  IApiVersionEndpointSummary,
-  IContract,
-} from '../../interfaces/ICommunication';
 import { BackendService } from '../../services/backend/backend.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import {ISignUpInfo} from "../../interfaces/ISignUpInfo";
 import {SignUpService} from "../../services/sign-up/sign-up.service";
+import {IContractExt} from "../../interfaces/IContractExt";
 
 @Component({
   selector: 'app-my-apps-use-api',
@@ -14,7 +11,7 @@ import {SignUpService} from "../../services/sign-up/sign-up.service";
   styleUrls: ['./my-apps-use-api.component.scss'],
 })
 export class MyAppsUseApiComponent implements OnInit, OnChanges {
-  @Input() contract?: IContract;
+  @Input() contract?: IContractExt;
   newContractDetails: ISignUpInfo;
 
   mockText =
@@ -54,18 +51,7 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
     if (this.contract) {
       this.disableButtons = false;
       this.apiKey = this.contract!.client.apikey;
-      this.backend
-        .getManagedApiEndpoint(
-          this.contract.api.api.organization.id,
-          this.contract.api.api.id,
-          this.contract.api.version
-        )
-        .subscribe(
-          (endpoint: IApiVersionEndpointSummary) => {
-            this.endpoint = endpoint.managedEndpoint;
-          },
-          (error) => this.snackbar.showErrorSnackBar(error.message, error)
-        );
+      this.endpoint = this.contract.managedEndpoint;
     } else {
       this.disableButtons = true;
       this.apiKey = this.previewText.apiKey;

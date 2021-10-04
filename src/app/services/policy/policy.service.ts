@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import {flatMap} from "rxjs/internal/operators";
 import {IPolicy} from "../../interfaces/ICommunication";
 import {IPolicySummaryExt} from "../../interfaces/IPolicySummaryExt";
 import {IPolicyExt} from "../../interfaces/IPolicyExt";
-import {map, tap} from "rxjs/operators";
+import {map, mergeMap, tap} from "rxjs/operators";
 import {BackendService} from "../backend/backend.service";
-import {Observable} from "rxjs";
+import {forkJoin, Observable, of} from "rxjs";
+import {formatBytes} from "../../shared/utility";
 
 @Injectable({
   providedIn: 'root'
@@ -14,24 +14,30 @@ export class PolicyService {
 
   constructor(private backendService: BackendService) {}
 
-  public getPlanPolicies(orgId: string, planId: string, planVersion: string): Observable<IPolicyExt> {
+  public getPlanPolicies(orgId: string, planId: string, planVersion: string): Observable<IPolicyExt[]> {
     return this.getExtendedPolicySummaries(orgId, planId, planVersion).pipe(
-      flatMap((policySummaries: IPolicySummaryExt[]) => {
-        return policySummaries
-      }),
-      flatMap((policySummary: IPolicySummaryExt) => {
-        return this.getExtendedPlanPolicy(orgId, policySummary);
+      mergeMap((extendedPolicySummaries: IPolicySummaryExt[]) => {
+        if (extendedPolicySummaries.length > 0){
+          return forkJoin(extendedPolicySummaries.map(policySummary => {
+            return this.getExtendedPlanPolicy(orgId, policySummary)
+          }))
+        } else {
+         return of([] as IPolicyExt[])
+        }
       })
     )
   };
 
-  public getApiPolicies(orgId: string, apiId: string, apiVersion: string): Observable<IPolicyExt> {
+  public getApiPolicies(orgId: string, apiId: string, apiVersion: string): Observable<IPolicyExt[]> {
     return this.backendService.getApiPolicySummaries(orgId, apiId, apiVersion).pipe(
-      flatMap((apiPolicySummaries: IPolicySummaryExt[]) => {
-        return apiPolicySummaries;
-      }),
-      flatMap((apiPolicySummary: IPolicySummaryExt) => {
-        return this.getExtendedApiPolicy(orgId, apiId, apiVersion, apiPolicySummary.id.toString());
+      mergeMap((extendedPolicySummaries: IPolicySummaryExt[]) => {
+        if (extendedPolicySummaries.length > 0) {
+          return forkJoin(extendedPolicySummaries.map(extendedPolicySummary => {
+            return this.getExtendedApiPolicy(orgId, apiId, apiVersion, extendedPolicySummary.id.toString())
+          }))
+        } else {
+          return of([] as IPolicyExt[])
+        }
       })
     )
   }
@@ -67,7 +73,7 @@ export class PolicyService {
       }
       case 'TransferQuotaPolicy': {
         extendedPolicy.shortName = 'Quota'
-        extendedPolicy.shortDescription = `${this.formatBytes(policyConfig.limit)} per ${policyConfig.period}`
+        extendedPolicy.shortDescription = `${formatBytes(policyConfig.limit)} per ${policyConfig.period}`
         break;
       }
     }
@@ -94,18 +100,5 @@ export class PolicyService {
         })
       })
     )
-  }
-
-  private formatBytes(bytes: number, decimals = 0): string {
-    // Thankfully taken from https://stackoverflow.com/a/18650828
-    if (bytes === 0) return '0 Bytes';
-
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 }

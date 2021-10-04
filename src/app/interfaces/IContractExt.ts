@@ -7,6 +7,7 @@ import {IPolicyExt} from "./IPolicyExt";
  * Further it extends the contract object with policies
  */
 export interface IContractExt extends IContract {
+  managedEndpoint: string;
   section: 'summary' | 'use-api' | 'policies' | 'manage-api';
   policies: IPolicyExt[];
 }

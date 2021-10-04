@@ -240,11 +240,9 @@ export class BackendService {
     clientId: string,
     versionName: string,
     contractId: number
-  ): Observable<Array<IContract>> {
+  ): Observable<IContract> {
     const path = `/organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts/${contractId}`;
-    return this.http.get(this.generateUrl(path)) as Observable<
-      Array<IContract>
-    >;
+    return this.http.get<IContract>(this.generateUrl(path)) ;
   }
 
   public getManagedApiEndpoint(

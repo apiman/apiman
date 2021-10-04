@@ -14,10 +14,11 @@ import {
   IContract,
   IContractSummary,
 } from '../../interfaces/ICommunication';
-import { flatMap } from 'rxjs/internal/operators';
 import { IContractExt } from '../../interfaces/IContractExt';
 import {PolicyService} from "../../services/policy/policy.service";
-import {IPolicyExt} from "../../interfaces/IPolicyExt";
+import {map, switchMap} from "rxjs/operators";
+import {forkJoin} from "rxjs";
+import {flatArray} from "../../shared/utility";
 
 @Component({
   selector: 'app-my-apps',
@@ -43,45 +44,62 @@ export class MyAppsComponent implements OnInit {
     this.setUpHero();
     this.fetchContracts();
   }
-
+  // Detailed explanation of request chain: https://stackoverflow.com/questions/69421293/how-to-chain-requests-correctly-with-rxjs
   private fetchContracts() {
     this.backend
       .getEditableClients()
       .pipe(
-        flatMap((clients: IClientSummaryBean[]) => {
-          return clients;
+        switchMap((clientSummaries: IClientSummaryBean[]) => {
+          return forkJoin(clientSummaries.map(clientSummary => {
+            return this.backend.getClientVersions(
+              clientSummary.organizationId,
+              clientSummary.id
+            );
+          }))
         }),
-        flatMap((clientSum: IClientSummaryBean) => {
-          return this.backend.getClientVersions(
-            clientSum.organizationId,
-            clientSum.id
+        switchMap((nestedClientVersionSummaries: IClientVersionSummaryBean[][])=> {
+          const clientVersionSummaries: IClientVersionSummaryBean[] = flatArray(nestedClientVersionSummaries)
+          return forkJoin(clientVersionSummaries.map(clientVersionSummary => {
+              return this.backend.getContracts(
+                clientVersionSummary.organizationId,
+                clientVersionSummary.id,
+                clientVersionSummary.version
+              );
+            })
           );
         }),
-        flatMap((versions: IClientVersionSummaryBean[]) => {
-          return versions;
+        switchMap((nestedContractSummaries: IContractSummary[][]) => {
+          const contractSummaries: IContractSummary[] = flatArray(nestedContractSummaries)
+          return forkJoin(contractSummaries.map(contractSummary => {
+            return this.backend.getContract(
+              contractSummary.clientOrganizationId,
+              contractSummary.clientId,
+              contractSummary.clientVersion,
+              contractSummary.contractId
+            );
+          }))
         }),
-        flatMap((versionSum: IClientVersionSummaryBean) => {
-          return this.backend.getContracts(
-            versionSum.organizationId,
-            versionSum.id,
-            versionSum.version
-          );
-        }),
-        flatMap((contracts: IContractSummary[]) => {
-          return contracts;
-        }),
-        flatMap((contractSum: IContractSummary) => {
-          return this.backend.getContract(
-            contractSum.clientOrganizationId,
-            contractSum.clientId,
-            contractSum.clientVersion,
-            contractSum.contractId
-          );
+        switchMap((contracts: IContract[]) => {
+          return forkJoin(contracts.map(contract => {
+            const orgId = contract.plan.plan.organization.id;
+            return forkJoin([
+              this.policyService.getPlanPolicies(orgId, contract.plan.plan.id, contract.plan.version),
+              this.policyService.getApiPolicies(orgId, contract.api.api.id, contract.api.version),
+              this.backend.getManagedApiEndpoint(orgId, contract.api.api.id, contract.api.version)
+            ]).pipe(
+              map(([planPolicies, apiPolicies,endpoint]) => {
+                return {
+                  ...contract,
+                  policies: planPolicies.concat(apiPolicies),
+                  section: 'summary',
+                  managedEndpoint: endpoint.managedEndpoint
+                } as IContractExt;
+              })
+            )
+          }))
         })
-      )
-      .subscribe((contracts: IContract[]) => {
-        const extended = contracts as IContractExt[];
-        this.extractContracts(extended);
+      ).subscribe((test) => {
+        this.extractContracts(test)
       });
   }
 
@@ -100,8 +118,6 @@ export class MyAppsComponent implements OnInit {
         clientNameVersionMapped
       );
 
-      this.extendContract(contract);
-
       if (foundContracts) {
         const contractIfPartOfArray = foundContracts.find((c: IContractExt) => {
           return c.id === contract.id;
@@ -117,23 +133,8 @@ export class MyAppsComponent implements OnInit {
         );
       } else {
         this.clientContractsMap.set(clientNameVersionMapped, [contract]);
-        console.log('test')
       }
     });
-  }
-
-
-
-  /**
-   * Extends the ContractBean object with additional values
-   * @param contract
-   * @private
-   */
-  private extendContract(contract: IContract): IContractExt {
-    const contractExt = contract as IContractExt;
-    contractExt.section = 'summary';
-    contractExt.policies = this.getPolicies(contractExt);
-    return contractExt;
   }
 
   private setUpHero() {
@@ -141,21 +142,6 @@ export class MyAppsComponent implements OnInit {
       title: this.translator.instant('APPS.TITLE'),
       subtitle: this.translator.instant('APPS.SUBTITLE'),
     });
-  }
-
-  private getPolicies(extendedContract: IContractExt): IPolicyExt[] {
-    const policies: IPolicyExt[] = [];
-    this.policyService.getPlanPolicies(extendedContract.plan.plan.organization.id,
-      extendedContract.plan.plan.id,
-      extendedContract.plan.version).subscribe((extendedPolicy: IPolicyExt) => {
-        policies.push(extendedPolicy);
-    });
-    this.policyService.getApiPolicies(extendedContract.api.api.organization.id,
-      extendedContract.api.api.id,
-      extendedContract.api.version).subscribe((extendedPolicy: IPolicyExt) => {
-        policies.push(extendedPolicy);
-    })
-    return policies;
   }
 
   setSection(api: any, sectionName: ISection) {
