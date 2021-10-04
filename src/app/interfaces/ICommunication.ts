@@ -1,14 +1,5 @@
 import { statusColorMap } from './IStatus';
 
-export interface IClientSummaryBean {
-  organizationId: string;
-  organizationName: string;
-  id: string;
-  name: string;
-  description: string;
-  numContracts: number;
-}
-
 export interface IAction {
   type:
     | 'publishAPI'
@@ -963,34 +954,4 @@ export interface IUser {
 export interface IUpdateUser {
   fullName: string;
   email: string;
-}
-
-export interface IOrganizationBean {
-  id: string;
-  name: string;
-  description: string;
-  createdBy: string;
-  createdOn: string;
-  modifiedBy: string;
-  modifiedOn: string;
-}
-
-export interface IClientBean {
-  organization: IOrganizationBean;
-  id: string;
-  name: string;
-  description: string;
-  createdBy: string;
-  createdOn: string;
-}
-
-export interface IClientVersionSummaryBean {
-  name: string;
-  id: string;
-  version: string;
-  description: string;
-  status: 'Created' | 'Ready' | 'Registered' | 'Retired';
-  apiKey: string;
-  organizationId: string;
-  organizationName: string;
 }

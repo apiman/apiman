@@ -9,8 +9,7 @@ import {
   statusColorMap,
 } from '../../interfaces/IStatus';
 import {
-  IClientSummaryBean,
-  IClientVersionSummaryBean,
+  IClientSummary, IClientVersionSummary,
   IContract,
   IContractSummary,
 } from '../../interfaces/ICommunication';
@@ -55,7 +54,7 @@ export class MyAppsComponent implements OnInit {
     this.backend
       .getEditableClients()
       .pipe(
-        switchMap((clientSummaries: IClientSummaryBean[]) => {
+        switchMap((clientSummaries: IClientSummary[]) => {
           return forkJoin(clientSummaries.map(clientSummary => {
             return this.backend.getClientVersions(
               clientSummary.organizationId,
@@ -63,8 +62,8 @@ export class MyAppsComponent implements OnInit {
             );
           }))
         }),
-        switchMap((nestedClientVersionSummaries: IClientVersionSummaryBean[][])=> {
-          const clientVersionSummaries: IClientVersionSummaryBean[] = flatArray(nestedClientVersionSummaries)
+        switchMap((nestedClientVersionSummaries: IClientVersionSummary[][])=> {
+          const clientVersionSummaries: IClientVersionSummary[] = flatArray(nestedClientVersionSummaries)
           return forkJoin(clientVersionSummaries.map(clientVersionSummary => {
               return this.backend.getContracts(
                 clientVersionSummary.organizationId,

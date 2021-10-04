@@ -7,7 +7,7 @@ import {
   IApi, IApiPlanSummary,
   IApiVersion,
   IApiVersionEndpointSummary,
-  IApiVersionSummary,
+  IApiVersionSummary, IClientSummary, IClientVersionSummary,
   IContract,
   IContractSummary,
   INewContract,
@@ -16,90 +16,7 @@ import {
   ISearchCriteria,
   ISearchResultsApiSummary,
 } from '../../interfaces/ICommunication';
-import {
-  IClientSummaryBean,
-  IClientVersionSummaryBean,
-} from '../../interfaces/ICommunication';
 import {IPolicySummaryExt} from "../../interfaces/IPolicySummaryExt";
-
-export interface ApiSummaryBean {
-  organizationId?: string;
-  organizationName?: string;
-  id?: string;
-  name?: string;
-  description?: string;
-
-  /** @format date-time */
-  createdOn?: string;
-}
-
-export interface ApiBean {
-  organization?: OrganizationBean;
-  id?: string;
-  name?: string;
-  description?: string;
-  createdBy?: string;
-
-  /** @format date-time */
-  createdOn?: string;
-
-  /** @format int32 */
-  numPublished?: number;
-}
-
-export interface ApiVersionSummaryBean {
-  organizationId?: string;
-  organizationName?: string;
-  id?: string;
-  name?: string;
-  description?: string;
-  status?: 'Created' | 'Ready' | 'Published' | 'Retired';
-  version?: string;
-  publicAPI?: boolean;
-}
-
-export interface OrganizationBean {
-  id?: string;
-  name?: string;
-  description?: string;
-  createdBy?: string;
-
-  /** @format date-time */
-  createdOn?: string;
-  modifiedBy?: string;
-
-  /** @format date-time */
-  modifiedOn?: string;
-}
-
-export interface SearchResultsBeanApiSummaryBean {
-  beans: ApiSummaryBean[];
-
-  /** @format int32 */
-  totalSize: number;
-}
-
-export interface SearchCriteriaBean {
-  filters: SearchCriteriaFilterBean[];
-  orderBy?: OrderByBean;
-  paging: PagingBean;
-}
-
-export interface SearchCriteriaFilterBean {
-  name?: string;
-  value?: string;
-  operator?: 'bool_eq' | 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'like';
-}
-
-export interface OrderByBean {
-  ascending?: boolean;
-  name?: string;
-}
-
-export interface PagingBean {
-  page?: number;
-  pageSize?: number;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -207,21 +124,17 @@ export class BackendService {
     ) as Observable<IContract>;
   }
 
-  public getEditableClients(): Observable<Array<IClientSummaryBean>> {
+  public getEditableClients(): Observable<IClientSummary[]> {
     const path = `users/${this.userName}/editable-clients`;
-    return this.http.get(this.generateUrl(path)) as Observable<
-      Array<IClientSummaryBean>
-    >;
+    return this.http.get<IClientSummary[]>(this.generateUrl(path));
   }
 
   public getClientVersions(
     organizationId: string,
     clientId: string
-  ): Observable<Array<IClientVersionSummaryBean>> {
+  ): Observable<IClientVersionSummary[]> {
     const path = `organizations/${organizationId}/clients/${clientId}/versions`;
-    return this.http.get(this.generateUrl(path)) as Observable<
-      Array<IClientVersionSummaryBean>
-    >;
+    return this.http.get<IClientVersionSummary[]>(this.generateUrl(path));
   }
 
   public getContracts(
@@ -230,9 +143,7 @@ export class BackendService {
     versionName: string
   ): Observable<IContractSummary[]> {
     const path = `organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts`;
-    return this.http.get(this.generateUrl(path)) as Observable<
-      IContractSummary[]
-    >;
+    return this.http.get<IContractSummary[]>(this.generateUrl(path));
   }
 
   public getContract(
@@ -251,9 +162,9 @@ export class BackendService {
     versionName: string
   ): Observable<IApiVersionEndpointSummary> {
     const path = `/organizations/${organizationId}/apis/${apiId}/versions/${versionName}/endpoint`;
-    return this.http.get(
+    return this.http.get<IApiVersionEndpointSummary>(
       this.generateUrl(path)
-    ) as Observable<IApiVersionEndpointSummary>;
+    );
   }
 
   public getApiVersionPlans(organizationId: string,
