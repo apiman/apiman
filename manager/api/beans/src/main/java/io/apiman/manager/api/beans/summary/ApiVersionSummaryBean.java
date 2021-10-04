@@ -16,9 +16,10 @@
 package io.apiman.manager.api.beans.summary;
 
 import io.apiman.manager.api.beans.apis.ApiStatus;
+import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 
 import java.io.Serializable;
-
+import java.util.Set;
 
 /**
  * A summary of an individual API version.
@@ -39,6 +40,7 @@ public class ApiVersionSummaryBean implements Serializable {
     private String version;
     private boolean publicAPI;
     private boolean exposeInPortal;
+    private Set<KeyValueTagDto> apiTags;
 
     /**
      * Constructor.
@@ -195,4 +197,12 @@ public class ApiVersionSummaryBean implements Serializable {
                 + ", status=" + status + ", version=" + version + ", publicAPI=" + publicAPI + "]";
     }
 
+    public Set<KeyValueTagDto> getApiTags() {
+        return apiTags;
+    }
+
+    public ApiVersionSummaryBean setApiTags(Set<KeyValueTagDto> apiTags) {
+        this.apiTags = apiTags;
+        return this;
+    }
 }

@@ -314,20 +314,20 @@ public abstract class AbstractJpaStorage {
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.bool_eq) {
                     predicates.add(builder.equal(from.<Boolean>get(filter.getName()), Boolean.valueOf(filter.getValue())));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.gt) {
-                    predicates.add(builder.greaterThan(from.<Long>get(filter.getName()), new Long(filter.getValue())));
+                    predicates.add(builder.greaterThan(from.<Long>get(filter.getName()), Long.valueOf(filter.getValue())));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.gte) {
-                    predicates.add(builder.greaterThanOrEqualTo(from.<Long>get(filter.getName()), new Long(filter.getValue())));
+                    predicates.add(builder.greaterThanOrEqualTo(from.<Long>get(filter.getName()), Long.valueOf(filter.getValue())));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.lt) {
-                    predicates.add(builder.lessThan(from.<Long>get(filter.getName()), new Long(filter.getValue())));
+                    predicates.add(builder.lessThan(from.<Long>get(filter.getName()), Long.valueOf(filter.getValue())));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.lte) {
-                    predicates.add(builder.lessThanOrEqualTo(from.<Long>get(filter.getName()), new Long(filter.getValue())));
+                    predicates.add(builder.lessThanOrEqualTo(from.<Long>get(filter.getName()), Long.valueOf(filter.getValue())));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.neq) {
                     predicates.add(builder.notEqual(from.get(filter.getName()), filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.like) {
                     predicates.add(builder.like(builder.upper(from.<String>get(filter.getName())), filter.getValue().toUpperCase().replace('*', '%')));
                 }
             }
-            query.where(predicates.toArray(new Predicate[predicates.size()]));
+            query.where(predicates.toArray(new Predicate[0]));
         }
         OrderByBean orderBy = criteria.getOrderBy();
         if (orderBy != null && !countOnly) {
@@ -339,6 +339,7 @@ public abstract class AbstractJpaStorage {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected <T> Optional<T> getOne(Query query) {
         List<T> resultList = (List<T>) query.getResultList();
 

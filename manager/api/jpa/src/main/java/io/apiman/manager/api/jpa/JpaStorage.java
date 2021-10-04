@@ -67,6 +67,7 @@ import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+import io.apiman.manager.api.beans.summary.mappers.ApiMapper;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -83,9 +84,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -110,6 +113,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JpaStorage.class);
 
     private IDataEncrypter encrypter;
+    private final ApiMapper apiMapper = ApiMapper.INSTANCE;
 
     @Inject
     public JpaStorage(IDataEncrypter encrypter) {
@@ -756,20 +760,26 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         SearchResultsBean<ApiBean> result = find(criteria, ApiBean.class);
         SearchResultsBean<ApiSummaryBean> rval = new SearchResultsBean<>();
         rval.setTotalSize(result.getTotalSize());
-        List<ApiBean> beans = result.getBeans();
-        rval.setBeans(new ArrayList<>(beans.size()));
-        for (ApiBean api : beans) {
-            ApiSummaryBean summary = new ApiSummaryBean();
-            OrganizationBean organization = api.getOrganization();
-            summary.setId(api.getId());
-            summary.setName(api.getName());
-            summary.setImage(api.getImage());
-            summary.setDescription(api.getDescription());
-            summary.setCreatedOn(api.getCreatedOn());
-            summary.setOrganizationId(api.getOrganization().getId());
-            summary.setOrganizationName(organization.getName());
-            rval.getBeans().add(summary);
-        }
+        List<ApiSummaryBean> beans = result.getBeans()
+                .stream()
+                .map(apiMapper::toSummary)
+                .collect(Collectors.toList());
+
+
+        //List<ApiBean> beans = result.getBeans();
+        //rval.setBeans(new ArrayList<>(beans.size()));
+        // for (ApiBean api : beans) {
+        //     ApiSummaryBean summary = new ApiSummaryBean();
+        //     OrganizationBean organization = api.getOrganization();
+        //     summary.setId(api.getId());
+        //     summary.setName(api.getName());
+        //     summary.setImage(api.getImage());
+        //     summary.setDescription(api.getDescription());
+        //     summary.setCreatedOn(api.getCreatedOn());
+        //     summary.setOrganizationId(api.getOrganization().getId());
+        //     summary.setOrganizationName(organization.getName());
+        //     rval.getBeans().add(summary);
+        // }
         return rval;
     }
 
@@ -1030,28 +1040,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         if (orgIds == null || orgIds.isEmpty()) {
             return Collections.emptyList();
         }
-
-        List<ApiSummaryBean> rval = new ArrayList<>();
         try {
             EntityManager entityManager = getActiveEntityManager();
             String jpql = "SELECT a FROM ApiBean a JOIN a.organization o WHERE o.id IN :orgs ORDER BY a.id ASC";
-            Query query = entityManager.createQuery(jpql);
+            TypedQuery<ApiBean> query = entityManager.createQuery(jpql, ApiBean.class);
             query.setParameter("orgs", orgIds);
 
-            List<ApiBean> qr = query.getResultList();
-            for (ApiBean bean : qr) {
-                ApiSummaryBean summary = new ApiSummaryBean();
-                summary.setId(bean.getId());
-                summary.setName(bean.getName());
-                summary.setDescription(bean.getDescription());
-                summary.setCreatedOn(bean.getCreatedOn());
-                summary.setImage(bean.getImage());
-                OrganizationBean org = bean.getOrganization();
-                summary.setOrganizationId(org.getId());
-                summary.setOrganizationName(org.getName());
-                rval.add(summary);
-            }
-            return rval;
+            return query.getResultList()
+                    .stream()
+                    .map(apiMapper::toSummary)
+                    .collect(Collectors.toList());
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -1130,32 +1128,48 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     + " WHERE o.id = :orgId"
                     + "  AND s.id = :apiId"
                     + " ORDER BY v.createdOn DESC";
-            Query query = entityManager.createQuery(jpql);
+            TypedQuery<ApiVersionBean> query = entityManager.createQuery(jpql, ApiVersionBean.class);
             query.setMaxResults(500);
             query.setParameter("orgId", orgId);
             query.setParameter("apiId", apiId);
 
             List<ApiVersionBean> apiVersions = query.getResultList();
-            List<ApiVersionSummaryBean> rval = new ArrayList<>(apiVersions.size());
-            for (ApiVersionBean apiVersion : apiVersions) {
-                ApiVersionSummaryBean svsb = new ApiVersionSummaryBean();
-                svsb.setOrganizationId(apiVersion.getApi().getOrganization().getId());
-                svsb.setOrganizationName(apiVersion.getApi().getOrganization().getName());
-                svsb.setId(apiVersion.getApi().getId());
-                svsb.setName(apiVersion.getApi().getName());
-                svsb.setDescription(apiVersion.getApi().getDescription());
-                svsb.setVersion(apiVersion.getVersion());
-                svsb.setStatus(apiVersion.getStatus());
-                svsb.setPublicAPI(apiVersion.isPublicAPI());
-                svsb.setExposeInPortal(apiVersion.isExposeInPortal());
-                svsb.setExtendedDescription(apiVersion.getExtendedDescription());
-                rval.add(svsb);
-            }
-            return rval;
+            return apiVersions.stream()
+                    .map(apiMapper::toSummary)
+                    .collect(Collectors.toList());
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
+    }
+
+    @Override
+    public List<ApiBean> getApisByTagNameAndValue(String tagKey, String tagValue) {
+        TypedQuery<ApiBean> query = getSession()
+                .createQuery(
+                        "SELECT ApiBean FROM ApiBean avb "
+                                + "JOIN avb.tags tag "
+                                + "WHERE tag.key = :key "
+                                + "AND tag.value = :value",
+                        ApiBean.class
+                )
+                .setParameter("key", tagKey)
+                .setParameter("value", tagValue);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<ApiBean> getApisByTagName(String tagKey) {
+        TypedQuery<ApiBean> query = getSession()
+                .createQuery(
+                        "SELECT ApiBean FROM ApiBean avb "
+                                + "JOIN avb.tags tag "
+                                + "WHERE tag.key = :key",
+                        ApiBean.class
+                )
+                .setParameter("key", tagKey);
+        return query.getResultList();
     }
 
     /**
