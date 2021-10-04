@@ -342,11 +342,6 @@ export interface IApiSummary {
   createdOn: string;
 }
 
-export interface IApiListData extends IApiSummary {
-  docsAvailable?: boolean;
-  latestVersion?: string;
-}
-
 export interface IApiVersionSummary {
   organizationId: string;
   organizationName: string;
@@ -854,11 +849,6 @@ export interface ISearchResultsApiSummary {
   beans: IApiSummary[];
 
   /** @format int32 */
-  totalSize: number;
-}
-
-export interface ISearchResult {
-  apis: IApiListData[];
   totalSize: number;
 }
 

@@ -1,16 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api/api.service';
 import { PageEvent } from '@angular/material/paginator';
-import { switchMap, tap } from 'rxjs/operators';
-import { forkJoin, Observable, of } from 'rxjs';
+import {map, switchMap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import {
-  IApiListData,
-  IApiSummary,
-  ISearchCriteria,
-  ISearchResult,
-} from '../../interfaces/ICommunication';
+import { IApiSummary, ISearchCriteria } from '../../interfaces/ICommunication';
 import {ActivatedRoute, Router} from "@angular/router";
+import {IApiSummaryExt} from "../../interfaces/IApiSummaryExt";
+import {isApiDocAvailable} from "../../shared/utility";
 
 @Component({
   selector: 'app-api-card-list',
@@ -18,7 +15,7 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrls: ['./api-card-list.component.scss'],
 })
 export class ApiCardListComponent implements OnInit {
-  apis: IApiSummary[] = [];
+  apis: IApiSummaryExt[] = [];
   totalSize = 0;
   ready = false;
   searchTerm = '';
@@ -97,63 +94,48 @@ export class ApiCardListComponent implements OnInit {
   }
 
   getApiList(): void {
-    const docsAvailable: Array<Observable<boolean>> = [];
-    const result: ISearchResult = { apis: [], totalSize: 0 };
-
     this.loadingSpinnerService.startWaiting();
     this.ready = false;
 
     this.apiService
       .searchApis(this.searchCriteria)
       .pipe(
-        // switch from SearchResultsBeanApiSummaryBean to ISearchResult
-        switchMap((searchResult) => {
-          result.apis = searchResult.beans;
-          result.totalSize = searchResult.totalSize;
-          return of(result);
+        // map from SearchResultsBeanApiSummaryBean to IApiSummary[]
+        map((searchResult) => {
+          this.totalSize = searchResult.totalSize;
+          return searchResult.beans;
         }),
-        tap((searchResult) => {
-          // Check API docs for every API
-          searchResult.apis.forEach((api) => {
-            docsAvailable.push(this.checkApiDocs(api));
-          });
-          // Set docsAvailable once every Request has finished
-          forkJoin(docsAvailable).subscribe((result) => {
-            result.forEach((eachResult, index) => {
-              searchResult.apis[index].docsAvailable = eachResult;
-            });
-            this.loadingSpinnerService.stopWaiting();
-            this.ready = true;
-          });
+
+        switchMap((apiSummaries: IApiSummary[]) => {
+          return forkJoin(apiSummaries.map(apiSummary => {
+            return this.apiService.getLatestApiVersion(apiSummary.organizationId, apiSummary.id).pipe(
+              map(latestApiVersion => {
+                return {
+                  ...apiSummary,
+                  latestVersion: latestApiVersion.version,
+                  docsAvailable: isApiDocAvailable(latestApiVersion)
+                } as IApiSummaryExt;
+              })
+            );
+          }));
         })
-      )
-      .subscribe((searchResult) => {
+      ).subscribe((apiList: IApiSummaryExt[]) => {
         if (this.listType === 'api') {
-          this.apis = searchResult.apis;
+          this.apis = apiList;
         } else if (this.listType === 'featuredApi') {
-          this.apis = searchResult.apis.slice(0,4);
+          this.apis = apiList.slice(0,4);
         }
-        this.totalSize = searchResult.totalSize;
+        this.loadingSpinnerService.stopWaiting();
+        this.ready = true;
       });
   }
 
-  checkApiDocs(api: IApiListData): Observable<boolean> {
-    return this.apiService.getLatestApiVersion(api.organizationId, api.id).pipe(
-      tap((apiVersion) => (api.latestVersion = apiVersion.version)),
-      switchMap((apiVersion) => {
-        return of(
-            apiVersion.definitionType !== null &&
-            apiVersion.definitionType !== 'None'
-        );
-      })
-    );
-  }
-
-  getFeaturedApis(): void {
+  //TODO implement real api call
+/*  getFeaturedApis(): void {
     this.apiService
       .getFeaturedApis(this.searchCriteria)
       .subscribe((searchResult) => {
         this.apis = searchResult.beans;
       });
-  }
+  }*/
 }

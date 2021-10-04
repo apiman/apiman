@@ -11,12 +11,7 @@
     />
   </mat-form-field>
 </div>
-<ng-container *ngIf="totalSize === 0">
-  <h2 class="align">
-    {{'COMMON.NO_DATA_FOUND' | translate}}
-  </h2>
-</ng-container>
-<ng-container *ngIf="ready">
+<ng-container *ngIf="apis.length > 0 && ready; else NoDataMsg">
   <div id="grid">
     <app-api-card
       *ngFor="let api of apis"
@@ -25,6 +20,13 @@
     ></app-api-card>
   </div>
 </ng-container>
+<ng-template #NoDataMsg>
+  <ng-container *ngIf="this.ready">
+    <h2 class="align">
+      {{'COMMON.NO_DATA_FOUND' | translate}}
+    </h2>
+  </ng-container>
+</ng-template>
 <div *ngIf="listType === 'api' && totalSize > searchCriteria.paging.pageSize" class="align">
   <mat-paginator
     [length]="totalSize"

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IApiListData } from '../../interfaces/ICommunication';
+import {IApiSummaryExt} from "../../interfaces/IApiSummaryExt";
 
 @Component({
   selector: 'app-api-card',
@@ -13,5 +13,5 @@ export class ApiCardComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
-  @Input() api!: IApiListData;
+  @Input() api!: IApiSummaryExt;
 }
