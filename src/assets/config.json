@@ -1,6 +1,7 @@
 {
   "language": "en",
   "supportedLanguages": ["de", "en"],
+  "theme": "default",
   "hero": {
     "title": "HOME.TITLE",
     "subtitle": "HOME.SUBTITLE",

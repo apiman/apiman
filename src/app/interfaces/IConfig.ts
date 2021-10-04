@@ -1,6 +1,7 @@
 export interface IConfig {
   language: string;
   supportedLanguages: string[];
+  theme: string;
   endpoint: string;
   hero: IHero;
   navigation: INavigation;

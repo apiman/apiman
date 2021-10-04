@@ -39,14 +39,15 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { GaugeChartComponent } from './components/charts/gauge-chart/gauge-chart.component';
 import { IConfig } from './interfaces/IConfig';
 import { ApprovalComponent } from './components/approval/approval.component';
+import { ThemeService } from './services/theme/theme.service';
 
-export function initializeApp(configService: ConfigService, devPortalInitializer: InitializerService, keycloakHelper: KeycloakHelperService): () => Promise<any> {
+export function initializeApp(configService: ConfigService, devPortalInitializer: InitializerService, keycloakHelper: KeycloakHelperService, themeService: ThemeService): () => Promise<any> {
   return () => new Promise((resolve, reject) => {
     /* At first fetch the configuration file */
     configService.readAndEvaluateConfig().then((config: IConfig) => {
 
       /* After you can list the promises, which depend on the config here */
-      return Promise.all([devPortalInitializer.initLanguage(), keycloakHelper.initKeycloak()]).then(() => {
+      return Promise.all([devPortalInitializer.initLanguage(), keycloakHelper.initKeycloak(), themeService.initTheme(config.theme)]).then(() => {
         resolve(true);
       }).catch((e: Error) => {
         reject(e);
@@ -116,7 +117,8 @@ export function createTranslateLoader(http: HttpClient) {
       deps: [
         ConfigService,
         InitializerService,
-        KeycloakHelperService
+        KeycloakHelperService,
+        ThemeService,
       ],
     },
   ],

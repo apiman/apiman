@@ -1,6 +1,7 @@
 @use '~@angular/material' as mat;
 @import '~@angular/material/theming';
 @import 'assets/themes/default';
+@import 'assets/themes/custom';
 @include mat-core();
 
 /***** THEMING *****/
@@ -77,11 +78,13 @@
   // Include theme styles for components.
 }
 
-.theme {
-  @include app-theme($theme);
+.theme-default {
+  @include app-theme($theme-default);
 }
 
-$config: mat.get-color-config($theme);
+.theme-custom {
+  @include app-theme($theme-custom);
+}
 
 /***** DEFINITIONS *****/
 /** Font **/

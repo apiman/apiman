@@ -5,4 +5,4 @@ $primary-palette: mat-palette($mat-indigo);
 $accent-palette: mat-palette($mat-pink);
 $warn-palette: mat-palette($mat-lime);
 
-$theme: mat-light-theme($primary-palette, $accent-palette, $warn-palette);
+$theme-default: mat-light-theme($primary-palette, $accent-palette, $warn-palette);

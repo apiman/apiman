@@ -64,8 +64,4 @@ export class ConfigService {
   getShowHomeLink(): boolean {
     return this.config.navigation.showHomeLink;
   }
-
-  setConfig(config: IConfig) {
-    this.config = config;
-  }
 }
