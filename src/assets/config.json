@@ -1,7 +1,6 @@
 {
   "language": "en",
   "supportedLanguages": ["de", "en"],
-  "endpoint": "https://vagrantguest/pas/apiman",
   "hero": {
     "title": "HOME.TITLE",
     "subtitle": "HOME.SUBTITLE",
@@ -43,6 +42,7 @@
     ],
     "separator": "•"
   },
+  "endpoint": "https://vagrantguest/pas/apiman",
   "auth": {
     "url": "https://vagrantguest/pas/keycloak",
     "realm": "PAS",

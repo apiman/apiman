@@ -2,16 +2,21 @@
 <div class="grid">
   <div>
     <h4>{{ "APPS.API_DOCS_TRY_NOW" | translate }}</h4>
-    <p>{{ mockText }}</p>
+    <p>{{ "DESCRIPTIONS.TRY_IT_OUT" | translate }}</p>
   </div>
   <div id="try-it-now-btn">
     <ng-container *ngIf="contract">
-      <button mat-raised-button color="primary" [disabled]="disableButtons" [routerLink]="[
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="disableButtons"
+        [routerLink]="[
           '/swagger',
           contract.client.client.organization.id,
           contract.api.id,
           contract.api.version
-        ]">
+        ]"
+      >
         {{ "APPS.VIEW_AND_TRY_NOW" | translate }}
       </button>
     </ng-container>
@@ -32,7 +37,7 @@
 <div class="grid">
   <div>
     <h4>{{ "APPS.API_KEY" | translate }}</h4>
-    <p>{{ mockText }}</p>
+    <p>{{ "DESCRIPTIONS.API_KEY" | translate }}</p>
   </div>
   <div>
     <mat-form-field>
@@ -54,7 +59,7 @@
 <div class="grid">
   <div>
     <h4>{{ "APPS.ENDPOINT" | translate }}</h4>
-    <p>{{ mockText }}</p>
+    <p>{{ "DESCRIPTIONS.API_ENDPOINT" | translate }}</p>
   </div>
   <div>
     <mat-form-field>
@@ -76,7 +81,7 @@
 <div class="grid" *ngIf="hasOAuth">
   <div>
     <h4>{{ "APPS.AUTHENTICATION" | translate }}</h4>
-    <p>{{ mockText }}</p>
+    <p>{{ "DESCRIPTIONS.OAUTH" | translate }}</p>
   </div>
   <div>
     <mat-form-field>
