@@ -19,6 +19,7 @@ import {PolicyService} from "../../services/policy/policy.service";
 import {map, switchMap} from "rxjs/operators";
 import {forkJoin} from "rxjs";
 import {flatArray} from "../../shared/utility";
+import {SpinnerService} from "../../services/spinner/spinner.service";
 
 @Component({
   selector: 'app-my-apps',
@@ -28,12 +29,14 @@ import {flatArray} from "../../shared/utility";
 export class MyAppsComponent implements OnInit {
   contracts: IContractExt[] = [];
   clientContractsMap = new Map<string, IContractExt[]>();
+  contractsLoaded: boolean= false;
 
   tmpUrl = 'https://pbs.twimg.com/media/Ez-AaifWYAIiFSQ.jpg';
   tmpUrl2 =
     'https://cdn0.iconfinder.com/data/icons/customicondesignoffice5/256/examples.png';
 
   constructor(
+    private spinnerService: SpinnerService,
     private heroService: HeroService,
     private translator: TranslateService,
     private backend: BackendService,
@@ -46,6 +49,9 @@ export class MyAppsComponent implements OnInit {
   }
   // Detailed explanation of request chain: https://stackoverflow.com/questions/69421293/how-to-chain-requests-correctly-with-rxjs
   private fetchContracts() {
+    this.spinnerService.startWaiting();
+    this.contractsLoaded = false;
+
     this.backend
       .getEditableClients()
       .pipe(
@@ -98,8 +104,10 @@ export class MyAppsComponent implements OnInit {
             )
           }))
         })
-      ).subscribe((test) => {
-        this.extractContracts(test)
+      ).subscribe((contracts) => {
+        this.spinnerService.stopWaiting();
+        this.contractsLoaded = true;
+        this.extractContracts(contracts)
       });
   }
 
