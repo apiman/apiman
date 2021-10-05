@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {IPolicy} from "../../interfaces/ICommunication";
 import {IPolicySummaryExt} from "../../interfaces/IPolicySummaryExt";
 import {IPolicyExt} from "../../interfaces/IPolicyExt";
-import {map, mergeMap, tap} from "rxjs/operators";
+import {map, switchMap, tap} from "rxjs/operators";
 import {BackendService} from "../backend/backend.service";
 import {forkJoin, Observable, of} from "rxjs";
 import {formatBytes} from "../../shared/utility";
@@ -16,7 +16,7 @@ export class PolicyService {
 
   public getPlanPolicies(orgId: string, planId: string, planVersion: string): Observable<IPolicyExt[]> {
     return this.getExtendedPolicySummaries(orgId, planId, planVersion).pipe(
-      mergeMap((extendedPolicySummaries: IPolicySummaryExt[]) => {
+      switchMap((extendedPolicySummaries: IPolicySummaryExt[]) => {
         if (extendedPolicySummaries.length > 0){
           return forkJoin(extendedPolicySummaries.map(policySummary => {
             return this.getExtendedPlanPolicy(orgId, policySummary)
@@ -24,13 +24,17 @@ export class PolicyService {
         } else {
          return of([] as IPolicyExt[])
         }
+      }),
+      // in v1 only certain policies will be displayed
+      switchMap((extendedPolicies: IPolicyExt[]) => {
+        return this.filterPolicies(extendedPolicies);
       })
     )
   };
 
   public getApiPolicies(orgId: string, apiId: string, apiVersion: string): Observable<IPolicyExt[]> {
     return this.backendService.getApiPolicySummaries(orgId, apiId, apiVersion).pipe(
-      mergeMap((extendedPolicySummaries: IPolicySummaryExt[]) => {
+      switchMap((extendedPolicySummaries: IPolicySummaryExt[]) => {
         if (extendedPolicySummaries.length > 0) {
           return forkJoin(extendedPolicySummaries.map(extendedPolicySummary => {
             return this.getExtendedApiPolicy(orgId, apiId, apiVersion, extendedPolicySummary.id.toString())
@@ -38,6 +42,10 @@ export class PolicyService {
         } else {
           return of([] as IPolicyExt[])
         }
+      }),
+      // in v1 only certain policies will be displayed
+      switchMap((extendedPolicies: IPolicyExt[]) => {
+        return this.filterPolicies(extendedPolicies);
       })
     )
   }
@@ -100,5 +108,17 @@ export class PolicyService {
         })
       })
     )
+  }
+
+
+  private filterPolicies(extendedPolicies: IPolicyExt[]): Observable<IPolicyExt[]> {
+    const filteredExtendedPolicies: IPolicyExt[] = [];
+    extendedPolicies.forEach((extendedPolicy) => {
+      if (extendedPolicy.definition.id === 'RateLimitingPolicy' ||
+        extendedPolicy.definition.id === 'TransferQuotaPolicy') {
+        filteredExtendedPolicies.push(extendedPolicy);
+      }
+    })
+    return of(filteredExtendedPolicies);
   }
 }
