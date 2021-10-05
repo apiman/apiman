@@ -74,7 +74,8 @@ export class MarketplaceApiTermsComponent implements OnInit {
   ngOnInit(): void {}
 
   onClick() {
-    if (this.acceptedPrivacyTerms && this.acceptedTerms)
-      this.agreedTermsAndPrivacy.emit(true);
+    this.agreedTermsAndPrivacy.emit(
+      this.acceptedPrivacyTerms && this.acceptedTerms
+    );
   }
 }
