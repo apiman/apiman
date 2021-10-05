@@ -25,7 +25,7 @@ mat-panel-title {
   width: 75%;
 
   #icon {
-    margin: 2em 2em 0 2em;
+    margin: 2em 1.4em 0 0;
   }
 
   #shortDescription {
@@ -70,5 +70,5 @@ mat-grid-list {
 }
 
 .mat-expansion-panel-header.mat-expanded{
-  background-color: rgba(0, 0, 0, 0.02) !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
 }

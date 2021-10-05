@@ -1,21 +1,29 @@
-<div class="chart-container">
-  <h2>{{ name }}</h2>
-  <div class="chart">
+<div class="chart mat-elevation-z2">
+  <h3 class="chart-header primary">{{ name }}</h3>
+  <mat-divider></mat-divider>
+  <div class="ngx-wrapper">
     <ngx-charts-gauge
-      class="second"
       [results]="data"
       [legend]="legend"
       [max]="limit"
       [legendPosition]="legendPosition"
       [scheme]="colorScheme"
+      [view]="[380, 256]"
+      [valueFormatting]="disableValueLabel"
     >
     </ngx-charts-gauge>
   </div>
+
+  <div class="info-icon">
+    <mat-icon [inline]="true" color="primary">tune</mat-icon>
+  </div>
+
   <div class="infos">
-    <h4>Usage ({{ period }})</h4>
-    <h2>
-      {{ currentValue }} <span class="primary">/ {{ limit }}</span>
-    </h2>
-    <h3>{{ percentage }}% used</h3>
+    <div class="text2">USAGE ({{ period }})</div>
+    <div class="text-big3 letter-spacing">{{ currentValue }} / <span class="primary">{{ limit }}</span></div>
+    <div class="info-bottom text-big1">
+      <mat-divider></mat-divider>
+      <span>{{ percentage }}% used</span>
+    </div>
   </div>
 </div>

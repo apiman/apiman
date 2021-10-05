@@ -18,3 +18,9 @@ h2, h3 {
 .grid .divider-left {
   margin-bottom: -4rem;
 }
+
+.policy-charts-grid{
+  display: flex;
+  justify-content: center;
+  grid-column-gap: 1.8rem;
+}

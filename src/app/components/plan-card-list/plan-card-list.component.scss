@@ -1,9 +1,9 @@
 #plan-grid {
   margin-right: 2%;
   display: grid;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-start;
-  grid-template-columns: repeat(auto-fit, 420px);
+  grid-template-columns: repeat(auto-fit, 360px);
   grid-column-gap: 16px;
   grid-row-gap: 32px;
 }
@@ -39,7 +39,7 @@ p {
 }
 
 .card-header {
-  justify-content: center
+  justify-content: center;
 }
 
 .card-header-content {
@@ -49,4 +49,3 @@ p {
 #sign-up-button {
   width: 50%;
 }
-

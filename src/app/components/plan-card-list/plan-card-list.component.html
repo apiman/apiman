@@ -1,11 +1,11 @@
 <ng-container *ngIf="plans.length > 0">
-  <h2 class="primary mt-40">Plans</h2>
+  <h2 class="primary mt-rem-3">Plans</h2>
 </ng-container>
 <div id="plan-grid">
   <ng-container *ngFor="let plan of plans">
     <mat-card class="plan-card">
       <mat-card-header class="card-header">
-        <mat-card-title class="card-header-content">{{ plan.planName }}</mat-card-title>
+        <mat-card-title class="card-header-content mb-rem-1">{{ plan.planName }}</mat-card-title>
         <mat-card-subtitle class="card-header-content">{{ plan.planDescription }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content [ngSwitch]="plan.planId + ':' + plan.version">

@@ -2,8 +2,54 @@ h2, h3, h4 {
   text-align: center;
 }
 
+.chart{
+  display: flex;
+  flex-direction: column;
+  width: 308px;
+  height: 336px;
+}
+
+.mat-divider-horizontal{
+  position: unset;
+}
+
 .infos {
   position: relative;
-  z-index: 50;
-  top: -5rem
+  bottom: 147px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.info-icon{
+  text-align: center;
+  bottom: 176px;
+  position: relative;
+  font-size: 52px;
+}
+
+.bottom-area{
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.chart-header{
+  margin: 8px auto;
+}
+
+.letter-spacing{
+  letter-spacing: 0.08rem;
+}
+
+.info-bottom{
+  display: flex;
+  flex-direction: column;
+}
+
+.ngx-wrapper{
+ display: flex;
+}
+
+::ng-deep .ngx-charts{
+  margin-left: -39px !important;
 }

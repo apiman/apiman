@@ -20,6 +20,8 @@ export class GaugeChartComponent implements OnInit {
   name: string | undefined;
   colorScheme: any | undefined;
 
+  disableValueLabel = () => '';
+
   ngOnInit(): void {
     this.getPrimaryColor();
     this.setupChart();

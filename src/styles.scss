@@ -20,15 +20,15 @@
 
   // CUSTOM SCSS
   .primary-bg{
-    background: $primary !important;
+    background-color: $primary !important;
   }
 
   .warn-bg{
-    background: $warn !important;
+    background-color: $warn !important;
   }
 
   .accent-bg{
-    background: $accent !important;
+    background-color: $accent !important;
   }
 
   .active-link{
@@ -90,6 +90,32 @@
 /** Font **/
 $default-font: 'Open Sans', sans-serif;
 
+// text-classes work the same as h tags do
+.text{
+  font-size: 1rem;
+}
+
+.text2{
+  font-size: 0.8rem;
+}
+
+.text3{
+  font-size: 0.7rem;
+}
+
+// text-big-classes increase the sizes with an increasing index
+.text-big1{
+  font-size: 1.2rem;
+}
+
+.text-big2{
+  font-size: 1.4rem;
+}
+
+.text-big3{
+  font-size: 1.5rem;
+}
+
 /** Paddings and Margins **/
 $sizes: 5, 8, 10, 15, 20, 25, 30, 35, 40;
 @each $size in $sizes {
@@ -97,11 +123,9 @@ $sizes: 5, 8, 10, 15, 20, 25, 30, 35, 40;
   .mt-#{$size} {
     margin-top: #{$size}px;
   }
-
   .mr-#{$size} {
     margin-right: #{$size}px;
   }
-
   .mb-#{$size} {
     margin-bottom: #{$size}px;
   }
@@ -121,6 +145,37 @@ $sizes: 5, 8, 10, 15, 20, 25, 30, 35, 40;
   }
   .pl-#{$size} {
     padding-left: #{$size}px;
+  }
+}
+
+$remSizes: 1, 2, 3, 4;
+@each $size in $remSizes {
+  // Margins
+  .mt-rem-#{$size} {
+    margin-top: #{$size}rem;
+  }
+  .mr-rem-#{$size} {
+    margin-right: #{$size}rem;
+  }
+  .mb-rem-#{$size} {
+    margin-bottom: #{$size}rem;
+  }
+  .ml-rem-#{$size} {
+    margin-left: #{$size}rem;
+  }
+
+  // Paddings
+  .pt-rem-#{$size} {
+    padding-top: #{$size}rem;
+  }
+  .pr-rem-#{$size} {
+    padding-right: #{$size}rem;
+  }
+  .pb-rem-#{$size} {
+    padding-bottom: #{$size}rem;
+  }
+  .pl-rem-#{$size} {
+    padding-left: #{$size}rem;
   }
 }
 /***** DevPortal Default Styling *****/

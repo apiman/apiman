@@ -3,13 +3,9 @@
     <app-policy-card [policy]="policy"></app-policy-card>
   </div>
   <div class="divider-left">
-    <mat-grid-list cols="2" rowHeight="1:1" class="grid">
-      <mat-grid-tile colspan="1">
-        <app-gauge-chart [gaugeData]="gaugeData"></app-gauge-chart>
-      </mat-grid-tile>
-      <mat-grid-tile colspan="1">
-        <app-gauge-chart [gaugeData]="gaugeData"></app-gauge-chart>
-      </mat-grid-tile>
-    </mat-grid-list>
+    <div class="policy-charts-grid">
+      <div><app-gauge-chart [gaugeData]="gaugeData"></app-gauge-chart></div>
+      <div><app-gauge-chart [gaugeData]="gaugeData"></app-gauge-chart></div>
+    </div>
   </div>
 </div>
