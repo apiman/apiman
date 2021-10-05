@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public class DeveloperApiPlanSummaryDto {
 
+public class DeveloperApiPlanSummaryDto {
     private String planId;
     private String planName;
     private String planDescription;

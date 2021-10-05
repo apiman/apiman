@@ -2,6 +2,7 @@ package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
+import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -10,6 +11,7 @@ import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 
 import java.util.List;
@@ -51,13 +53,13 @@ public interface IDeveloperPortalResource {
     @GET
     @Path("organizations/{orgId}/apis/{apiId}/versions/{version}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiVersionBean getApiVersion(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("version") String version)
+    ApiVersionBean getApiVersion(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("version") String version)
             throws ApiVersionNotFoundException;
 
     @GET
     @Path("organizations/{orgId}/apis/{apiId}/versions/{version}/plans")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<DeveloperApiPlanSummaryDto> getApiVersionPlans(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("version") String version)
+    List<DeveloperApiPlanSummaryDto> getApiVersionPlans(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("version") String version)
             throws ApiVersionNotFoundException;
 
     @POST
@@ -65,4 +67,11 @@ public interface IDeveloperPortalResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     OrganizationBean createHomeOrgForDeveloper(NewOrganizationBean newOrg);
+
+    @GET
+    @Path("{organizationId}/apis/{apiId}/versions/{version}/policies")
+    @Produces(MediaType.APPLICATION_JSON)
+    List<ApiVersionPolicySummaryDto> listApiPolicies(@PathParam("organizationId") String organizationId,
+                                                     @PathParam("apiId") String apiId, @PathParam("version") String version)
+            throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException;
 }

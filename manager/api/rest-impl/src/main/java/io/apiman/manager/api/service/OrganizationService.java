@@ -113,8 +113,7 @@ public class OrganizationService implements DataAccessUtilMixin {
     public OrganizationService() {
     }
 
-    public OrganizationBean createOrg(
-        NewOrganizationBean bean) throws OrganizationAlreadyExistsException, InvalidNameException {
+    public OrganizationBean createOrg(NewOrganizationBean bean) throws OrganizationAlreadyExistsException, InvalidNameException {
 
         FieldValidator.validateName(bean.getName());
 

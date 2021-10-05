@@ -4,6 +4,7 @@ import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
+import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -11,7 +12,9 @@ import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.rest.IDeveloperPortalResource;
+import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -92,6 +95,20 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
             throw new IllegalArgumentException("Sorry, for now a developer's default org must be the same as their username. This restriction may be lifted later");
         }
         return orgService.createOrg(newOrg);
+    }
+
+    @Override
+    public List<ApiVersionPolicySummaryDto> listApiPolicies(String orgId, String apiId, String apiVersion)
+            throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
+        apiVersionMustBeExposedInPortal(orgId, apiId, apiVersion);
+        return portalService.getApiVersionPolicies(orgId, apiId, apiVersion);
+    }
+
+    private void apiVersionMustBeExposedInPortal(String orgId, String apiId, String apiVersion) {
+        ApiVersionBean retrieved = apiService.getApiVersion(orgId, apiId, apiVersion);
+        if (!retrieved.isExposeInPortal()) {
+            throw ExceptionFactory.apiVersionNotFoundException(apiId, apiVersion);
+        }
     }
 
     private void mustBeLoggedIn() {
