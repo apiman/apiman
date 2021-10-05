@@ -73,7 +73,7 @@ public class ApiBean implements Serializable, Cloneable {
     private String description;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "api_tag",
-            joinColumns = @JoinColumn(name = "api_id"),
+            joinColumns = { @JoinColumn(name = "api_id"), @JoinColumn(name = "org_id") },
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<KeyValueTag> tags = new HashSet<>();

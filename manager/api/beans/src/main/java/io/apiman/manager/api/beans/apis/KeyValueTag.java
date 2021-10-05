@@ -13,7 +13,6 @@ import org.hibernate.annotations.NaturalId;
  * Simple tag with value.
  */
 @Entity
-//@Immutable
 public class KeyValueTag {
     @Id
     @GeneratedValue
@@ -27,6 +26,15 @@ public class KeyValueTag {
     private String value;
 
     public KeyValueTag() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public KeyValueTag setId(Long id) {
+        this.id = id;
+        return this;
     }
 
     public String getKey() {
