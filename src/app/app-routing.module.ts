@@ -8,6 +8,7 @@ import { AccountComponent } from './components/account/account.component';
 import { MyAppsComponent } from './components/my-apps/my-apps.component';
 import { AuthGuard } from './guards/auth.guard';
 import { SwaggerComponent } from './components/swagger/swagger.component';
+import {ApprovalComponent} from "./components/approval/approval.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
   { path: 'applications', component: MyAppsComponent, canActivate: [AuthGuard] },
   { path: 'swagger/:orgId/:apiId/:apiVersion', component: SwaggerComponent },
+  { path: 'approval', component: ApprovalComponent },
 ];
 
 @NgModule({

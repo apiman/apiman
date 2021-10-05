@@ -14,7 +14,7 @@ import { SignUpService } from '../../services/sign-up/sign-up.service';
 import { ISignUpInfo } from '../../interfaces/ISignUpInfo';
 import { BackendService } from '../../services/backend/backend.service';
 import { MatStepper } from '@angular/material/stepper';
-import {IContractExt} from "../../interfaces/IContractExt";
+import { IContractExt } from '../../interfaces/IContractExt';
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
@@ -106,13 +106,15 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       .createContract(client.organizationId, client.id, '1.0', contract)
       .subscribe(
         (contract: IContract) => {
-
           this.snackbar.showPrimarySnackBar(
             this.translator.instant('WIZARD.SUCCESS')
           );
           this.contract = contract as IContractExt;
-
-          stepper.next();
+          if (this.contract.client.status === 'Ready') {
+            stepper.next();
+          } else {
+            void this.router.navigate(['approval']);
+          }
         },
         (error) => this.snackbar.showErrorSnackBar(error.message, error)
       );

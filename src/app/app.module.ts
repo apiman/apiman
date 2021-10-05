@@ -38,6 +38,7 @@ import { PolicyCardComponent } from './components/policy-card/policy-card.compon
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { GaugeChartComponent } from './components/charts/gauge-chart/gauge-chart.component';
 import { IConfig } from './interfaces/IConfig';
+import { ApprovalComponent } from './components/approval/approval.component';
 
 export function initializeApp(configService: ConfigService, devPortalInitializer: InitializerService, keycloakHelper: KeycloakHelperService): () => Promise<any> {
   return () => new Promise((resolve, reject) => {
@@ -83,6 +84,7 @@ export function createTranslateLoader(http: HttpClient) {
     MyAppsManageApiComponent,
     PolicyCardComponent,
     GaugeChartComponent,
+    ApprovalComponent,
   ],
   imports: [
     KeycloakAngularModule,
