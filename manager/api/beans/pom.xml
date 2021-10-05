@@ -103,6 +103,11 @@
               <artifactId>mapstruct-processor</artifactId>
               <version>${version.org.mapstruct}</version>
             </path>
+            <path>
+              <groupId>org.hibernate</groupId>
+              <artifactId>hibernate-jpamodelgen</artifactId>
+              <version>${version.org.hibernate}</version>
+            </path>
             <!-- other annotation processors -->
           </annotationProcessorPaths>
         </configuration>

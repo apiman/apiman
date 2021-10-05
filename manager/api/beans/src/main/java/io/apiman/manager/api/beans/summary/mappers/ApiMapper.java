@@ -5,6 +5,8 @@ import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -25,6 +27,7 @@ public interface ApiMapper {
 
     })
     ApiSummaryBean toSummary(ApiBean apiBean);
+    List<ApiSummaryBean> toSummary(List<ApiBean> apiBean);
 
     @Mappings({
             @Mapping(source = "api.organization.id", target = "organizationId"),
