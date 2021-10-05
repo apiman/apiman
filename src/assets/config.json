@@ -5,13 +5,13 @@
   "hero": {
     "title": "HOME.TITLE",
     "subtitle": "HOME.SUBTITLE",
-    "heroImgUrl": "https://www.gstatic.com/earth/social/00_generic_facebook-001.jpg",
+    "heroImgUrl": "assets/img/header.jpeg",
     "large": true,
     "fontColor": {
-      "title": "rgba(255, 255, 255, 1)",
-      "subtitle": "rgba(255, 255, 255, 1)"
+      "title": "white",
+      "subtitle": "white"
     },
-    "overlayColor": "rgba(200, 200, 200, 0.4)"
+    "overlayColor": "rgba(0, 0, 0, 0)"
   },
   "navigation": {
     "showHomeLink": true,
