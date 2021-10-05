@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 </head>
 <body>
 <div ng-include="headerInclude"></div>
@@ -39,61 +38,63 @@
                  apiman-i18n-key="export-in-portal"
                  style="padding-left: 3px">Expose this API in the developer portal</label>
         </div>
-        <div class="title" apiman-i18n-key="available-plans">Attached Plans</div>
-        <div>
+        <div ng-show="apiVersion.exposeInPortal">
+          <div class="title" apiman-i18n-key="available-plans">Attached Plans</div>
+          <div>
             <span apiman-i18n-key="available-plans-help">
               Select which plans appear in the developer portal, and whether developers need approval before they can finalise their subscription.
             </span>
-        </div>
-        <div class="apiman-divider-40"
-             ng-show="plans.summaries.length === 0">
-          <div class="alert alert-warning">
-            <span class="pficon pficon-info"></span>
-            <span apiman-i18n-key="api-plans.no-locked-plans-found">No plans were attached to this API.</span>
           </div>
-        </div>
+          <div class="apiman-divider-40"
+               ng-show="plans.length === 0">
+            <div class="alert alert-warning">
+              <span class="pficon pficon-info"></span>
+              <span apiman-i18n-key="api-plans.no-locked-plans-found">No plans were attached to this API.</span>
+            </div>
+          </div>
 
-        <div class="container-fluid container-cards-pf">
-          <div class="row row-cards-pf"  style="display: flex;">
-            <div class="col-xs-6 col-sm-5 col-md-5" style="display: inline-flex; width: 27em;" ng-repeat="plan in plans.summaries">
-              <div class="card-pf card-pf-accented card-pf-aggregate-status">
-                <h2 class="card-pf-title">
-                  {{plan.planName}}
-                  <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
-                </h2>
-                <div class="card-pf-body text-left">
-                  <p class="card-text">{{ plan.planDescription }}</p>
+          <div class="container-fluid container-cards-pf">
+            <div class="row row-cards-pf"  style="display: flex;">
+              <div class="col-xs-6 col-sm-5 col-md-5 container-border" style="display: inline-flex; width: 27em;" ng-repeat="plan in apiVersion.plans">
+                <div class="card-pf card-pf-accented card-pf-aggregate-status">
+                  <h2 class="card-pf-title">
+                    {{  planSummaries[$index].planName }}
+                    <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
+                  </h2>
+                  <div class="card-pf-body text-left">
+                    <p class="card-text">{{ planSummaries[$index].planDescription }}</p>
 
 
-                  <div>
-                    <ul class="list-group list-group-flush">
-                      <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.exposeInPortal === true">&#9702; Plan <strong>is available</strong> in the developer portal</li>
-                      <li style="max-width: max-content !important;" class="list-group-item" ng-show="!plan.exposeInPortal">&#9702; Plan is <strong>not available</strong> in the developer portal</li>
-                      <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.requiresApproval === true">&#9702; Developers <strong>require approval</strong> to complete sign up</li>
-                      <li style="max-width: max-content !important;" class="list-group-item"  ng-show="!plan.requiresApproval">&#9702; Developers <strong>do not require approval</strong> to complete sign up</li>
-                    </ul>
-                    <!-- Checkbox -- expose in portal -->
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" ng-model="plan.exposeInPortal" value="{{ plan.exposeInPortal }}" id="exposeInPortal">
-                      <label class="form-check-label" for="exposeInPortal">
-                        Expose in developer portal
-                      </label>
-                    </div>
-                    <!-- Checkbox -- requires approval -->
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" ng-model="plan.requiresApproval" value="{{ plan.requiresApproval }}" id="requiresApproval">
-                      <label class="form-check-label" for="requiresApproval">
-                        Requires approval
-                      </label>
+                    <div>
+                      <ul class="list-group list-group-flush">
+                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.exposeInPortal === true">&#9702; Plan <strong>is available</strong> in the developer portal</li>
+                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="!plan.exposeInPortal">&#9702; Plan is <strong>not available</strong> in the developer portal</li>
+                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.requiresApproval === true">&#9702; Developers <strong>require approval</strong> to complete sign up</li>
+                        <li style="max-width: max-content !important;" class="list-group-item"  ng-show="!plan.requiresApproval">&#9702; Developers <strong>do not require approval</strong> to complete sign up</li>
+                      </ul>
+                      <!-- Checkbox -- expose in portal -->
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" ng-model="plan.exposeInPortal" value="{{ plan.exposeInPortal }}" id="exposeInPortal-{{$index}}">
+                        <label class="form-check-label" for="exposeInPortal-{{$index}}">
+                          Expose in developer portal
+                        </label>
+                      </div>
+                      <!-- Checkbox -- requires approval -->
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" ng-model="plan.requiresApproval" value="{{ plan.requiresApproval }}" id="requiresApproval-{{$index}}">
+                        <label class="form-check-label" for="requiresApproval-{{$index}}">
+                          Requires approval
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            <!-- /row -->
           </div>
-          <!-- /row -->
+          <hr />
         </div>
-        <hr />
         <!-- API description markdown row -->
         <div class="title" apiman-i18n-key="extended-api-description">Extended API Description</div>
         <div>
@@ -102,30 +103,29 @@
             </span>
         </div>
         <div id="editor"></div>
-        <button ng-click="doSave($event)">Save</button>
         <!-- /row -->
+        <!-- save -->
+        <hr />
+        <div apiman-permission="apiEdit"
+             ng-show="!isEntityDisabled()"
+             class="actions"
+             style="margin-top: 20px">
+          <button ng-disabled="!isDirty"
+                  class="btn btn-primary"
+                  ng-click="doSave($event)"
+                  type="submit"
+                  data-icon="fa-cog">
+            <span ng-show="saving" apiman-i18n-key="saving">Saving</span>
+            <span ng-hide="saving" apiman-i18n-key="save">Save</span>
+          </button>
+          <button ng-disabled="!isDirty"
+                  ng-click="reset()"
+                  class="btn btn-default"
+                  data-field="cancelButton"
+                  apiman-i18n-key="cancel">Cancel</button>
+        </div>
+        <!-- /save -->
       </div>
-      <!-- save -->
-      <hr />
-      <div apiman-permission="apiEdit"
-           ng-show="!isEntityDisabled()"
-           class="actions"
-           style="margin-top: 20px">
-        <button ng-disabled="checkValid() === false || isDirty === false || saving === true"
-                ng-click="validateEndpoint()"
-                class="btn btn-primary"
-                type="submit"
-                data-icon="fa-cog">
-          <span ng-show="saving" apiman-i18n-key="saving">Saving</span>
-          <span ng-hide="saving" apiman-i18n-key="save">Save</span>
-        </button>
-        <button ng-disabled="!isDirty"
-                ng-click="reset()"
-                class="btn btn-default"
-                data-field="cancelButton"
-                apiman-i18n-key="cancel">Cancel</button>
-      </div>
-      <!-- /save -->
     </div>
   </div>
 </div>

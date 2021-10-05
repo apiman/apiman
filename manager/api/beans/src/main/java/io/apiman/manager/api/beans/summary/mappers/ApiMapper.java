@@ -2,8 +2,11 @@ package io.apiman.manager.api.beans.summary.mappers;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
+
+import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -25,6 +28,7 @@ public interface ApiMapper {
 
     })
     ApiSummaryBean toSummary(ApiBean apiBean);
+    List<ApiSummaryBean> toSummary(List<ApiBean> apiBean);
 
     @Mappings({
             @Mapping(source = "api.organization.id", target = "organizationId"),
@@ -35,4 +39,6 @@ public interface ApiMapper {
             @Mapping(source = "api.tags", target = "apiTags")
     })
     ApiVersionSummaryBean toSummary(ApiVersionBean apiBean);
+
+    ApiBeanDto toDto(ApiBean apiBean);
 }

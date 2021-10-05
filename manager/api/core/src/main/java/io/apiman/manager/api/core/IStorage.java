@@ -38,6 +38,7 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
@@ -78,6 +79,10 @@ public interface IStorage {
     public void createGateway(GatewayBean gateway) throws StorageException;
     public void createPlugin(PluginBean plugin) throws StorageException;
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
+
+    // TODO(msavy): optimise this
+    List<ApiSummaryBean> findExposedApis() throws StorageException;
+
     public void createAuditEntry(AuditEntryBean entry) throws StorageException;
     public void createDownload(DownloadBean download) throws StorageException;
     public void createDeveloper(DeveloperBean developerBean) throws StorageException;

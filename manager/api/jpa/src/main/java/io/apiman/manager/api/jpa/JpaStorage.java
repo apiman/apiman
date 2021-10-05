@@ -20,11 +20,13 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
 import io.apiman.manager.api.beans.apis.ApiBean;
+import io.apiman.manager.api.beans.apis.ApiBean_;
 import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiPlanBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.ApiVersionBean_;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -88,7 +90,6 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -96,7 +97,10 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
@@ -758,29 +762,43 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria)
             throws StorageException {
         SearchResultsBean<ApiBean> result = find(criteria, ApiBean.class);
-        SearchResultsBean<ApiSummaryBean> rval = new SearchResultsBean<>();
-        rval.setTotalSize(result.getTotalSize());
         List<ApiSummaryBean> beans = result.getBeans()
                 .stream()
                 .map(apiMapper::toSummary)
                 .collect(Collectors.toList());
 
+        return new SearchResultsBean<ApiSummaryBean>()
+                .setTotalSize(result.getTotalSize())
+                .setBeans(beans);
+    }
 
-        //List<ApiBean> beans = result.getBeans();
-        //rval.setBeans(new ArrayList<>(beans.size()));
-        // for (ApiBean api : beans) {
-        //     ApiSummaryBean summary = new ApiSummaryBean();
-        //     OrganizationBean organization = api.getOrganization();
-        //     summary.setId(api.getId());
-        //     summary.setName(api.getName());
-        //     summary.setImage(api.getImage());
-        //     summary.setDescription(api.getDescription());
-        //     summary.setCreatedOn(api.getCreatedOn());
-        //     summary.setOrganizationId(api.getOrganization().getId());
-        //     summary.setOrganizationName(organization.getName());
-        //     rval.getBeans().add(summary);
-        // }
-        return rval;
+    @Override
+    public SearchResultsBean<ApiSummaryBean> findExposedApis(SearchCriteriaBean criteria) throws StorageException {
+        CriteriaBuilder builder = getActiveEntityManager().getCriteriaBuilder();
+        CriteriaQuery<ApiBean> criteriaQuery = builder.createQuery(ApiBean.class);
+        Root<ApiBean> root = criteriaQuery.from(ApiBean.class);
+        super.applySearchCriteriaToQuery(criteria, builder, criteriaQuery, root, false);
+        SetJoin<ApiBean, ApiVersionBean> versions = root.join(ApiBean_.apiVersionSet, JoinType.INNER);
+        Predicate isExposed = builder.equal(versions.get(ApiVersionBean_.exposeInPortal), true);
+        criteriaQuery.where(isExposed);
+        SearchResultsBean<ApiBean> result = super.find(criteria, ApiBean.class);
+        return new SearchResultsBean<ApiSummaryBean>()
+                .setBeans(apiMapper.toSummary(result.getBeans()))
+                .setTotalSize(result.getTotalSize());
+    }
+
+    // TODO(msavy): optimise this
+    @Override
+    public List<ApiSummaryBean> findExposedApis() throws StorageException {
+        List<ApiBean> apisWithExposedVersions = getActiveEntityManager()
+                .createQuery(
+                        "SELECT DISTINCT ApiBean "
+                                + "FROM ApiBean ab "
+                                + "JOIN ApiVersionBean avb "
+                                + "WHERE ab.id = avb.api.id "
+                                + "AND avb.exposeInPortal = true ", ApiBean.class)
+                .getResultList();
+        return apiMapper.toSummary(apisWithExposedVersions);
     }
 
     /**

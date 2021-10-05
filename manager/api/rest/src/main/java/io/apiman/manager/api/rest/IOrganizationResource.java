@@ -24,6 +24,7 @@ import io.apiman.manager.api.beans.apis.NewApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ApiKeyBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -96,7 +97,6 @@ import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 
-import java.io.IOException;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -112,7 +112,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.swagger.annotations.Api;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  * The Organization API.
@@ -862,7 +861,7 @@ public interface IOrganizationResource {
     @Path("{organizationId}/apis")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiBean createApi(@PathParam("organizationId") String organizationId, @NotNull NewApiBean bean)
+    public ApiBeanDto createApi(@PathParam("organizationId") String organizationId, @NotNull NewApiBean bean)
             throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException,
             InvalidNameException;
 
@@ -905,8 +904,8 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/apis/{apiId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiBean getApi(@PathParam("organizationId") String organizationId,
-                          @PathParam("apiId") String apiId) throws ApiNotFoundException,
+    public ApiBeanDto getApi(@PathParam("organizationId") String organizationId,
+                             @PathParam("apiId") String apiId) throws ApiNotFoundException,
             NotAuthorizedException;
 
     /**

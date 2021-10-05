@@ -19,7 +19,6 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
-import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiDefinitionType;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
@@ -28,6 +27,7 @@ import io.apiman.manager.api.beans.apis.NewApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ApiKeyBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -513,7 +513,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
-    public ApiBean createApi(String organizationId, NewApiBean bean)
+    public ApiBeanDto createApi(String organizationId, NewApiBean bean)
         throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
         // As an upload will have happened separately, we need to attach to the blob so that it doesn't get wiped out later.
@@ -546,7 +546,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
-    public ApiBean getApi(String organizationId, String apiId)
+    public ApiBeanDto getApi(String organizationId, String apiId)
         throws ApiNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
         return apiService.getApi(organizationId, apiId);

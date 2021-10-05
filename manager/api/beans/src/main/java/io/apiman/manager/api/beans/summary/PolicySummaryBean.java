@@ -51,8 +51,9 @@ public class PolicySummaryBean implements Serializable {
     /**
      * @param policyDefinitionId the policyDefinitionId to set
      */
-    public void setPolicyDefinitionId(String policyDefinitionId) {
+    public PolicySummaryBean setPolicyDefinitionId(String policyDefinitionId) {
         this.policyDefinitionId = policyDefinitionId;
+        return this;
     }
 
     /**
@@ -65,8 +66,9 @@ public class PolicySummaryBean implements Serializable {
     /**
      * @param id the id to set
      */
-    public void setId(Long id) {
+    public PolicySummaryBean setId(Long id) {
         this.id = id;
+        return this;
     }
 
     /**
@@ -79,8 +81,9 @@ public class PolicySummaryBean implements Serializable {
     /**
      * @param name the name to set
      */
-    public void setName(String name) {
+    public PolicySummaryBean setName(String name) {
         this.name = name;
+        return this;
     }
 
     /**
@@ -93,8 +96,9 @@ public class PolicySummaryBean implements Serializable {
     /**
      * @param description the description to set
      */
-    public void setDescription(String description) {
+    public PolicySummaryBean setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     /**
@@ -107,8 +111,9 @@ public class PolicySummaryBean implements Serializable {
     /**
      * @param icon the icon to set
      */
-    public void setIcon(String icon) {
+    public PolicySummaryBean setIcon(String icon) {
         this.icon = icon;
+        return this;
     }
 
     /**
@@ -121,8 +126,9 @@ public class PolicySummaryBean implements Serializable {
     /**
      * @param createdBy the createdBy to set
      */
-    public void setCreatedBy(String createdBy) {
+    public PolicySummaryBean setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+        return this;
     }
 
     /**
@@ -135,8 +141,9 @@ public class PolicySummaryBean implements Serializable {
     /**
      * @param createdOn the createdOn to set
      */
-    public void setCreatedOn(Date createdOn) {
+    public PolicySummaryBean setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+        return this;
     }
 
     /* (non-Javadoc)

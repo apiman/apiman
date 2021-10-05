@@ -91,6 +91,8 @@ public interface IStorageQuery {
      */
     public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria) throws StorageException;
 
+    public SearchResultsBean<ApiSummaryBean> findExposedApis(SearchCriteriaBean criteria) throws StorageException;
+
     /**
      * Finds plans (within an organization) with the given criteria.
      * @param organizationId the organization id
@@ -348,5 +350,4 @@ public interface IStorageQuery {
      * @throws StorageException if an exception occurs during storage attempt
      */
     public Set<PermissionBean> getPermissions(String userId) throws StorageException;
-
 }

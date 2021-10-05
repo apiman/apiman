@@ -32,4 +32,7 @@ global.SwaggerClient = require('swagger-client');
 var sugar = require('sugar');
 var ngFileUpload = require('ng-file-upload');
 global.moment = require('moment/min/moment.min.js');
-global.editor = require('@toast-ui/editor'); // Markdown editor
+// Markdown editor and code highlight plugin (for editor)
+global.editor = require('@toast-ui/editor');
+global.codeSyntaxHighlightPlugin = require('@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all');
+global.prism = require('prismjs');

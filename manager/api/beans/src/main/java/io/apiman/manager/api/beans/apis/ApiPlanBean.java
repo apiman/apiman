@@ -16,6 +16,7 @@
 package io.apiman.manager.api.beans.apis;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 import javax.persistence.Column;
@@ -104,41 +105,23 @@ public class ApiPlanBean implements Serializable {
              .toString();
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((planId == null) ? 0 : planId.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
-        return result;
+        return Objects.hash(planId, version, exposeInPortal, requiresApproval);
     }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
-        if (obj == null)
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ApiPlanBean other = (ApiPlanBean) obj;
-        if (planId == null) {
-            if (other.planId != null)
-                return false;
-        } else if (!planId.equals(other.planId))
-            return false;
-        if (version == null) {
-            if (other.version != null)
-                return false;
-        } else if (!version.equals(other.version))
-            return false;
-        return true;
+        }
+        ApiPlanBean that = (ApiPlanBean) o;
+        return Objects.equals(planId, that.planId)
+                       && Objects.equals(version, that.version)
+                       && Objects.equals(exposeInPortal, that.exposeInPortal)
+                       && Objects.equals(requiresApproval, that.requiresApproval);
     }
-
 }

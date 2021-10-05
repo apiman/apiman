@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.apis.NewApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagMapper;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -99,6 +100,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
 
 import static java.util.stream.Collectors.toList;
@@ -182,7 +184,7 @@ public class ApiService implements DataAccessUtilMixin {
         });
     }
 
-    public ApiBean createApi(String organizationId, NewApiBean bean)
+    public ApiBeanDto createApi(String organizationId, NewApiBean bean)
         throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException,
         InvalidNameException {
 
@@ -225,13 +227,13 @@ public class ApiService implements DataAccessUtilMixin {
                 createApiVersionInternal(newApiVersion, newApi, gateway);
             }
 
-            return newApi;
+            return apiMapper.toDto(newApi);
         });
     }
     
-    public ApiBean getApi(String organizationId, String apiId)
+    public ApiBeanDto getApi(String organizationId, String apiId)
         throws ApiNotFoundException, NotAuthorizedException {
-        return getApiFromStorage(organizationId, apiId);
+        return apiMapper.toDto(getApiFromStorage(organizationId, apiId));
     }
 
     /**
@@ -409,7 +411,7 @@ public class ApiService implements DataAccessUtilMixin {
         newVersion.setEndpointContentType(bean.getEndpointContentType());
         newVersion.setDefinitionUrl(bean.getDefinitionUrl());
         newVersion.setExtendedDescription(bean.getExtendedDescription());
-        newVersion.setExposeInPortal(bean.getExposeInPortal());
+        newVersion.setExposeInPortal(BooleanUtils.toBoolean(bean.getExposeInPortal()));
         if (bean.getPublicAPI() != null) {
             newVersion.setPublicAPI(bean.getPublicAPI());
         }
@@ -672,10 +674,17 @@ public class ApiService implements DataAccessUtilMixin {
             data.addChange("parsePayload", String.valueOf(avb.isParsePayload()), String.valueOf(bean.getParsePayload())); //$NON-NLS-1$
             avb.setParsePayload(bean.getParsePayload());
         }
-
         if (AuditUtils.valueChanged(avb.getDisableKeysStrip(), bean.getDisableKeysStrip())) {
             data.addChange("disableKeysStrip", String.valueOf(avb.getDisableKeysStrip()), String.valueOf(bean.getDisableKeysStrip())); //$NON-NLS-1$
             avb.setDisableKeysStrip(bean.getDisableKeysStrip());
+        }
+        if (AuditUtils.valueChanged(avb.getExtendedDescription(), bean.getExtendedDescription())) {
+            data.addChange("extendedDescription", String.valueOf(avb.getExtendedDescription()), String.valueOf(bean.getExtendedDescription())); //$NON-NLS-1$
+            avb.setExtendedDescription(bean.getExtendedDescription());
+        }
+        if (AuditUtils.valueChanged(avb.isExposeInPortal(), bean.isExposeInPortal())) {
+            data.addChange("exposeInPortal", String.valueOf(avb.isExposeInPortal()), String.valueOf(bean.isExposeInPortal())); //$NON-NLS-1$
+            avb.setExposeInPortal(bean.isExposeInPortal());
         }
 
         return tryAction(() -> {

@@ -73,7 +73,7 @@
     </dependency>
     <dependency>
       <groupId>com.vladmihalcea</groupId>
-      <artifactId>hibernate-types-55</artifactId>
+      <artifactId>hibernate-types-52</artifactId>
       <version>2.12.1</version>
     </dependency>
     <dependency>
@@ -102,6 +102,11 @@
               <groupId>org.mapstruct</groupId>
               <artifactId>mapstruct-processor</artifactId>
               <version>${version.org.mapstruct}</version>
+            </path>
+            <path>
+              <groupId>org.hibernate</groupId>
+              <artifactId>hibernate-jpamodelgen</artifactId>
+              <version>${version.org.hibernate}</version>
             </path>
             <!-- other annotation processors -->
           </annotationProcessorPaths>

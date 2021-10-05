@@ -11,6 +11,8 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -35,44 +37,32 @@ public class SearchService implements DataAccessUtilMixin {
     public SearchService() {}
 
     public SearchResultsBean<OrganizationSummaryBean> findOrganizations(@NotNull SearchCriteriaBean criteria) {
-        if (criteria.getFilters().isEmpty()) {
-            return emptySearchResults();
-        }
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findOrganizations(criteria));
     }
 
     public SearchResultsBean<ClientSummaryBean> findClients(@NotNull SearchCriteriaBean criteria) {
-        if (criteria.getFilters().isEmpty()) {
-            return emptySearchResults();
-        }
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findClients(criteria));
     }
 
     public SearchResultsBean<ApiSummaryBean> findApis(@NotNull SearchCriteriaBean criteria) {
-        if (criteria.getFilters().isEmpty()) {
-            return emptySearchResults();
-        }
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findApis(criteria));
     }
 
     public SearchResultsBean<UserBean> findUsers(@NotNull SearchCriteriaBean criteria) {
-        if (criteria.getFilters().isEmpty()) {
-            return emptySearchResults();
-        }
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findUsers(criteria));
     }
 
-    public SearchResultsBean<RoleBean> findRoles(SearchCriteriaBean criteria) {
+    public SearchResultsBean<RoleBean> findRoles(@NotNull SearchCriteriaBean criteria) {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findRoles(criteria));
     }
 
     @SuppressWarnings("unchecked")
-    private <T> SearchResultsBean<T> emptySearchResults() {
+    public static <T> SearchResultsBean<T> emptySearchResults() {
         return (SearchResultsBean<T>) EMPTY_SEARCH_RESULTS;
     }
 }

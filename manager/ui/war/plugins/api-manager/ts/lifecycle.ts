@@ -61,6 +61,7 @@ module ApimanPageLifecycle {
         "page.title.api-def": "apiman - {0} (Definition)",
         "page.title.api-overview": "apiman - {0} (Overview)",
         "page.title.api-plans": "apiman - {0} (Plans)",
+        "page.title.api-devportal": "apiman - {0} (Dev Portal Config)",
         "page.title.api-policies": "apiman - {0} (Policies)",
         "page.title.user-activity": "apiman - {0} (Change Log)",
         "page.title.user-clients": "apiman - {0} (Client Apps)",
@@ -154,15 +155,14 @@ module ApimanPageLifecycle {
             };
             return {
                 setPageTitle: function(titleKey, params) {
-                    var key = 'page.title.' + titleKey;
-                    var pattern = pageTitles[key];
+                    let key = 'page.title.' + titleKey;
+                    let pattern = pageTitles[key];
                     pattern = TranslationSvc.translate(key, pattern);
                     if (pattern) {
-                        var args = [];
+                        let args = [];
                         args.push(pattern);
                         args = args.concat(params);
-                        var title = formatMessage(args);
-                        document.title = title;
+                        document.title = formatMessage(args);
                     } else {
                         document.title = pattern;
                     }

@@ -129,7 +129,10 @@ gulp.task('css', function() {
             'node_modules/angular-ui-bootstrap/ui-bootstrap-csp.css',
             'node_modules/ui-select/dist/select.css',
             'node_modules/select2/select2.css',
-            SwaggerUIPath + '/swagger-ui.css'
+            SwaggerUIPath + '/swagger-ui.css',
+            'node_modules/prismjs/themes/prism.css',
+            'node_modules/@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css',
+            'node_modules/@toast-ui/editor/dist/toastui-editor.css'
         ], {base: 'node_modules/'})
         .pipe(concatCss('deps.css'))
         .pipe(gulp.dest('.'));

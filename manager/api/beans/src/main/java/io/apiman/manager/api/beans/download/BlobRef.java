@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class BlobRef {
+    @BlobReference
     private String id;
     private String name;
     private String mimeType;
