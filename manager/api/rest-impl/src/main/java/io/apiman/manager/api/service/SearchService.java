@@ -37,33 +37,21 @@ public class SearchService implements DataAccessUtilMixin {
     public SearchService() {}
 
     public SearchResultsBean<OrganizationSummaryBean> findOrganizations(@NotNull SearchCriteriaBean criteria) {
-        if (criteria.getFilters().isEmpty()) {
-            return emptySearchResults();
-        }
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findOrganizations(criteria));
     }
 
     public SearchResultsBean<ClientSummaryBean> findClients(@NotNull SearchCriteriaBean criteria) {
-        if (criteria.getFilters().isEmpty()) {
-            return emptySearchResults();
-        }
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findClients(criteria));
     }
 
     public SearchResultsBean<ApiSummaryBean> findApis(@NotNull SearchCriteriaBean criteria) {
-        if (criteria.getFilters().isEmpty()) {
-            return emptySearchResults();
-        }
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findApis(criteria));
     }
 
     public SearchResultsBean<UserBean> findUsers(@NotNull SearchCriteriaBean criteria) {
-        if (criteria.getFilters().isEmpty()) {
-            return emptySearchResults();
-        }
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findUsers(criteria));
     }

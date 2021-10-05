@@ -2,6 +2,7 @@ package io.apiman.manager.api.beans.summary.mappers;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 
@@ -38,4 +39,6 @@ public interface ApiMapper {
             @Mapping(source = "api.tags", target = "apiTags")
     })
     ApiVersionSummaryBean toSummary(ApiVersionBean apiBean);
+
+    ApiBeanDto toDto(ApiBean apiBean);
 }
