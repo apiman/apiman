@@ -19,6 +19,7 @@ import {map, switchMap} from "rxjs/operators";
 import {forkJoin} from "rxjs";
 import {flatArray} from "../../shared/utility";
 import {SpinnerService} from "../../services/spinner/spinner.service";
+import {ApiService} from "../../services/api/api.service";
 
 @Component({
   selector: 'app-my-apps',
@@ -40,6 +41,7 @@ export class MyAppsComponent implements OnInit {
     private translator: TranslateService,
     private backend: BackendService,
     private policyService: PolicyService,
+    private apiService: ApiService,
   ) {}
 
   ngOnInit(): void {
@@ -90,14 +92,16 @@ export class MyAppsComponent implements OnInit {
             return forkJoin([
               this.policyService.getPlanPolicies(orgId, contract.plan.plan.id, contract.plan.version),
               this.policyService.getApiPolicies(orgId, contract.api.api.id, contract.api.version),
-              this.backend.getManagedApiEndpoint(orgId, contract.api.api.id, contract.api.version)
+              this.backend.getManagedApiEndpoint(orgId, contract.api.api.id, contract.api.version),
+              this.apiService.isApiDocAvailable(contract.api)
             ]).pipe(
-              map(([planPolicies, apiPolicies,endpoint]) => {
+              map(([planPolicies, apiPolicies, endpoint, docsAvailable]) => {
                 return {
                   ...contract,
                   policies: planPolicies.concat(apiPolicies),
                   section: 'summary',
-                  managedEndpoint: endpoint.managedEndpoint
+                  managedEndpoint: endpoint.managedEndpoint,
+                  docsAvailable: docsAvailable
                 } as IContractExt;
               })
             )

@@ -204,6 +204,13 @@ export class BackendService {
     return this.http.get<IPolicy>(this.generateUrl(path))
   }
 
+  public headApiDefinition(organizationId: string,
+                           apiId: string,
+                           apiVersion:string): Observable<any> {
+    const path= `organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
+    return this.http.head(this.generateUrl(path));
+  }
+
   /********* Helper **********/
   private generateUrl(path: string) {
     return `${this.endpoint}/${path}`;

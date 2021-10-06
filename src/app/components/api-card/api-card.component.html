@@ -12,15 +12,19 @@
   </mat-card-content>
   <div>
     <mat-card-actions class="api-card-actions">
-      <button
-        mat-raised-button
-        color="primary"
-        class="api-card-button"
-        *ngIf="api.docsAvailable"
+      <a *ngIf="api.docsAvailable"
         [routerLink]="['/swagger', api.organizationId, api.id, api.latestVersion]"
+        target="_blank"
       >
-        API Docs
-      </button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="api-card-button"
+        >
+          {{ "COMMON.API_DOCS" | translate }}
+        </button>
+      </a>
+
       <button
         mat-raised-button
         color="primary"

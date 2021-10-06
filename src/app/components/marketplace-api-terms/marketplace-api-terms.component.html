@@ -20,7 +20,7 @@
         [(ngModel)]="acceptedTerms"
         (change)="onClick()"
         >I agree to the
-        <a [href]="termsLink" class="primary"
+        <a [href]="termsLink" class="primary" target="_blank"
           >terms and conditions</a
         ></mat-checkbox
       >
@@ -31,7 +31,7 @@
         [(ngModel)]="acceptedPrivacyTerms"
         (change)="onClick()"
         >I accept the
-        <a [href]="privacyLink" class="primary">privacy policy</a></mat-checkbox
+        <a [href]="privacyLink" class="primary" target="_blank">privacy policy</a></mat-checkbox
       >
     </p>
   </mat-card-content>

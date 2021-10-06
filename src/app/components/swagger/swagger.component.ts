@@ -78,7 +78,7 @@ export class SwaggerComponent implements OnInit {
       requestInterceptor: (request: any) => {
         if (request.loadSpec) {
           // Fetch the spec using Basic auth, replace "user" and "password" with yours
-          request.headers.Authorization = 'Basic ' + btoa('test:test1234');
+          request.headers.Authorization = 'Basic ' + btoa('support.is:Sch33rBP44$');
 
           // or API key
           // req.headers.MyApiKey = 'abcde12345';

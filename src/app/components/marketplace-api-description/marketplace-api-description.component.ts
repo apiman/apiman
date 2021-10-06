@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IApiVersion } from '../../interfaces/ICommunication';
+import {IApiVersionExt} from "../../interfaces/IApiVersionExt";
 
 @Component({
   selector: 'app-marketplace-api-description',
@@ -7,7 +7,7 @@ import { IApiVersion } from '../../interfaces/ICommunication';
   styleUrls: ['./marketplace-api-description.component.scss'],
 })
 export class MarketplaceApiDescriptionComponent implements OnInit {
-  @Input() api!: IApiVersion;
+  @Input() api!: IApiVersionExt;
   @Input() isLatest!: boolean;
 
   features: string[] = ['fast', 'free', 'fancy features'];

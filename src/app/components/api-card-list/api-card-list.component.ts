@@ -1,13 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api/api.service';
 import { PageEvent } from '@angular/material/paginator';
-import { map, switchMap } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
+import {forkJoin, Observable, of} from 'rxjs';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { IApiSummary, ISearchCriteria } from '../../interfaces/ICommunication';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import { IApiSummaryExt } from '../../interfaces/IApiSummaryExt';
-import { isApiDocAvailable } from '../../shared/utility';
+import {ActivatedRoute, Params, Router} from "@angular/router";
+import {IApiSummaryExt} from "../../interfaces/IApiSummaryExt";
 
 @Component({
   selector: 'app-api-card-list',
@@ -18,7 +17,9 @@ export class ApiCardListComponent implements OnInit {
   apis: IApiSummaryExt[] = [];
   totalSize = 0;
   ready = false;
+  error = false;
   searchTerm = '';
+  pageIndex = 0;
   searchCriteria: ISearchCriteria = {
     filters: [
       {
@@ -52,6 +53,7 @@ export class ApiCardListComponent implements OnInit {
     this.route.queryParams.subscribe((params: Params) => {
       if (params.page) {
         this.searchCriteria.paging.page = params.page;
+        this.pageIndex = params.page -1;
       } else {
         this.searchCriteria.paging.page = 1;
       }
@@ -99,6 +101,7 @@ export class ApiCardListComponent implements OnInit {
   getApiList(): void {
     this.loadingSpinnerService.startWaiting();
     this.ready = false;
+    this.error = false;
 
     this.apiService
       .searchApis(this.searchCriteria)
@@ -110,17 +113,25 @@ export class ApiCardListComponent implements OnInit {
         }),
 
         switchMap((apiSummaries: IApiSummary[]) => {
-          return forkJoin(apiSummaries.map(apiSummary => {
-            return this.apiService.getLatestApiVersion(apiSummary.organizationId, apiSummary.id).pipe(
-              map(latestApiVersion => {
-                return {
-                  ...apiSummary,
-                  latestVersion: latestApiVersion.version,
-                  docsAvailable: isApiDocAvailable(latestApiVersion)
-                } as IApiSummaryExt;
-              })
-            );
-          }));
+          if (apiSummaries.length > 0) {
+            return forkJoin(apiSummaries.map(apiSummary => {
+              return this.apiService.getLatestApiVersion(apiSummary.organizationId, apiSummary.id).pipe(
+                switchMap(latestApiVersion => {
+                  return this.apiService.isApiDocAvailable(latestApiVersion).pipe(
+                    map(docsAvailable => {
+                      return {
+                        ...apiSummary,
+                        latestVersion: latestApiVersion.version,
+                        docsAvailable: docsAvailable
+                      } as IApiSummaryExt;
+                    })
+                  )
+                })
+              );
+            }));
+          } else {
+            return of([]) as Observable<IApiSummaryExt[]>
+          }
         })
       ).subscribe((apiList: IApiSummaryExt[]) => {
         if (this.listType === 'api') {
@@ -130,7 +141,10 @@ export class ApiCardListComponent implements OnInit {
         }
         this.loadingSpinnerService.stopWaiting();
         this.ready = true;
-      });
+      }, () => {
+        this.error = true;
+        this.loadingSpinnerService.stopWaiting()
+    });
   }
 
   //TODO implement real api call

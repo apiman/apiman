@@ -2,12 +2,13 @@ import {Component, Input, OnInit} from '@angular/core';
 import { PlanService } from '../../services/plan/plan.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { SignUpService } from "../../services/sign-up/sign-up.service";
-import {IApiPlanSummary, IApiVersion} from "../../interfaces/ICommunication";
+import {IApiPlanSummary} from "../../interfaces/ICommunication";
 import {IPolicyExt} from "../../interfaces/IPolicyExt";
 import {PolicyService} from "../../services/policy/policy.service";
 import {switchMap} from "rxjs/operators";
 import {forkJoin} from "rxjs";
 import {flatArray} from "../../shared/utility";
+import {IApiVersionExt} from "../../interfaces/IApiVersionExt";
 
 @Component({
   selector: 'app-plan-card-list',
@@ -15,7 +16,7 @@ import {flatArray} from "../../shared/utility";
   styleUrls: ['./plan-card-list.component.scss'],
 })
 export class PlanCardListComponent implements OnInit {
-  @Input() apiVersion!: IApiVersion;
+  @Input() apiVersion!: IApiVersionExt;
   plans: IApiPlanSummary[] = [];
 
   constructor(private route: ActivatedRoute,
@@ -48,7 +49,7 @@ export class PlanCardListComponent implements OnInit {
       policies.concat(this.apiPolicies);
     }
 
-    this.signUpService.setSignUpInfo(this.orgId, this.apiVersion, plan, policies);
+    this.signUpService.setSignUpInfo(this.orgId, this.apiVersion, plan, policies, this.apiVersion.docsAvailable);
     this.router.navigate(['/api-signup', this.orgId, this.apiId]);
   }
 

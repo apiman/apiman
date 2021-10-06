@@ -6,4 +6,5 @@ export interface ISignUpInfo {
   plan: IApiPlanSummary;
   policies: IPolicyExt[];
   organizationId: string;
+  docsAvailable: boolean;
 }

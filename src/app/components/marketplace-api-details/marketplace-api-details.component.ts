@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api/api.service';
 import { HeroService } from '../../services/hero/hero.service';
-import { switchMap } from 'rxjs/operators';
-import {forkJoin, Observable} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
+import {forkJoin} from 'rxjs';
 import { IApi, IApiVersion } from '../../interfaces/ICommunication';
+import {SpinnerService} from "../../services/spinner/spinner.service";
+import {IApiVersionExt} from "../../interfaces/IApiVersionExt";
 
 @Component({
   selector: 'app-marketplace-api-details',
@@ -14,12 +16,13 @@ import { IApi, IApiVersion } from '../../interfaces/ICommunication';
 export class MarketplaceApiDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
-    public apiService: ApiService,
-    private heroService: HeroService
+    private apiService: ApiService,
+    private heroService: HeroService,
+    private spinnerService: SpinnerService
   ) {}
 
   api!: IApi;
-  apis!: IApiVersion[];
+  apis!: IApiVersionExt[];
 
   ngOnInit(): void {
     this.getApiVersions();
@@ -33,27 +36,37 @@ export class MarketplaceApiDetailsComponent implements OnInit {
   }
 
   getApiVersions(): void {
+    this.spinnerService.startWaiting()
     const orgId = this.route.snapshot.paramMap.get('orgId')!;
     const apiId = this.route.snapshot.paramMap.get('apiId')!;
-    const newVersions: Array<Observable<IApiVersion>> = [];
     this.apiService
       .getApiVersionSummaries(orgId, apiId)
       .pipe(
-        switchMap((apiVersionSummarys) => {
-          for (const apiVersionSummary of apiVersionSummarys) {
-            newVersions.push(
-              this.apiService.getApiVersion(
-                apiVersionSummary.organizationId,
-                apiVersionSummary.id,
-                apiVersionSummary.version
-              )
-            );
-          }
-          return forkJoin(newVersions);
+        switchMap((apiVersionSummaries) => {
+          return forkJoin(apiVersionSummaries.map(apiVersionSummary => {
+            return this.apiService.getApiVersion(
+              apiVersionSummary.organizationId,
+              apiVersionSummary.id,
+              apiVersionSummary.version
+            )
+          }))
+        }),
+        switchMap((apiVersions: IApiVersion[]) => {
+          return forkJoin(apiVersions.map(apiVersion => {
+            return this.apiService.isApiDocAvailable(apiVersion).pipe(
+              map(docsAvailable => {
+                return {
+                  ...apiVersion,
+                  docsAvailable: docsAvailable
+                } as IApiVersionExt;
+              })
+            )
+          }))
         })
       )
-      .subscribe((data) => {
-        this.apis = data
+      .subscribe((apiVersions) => {
+        this.spinnerService.stopWaiting();
+        this.apis = apiVersions
       });
   }
 }

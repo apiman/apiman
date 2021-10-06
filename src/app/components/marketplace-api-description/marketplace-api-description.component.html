@@ -5,22 +5,17 @@
         Version {{ api.version }} of {{ api.api.name }}
         <span *ngIf="isLatest" id="latest-tag" class="primary">[latest]</span>
       </div>
-      <button
-        mat-raised-button
-        id="docs-button"
-        color="primary"
-        *ngIf="
-          (api.definitionType !== null && api.definitionType !== 'None')
-        "
-        [routerLink]="[
-          '/swagger',
-          api.api.organization!.id,
-          api.api.id,
-          api.version
-        ]"
+      <a *ngIf="api.docsAvailable"
+         [routerLink]="['/swagger', api.api.organization.id, api.api.id,api.version]"
       >
-        API Documentation
-      </button>
+        <button
+          mat-raised-button
+          id="docs-button"
+          color="primary"
+        >
+          {{ "COMMON.API_DOCS" | translate }}
+        </button>
+      </a>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div id="content-header">

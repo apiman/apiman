@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BackendService } from '../backend/backend.service';
-import { Observable, throwError } from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import { catchError, map, retry, switchMap } from 'rxjs/operators';
 import {
   IApi,
@@ -18,7 +18,6 @@ export class ApiService {
   apis: IApiSummary[] = [];
   currentApi!: Observable<IApi>;
   currentApiVersions!: Observable<IApiVersionSummary[]>;
-  totalSize = 0;
 
   constructor(private backendService: BackendService) {}
 
@@ -75,6 +74,17 @@ export class ApiService {
           latestApiVersionSummary.version
         );
       })
+    );
+  }
+
+  isApiDocAvailable(apiSummary: IApiVersion): Observable<boolean> {
+    return this.backendService.headApiDefinition(apiSummary.api.organization.id,
+                                                 apiSummary.api.id,
+                                                 apiSummary.version).pipe(
+      map(() => {
+        return true;
+      }),
+      catchError(() => of(false))
     );
   }
 

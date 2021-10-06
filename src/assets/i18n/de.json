@@ -15,7 +15,9 @@
     "SIGNUP": "Anmeldung",
     "HOME": "Home",
     "QUERY_PARAMETER": "Als HTTP Query Parameter",
-    "HTTP_HEADER": "Als HTTP Request Header"
+    "HTTP_HEADER": "Als HTTP Request Header",
+    "API_DOCS": "API Dokumentation",
+    "ERROR": "Die Daten konnten nicht geladen werden, bitte versuchen Sie es später erneut."
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",
@@ -39,8 +41,6 @@
     "USE_API": "API benutzen",
     "POLICIES": "Regeln",
     "MANAGE_API": "API verwalten",
-    "API_DOCS_TRY_NOW": "API Doku & Jetzt ausprobieren",
-    "VIEW_AND_TRY_NOW": "API Doku anschauen & ausprobieren",
     "API_KEY": "API Key",
     "ENDPOINT": "Endpoint",
     "AUTHENTICATION": "Authentifizierung",

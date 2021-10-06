@@ -1,34 +1,25 @@
 <!-- Try it now -->
 <div class="grid">
   <div>
-    <h4>{{ "APPS.API_DOCS_TRY_NOW" | translate }}</h4>
+    <h4>{{ "COMMON.API_DOCS" | translate }}</h4>
     <p [innerHTML]="'DESCRIPTIONS.TRY_IT_OUT' | translate"></p>
   </div>
   <div id="try-it-now-btn">
-    <ng-container *ngIf="contract">
-      <button
-        mat-raised-button
-        color="primary"
-        [disabled]="disableButtons"
-        [routerLink]="[
+    <ng-container *ngIf="docsAvailable">
+      <a [routerLink]="[
           '/swagger',
-          contract.client.client.organization.id,
-          contract.api.id,
-          contract.api.version
+          orgId,
+          apiId,
+          apiVersion
         ]"
-      >
-        {{ "APPS.VIEW_AND_TRY_NOW" | translate }}
-      </button>
-    </ng-container>
-    <ng-container *ngIf="!contract">
-      <button mat-raised-button color="primary" [routerLink]="[
-          '/swagger',
-          newContractDetails.organizationId,
-          newContractDetails.apiVersion.id,
-          newContractDetails.apiVersion.version
-        ]">
-        {{ "APPS.VIEW_AND_TRY_NOW" | translate }}
-      </button>
+      target="_blank">
+        <button
+          mat-raised-button
+          color="primary"
+        >
+          {{ "COMMON.API_DOCS" | translate }}
+        </button>
+      </a>
     </ng-container>
   </div>
 </div>

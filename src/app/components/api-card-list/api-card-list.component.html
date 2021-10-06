@@ -24,9 +24,16 @@
   </div>
 </ng-container>
 <ng-template #NoDataMsg>
-  <ng-container *ngIf="this.ready">
+  <ng-container *ngIf="this.ready; else ErrorMsg">
     <h2 class="align">
       {{'COMMON.NO_DATA_FOUND' | translate}}
+    </h2>
+  </ng-container>
+</ng-template>
+<ng-template #ErrorMsg>
+  <ng-container *ngIf="error">
+    <h2 class="align">
+      {{ 'COMMON.ERROR' | translate }}
     </h2>
   </ng-container>
 </ng-template>
@@ -35,7 +42,13 @@
     [length]="totalSize"
     [pageSize]="searchCriteria.paging.pageSize"
     [pageSizeOptions]="[4, 8, 12, 16, totalSize]"
+    [pageIndex]="pageIndex"
     (page)="OnPageChange($event)"
   >
   </mat-paginator>
+</div>
+<div id="show-all-wrapper" *ngIf="listType === 'featuredApi' && ready">
+  <button mat-raised-button color="primary" [routerLink]="['/marketplace']">
+    {{ "HOME.SHOW_ALL" | translate }}
+  </button>
 </div>

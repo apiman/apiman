@@ -17,13 +17,15 @@ export class SignUpService {
     orgId: string,
     apiVersion: IApiVersion,
     plan: IApiPlanSummary,
-    policies: IPolicyExt[]
+    policies: IPolicyExt[],
+    docsAvailable: boolean
   ): void {
     this.signUpInfo = {
       apiVersion: apiVersion,
       plan: plan,
       organizationId: orgId,
-      policies: policies
+      policies: policies,
+      docsAvailable: docsAvailable
     };
   }
 }

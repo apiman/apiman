@@ -82,10 +82,18 @@
         </mat-form-field>
       </div>
     </div>
-    <div class="view-docs">
-      <button mat-raised-button color="primary">
-        View API Docs and try it now
-      </button>
+    <div class="view-docs" *ngIf="contract && contract.docsAvailable">
+      <a [routerLink]="[
+          '/swagger',
+          contract.api.api.organization.id,
+          contract.api.api.id,
+          contract.api.version
+        ]"
+        target="_blank">
+        <button mat-raised-button color="primary">
+          {{ "COMMON.API_DOCS" | translate }}
+        </button>
+      </a>
     </div>
   </div>
   <div class="policies">

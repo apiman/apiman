@@ -15,6 +15,11 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
   @Input() contract?: IContractExt;
   newContractDetails: ISignUpInfo;
 
+  orgId = '';
+  apiId = '';
+  apiVersion = '';
+  docsAvailable = false;
+
   apiKey = '';
   endpoint = '';
   oAuthServerUrl = '';
@@ -51,12 +56,20 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
       this.disableButtons = false;
       this.apiKey = this.contract.client.apikey;
       this.endpoint = this.contract.managedEndpoint;
+      this.orgId = this.contract.api.api.organization.id;
+      this.apiId = this.contract.api.api.id;
+      this.apiVersion = this.contract.api.version;
+      this.docsAvailable = this.contract.docsAvailable;
     } else {
       this.disableButtons = true;
       this.apiKey = this.previewText.apiKey;
       this.endpoint = this.previewText.endpoint;
       this.oAuthServerUrl = this.previewText.oAuthServerUrl;
       this.oAuthClientSecret = this.previewText.oAuthClientSecret;
+      this.orgId = this.newContractDetails.organizationId;
+      this.apiId = this.newContractDetails.apiVersion.api.id;
+      this.apiVersion = this.newContractDetails.apiVersion.version;
+      this.docsAvailable = this.newContractDetails.docsAvailable;
     }
   }
 }

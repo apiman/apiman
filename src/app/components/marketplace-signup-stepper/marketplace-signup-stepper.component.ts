@@ -4,7 +4,6 @@ import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
   IClientSummary,
-  IContract,
   INewContract,
   IPolicy,
 } from '../../interfaces/ICommunication';
@@ -15,6 +14,7 @@ import { ISignUpInfo } from '../../interfaces/ISignUpInfo';
 import { BackendService } from '../../services/backend/backend.service';
 import { MatStepper } from '@angular/material/stepper';
 import { IContractExt } from '../../interfaces/IContractExt';
+import {map, switchMap} from "rxjs/operators";
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
@@ -103,13 +103,27 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     };
 
     this.backend
-      .createContract(client.organizationId, client.id, '1.0', contract)
+      .createContract(client.organizationId, client.id, '1.0', contract).pipe(
+        switchMap(contract => {
+          return this.backend.getManagedApiEndpoint(
+            contract.client.client.organization.id,
+            contract.api.api.id,
+            contract.api.version).pipe(
+              map(endpoint => {
+                return {
+                  ...contract,
+                  managedEndpoint: endpoint.managedEndpoint
+                } as IContractExt;
+              })
+          )
+        })
+      )
       .subscribe(
-        (contract: IContract) => {
+        (contract: IContractExt) => {
           this.snackbar.showPrimarySnackBar(
             this.translator.instant('WIZARD.SUCCESS')
           );
-          this.contract = contract as IContractExt;
+          this.contract = contract;
           if (['Ready', 'Created'].includes(this.contract.client.status)) {
             stepper.next();
           } else {
