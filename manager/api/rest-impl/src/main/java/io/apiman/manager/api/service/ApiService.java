@@ -674,10 +674,17 @@ public class ApiService implements DataAccessUtilMixin {
             data.addChange("parsePayload", String.valueOf(avb.isParsePayload()), String.valueOf(bean.getParsePayload())); //$NON-NLS-1$
             avb.setParsePayload(bean.getParsePayload());
         }
-
         if (AuditUtils.valueChanged(avb.getDisableKeysStrip(), bean.getDisableKeysStrip())) {
             data.addChange("disableKeysStrip", String.valueOf(avb.getDisableKeysStrip()), String.valueOf(bean.getDisableKeysStrip())); //$NON-NLS-1$
             avb.setDisableKeysStrip(bean.getDisableKeysStrip());
+        }
+        if (AuditUtils.valueChanged(avb.getExtendedDescription(), bean.getExtendedDescription())) {
+            data.addChange("extendedDescription", String.valueOf(avb.getExtendedDescription()), String.valueOf(bean.getExtendedDescription())); //$NON-NLS-1$
+            avb.setExtendedDescription(bean.getExtendedDescription());
+        }
+        if (AuditUtils.valueChanged(avb.isExposeInPortal(), bean.isExposeInPortal())) {
+            data.addChange("exposeInPortal", String.valueOf(avb.isExposeInPortal()), String.valueOf(bean.isExposeInPortal())); //$NON-NLS-1$
+            avb.setExposeInPortal(bean.isExposeInPortal());
         }
 
         return tryAction(() -> {

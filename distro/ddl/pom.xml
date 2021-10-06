@@ -29,9 +29,12 @@
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-api-beans</artifactId>
-      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-manager-api-jpa</artifactId>
     </dependency>
   </dependencies>
 

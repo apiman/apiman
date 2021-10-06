@@ -146,9 +146,31 @@ module ApimanRPC {
             }
         }]);
 
+    export interface BlobRef {
+        id: string;
+        name: string;
+        mimeType: string;
+        hash: number;
+    }
+
+    export var BlobService = _module.factory('BlobService', ['$http', 'Configuration', '$q',
+        ($http, Configuration, $q) => {
+            return {
+                uploadBlob: (blob: Blob | File): Promise<BlobRef> => {
+                    const formData: FormData = new FormData();
+                    formData.append('image', blob);
+                    return $http({
+                        method: 'POST',
+                        url: `${Configuration.api.endpoint}/blobs`,
+                        data: formData
+                    })
+                }
+            }
+        }]);
+
     export var OrganizationSvcs = _module.factory('OrgSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
-            var endpoint = Configuration.api.endpoint + '/organizations/:organizationId/:entityType/:entityId/:versionsOrActivity/:version/:policiesOrActivity/:policyId/:policyChain';
+            const endpoint = Configuration.api.endpoint + '/organizations/:organizationId/:entityType/:entityId/:versionsOrActivity/:version/:policiesOrActivity/:policyId/:policyChain';
             return $resource(endpoint,
                 {
                     organizationId: '@organizationId',

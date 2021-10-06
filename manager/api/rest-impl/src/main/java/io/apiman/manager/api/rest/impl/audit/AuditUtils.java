@@ -103,15 +103,11 @@ public class AuditUtils {
      * @return true if value changed, else false
      */
     public static boolean valueChanged(Set<?> before, Set<?> after) {
-        if ((before == null && after == null) || after == null) {
+        if (after == null) {
             return false;
         }
         if (before == null) {
-            if (after.isEmpty()) {
-                return false;
-            } else {
-                return true;
-            }
+            return !after.isEmpty();
         } else {
             if (before.size() != after.size()) {
                 return true;

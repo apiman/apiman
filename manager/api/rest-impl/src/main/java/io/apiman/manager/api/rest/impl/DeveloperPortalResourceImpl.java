@@ -31,27 +31,22 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 /**
- * {@inheritDoc}.
- *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
 public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     private final IApimanLogger LOG = ApimanLoggerFactory.getLogger(DeveloperPortalResourceImpl.class);
-    private SearchService searchService;
     private ApiService apiService;
     private DevPortalService portalService;
     private OrganizationService orgService;
     private ISecurityContext securityContext;
 
     @Inject
-    public DeveloperPortalResourceImpl(SearchService searchService,
-                                       ApiService apiService,
+    public DeveloperPortalResourceImpl(ApiService apiService,
                                        DevPortalService portalService,
                                        OrganizationService orgService,
                                        ISecurityContext securityContext) {
-        this.searchService = searchService;
         this.apiService = apiService;
         this.portalService = portalService;
         this.orgService = orgService;

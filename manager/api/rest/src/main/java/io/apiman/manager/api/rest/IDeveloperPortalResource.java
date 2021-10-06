@@ -35,7 +35,6 @@ import javax.ws.rs.core.Response;
  */
 @Path("/devportal")
 public interface IDeveloperPortalResource {
-
     @POST
     @Path("apis/search")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -47,6 +46,13 @@ public interface IDeveloperPortalResource {
     @Path("apis/featured")
     @Produces(MediaType.APPLICATION_JSON)
     List<ApiSummaryBean> getFeaturedApis();
+
+    @POST
+    @Path("organizations")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    OrganizationBean createHomeOrgForDeveloper(NewOrganizationBean newOrg)
+            throws OrganizationAlreadyExistsException;
 
     @GET
     @Path("organizations/{orgId}/apis/{apiId}/versions/")
@@ -63,13 +69,6 @@ public interface IDeveloperPortalResource {
     @Produces(MediaType.APPLICATION_JSON)
     List<DeveloperApiPlanSummaryDto> getApiVersionPlans(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("apiVersion") String apiVersion)
             throws ApiVersionNotFoundException;
-
-    @POST
-    @Path("organizations")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    OrganizationBean createHomeOrgForDeveloper(NewOrganizationBean newOrg)
-            throws OrganizationAlreadyExistsException;
 
     @GET
     @Path("organizations/{orgId}/apis/{apiId}/versions/{apiVersion}/policies")
