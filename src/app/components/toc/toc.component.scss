@@ -1,0 +1,17 @@
+.toc{
+  font-size: 0.9rem;
+  white-space: nowrap;
+  position: sticky;
+  padding-left: 1rem;
+  ul{
+    list-style: none;
+    padding-left: 0rem;
+    li{
+      padding-left: 0.8rem;
+    }
+  }
+  ul:first-child {
+    padding-left: 0;
+    margin-top: 1rem;
+  }
+}

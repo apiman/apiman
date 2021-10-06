@@ -40,6 +40,7 @@ import { GaugeChartComponent } from './components/charts/gauge-chart/gauge-chart
 import { IConfig } from './interfaces/IConfig';
 import { ApprovalComponent } from './components/approval/approval.component';
 import { ThemeService } from './services/theme/theme.service';
+import {TocComponent} from "./components/toc/toc.component";
 
 export function initializeApp(configService: ConfigService, devPortalInitializer: InitializerService, keycloakHelper: KeycloakHelperService, themeService: ThemeService): () => Promise<any> {
   return () => new Promise((resolve, reject) => {
@@ -86,6 +87,7 @@ export function createTranslateLoader(http: HttpClient) {
     PolicyCardComponent,
     GaugeChartComponent,
     ApprovalComponent,
+    TocComponent
   ],
   imports: [
     KeycloakAngularModule,

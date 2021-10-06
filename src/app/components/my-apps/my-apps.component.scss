@@ -96,3 +96,17 @@
   margin-left: 2rem;
   margin-right: 2rem;
 }
+
+.wrapper{
+  display: flex;
+  align-items: flex-start;
+  column-gap: 1.4rem;
+  .first{
+    flex: 7;
+  }
+  .second{
+    flex: 1;
+    top: 0px;
+    position: sticky;
+  }
+}

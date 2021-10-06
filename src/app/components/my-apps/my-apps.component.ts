@@ -20,20 +20,23 @@ import {forkJoin} from "rxjs";
 import {flatArray} from "../../shared/utility";
 import {SpinnerService} from "../../services/spinner/spinner.service";
 import {ApiService} from "../../services/api/api.service";
+import {ITocLink} from "../../interfaces/ITocLink";
 
 @Component({
   selector: 'app-my-apps',
   templateUrl: './my-apps.component.html',
-  styleUrls: ['./my-apps.component.scss'],
+  styleUrls: ['./my-apps.component.scss']
 })
 export class MyAppsComponent implements OnInit {
   contracts: IContractExt[] = [];
   clientContractsMap = new Map<string, IContractExt[]>();
-  contractsLoaded: boolean= false;
+  contractsLoaded = false;
 
   tmpUrl = 'https://pbs.twimg.com/media/Ez-AaifWYAIiFSQ.jpg';
   tmpUrl2 =
     'https://cdn0.iconfinder.com/data/icons/customicondesignoffice5/256/examples.png';
+
+  tocLinks: ITocLink[] = [];
 
   constructor(
     private spinnerService: SpinnerService,
@@ -41,7 +44,7 @@ export class MyAppsComponent implements OnInit {
     private translator: TranslateService,
     private backend: BackendService,
     private policyService: PolicyService,
-    private apiService: ApiService,
+    private apiService: ApiService
   ) {}
 
   ngOnInit(): void {
@@ -110,7 +113,8 @@ export class MyAppsComponent implements OnInit {
       ).subscribe((contracts) => {
         this.spinnerService.stopWaiting();
         this.contractsLoaded = true;
-        this.extractContracts(contracts)
+        this.extractContracts(contracts);
+        this.generateTocLinks();
       });
   }
 
@@ -151,7 +155,7 @@ export class MyAppsComponent implements OnInit {
   private setUpHero() {
     this.heroService.setUpHero({
       title: this.translator.instant('APPS.TITLE'),
-      subtitle: this.translator.instant('APPS.SUBTITLE'),
+      subtitle: this.translator.instant('APPS.SUBTITLE')
     });
   }
 
@@ -161,5 +165,42 @@ export class MyAppsComponent implements OnInit {
 
   getColorForLabel(status: IApiStatus | IClientStatus) {
     return statusColorMap.get(status);
+  }
+
+  formatClientContractTitle(key: string) {
+    return key.replace(':', ' - ');
+  }
+
+  private generateTocLinks() {
+    this.clientContractsMap.forEach((value: IContractExt[], key: string) => {
+      const formated = this.formatClientContractTitle(key);
+
+      this.tocLinks.push({
+        name: formated,
+        destination: formated,
+        subLinks: this.generateTocSubLinks(value)
+      });
+    });
+  }
+
+  private generateTocSubLinks(contracts: IContractExt[]): ITocLink[]{
+    let subLinks: ITocLink[] = [];
+
+    contracts.forEach((contract: IContractExt) => {
+      subLinks.push({
+        name: this.formatApiVersionPlanTitle(contract),
+        destination: this.formatApiVersionPlanTitleWithClient(contract)
+      })
+    });
+
+    return subLinks;
+  }
+
+  formatApiVersionPlanTitle(contract: IContractExt) {
+    return `${contract.api.api.name} ${contract.api.version} - ${contract.plan.plan.name}`;
+  }
+
+  formatApiVersionPlanTitleWithClient(contract: IContractExt): string {
+    return this.formatApiVersionPlanTitle(contract) + '-forClient-' + contract.client.client.name;
   }
 }
