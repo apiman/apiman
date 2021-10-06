@@ -9,11 +9,11 @@
       <p #heroSubtitle>{{ heroService.hero.subtitle }}</p>
     </div>
     <div id="hero-btn">
-      <button mat-raised-button color="primary" (click)="login()" *ngIf="!loggedIn; else logoutBtn">
+      <button mat-stroked-button color="primary" (click)="login()" *ngIf="!loggedIn; else logoutBtn" class="primary-border-color">
         Register / Login
       </button>
       <ng-template #logoutBtn>
-        <button mat-raised-button color="primary" (click)="logout()">
+        <button mat-stroked-button color="primary" (click)="logout()" class="primary-border-color">
           Log-Out
         </button>
       </ng-template>
