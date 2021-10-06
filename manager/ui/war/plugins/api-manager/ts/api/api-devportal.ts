@@ -1,7 +1,7 @@
 /// <reference path="../apimanPlugin.ts"/>
 /// <reference path="../rpc.ts"/>
 
-import {Editor, HookCallback, HookMap} from "@toast-ui/editor/types/editor";
+//import {Editor, HookCallback, HookMap} from "@toast-ui/editor/types/editor";
 
 module Apiman {
   import ApiPlanSummaryBean = ApimanRPC.ApiPlanSummaryBean;
@@ -30,7 +30,7 @@ module Apiman {
             PageLifecycle.setPageTitle('api-devportal', [$scope.api.name]);
           });
 
-          const uploadImage = (blob: Blob | File, callback: HookCallback): void => {
+          const uploadImage = (blob: Blob | File, callback): void => {
             BlobService.uploadBlob(blob).then(
                 (blobRef: BlobRef) => {
                   Logger.debug("Uploaded successfully: {0}", blobRef);
@@ -43,7 +43,7 @@ module Apiman {
           }
 
           // Load Markdown Editor
-          const ed: Editor = new $window.editor({
+          const ed = new $window.editor({
             el: document.querySelector('#editor'),
             height: '500px',
             initialEditType: 'markdown',
@@ -51,9 +51,9 @@ module Apiman {
             usageStatistics: false,
             hooks: {
               addImageBlobHook: uploadImage
-            } as HookMap,
+            },
             plugins: [[$window.codeSyntaxHighlightPlugin, { highlighter: $window.prism }]]
-          }) as Editor;
+          });
 
           // Get the API Version Plan summaries
           DevPortalService.getApiVersionPlans(params.org, params.api, params.version).then(

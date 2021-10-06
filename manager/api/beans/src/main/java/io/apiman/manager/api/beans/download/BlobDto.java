@@ -19,6 +19,9 @@ public class BlobDto {
     private FileBackedOutputStream blob;
     private long hash;
 
+    public BlobDto() {
+    }
+
     public String getId() {
         return id;
     }

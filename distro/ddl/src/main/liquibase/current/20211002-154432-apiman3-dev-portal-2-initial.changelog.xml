@@ -184,4 +184,100 @@
             </column>
         </createTable>
     </changeSet>
+    <!-- blobstore + eventstore -->
+    <changeSet author="msavy (generated)" id="1633542267834-6">
+        <createTable tableName="blob_store">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="blob_storePK"/>
+            </column>
+            <column name="mrblobby" type="BLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hash" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mime_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="references" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy (generated)" id="1633542267834-7">
+        <createTable tableName="outbox">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="outboxPK"/>
+            </column>
+            <column name="event_version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payload" type="BINARY">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy (generated)" id="1633542267834-8">
+        <addUniqueConstraint columnNames="id" constraintName="UC_BLOB_STOREID_COL" tableName="blob_store"/>
+    </changeSet>
+<!--    <changeSet author="msavy (generated)" id="1633542267834-9">-->
+<!--        <addUniqueConstraint columnNames="plan_id, plan_org_id, version" constraintName="UK53ss55b2hiye2e9v6lftdo5jg" tableName="plan_versions"/>-->
+<!--    </changeSet>-->
+    <changeSet author="msavy (generated)" id="1633542267834-10">
+        <addUniqueConstraint columnNames="hash, mime_type, name" constraintName="UK_4jee67ekw7s4y8spoc58i4dsf" tableName="blob_store"/>
+    </changeSet>
+<!--    <changeSet author="msavy (generated)" id="1633542267834-11">-->
+<!--        <addUniqueConstraint columnNames="key" constraintName="UK_9ag6p3dn96urpj910hbblr5d7" tableName="KeyValueTag"/>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="msavy (generated)" id="1633542267834-12">-->
+<!--        <addUniqueConstraint columnNames="user_id, role_id, org_id" constraintName="UKfwy6c61bcnvshcsxubanjvi08" tableName="memberships"/>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="msavy (generated)" id="1633542267834-13">-->
+<!--        <addUniqueConstraint columnNames="group_id, artifact_id" constraintName="UKofbok9ushig9vviq01dnu11x" tableName="plugins"/>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="msavy (generated)" id="1633542267834-14">-->
+<!--        <addUniqueConstraint columnNames="userId, type" constraintName="UserAllowedOnlyOneOfEachNotificationType" tableName="notification_preferences"/>-->
+<!--    </changeSet>-->
+    <changeSet author="msavy (generated)" id="1633542267834-15">
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="api_tag" constraintName="FK2h64maqscweorti1hta9josl2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="KeyValueTag" validate="true"/>
+    </changeSet>
+    <changeSet author="msavy (generated)" id="1633542267834-16">
+        <addForeignKeyConstraint baseColumnNames="api_id,org_id" baseTableName="api_tag" constraintName="FKlpr8yu65omneju5297uqthb6k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id,organization_id" referencedTableName="apis" validate="true"/>
+    </changeSet>
+<!--    <changeSet author="msavy (generated)" id="1633542267834-1">-->
+<!--        <alterSequence startValue="69" incrementBy="10" sequenceName="hibernate_sequence"/>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="msavy (generated)" id="1633542267834-2">-->
+<!--        <dropPrimaryKey tableName="api_plans"/>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="msavy (generated)" id="1633542267834-3">-->
+<!--        <addPrimaryKey columnNames="api_version_id, expose_in_portal, plan_id, requires_approval, version" tableName="api_plans"/>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="msavy (generated)" id="1633542267834-4">-->
+<!--        <dropPrimaryKey tableName="users"/>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="msavy (generated)" id="1633542267834-5">-->
+<!--        <addPrimaryKey columnNames="username" constraintName="usersPK" tableName="users"/>-->
+<!--    </changeSet>-->
 </databaseChangeLog>

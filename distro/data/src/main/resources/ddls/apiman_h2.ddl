@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 02/10/2021, 18:24
+-- Ran at: 06/10/2021, 18:44
 -- Against: sa@offline:h2?version=1.4.200&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/h2/databasechangelog.csv
 -- Liquibase version: 4.4.3
 -- *********************************************************************
@@ -10,6 +10,15 @@
 -- "support" JSON
 CREATE domain IF NOT EXISTS json AS text;
 CREATE domain IF NOT EXISTS jsonb AS other;
+
+-- *********************************************************************
+-- Update Database Script
+-- *********************************************************************
+-- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
+-- Ran at: 06/10/2021, 19:01
+-- Against: sa@offline:h2?version=1.4.200&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/h2/databasechangelog.csv
+-- Liquibase version: 4.4.3
+-- *********************************************************************
 
 -- Changeset src/main/liquibase/current/000-apiman-manager-api.db.sequences.changelog.xml::1434723514712-2::apiman (generated)
 CREATE SEQUENCE hibernate_sequence START WITH 999;
@@ -344,3 +353,20 @@ CREATE TABLE KeyValueTag (id BIGINT AUTO_INCREMENT NOT NULL, key VARCHAR(255) NO
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-5::msavy (generated)
 CREATE TABLE api_tag (api_id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NOT NULL, tag_id BIGINT NOT NULL, CONSTRAINT PK_API_TAG PRIMARY KEY (api_id, org_id, tag_id));
 
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-6::msavy (generated)
+CREATE TABLE blob_store (id VARCHAR(255) NOT NULL, mrblobby BLOB NOT NULL, created_on TIMESTAMP NOT NULL, hash BIGINT NOT NULL, mime_type VARCHAR(255) NOT NULL, modified_on TIMESTAMP NOT NULL, name VARCHAR(255) NOT NULL, references INT NOT NULL, CONSTRAINT blob_storePK PRIMARY KEY (id));
+
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-7::msavy (generated)
+CREATE TABLE outbox (id BIGINT AUTO_INCREMENT NOT NULL, event_version BIGINT NOT NULL, payload BINARY NOT NULL, source VARCHAR(255) NOT NULL, subject VARCHAR(255) NOT NULL, time TIMESTAMP NOT NULL, type VARCHAR(255) NOT NULL, CONSTRAINT outboxPK PRIMARY KEY (id));
+
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-8::msavy (generated)
+ALTER TABLE blob_store ADD CONSTRAINT UC_BLOB_STOREID_COL UNIQUE (id);
+
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-10::msavy (generated)
+ALTER TABLE blob_store ADD CONSTRAINT UK_4jee67ekw7s4y8spoc58i4dsf UNIQUE (hash, mime_type, name);
+
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-15::msavy (generated)
+ALTER TABLE api_tag ADD CONSTRAINT FK2h64maqscweorti1hta9josl2 FOREIGN KEY (tag_id) REFERENCES KeyValueTag (id);
+
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-16::msavy (generated)
+ALTER TABLE api_tag ADD CONSTRAINT FKlpr8yu65omneju5297uqthb6k FOREIGN KEY (api_id, org_id) REFERENCES apis (id, organization_id);
