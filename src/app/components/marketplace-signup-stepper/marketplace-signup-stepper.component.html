@@ -86,34 +86,6 @@
         </mat-card-actions>
       </mat-card>
     </mat-step>
-<!--    <mat-step label="{{ 'WIZARD.FORTH_STEP_LABEL' | translate }}">-->
-<!--      <mat-card>-->
-<!--        <mat-card-header>-->
-<!--          <mat-card-title>{{-->
-<!--            "WIZARD.FORTH_STEP_TITLE" | translate-->
-<!--          }}</mat-card-title>-->
-<!--        </mat-card-header>-->
-<!--        <mat-card-content class="mat-card-header-text">-->
-<!--          <app-my-apps-use-api [contract]="contract"></app-my-apps-use-api>-->
-<!--          <h3>Policies</h3>-->
-<!--          &lt;!&ndash;In this version we will not have more than 2 policies&ndash;&gt;-->
-<!--          <div class="policies" *ngIf="newContractDetails.policies">-->
-<!--            <app-policy-card-->
-<!--              *ngFor="let policy of newContractDetails.policies"-->
-<!--              [policy]="policy"-->
-<!--            ></app-policy-card>-->
-<!--          </div>-->
-<!--        </mat-card-content>-->
-<!--        <mat-divider></mat-divider>-->
-<!--        <mat-card-actions class="right">-->
-<!--          <button mat-raised-button color="primary" (click)="finish()">-->
-<!--            {{ "COMMON.FINISH" | translate }}-->
-<!--          </button>-->
-<!--        </mat-card-actions>-->
-<!--      </mat-card>-->
-<!--    </mat-step>-->
-
-
     <mat-step>
       <ng-template matStepLabel>{{ 'WIZARD.FORTH_STEP_LABEL' | translate }}</ng-template>
       <ng-template matStepContent>
