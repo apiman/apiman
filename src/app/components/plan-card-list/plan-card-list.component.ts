@@ -9,6 +9,7 @@ import {switchMap} from "rxjs/operators";
 import {forkJoin} from "rxjs";
 import {flatArray} from "../../shared/utility";
 import {IApiVersionExt} from "../../interfaces/IApiVersionExt";
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-plan-card-list',
@@ -23,7 +24,8 @@ export class PlanCardListComponent implements OnInit {
               private planService: PlanService,
               private policyService: PolicyService,
               private signUpService: SignUpService,
-              private router: Router
+              private router: Router,
+              private keycloak: KeycloakService
   ) {}
 
   planPoliciesMap = new Map<string, IPolicyExt[]>();
@@ -38,6 +40,8 @@ export class PlanCardListComponent implements OnInit {
   }
 
   onSignUp(plan: IApiPlanSummary) {
+    this.checkIfUserIsLoggedIn();
+
     const policies: IPolicyExt[] = [];
     const planIdVersionMapped = plan.planId + ':' + plan.version;
     const foundPlanPolicies = this.planPoliciesMap.get(planIdVersionMapped);
@@ -80,5 +84,17 @@ export class PlanCardListComponent implements OnInit {
         this.planPoliciesMap.set(planIdVersionMapped, [extendedPolicy]);
       }
     })
+  }
+
+  /**
+   * Checks if the user is logged in and redirects to login in notGlau
+   * @private
+   */
+  private checkIfUserIsLoggedIn() {
+    this.keycloak.isLoggedIn().then((loggedIn) => {
+      if (!loggedIn) {
+        this.keycloak.login();
+      }
+    });
   }
 }
