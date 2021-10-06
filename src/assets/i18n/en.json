@@ -13,7 +13,9 @@
     "NO_DATA_FOUND": "No data found",
     "CONFIRM": "Confirm",
     "SIGNUP": "Signup",
-    "HOME": "Home"
+    "HOME": "Home",
+    "QUERY_PARAMETER": "As HTTP Query Parameter",
+    "HTTP_HEADER": "As HTTP Request Header"
   },
   "HOME": {
     "TITLE": "KoolBank Api Developer Portal",

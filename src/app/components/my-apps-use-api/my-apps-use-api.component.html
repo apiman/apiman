@@ -41,10 +41,15 @@
   </div>
   <div>
     <mat-form-field>
-      <input matInput readonly value="{{ apiKey }}" />
+      <input
+        matInput
+        readonly
+        value="{{ 'X-API-Key: ' + apiKey }}"
+        [placeholder]="'COMMON.HTTP_HEADER' | translate"
+      />
       <button
         [disabled]="disableButtons"
-        [cdkCopyToClipboard]="apiKey"
+        [cdkCopyToClipboard]="'X-API-Key: ' + apiKey"
         mat-icon-button
         matSuffix
         class="input-icon-btn"
@@ -63,10 +68,15 @@
   </div>
   <div>
     <mat-form-field>
-      <input matInput readonly value="{{ endpoint }}" />
+      <input
+        matInput
+        readonly
+        value="{{ endpoint + '?apikey=' + apiKey }}"
+        [placeholder]="'COMMON.QUERY_PARAMETER' | translate"
+      />
       <button
         [disabled]="disableButtons"
-        [cdkCopyToClipboard]="endpoint"
+        [cdkCopyToClipboard]="endpoint + '?apikey=' + apiKey"
         mat-icon-button
         matSuffix
         class="input-icon-btn"
