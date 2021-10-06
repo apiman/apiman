@@ -43,13 +43,13 @@ public class BlobEntity {
     // @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     @Column(name = "created_on", nullable = false)
-    @NotNull
+    //@NotNull
     private OffsetDateTime createdOn;
 
     // @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     @Column(name = "modified_on", nullable = false)
-    @NotNull
+    //@NotNull
     private OffsetDateTime modifiedOn;
 
     @Lob

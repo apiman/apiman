@@ -161,6 +161,7 @@ module ApimanRPC {
                     formData.append('image', blob);
                     return $http({
                         method: 'POST',
+                        headers: {"Content-Type": undefined }, // Otherwise Angular will set the content type as JSON
                         url: `${Configuration.api.endpoint}/blobs`,
                         data: formData
                     })

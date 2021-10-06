@@ -14,10 +14,12 @@ import io.apiman.manager.api.security.ISecurityContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.URI;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -70,11 +72,14 @@ public class BlobResourceImpl implements IBlobResource {
     }
 
     @Override
-    public BlobRef uploadBlob(MultipartFormDataInput multipartInput) throws IOException {
+    public Response uploadBlob(MultipartFormDataInput multipartInput) throws IOException {
         Preconditions.checkState(securityContext.getCurrentUser() != null, "Must be logged in!");
         // Try to do image first as it is probably more likely to fail.
         MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
         // Blob is unreferenced and will be deleted if nobody attaches to it.
-        return blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream(), 0);
+        BlobRef blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream(), 0);
+        // Where the blob can be resolved
+        URI location = UriBuilder.fromResource(IBlobResource.class).path(blobRef.getId()).build();
+        return Response.created(location).build();
     }
 }

@@ -2,14 +2,18 @@ package io.apiman.manager.api.beans.download;
 
 import java.time.OffsetDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Blob summary.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class BlobRef {
-    @BlobReference
     private String id;
+    @BlobReference
+    @JsonProperty
+    private String location;
     private String name;
     private String mimeType;
     private OffsetDateTime createdOn;
@@ -25,6 +29,7 @@ public class BlobRef {
 
     public BlobRef setId(String id) {
         this.id = id;
+        this.location = id;
         return this;
     }
 

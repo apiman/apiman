@@ -32,11 +32,11 @@ public interface IBlobResource {
      * @return the file in the response
      */
     @GET
-    @Path("{uid}")
+    @Path("{uid:.+}")
     Response getBlob(@PathParam("uid") String uid);
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    BlobRef uploadBlob(@NotNull MultipartFormDataInput multipartInput) throws IOException;
+    Response uploadBlob(@NotNull MultipartFormDataInput multipartInput) throws IOException;
 }
