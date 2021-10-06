@@ -3,8 +3,8 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
+import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -19,6 +19,7 @@ import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.ApiService;
+import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
 import io.apiman.manager.api.service.DevPortalService;
 import io.apiman.manager.api.service.OrganizationService;
 import io.apiman.manager.api.service.SearchService;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 /**
  * {@inheritDoc}.
@@ -95,7 +97,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     public OrganizationBean createHomeOrgForDeveloper(NewOrganizationBean newOrg) {
         mustBeLoggedIn();
         if (!newOrg.getName().equals(securityContext.getCurrentUser())) {
-            throw new IllegalArgumentException("Sorry, for now a developer's default org must be the same as their username. This restriction may be lifted later");
+            throw new NotAuthorizedException("A developer's default org must be the same as their username. This restriction may be lifted later.");
         }
         return orgService.createOrg(newOrg);
     }
@@ -105,6 +107,16 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
             throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
         apiVersionMustBeExposedInPortal(orgId, apiId, apiVersion);
         return portalService.getApiVersionPolicies(orgId, apiId, apiVersion);
+    }
+
+    @Override
+    public Response getApiDefinition(String orgId, String apiId, String apiVersion) throws ApiVersionNotFoundException {
+        apiVersionMustBeExposedInPortal(orgId, apiId, apiVersion);
+        ApiDefinitionStream apiDef = apiService.getApiDefinition(orgId, apiId, apiVersion);
+        return Response.ok()
+                .entity(apiDef.getDefinition())
+                .type(apiDef.getDefinitionType().getMediaType())
+                .build();
     }
 
     private void apiVersionMustBeExposedInPortal(String orgId, String apiId, String apiVersion) {
