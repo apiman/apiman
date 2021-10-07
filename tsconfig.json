@@ -20,7 +20,8 @@
     "module": "es2020",
     "lib": [
       "es2018",
-      "dom"
+      "dom",
+      "ESNext.String"
     ]
   },
   "angularCompilerOptions": {

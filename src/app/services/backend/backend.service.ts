@@ -58,7 +58,7 @@ export class BackendService {
    * Get Api
    */
   public getApi(orgId: string, apiId: string): Observable<IApi> {
-    const path = `/organizations/${orgId}/apis/${apiId}`;
+    const path = `organizations/${orgId}/apis/${apiId}`;
     return this.http.get(
       this.generateUrl(path),
       this.httpOptions
@@ -72,7 +72,7 @@ export class BackendService {
     orgId: string,
     apiId: string
   ): Observable<IApiVersionSummary[]> {
-    const path = `/organizations/${orgId}/apis/${apiId}/versions`;
+    const path = `organizations/${orgId}/apis/${apiId}/versions`;
     return this.http.get<IApiVersionSummary[]>(
       this.generateUrl(path),
       this.httpOptions

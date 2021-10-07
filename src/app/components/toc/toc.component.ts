@@ -1,5 +1,6 @@
-import {AfterViewInit, Component, Input} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ITocLink} from '../../interfaces/ITocLink';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-toc',
@@ -10,11 +11,14 @@ export class TocComponent implements AfterViewInit{
   @Input() links: ITocLink[] = [];
   linksInViewPort: ITocLink[] = [];
 
-  constructor() {}
+  constructor(private router: Router) {}
+
 
   ngAfterViewInit() {
     if (this.links.length > 0)
       this.links[0].active = true;
+
+    this.scroll(window.location.hash.replace('#', ''));
   }
 
   onWindowScroll() {
@@ -51,7 +55,15 @@ export class TocComponent implements AfterViewInit{
   }
 
   scroll(id: string) {
-    const clientToScroll = document.getElementById(id)!;
-    clientToScroll.scrollIntoView({behavior: 'smooth'})
+    const clientToScroll = document.getElementById(id);
+
+    if (clientToScroll)
+      clientToScroll.scrollIntoView({behavior: 'smooth'});
+
+    if(history.pushState && id) {
+      history.pushState(null, '/applications', '/applications#' + id);
+    }else{
+      history.pushState(null, '/applications', '/applications')
+    }
   }
 }

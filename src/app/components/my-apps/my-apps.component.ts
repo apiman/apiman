@@ -21,6 +21,8 @@ import {flatArray} from "../../shared/utility";
 import {SpinnerService} from "../../services/spinner/spinner.service";
 import {ApiService} from "../../services/api/api.service";
 import {ITocLink} from "../../interfaces/ITocLink";
+import {KeyValue} from "@angular/common";
+import {TocService} from "../../services/toc.service";
 
 @Component({
   selector: 'app-my-apps',
@@ -33,10 +35,10 @@ export class MyAppsComponent implements OnInit {
   contractsLoaded = false;
 
   tmpUrl = 'https://pbs.twimg.com/media/Ez-AaifWYAIiFSQ.jpg';
-  tmpUrl2 =
-    'https://cdn0.iconfinder.com/data/icons/customicondesignoffice5/256/examples.png';
+  tmpUrl2 = 'https://cdn0.iconfinder.com/data/icons/customicondesignoffice5/256/examples.png';
 
   tocLinks: ITocLink[] = [];
+
 
   constructor(
     private spinnerService: SpinnerService,
@@ -44,13 +46,16 @@ export class MyAppsComponent implements OnInit {
     private translator: TranslateService,
     private backend: BackendService,
     private policyService: PolicyService,
-    private apiService: ApiService
-  ) {}
+    private apiService: ApiService,
+    public tocService: TocService
+  ) {
+  }
 
   ngOnInit(): void {
     this.setUpHero();
     this.fetchContracts();
   }
+
   // Detailed explanation of request chain: https://stackoverflow.com/questions/69421293/how-to-chain-requests-correctly-with-rxjs
   private fetchContracts() {
     this.spinnerService.startWaiting();
@@ -127,11 +132,8 @@ export class MyAppsComponent implements OnInit {
     this.contracts = this.contracts.concat(contracts);
 
     this.contracts.forEach((contract: IContractExt) => {
-      const clientNameVersionMapped =
-        contract.client.client.name + ':' + contract.client.version;
-      const foundContracts = this.clientContractsMap.get(
-        clientNameVersionMapped
-      );
+      const clientNameVersionMapped = (contract.client.client.name + ':' + contract.client.version).toLowerCase();
+      const foundContracts = this.clientContractsMap.get(clientNameVersionMapped);
 
       if (foundContracts) {
         const contractIfPartOfArray = foundContracts.find((c: IContractExt) => {
@@ -150,6 +152,9 @@ export class MyAppsComponent implements OnInit {
         this.clientContractsMap.set(clientNameVersionMapped, [contract]);
       }
     });
+
+    // Sort Clients by name
+    this.clientContractsMap = new Map([...this.clientContractsMap.entries()].sort());
   }
 
   private setUpHero() {
@@ -167,17 +172,15 @@ export class MyAppsComponent implements OnInit {
     return statusColorMap.get(status);
   }
 
-  formatClientContractTitle(key: string) {
-    return key.replace(':', ' - ');
+  formatClientContractTitle(key: string): string {
+    return this.clientContractsMap.get(key)![0].client.client.name + ' - ' + this.clientContractsMap.get(key)![0].client.version;
   }
 
   private generateTocLinks() {
     this.clientContractsMap.forEach((value: IContractExt[], key: string) => {
-      const formated = this.formatClientContractTitle(key);
-
       this.tocLinks.push({
-        name: formated,
-        destination: formated,
+        name: this.formatClientContractTitle(key),
+        destination: this.tocService.formatClientId(value[0]),
         subLinks: this.generateTocSubLinks(value)
       });
     });
@@ -189,7 +192,7 @@ export class MyAppsComponent implements OnInit {
     contracts.forEach((contract: IContractExt) => {
       subLinks.push({
         name: this.formatApiVersionPlanTitle(contract),
-        destination: this.formatApiVersionPlanTitleWithClient(contract)
+        destination: this.tocService.formatApiVersionPlanId(contract)
       })
     });
 
@@ -198,9 +201,5 @@ export class MyAppsComponent implements OnInit {
 
   formatApiVersionPlanTitle(contract: IContractExt) {
     return `${contract.api.api.name} ${contract.api.version} - ${contract.plan.plan.name}`;
-  }
-
-  formatApiVersionPlanTitleWithClient(contract: IContractExt): string {
-    return this.formatApiVersionPlanTitle(contract) + '-forClient-' + contract.client.client.name;
   }
 }

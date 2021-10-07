@@ -88,7 +88,6 @@ export class KeycloakHelperService {
   }
 
   private static setTokensToSessionStorage(keycloakInstance: KeycloakInstance) {
-    console.log('Set token:' + keycloakInstance.token);
     window.sessionStorage.setItem(
       'KEYCLOAK_SESSION_STORAGE_TOKEN',
       keycloakInstance.token!

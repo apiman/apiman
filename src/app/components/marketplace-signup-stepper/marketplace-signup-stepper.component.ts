@@ -15,6 +15,7 @@ import { BackendService } from '../../services/backend/backend.service';
 import { MatStepper } from '@angular/material/stepper';
 import { IContractExt } from '../../interfaces/IContractExt';
 import {map, switchMap} from "rxjs/operators";
+import {TocService} from "../../services/toc.service";
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
@@ -37,7 +38,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     private configService: ConfigService,
     private signUpService: SignUpService,
     private router: Router,
-    private backend: BackendService
+    private backend: BackendService,
+    private tocService: TocService
   ) {
     this.termsEnabled = this.configService.getTerms().enabled;
     this.newContractDetails = this.signUpService.getSignUpInfo();
@@ -106,7 +108,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       .createContract(client.organizationId, client.id, '1.0', contract).pipe(
         switchMap(contract => {
           return this.backend.getManagedApiEndpoint(
-            contract.client.client.organization.id,
+            contract.api.api.organization.id,
             contract.api.api.id,
             contract.api.version).pipe(
               map(endpoint => {
@@ -135,6 +137,6 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   }
 
   finish(): void {
-    void this.router.navigate(['applications']);
+    void this.router.navigate(['applications'], {fragment: this.tocService.formatClientId(this.contract!)});
   }
 }

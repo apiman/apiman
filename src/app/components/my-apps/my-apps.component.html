@@ -1,6 +1,6 @@
 <div *ngIf="contractsLoaded" class="wrapper">
   <div id="contracts" class="first">
-    <mat-card *ngFor="let cliCon of clientContractsMap | keyvalue" class="mb-40" [id]="formatClientContractTitle(cliCon.key)">
+    <mat-card *ngFor="let cliCon of clientContractsMap | keyvalue" class="mb-40" [id]="tocService.formatClientId(cliCon.value[0])">
       <div class="app-header">
         <div class="app-icon-wrapper">
           <img class="app-icon" [src]="tmpUrl" alt="app-icon" />
@@ -49,7 +49,7 @@
             <div class="app-api-header-icon-wrapper">
               <img class="app-api-header-icon" [src]="tmpUrl2" alt="app-icon" />
             </div>
-            <div class="app-api-header-title" [id]="formatApiVersionPlanTitleWithClient(contract)">
+            <div class="app-api-header-title" [id]="tocService.formatApiVersionPlanId(contract)">
               <h3 class="primary">
                 {{formatApiVersionPlanTitle(contract)}}
               </h3>
