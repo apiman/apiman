@@ -10,13 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class FooterService {
   footer: IFooter;
 
-  links: ILink[] = [
-    {
-      name: 'Apiman',
-      link: 'https://www.apiman.io/',
-      openInNewTab: true,
-    },
-  ];
+  links: ILink[] = [];
 
   constructor(private configService: ConfigService) {
     this.footer = this.initLinks();

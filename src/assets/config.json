@@ -17,8 +17,8 @@
     "showHomeLink": true,
     "links": [
       {
-        "name": "Puppy Link",
-        "link": "https://pbs.twimg.com/profile_images/704447240216051712/mTel0Q49_400x400.jpg",
+        "name": "Support",
+        "link": "https://support.scheer-pas.com/portal",
         "openInNewTab": true
       }
     ],
@@ -27,18 +27,13 @@
   "footer": {
     "links": [
       {
-        "name": "Scheer PAS",
-        "link": "https://www.scheer-pas.com/",
-        "openInNewTab": false
-      },
-      {
-        "name": "Github",
-        "link": "https://www.github.com/",
+        "name": "Apiman",
+        "link": "https://www.apiman.io/",
         "openInNewTab": true
       },
       {
-        "name": "Keybase",
-        "link": "https://keybase.io/",
+        "name": "Scheer PAS",
+        "link": "https://www.scheer-pas.com/",
         "openInNewTab": true
       }
     ],
@@ -52,6 +47,7 @@
   },
   "terms": {
     "enabled": true,
+    "termsTextBoxEnabled": true,
     "termsLink": "https://www.apache.org/licenses/LICENSE-2.0",
     "privacyLink": "https://www.apache.org/licenses/LICENSE-2.0"
   }
