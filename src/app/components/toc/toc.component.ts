@@ -60,10 +60,7 @@ export class TocComponent implements AfterViewInit{
     if (clientToScroll)
       clientToScroll.scrollIntoView({behavior: 'smooth'});
 
-    if(history.pushState && id) {
-      history.pushState(null, '/applications', '/applications#' + id);
-    }else{
-      history.pushState(null, '/applications', '/applications')
-    }
+    if(history.pushState && id)
+      history.pushState(null, '', document.location.href.split('#')[0] + '#' + id);
   }
 }
