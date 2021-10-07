@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import {HeroService} from "../../services/hero/hero.service";
+import {TranslateService} from "@ngx-translate/core";
 declare const SwaggerUIBundle: any;
 
 @Component({
@@ -10,7 +12,9 @@ declare const SwaggerUIBundle: any;
 export class SwaggerComponent implements OnInit {
   private apiMgmtUiRestUrl = 'https://vagrantguest/pas/apiman';
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute,
+              private heroService: HeroService,
+              private translator: TranslateService) {}
 
   /**
    * Load the swagger definition and display it with the swagger ui bundle library on component initialization
@@ -19,6 +23,10 @@ export class SwaggerComponent implements OnInit {
     const organizationId = this.route.snapshot.paramMap.get('orgId');
     const apiId = this.route.snapshot.paramMap.get('apiId');
     const apiVersion = this.route.snapshot.paramMap.get('apiVersion');
+    this.heroService.setUpHero({
+      title: this.translator.instant('COMMON.API_DOCS'),
+      subtitle: `${apiId} - ${apiVersion}`
+    });
 
     const isPublicApi = history.state.data
       ? history.state.data.publicAPI
