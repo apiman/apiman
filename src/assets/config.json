@@ -47,7 +47,6 @@
   },
   "terms": {
     "enabled": true,
-    "termsTextBoxEnabled": true,
     "termsLink": "https://www.apache.org/licenses/LICENSE-2.0",
     "privacyLink": "https://www.apache.org/licenses/LICENSE-2.0"
   }
