@@ -101,7 +101,7 @@ public class BlobStoreRepository extends AbstractJpaStorage {
         getActiveEntityManager()
                 .createQuery("DELETE FROM BlobEntity b "
                                      + "WHERE b.createdOn < :timeThreshold "
-                                     + "AND b.references = 0")
+                                     + "AND b.references <= 0")
                 .setParameter("timeThreshold", timeThreshold)
                 .executeUpdate();
     }

@@ -9,16 +9,16 @@ module Apiman {
   import ApiVersionBean = ApimanRPC.ApiVersionBean;
   import BlobRef = ApimanRPC.BlobRef;
 
-  export var ApiDevPortalController = _module.controller( "Apiman.DevPortalController",
-      ['$q', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'Configuration', 'EntityStatusSvc', 'DevPortalService', 'BlobService', 'Logger', '$window',
-        ($q, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, Configuration, EntityStatusSvc, DevPortalService, BlobService, Logger, $window) => {
+  export var ApiDevPortalController = _module.controller( 'Apiman.DevPortalController',
+      ['$q', '$scope', '$rootScope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'Configuration', 'EntityStatusSvc', 'DevPortalService', 'BlobService', 'Logger', '$window', '$interval',
+        ($q, $scope, $rootScope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, Configuration, EntityStatusSvc, DevPortalService, BlobService, Logger, $window, $interval) => {
           const params = $routeParams;
           $scope.organizationId = params.org;
           $scope.tab = 'devportal';
           $scope.version = params.version;
           $scope.showMetrics = Configuration.ui.metrics;
           $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
-          $scope.isDirty = false;
+          $rootScope.isDirty = false;
           $scope.apiVersion = null as ApiVersionBean;
           let apiVersionCopy = null as ApiVersionBean;
           $scope.planSummaries = [] as ApiPlanSummaryBean[];
@@ -42,6 +42,7 @@ module Apiman {
             );
           }
 
+          /*** Markdown Editor ***/
           // Load Markdown Editor
           const ed = new $window.editor({
             el: document.querySelector('#editor'),
@@ -52,8 +53,24 @@ module Apiman {
             hooks: {
               addImageBlobHook: uploadImage
             },
+            events: {
+              blur: () => editorDirtyCheck
+            },
             plugins: [[$window.codeSyntaxHighlightPlugin, { highlighter: $window.prism }]]
           });
+
+          // Dirty check the MD editor pane every 2 seconds (avoids excessive checking).
+          $interval(() => {
+            editorDirtyCheck();
+          }, 1000);
+
+          const editorDirtyCheck = (): void => {
+            if ($scope.apiVersion.extendedDescription !== ed.getMarkdown()) {
+              $rootScope.isDirty = true;
+            }
+          }
+
+          /*** End Markdown Editor ***/
 
           // Get the API Version Plan summaries
           DevPortalService.getApiVersionPlans(params.org, params.api, params.version).then(
@@ -82,7 +99,7 @@ module Apiman {
                     return;
                   }
                   // Logger.debug("Dirty set to true {0} vs {1}", oldValue, newValue);
-                  $scope.isDirty = true;
+                  $rootScope.isDirty = true;
                 }, true);
               },
               (failure) => handleFailure(failure)
@@ -92,7 +109,8 @@ module Apiman {
           // Reset (copy saved pristine copy back over).
           $scope.reset = () => {
             $scope.apiVersion = angular.copy(apiVersionCopy) as ApiVersionBean;
-            $scope.isDirty = false;
+            ed.setMarkdown($scope.apiVersion.extendedDescription, true);
+            $rootScope.isDirty = false;
           };
 
           // Save
@@ -105,15 +123,15 @@ module Apiman {
             } as UpdateApiVersionBean;
 
             DevPortalService.updateApiVersion(params.org, params.api, params.version, updateApiVersionBean).then(
-                (ok) => {
+                (_) => {
                   Logger.info("Api Version update succeeded!");
-                  $scope.isDirty = false;
+                  $rootScope.isDirty = false;
                 },
                 (failure) => handleFailure(failure)
             );
           }
 
-          function handleFailure(failure: any) {
+          function handleFailure(failure: any): void {
             // TODO(msavy): do something useful here...
             Logger.error("failure {0}", failure.data || failure);
           }
