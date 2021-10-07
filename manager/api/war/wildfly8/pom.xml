@@ -24,7 +24,6 @@
       <classifier>classes</classifier>
       <scope>provided</scope>
     </dependency>
-
     <!-- Project dependencies not included in the base WAR -->
     <dependency>
       <groupId>io.apiman</groupId>
@@ -34,8 +33,27 @@
       <groupId>io.apiman</groupId>
       <artifactId>apiman-common-logging-jboss</artifactId>
     </dependency>
-
-    <!-- Project dependencies in the base WAR but that are also directly used -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+    </dependency>
+    <!-- Use our own version of Jackson --><!-- Project dependencies in the base WAR but that are also directly used -->
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-api-core</artifactId>

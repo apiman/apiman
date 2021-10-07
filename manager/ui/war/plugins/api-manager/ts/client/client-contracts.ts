@@ -1,7 +1,10 @@
 /// <reference path="../apimanPlugin.ts"/>
 /// <reference path="../rpc.ts"/>
+/// <reference path="../model/contract.d.ts"/>
+
+import {ContractSummaryBean} from "../model/contract";
+
 module Apiman {
-    
     export var ClientContractsController = _module.controller('Apiman.ClientContractsController',
         [
             '$q',
@@ -27,7 +30,7 @@ module Apiman {
             pageData = angular.extend(pageData, {
                 contracts: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'clients', entityId: params.client, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'contracts' }, function(contracts) {
-                        $scope.filteredContracts = contracts;
+                        $scope.filteredContracts = contracts as ContractSummaryBean[];
                         resolve(contracts);
                     }, reject);
                 })

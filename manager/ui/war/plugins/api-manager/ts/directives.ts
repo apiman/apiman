@@ -228,7 +228,7 @@ module Apiman {
                             $(element).removeClass();
                             $(element).addClass('apiman-label');
 
-                            if (entityStatus == 'Created' || entityStatus == 'Ready') {
+                            if (entityStatus == 'Created' || entityStatus == 'Ready' || entityStatus == 'AwaitingApproval') {
                                 $(element).addClass('apiman-label-warning');
                             } else if (entityStatus == 'Retired') {
                                 $(element).addClass('apiman-label-default');
