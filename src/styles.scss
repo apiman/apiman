@@ -25,9 +25,9 @@
   .warn {color: $warn;}
 
   // Background
-  .primary-bg{background-color: $primary}
-  .warn-bg{background-color: $warn}
-  .accent-bg{background-color: $accent;}
+  .primary-bg{background-color: $primary !important;}
+  .warn-bg{background-color: $warn !important;}
+  .accent-bg{background-color: $accent !important;}
 
   // Border
   .primary-border-color{border-color: $primary !important}
