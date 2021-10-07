@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: flex-start;
   grid-template-columns: repeat(auto-fit, 360px);
-  grid-column-gap: 16px;
+  grid-column-gap: 2rem;
   grid-row-gap: 32px;
 }
 
@@ -34,7 +34,6 @@ p {
 }
 
 .plan-card{
-  width: 100%;
   border: 1px solid rgba(0,0,0,0.1);
 }
 
