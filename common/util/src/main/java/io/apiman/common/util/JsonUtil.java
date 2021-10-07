@@ -28,6 +28,9 @@ import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNQUOTED_FIE
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class JsonUtil {
+    public JsonUtil() {
+    }
+
     private static final ObjectMapper OM = JsonMapper
          .builder()
          // (mostly) match the JSON5 spec.

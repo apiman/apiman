@@ -44,6 +44,9 @@
                   <div class="row">
                     <div class="col-md-10 col-no-padding">
                       <a href="{{ pluginName }}/browse/orgs/{{ contract.apiOrganizationId }}">{{ contract.apiOrganizationName }}</a> / <span class="title"><a href="{{ pluginName }}/browse/orgs/{{ contract.apiOrganizationId }}/{{ contract.apiId }}/{{ contract.apiVersion }}">{{ contract.apiName }}</a></span>
+                      <!-- Warning if contract awaiting approval -->
+                      <span class="alert-warning" style="float: right;" apiman-i18n-key="client-contract.detail.awaiting-approval" ng-hide="contract.">❗ Awaiting approval from an administrator</span>
+
                       <div class="versionAndPlan">
                         <span apiman-i18n-key="client-contract.detail.api-version">API version</span>
                         <span><a href="{{ pluginName }}/browse/orgs/{{ contract.apiOrganizationId }}/{{ contract.apiId }}/{{ contract.apiVersion }}">{{ contract.apiVersion }}</a></span>
@@ -53,22 +56,23 @@
                         <i class="fa fa-clock-o fa-fw fa-inline"></i>
                         <span>{{ contract.createdOn | date: 'yyyy-MM-dd' }}</span>
                       </div>
+
                       <div class="description apiman-label-faded">
                         {{ contract.apiDescription }}
                       </div>
                     </div>
                     <div class="col-md-2 col-no-padding">
-                      <span class="actions"><button apiman-i18n-key="break-contract" apiman-status="Created,Ready,Registered" apiman-permission="clientEdit" ng-click="break(contract)" class="btn btn-default">Break Contract</button></span>
+                      <span class="actions"><button apiman-i18n-key="break-contract" apiman-status="Created,Ready,Registered,AwaitingApproval" apiman-permission="clientEdit" ng-click="break(contract)" class="btn btn-default">Break Contract</button></span>
                     </div>
                   </div>
                   <hr />
                 </div>
               </div>
-              
+
               <div class="apiman-no-content container-fluid" ng-show="filteredContracts.length == 0">
                 <p class="apiman-no-entities-description" apiman-i18n-key="no-client-api-contracts.message">No API contracts have been created for this Client App yet or your filter does not match any contracts. If you create a new contract, it will be displayed here.</p>
-              </div>              
-              
+              </div>
+
             </div>
           </div>
         </div>

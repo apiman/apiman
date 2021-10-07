@@ -65,8 +65,11 @@ module Apiman {
           }, 1000);
 
           const editorDirtyCheck = (): void => {
-            if ($scope.apiVersion.extendedDescription !== ed.getMarkdown()) {
+            let latestDescription = ed.getMarkdown();
+            // Original description != latestDescription
+            if (apiVersionCopy.extendedDescription !== latestDescription) {
               $rootScope.isDirty = true;
+              $scope.apiVersion.extendedDescription = latestDescription;
             }
           }
 

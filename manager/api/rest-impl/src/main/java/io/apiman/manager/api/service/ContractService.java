@@ -110,7 +110,7 @@ public class ContractService implements DataAccessUtilMixin {
         NotAuthorizedException {
 
         try {
-            ContractBean contract = createContractInternal(organizationId, clientId, version, bean);
+            ContractBean contract = tryAction(() -> createContractInternal(organizationId, clientId, version, bean));
             LOGGER.debug("Created new contract {0}: {1}", contract.getId(), contract); //$NON-NLS-1$
             if (contract.getStatus() == ContractStatus.AwaitingApproval) {
                 fireContractApprovalRequest(securityContext.getCurrentUser(), contract);
@@ -118,25 +118,14 @@ public class ContractService implements DataAccessUtilMixin {
             return contract;
         } catch (AbstractRestException e) {
             throw e;
-        } catch (Exception e) {
-            // Up above, we are optimistically creating the contract.  If it fails, check to see
-            // if it failed because it was a duplicate.  If so, throw something sensible.  We
-            // only do this on failure (we would get a FK constraint failure, for example) to
-            // reduce overhead on the typical happy path.
-            if (contractAlreadyExists(organizationId, clientId, version, bean)) {
-                throw ExceptionFactory.contractAlreadyExistsException();
-            } else {
-                throw new SystemErrorException(e);
-            }
         }
     }
 
     /**
      * Creates a contract.
      */
-    protected ContractBean createContractInternal(String organizationId, String clientId,
-        String version, NewContractBean bean) throws StorageException, Exception {
-        ClientVersionBean cvb = clientAppService.getClientVersion(organizationId, clientId, version);
+    protected ContractBean createContractInternal(String clientOrgId, String clientId, String clientVersion, NewContractBean bean) throws Exception {
+        ClientVersionBean cvb = clientAppService.getClientVersion(clientOrgId, clientId, clientVersion);
 
         if (cvb.getStatus() == ClientStatus.Retired) {
             throw ExceptionFactory.invalidClientStatusException();
@@ -169,8 +158,9 @@ public class ContractService implements DataAccessUtilMixin {
         contract.setCreatedOn(new Date());
 
         boolean approvalRequired = false;
+        OrganizationBean planOrg = pvb.getPlan().getOrganization();
 
-        if (!apiPlanBean.isRequiresApproval() || securityContext.hasPermission(planAdmin, organizationId)) {
+        if (!apiPlanBean.isRequiresApproval() || securityContext.hasPermission(planAdmin, planOrg.getId())) {
             LOGGER.debug("Contract valid immediately ✅: {0}", contract);
             contract.setStatus(ContractStatus.Created);
         } else {

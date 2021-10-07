@@ -127,36 +127,6 @@ public class NotificationService implements DataAccessUtilMixin {
         return new SearchResultsBean<NotificationDto<?>>(dtos, results.getTotalSize());
     }
 
-    // public void sendNotification(@NotNull CreateNotificationDto newNotification, String organization) {
-    //     LOGGER.debug("Creating new notification(s): {0}", newNotification);
-    //
-    //     List<UserDto> resolvedRecipients = calculateRecipients(newNotification.getRecipient(), organization);
-    //
-    //     for (UserDto resolvedRecipient : resolvedRecipients) {
-    //         NotificationEntity notificationEntity = new NotificationEntity()
-    //              .setCategory(newNotification.getCategory())
-    //              .setReason(newNotification.getReason())
-    //              .setReasonMessage(newNotification.getReasonMessage())
-    //              .setNotificationStatus(NotificationStatus.OPEN)
-    //              .setRecipient(resolvedRecipient.getUsername())
-    //              .setSource(newNotification.getSource())
-    //              .setPayload(JsonUtil.toJsonTree(newNotification.getPayload()));
-    //
-    //         tryAction(() -> {
-    //             // 1. Save notification into notifications table.
-    //             LOGGER.trace("Creating notification entity in repository layer: {0}", notificationEntity);
-    //             notificationRepository.create(notificationEntity);
-    //
-    //             // Avoiding serializing and deserializing the payload immediately!
-    //             NotificationDto<?> dto = toDto(notificationEntity, newNotification.getPayload(), resolvedRecipient);
-    //
-    //             // 2. Emit notification onto notification bus.
-    //             LOGGER.trace("Firing notification: {0}", dto);
-    //             notificationDispatcher.fire(dto);
-    //         });
-    //     }
-    // }
-
     /**
      * Send a new notification to a specified recipient (userId)
      *

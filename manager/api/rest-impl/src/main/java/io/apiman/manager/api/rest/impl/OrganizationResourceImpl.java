@@ -128,6 +128,7 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -143,6 +144,7 @@ import org.apache.commons.lang3.BooleanUtils;
  * @author eric.wittmann@redhat.com
  */
 @RequestScoped
+@Transactional
 public class OrganizationResourceImpl implements IOrganizationResource, DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(OrganizationResourceImpl.class);
