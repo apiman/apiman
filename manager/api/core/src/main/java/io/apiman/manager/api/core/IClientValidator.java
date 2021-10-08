@@ -15,7 +15,11 @@
  */
 package io.apiman.manager.api.core;
 
+import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
+import io.apiman.manager.api.beans.contracts.ContractBean;
+
+import java.util.List;
 
 /**
  * Validates the state of clients and client versions.
@@ -65,4 +69,5 @@ public interface IClientValidator {
      */
     boolean isReady(ClientVersionBean client, boolean hasContracts) throws Exception;
 
+    ClientStatus determineStatus(ClientVersionBean bean, List<ContractBean> contracts);
 }

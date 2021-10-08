@@ -2,6 +2,7 @@ package io.apiman.manager.api.service;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.util.Preconditions;
 import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
@@ -62,6 +63,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import static io.apiman.manager.api.beans.contracts.ContractStatus.AwaitingApproval;
+import static io.apiman.manager.api.beans.contracts.ContractStatus.Created;
 import static io.apiman.manager.api.beans.idm.PermissionType.planAdmin;
 
 /**
@@ -162,7 +165,7 @@ public class ContractService implements DataAccessUtilMixin {
 
         if (!apiPlanBean.isRequiresApproval() || securityContext.hasPermission(planAdmin, planOrg.getId())) {
             LOGGER.debug("Contract valid immediately ✅: {0}", contract);
-            contract.setStatus(ContractStatus.Created);
+            contract.setStatus(Created);
         } else {
             LOGGER.debug("Contract requires approval ✋: {0}", contract);
             contract.setStatus(ContractStatus.AwaitingApproval);
@@ -235,10 +238,13 @@ public class ContractService implements DataAccessUtilMixin {
     public void deleteAllContracts(String organizationId, String clientId, String version)
         throws ClientNotFoundException, NotAuthorizedException {
 
-        List<ContractSummaryBean> contracts = clientAppService.getClientVersionContracts(organizationId, clientId, version);
-        for (ContractSummaryBean contract : contracts) {
-            deleteContract(organizationId, clientId, version, contract.getContractId());
-        }
+        // List<ContractSummaryBean> contracts = clientAppService.getClientVersionContracts(organizationId, clientId, version);
+        // for (ContractSummaryBean contract : contracts) {
+        //     deleteContract(organizationId, clientId, version, contract.getContractId());
+        // }
+        // ClientVersionBean clientVersion = tryAction(() -> storage.getClientVersion(organizationId, clientId, version));
+        // clientVersion.setStatus(ClientStatus.Created);
+        List<ContractSummaryBean> contracts = storage.getAllContracts();
     }
 
     @Transactional
@@ -246,18 +252,22 @@ public class ContractService implements DataAccessUtilMixin {
         throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException,
         InvalidClientStatusException {
 
-        tryAction(() -> {
-            ContractBean contract = storage.getContract(contractId);
-            if (contract == null) {
-                throw ExceptionFactory.contractNotFoundException(contractId);
-            }
+
+    }
+
+    private void deleteAllContractsInternal(String organizationId, String clientId, String clientVersion, List<ContractBean> allContracts, List<ContractBean> contractsToDelete)
+            throws Exception {
+        Preconditions.checkArgument(allContracts.size() > 0, "Must have at least 1 contract if you want to delete");
+        Preconditions.checkArgument(allContracts.size() > 0, "Must nominate at least 1 contract to delete");
+        for (ContractBean contract : contractsToDelete) {
+            Long contractId = contract.getId();
             if (!contract.getClient().getClient().getOrganization().getId().equals(organizationId)) {
                 throw ExceptionFactory.contractNotFoundException(contractId);
             }
             if (!contract.getClient().getClient().getId().equals(clientId)) {
                 throw ExceptionFactory.contractNotFoundException(contractId);
             }
-            if (!contract.getClient().getVersion().equals(version)) {
+            if (!contract.getClient().getVersion().equals(clientVersion)) {
                 throw ExceptionFactory.contractNotFoundException(contractId);
             }
             if (contract.getClient().getStatus() == ClientStatus.Retired) {
@@ -266,15 +276,30 @@ public class ContractService implements DataAccessUtilMixin {
             storage.deleteContract(contract);
             storage.createAuditEntry(AuditUtils.contractBrokenFromClient(contract, securityContext));
             storage.createAuditEntry(AuditUtils.contractBrokenToApi(contract, securityContext));
+        }
 
-            // Update the version with new meta-data (e.g. modified-by)
-            ClientVersionBean clientV = clientAppService.getClientVersion(organizationId, clientId, version);
-            clientV.setModifiedBy(securityContext.getCurrentUser());
-            clientV.setModifiedOn(new Date());
-            storage.updateClientVersion(clientV);
+        // Update the version with new meta-data (e.g. modified-by)
+        ClientVersionBean clientV = clientAppService.getClientVersion(organizationId, clientId, clientVersion);
+        clientV.setModifiedBy(securityContext.getCurrentUser());
+        clientV.setModifiedOn(new Date());
 
-            LOGGER.debug(String.format("Deleted contract: %s", contract)); //$NON-NLS-1$
-        });
+        ClientStatus newStatus = clientValidator.determineStatus(clientV, allContracts);
+        LOGGER.debug("New status for client version {0} is: {1}", clientV, newStatus);
+        clientV.setStatus(newStatus);
+        // // TODO modify EntityValidator to return a state for us
+        // boolean anyAwaitingApproval = allContracts.stream().anyMatch(c -> c.getStatus() == ContractStatus.AwaitingApproval);
+        // if (anyAwaitingApproval) {
+        //     clientV.setStatus(ClientStatus.AwaitingApproval);
+        // } else {
+        //     // If you deleted all contracts.
+        //     if (allContracts.size() == contractsToDelete.size()) {
+        //         clientV.setStatus(ClientStatus.Created);
+        //     } else { // Some contracts left, and they're not awaiting approval.
+        //         clientV.setStatus(ClientStatus.Ready);
+        //     }
+        // }
+        storage.updateClientVersion(clientV);
+        LOGGER.debug("Deleted contract(s): {0}", contractsToDelete); //$NON-NLS-1$
     }
 
     // TODO make properly optimised query for this

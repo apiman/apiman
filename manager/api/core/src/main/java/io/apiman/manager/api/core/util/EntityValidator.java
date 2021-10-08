@@ -19,7 +19,10 @@ import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
 import io.apiman.manager.api.beans.apis.StatusItemBean;
+import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
+import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.contracts.ContractStatus;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IApiValidator;
@@ -28,10 +31,11 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.i18n.Messages;
 
 import java.util.List;
-
 import javax.inject.Inject;
 
 /**
+ * TODO could rework this to return or set a status?
+ *
  * Validates the state of various entities, including APIs and clients.
  *
  * @author eric.wittmann@redhat.com
@@ -52,23 +56,34 @@ public class EntityValidator implements IApiValidator, IClientValidator {
      */
     @Override
     public boolean isReady(ClientVersionBean client) throws Exception {
-        boolean hasContracts = true;
-
         List<ContractSummaryBean> contracts = storageQuery.getClientContracts(client.getClient().getOrganization().getId(), client
                 .getClient().getId(), client.getVersion());
+        // If empty, not ready
         if (contracts.isEmpty()) {
-            hasContracts = false;
+            return false;
         }
-
-        return isReady(client, hasContracts);
+        // None must be in unapproved state
+        return contracts.stream().allMatch(c -> c.getStatus() == ContractStatus.Created);
     }
 
-    /**
-     * @see io.apiman.manager.api.core.IClientValidator#isReady(io.apiman.manager.api.beans.clients.ClientVersionBean, boolean)
-     */
+    // /**
+    //  * @see io.apiman.manager.api.core.IClientValidator#isReady(io.apiman.manager.api.beans.clients.ClientVersionBean, boolean)
+    //  */
+    // @Override
+    // public boolean isReady(ClientVersionBean client, boolean hasContracts) throws Exception {
+    //     return hasContracts;
+    // }
+
     @Override
-    public boolean isReady(ClientVersionBean client, boolean hasContracts) throws Exception {
-        return hasContracts;
+    public ClientStatus determineStatus(ClientVersionBean cvb, List<ContractBean> contracts) {
+        if (contracts.isEmpty()) {
+            return ClientStatus.Created;
+        }
+        boolean anyAwaitingApproval = contracts.stream().anyMatch(c -> c.getStatus() == ContractStatus.AwaitingApproval);
+        if (anyAwaitingApproval) {
+            return ClientStatus.AwaitingApproval;
+        }
+        return ClientStatus.Ready;
     }
 
     /**

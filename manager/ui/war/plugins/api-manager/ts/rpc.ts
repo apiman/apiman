@@ -49,66 +49,24 @@ module ApimanRPC {
                 });
         }]);
 
-    export interface ApiPlanSummaryBean {
-        planId: string;
-        planName: string;
-        planDescription: string;
-        version: string;
-        exposeInPortal: boolean;
-        requiresApproval: boolean;
-    }
-
-    export interface ApiGatewayBean {
-        gatewayId: string
-    }
-
-    export interface ApiPlanBean {
-        planId: string,
-        version: string,
-        exposeInPortal: boolean,
-        requiresApproval: boolean
-    }
-
-    export interface UpdateApiVersionBean {
-        endpoint: string;
-        endpointType: string; // enum EndpointType
-        endpointContentType: string // enum EndpointContentType;
-        endpointProperties: Map<string, string>,
-        gateways: ApiGatewayBean[], // Set<ApiGatewayBean>
-        parsePayload: boolean,
-        publicAPI: boolean,
-        disableKeysStrip: boolean,
-        plans: ApiPlanBean[],
-        extendedDescription: string,
-        exposeInPortal: boolean
-    }
-
-    export interface ApiVersionBean {
-        id: number,
-        //api: ApiBean,
-        status: string, // Enum ApiStatus
-        endpoint: string,
-        endpointType: string, //enum EndpointType
-        endpointContentType: string, // enum EndpointContentType
-        endpointProperties: Map<String, String>,
-        gateways: ApiGatewayBean[],
-        publicAPI: boolean,
-        //apiDefinition: ApiDefinitionBean
-        plans: ApiPlanBean[],
-        version: string,
-        createdBy: string,
-        createdOn: string,
-        modifiedBy: string,
-        modifiedOn: string,
-        publishedOn: string,
-        retiredOn: string,
-        definitionType: string // ApiDefinitionType
-        parsePayload: boolean,
-        disableKeysStrip: boolean,
-        definitionUrl: string,
-        exposeInPortal: boolean,
-        extendedDescription: string
-    }
+    export var ContractService = _module.factory('ContractService', ['$http', 'Configuration', '$q',
+        ($http, Configuration, $q) => {
+            return {
+                approveContract: (contractId: number) => {
+                    return $http({
+                        method: 'POST',
+                        url: `${Configuration.api.endpoint}/actions/contracts/${contractId}`,
+                        data: {
+                            contractId: contractId,
+                            status: 'AwaitingApproval'
+                        } as ContractAction
+                    }).then(
+                        (success) => $q.resolve(success.data),
+                        (failure) => $q.reject(failure)
+                    );
+                }
+            }
+        }]);
 
     export var DevPortalService = _module.factory('DevPortalService', ['$http', 'Configuration', '$q',
         ($http, Configuration, $q) => {
@@ -145,13 +103,6 @@ module ApimanRPC {
                 }
             }
         }]);
-
-    export interface BlobRef {
-        id: string;
-        name: string;
-        mimeType: string;
-        hash: number;
-    }
 
     export var BlobService = _module.factory('BlobService', ['$http', 'Configuration', '$q',
         ($http, Configuration, $q) => {
@@ -432,7 +383,6 @@ module ApimanRPC {
             }
         }]);
 
-
     export var ApiCatalogSvcs = _module.factory('ApiCatalogSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             return {
@@ -448,5 +398,98 @@ module ApimanRPC {
                 }
             }
         }]);
+
+    export interface ApiPlanSummaryBean {
+        planId: string;
+        planName: string;
+        planDescription: string;
+        version: string;
+        exposeInPortal: boolean;
+        requiresApproval: boolean;
+    }
+
+    export interface ApiGatewayBean {
+        gatewayId: string
+    }
+
+    export interface ApiPlanBean {
+        planId: string;
+        version: string;
+        exposeInPortal: boolean;
+        requiresApproval: boolean
+    }
+
+    export interface UpdateApiVersionBean {
+        endpoint: string;
+        endpointType: string; // enum EndpointType
+        endpointContentType: string // enum EndpointContentType;
+        endpointProperties: Map<string, string>;
+        gateways: ApiGatewayBean[]; // Set<ApiGatewayBean>
+        parsePayload: boolean;
+        publicAPI: boolean;
+        disableKeysStrip: boolean;
+        plans: ApiPlanBean[];
+        extendedDescription: string;
+        exposeInPortal: boolean
+    }
+
+    export interface ApiVersionBean {
+        id: number;
+        //api: ApiBean;
+        status: string; // Enum ApiStatus
+        endpoint: string;
+        endpointType: string; //enum EndpointType
+        endpointContentType: string; // enum EndpointContentType
+        endpointProperties: Map<string, string>;
+        gateways: ApiGatewayBean[];
+        publicAPI: boolean;
+        //apiDefinition: ApiDefinitionBean
+        plans: ApiPlanBean[];
+        version: string;
+        createdBy: string;
+        createdOn: string;
+        modifiedBy: string;
+        modifiedOn: string;
+        publishedOn: string;
+        retiredOn: string;
+        definitionType: string // ApiDefinitionType
+        parsePayload: boolean;
+        disableKeysStrip: boolean;
+        definitionUrl: string;
+        exposeInPortal: boolean;
+        extendedDescription: string
+    }
+
+    export interface ContractSummaryBean {
+        contractId: number;
+        clientOrganizationId: string;
+        clientOrganizationName: string;
+        clientId: string;
+        clientName: string;
+        clientVersion: string;
+        apiOrganizationId: string;
+        apiOrganizationName: string;
+        apiId: string;
+        apiName: string;
+        apiVersion: string;
+        apiDescription: string;
+        planName: string;
+        planId: string;
+        planVersion: string;
+        createdOn: Date;
+        status: string; // ContractStatus enum
+    }
+
+    export interface BlobRef {
+        id: string;
+        name: string;
+        mimeType: string;
+        hash: number;
+    }
+
+    export interface ContractAction {
+        contractId: number,
+        status: string
+    }
 
 }
