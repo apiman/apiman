@@ -91,7 +91,7 @@ public class ApimanCorsFilter implements Filter {
                     httpResp.setHeader("Vary", "Origin"); 
                 }
                 httpResp.setHeader("Access-Control-Allow-Credentials", "true"); 
-                httpResp.setHeader("Access-Control-Expose-Headers", "X-Apiman-Error"); 
+                httpResp.setHeader("Access-Control-Expose-Headers", "X-Apiman-Error,Total-Count,X-Total-Count");
             }
             chain.doFilter(httpReq, httpResp);
         }

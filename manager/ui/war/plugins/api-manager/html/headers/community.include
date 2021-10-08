@@ -17,7 +17,7 @@
                     <!-- Consider adding dropdown drawer -->
                     <button class="btn btn-link nav-item-iconic drawer-pf-trigger-icon">
                         <span class="fa fa-bell dropdown-title" title="Notifications"></span>
-                        <span class="badge badge-pf-bordered" ng-show="userNotificationCount > 0"> </span><!-- in order to show the empty badge this requires a space, otherwise add a value -->
+                        <span class="badge badge-pf-bordered" ng-show="userNotificationCount > 0">{{ userNotificationCount }}</span><!-- in order to show the empty badge this requires a space, otherwise add a value -->
                     </button>
                 </li>
                 <li class="dropdown">

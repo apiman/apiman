@@ -161,7 +161,6 @@ public class ContractService implements DataAccessUtilMixin {
         contract.setCreatedBy(securityContext.getCurrentUser());
         contract.setCreatedOn(new Date());
 
-        boolean approvalRequired = false;
         OrganizationBean planOrg = pvb.getPlan().getOrganization();
 
         if (!apiPlanBean.isRequiresApproval() || securityContext.hasPermission(planAdmin, planOrg.getId())) {
@@ -170,23 +169,19 @@ public class ContractService implements DataAccessUtilMixin {
         } else {
             LOGGER.debug("Contract requires approval ✋: {0}", contract);
             contract.setStatus(ContractStatus.AwaitingApproval);
-            approvalRequired = true;
-        }
-
-        // Move the client to the "Ready" state if necessary.
-        if (cvb.getStatus() == ClientStatus.Created && clientValidator.isReady(cvb, true)) {
-            ClientStatus oldStatus = cvb.getStatus();
-            if (approvalRequired) {
-                cvb.setStatus(ClientStatus.AwaitingApproval);
-            } else {
-                cvb.setStatus(ClientStatus.Ready);
-            }
-            clientAppService.fireClientStatusChangeEvent(cvb, oldStatus);
         }
 
         storage.createContract(contract);
         storage.createAuditEntry(AuditUtils.contractCreatedFromClient(contract, securityContext));
         storage.createAuditEntry(AuditUtils.contractCreatedToApi(contract, securityContext));
+
+        // Determine what status of CVB should be now
+        ClientStatus oldStatus = cvb.getStatus();
+        ClientStatus newStatus = clientValidator.determineStatus(cvb);
+        if (oldStatus != newStatus) {
+            cvb.setStatus(newStatus);
+            clientAppService.fireClientStatusChangeEvent(cvb, oldStatus);
+        }
 
         // Update the version with new meta-data (e.g. modified-by)
         cvb.setModifiedBy(securityContext.getCurrentUser());
@@ -292,18 +287,6 @@ public class ContractService implements DataAccessUtilMixin {
         ClientStatus newStatus = clientValidator.determineStatus(clientV, allContracts);
         LOGGER.debug("New status for client version {0} is: {1}", clientV, newStatus);
         clientV.setStatus(newStatus);
-        // // TODO modify EntityValidator to return a state for us
-        // boolean anyAwaitingApproval = allContracts.stream().anyMatch(c -> c.getStatus() == ContractStatus.AwaitingApproval);
-        // if (anyAwaitingApproval) {
-        //     clientV.setStatus(ClientStatus.AwaitingApproval);
-        // } else {
-        //     // If you deleted all contracts.
-        //     if (allContracts.size() == contractsToDelete.size()) {
-        //         clientV.setStatus(ClientStatus.Created);
-        //     } else { // Some contracts left, and they're not awaiting approval.
-        //         clientV.setStatus(ClientStatus.Ready);
-        //     }
-        // }
         storage.updateClientVersion(clientV);
         LOGGER.debug("Deleted contract(s): {0}", contractsToDelete); //$NON-NLS-1$
     }
