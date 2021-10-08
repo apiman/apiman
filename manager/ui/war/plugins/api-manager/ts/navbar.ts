@@ -2,7 +2,7 @@
 module Apiman {
 
     export var NavbarController = _module.controller("Apiman.NavbarController",
-        ['$scope', '$rootScope', 'Logger', 'Configuration', ($scope, $rootScope, Logger, Configuration) => {
+        ['$scope', '$rootScope', 'Logger', 'Configuration', 'NotificationService', ($scope, $rootScope, Logger, Configuration, NotificationService) => {
             Logger.log("Current user is {0}.", Configuration.user.username);
             $scope.username = Configuration.user.username;
             $scope.logoutUrl = Configuration.apiman.logoutUrl;
@@ -10,6 +10,21 @@ module Apiman {
                 Logger.info('Returning to parent UI: {0}', Configuration.ui.backToConsole);
                 window.location.href = Configuration.ui.backToConsole;
             };
+            $scope.userNotificationCount = null;
+
+            NotificationService.getNotificationCount(Configuration.user.username).then(
+                (count) => {
+                  $scope.userNotificationCount = count;
+                  Logger.info("Unread notifications = {0}", count);
+                },
+                (failure) => {
+                  if (failure == null) {
+                    Logger.error("Probably could not access Total-Count header due to CORS configuration issues when accessing Server API.")
+                  } else {
+                    Logger.error("Problem retrieving notifications count {0}", failure);
+                  }
+                } // TODO do something useful
+            );
 
             angular.element(document).ready(function () {
                 // Make header not scrollable
