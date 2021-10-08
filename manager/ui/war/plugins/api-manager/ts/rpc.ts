@@ -115,10 +115,29 @@ module ApimanRPC {
                         headers: {"Content-Type": undefined }, // Otherwise Angular will set the content type as JSON
                         url: `${Configuration.api.endpoint}/blobs`,
                         data: formData
-                    })
+                    }).then(
+                        (success) => $q.resolve(success.data),
+                        (failure) => $q.reject(failure)
+                    )
                 }
             }
         }]);
+
+    export var NotificationService = _module.factory('NotificationService', ['$http', 'Configuration', '$q',
+        ($http, Configuration, $q) => {
+            return {
+                getNotificationCount: (userId: string): Promise<number> => {
+                    return $http({
+                        method: 'HEAD',
+                        url: `${Configuration.api.endpoint}/users/${userId}/notifications`
+                    }).then(
+                        success => $q.resolve(success.headers('Total-Count')),
+                        failure => $q.reject(failure)
+                    )
+                }
+            }
+        }
+    ]);
 
     export var OrganizationSvcs = _module.factory('OrgSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {

@@ -66,13 +66,16 @@ public class EntityValidator implements IApiValidator, IClientValidator {
         return contracts.stream().allMatch(c -> c.getStatus() == ContractStatus.Created);
     }
 
-    // /**
-    //  * @see io.apiman.manager.api.core.IClientValidator#isReady(io.apiman.manager.api.beans.clients.ClientVersionBean, boolean)
-    //  */
-    // @Override
-    // public boolean isReady(ClientVersionBean client, boolean hasContracts) throws Exception {
-    //     return hasContracts;
-    // }
+    /**
+     * @see io.apiman.manager.api.core.IClientValidator#isReady(io.apiman.manager.api.beans.clients.ClientVersionBean, boolean)
+     */
+    @Override
+    public boolean isReady(ClientVersionBean client, boolean hasContracts) throws Exception {
+        if (!hasContracts) {
+            return false;
+        }
+        return isReady(client);
+    }
 
     @Override
     public ClientStatus determineStatus(ClientVersionBean cvb, List<ContractBean> contracts) {
