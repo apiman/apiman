@@ -36,7 +36,7 @@ export class MarketplaceApiDetailsComponent implements OnInit {
   }
 
   getApiVersions(): void {
-    this.spinnerService.startWaiting()
+    this.spinnerService.startWaiting();
     const orgId = this.route.snapshot.paramMap.get('orgId')!;
     const apiId = this.route.snapshot.paramMap.get('apiId')!;
     this.apiService
@@ -66,7 +66,7 @@ export class MarketplaceApiDetailsComponent implements OnInit {
       )
       .subscribe((apiVersions) => {
         this.spinnerService.stopWaiting();
-        this.apis = apiVersions
+        this.apis = apiVersions;
       });
   }
 }
