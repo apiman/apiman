@@ -23,7 +23,7 @@ module Apiman {
                         var plainVersions = [];
 
                         angular.forEach(versions, function (version) {
-                            if (version.status == 'Created' || version.status == 'Ready' || version.status == 'Registered') {
+                            if (version.status === 'Created' || version.status === 'Ready' || version.status === 'Registered' || version.status === 'AwaitingApproval') {
                                 plainVersions.push(version.version);
                             }
                         });

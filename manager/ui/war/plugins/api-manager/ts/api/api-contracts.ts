@@ -2,9 +2,10 @@
 /// <reference path="../rpc.ts"/>
 module Apiman {
 
+    import ContractSummaryBean = ApimanRPC.ContractSummaryBean;
     export var ApiContractsController = _module.controller("Apiman.ApiContractsController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'Configuration',
-        ($q, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, Configuration) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'Configuration', 'ContractService',
+        ($q, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, Configuration, ContractService) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'contracts';
@@ -33,6 +34,18 @@ module Apiman {
                     getNextPage(resolve, reject);
                 })
             });
+
+            $scope.approveContract = (contract: ContractSummaryBean) => {
+                Logger.debug("Attempting to approve contract: {0}", contract);
+                ContractService.approveContract(contract.contractId).then(
+                    (_) => {
+                        contract.status = 'Created';
+                    },
+                    (failure) => {
+
+                    }
+                )
+            };
             
             $scope.getNextPage = getNextPage;
 

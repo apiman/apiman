@@ -1,10 +1,9 @@
 /// <reference path="../apimanPlugin.ts"/>
 /// <reference path="../rpc.ts"/>
-/// <reference path="../model/contract.d.ts"/>
-
-import {ContractSummaryBean} from "../model/contract";
+/// <reference path="../model/contract.model.ts"/>
 
 module Apiman {
+    import ContractSummaryBean = ApimanRPC.ContractSummaryBean;
     export var ClientContractsController = _module.controller('Apiman.ClientContractsController',
         [
             '$q',
@@ -17,7 +16,8 @@ module Apiman {
             'Logger',
             '$routeParams',
             'Configuration',
-        ($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, Logger, $routeParams, Configuration) => {
+            'ContractService',
+        ($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, Logger, $routeParams, Configuration, ContractService) => {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -135,6 +135,11 @@ module Apiman {
                 }, function () {
                     //console.log('Modal dismissed at: ' + new Date());
                 });
+            };
+
+            $scope.approveContract = (id: number) => {
+                Logger.debug("Approving {0}", id);
+                ContractService.approveContract(id);
             };
             
             PageLifecycle.loadPage('ClientContracts', 'clientView', pageData, $scope, function() {
