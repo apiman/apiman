@@ -17,7 +17,8 @@
     "QUERY_PARAMETER": "As HTTP Query Parameter",
     "HTTP_HEADER": "As HTTP Request Header",
     "API_DOCS": "API Documentation",
-    "ERROR": "Data could not be loaded, please try again later."
+    "ERROR": "Data could not be loaded, please try again later.",
+    "SUCCESS": "Successfully created!"
   },
   "HOME": {
     "TITLE": "KoolBank Api Developer Portal",

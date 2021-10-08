@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakInstance } from 'keycloak-js';
 import { ConfigService } from '../config/config.service';
-import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -11,10 +10,12 @@ import {Router} from '@angular/router';
 export class KeycloakHelperService {
   private isLoggedIn = false;
   private executed = false;
+  private username?: string;
 
   constructor(
     private readonly keycloak: KeycloakService,
-    private configService: ConfigService) {  }
+    private configService: ConfigService
+  ) {}
 
   /**
    * Init keycloak setting, this is called via APP Initializer
@@ -101,5 +102,12 @@ export class KeycloakHelperService {
   private static clearTokensFromSessionStorage() {
     window.sessionStorage.removeItem('KEYCLOAK_SESSION_STORAGE_TOKEN');
     window.sessionStorage.removeItem('KEYCLOAK_SESSION_STORAGE_REFRESH_TOKEN');
+  }
+
+  public getUsername() {
+    if (!this.username) {
+      this.username = this.keycloak.getUsername();
+    }
+    return this.username;
   }
 }
