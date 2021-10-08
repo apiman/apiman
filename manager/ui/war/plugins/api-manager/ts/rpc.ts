@@ -52,10 +52,10 @@ module ApimanRPC {
     export var ContractService = _module.factory('ContractService', ['$http', 'Configuration', '$q',
         ($http, Configuration, $q) => {
             return {
-                approveContract: (contractId: number) => {
+                approveContract: (contractId: number): Promise<any> => {
                     return $http({
                         method: 'POST',
-                        url: `${Configuration.api.endpoint}/actions/contracts/${contractId}`,
+                        url: `${Configuration.api.endpoint}/actions/contracts`,
                         data: {
                             contractId: contractId,
                             status: 'AwaitingApproval'
