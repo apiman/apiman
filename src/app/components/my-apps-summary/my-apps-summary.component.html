@@ -99,14 +99,21 @@
   <div class="policies">
     <mat-card *ngFor="let policy of contract!.policies" class="example-card">
       <mat-card-header>
-        <mat-icon mat-card-avatar>analytics</mat-icon>
-        <mat-card-title>Shiba Inu</mat-card-title>
+        <mat-icon color="primary" mat-card-avatar>tune</mat-icon>
+        <mat-card-title>Rate Limiting</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>
-          The Shiba Inu is the smallest of the six original and distinct spitz
-          breeds of dog from Japan
-        </p>
+        <div class="limit-flex">
+          <div>
+            <p><b>300</b> requests per <b>day</b></p>
+            <p><b>150</b> / 300</p>
+          </div>
+          <div class="second">
+            <button (click)="setSectionToPolicies();" mat-icon-button color="primary" class="mt-10">
+              <mat-icon>info</mat-icon>
+            </button>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>

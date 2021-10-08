@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {IContractExt} from '../../interfaces/IContractExt';
 
 @Component({
@@ -8,7 +8,12 @@ import {IContractExt} from '../../interfaces/IContractExt';
 })
 export class MyAppsSummaryComponent implements OnInit {
   @Input() contract?: IContractExt;
+
   constructor() {}
 
   ngOnInit(): void {}
+
+  setSectionToPolicies() {
+    this.contract!.section = 'policies';
+  }
 }

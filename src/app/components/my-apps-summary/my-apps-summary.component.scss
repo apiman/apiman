@@ -46,3 +46,14 @@ mat-form-field{
   font-size: 32px;
   width: 28px;
 }
+
+.limit-flex{
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  .second{
+    top: 12px;
+    position: relative;
+  }
+}
