@@ -87,7 +87,7 @@
   text-align: right;
   span{
     margin-right: 16px;
-    padding: 12px;
+    padding: 6px;
     color: white;
   }
 }
@@ -109,4 +109,8 @@
     top: 0px;
     position: sticky;
   }
+}
+
+.client-card{
+  padding-bottom: 1.6rem;
 }

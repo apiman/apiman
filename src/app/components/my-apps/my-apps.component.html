@@ -1,6 +1,6 @@
 <div *ngIf="contractsLoaded" class="wrapper">
   <div id="contracts" class="first">
-    <mat-card *ngFor="let cliCon of clientContractsMap | keyvalue" class="mb-40" [id]="tocService.formatClientId(cliCon.value[0])">
+    <mat-card *ngFor="let cliCon of clientContractsMap | keyvalue" class="mb-40 mat-elevation-z3 client-card" [id]="tocService.formatClientId(cliCon.value[0])">
       <div class="app-header">
         <div class="app-icon-wrapper">
           <img class="app-icon" [src]="tmpUrl" alt="app-icon" />
