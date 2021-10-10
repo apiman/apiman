@@ -1,10 +1,12 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
+import {NINETY_DAYS, ONE_DAY, ONE_HOUR, SEVEN_DAYS, THIRTY_DAYS} from "../api/api-metrics";
+import Logger from "js-logger";
+import c3 = require("c3");
 
-    export var ClientMetricsController = _module.controller("Apiman.ClientMetricsController",
+_module.controller("Apiman.ClientMetricsController",
         ['$q', '$scope', '$location', 'PageLifecycle', 'ClientEntityLoader', '$routeParams', 'MetricsSvcs', 'Configuration',
-        ($q, $scope, $location, PageLifecycle, ClientEntityLoader, $routeParams, MetricsSvcs, Configuration) => {
+        function ($q, $scope, $location, PageLifecycle, ClientEntityLoader, $routeParams, MetricsSvcs, Configuration) {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'metrics';
@@ -19,7 +21,7 @@ module Apiman {
                 var columns = [];
                 var x = ['x'];
                 var dataPoints = ['data'];
-                angular.forEach(data.data, function(numRequests, apiName) {
+                angular.forEach(data.data, function(numRequests, unused, apiName) {
                     x.push(apiName);
                     dataPoints.push(numRequests);
                 });
@@ -147,6 +149,4 @@ module Apiman {
                 PageLifecycle.setPageTitle('client-metrics', [ $scope.client.name ]);
                 refreshCharts();
             });
-        }])
-
-}
+        }]);

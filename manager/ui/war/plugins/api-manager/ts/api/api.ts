@@ -1,10 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var ApiRedirectController = _module.controller("Apiman.ApiRedirectController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) => {
+_module.controller("Apiman.ApiRedirectController",
+    ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams',
+        function ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) {
             var orgId = $routeParams.org;
             var apiId = $routeParams.api;
 
@@ -25,9 +23,9 @@ module Apiman {
             });
         }]);
 
-    export var ApiEntityLoader = _module.factory('ApiEntityLoader',
-        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusSvc',
-        ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusSvc) => {
+_module.factory('ApiEntityLoader',
+    ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusSvc',
+        function ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusSvc) {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
@@ -50,21 +48,21 @@ module Apiman {
             }
         }]);
 
-    export var ApiEntityController = _module.controller("Apiman.ApiEntityController",
-        [
-            '$rootScope',
-            '$q',
-            '$location',
-            '$scope',
-            '$uibModal',
-            'ActionSvcs',
-            'Logger',
-            'PageLifecycle',
-            '$routeParams',
-            'OrgSvcs',
-            'EntityStatusSvc',
-            'Configuration',
-        ($rootScope, $q, $location, $scope, $uibModal, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) => {
+_module.controller("Apiman.ApiEntityController",
+    [
+        '$rootScope',
+        '$q',
+        '$location',
+        '$scope',
+        '$uibModal',
+        'ActionSvcs',
+        'Logger',
+        'PageLifecycle',
+        '$routeParams',
+        'OrgSvcs',
+        'EntityStatusSvc',
+        'Configuration',
+        function ($rootScope, $q, $location, $scope, $uibModal, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) {
             var params = $routeParams;
             $scope.params = params;
 
@@ -79,6 +77,7 @@ module Apiman {
 
             // Initiates the tooltip (this is required for performance reasons)
             $(function () {
+                // @ts-ignore
                 $('[data-toggle="popover"]').popover();
             });
 
@@ -105,7 +104,7 @@ module Apiman {
             if (Configuration.ui.platform == 'f8' || Configuration.ui.platform == 'ose') {
                 $scope.showCtxMenu = false;
             }
-            
+
             // Add check for ability to delete, show/hide Delete option
             $scope.canDelete = function() {};
 
@@ -194,7 +193,7 @@ module Apiman {
                     organizationId: params.org,
                     entityVersion: params.version
                 };
-                
+
                 ActionSvcs.save(publishAction, function(reply) {
                     $scope.version.publishedOn = Date.now();
                     $scope.publishButton.state = 'complete';
@@ -255,72 +254,71 @@ module Apiman {
                 };
 
                 OrgSvcs.update({
-                    organizationId: $scope.organizationId,
-                    entityType: 'apis',
-                    entityId: $scope.api.id,
-                },
-                updateApiBean,
-                function(success) {
-                    Logger.info("Updated sucessfully");
-                },
-                function(error) {
-                    Logger.error("Unable to update API description:  {0}", error);
-                });
+                        organizationId: $scope.organizationId,
+                        entityType: 'apis',
+                        entityId: $scope.api.id,
+                    },
+                    updateApiBean,
+                    function(success) {
+                        Logger.info("Updated sucessfully");
+                    },
+                    function(error) {
+                        Logger.error("Unable to update API description:  {0}", error);
+                    });
             };
         }]);
 
 
-    export var ApiDeleteModalCtrl = _module.controller('ApiDeleteModalCtrl', function ($location,
-                                                                                       $rootScope,
-                                                                                       $scope,
-                                                                                       $uibModalInstance,
-                                                                                       ApiSvcs,
-                                                                                       Configuration,
-                                                                                       PageLifecycle,
-                                                                                       api,
-                                                                                       params) {
+_module.controller('ApiDeleteModalCtrl', function ($location,
+                                                   $rootScope,
+                                                   $scope,
+                                                   $uibModalInstance,
+                                                   ApiSvcs,
+                                                   Configuration,
+                                                   PageLifecycle,
+                                                   api,
+                                                   params) {
 
-        $scope.api = api;
-        $scope.params = params;
+    $scope.api = api;
+    $scope.params = params;
 
-        $scope.confirmApiName = '';
+    $scope.confirmApiName = '';
 
-        // Used for enabling/disabling the submit button
-        $scope.okayToDelete = false;
+    // Used for enabling/disabling the submit button
+    $scope.okayToDelete = false;
 
-        $scope.typed = function () {
-            // For user convenience, compare lower case values so that check is not case-sensitive
-            $scope.okayToDelete = ($scope.confirmApiName.toLowerCase() === api.name.toLowerCase());
+    $scope.typed = function () {
+        // For user convenience, compare lower case values so that check is not case-sensitive
+        $scope.okayToDelete = ($scope.confirmApiName.toLowerCase() === api.name.toLowerCase());
+    };
+
+    // Yes, delete the API
+    $scope.yes = function () {
+        var deleteAction = {
+            apiId: params.api,
+            orgId: params.org
         };
 
-        // Yes, delete the API
-        $scope.yes = function () {
-            var deleteAction = {
-                apiId: params.api,
-                orgId: params.org
-            };
+        ApiSvcs.deleteApi(deleteAction).then(function(res) {
+            $scope.okayToDelete = false;
 
-            ApiSvcs.deleteApi(deleteAction).then(function(res) {
-                $scope.okayToDelete = false;
-
-                setTimeout(function() {
-                    $uibModalInstance.close();
-
-                    // Redirect users to their list of APIs
-                    $location.path($rootScope.pluginName + '/users/' + Configuration.user.username + '/apis');
-                }, 800);
-
-                // We should display some type of Toastr/Growl notification to the user here
-            }, function(err) {
-                $scope.okayToDelete = false;
+            setTimeout(function() {
                 $uibModalInstance.close();
-                PageLifecycle.handleError(err);
-            });
-        };
 
-        // No, do NOT delete the API
-        $scope.no = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-    });
-}
+                // Redirect users to their list of APIs
+                $location.path($rootScope.pluginName + '/users/' + Configuration.user.username + '/apis');
+            }, 800);
+
+            // We should display some type of Toastr/Growl notification to the user here
+        }, function(err) {
+            $scope.okayToDelete = false;
+            $uibModalInstance.close();
+            PageLifecycle.handleError(err);
+        });
+    };
+
+    // No, do NOT delete the API
+    $scope.no = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+});

@@ -1,9 +1,9 @@
-/// <reference path='../apimanPlugin.ts'/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var NewContractController = _module.controller('Apiman.NewContractController',
+_module.controller('Apiman.NewContractController',
         ['$location', '$q', '$rootScope', '$scope', '$uibModal', 'UserSvcs', 'CurrentUser', 'Logger', 'OrgSvcs', 'PageLifecycle',
-        ($location, $q, $rootScope, $scope, $uibModal, UserSvcs, CurrentUser, Logger, OrgSvcs, PageLifecycle) => {
+        function ($location, $q, $rootScope, $scope, $uibModal, UserSvcs, CurrentUser, Logger, OrgSvcs, PageLifecycle) {
                 var params = $location.search();
                 var apiId = params.api;
                 var apiOrgId = params.apiorg;
@@ -216,4 +216,3 @@ module Apiman {
             }
         ]
     );
-}

@@ -1,10 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var EditPolicyDefController = _module.controller("Apiman.EditPolicyDefController",
+_module.controller("Apiman.EditPolicyDefController",
         ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', '$routeParams',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle, $routeParams) => {
+        function ($q, $scope, $location, ApimanSvcs, PageLifecycle, $routeParams) {
             var params = $routeParams;
             
             var pageData = {
@@ -31,6 +30,4 @@ module Apiman {
             PageLifecycle.loadPage('EditPolicyDef', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('edit-policyDef');
             });
-    }])
-
-}
+    }]);

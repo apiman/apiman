@@ -1,10 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var AdminPluginsController = _module.controller("Apiman.AdminPluginsController",
+_module.controller("Apiman.AdminPluginsController",
         ['$q', '$scope', 'Modals', 'ApimanSvcs', 'PageLifecycle', 'Logger',
-        ($q, $scope, Modals, ApimanSvcs, PageLifecycle, Logger) => {
+        function ($q, $scope, Modals, ApimanSvcs, PageLifecycle, Logger) {
             $scope.tab = 'plugins';
             $scope.filterAvailablePlugins = function(value) {
                 if (!value) {
@@ -134,6 +133,4 @@ module Apiman {
                 PageLifecycle.setPageTitle('admin-plugins');
                 refreshPlugins();
             });
-    }])
-
-}
+    }]);

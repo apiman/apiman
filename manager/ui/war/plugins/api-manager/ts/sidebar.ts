@@ -1,10 +1,4 @@
-/// <reference path="apimanPlugin.ts"/>
-module Apiman {
-
-    export var SidebarController = _module.controller("Apiman.SidebarController",
-        ['$scope', 'Logger', 'Configuration', ($scope, Logger, Configuration) => {
-            
-            
-        }]);
-
-}
+import {_module} from "./apimanPlugin";
+_module.controller("Apiman.SidebarController",
+    ['$scope', 'Logger', 'Configuration',
+        function($scope, Logger, Configuration) {}]);

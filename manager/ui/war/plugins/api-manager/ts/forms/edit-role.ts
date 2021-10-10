@@ -1,8 +1,7 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var EditRoleController = _module.controller("Apiman.EditRoleController",
+_module.controller("Apiman.EditRoleController",
         [
             '$q', 
             '$scope', 
@@ -12,7 +11,7 @@ module Apiman {
             'PageLifecycle', 
             'Logger',  
             '$routeParams',
-        ($q, $scope, $location, $uibModal, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
+        function ($q, $scope, $location, $uibModal, ApimanSvcs, PageLifecycle, Logger, $routeParams) {
             var params = $routeParams;
             var allPermissions     = ['orgView', 'orgEdit', 'orgAdmin',
                                       'planView','planEdit','planAdmin',
@@ -107,6 +106,4 @@ module Apiman {
                 PageLifecycle.setPageTitle('edit-role');
                 $('#apiman-description').focus();
             });
-    }])
-
-}
+    }]);

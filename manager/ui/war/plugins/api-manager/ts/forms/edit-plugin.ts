@@ -1,8 +1,6 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var EditPluginController = _module.controller("Apiman.EditPluginController",
+_module.controller("Apiman.EditPluginController",
         [
             '$q', 
             '$scope', 
@@ -11,7 +9,7 @@ module Apiman {
             'PageLifecycle', 
             '$routeParams', 
             'Logger',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle, $routeParams, Logger) => {
+        function ($q, $scope, $location, ApimanSvcs, PageLifecycle, $routeParams, Logger) {
             var params = $routeParams;
             
             var pageData = {
@@ -41,6 +39,4 @@ module Apiman {
             PageLifecycle.loadPage('EditPlugin', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('plugin-details');
             });
-    }])
-
-}
+    }]);

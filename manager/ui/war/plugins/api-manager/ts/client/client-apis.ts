@@ -1,9 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
-    export var ClientApisController = _module.controller('Apiman.ClientApisController',
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
+
+_module.controller('Apiman.ClientApisController',
         ['$q', '$scope', '$location', 'PageLifecycle','ClientEntityLoader','Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout', '$routeParams', 'Configuration', 'ApiRegistrySvcs', 'DownloadSvcs', '$window', '$uibModal', '$log', 'SwaggerUIContractService',
-        ($q, $scope, $location, PageLifecycle, ClientEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration, ApiRegistrySvcs, DownloadSvcs, $window, $uibModal, $log, SwaggerUIContractService) => {
+        function ($q, $scope, $location, PageLifecycle, ClientEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration, ApiRegistrySvcs, DownloadSvcs, $window, $uibModal, $log, SwaggerUIContractService) {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -160,6 +160,3 @@ module Apiman {
             //console.error('Error!', err);
         };
     });
-
-
-}

@@ -1,10 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-/// <reference path="../model/contract.model.ts"/>
+import {_module} from "../apimanPlugin";
+import {ContractSummaryBean} from "../model/contract.model";
+import angular = require("angular");
 
-module Apiman {
-    import ContractSummaryBean = ApimanRPC.ContractSummaryBean;
-    export var ClientContractsController = _module.controller('Apiman.ClientContractsController',
+_module.controller('Apiman.ClientContractsController',
         [
             '$q',
             '$scope',
@@ -17,7 +15,7 @@ module Apiman {
             '$routeParams',
             'Configuration',
             'ContractService',
-        ($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, Logger, $routeParams, Configuration, ContractService) => {
+        function($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, Logger, $routeParams, Configuration, ContractService) {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -145,6 +143,4 @@ module Apiman {
             PageLifecycle.loadPage('ClientContracts', 'clientView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('client-contracts', [ $scope.client.name ]);
             });
-        }])
-
-}
+        }]);

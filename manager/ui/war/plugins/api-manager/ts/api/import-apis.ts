@@ -1,14 +1,13 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
-    
-    var pages = [
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
+
+const pages = [
         'find-apis', 'choose-plans', 'import-apis'
     ];
 
-    export var ApiRedirectController = _module.controller("Apiman.ImportApisController",
+    _module.controller("Apiman.ImportApisController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams', 'Logger', 'ApiCatalogSvcs',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams, Logger, ApiCatalogSvcs) => {
+        function ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams, Logger, ApiCatalogSvcs) {
             var params = $routeParams;
             $scope.params = params;
             $scope.organizationId = params.org;
@@ -238,4 +237,3 @@ module Apiman {
                 PageLifecycle.setPageTitle('import-apis');
             });
         }]);
-}

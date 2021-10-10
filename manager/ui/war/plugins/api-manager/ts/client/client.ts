@@ -1,10 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var ClientRedirectController = _module.controller('Apiman.ClientRedirectController',
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams) => {
+_module.controller('Apiman.ClientRedirectController',
+    ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams',
+        function ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams) {
             var orgId = $routeParams.org;
             var clientId = $routeParams.client;
 
@@ -27,9 +25,9 @@ module Apiman {
             });
         }]);
 
-    export var ClientEntityLoader = _module.factory('ClientEntityLoader',
-        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusSvc',
-        ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusSvc) => {
+_module.factory('ClientEntityLoader',
+    ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusSvc',
+        function ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusSvc) {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
@@ -55,21 +53,21 @@ module Apiman {
             }
         }]);
 
-    export var ClientEntityController = _module.controller('Apiman.ClientEntityController',
-        [
-            '$q',
-            '$uibModal',
-            '$scope',
-            '$rootScope',
-            '$location',
-            'ActionSvcs',
-            'Logger',
-            'PageLifecycle',
-            '$routeParams',
-            'OrgSvcs',
-            'EntityStatusSvc',
-            'Configuration',
-        ($q, $uibModal, $scope, $rootScope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) => {
+_module.controller('Apiman.ClientEntityController',
+    [
+        '$q',
+        '$uibModal',
+        '$scope',
+        '$rootScope',
+        '$location',
+        'ActionSvcs',
+        'Logger',
+        'PageLifecycle',
+        '$routeParams',
+        'OrgSvcs',
+        'EntityStatusSvc',
+        'Configuration',
+        function ($q, $uibModal, $scope, $rootScope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs, EntityStatusSvc, Configuration) {
             var params = $routeParams;
 
             $scope.setEntityStatus = EntityStatusSvc.setEntityStatus;
@@ -79,7 +77,7 @@ module Apiman {
             $scope.setVersion = function(client) {
                 PageLifecycle.redirectTo('/orgs/{0}/clients/{1}/{2}', params.org, params.client, client.version);
             };
-            
+
             $scope.isModified = function() {
                 if (!$scope.version.publishedOn) {
                     return false;
@@ -88,7 +86,7 @@ module Apiman {
                 var mod = new Date($scope.version.modifiedOn);
                 return mod > pub;
             };
-            
+
             $scope.isReregisterable = function() {
                 var rval = false;
                 if ($scope.getEntityStatus() == 'Retired') {
@@ -105,14 +103,14 @@ module Apiman {
             $scope.registerClient = function() {
                 $scope.registerButton.state = 'in-progress';
                 $scope.reregisterButton.state = 'in-progress';
-                
+
                 var registerAction = {
                     type: 'registerClient',
                     entityId: params.client,
                     organizationId: params.org,
                     entityVersion: params.version
                 };
-                
+
                 ActionSvcs.save(registerAction, function(reply) {
                     $scope.version.publishedOn = Date.now();
                     $scope.registerButton.state = 'complete';
@@ -176,15 +174,15 @@ module Apiman {
                 };
 
                 OrgSvcs.update({
-                    organizationId: $scope.organizationId,
-                    entityType: 'clients',
-                    entityId: $scope.client.id
-                },
-                updateClientBean,
-                function(success) {},
-                function(error) {
-                    Logger.error('Unable to update client description: {0}', error);
-                });
+                        organizationId: $scope.organizationId,
+                        entityType: 'clients',
+                        entityId: $scope.client.id
+                    },
+                    updateClientBean,
+                    function(success) {},
+                    function(error) {
+                        Logger.error('Unable to update client description: {0}', error);
+                    });
             };
 
 
@@ -217,6 +215,4 @@ module Apiman {
                     Logger.info('Modal dismissed at: ' + new Date());
                 });
             };
-    }]);
-
-}
+        }]);

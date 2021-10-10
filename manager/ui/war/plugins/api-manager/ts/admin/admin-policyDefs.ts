@@ -1,9 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var AdminPolicyDefsController = _module.controller("Apiman.AdminPolicyDefsController",
-        ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', ($q, $scope, ApimanSvcs, PageLifecycle) => {
+_module.controller("Apiman.AdminPolicyDefsController",
+        ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', 
+        function ($q, $scope, ApimanSvcs, PageLifecycle) {
             $scope.tab = 'policyDefs';
             $scope.filterPolicies = function(value) {
                 if (!value) {
@@ -30,6 +30,4 @@ module Apiman {
             PageLifecycle.loadPage('AdminPolicyDefs', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-policyDefs');
             });
-    }])
-
-}
+    }]);

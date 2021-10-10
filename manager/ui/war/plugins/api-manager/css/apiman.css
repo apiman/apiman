@@ -2130,7 +2130,7 @@ html, body {height: 100%;}
     padding: 19px 0;
 }*/
 
-/*angulr-scrollable-table*/
+/*angular-scrollable-table*/
 .scrollableContainer .headerSpacer {
   background-clip: padding-box;
   background-color: #f5f5f5;
@@ -2151,3 +2151,9 @@ html, body {height: 100%;}
   padding-left: 5vw;
   padding-right: 5vw;
 }
+
+/*Notifications*/
+ .notification-main-body:hover {
+   cursor: pointer;
+ }
+/*End Notifications*/

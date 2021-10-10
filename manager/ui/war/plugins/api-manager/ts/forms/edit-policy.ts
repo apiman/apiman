@@ -1,9 +1,10 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
-    
-    export var EditPolicyController = _module.controller("Apiman.EditPolicyController",
+import {_module} from "../apimanPlugin";
+import {ConfigForms} from "./new-policy";
+import angular = require("angular");
+
+_module.controller("Apiman.EditPolicyController",
         ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams', 'EntityStatusSvc', 'CurrentUser',
-        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams, EntityStatusSvc, CurrentUser) => {
+        function ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams, EntityStatusSvc, CurrentUser) {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -108,5 +109,3 @@ module Apiman {
                 $('#apiman-description').focus();
             });
         }]);
-
-}

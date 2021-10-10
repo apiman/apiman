@@ -1,10 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var AdminRolesController = _module.controller("Apiman.AdminRolesController",
+_module.controller("Apiman.AdminRolesController",
         ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', 
-        ($q, $scope, ApimanSvcs, PageLifecycle) => {
+        function ($q, $scope, ApimanSvcs, PageLifecycle) {
             $scope.tab = 'roles';
             $scope.filterRoles = function(value) {
                 if (!value) {
@@ -31,6 +30,4 @@ module Apiman {
             PageLifecycle.loadPage('AdminRoles', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-roles');
             });
-    }])
-
-}
+    }]);
