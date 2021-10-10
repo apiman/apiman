@@ -1,9 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var ConsumerApisController = _module.controller("Apiman.ConsumerApisController",
+_module.controller("Apiman.ConsumerApisController",
         ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 'Logger',
-        ($q, $location, $scope, ApimanSvcs, PageLifecycle, Logger) => {
+        function ($q, $location, $scope, ApimanSvcs, PageLifecycle, Logger) {
             var params = $location.search();
             if (params.q) {
                 $scope.apiName = params.q;
@@ -57,5 +57,3 @@ module Apiman {
                 });
             });
         }]);
-
-}

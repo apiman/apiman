@@ -1,15 +1,16 @@
-/// <reference path="../../includes.ts"/>
-module ApimanFilters {
+import {ChecklistConfig} from "./model/checklist.model";
+import angular = require("angular");
+import _ = require("lodash");
 
-    export var _module = angular.module('ApimanFilters', ['ApimanConfiguration']);
+const _module = angular.module('ApimanFilters', ['ApimanConfiguration']);
 
-    export var checklist = _module.filter('urlEncode', function() {
+    _module.filter('urlEncode', function() {
         return encodeURIComponent;
     });
 
     // Checklist Filter:
     // This filter processes and formats data returned by the /status endpoint.
-    export var checklist = _module.filter('checklist', function() {
+    _module.filter('checklist', function() {
         // Map the IDs to the Tab Names
         // This is used when checking if the user is on the same tab
         // defined on the checklist.
@@ -45,7 +46,7 @@ module ApimanFilters {
         };
     });
 
-    export var propsFilter = _module.filter('propsFilter', function() {
+    _module.filter('propsFilter', function() {
         return function(items, props) {
             var out = [];
 
@@ -76,7 +77,7 @@ module ApimanFilters {
         };
     });
 
-    export var selectedTags = _module.filter('selectedTags', ['Logger', function(Logger) {
+    _module.filter('selectedTags', ['Logger', function(Logger) {
         return function(array, selectedTags) {
             if(array && selectedTags.length >= 1) {
                 return array.filter(function(item) {
@@ -96,5 +97,4 @@ module ApimanFilters {
         };
     }]);
 
-}
 

@@ -1,10 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var OrgRedirectController = _module.controller("Apiman.OrgRedirectController",
+_module.controller("Apiman.OrgRedirectController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) => {
+        function ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) {
             var params = $routeParams;
             $scope.organizationId = params.org;
             if (!CurrentUser.isMember(params.org)) {
@@ -23,5 +21,3 @@ module Apiman {
                 PageLifecycle.forwardTo('/orgs/{0}/{1}', orgId, tab);
             });
         }]);
-
-}

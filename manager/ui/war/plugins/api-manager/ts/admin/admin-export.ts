@@ -1,10 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var AdminRolesController = _module.controller("Apiman.AdminExportImportController",
+_module.controller("Apiman.AdminExportImportController",
         ['$q', '$scope', 'SystemSvcs', 'DownloadSvcs', 'PageLifecycle', 'Logger', '$window',
-        ($q, $scope, SystemSvcs, DownloadSvcs, PageLifecycle, Logger, $window) => {
+        function ($q, $scope, SystemSvcs, DownloadSvcs, PageLifecycle, Logger, $window) {
             $scope.tab = 'export';
             var pageData = {
             };
@@ -56,6 +54,4 @@ module Apiman {
             PageLifecycle.loadPage('AdminExport', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-export');
             });
-    }])
-
-}
+    }]);

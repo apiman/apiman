@@ -1,16 +1,16 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import angular = require("angular");
+import c3 = require("c3");
+import { _module } from '../apimanPlugin'
 
-    export var NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
-    export var THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
-    export var SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
-    export var ONE_DAY = 1 * 24 * 60 * 60 * 1000;
-    export var ONE_HOUR = 1 * 60 * 60 * 1000;
+    export const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
+    export const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+    export const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+    export const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
+    export const ONE_HOUR = 1 * 60 * 60 * 1000;
 
-    export var ApiMetricsController = _module.controller("Apiman.ApiMetricsController",
+    _module.controller("Apiman.ApiMetricsController",
         ['$q', 'Logger', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'MetricsSvcs', '$routeParams', '$timeout', 'Configuration',
-        ($q, Logger, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, MetricsSvcs, $routeParams, $timeout, Configuration) => {
+       function ($q, Logger, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, MetricsSvcs, $routeParams, $timeout, Configuration) {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'metrics';
@@ -435,6 +435,4 @@ module Apiman {
                 PageLifecycle.setPageTitle('api-metrics', [ $scope.api.name ]);
                 refreshCharts();
             });
-        }])
-
-}
+        }]);

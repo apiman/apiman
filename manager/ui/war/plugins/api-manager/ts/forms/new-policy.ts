@@ -1,7 +1,7 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
+import angular = require("angular");
+import {_module} from "../apimanPlugin";
 
-    export var ConfigForms = {
+export var ConfigForms = {
         BASICAuthenticationPolicy: 'basic-auth.include',
         IgnoredResourcesPolicy: 'ignored-resources.include',
         IPBlacklistPolicy: 'ip-list.include',
@@ -18,7 +18,7 @@ module Apiman {
 
     export var NewPolicyController = _module.controller("Apiman.NewPolicyController",
         ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams',
-        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
+        function ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) {
             var params = $routeParams;
 
             var etype = params.type;
@@ -115,5 +115,3 @@ module Apiman {
                 PageLifecycle.setPageTitle('new-policy');
             });
         }]);
-
-}

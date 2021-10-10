@@ -1,10 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var ConsumerOrgController = _module.controller("Apiman.ConsumerOrgController",
+_module.controller("Apiman.ConsumerOrgController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', 'CurrentUser', '$routeParams',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, CurrentUser, $routeParams) => {
+        function ($q, $scope, $location, OrgSvcs, PageLifecycle, CurrentUser, $routeParams) {
 
             $scope.filterApis = function(value) {
                 if (!value) {
@@ -42,6 +41,4 @@ module Apiman {
                 $scope.filteredApis = $scope.apis;
                 PageLifecycle.setPageTitle('consumer-org', [ $scope.org.name ]);
             });
-        }])
-
-}
+        }]);

@@ -14,11 +14,9 @@
  *  imitations under the License.
  */
 
-/// <reference path="apimanPlugin.ts"/>
+import {_module} from "./apimanPlugin";
 
-module Apiman {
-
-    export var SwaggerUIContractService = _module.service('SwaggerUIContractService', function () {
+_module.service('SwaggerUIContractService', function () {
         var key;
 
         var setXAPIKey = function (XAPIKey) {
@@ -40,4 +38,3 @@ module Apiman {
             removeXAPIKey: removeXAPIKey
         }
     });
-}

@@ -1,10 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var ImportPolicyDefsController = _module.controller("Apiman.ImportPolicyDefsController",
+_module.controller("Apiman.ImportPolicyDefsController",
         ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle) => {
+        function ($q, $scope, $location, ApimanSvcs, PageLifecycle) {
             $scope.isData = true;
             $scope.isConfirm = false;
             $scope.isValid = false;
@@ -47,6 +46,4 @@ module Apiman {
             PageLifecycle.loadPage('ImportPolicyDefs', 'admin', undefined, $scope, function() {
                 PageLifecycle.setPageTitle('import-policyDefs');
             });
-    }])
-
-}
+    }]);

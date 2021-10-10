@@ -1,9 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var NewOrgController = _module.controller("Apiman.NewOrgController",
+_module.controller("Apiman.NewOrgController",
         ['$q', '$location', '$scope', 'OrgSvcs', 'PageLifecycle', 'CurrentUser',
-        ($q, $location, $scope, OrgSvcs, PageLifecycle, CurrentUser) => {
+        function ($q, $location, $scope, OrgSvcs, PageLifecycle, CurrentUser) {
             $scope.saveNewOrg = function() {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save($scope.org, function(reply) {
@@ -19,5 +18,3 @@ module Apiman {
                 });
             });
         }]);
-
-}

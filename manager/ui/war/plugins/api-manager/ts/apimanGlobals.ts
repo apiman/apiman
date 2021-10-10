@@ -1,7 +1,8 @@
-/// <reference path='../../includes.ts'/>
+import * as jsLogger from "js-logger";
+import { ILogger } from "js-logger";
 
-module Apiman {
-    export var pluginName = 'api-manager';
-    export var log: Logging.Logger = Logger.get(pluginName);
-    export var templatePath = 'plugins/api-manager/html';
+export class ApimanGlobals {
+    public static pluginName: string = 'api-manager';
+    public static Logger: ILogger = jsLogger.get('apiman-manager');
+    public static templatePath: string = 'plugins/api-manager/html';
 }

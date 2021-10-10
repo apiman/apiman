@@ -1,9 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var NewGatewayController = _module.controller("Apiman.NewGatewayController",
+_module.controller("Apiman.NewGatewayController",
         ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 'CurrentUser', 'Logger',
-        ($q, $location, $scope, ApimanSvcs, PageLifecycle, CurrentUser, Logger) => {
+        function ($q, $location, $scope, ApimanSvcs, PageLifecycle, CurrentUser, Logger) {
             $scope.isValid = false;
             $scope.gateway = {};
             $scope.configuration = {
@@ -83,5 +83,3 @@ module Apiman {
                 $('#apiman-gateway-name').focus();
             });
         }]);
-
-}

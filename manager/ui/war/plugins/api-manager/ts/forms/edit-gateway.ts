@@ -1,10 +1,10 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import Logger from "js-logger";
+import angular = require("angular");
 
-    export var EditGatewayController = _module.controller("Apiman.EditGatewayController",
+_module.controller("Apiman.EditGatewayController",
         ['$location', '$q', '$rootScope', '$routeParams', '$scope', '$uibModal', 'ApimanSvcs', 'PageLifecycle',
-        ($location, $q, $rootScope, $routeParams, $scope, $uibModal, ApimanSvcs, PageLifecycle) => {
+        function ($location, $q, $rootScope, $routeParams, $scope, $uibModal, ApimanSvcs, PageLifecycle) {
             $scope.isValid = false;
             var params = $routeParams;
             
@@ -151,6 +151,4 @@ module Apiman {
                 $scope.$watch('passwordConfirm', validate);
                 $('#apiman-gateway-description').focus();
             });
-    }])
-
-}
+    }]);

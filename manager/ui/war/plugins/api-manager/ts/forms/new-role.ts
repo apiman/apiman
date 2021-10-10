@@ -1,9 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var NewRoleController = _module.controller("Apiman.NewRoleController",
+_module.controller("Apiman.NewRoleController",
         ['$q', '$location', '$scope', 'OrgSvcs', 'PageLifecycle', 'CurrentUser', 'Logger', 'ApimanSvcs',
-        ($q, $location, $scope, OrgSvcs, PageLifecycle, CurrentUser, Logger, ApimanSvcs) => {
+        function ($q, $location, $scope, OrgSvcs, PageLifecycle, CurrentUser, Logger, ApimanSvcs) {
             $scope.role = {};
             $scope.rolePermissions = {};
             $scope.isValid = false;
@@ -55,5 +55,3 @@ module Apiman {
                 $('#apiman-entityname').focus();
             });
         }]);
-
-}

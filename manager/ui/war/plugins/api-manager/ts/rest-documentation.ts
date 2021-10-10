@@ -1,54 +1,55 @@
-module Apiman {
-    export var ManagerRestApiDefController = _module.controller("Apiman.ManagerRestApiDefController",
-        ['$q', '$rootScope', '$scope', 'PageLifecycle', 'Configuration',
-            ($q, $rootScope, $scope, PageLifecycle, Configuration) => {
+import { _module } from './apimanPlugin';
+import SwaggerUIBundle from "swagger-ui-dist/swagger-ui-bundle.js";
 
-                PageLifecycle.loadPage('MangerRestApiDef', undefined, undefined, $scope, function() {
+_module.controller("Apiman.ManagerRestApiDefController",
+    ['$q', '$rootScope', '$scope', 'PageLifecycle', 'Configuration',
+        function ($q, $rootScope, $scope, PageLifecycle, Configuration) {
 
-                    PageLifecycle.setPageTitle('manager-rest-def');
+            PageLifecycle.loadPage('MangerRestApiDef', undefined, undefined, $scope, function() {
 
-                    $scope.definitionUrl = Configuration.api.endpoint + '/swagger.yaml';
+                PageLifecycle.setPageTitle('manager-rest-def');
 
-                    if (SwaggerUIBundle) {
-                        $scope.definitionStatus = 'loading';
-                        let ui;
-                        let swaggerOptions = <any>{
-                            url: $scope.definitionUrl,
-                            dom_id: "#swagger-ui-container",
-                            validatorUrl: "https://online.swagger.io/validator",
-                            presets: [
-                                SwaggerUIBundle.presets.apis
-                            ],
-                            layout: "BaseLayout",
-                            sorter : "alpha",
+                $scope.definitionUrl = Configuration.api.endpoint + '/swagger.yaml';
 
-                            requestInterceptor: function(request) {
-                                // Send keycloak token
-                                request.headers.Authorization = Configuration.getAuthorizationHeader();
-                                return request;
-                            },
-                            onComplete: function() {
+                if (SwaggerUIBundle) {
+                    $scope.definitionStatus = 'loading';
+                    let ui;
+                    let swaggerOptions = <any>{
+                        url: $scope.definitionUrl,
+                        dom_id: "#swagger-ui-container",
+                        validatorUrl: "https://online.swagger.io/validator",
+                        presets: [
+                            SwaggerUIBundle.presets.apis
+                        ],
+                        layout: "BaseLayout",
+                        sorter : "alpha",
+
+                        requestInterceptor: function(request) {
+                            // Send keycloak token
+                            request.headers.Authorization = Configuration.getAuthorizationHeader();
+                            return request;
+                        },
+                        onComplete: function() {
+                            $scope.$apply(function() {
+                                $scope.definitionStatus = 'complete';
+                            });
+                        },
+                        // do error handling in the responseInterceptor
+                        responseInterceptor: function (response) {
+                            if (response.status == 500 && response.ok === false) {
                                 $scope.$apply(function() {
-                                    $scope.definitionStatus = 'complete';
+                                    $scope.definitionStatus = 'error';
+                                    $scope.hasError = true;
                                 });
-                            },
-                            // do error handling in the responseInterceptor
-                            responseInterceptor: function (response) {
-                                if (response.status == 500 && response.ok === false) {
-                                    $scope.$apply(function() {
-                                        $scope.definitionStatus = 'error';
-                                        $scope.hasError = true;
-                                    });
-                                }
-                                return response;
                             }
-                        };
+                            return response;
+                        }
+                    };
 
-                        ui = SwaggerUIBundle(swaggerOptions);
-                        $scope.hasDefinition = true;
-                    } else {
-                        $scope.hasDefinition = false;
-                    }
-                });
-            }]);
-}
+                    ui = SwaggerUIBundle(swaggerOptions);
+                    $scope.hasDefinition = true;
+                } else {
+                    $scope.hasDefinition = false;
+                }
+            });
+        }]);

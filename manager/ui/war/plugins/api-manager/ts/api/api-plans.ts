@@ -1,10 +1,10 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import _ = require("lodash");
+import angular = require("angular");
 
- export var ApiPlansController = _module.controller('Apiman.ApiPlansController',
-        ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Configuration',
-        ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Configuration) => {
+_module.controller('Apiman.ApiPlansController',
+    ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Configuration',
+        function ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Configuration) {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -48,23 +48,23 @@ module Apiman {
                                 promises.push($q(function(resolve, reject) {
                                     OrgSvcs.query({ organizationId: params.org, entityType: 'plans', entityId: plan.id, versionsOrActivity: 'versions' }, function(planVersions) {
                                         //for each plan find the versions that are locked
-                                       var lockedVersions = [];
+                                        var lockedVersions = [];
 
-                                       for (var j = 0; j < planVersions.length; j++) {
-                                           var planVersion = planVersions[j];
+                                        for (var j = 0; j < planVersions.length; j++) {
+                                            var planVersion = planVersions[j];
 
-                                           if (planVersion.status == 'Locked') {
-                                               lockedVersions.push(planVersion.version);
-                                           }
-                                       }
+                                            if (planVersion.status == 'Locked') {
+                                                lockedVersions.push(planVersion.version);
+                                            }
+                                        }
 
-                                       // if we found locked plan versions then add them
-                                       if (lockedVersions.length > 0) {
-                                           plan.lockedVersions = lockedVersions;
-                                           lockedPlans.push(plan);
-                                       }
+                                        // if we found locked plan versions then add them
+                                        if (lockedVersions.length > 0) {
+                                            plan.lockedVersions = lockedVersions;
+                                            lockedPlans.push(plan);
+                                        }
 
-                                       resolve(planVersions);
+                                        resolve(planVersions);
                                     }, reject);
                                 }))
                             });
@@ -156,4 +156,3 @@ module Apiman {
                 PageLifecycle.setPageTitle('api-plans', [ $scope.api.name ]);
             });
         }]);
-}

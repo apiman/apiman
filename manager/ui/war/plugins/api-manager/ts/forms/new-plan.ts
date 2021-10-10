@@ -1,9 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var NewPlanController = _module.controller("Apiman.NewPlanController",
+_module.controller("Apiman.NewPlanController",
         ['$q', '$location', '$scope', 'CurrentUser', 'UserSvcs', 'OrgSvcs', 'PageLifecycle', '$rootScope',
-        ($q, $location, $scope, CurrentUser, UserSvcs, OrgSvcs, PageLifecycle, $rootScope) => {
+        function ($q, $location, $scope, CurrentUser, UserSvcs, OrgSvcs, PageLifecycle, $rootScope) {
             var recentOrg = $rootScope.mruOrg;
 
             var pageData = {
@@ -43,5 +42,3 @@ module Apiman {
                 });
             });
         }]);
-
-}
