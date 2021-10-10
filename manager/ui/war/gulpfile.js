@@ -11,6 +11,8 @@ const path = require('path');
 const pkg = require('./package.json');
 const s = require('underscore.string');
 const source = require('vinyl-source-stream');
+const tsify = require("tsify");
+const glob = require("glob");
 
 // ---------------------- Gulp Plugins ---->>
 const angularTemplatecache = require('gulp-angular-templatecache');
@@ -21,7 +23,7 @@ const connect = require('gulp-connect');
 const notify = require('gulp-notify');
 const replace = require('gulp-replace');
 const runSequence = require('run-sequence');
-const typescript = require('gulp-typescript');
+// const typescript = require('gulp-typescript');
 const watch = require('gulp-watch');
 
 module.exports = { gulp, connect }
@@ -30,19 +32,14 @@ module.exports = { gulp, connect }
 // ---------------------- Configuration ---->>
 
 var config = {
+    debug: true,
     main: '.',
     ts: 'plugins/**/*.ts',
     templates: 'plugins/**/*.html',
     templateIncludes: 'plugins/**/*.include',
     templateModule: pkg.name + '-templates',
     dest: './dist/',
-    js: pkg.name + '.js',
-    tsProject: typescript.createProject({
-        target: 'ES6',
-        module: 'commonjs',
-        declarationFiles: true,
-        noExternalResolve: false
-    })
+    js: pkg.name + '.js'
 };
 
 var SwaggerUIPath = './node_modules/swagger-ui-dist';
@@ -63,17 +60,46 @@ gulp.task('default', function() {
 // Browserify Task
 // Bundles node_modules required() in ./entry.js to be used on the client (/lib/scripts.js)
 gulp.task('browserify', function() {
-    return browserify('./entry.js')
-        .bundle()
-        .pipe(source('deps.js')) // gives streaming vinyl file object
-        .pipe(buffer()) // <----- convert from streaming to buffered vinyl file object
-        .pipe(gulp.dest(config.dest));
+    const allTsFiles = glob.sync('./plugins/api-manager/**/*.ts');
+    return browserify({
+        basedir: ".",
+        debug: true,
+        entries: ["./entry.ts", "./apiman/config.js", "./apiman/translations.js"].concat(allTsFiles),
+        cache: {},
+        packageCache: {}
+    })
+    .plugin(tsify)
+    .bundle()
+    .on('error', function (error) { console.error(error.toString()); })
+    .pipe(source('apiman-manager-uix.js')) // gives streaming vinyl file object
+    .pipe(buffer()) // <----- convert from streaming to buffered vinyl file object
+    .pipe(gulp.dest("dist"))
+    //.pipe(process.stdout)
+    // .pipe(gulp.dest(config.dest));
 });
+
+// gulp.task('', function() {
+//     return browserify({
+//         basedir: ".",
+//         debug: true,
+//         entries: ["./entry.ts"],
+//         cache: {},
+//         packageCache: {}
+//     })
+//     .plugin(tsify)
+//     .bundle()
+//     .on('error', function (error) { console.error(error.toString()); })
+//     .pipe(source('deps.js')) // gives streaming vinyl file object
+//     .pipe(buffer()) // <----- convert from streaming to buffered vinyl file object
+//     .pipe(gulp.dest("dist"))
+//     //.pipe(process.stdout)
+//     // .pipe(gulp.dest(config.dest));
+// });
 
 
 // Build Task
 gulp.task('build', function() {
-    return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
+    return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'template', 'concat', 'clean');
 });
 
 
@@ -132,7 +158,9 @@ gulp.task('css', function() {
             SwaggerUIPath + '/swagger-ui.css',
             'node_modules/prismjs/themes/prism.css',
             'node_modules/@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css',
-            'node_modules/@toast-ui/editor/dist/toastui-editor.css'
+            'node_modules/@toast-ui/editor/dist/toastui-editor.css',
+            'node_modules/tui-color-picker/dist/tui-color-picker.css',
+            'node_modules/@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css'
         ], {base: 'node_modules/'})
         .pipe(concatCss('deps.css'))
         .pipe(gulp.dest('.'));
@@ -197,45 +225,61 @@ gulp.task('template', function() {
         .pipe(gulp.dest('.'));
 });
 
-
+// gulp.task('tsc', function() {
+//     return browserify({
+//         basedir: ".",
+//         debug: true,
+//         entries: ["plugins/api-manager/ts/apimanPlugin.ts"],
+//         cache: {},
+//         packageCache: {}
+//     })
+//     .plugin(tsify)
+//     .bundle()
+//     .pipe(source("apiman-manager-ui.js"))
+//     .pipe(gulp.dest("dist"))
+//     // return gulp.src(config.ts)
+//     // .pipe(tsify)
+//     // .pipe(concat('compiled.js'))
+//     // .pipe(gulp.dest("dist"))
+// });
 // TSC Task
 // Compiles TS into JS
 // Creates the compiled.js file in the project root (/manager/ui/war)
-gulp.task('tsc', function() {
-    var cwd = process.cwd();
-
-    // Grab all TypeScript files (controllers, services, directives, etc.)
-    // Pipe them into the TypeScript project created above (config.tsProject)
-    var tsResult = gulp.src(config.ts)
-        .pipe(typescript(config.tsProject))
-        .on('error', notify.onError({
-            message: '#{ error.message }',
-            title: 'Typescript compilation error'
-        }));
-
-    // eventStream.merge(argument1, argument2);
-    // argument1: Take the result of the TypeScript project (.js).
-    // Pipe it into, or concatenate it onto the compiled.js file.
-    // Then, pipe that file into the project root.
-    // argument2: Take the result of the TypeScript project (.dts).
-    // Pipe it into a d.ts. file.
-    // Pipe that file into the result of a buffer that gets passed to map();
-    return eventStream.merge(
-        tsResult.js
-            .pipe(concat('compiled.js'))
-            .pipe(gulp.dest('.')),
-        tsResult.dts
-            .pipe(gulp.dest('d.ts'))
-    ).pipe(map(function(buf, filename) {
-            if (!s.endsWith(filename, 'd.ts')) {
-                return buf;
-            }
-
-            var relative = path.relative(cwd, filename);
-            fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
-            return buf;
-        }));
-});
+// gulp.task('tsc', function() {
+//     var cwd = process.cwd();
+//
+//     // Grab all TypeScript files (controllers, services, directives, etc.)
+//     // Pipe them into the TypeScript project created above (config.tsProject)
+//     var tsResult = gulp.src(config.ts)
+//         .pipe(typescript(config.tsProject))
+//         .on('error', notify.onError({
+//             message: '#{ error.message }',
+//             title: 'Typescript compilation error'
+//         }));
+//
+//     // eventStream.merge(argument1, argument2);
+//     // argument1: Take the result of the TypeScript project (.js).
+//     // Pipe it into, or concatenate it onto the compiled.js file.
+//     // Then, pipe that file into the project root.
+//     // argument2: Take the result of the TypeScript project (.dts).
+//     // Pipe it into a d.ts. file.
+//     // Pipe that file into the result of a buffer that gets passed to map();
+//     return eventStream.merge(
+//         tsResult.js
+//             .pipe(concat('compiled.js'))
+//             .pipe(gulp.dest('.')),
+//         tsResult.dts
+//             .pipe(gulp.dest('d.ts'))
+//     ).pipe(map(function(buf, filename) {
+//             if (!s.endsWith(filename, 'd.ts')) {
+//                 return buf;
+//             }
+//
+//             var relative = path.relative(cwd, filename);
+//             fs.appendFileSync('defs.d.ts', '/// <reference path="' + relative + '"/>\n');
+//             return buf;
+//         }));
+// });
 
 
 // Watch Task
@@ -249,7 +293,7 @@ gulp.task('watch', function() {
         'plugins/api-manager/css/apiman.css',
         'apiman/translations.js'
     ], function() {
-        return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'tsc', 'template', 'concat', 'clean');
+        return runSequence(['browserify', 'css', 'fonts', 'images'], 'path-adjust', 'clean-defs', 'template', 'concat', 'clean');
     });
 });
 
