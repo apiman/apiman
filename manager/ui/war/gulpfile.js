@@ -61,10 +61,12 @@ gulp.task('default', function() {
 // Bundles node_modules required() in ./entry.js to be used on the client (/lib/scripts.js)
 gulp.task('browserify', function() {
     const allTsFiles = glob.sync('./plugins/api-manager/**/*.ts');
+    const configFiles = ["./apiman/config.js", "./apiman/translations.js"];
+    const allFiles = allTsFiles.concat(configFiles);
     return browserify({
         basedir: ".",
         debug: true,
-        entries: ["./entry.ts", "./apiman/config.js", "./apiman/translations.js"].concat(allTsFiles),
+        entries: ["./entry.ts"].concat(allFiles),
         cache: {},
         packageCache: {}
     })

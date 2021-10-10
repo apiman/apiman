@@ -187,7 +187,7 @@
                 class="btn btn-default fa fa-check"
                 role="button"
                 aria-label="Mark notification read"
-                ng-click="markNotificationRead(notification)"
+                ng-click="markRead(notification)"
               ></button>
               <div class="dropdown pull-right dropdown-kebab-pf">
                 <button
@@ -228,11 +228,11 @@
                     </div>
                     <div class="list-group-item-text">
                       <a href="{{ getNotificationMeta(notification).link }}">
-                      {{ notification.reasonMessage }}
+                      {{ getNotificationMeta(notification).message }} {{ notification.id }}
                       </a>
                     </div>
                   </div>
-                  <div class="list-view-pf-additional-info">
+<!--                  <div class="list-view-pf-additional-info">-->
                     <!--                  <div class="list-view-pf-additional-info-item">-->
                     <!--                    <span class="pficon pficon-screen"></span>-->
                     <!--                    <strong>8</strong> Hosts-->
@@ -249,11 +249,16 @@
                     <!--                    <span class="pficon pficon-image"></span>-->
                     <!--                    <strong>8</strong> Images-->
                     <!--                  </div>-->
-                  </div>
+<!--                  </div>-->
                 </div>
             </div>
           </div>
         </div>
+        <uib-pagination boundary-link-numbers="true" direction-links="true" force-ellipses="true"
+                        items-per-page="pageSize"
+                        max-size="5" ng-change="getNotificationsWithPagination(currentPage, pageSize)"
+                        ng-init="currentPage = 1" ng-model="currentPage" rotate="true"
+                        total-items="notifications.totalSize"/>
       </div>
 
     </div>
