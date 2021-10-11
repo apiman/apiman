@@ -27,7 +27,7 @@ _module.controller("Apiman.NotificationController", [
     PageLifecycle
   ) {
     $rootScope.pageState = "loaded";
-    $scope.notificationSearchResult = null as SearchResultsBean<ApimanNotification<any>>;
+    $scope.notificationSearchResult = null;
     $scope.pageSize = 15;
 
     PageLifecycle.loadPage(
@@ -43,6 +43,13 @@ _module.controller("Apiman.NotificationController", [
     $scope.getNotificationsWithPagination = (pageIdx: number, pageSize: number): void => {
       const username: string = Configuration.user.username;
       const notificationCriteria: NotificationCriteriaBean = {
+        filters: [
+          {
+            name: 'status',
+            operator: 'eq',
+            value: 'OPEN',
+          }
+        ],
         paging: {
           page: pageIdx,
           pageSize: pageSize,
@@ -73,11 +80,29 @@ _module.controller("Apiman.NotificationController", [
       //$scope.$apply();
     };
 
-    $scope = function (humanRelativeDate): string {
-      return "";
+    $scope.humanRelativeDate = function (humanRelativeDate): string {
       // @ts-ignore
-      //return dayjs().from(dayjs(humanRelativeDate));
+      return dayjs().to(dayjs(humanRelativeDate));
     }
+
+    $scope.deleteNotification = (notification: ApimanNotification<any>): void => {
+      const notificationIds: number[] = [ notification.id ];
+      Logger.info("Notification to mark read: {0}", notification);
+      NotificationService.deleteNotification(notificationIds).then(
+          succeeded => {
+            // Delete the notification out of the results array. For some reason this is annoyingly verbose in JS.
+            let notificationArray = $scope.notificationSearchResult.beans;
+            notificationArray.forEach((candidateNotification: ApimanNotification<any>, index) => {
+              if (notification.id === candidateNotification.id) {
+                notificationArray.splice(index, 1);
+              }
+            });
+          },
+          failed => {
+            // TODO: handle gracefully
+          }
+      );
+    };
 
     $scope.markRead = function (notification: ApimanNotification<any>): void {
       const notificationIds: number[] = [ notification.id ];
