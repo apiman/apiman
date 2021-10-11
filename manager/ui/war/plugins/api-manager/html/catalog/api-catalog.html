@@ -156,7 +156,7 @@
                                 </div>
                                 <div class="actions">
                                     <span class="apiman-action-divider" apiman-i18n-skip=""></span>
-                                    <a href="#" ng-click="importApi(api)" uib-tooltip="{{ api.endpoint }}" tooltip-trigger="mouseenter" tooltip-placement="top">
+                                    <a ng-click="importApi(api)" uib-tooltip="{{ api.endpoint }}" tooltip-trigger="mouseenter" tooltip-placement="top">
                                         <i class="fa fa-cart-arrow-down"></i>
                                         <span style="margin-left: 5px" apiman-i18n-key="import">Import</span>
                                     </a>
@@ -200,7 +200,7 @@
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li ng-repeat="org in orgs">
-                                                <a href="#" ng-click="setOrg( org )">{{ org.name }}</a>
+                                                <a ng-click="setOrg( org )">{{ org.name }}</a>
                                             </li>
                                         </ul>
                                     </div>

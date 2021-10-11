@@ -80,13 +80,14 @@
                 <echo></echo>
 
                 <delete file="${basedir}/src/main/webapp/index.html" />
-                <copy file="${basedir}/../index.html" tofile="${basedir}/src/main/webapp/index.html" overwrite="true" />
+                <copy file="${basedir}/../dist/index.html" tofile="${basedir}/src/main/webapp/index.html" overwrite="true" />
+
+                <replaceregexp file="${basedir}/src/main/webapp/index.html" 
+                match="&lt;base.href....&gt;" replace="&lt;base href=&apos;${ui.webcontext}&apos;&gt;" byline="true" />
                 <replaceregexp file="${basedir}/src/main/webapp/index.html"
-                  match="&lt;base.href....&gt;" replace="&lt;base href=&apos;${ui.webcontext}&apos;&gt;" byline="true" />
-                <replaceregexp file="${basedir}/src/main/webapp/index.html"
-                  match="&lt;script.src=&quot;([\w\/\.\-]+)&quot;" replace="&lt;script src=&quot;\1?cid=${timestamp}&quot;" byline="true" />
-                <replaceregexp file="${basedir}/src/main/webapp/index.html"
-                  match="&lt;link.rel=&quot;stylesheet&quot;.href=&quot;([\w\/\.\-]+)&quot;" replace="&lt;link rel=&quot;stylesheet&quot; href=&quot;\1?cid=${timestamp}&quot;" byline="true" />
+                  match="&lt;script defer=&quot;defer&quot; src=&quot;([\w\/\.\-]+)&quot;" 
+                  replace="&lt;script defer=&quot;defer&quot; src=&quot;dist/\1?cid=${timestamp}&quot;" byline="true" />
+                
                 <echo>Successfully processed file ${project.build.directory}/${project.artifactId}-${project.version}/index.html</echo>
               </target>
             </configuration>

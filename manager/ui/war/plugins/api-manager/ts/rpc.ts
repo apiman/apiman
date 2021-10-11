@@ -229,8 +229,8 @@ _module.factory('ApiSvcs', [
         }
     }]);
 
-_module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration',
-    function($resource, $http, Configuration) {
+_module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration', '$q',
+    function($resource, $http, Configuration, $q) {
         return {
             getApimanDefinitionUrl: function(orgId, apiId, version) {
                 var endpoint = formatEndpoint(
@@ -238,17 +238,19 @@ _module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration',
                     { organizationId: orgId, apiId: apiId, version: version });
                 return endpoint;
             },
-            getApiDefinition: function(orgId, apiId, version, handler, errorHandler) {
+            getApiDefinition: function(orgId, apiId, version, handler): Promise<string> {
                 var endpoint = formatEndpoint(
                     Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/definition',
                     { organizationId: orgId, apiId: apiId, version: version });
-                $http({
+                return $http({
                     method: 'GET',
-                    url: endpoint,
-                    transformResponse: function(value) { return value; }
-                }).success(handler).error(errorHandler);
+                    url: endpoint
+                }).then(
+                    ok => $q.resolve(JSON.stringify(ok.data)),
+                    failure => $q.reject(failure)
+                );
             },
-            updateApiDefinition: function (orgId, apiId, version, definition, definitionType, handler, errorHandler) {
+            updateApiDefinition: function (orgId, apiId, version, definition, definitionType): Promise<any> {
                 let ct = 'application/json';
                 if (definitionType == 'SwaggerYAML') {
                     ct = 'application/x-yaml';
@@ -258,25 +260,31 @@ _module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration',
                 let endpoint = formatEndpoint(
                     Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/definition',
                     {organizationId: orgId, apiId: apiId, version: version});
-                $http({
+                return $http({
                     method: 'PUT',
                     url: endpoint,
                     headers: {'Content-Type': ct},
                     data: definition
-                }).success(handler).error(errorHandler);
+                }).then(
+                    ok => $q.resolve(ok),
+                    failure => $q.reject(failure)
+                );
             },
-            updateApiDefinitionFromUrl(orgId, apiId, version, definitionUrl, definitionType, handler, errorHandler) {
+            updateApiDefinitionFromUrl(orgId, apiId, version, definitionUrl, definitionType): Promise<any> {
                 let ct = 'application/json';
                 let endpoint = formatEndpoint(
                     Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/definition',
                     {organizationId: orgId, apiId: apiId, version: version});
-                let data = JSON.stringify({ definitionUrl: definitionUrl, definitionType: definitionType });
-                $http({
+                ///let data = JSON.stringify();
+                return $http({
                     method: 'POST',
                     url: endpoint,
                     headers: {'Content-Type': ct},
-                    data: data
-                }).success(handler).error(errorHandler);
+                    data: {
+                        definitionUrl: definitionUrl,
+                        definitionType: definitionType
+                    }
+                })
             }
         }
     }]);

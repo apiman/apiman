@@ -48,6 +48,14 @@ export enum NotificationStatus {
   SYSTEM_DISMISSED = 'SYSTEM_DISMISSED'
 }
 
+export enum ClientStatus {
+  Created = "Created",
+  AwaitingApproval = "AwaitingApproval",
+  Ready = "Ready",
+  Registered = "Registered",
+  Retired = "Retired"
+}
+
 export interface ApimanNotification<P extends IVersionedApimanEvent> {
   id: number;
   category: NotificationCategory;
@@ -96,6 +104,15 @@ export interface ContractApprovalEvent extends IVersionedApimanEvent {
   planVersion: string;
   approved: boolean;
   rejectionReason: string;
+}
+
+export interface ClientVersionStatusEvent extends IVersionedApimanEvent {
+  headers: ApimanEventHeaders;
+  clientOrgId: string;
+  clientId: string;
+  clientVersion: string;
+  previousStatus: ClientStatus;
+  newStatus: ClientStatus;
 }
 
 export interface NotificationAction {

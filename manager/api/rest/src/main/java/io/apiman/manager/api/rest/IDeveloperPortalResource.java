@@ -33,7 +33,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@Path("/devportal")
+@Path("devportal")
 public interface IDeveloperPortalResource {
     @POST
     @Path("apis/search")

@@ -133,9 +133,8 @@
             <resource>
               <directory>.</directory>
               <includes>
-                <include>index.html</include>
                 <include>favicon.ico</include>
-                <include>dist/**</include>
+                <include>dist/**</include> <!-- built index.html is in here -->
                 <include>plugins/**</include>
               </includes>
             </resource>
@@ -154,11 +153,10 @@
               <goal>install-node-and-yarn</goal>
             </goals>
             <configuration>
-              <nodeVersion>v14.16.0</nodeVersion>
-              <yarnVersion>v1.22.5</yarnVersion>
+              <nodeVersion>v16.11.0</nodeVersion>
+              <yarnVersion>v1.22.15</yarnVersion>
             </configuration>
           </execution>
-
           <execution>
             <id>yarn install</id>
             <goals>
@@ -168,18 +166,16 @@
               <arguments>install</arguments>
             </configuration>
           </execution>
-
           <execution>
-            <id>gulp build</id>
+            <id>webpack production build</id>
             <goals>
-              <goal>gulp</goal>
+              <goal>webpack</goal>
             </goals>
             <phase>generate-resources</phase>
             <configuration>
-              <arguments>build</arguments>
+              <arguments>--mode production --stats verbose</arguments>
             </configuration>
           </execution>
-
         </executions>
       </plugin>
 
@@ -201,12 +197,15 @@
                 <echo>********************************************************************</echo>
                 <echo></echo>
 
-                <replaceregexp file="${basedir}/target/apimanui/index.html"
+                <replaceregexp file="${basedir}/target/apimanui/dist/index.html" 
                   match="&lt;base.href....&gt;" replace="&lt;base href=&apos;${ui.webcontext}&apos;&gt;" byline="true" />
-                <replaceregexp file="${basedir}/target/apimanui/index.html"
-                  match="&lt;script.src=&quot;([\w\/\.\-]+)&quot;" replace="&lt;script src=&quot;\1?cid=${timestamp}&quot;" byline="true" />
-                <replaceregexp file="${basedir}/target/apimanui/index.html"
-                  match="&lt;link.rel=&quot;stylesheet&quot;.href=&quot;([\w\/\.\-]+)&quot;" replace="&lt;link rel=&quot;stylesheet&quot; href=&quot;\1?cid=${timestamp}&quot;" byline="true" />
+                <replaceregexp file="${basedir}/target/apimanui/dist/index.html"
+                    match="&lt;script defer=&quot;defer&quot; src=&quot;([\w\/\.\-]+)&quot;" 
+                  replace="&lt;script defer=&quot;defer&quot; src=&quot;dist/\1?cid=${timestamp}&quot;" byline="true" />
+
+                <!-- <replaceregexp  match="&lt;link.rel=&quot;stylesheet&quot;.href=&quot;([\w\/\.\-]+)&quot;" 
+                  replace="&lt;link rel=&quot;stylesheet&quot; href=&quot;\1?cid=${timestamp}&quot;" 
+                  byline="true" /> -->
                 <echo>Successfully processed file ${project.build.directory}/${project.artifactId}-${project.version}/index.html</echo>
               </target>
             </configuration>

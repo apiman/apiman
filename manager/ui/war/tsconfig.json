@@ -1,15 +1,16 @@
 {
     "compilerOptions": {
       "module": "CommonJS",
-//      "outDir": "dist",
+      "outDir": "./dist/",
       "removeComments": true,
       "preserveConstEnums": true,
       "sourceMap": true,
       "noImplicitAny": false, // TODO: Invert this later
-      "target": "ES6"
+      "target": "ES5",
+      "allowJs": true
 //      "esModuleInterop": true,
 //      "allowSyntheticDefaultImports": false
     },
-    "files": ["plugins/**/*.ts"],
+    "include": ["plugins/**/*.ts"],
     "exclude": ["node_modules"]
   }

@@ -1,41 +1,45 @@
 // // Browserify imports
-// import * as $ from 'jquery'
-// // @ts-ignore
-// window.jQuery = $;
-// // @ts-ignore
-// window.$ = $;
-// import 'bootstrap/dist/js/bootstrap.js';
-// import 'bootstrap-select/dist/js/bootstrap-select.js';
-// import 'json-editor';
-// import 'patternfly/dist/js/patternfly.js';
-// import 'angular';
-// import 'angular-ui-bootstrap/ui-bootstrap.js';
-// import 'angular-ui-bootstrap/ui-bootstrap-tpls.js';
-// import 'ui-select/dist/select.js';
-// import 'angular-clipboard';
-// import 'angular-resource';
-// import 'ng-sortable/dist/ng-sortable.js';
-// import 'd3';
-// import 'c3/c3.js';
-// import 'angular-xeditable-npm/dist/js/xeditable.js';
-// import 'angular-sanitize';
-// import 'angular-animate';
-// import 'js-logger';
-// import 'lodash';
-// import 'angular-route';
-// import 'urijs';
-// import 'angular-schema-form';
-// import 'angular-scrollable-table/angular-scrollable-table.js';
-// import 'swagger-ui-dist/swagger-ui-bundle.js';
-// import 'swagger-client';
-//
-// import 'sugar';
-// import 'ng-file-upload';
-// import 'moment/min/moment.min.js';
-// // Markdown editor and code highlight plugin (for editor)
-// import '@toast-ui/editor';
-// import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all';
-// import 'prismjs';
+import * as $ from 'jquery'
+// @ts-ignore
+window.jQuery = $;
+// @ts-ignore
+window.$ = $;
+import 'bootstrap/dist/js/bootstrap.js';
+import 'bootstrap-select/dist/js/bootstrap-select.js';
+import 'json-editor';
+import 'patternfly/dist/js/patternfly.js';
+import 'angular';
+import 'angular-ui-bootstrap/ui-bootstrap.js';
+import 'angular-ui-bootstrap/ui-bootstrap-tpls.js';
+import 'ui-select/dist/select.js';
+import 'angular-clipboard';
+import 'angular-resource';
+import 'ng-sortable/dist/ng-sortable.js';
+import 'd3';
+import 'c3/c3.js';
+import 'angular-xeditable-npm/dist/js/xeditable.js';
+import 'angular-sanitize';
+import 'angular-animate';
+import 'js-logger';
+import 'lodash';
+import 'angular-route';
+import 'urijs';
+import 'angular-schema-form';
+import 'angular-scrollable-table/angular-scrollable-table.js';
+import 'swagger-ui-dist/swagger-ui-bundle.js';
+import 'swagger-client';
+
+import 'sugar';
+import 'ng-file-upload';
+import 'moment';
+import 'moment/min/locales';
+import * as dayjs from 'dayjs';
+const relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime)
+// Markdown editor and code highlight plugin (for editor)
+import '@toast-ui/editor';
+import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all';
+import 'prismjs';
 
 // End browserify imports
 
@@ -51,6 +55,28 @@ import './translation.ts'
 import './lifecycle.ts'
 import './currentuser.ts'
 import './modals.ts'
+
+/** CSS Imports **/
+import 'bootstrap-select/dist/css/bootstrap-select.css'
+import 'patternfly/dist/css/patternfly.css'
+import 'patternfly/dist/css/patternfly-additions.css'
+import 'ng-sortable/dist/ng-sortable.css'
+import 'c3/c3.css'
+import 'angular-xeditable-npm/dist/css/xeditable.css'
+import 'angular-scrollable-table/scrollable-table.css'
+import 'angular-ui-bootstrap/ui-bootstrap-csp.css'
+import 'ui-select/dist/select.css'
+import 'select2/select2.css'
+import 'prismjs/themes/prism.css'
+import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css'
+import '@toast-ui/editor/dist/toastui-editor.css'
+import 'tui-color-picker/dist/tui-color-picker.css'
+import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css'
+import 'swagger-ui-dist/swagger-ui.css'
+
+/** Load these last to ensure they don't get overriden **/
+import '../css/apiman.css';
+import '../css/apiman-responsive.css';
 
 export const _module: IModule = angular.module(ApimanGlobals.pluginName, [
     'angular-clipboard',
@@ -73,6 +99,7 @@ export const _module: IModule = angular.module(ApimanGlobals.pluginName, [
     'ApimanCurrentUser',
     'ApimanModals'
 ]);
+
 
 _module.config([
     '$locationProvider',
@@ -415,3 +442,98 @@ $.getScript('apiman/config.js')
             ApimanGlobals.Logger.debug('Error fetching translations: ', response);
         });
     });
+
+/** Imitating the old way of magically including everything (not best practice now, but
+ * don't have time to manually do the includes in each file yet **/
+import "./filters.ts"
+import "./policies.ts"
+import "./forms/new-org.ts"
+import "./forms/new-gateway.ts"
+import "./forms/edit-role.ts"
+import "./forms/new-planversion.ts"
+import "./forms/new-plugin.ts"
+import "./forms/new-clientversion.ts"
+import "./forms/new-contract.ts"
+import "./forms/edit-plugin.ts"
+import "./forms/import-policyDefs.ts"
+import "./forms/new-role.ts"
+import "./forms/new-apiversion.ts"
+import "./forms/new-policy.ts"
+import "./forms/new-api.ts"
+import "./forms/new-client.ts"
+import "./forms/edit-policy.ts"
+import "./forms/edit-gateway.ts"
+import "./forms/edit-policyDef.ts"
+import "./forms/new-plan.ts"
+import "./errors.ts"
+import "./notification/notification.service.ts"
+import "./notification/notification.ts"
+import "./notification/notificationmapper.service.ts"
+import "./org/org-plans.ts"
+import "./org/org-apis.ts"
+import "./org/org-members.ts"
+import "./org/org-sidebar.ts"
+import "./org/org-new-member.ts"
+import "./org/org-clients.ts"
+import "./org/org.ts"
+import "./org/org-activity.ts"
+import "./org/org-manage-members.ts"
+import "./plan/plan-activity.ts"
+import "./plan/plan-overview.ts"
+import "./plan/plan.ts"
+import "./plan/plan-policies.ts"
+import "./catalog/api-catalog.ts"
+import "./modals.ts"
+import "./lifecycle.ts"
+import "./translation.ts"
+import "./admin/admin-gateways.ts"
+import "./admin/admin-policyDefs.ts"
+import "./admin/admin-roles.ts"
+import "./admin/admin-export.ts"
+import "./admin/admin-plugins.ts"
+import "./rpc.ts"
+import "./directives.ts"
+import "./user/user-profile.ts"
+import "./user/user-apis.ts"
+import "./user/user-orgs.ts"
+import "./user/user-activity.ts"
+import "./user/user.ts"
+import "./user/user-clients.ts"
+import "./dash.ts"
+import "./about.ts"
+import "./logger.ts"
+import "./currentuser.ts"
+import "./navbar.ts"
+import "./rest-documentation.ts"
+import "./model/checklist.model.ts"
+import "./model/blob.model.ts"
+import "./model/notifications.model.ts"
+import "./model/api.model.ts"
+import "./model/contract.model.ts"
+import "./apimanGlobals.ts"
+import "./api/api-policies.ts"
+import "./api/api-devportal.ts"
+import "./api/api-overview.ts"
+import "./api/api-endpoint.ts"
+import "./api/api.ts"
+import "./api/api-activity.ts"
+import "./api/api-plans.ts"
+import "./api/api-contracts.ts"
+import "./api/api-def.ts"
+import "./api/import-apis.ts"
+import "./api/api-metrics.ts"
+import "./api/api-impl.ts"
+import "./consumer/consumer-orgs.ts"
+import "./consumer/consumer-api.ts"
+import "./consumer/consumer-org.ts"
+import "./consumer/consumer-apis.ts"
+import "./services.ts"
+import "./client/client-overview.ts"
+import "./client/client-contracts.ts"
+import "./client/client-policies.ts"
+import "./client/client-metrics.ts"
+import "./client/client-apis.ts"
+import "./client/client.ts"
+import "./client/client-activity.ts"
+import "./configuration.ts"
+import "./sidebar.ts"

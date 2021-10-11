@@ -136,35 +136,42 @@ _module.controller('Apiman.ClientEntityController',
                 };
 
                 var modalInstance = $uibModal.open({
-                    animation: $scope.animationsEnabled,
-                    templateUrl: 'confirmModal.html',
-                    //templateUrl: 'modal.html',
-                    controller: 'ModalConfirmCtrl',
-                    size: size,
-                    resolve: {
-                        options: function () {
-                            return options;
-                        }
-                    }
+                  animation: $scope.animationsEnabled,
+                  templateUrl: "confirmModal.html",
+                  //templateUrl: 'modal.html',
+                  controller: "ModalConfirmCtrl",
+                  size: size,
+                  resolve: {
+                    options: function () {
+                      return options;
+                    },
+                  },
                 });
 
-                modalInstance.result.then(function () {
-                    var unregisterAction = {
-                        type: 'unregisterClient',
-                        entityId: params.client,
-                        organizationId: params.org,
-                        entityVersion: params.version
+                modalInstance.result.then(
+                  function () {
+                    const unregisterAction = {
+                      type: "unregisterClient",
+                      entityId: params.client,
+                      organizationId: params.org,
+                      entityVersion: params.version,
                     };
 
-                    ActionSvcs.save(unregisterAction, function(reply) {
-                        $scope.version.status = 'Retired';
-                        $scope.unregisterButton.state = 'complete';
+                    ActionSvcs.save(
+                      unregisterAction,
+                      function (reply) {
+                        $scope.version.status = "Retired";
+                        $scope.unregisterButton.state = "complete";
                         $scope.setEntityStatus($scope.version.status);
-                    }, PageLifecycle.handleError);
-                }, function () {
+                      },
+                      PageLifecycle.handleError
+                    );
+                  },
+                  function () {
                     //console.log('Modal dismissed at: ' + new Date());
-                    $scope.unregisterButton.state = 'complete';
-                });
+                    $scope.unregisterButton.state = "complete";
+                  }
+                );
 
             };
 

@@ -111,7 +111,7 @@
                               <td>{{ api.tags[0] }}</td>
                               <td>{{ api.endpoint }}</td>
                               <td>
-                                  <a ng-hide="isApiSelected(api) || isAlreadyExisting(api)" href="#" ng-click="addApi(api)" apiman-i18n-key="add">Add</a>
+                                  <a ng-hide="isApiSelected(api) || isAlreadyExisting(api)" ng-click="addApi(api)" apiman-i18n-key="add">Add</a>
                                   <i ng-show="isAlreadyExisting(api)" class=" fa fa-fw fa-warning" apiman-i18n-key="import-apis.already-existing" title="An API with the same name already exists in this organization!"></i>
                               </td>
                             </tr>
@@ -149,7 +149,7 @@
                             <td>{{ api.endpointType | uppercase }}</td>
                             <td>{{ api.tags[0] }}</td>
                             <td>{{ api.endpoint }}</td>
-                            <td><a href="#" ng-click="removeApi(api)" apiman-i18n-key="remove">Remove</a></td>
+                            <td><a ng-click="removeApi(api)" apiman-i18n-key="remove">Remove</a></td>
                           </tr>
                         </tbody>
                       </table>
