@@ -79,7 +79,8 @@
       "MORE_INFO": "The following headers in the response contain useful information relating to rate limit,",
       "LIMIT": "Rate limit allowance (per time period)",
       "REMAINING": "Rate limit allowance remaining",
-      "RESET": "Rate limit allowance remaining"
+      "RESET": "Rate limit allowance remaining",
+      "CONDITION_LIGHT": "<b>{{limit}}</b> requests per <b>{{timeUnit}}</b>"
     },
     "QUOTA": {
       "TITLE": "Quota Policy",
@@ -87,7 +88,8 @@
       "MORE_INFO": "The following headers in the response contain useful information relating to quota limit,",
       "LIMIT": "Quota limit allowance (per time period)",
       "REMAINING": "Quota limit allowance remaining",
-      "RESET": "Quota limit allowance remaining"
+      "RESET": "Quota limit allowance remaining",
+      "CONDITION_LIGHT": "<b>{{limit}}</b> data per <b>{{timeUnit}}</b>"
     }
   },
   "DESCRIPTIONS": {

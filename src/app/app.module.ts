@@ -41,6 +41,7 @@ import { IConfig } from './interfaces/IConfig';
 import { ApprovalComponent } from './components/approval/approval.component';
 import { ThemeService } from './services/theme/theme.service';
 import {TocComponent} from "./components/toc/toc.component";
+import {PolicyCardLightComponent} from "./components/policy-card-light/policy-card-light.component";
 
 export function initializeApp(configService: ConfigService, devPortalInitializer: InitializerService, keycloakHelper: KeycloakHelperService, themeService: ThemeService): () => Promise<any> {
   return () => new Promise((resolve, reject) => {
@@ -85,6 +86,7 @@ export function createTranslateLoader(http: HttpClient) {
     MyAppsPoliciesComponent,
     MyAppsManageApiComponent,
     PolicyCardComponent,
+    PolicyCardLightComponent,
     GaugeChartComponent,
     ApprovalComponent,
     TocComponent

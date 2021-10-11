@@ -14,7 +14,7 @@
 
 .app-icon{
   width: 100%;
-  border-radius: 50%;
+  transform: scale(0.9);
 }
 
 .app-title{
@@ -70,6 +70,7 @@
   margin-left: 1rem;
   max-width: 100%;
   overflow: hidden;
+  width: 48px;
 }
 
 #lightbulb {

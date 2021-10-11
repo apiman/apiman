@@ -7,10 +7,33 @@ import {BackendService} from "../backend/backend.service";
 import {forkJoin, Observable, of} from "rxjs";
 import {formatBytes} from "../../shared/utility";
 
+export interface PolicyHeaders {
+  headerLimit: string;
+  headerRemaining: string;
+  headerReset: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class PolicyService {
+  // Default Headers
+  private rateLimitPolicyHeaders: PolicyHeaders = {
+    headerLimit: 'X-RateLimit-Limit',
+    headerRemaining: 'X-RateLimit-Remaining',
+    headerReset: 'X-RateLimit-Reset',
+  };
+
+  private transferQuotaPolicyHeaders: PolicyHeaders = {
+    headerLimit: 'X-TransferQuota-Limit',
+    headerRemaining: 'X-TransferQuota-Remaining',
+    headerReset: 'X-TransferQuota-Reset',
+  };
+
+  public readonly policyIds = {
+    'RATE_LIMITING': 'RateLimitingPolicy',
+    'TRANSFER_QUOTA': 'TransferQuotaPolicy'
+  }
 
   constructor(private backendService: BackendService) {}
 
@@ -74,12 +97,12 @@ export class PolicyService {
   private extendPolicy(extendedPolicy: IPolicyExt) {
     const policyConfig = JSON.parse(extendedPolicy.configuration);
     switch (extendedPolicy.definition.id) {
-      case 'RateLimitingPolicy': {
+      case this.policyIds.RATE_LIMITING: {
         extendedPolicy.shortName = 'Rate Limit'
         extendedPolicy.shortDescription = `${policyConfig.limit} Request${policyConfig.limit > 1 ? 's' : ''} per ${policyConfig.period}`
         break;
       }
-      case 'TransferQuotaPolicy': {
+      case this.policyIds.TRANSFER_QUOTA: {
         extendedPolicy.shortName = 'Quota'
         extendedPolicy.shortDescription = `${formatBytes(policyConfig.limit)} per ${policyConfig.period}`
         break;
@@ -110,15 +133,61 @@ export class PolicyService {
     )
   }
 
-
   private filterPolicies(extendedPolicies: IPolicyExt[]): Observable<IPolicyExt[]> {
     const filteredExtendedPolicies: IPolicyExt[] = [];
     extendedPolicies.forEach((extendedPolicy) => {
-      if (extendedPolicy.definition.id === 'RateLimitingPolicy' ||
-        extendedPolicy.definition.id === 'TransferQuotaPolicy') {
+      if ([this.policyIds.RATE_LIMITING, this.policyIds.TRANSFER_QUOTA].includes(extendedPolicy.definition.id)) {
         filteredExtendedPolicies.push(extendedPolicy);
       }
     })
     return of(filteredExtendedPolicies);
+  }
+
+  public initPolicy(policy: IPolicyExt) {
+    // Config from backend is a JSON object in string representation
+    policy.configAsObject = JSON.parse(policy.configuration);
+
+    switch (policy.definition.id) {
+      case this.policyIds.RATE_LIMITING: {
+        this.checkHeaders(policy, this.rateLimitPolicyHeaders);
+        policy.icon = 'tune';
+        policy.policyIdentifier = 'RATE_LIMIT';
+        policy.restrictions = this.getRestrictions(policy.configAsObject.limit, policy.configAsObject.period);
+        break;
+      }
+      case this.policyIds.TRANSFER_QUOTA: {
+        this.checkHeaders(policy, this.transferQuotaPolicyHeaders);
+        policy.icon = 'import_export';
+        policy.policyIdentifier = 'QUOTA';
+        policy.restrictions = this.getRestrictions(formatBytes(policy.configAsObject.limit), policy.configAsObject.period);
+        break;
+      }
+    }
+
+    return policy;
+  }
+
+  private getRestrictions(limit: string, timeUnit: string){
+    return {
+      limit: limit,
+      timeUnit: timeUnit
+    };
+  }
+
+  public checkHeaders(policy: IPolicyExt, defaultHeaders: PolicyHeaders) {
+    // Copy default values, we need these multiple times
+    let newHeaders = {...defaultHeaders};
+
+    if (policy.configAsObject.headerLimit) {
+      newHeaders.headerLimit = policy.configAsObject.headerLimit;
+    }
+    if (policy.configAsObject.headerRemaining) {
+      newHeaders.headerRemaining = policy.configAsObject.headerRemaining;
+    }
+    if (policy.configAsObject.headerReset) {
+      newHeaders.headerReset = policy.configAsObject.headerReset;
+    }
+
+    policy.headers = newHeaders;
   }
 }

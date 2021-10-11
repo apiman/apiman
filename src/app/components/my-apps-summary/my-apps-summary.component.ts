@@ -13,8 +13,4 @@ export class MyAppsSummaryComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
-
-  setSectionToPolicies() {
-    this.contract!.section = 'policies';
-  }
 }

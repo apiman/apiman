@@ -1,0 +1,15 @@
+.limit-flex{
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  .second{
+    top: 12px;
+    position: relative;
+  }
+}
+
+.mat-card-avatar{
+  font-size: 32px;
+  width: 28px;
+}

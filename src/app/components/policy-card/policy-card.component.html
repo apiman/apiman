@@ -1,30 +1,25 @@
-<mat-card>
+<mat-card *ngIf="policy">
   <mat-card-header>
-    <mat-icon mat-card-avatar color="primary">{{ icon }}</mat-icon>
+    <mat-icon mat-card-avatar color="primary">{{ policy.icon }}</mat-icon>
     <mat-card-title>{{
-      "POLICIES." + policyIdentifier + ".TITLE" | translate
+      "POLICIES." + policy.policyIdentifier + ".TITLE" | translate
     }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p
-      [innerHTML]="
-        'POLICIES.' + policyIdentifier + '.DESCRIPTION'
-          | translate: policyConfig
-      "
-    ></p>
-    <p>{{ "POLICIES." + policyIdentifier + ".MORE_INFO" | translate }}</p>
+    <p [innerHTML]="'POLICIES.' + policy.policyIdentifier + '.DESCRIPTION' | translate:policy.restrictions"></p>
+    <p>{{ "POLICIES." + policy.policyIdentifier + ".MORE_INFO" | translate }}</p>
     <ul>
       <li>
-        <strong>{{ headers.headerLimit }}:</strong>
-        {{ "POLICIES." + policyIdentifier + ".LIMIT" | translate }}
+        <b>{{ policy.headers.headerLimit }}:</b>
+        {{ "POLICIES." + policy.policyIdentifier + ".LIMIT" | translate }}
       </li>
       <li>
-        <strong>{{ headers.headerRemaining }}:</strong>
-        {{ "POLICIES." + policyIdentifier + ".REMAINING" | translate }}
+        <b>{{ policy.headers.headerRemaining }}:</b>
+        {{ "POLICIES." + policy.policyIdentifier + ".REMAINING" | translate }}
       </li>
       <li>
-        <strong>{{ headers.headerReset }}:</strong>
-        {{ "POLICIES." + policyIdentifier + ".RESET" | translate }}
+        <b>{{ policy.headers.headerReset }}:</b>
+        {{ "POLICIES." + policy.policyIdentifier + ".RESET" | translate }}
       </li>
     </ul>
   </mat-card-content>

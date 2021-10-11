@@ -33,10 +33,7 @@ export class MyAppsComponent implements OnInit {
   clientContractsMap = new Map<string, IContractExt[]>();
   contractsLoaded = false;
 
-  tmpUrl = 'https://pbs.twimg.com/media/Ez-AaifWYAIiFSQ.jpg';
-
   tocLinks: ITocLink[] = [];
-
 
   constructor(
     private spinnerService: SpinnerService,
