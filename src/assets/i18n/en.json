@@ -18,7 +18,9 @@
     "HTTP_HEADER": "As HTTP Request Header",
     "API_DOCS": "API Documentation",
     "ERROR": "Data could not be loaded, please try again later.",
-    "SUCCESS": "Successfully created!"
+    "SUCCESS": "Successfully created!",
+    "LOGIN_OR_REGISTER": "Login / Register",
+    "LOGOUT": "Logout"
   },
   "HOME": {
     "TITLE": "KoolBank Api Developer Portal",

@@ -20,6 +20,10 @@ export interface IHero {
     subtitle: string;
   };
   overlayColor: string;
+  buttonColor: {
+    login: string;
+    logout: string;
+  };
 }
 
 export interface INavigation {

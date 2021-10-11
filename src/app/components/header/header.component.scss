@@ -25,6 +25,19 @@
   right: 3%;
 }
 
+#login-btn,#logout-btn{
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: white;
+  border: 1px solid white;
+  padding: 0px 15px;
+  background-color: rgba(0, 0, 0, 0);
+  border-radius: 4px;
+  line-height: 34px;
+}
+
 .hero-large {
   min-height: 32vh;
 }

@@ -18,7 +18,9 @@
     "HTTP_HEADER": "Als HTTP Request Header",
     "API_DOCS": "API Dokumentation",
     "ERROR": "Die Daten konnten nicht geladen werden, bitte versuchen Sie es später erneut.",
-    "SUCCESS": "Erfolgreich erstellt!"
+    "SUCCESS": "Erfolgreich erstellt!",
+    "LOGIN_OR_REGISTER": "Anmelden / Registrieren",
+    "LOGOUT": "Abmelden"
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",

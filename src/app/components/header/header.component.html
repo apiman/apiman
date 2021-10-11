@@ -9,14 +9,8 @@
       <p #heroSubtitle>{{ heroService.hero.subtitle }}</p>
     </div>
     <div id="hero-btn">
-      <button mat-stroked-button color="primary" (click)="login()" *ngIf="!loggedIn; else logoutBtn" class="primary-border-color">
-        Register / Login
-      </button>
-      <ng-template #logoutBtn>
-        <button mat-stroked-button color="primary" (click)="logout()" class="primary-border-color">
-          Log-Out
-        </button>
-      </ng-template>
+      <button #loginBtn (click)="login()" [hidden]="loggedIn" id="login-btn">{{'COMMON.LOGIN_OR_REGISTER' | translate}}</button>
+      <button #logoutBtn (click)="logout()" [hidden]="!loggedIn" id="logout-btn">{{'COMMON.LOGOUT' | translate}}</button>
     </div>
   </div>
 </div>

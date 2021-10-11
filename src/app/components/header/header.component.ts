@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
+  ElementRef, OnInit,
   Renderer2,
   ViewChild,
 } from '@angular/core';
@@ -14,11 +14,13 @@ import {KeycloakHelperService} from "../../services/keycloak-helper/keycloak-hel
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements AfterViewInit {
+export class HeaderComponent implements OnInit, AfterViewInit {
   @ViewChild('heroImage') heroImageDiv!: ElementRef;
   @ViewChild('heroTitle') heroTitle!: ElementRef;
   @ViewChild('heroSubtitle') heroSubtitle!: ElementRef;
   @ViewChild('heroOverlay') heroOverlay!: ElementRef;
+  @ViewChild('loginBtn') heroLoginBtn!: ElementRef;
+  @ViewChild('logoutBtn') heroLogoutBtn!: ElementRef;
 
   loggedIn = false;
 
@@ -29,29 +31,22 @@ export class HeaderComponent implements AfterViewInit {
     private keycloakHelper: KeycloakHelperService
   ) {}
 
+  async ngOnInit() {
+    this.loggedIn = await this.keycloak.isLoggedIn();
+  }
+
   async ngAfterViewInit() {
-    this.renderer.setStyle(
-      this.heroImageDiv.nativeElement,
-      'background-image',
-      'url("' + this.heroService.hero.heroImgUrl + '")'
-    );
-    this.renderer.setStyle(
-      this.heroTitle.nativeElement,
-      'color',
-      this.heroService.hero.fontColor.title
-    );
-    this.renderer.setStyle(
-      this.heroSubtitle.nativeElement,
-      'color',
-      this.heroService.hero.fontColor.subtitle
-    );
-    this.renderer.setStyle(
-      this.heroOverlay.nativeElement,
-      'background-color',
-      this.heroService.hero.overlayColor
-    );
+    this.setStyle(this.heroImageDiv.nativeElement, 'background-image', 'url("' + this.heroService.hero.heroImgUrl + '")');
+    this.setStyle(this.heroTitle.nativeElement,'color', this.heroService.hero.fontColor.title);
+    this.setStyle(this.heroSubtitle.nativeElement,'color', this.heroService.hero.fontColor.subtitle);
+    this.setStyle(this.heroOverlay.nativeElement,'background-color', this.heroService.hero.overlayColor);
 
     this.loggedIn = await this.keycloak.isLoggedIn();
+    this.setStyleForLoginBtn();
+  }
+
+  setStyle(el: any, style: string, value: string){
+    this.renderer.setStyle(el, style, value);
   }
 
   public login() {
@@ -60,5 +55,17 @@ export class HeaderComponent implements AfterViewInit {
 
   public logout(): void {
     this.keycloakHelper.logout();
+  }
+
+  private setStyleForLoginBtn() {
+    if (this.heroService.hero.buttonColor.login && !this.loggedIn) {
+      this.setStyle(this.heroLoginBtn.nativeElement, 'color', this.heroService.hero.buttonColor.login);
+      this.setStyle(this.heroLoginBtn.nativeElement, 'border-color', this.heroService.hero.buttonColor.login);
+    }
+
+    if (this.heroService.hero.buttonColor.logout && this.loggedIn) {
+      this.setStyle(this.heroLogoutBtn.nativeElement, 'color', this.heroService.hero.buttonColor.logout);
+      this.setStyle(this.heroLogoutBtn.nativeElement, 'border-color', this.heroService.hero.buttonColor.logout);
+    }
   }
 }
