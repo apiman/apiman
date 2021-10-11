@@ -8,6 +8,7 @@ import {IContractExt} from '../../interfaces/IContractExt';
 })
 export class MyAppsSummaryComponent implements OnInit {
   @Input() contract?: IContractExt;
+  hasOAuth = false;
 
   constructor() {}
 

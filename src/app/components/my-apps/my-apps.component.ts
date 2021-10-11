@@ -21,7 +21,6 @@ import {flatArray} from "../../shared/utility";
 import {SpinnerService} from "../../services/spinner/spinner.service";
 import {ApiService} from "../../services/api/api.service";
 import {ITocLink} from "../../interfaces/ITocLink";
-import {KeyValue} from "@angular/common";
 import {TocService} from "../../services/toc.service";
 
 @Component({
@@ -35,7 +34,6 @@ export class MyAppsComponent implements OnInit {
   contractsLoaded = false;
 
   tmpUrl = 'https://pbs.twimg.com/media/Ez-AaifWYAIiFSQ.jpg';
-  tmpUrl2 = 'https://cdn0.iconfinder.com/data/icons/customicondesignoffice5/256/examples.png';
 
   tocLinks: ITocLink[] = [];
 

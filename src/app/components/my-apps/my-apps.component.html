@@ -3,7 +3,7 @@
     <mat-card *ngFor="let cliCon of clientContractsMap | keyvalue" class="mb-40 mat-elevation-z3 client-card" [id]="tocService.formatClientId(cliCon.value[0])">
       <div class="app-header">
         <div class="app-icon-wrapper">
-          <img class="app-icon" [src]="tmpUrl" alt="app-icon" />
+          <img class="app-icon" [src]="tmpUrl" alt="app-icon">
         </div>
         <div class="content-text">
           <h3 class="primary app-title" >
@@ -47,7 +47,7 @@
         <div class="app-api-content mat-elevation-z2">
           <div class="app-api-header">
             <div class="app-api-header-icon-wrapper">
-              <img class="app-api-header-icon" [src]="tmpUrl2" alt="app-icon" />
+              <mat-icon id="lightbulb" color="primary">lightbulb</mat-icon>
             </div>
             <div class="app-api-header-title" [id]="tocService.formatApiVersionPlanId(contract)">
               <h3 class="primary">

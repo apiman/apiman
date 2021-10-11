@@ -38,7 +38,7 @@
         </mat-form-field>
       </div>
     </div>
-    <div class="auth-endpoint">
+    <div class="auth-endpoint" *ngIf="hasOAuth">
       <div>
         <mat-icon class="form-field-pre-icon" color="primary">public</mat-icon>
       </div>
@@ -62,7 +62,7 @@
         </mat-form-field>
       </div>
     </div>
-    <div class="auth-key">
+    <div class="auth-key" *ngIf="hasOAuth">
       <div>
         <mat-icon class="form-field-pre-icon" color="primary">vpn_key</mat-icon>
       </div>
