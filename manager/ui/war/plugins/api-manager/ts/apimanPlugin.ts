@@ -33,6 +33,9 @@ import 'sugar';
 import 'ng-file-upload';
 import 'moment';
 import 'moment/min/locales';
+import * as dayjs from 'dayjs';
+const relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime)
 // Markdown editor and code highlight plugin (for editor)
 import '@toast-ui/editor';
 import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all';
@@ -53,8 +56,7 @@ import './lifecycle.ts'
 import './currentuser.ts'
 import './modals.ts'
 
-import '../css/apiman.css';
-import '../css/apiman-responsive.css';
+/** CSS Imports **/
 import 'bootstrap-select/dist/css/bootstrap-select.css'
 import 'patternfly/dist/css/patternfly.css'
 import 'patternfly/dist/css/patternfly-additions.css'
@@ -71,6 +73,10 @@ import '@toast-ui/editor/dist/toastui-editor.css'
 import 'tui-color-picker/dist/tui-color-picker.css'
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css'
 import 'swagger-ui-dist/swagger-ui.css'
+
+/** Load these last to ensure they don't get overriden **/
+import '../css/apiman.css';
+import '../css/apiman-responsive.css';
 
 export const _module: IModule = angular.module(ApimanGlobals.pluginName, [
     'angular-clipboard',
@@ -437,7 +443,8 @@ $.getScript('apiman/config.js')
         });
     });
 
-
+/** Imitating the old way of magically including everything (not best practice now, but
+ * don't have time to manually do the includes in each file yet **/
 import "./filters.ts"
 import "./policies.ts"
 import "./forms/new-org.ts"

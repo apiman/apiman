@@ -9,7 +9,9 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
+    port: 2772,
     static: './dist',
+    historyApiFallback: true
   },
   plugins: [
     new HtmlWebpackPlugin({

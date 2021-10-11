@@ -5,6 +5,7 @@ import {
   NotificationCriteriaBean,
 } from "../model/notifications.model";
 import { NotificationLayoutMetadata } from "./notificationmapper.service";
+import * as dayjs from 'dayjs';
 
 _module.controller("Apiman.NotificationController", [
   "$location",
@@ -26,7 +27,7 @@ _module.controller("Apiman.NotificationController", [
     PageLifecycle
   ) {
     $rootScope.pageState = "loaded";
-    $scope.notifications = null;
+    $scope.notificationSearchResult = null as SearchResultsBean<ApimanNotification<any>>;
     $scope.pageSize = 15;
 
     PageLifecycle.loadPage(
@@ -51,7 +52,7 @@ _module.controller("Apiman.NotificationController", [
       NotificationService.getNotificationsForUser(username, notificationCriteria).then(
           (searchResult: SearchResultsBean<ApimanNotification<any>>) => {
             Logger.info("Notifications: {0}", searchResult);
-            $scope.notifications = searchResult;
+            $scope.notificationSearchResult = searchResult;
           },
           (failure) => {
             Logger.error(failure);
@@ -59,24 +60,8 @@ _module.controller("Apiman.NotificationController", [
       )
     };
 
-    // Load notifs
+    // Load notifications when we start the page.
     $scope.getNotificationsWithPagination(1, $scope.pageSize);
-
-    // // Load in the notifications
-    // NotificationService.getNotificationsForUser(
-    //   Configuration.user.username,
-    //   notificationCriteria
-    // ).then(
-    //   (searchResult: SearchResultsBean<ApimanNotification<any>>) => {
-    //     // TODO: probably should remove this log stmt for perf reasons
-    //     Logger.info("Notifications: {0}", searchResult);
-    //     $scope.notifications = searchResult;
-    //   },
-    //   (failure) => {
-    //     // TODO: do something useful...
-    //     Logger.error(failure);
-    //   }
-    // );
 
     $scope.getNotificationMeta = function (notification: ApimanNotification<any>): NotificationLayoutMetadata {
       return NotificationMapperService.mapNotification(notification);
@@ -88,14 +73,22 @@ _module.controller("Apiman.NotificationController", [
       //$scope.$apply();
     };
 
+    $scope = function (humanRelativeDate): string {
+      return "";
+      // @ts-ignore
+      //return dayjs().from(dayjs(humanRelativeDate));
+    }
+
     $scope.markRead = function (notification: ApimanNotification<any>): void {
       const notificationIds: number[] = [ notification.id ];
       Logger.info("Notification to mark read: {0}", notification);
       NotificationService.markNotificationRead(notificationIds).then(
           succeeded => {
-            $scope.notifications.forEach((notification: ApimanNotification<any>, index) => {
-              if (notification.id === notification.id) {
-                this.documents.splice(index, 1);
+            // Delete the notification out of the results array. For some reason this is annoyingly verbose in JS.
+            let notificationArray = $scope.notificationSearchResult.beans;
+            notificationArray.forEach((candidateNotification: ApimanNotification<any>, index) => {
+              if (notification.id === candidateNotification.id) {
+                notificationArray.splice(index, 1);
               }
             });
           },

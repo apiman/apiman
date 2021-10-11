@@ -16,7 +16,7 @@
       ng-show="pageState == 'loaded'"
     >
 
-      <div class="alert alert-info" ng-show="notifications.totalSize <= 0">You don't have any notifications 🥳</div>
+      <div class="alert alert-info" ng-show="notificationSearchResult.totalSize <= 0">You don't have any notifications 🥳</div>
 
       <!--      <div class="container-fluid">-->
       <!--        <div class="row toolbar-pf">-->
@@ -180,7 +180,7 @@
           <div
             class="list-group-item"
             style="max-width: unset"
-            ng-repeat="notification in notifications.beans"
+            ng-repeat="notification in notificationSearchResult.beans"
           >
             <div class="list-view-pf-actions">
               <button
@@ -228,7 +228,7 @@
                     </div>
                     <div class="list-group-item-text">
                       <a href="{{ getNotificationMeta(notification).link }}">
-                      {{ getNotificationMeta(notification).message }} {{ notification.id }}
+                      {{ getNotificationMeta(notification).message }} {{ notification.createdOn }}
                       </a>
                     </div>
                   </div>
@@ -256,9 +256,9 @@
         </div>
         <uib-pagination boundary-link-numbers="true" direction-links="true" force-ellipses="true"
                         items-per-page="pageSize"
-                        max-size="5" ng-change="getNotificationsWithPagination(currentPage, pageSize)"
+                        max-size="50" ng-change="getNotificationsWithPagination(currentPage, pageSize)"
                         ng-init="currentPage = 1" ng-model="currentPage" rotate="true"
-                        total-items="notifications.totalSize"/>
+                        total-items="notificationSearchResult.totalSize"/>
       </div>
 
     </div>
