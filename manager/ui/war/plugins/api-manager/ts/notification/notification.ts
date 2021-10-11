@@ -60,23 +60,28 @@ _module.controller("Apiman.NotificationController", [
       }
     );
 
-    $scope.getNotificationMeta = (
-      notification: ApimanNotification<any>
-    ): NotificationLayoutMetadata => {
+    $scope.getNotificationMeta = function (notification: ApimanNotification<any>): NotificationLayoutMetadata {
       return NotificationMapperService.mapNotification(notification);
     };
 
-    $scope.goToEventLink = (notification: ApimanNotification<any>): void => {
+    $scope.goToEventLink = function (notification: ApimanNotification<any>): void {
       const link = NotificationMapperService.mapNotification(notification).link;
       $location.path(link);
       //$scope.$apply();
     };
 
-    $scope.markNotificationRead = (
-      notification: ApimanNotification<any>
-    ): void => {
-      const notificationId: number = notification.id;
-      NotificationService.markNotificationRead(Array(notificationId));
+    $scope.markRead = function (notification: ApimanNotification<any>): void {
+      const notificationIds: number[] = [ notification.id ];
+      Logger.info("Notification ID {0}", notification);
+      NotificationService.markNotificationRead(notificationIds).then(
+          ok => {
+            $scope.notification as SearchResultsBean<ApimanNotification<any>> = ;
+            //$scope.notifications.;
+          },
+          failed => {
+            // TODO: handle gracefully
+          }
+      );
     };
   }
 ]);

@@ -13,7 +13,7 @@ _module.service("NotificationService", [
   "$q",
   function ($http, Configuration, $q) {
     return {
-      markNotificationRead: (notificationIds: number[]): Promise<any> => {
+      markNotificationRead: function (notificationIds: number[]): Promise<any> {
         const userId: string = Configuration.user.username;
         const notificationAction: NotificationAction = {
           notificationIds: notificationIds,
