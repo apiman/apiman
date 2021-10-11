@@ -27,12 +27,7 @@ _module.controller("Apiman.NotificationController", [
   ) {
     $rootScope.pageState = "loaded";
     $scope.notifications = null;
-    const notificationCriteria: NotificationCriteriaBean = {
-      paging: {
-        page: 1,
-        pageSize: 10,
-      } as PagingBean,
-    };
+    $scope.pageSize = 15;
 
     PageLifecycle.loadPage(
       "Notifications",
@@ -44,21 +39,44 @@ _module.controller("Apiman.NotificationController", [
       }
     );
 
-    // Load in the notifications
-    NotificationService.getNotificationsForUser(
-      Configuration.user.username,
-      notificationCriteria
-    ).then(
-      (searchResult: SearchResultsBean<ApimanNotification<any>>) => {
-        // TODO: probably should remove this log stmt for perf reasons
-        Logger.info("Notifications: {0}", searchResult);
-        $scope.notifications = searchResult;
-      },
-      (failure) => {
-        // TODO: do something useful...
-        Logger.error(failure);
-      }
-    );
+    $scope.getNotificationsWithPagination = (pageIdx: number, pageSize: number): void => {
+      const username: string = Configuration.user.username;
+      const notificationCriteria: NotificationCriteriaBean = {
+        paging: {
+          page: pageIdx,
+          pageSize: pageSize,
+        } as PagingBean,
+      };
+
+      NotificationService.getNotificationsForUser(username, notificationCriteria).then(
+          (searchResult: SearchResultsBean<ApimanNotification<any>>) => {
+            Logger.info("Notifications: {0}", searchResult);
+            $scope.notifications = searchResult;
+          },
+          (failure) => {
+            Logger.error(failure);
+          }
+      )
+    };
+
+    // Load notifs
+    $scope.getNotificationsWithPagination(1, $scope.pageSize);
+
+    // // Load in the notifications
+    // NotificationService.getNotificationsForUser(
+    //   Configuration.user.username,
+    //   notificationCriteria
+    // ).then(
+    //   (searchResult: SearchResultsBean<ApimanNotification<any>>) => {
+    //     // TODO: probably should remove this log stmt for perf reasons
+    //     Logger.info("Notifications: {0}", searchResult);
+    //     $scope.notifications = searchResult;
+    //   },
+    //   (failure) => {
+    //     // TODO: do something useful...
+    //     Logger.error(failure);
+    //   }
+    // );
 
     $scope.getNotificationMeta = function (notification: ApimanNotification<any>): NotificationLayoutMetadata {
       return NotificationMapperService.mapNotification(notification);
@@ -72,11 +90,14 @@ _module.controller("Apiman.NotificationController", [
 
     $scope.markRead = function (notification: ApimanNotification<any>): void {
       const notificationIds: number[] = [ notification.id ];
-      Logger.info("Notification ID {0}", notification);
+      Logger.info("Notification to mark read: {0}", notification);
       NotificationService.markNotificationRead(notificationIds).then(
-          ok => {
-            $scope.notification as SearchResultsBean<ApimanNotification<any>> = ;
-            //$scope.notifications.;
+          succeeded => {
+            $scope.notifications.forEach((notification: ApimanNotification<any>, index) => {
+              if (notification.id === notification.id) {
+                this.documents.splice(index, 1);
+              }
+            });
           },
           failed => {
             // TODO: handle gracefully

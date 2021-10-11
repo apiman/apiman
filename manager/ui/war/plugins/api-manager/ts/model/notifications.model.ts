@@ -82,6 +82,22 @@ export interface ContractCreatedEvent extends IVersionedApimanEvent {
   approvalRequired: boolean;
 }
 
+export interface ContractApprovalEvent extends IVersionedApimanEvent {
+  headers: ApimanEventHeaders;
+  approver: UserDto;
+  clientOrgId: string;
+  clientId: string;
+  clientVersion: string;
+  apiOrgId: string;
+  apiId: string;
+  apiVersion: string;
+  contractId: string;
+  planId: string;
+  planVersion: string;
+  approved: boolean;
+  rejectionReason: string;
+}
+
 export interface NotificationAction {
   markAll?: boolean,
   notificationIds: number[],
