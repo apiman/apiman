@@ -96,10 +96,11 @@
 
 
                 <replaceregexp file="${basedir}/src/main/webapp/index.html" 
-                  match="&lt;base.href....&gt;" replace="&lt;base href=&apos;${ui.webcontext}&apos;&gt;" byline="true" />
+                  match="&lt;base.href....&gt;" 
+                  replace="&lt;base href=&apos;${ui.webcontext}&apos;&gt;" byline="true" />
                 <replaceregexp file="${basedir}/src/main/webapp/index.html"
                     match="&lt;script defer=&quot;defer&quot; src=&quot;([\w\/\.\-]+)&quot;" 
-                  replace="&lt;script defer=&quot;defer&quot; src=&quot;\1?cid=${timestamp}&quot;" byline="true" />
+                  replace="&lt;script defer=&quot;defer&quot; src=&quot;dist/\1?cid=${timestamp}&quot;" byline="true" />
 
                 <echo>Successfully processed file ${project.build.directory}/${project.artifactId}-${project.version}/index.html</echo>
               </target>
