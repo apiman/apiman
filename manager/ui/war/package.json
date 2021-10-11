@@ -25,13 +25,17 @@
     "cy:run": "cypress run",
     "start": "yarn run gulp",
     "ci": "cd ci && bash run-e2e.sh",
-    "test:headless": "yarn cy:run"
+    "test:headless": "yarn cy:run",
+    "watch": "webpack --watch --mode=development",
+    "serve": "webpack serve --open --mode=development"
   },
   "resolutions": {
     "graceful-fs": "^4.2.4",
     "http-proxy": "1.18.1",
     "jquery": "3.5.1",
-    "@types/jquery": "3.5.1"
+    "@types/jquery": "3.5.1",
+    "moment": "2.29.1",
+    "moment-timezone": "^0.5.28"
   },
   "dependencies": {
     "@toast-ui/editor": "^3.1.0",
@@ -47,6 +51,7 @@
     "angular-sanitize": "1.8.2",
     "angular-schema-form": "0.8.12",
     "angular-scrollable-table": "1.1.2",
+    "angular-templatecache-webpack-plugin": "^1.0.1",
     "angular-ui-bootstrap": "0.14.3",
     "angular-xeditable-npm": "0.1.9",
     "browserify": "17.0.0",
@@ -57,9 +62,10 @@
     "js-logger": "1.6.1",
     "json-editor": "0.7.23",
     "lodash": "^4.17.15",
-    "moment": "^2.11.2",
+    "moment": "2.29.1",
     "ng-file-upload": "9.1.1",
     "ng-sortable": "1.2.2",
+    "ngtemplate-loader": "^2.1.0",
     "patternfly": "^3.59.4",
     "prismjs": "^1.25.0",
     "replace-ext": "0.0.1",
@@ -81,6 +87,8 @@
     "@types/jquery": "3.5.1",
     "@types/lodash": "^4.14.175",
     "@types/urijs": "^1.19.17",
+    "copy-webpack-plugin": "^9.0.1",
+    "css-loader": "^6.4.0",
     "cypress": "^7.3.0",
     "cypress-sql-server": "^1.0.0",
     "glob": "^7.2.0",
@@ -93,15 +101,23 @@
     "gulp-notify": "2.2.0",
     "gulp-replace": "0.5.4",
     "gulp-watch": "4.3.5",
+    "html-loader": "^2.1.2",
+    "html-webpack-plugin": "^5.3.2",
     "http-proxy": "1.18.1",
     "http-proxy-middleware": "^2.0.0",
     "prettier": "^2.4.1",
+    "raw-loader": "^4.0.2",
+    "style-loader": "^3.3.0",
+    "ts-loader": "^9.2.6",
     "tsify": "^5.0.4",
     "vinyl": "1.1.0",
     "vinyl-buffer": "1.0.0",
     "vinyl-map": "^1.0.2",
     "vinyl-source-stream": "1.1.0",
-    "wait-on": "^5.3.0"
+    "wait-on": "^5.3.0",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0",
+    "webpack-dev-server": "^4.3.1"
   },
   "optionalDependencies": {
     "fsevents": "*"
