@@ -18,7 +18,7 @@
       />
     </mat-form-field>
   </form>
-  <button mat-raised-button color="primary" class="ml-20" (click)="addClient()">
+  <button mat-raised-button color="primary" class="ml-20" [disabled]="clickedRows.size > 0 || clientName.length === 0" (click)="addClient()">
     {{ "COMMON.CREATE" | translate }}
   </button>
 </div>

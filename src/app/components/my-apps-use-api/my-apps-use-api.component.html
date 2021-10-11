@@ -35,12 +35,12 @@
       <input
         matInput
         readonly
-        value="{{ 'X-API-Key: ' + apiKey }}"
+        value="{{ apiKey }}"
         [placeholder]="'COMMON.HTTP_HEADER' | translate"
       />
       <button
         [disabled]="disableButtons"
-        [cdkCopyToClipboard]="'X-API-Key: ' + apiKey"
+        [cdkCopyToClipboard]="apiKey"
         mat-icon-button
         matSuffix
         class="input-icon-btn"
@@ -62,12 +62,12 @@
       <input
         matInput
         readonly
-        value="{{ endpoint + '?apikey=' + apiKey }}"
+        value="{{ endpoint }}"
         [placeholder]="'COMMON.QUERY_PARAMETER' | translate"
       />
       <button
         [disabled]="disableButtons"
-        [cdkCopyToClipboard]="endpoint + '?apikey=' + apiKey"
+        [cdkCopyToClipboard]="endpoint"
         mat-icon-button
         matSuffix
         class="input-icon-btn"

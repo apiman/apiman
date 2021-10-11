@@ -54,8 +54,8 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
   private initProperties() {
     if (this.contract) {
       this.disableButtons = false;
-      this.apiKey = this.contract.client.apikey;
-      this.endpoint = this.contract.managedEndpoint;
+      this.apiKey = `X-API-Key: ${this.contract.client.apikey}`;
+      this.endpoint = `${this.contract.managedEndpoint}?apikey=${this.contract.client.apikey}`;
       this.orgId = this.contract.api.api.organization.id;
       this.apiId = this.contract.api.api.id;
       this.apiVersion = this.contract.api.version;

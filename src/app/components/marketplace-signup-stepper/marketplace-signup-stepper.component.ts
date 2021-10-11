@@ -126,10 +126,10 @@ export class MarketplaceSignupStepperComponent implements OnInit {
             this.translator.instant('WIZARD.SUCCESS')
           );
           this.contract = contract;
-          if (['Ready', 'Created'].includes(this.contract.client.status)) {
-            stepper.next();
-          } else {
+          if ('AwaitingApproval' === this.contract.client.status) {
             void this.router.navigate(['approval']);
+          } else {
+            stepper.next();
           }
         },
         (error) => this.snackbar.showErrorSnackBar(error.message, error)

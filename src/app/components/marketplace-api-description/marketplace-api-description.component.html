@@ -26,13 +26,13 @@
         src="https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png"
       />
     </span>
-    <p id="shortDescription">{{ markdown.substr(0, 240) }}</p>
+    <p id="shortDescription">{{ api.api.description.substr(0, 240) }}</p>
   </div>
 
   <mat-grid-list cols="4" rowHeight="1:1">
     <mat-grid-tile colspan="3" id="long-description-tile">
       <div class="box" data-simplebar>
-        <markdown [data]="markdown"></markdown>
+        <markdown [data]="api.extendedDescription"></markdown>
       </div>
     </mat-grid-tile>
     <mat-grid-tile colspan="1">

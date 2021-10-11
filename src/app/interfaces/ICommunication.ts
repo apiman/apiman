@@ -83,6 +83,7 @@ export interface IApiVersion {
   parsePayload: boolean;
   disableKeysStrip: boolean;
   definitionUrl: string;
+  extendedDescription: string;
 }
 
 export interface IOrganization {
@@ -498,7 +499,7 @@ export interface IClientVersion {
   /** @format int64 */
   id: number;
   client: IClient;
-  status: 'Created' | 'Ready' | 'Registered' | 'Retired';
+  status: 'Created' | 'Ready' | 'Registered' | 'Retired' | 'AwaitingApproval';
   version: string;
   createdBy: string;
 

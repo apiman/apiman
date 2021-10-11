@@ -127,7 +127,7 @@ export class BackendService {
       name: this.keycloakHelper.getUsername(),
       description: ''
     };
-    const path = '/devportal/organizations';
+    const path = 'devportal/organizations';
     return this.http.post<IOrganization>(this.generateUrl(path), org);
   }
 

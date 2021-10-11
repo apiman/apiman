@@ -11,6 +11,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {catchError, switchMap} from 'rxjs/operators';
 import {forkJoin, of} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
+import {KeycloakHelperService} from "../../services/keycloak-helper/keycloak-helper.service";
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -30,7 +31,8 @@ export class MarketplaceClientAppComponent implements OnInit {
   constructor(
     private backend: BackendService,
     private snackbar: SnackbarService,
-    private translator: TranslateService
+    private translator: TranslateService,
+    private keycloakHelper: KeycloakHelperService
   ) {}
 
   ngOnInit(): void {
@@ -53,7 +55,7 @@ export class MarketplaceClientAppComponent implements OnInit {
     const orgId: string =
       this.organizations.length > 1
         ? this.organizationId
-        : this.organizations[0].id;
+        : this.keycloakHelper.getUsername();
     this.backend.createClient(orgId, this.clientName)
       .pipe(
         switchMap((client: IClient) => {
@@ -68,7 +70,7 @@ export class MarketplaceClientAppComponent implements OnInit {
           this.createTableView(results);
         },
         (error) => {
-          this.snackbar.showErrorSnackBar(error);
+          this.snackbar.showErrorSnackBar(error.error.message);
         }
       );
   }
@@ -120,10 +122,9 @@ export class MarketplaceClientAppComponent implements OnInit {
   }
 
   private createTableView(results: [IOrganizationSummary[], IClientSummary[]]) {
-    const organizations = results[0];
     const clients = results[1];
     this.organizations = results[0];
-    if (organizations.length > 1) {
+    if (this.organizations.length > 1) {
       this.displayedColumns = ['org-name', 'name'];
     }
     this.dataSource = new MatTableDataSource(results[1]);
