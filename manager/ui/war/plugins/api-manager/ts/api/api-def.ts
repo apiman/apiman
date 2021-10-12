@@ -67,7 +67,8 @@ _module.controller('Apiman.ApiDefController',
             }
 
             ApiDefinitionSvcs.updateApiDefinition(params.org, params.api, params.version,
-                $scope.updatedApiDefinition, $scope.selectedDefinitionType.value,
+                $scope.updatedApiDefinition, $scope.selectedDefinitionType.value)
+            .then(
                 function() {
                     Logger.debug("Updated the api definition!");
                     $scope.apiDefinition = $scope.updatedApiDefinition;
@@ -77,7 +78,8 @@ _module.controller('Apiman.ApiDefController',
                     Modals.rpcerror(error, null, null);
                     Logger.error("Error updating definition: {0}", error);
                     $scope.saveButton.state = 'error';
-                });
+                }
+                );
         };
 
 
@@ -104,7 +106,7 @@ _module.controller('Apiman.ApiDefController',
         var pageData = ApiEntityLoader.getCommonData($scope, $location);
 
         var loadDefinition = function () {
-            ApiDefinitionSvcs.getApiDefinition(params.org, params.api, params.version,
+            ApiDefinitionSvcs.getApiDefinition(params.org, params.api, params.version).then(
                 function (definition) {
                     $scope.apiDefinition = definition;
                     $scope.updatedApiDefinition = definition;
@@ -178,7 +180,8 @@ _module.controller('Apiman.ApiDefController',
         $scope.updateDefinitionFromUrl = function () {
             let definitionUrl = $scope.updatedApiDefinitionUrl;
             let definitionType = $scope.selectedDefinitionType.value;
-            ApiDefinitionSvcs.updateApiDefinitionFromUrl(params.org, params.api, params.version, definitionUrl, definitionType,
+            ApiDefinitionSvcs.updateApiDefinitionFromUrl(params.org, params.api, params.version, definitionUrl, definitionType)
+            .then(
                 function () {
                     Logger.debug("Updated the api definition!");
                     loadDefinition();
@@ -188,7 +191,8 @@ _module.controller('Apiman.ApiDefController',
                     Modals.rpcerror(error, null, null);
                     Logger.error("Error updating definition: {0}", error);
                     $scope.saveButton.state = 'error';
-                })
+                }
+            )
 
         };
 
