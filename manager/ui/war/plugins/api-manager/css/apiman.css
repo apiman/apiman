@@ -22,6 +22,11 @@ textarea#api-definition.apiman-form-data.myBlur {
   outline: none;
 }
 
+/* Workaround for select2 ui-select Angular component no longer quite working properly (search is always enabled even when set as disabled in properties) */
+.ui-select-search-hidden {
+  display: none;
+}
+
 .ui-select-bootstrap .ui-select-choices-row>a:hover, .ui-select-bootstrap .ui-select-choices-row>a:focus {
   text-decoration: none;
   color: #262626;
