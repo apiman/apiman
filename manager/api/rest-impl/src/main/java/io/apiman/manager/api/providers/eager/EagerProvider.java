@@ -12,6 +12,9 @@ import javax.ws.rs.ext.Provider;
  * Thanks to Dan Allen <a href="https://gist.github.com/mojavelinux/635719#file-startupbeanextension-java-L19">
  * for this trick to eager initialise</a> managed beans in CDI.
  *
+ * todo(msavy): This has been temporarily disabled due to annoying classloader side-effects on Wildfly
+ * I haven't had time to figure out yet (should be provider in META-INF/services/ which is currently deleted.
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Provider
