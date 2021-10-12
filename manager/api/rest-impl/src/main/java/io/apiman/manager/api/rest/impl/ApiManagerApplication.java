@@ -75,6 +75,7 @@ public class ApiManagerApplication extends Application {
         classes.add(DeveloperResourceImpl.class);
         classes.add(BlobResourceImpl.class);
         classes.add(EventResourceImpl.class);
+        classes.add(DeveloperPortalResourceImpl.class);
 
         //add swagger 2.0 resource
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
