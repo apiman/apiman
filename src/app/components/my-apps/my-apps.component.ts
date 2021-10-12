@@ -11,7 +11,7 @@ import {
 import {
   IClientSummary, IClientVersionSummary,
   IContract,
-  IContractSummary,
+  IContractSummary, IPermission, IUserPermissions,
 } from '../../interfaces/ICommunication';
 import { IContractExt } from '../../interfaces/IContractExt';
 import {PolicyService} from "../../services/policy/policy.service";
@@ -22,6 +22,9 @@ import {SpinnerService} from "../../services/spinner/spinner.service";
 import {ApiService} from "../../services/api/api.service";
 import {ITocLink} from "../../interfaces/ITocLink";
 import {TocService} from "../../services/toc.service";
+import {MatDialog} from "@angular/material/dialog";
+import {UnregisterClientComponent} from "../dialogs/unregister-client/unregister-client.component";
+import {SnackbarService} from "../../services/snackbar/snackbar.service";
 
 @Component({
   selector: 'app-my-apps',
@@ -30,10 +33,14 @@ import {TocService} from "../../services/toc.service";
 })
 export class MyAppsComponent implements OnInit {
   contracts: IContractExt[] = [];
-  clientContractsMap = new Map<string, IContractExt[]>();
+  clientContractsMap!: Map<string, IContractExt[]>;
   contractsLoaded = false;
 
   tocLinks: ITocLink[] = [];
+
+  noDataFound = false;
+
+  clientAdminProfile = false;
 
   constructor(
     private spinnerService: SpinnerService,
@@ -42,17 +49,23 @@ export class MyAppsComponent implements OnInit {
     private backend: BackendService,
     private policyService: PolicyService,
     private apiService: ApiService,
-    public tocService: TocService
+    public tocService: TocService,
+    private dialog: MatDialog,
+    private snackbarService: SnackbarService
   ) {
   }
 
   ngOnInit(): void {
     this.setUpHero();
+    this.fetchProfiles();
     this.fetchContracts();
   }
 
   // Detailed explanation of request chain: https://stackoverflow.com/questions/69421293/how-to-chain-requests-correctly-with-rxjs
   private fetchContracts() {
+    this.contracts = [];
+    this.clientContractsMap = new Map<string, IContractExt[]>();
+
     this.spinnerService.startWaiting();
     this.contractsLoaded = false;
 
@@ -60,6 +73,12 @@ export class MyAppsComponent implements OnInit {
       .getEditableClients()
       .pipe(
         switchMap((clientSummaries: IClientSummary[]) => {
+          if (clientSummaries.length === 0) {
+            this.spinnerService.stopWaiting();
+            this.noDataFound = true;
+            this.contractsLoaded = true;
+          }
+
           return forkJoin(clientSummaries.map(clientSummary => {
             return this.backend.getClientVersions(
               clientSummary.organizationId,
@@ -172,6 +191,8 @@ export class MyAppsComponent implements OnInit {
   }
 
   private generateTocLinks() {
+    this.tocLinks = [];
+
     this.clientContractsMap.forEach((value: IContractExt[], key: string) => {
       this.tocLinks.push({
         name: this.formatClientContractTitle(key),
@@ -196,5 +217,29 @@ export class MyAppsComponent implements OnInit {
 
   formatApiVersionPlanTitle(contract: IContractExt) {
     return `${contract.api.api.name} ${contract.api.version} - ${contract.plan.plan.name}`;
+  }
+
+  unregister(contract: IContractExt, clientNameVersion: string) {
+    const dialogRef = this.dialog.open(UnregisterClientComponent, {autoFocus: false});
+    dialogRef.componentInstance.contract = contract;
+    dialogRef.componentInstance.clientNameVersion = {value: this.formatClientContractTitle(clientNameVersion)}
+
+    dialogRef.componentInstance.unregisterEmitter.subscribe(() => {
+      this.snackbarService.showPrimarySnackBar(this.translator.instant('APPS.CLIENT_REMOVED'))
+      this.fetchContracts();
+
+      dialogRef.close();
+    });
+  }
+
+  private fetchProfiles() {
+    this.backend.getPermissions().subscribe((response: IUserPermissions) => {
+      const found = response.permissions.find((p: IPermission) => {
+        return p.name === 'clientAdmin';
+      })
+
+      if (found)
+        this.clientAdminProfile = true;
+    });
   }
 }

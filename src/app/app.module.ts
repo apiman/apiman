@@ -42,6 +42,8 @@ import { ApprovalComponent } from './components/approval/approval.component';
 import { ThemeService } from './services/theme/theme.service';
 import {TocComponent} from "./components/toc/toc.component";
 import {PolicyCardLightComponent} from "./components/policy-card-light/policy-card-light.component";
+import {NoDataComponent} from "./components/no-data/no-data.component";
+import {UnregisterClientComponent} from "./components/dialogs/unregister-client/unregister-client.component";
 
 export function initializeApp(configService: ConfigService, devPortalInitializer: InitializerService, keycloakHelper: KeycloakHelperService, themeService: ThemeService): () => Promise<any> {
   return () => new Promise((resolve, reject) => {
@@ -89,7 +91,9 @@ export function createTranslateLoader(http: HttpClient) {
     PolicyCardLightComponent,
     GaugeChartComponent,
     ApprovalComponent,
-    TocComponent
+    TocComponent,
+    NoDataComponent,
+    UnregisterClientComponent
   ],
   imports: [
     KeycloakAngularModule,

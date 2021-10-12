@@ -1,6 +1,7 @@
-<div *ngIf="contractsLoaded" class="wrapper">
+<div *ngIf="contractsLoaded && !noDataFound" class="wrapper">
   <div id="contracts" class="first">
     <mat-card *ngFor="let cliCon of clientContractsMap | keyvalue" class="mb-40 mat-elevation-z3 client-card" [id]="tocService.formatClientId(cliCon.value[0])">
+      <!-- Client Header -->
       <div class="app-header">
         <div class="app-icon-wrapper">
           <img class="app-icon" [src]="'assets/img/api-man-logo.png'" alt="app-icon">
@@ -11,43 +12,57 @@
           </h3>
           {{ cliCon.value[0].client.client.description }}
         </div>
+        <div class="app-client-header-labels">
+          <span
+            matTooltip="Client Status"
+            [style]="'background-color: ' + getColorForLabel(cliCon.value[0].client.status)">
+            {{ cliCon.value[0].client.status }}
+          </span>
+          <button
+            *ngIf="cliCon.value[0].client.status === 'Registered' && clientAdminProfile"
+            (click)="unregister(cliCon.value[0], cliCon.key)"
+            mat-icon-button
+            color="primary">
+            <mat-icon>settings</mat-icon>
+          </button>
+        </div>
       </div>
-
       <div *ngFor="let contract of cliCon.value" class="app-api">
         <div class="app-api-menu">
           <div>
-      <span
-        (click)="setSection(contract, 'summary')"
-        [ngClass]="{ primary: contract.section === 'summary' }"
-      >{{ "APPS.SUMMARY" | translate }}</span
-      >
+            <span
+              (click)="setSection(contract, 'summary')"
+              [ngClass]="{ primary: contract.section === 'summary' }">
+              {{ "APPS.SUMMARY" | translate }}
+            </span>
           </div>
           <div>
-      <span
-        (click)="setSection(contract, 'use-api')"
-        [ngClass]="{ primary: contract.section === 'use-api' }"
-      >{{ "APPS.USE_API" | translate }}</span
-      >
+            <span
+              (click)="setSection(contract, 'use-api')"
+              [ngClass]="{ primary: contract.section === 'use-api' }">
+              {{ "APPS.USE_API" | translate }}
+            </span>
           </div>
           <div *ngIf="contract.policies.length > 0">
-      <span
-        (click)="setSection(contract, 'policies')"
-        [ngClass]="{ primary: contract.section === 'policies' }"
-      >{{ "APPS.POLICIES" | translate }}</span
-      >
+            <span
+              (click)="setSection(contract, 'policies')"
+              [ngClass]="{ primary: contract.section === 'policies' }">
+              {{ "APPS.POLICIES" | translate }}
+            </span>
           </div>
           <div>
-      <span
-        (click)="setSection(contract, 'manage-api')"
-        [ngClass]="{ primary: contract.section === 'manage-api' }"
-      >{{ "APPS.MANAGE_API" | translate }}</span
-      >
+<!--            TODO Add this later -->
+<!--            <span-->
+<!--              (click)="setSection(contract, 'manage-api')"-->
+<!--              [ngClass]="{ primary: contract.section === 'manage-api' }">-->
+<!--              {{ "APPS.MANAGE_API" | translate }}-->
+<!--            </span>-->
           </div>
         </div>
         <div class="app-api-content mat-elevation-z2">
           <div class="app-api-header">
             <div class="app-api-header-icon-wrapper">
-              <mat-icon id="lightbulb" color="primary" material-icons-outlined>lightbulb_outline</mat-icon>
+              <mat-icon class="app-api-header-icon" color="primary" material-icons-outlined>api_outline</mat-icon>
             </div>
             <div class="app-api-header-title" [id]="tocService.formatApiVersionPlanId(contract)">
               <h3 class="primary">
@@ -55,22 +70,17 @@
               </h3>
             </div>
             <div class="app-api-header-labels">
-        <span
-          matTooltip="API Status"
-          [style]="
-            'background-color: ' + getColorForLabel(contract.api.status)
-          "
-        >
-          {{ contract.api.status }}
-        </span>
               <span
-                matTooltip="Client Status"
-                [style]="
-            'background-color: ' + getColorForLabel(contract.client.status)
-          "
-              >
-          {{ contract.client.status }}
-        </span>
+                matTooltip="API Status"
+                [style]="'background-color: ' + getColorForLabel(contract.api.status)">
+                {{ contract.api.status }}
+              </span>
+<!--              THIS WILL BE ADDED LATER -->
+<!--              <span-->
+<!--                matTooltip="Client Status"-->
+<!--                [style]="'background-color: ' + getColorForLabel(contract.client.status)">-->
+<!--                {{ contract.client.status }}-->
+<!--              </span>-->
             </div>
           </div>
           <div class="api-section">
@@ -96,4 +106,8 @@
     </mat-card>
   </div>
   <div class="second"><app-toc [links]="tocLinks"></app-toc></div>
+</div>
+
+<div *ngIf="contractsLoaded && noDataFound" class="dp-center">
+  <app-no-data [text]="'APPS.NO_CLIENTS' | translate"></app-no-data>
 </div>

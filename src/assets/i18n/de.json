@@ -51,7 +51,9 @@
     "DISABLE_API": "Deaktivieren",
     "UNSUB_FROM_API": "Von der API abmelden",
     "UNSUB_FROM_THIS_API": "Von dieser API abmelden",
-    "UNSUB": "Abmelden"
+    "UNSUB": "Abmelden",
+    "NO_CLIENTS": "Es konnten keine Clients gefunden werden",
+    "CLIENT_REMOVED": "Der Client und die Verträge wurden entfernt"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Aus vorhandenen Anwendugen auswählen"
@@ -75,20 +77,23 @@
   "POLICIES": {
     "RATE_LIMIT": {
       "TITLE": "Rate Limiting Policy",
-      "DESCRIPTION": "You will be rate limited to <b>{{limit}}</b> requests per <b>{{timeUnit}}</b>",
-      "MORE_INFO": "The following headers in the response contain useful information relating to rate limit,",
-      "LIMIT": "Rate limit allowance (per time period)",
-      "REMAINING": "Rate limit allowance remaining",
-      "RESET": "Rate limit allowance remaining"
+      "DESCRIPTION": "Die Anfragefrequenz wird beschränkt auf <b>{{limit}}</b> Requests pro <b>{{timeUnit}}</b>",
+      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Requests,",
+      "LIMIT": "Rate Limit (pro Zeit)",
+      "REMAINING": "Rate Limit verbleibend",
+      "RESET": "Die Zeit, bis das Rate Limit zurückgesetzt wird",
+      "CONDITION_LIGHT": "<b>{{limit}}</b> Requests pro <b>{{timeUnit}}</b>"
     },
     "QUOTA": {
       "TITLE": "Quota Policy",
-      "DESCRIPTION": "You can transfer a maximum of <b>{{limit}}<b> of data per <b>{{timeUnit}}</b>",
-      "MORE_INFO": "The following headers in the response contain useful information relating to quota limit,",
-      "LIMIT": "Quota limit allowance (per time period)",
-      "REMAINING": "Quota limit allowance remaining",
-      "RESET": "Quota limit allowance remaining"
-    }
+      "DESCRIPTION": "Es können maximal <b>{{limit}}<b> Daten pro <b>{{timeUnit}}</b> konsumiert werden",
+      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Requests,",
+      "LIMIT": "Quota Limit (pro Zeit)",
+      "REMAINING": "Quota Limit verbleibend",
+      "RESET": "Die Zeit, bis das Quota Limit zurückgesetzt wird",
+      "CONDITION_LIGHT": "<b>{{limit}}</b> Daten pro <b>{{timeUnit}}</b>"
+    },
+    "USAGE": "Verbrauch"
   },
   "DESCRIPTIONS": {
     "TRY_IT_OUT": "Öffnet die Open API Defintion (Swagger) und erlaubt es Testaufrufe der API durchzuführen.",
@@ -103,5 +108,10 @@
     "TITLE": "Vielen Dank!",
     "SUBTITLE": "Dein Auftrag muss von <i>KoolBank</i> noch bestätigt werden",
     "MORE_INFO": "Du wirst über den aktuellen Status per E-Mail benachrichtigt"
+  },
+  "DIALOGS": {
+    "UNREGISTER_TITLE": "Client löschen",
+    "UNREGISTER_SURE": "Sind Sie sich wirklich sicher, dass Sie den Client <b>{{value}}</b> <span class='warn'>löschen</span> möchten?",
+    "UNREGISTER_BTN": "Löschen"
   }
 }

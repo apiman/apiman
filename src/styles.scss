@@ -166,6 +166,12 @@ $remSizes: 1, 2, 3, 4;
     padding-left: #{$size}rem;
   }
 }
+
+// Alignment
+.dp-center{
+  text-align: center;
+}
+
 /***** DevPortal Default Styling *****/
 /** Main tags **/
 html {

@@ -1,4 +1,5 @@
 import {IPolicy} from "./ICommunication";
+import {IGaugeChartData} from "./IGaugeChartData";
 
 export interface IPolicyExt extends IPolicy {
   planId: string;
@@ -13,4 +14,6 @@ export interface IPolicyExt extends IPolicy {
     timeUnit: string;
   }
   headers: any;
+  mainGaugeData: IGaugeChartData,
+  timeGaugeData: IGaugeChartData
 }

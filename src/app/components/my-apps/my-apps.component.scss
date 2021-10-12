@@ -2,7 +2,7 @@
   display: grid;
   justify-content: space-between;
   align-items: start;
-  grid-template-columns: 0.6fr 9.4fr;
+  grid-template-columns: 0.6fr 6fr 3.4fr;
   grid-column-gap: 16px;
   grid-row-gap: 32px;
 }
@@ -73,7 +73,7 @@
   width: 48px;
 }
 
-#lightbulb {
+.app-api-header-icon {
   font-size: 48px;
 }
 
@@ -86,14 +86,20 @@
 
 }
 
-.app-api-header-labels{
+.app-api-header-labels, .app-client-header-labels{
   white-space: nowrap;
   margin-right: 1.8rem;
   text-align: right;
   span{
-    margin-right: 16px;
+    margin-right: 1rem;
     padding: 6px;
     color: white;
+  }
+
+
+
+  span:last-child{
+    margin-right: 0;
   }
 }
 

@@ -7,11 +7,10 @@ import {IApiSummaryExt} from "../../interfaces/IApiSummaryExt";
   styleUrls: ['./api-card.component.scss'],
 })
 export class ApiCardComponent implements OnInit {
-  tmpUrl =
-    'https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png';
+  @Input() api!: IApiSummaryExt;
+  tmpUrl = 'https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png';
 
   constructor() {}
 
   ngOnInit(): void {}
-  @Input() api!: IApiSummaryExt;
 }

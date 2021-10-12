@@ -8,16 +8,15 @@ import { LegendPosition } from '@swimlane/ngx-charts';
   styleUrls: ['./gauge-chart.component.scss'],
 })
 export class GaugeChartComponent implements OnInit {
-  @Input() gaugeData?: IGaugeChartData;
+  @Input() gaugeData!: IGaugeChartData;
+  @Input() icon?: string;
 
   data: { name: string; value: number }[] = [{ name: '', value: 0 }];
   legend = false;
-  limit = 0;
   currentValue = 0;
   legendPosition = LegendPosition.Below;
   period = '';
   percentage = '';
-  name: string | undefined;
   colorScheme: any | undefined;
 
   disableValueLabel = () => '';
@@ -29,7 +28,6 @@ export class GaugeChartComponent implements OnInit {
 
   private setupChart() {
     if (this.gaugeData) {
-      this.name = this.gaugeData.name;
       this.data = [
         {
           name: 'Currently Used',
@@ -37,9 +35,8 @@ export class GaugeChartComponent implements OnInit {
         },
       ];
       this.currentValue = this.gaugeData.currentValue;
-      this.limit = this.gaugeData.limit;
       this.period = this.gaugeData.period;
-      this.percentage = ((this.currentValue * 100) / this.limit).toFixed(1);
+      this.percentage = ((this.currentValue * 100) / this.gaugeData.limit).toFixed(1);
     }
   }
 

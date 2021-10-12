@@ -3,4 +3,5 @@ export interface IGaugeChartData {
   limit: number;
   period: string;
   currentValue: number;
+  infoHeader: string;
 }

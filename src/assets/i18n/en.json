@@ -51,7 +51,9 @@
     "DISABLE_API": "Disable",
     "UNSUB_FROM_API": "Unsubscribe from API",
     "UNSUB_FROM_THIS_API": "Unsubscribe from this API",
-    "UNSUB": "Unsubscribe"
+    "UNSUB": "Unsubscribe",
+    "NO_CLIENTS": "Could not find any clients",
+    "CLIENT_REMOVED": "The client and the contracts has been removed"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Select from available Applications"
@@ -79,7 +81,7 @@
       "MORE_INFO": "The following headers in the response contain useful information relating to rate limit,",
       "LIMIT": "Rate limit allowance (per time period)",
       "REMAINING": "Rate limit allowance remaining",
-      "RESET": "Rate limit allowance remaining",
+      "RESET": "The time the rate limit will be reset",
       "CONDITION_LIGHT": "<b>{{limit}}</b> requests per <b>{{timeUnit}}</b>"
     },
     "QUOTA": {
@@ -90,7 +92,8 @@
       "REMAINING": "Quota limit allowance remaining",
       "RESET": "Quota limit allowance remaining",
       "CONDITION_LIGHT": "<b>{{limit}}</b> data per <b>{{timeUnit}}</b>"
-    }
+    },
+    "USAGE": "Usage"
   },
   "DESCRIPTIONS": {
     "TRY_IT_OUT": "Displays the Open API definition (Swagger) and allows for making test calls if the API is available.",
@@ -105,5 +108,10 @@
     "TITLE": "Thank you!",
     "SUBTITLE": "Your subscription is awaiting approval by <i>KoolBank</i>",
     "MORE_INFO": "You will receive an email notification when there is progress in your application"
+  },
+  "DIALOGS": {
+    "UNREGISTER_TITLE": "Remove Client",
+    "UNREGISTER_SURE": "Are you really sure you want to <span class='warn'>remove</span> the client <b>{{value}}</b>",
+    "UNREGISTER_BTN": "Unregister"
   }
 }

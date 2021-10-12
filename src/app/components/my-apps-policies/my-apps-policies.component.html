@@ -4,8 +4,8 @@
   </div>
   <div class="divider-left">
     <div class="policy-charts-grid">
-      <div><app-gauge-chart [gaugeData]="gaugeData"></app-gauge-chart></div>
-      <div><app-gauge-chart [gaugeData]="gaugeData"></app-gauge-chart></div>
+      <div><app-gauge-chart [gaugeData]="policy.mainGaugeData" [icon]="policy.icon"></app-gauge-chart></div>
+      <div><app-gauge-chart [gaugeData]="policy.timeGaugeData" [icon]="'timer'"></app-gauge-chart></div>
     </div>
   </div>
 </div>

@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import {
+  IAction,
   IApi, IApiPlanSummary,
   IApiVersion,
   IApiVersionEndpointSummary,
@@ -13,7 +14,7 @@ import {
   IOrganization,
   IOrganizationSummary, IPolicy, IPolicySummary,
   ISearchCriteria,
-  ISearchResultsApiSummary,
+  ISearchResultsApiSummary, IUserPermissions,
 } from '../../interfaces/ICommunication';
 import { IPolicySummaryExt } from '../../interfaces/IPolicySummaryExt';
 import {KeycloakHelperService} from '../keycloak-helper/keycloak-helper.service';
@@ -217,6 +218,28 @@ export class BackendService {
                            apiVersion:string): Observable<any> {
     const path = `organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
     return this.http.head(this.generateUrl(path));
+  }
+
+  public getPermissions(): Observable<IUserPermissions> {
+    const userId = this.keycloakHelper.getUsername();
+
+    const path = `users/${userId}/permissions`;
+    return this.http.get<IUserPermissions>(this.generateUrl(path));
+  }
+
+  public sendAction(action: IAction): Observable<void> {
+    const path = `actions`;
+    return this.http.post<void>(this.generateUrl(path), action);
+  }
+
+  public breakAllContracts(organizationId: string, clientId: string, clientVersion: string): Observable<void>{
+    const path = `organizations/${organizationId}/clients/${clientId}/versions/${clientVersion}/contracts`;
+    return this.http.delete<void>(this.generateUrl(path));
+  }
+
+  public deleteClient(organizationId: string, clientId: string){
+    const path = `organizations/${organizationId}/clients/${clientId}`
+    return this.http.delete<void>(this.generateUrl(path));
   }
 
   /********* Helper **********/
