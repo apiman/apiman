@@ -15,7 +15,7 @@ import { BackendService } from '../../services/backend/backend.service';
 import { MatStepper } from '@angular/material/stepper';
 import { IContractExt } from '../../interfaces/IContractExt';
 import { map, switchMap } from 'rxjs/operators';
-import { TocService } from '../../services/toc.service';
+import { TocService} from '../../services/toc/toc.service';
 
 @Component({
   selector: 'app-marketplace-signup-stepper',

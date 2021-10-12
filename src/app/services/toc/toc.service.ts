@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {IContractExt} from "../interfaces/IContractExt";
+import {IContractExt} from "../../interfaces/IContractExt";
 
 @Injectable({
   providedIn: 'root'

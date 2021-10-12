@@ -21,7 +21,7 @@ import {flatArray} from "../../shared/utility";
 import {SpinnerService} from "../../services/spinner/spinner.service";
 import {ApiService} from "../../services/api/api.service";
 import {ITocLink} from "../../interfaces/ITocLink";
-import {TocService} from "../../services/toc.service";
+import {TocService} from "../../services/toc/toc.service";
 import {MatDialog} from "@angular/material/dialog";
 import {UnregisterClientComponent} from "../dialogs/unregister-client/unregister-client.component";
 import {SnackbarService} from "../../services/snackbar/snackbar.service";

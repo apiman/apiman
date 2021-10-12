@@ -111,7 +111,7 @@
   },
   "DIALOGS": {
     "UNREGISTER_TITLE": "Client löschen",
-    "UNREGISTER_SURE": "Sind Sie sich wirklich sicher, dass Sie den Client <b>{{value}}</b> <span class='warn'>löschen</span> möchten?",
+    "UNREGISTER_SURE": "Sind Sie sich wirklich sicher, dass Sie den Client <b>{{value}}</b> und seine Verträge <span class='warn'>löschen</span> möchten?",
     "UNREGISTER_BTN": "Löschen"
   }
 }
