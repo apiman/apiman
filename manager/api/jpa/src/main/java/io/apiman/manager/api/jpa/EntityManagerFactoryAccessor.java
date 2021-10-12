@@ -29,7 +29,7 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
 /**
- * Produces an instance of {@link EntityManagerFactory}.
+ * Produces an instance of {@link EntityManagerFactory}. Or the managed persistence unit, if there is one :-).
  *
  * @author eric.wittmann@redhat.com
  */
@@ -43,6 +43,8 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
 
     @PersistenceContext(unitName = "apiman-manager-api-jpa")
     private EntityManager pcEm;
+
+    private final ThreadLocal<EntityManager> threadLocal = new ThreadLocal<>();
 
     /**
      * Constructor.
@@ -93,9 +95,6 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
                 throw t1;
             }
         }
-
-        System.out.println("Hibernate properties init");
-        //Persistence.getPersistenceUtil().
     }
 
     /**
@@ -107,20 +106,18 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         return emf;
     }
 
-    ThreadLocal<EntityManager> threadLocal = new ThreadLocal<>();
-
     @Produces
     public EntityManager getEntityManager() {
         if (pcEm != null) {
-            System.out.println("Using persistent context entity manager");
+            // System.out.println("Using persistent context entity manager");
             return pcEm;
         }
         EntityManager threadLocalEm = threadLocal.get();
         if (threadLocalEm != null && threadLocalEm.isOpen()) {
-            System.out.println("Return thread local em");
+            // System.out.println("Return thread local em");
             return threadLocalEm;
         } else {
-            System.out.println("Return new em");
+            // System.out.println("Return new em");
             EntityManager newEm = emf.createEntityManager();
             threadLocal.set(newEm);
             return newEm;

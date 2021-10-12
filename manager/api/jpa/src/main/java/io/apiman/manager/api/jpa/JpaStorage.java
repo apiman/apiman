@@ -102,6 +102,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.io.IOUtils;
 
@@ -1178,8 +1179,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     @Override
-    public List<ApiBean> getApisByTagName(String tagKey) {
-        TypedQuery<ApiBean> query = getSession()
+    public List<ApiBean> getApisByTagName(@NotNull String tagKey) {
+        TypedQuery<ApiBean> query = getActiveEntityManager()
                 .createQuery(
                         "SELECT ApiBean FROM ApiBean avb "
                                 + "JOIN avb.tags tag "
