@@ -1,5 +1,5 @@
 import {
-  ApimanNotification, ContractApprovalEvent,
+  ApimanNotification, ClientVersionStatusEvent, ContractApprovalEvent,
   ContractCreatedEvent,
 } from "../model/notifications.model";
 import { _module } from "../apimanPlugin";
@@ -13,12 +13,22 @@ _module.factory("NotificationMapperService", [
         notification: ApimanNotification<any>
       ): NotificationLayoutMetadata => {
         const result: NotificationLayoutResolver = MAPPER.mapNotification(notification);
-        return {
-          icon: result.icon,
-          reason: result.reason,
-          message: result.messageResolver(notification),
-          link: result.linkResolver(notification),
-        };
+
+        if (result == undefined) {
+          return {
+            icon: 'fa-alert',
+            reason: 'Notification',
+            message: notification.reasonMessage,
+            link: '' // TODO: use the link in the notification
+          }
+        } else {
+          return {
+            icon: result.icon,
+            reason: result.reason,
+            message: result.messageResolver(notification),
+            link: result.linkResolver(notification),
+          };
+        }
       },
     };
   },
@@ -70,10 +80,27 @@ class NotificationMapper {
         linkResolver: (notification: ApimanNotification<any>): string => {
           const notificationWithEvent: ApimanNotification<ContractApprovalEvent> = notification;
           const event: ContractApprovalEvent = notificationWithEvent.payload;
-          return `${ApimanGlobals.pluginName}/clients/${event.clientOrgId}/clients/${event.clientId}/${event.clientVersion}/contracts`;
+          return `${ApimanGlobals.pluginName}/clients/${event.clientOrgId}/${event.clientId}/${event.clientVersion}/contracts`;
         }
       },
     ],
+    [
+      "apiman.client.status_change",
+      {
+        icon: "fa-info",
+        reason: "Client App",
+        messageResolver: (notification: ApimanNotification<any>): string => {
+          const notificationWithEvent: ApimanNotification<ClientVersionStatusEvent> = notification;
+          const event: ClientVersionStatusEvent = notificationWithEvent.payload;
+          return `A client was published`; // TODO
+        },
+        linkResolver: (notification: ApimanNotification<any>): string => {
+          const notificationWithEvent: ApimanNotification<ClientVersionStatusEvent> = notification;
+          const event: ClientVersionStatusEvent = notificationWithEvent.payload;
+          return `${ApimanGlobals.pluginName}/clients/${event.clientOrgId}/${event.clientId}/${event.clientVersion}`;
+        }
+      },
+    ]
   ]);
 
   private approvalToString(event: ContractApprovalEvent): string {
