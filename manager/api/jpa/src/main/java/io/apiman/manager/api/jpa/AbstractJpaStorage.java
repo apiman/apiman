@@ -85,9 +85,7 @@ public abstract class AbstractJpaStorage {
      * @return the thread's entity manager
      */
     public EntityManager getActiveEntityManager() {
-        EntityManager em = emf.getEntityManager();
-        // System.out.println("em(jpa)=" + em.hashCode());
-        return em;
+        return emf.getEntityManager();
     }
 
     public Session getSession() {
