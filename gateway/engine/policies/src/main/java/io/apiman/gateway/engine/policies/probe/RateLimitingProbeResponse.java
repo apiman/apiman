@@ -4,11 +4,16 @@ import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.policies.config.RateLimitingConfig;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class RateLimitingProbeResponse implements IPolicyProbeResponse {
 
+    private String probeType = "RateLimitingProbeResponse";
     private RateLimitingConfig config;
     private RateLimitResponse status;
 
@@ -35,6 +40,6 @@ public class RateLimitingProbeResponse implements IPolicyProbeResponse {
 
     @Override
     public String getProbeType() {
-        return RateLimitingProbeResponse.class.getSimpleName();
+        return probeType;
     }
 }

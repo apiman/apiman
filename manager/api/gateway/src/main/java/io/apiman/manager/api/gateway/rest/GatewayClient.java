@@ -15,6 +15,9 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.util.MediaType;
 import io.apiman.gateway.api.rest.IApiResource;
 import io.apiman.gateway.api.rest.IClientResource;
 import io.apiman.gateway.api.rest.ISystemResource;
@@ -27,6 +30,7 @@ import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.apiman.gateway.engine.policies.probe.ProbeRegistry;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.i18n.Messages;
 
@@ -34,6 +38,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.UriBuilder;
@@ -45,7 +50,10 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -63,6 +71,7 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
     private static final String CLIENTS = "/clients"; //$NON-NLS-1$
 
     private static final ObjectMapper mapper = new ObjectMapper();
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(GatewayClient.class);
 
     private String endpoint;
     private CloseableHttpClient httpClient;
@@ -82,12 +91,11 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
     }
 
     public IPolicyProbeResponse probePolicy(String orgId, String apiId, String apiVersion, int idx) throws GatewayAuthenticationException {
-        return probePolicy(orgId, apiId, apiVersion, idx, "");
+        return probePolicy(orgId, apiId, apiVersion, idx, "", "");
     }
 
-    // organizations/{organizationId}/apis/{apiId}/versions/{version}/policies/{policyIdx}
-    public IPolicyProbeResponse probePolicy(String orgId, String apiId, String apiVersion, int idx, String apiKey) throws GatewayAuthenticationException {
-        InputStream is = null;
+    public IPolicyProbeResponse probePolicy(String orgId, String apiId, String apiVersion, int idx, String apiKey, String rawPayload) throws GatewayAuthenticationException {
+        InputStream probeResponseIs = null;
         try {
             UriBuilder probeUrl = UriBuilder.fromUri(endpoint)
                     .path("organizations")
@@ -101,22 +109,25 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
             if (apiKey != null && !apiKey.isBlank()) {
                 probeUrl.queryParam("apiKey", apiKey);
             }
-            HttpGet get = new HttpGet(probeUrl.build());
-            HttpResponse response = httpClient.execute(get);
+            HttpPost post = new HttpPost(probeUrl.build());
+            post.setHeader("Content-Type", MediaType.APPLICATION_JSON);
+            HttpEntity entity = new ByteArrayEntity(rawPayload.getBytes(StandardCharsets.UTF_8), ContentType.APPLICATION_JSON);
+            post.setEntity(entity);
+            HttpResponse response = httpClient.execute(post);
             int actualStatusCode = response.getStatusLine().getStatusCode();
             if (actualStatusCode == 401 || actualStatusCode == 403) {
                 throw new GatewayAuthenticationException();
             } else if (!(actualStatusCode / 100 == 2)) {
-                throw new RuntimeException("System status check failed: " + actualStatusCode); //$NON-NLS-1$
+                throw new RuntimeException("System status check failed: " + actualStatusCode + ": " + response.getStatusLine()); //$NON-NLS-1$
             }
-            is = response.getEntity().getContent();
-            return mapper.reader(IPolicyProbeResponse.class).readValue(is);
+            probeResponseIs = response.getEntity().getContent();
+            return ProbeRegistry.deserialize(probeResponseIs);
         } catch (GatewayAuthenticationException | RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(probeResponseIs);
         }
     }
 

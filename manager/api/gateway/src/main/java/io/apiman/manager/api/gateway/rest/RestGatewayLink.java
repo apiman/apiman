@@ -27,7 +27,6 @@ import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
-import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
@@ -206,7 +205,7 @@ public class RestGatewayLink implements IGatewayLink {
         getClient().unregister(client.getOrganizationId(), client.getClientId(), client.getVersion());
     }
 
-    @Override
+    //@Override
     public IPolicyProbeResponse probe(String orgId, String apiId, String apiVersion, int idx) throws RegistrationException, GatewayAuthenticationException {
         if (!isGatewayUp()) {
             throw new RegistrationException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
@@ -215,11 +214,11 @@ public class RestGatewayLink implements IGatewayLink {
     }
 
     @Override
-    public IPolicyProbeResponse probe(String orgId, String apiId, String apiVersion, int idx, String apiKey) throws RegistrationException, GatewayAuthenticationException {
+    public IPolicyProbeResponse probe(String orgId, String apiId, String apiVersion, int idx, String apiKey, String rawPayload) throws RegistrationException, GatewayAuthenticationException {
         if (!isGatewayUp()) {
             throw new RegistrationException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
         }
-        return getClient().probePolicy(orgId, apiId, apiVersion, idx, apiKey);
+        return getClient().probePolicy(orgId, apiId, apiVersion, idx, apiKey, rawPayload);
     }
 
     /**
