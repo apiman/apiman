@@ -96,7 +96,7 @@ _module.controller("Apiman.DevPortalController", [
           addImageBlobHook: uploadImage,
         },
         events: {
-          blur: () => editorDirtyCheck,
+          // blur: () => editorDirtyCheck,
         },
         plugins: [
           [codeSyntaxHighlight, {highlighter: Prism}],
@@ -117,7 +117,7 @@ _module.controller("Apiman.DevPortalController", [
     };
 
     // Dirty check the MD editor pane every 2 seconds (avoids excessive checking).
-    $interval(() => {
+    const intervalPromise: Promise<any> = $interval(() => {
       editorDirtyCheck();
     }, 1000);
 
@@ -126,8 +126,9 @@ _module.controller("Apiman.DevPortalController", [
         initEditor();
       }
       let latestDescription = markdownEditor.getMarkdown();
-      // Original description != latestDescription
-      if (apiVersionCopy.extendedDescription !== latestDescription) {
+      // If original description != latestDescription, and latest poll != previous poll
+      if (apiVersionCopy.extendedDescription !== latestDescription
+          && $scope.apiVersion.extendedDescription !== latestDescription) {
         $rootScope.isDirty = true;
         $scope.apiVersion.extendedDescription = latestDescription;
       }
@@ -156,11 +157,10 @@ _module.controller("Apiman.DevPortalController", [
           $scope.$watch(
               "apiVersion",
               (oldValue, newValue) => {
-                if (angular.equals(oldValue, newValue)) {
-                  return;
+                if (!angular.equals(oldValue, newValue)) {
+                  Logger.debug("Dirty set to true {0} vs {1}", oldValue, newValue);
+                  $rootScope.isDirty = true;
                 }
-                // Logger.debug("Dirty set to true {0} vs {1}", oldValue, newValue);
-                $rootScope.isDirty = true;
               },
               true
           );
@@ -180,6 +180,10 @@ _module.controller("Apiman.DevPortalController", [
       markdownEditor.setMarkdown($scope.apiVersion.extendedDescription, true);
       $rootScope.isDirty = false;
     };
+
+    $scope.$on('$destroy', function () {
+      $interval.cancel(intervalPromise);
+    });
 
     // Save
     $scope.doSave = (clickInfo) => {
