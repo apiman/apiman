@@ -36,7 +36,7 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a id="navbar-about" href="{{ pluginName }}/about" apiman-i18n-key="about-apiman">About apiman</a>
+                            <a id="navbar-about" href="{{ pluginName }}/about" apiman-i18n-key="about-apiman">About Apiman</a>
                         </li>
                         <li class="divider"></li>
                         <li>
