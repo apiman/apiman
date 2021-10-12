@@ -66,13 +66,13 @@
         </mat-card-header>
         <mat-card-content class="mat-card-header-text">
           <app-my-apps-use-api></app-my-apps-use-api>
-          <h4>Policies</h4>
-          <!--In this version we will not have more than 2 policies-->
-          <div class="policies">
-            <ng-container *ngFor="let policy of newContractDetails.policies">
+          <ng-container *ngFor="let policy of newContractDetails.policies">
+            <h4>Policies</h4>
+            <!--In this version we will not have more than 2 policies-->
+            <div class="policies">
               <app-policy-card [policy]="policy"></app-policy-card>
-            </ng-container>
-          </div>
+            </div>
+          </ng-container>
         </mat-card-content>
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
@@ -95,14 +95,13 @@
           </mat-card-header>
           <mat-card-content class="mat-card-header-text">
             <app-my-apps-use-api [contract]="contract"></app-my-apps-use-api>
-            <h3>Policies</h3>
-            <!--In this version we will not have more than 2 policies-->
-            <div class="policies" *ngIf="newContractDetails.policies">
-              <app-policy-card
-                *ngFor="let policy of newContractDetails.policies"
-                [policy]="policy"
-              ></app-policy-card>
-            </div>
+            <ng-container *ngFor="let policy of newContractDetails.policies">
+              <h4>Policies</h4>
+              <!--In this version we will not have more than 2 policies-->
+              <div class="policies">
+                <app-policy-card [policy]="policy"></app-policy-card>
+              </div>
+            </ng-container>
           </mat-card-content>
           <mat-divider></mat-divider>
           <mat-card-actions class="right">
