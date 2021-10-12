@@ -1,4 +1,4 @@
-<mat-expansion-panel [expanded]="isLatest">
+<mat-expansion-panel [expanded]="isLatest" xmlns="http://www.w3.org/1999/html">
   <mat-expansion-panel-header>
     <mat-panel-title>
       <div id="version-info">
@@ -26,30 +26,24 @@
         src="https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png"
       />
     </span>
-    <p id="shortDescription">{{ api.api.description.substr(0, 240) }}</p>
+    <p id="shortDescription">{{ shortDescription }}</p>
   </div>
 
-  <mat-grid-list cols="4" rowHeight="1:1">
-    <mat-grid-tile colspan="3" id="long-description-tile">
-      <div class="box" data-simplebar>
-        <markdown [data]="api.extendedDescription"></markdown>
-      </div>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="1">
-      <div class="box" id="key-features">
-        <h1 class="primary">Key Features</h1>
-        <mat-list>
-          <!--To-Do-->
-          <!--Use features of API instead of hard-coded value-->
-          <mat-list-item *ngFor="let feature of features">
-            <mat-icon matListIcon class="primary material-icons-outlined mr-8"
-              >folder_outline</mat-icon
-            >
-            <span>{{ feature }}</span>
-          </mat-list-item>
-        </mat-list>
-      </div>
-    </mat-grid-tile>
-  </mat-grid-list>
+  <div class="container">
+    <div class="box" id="long-description-tile" data-simplebar>
+      <markdown [data]="api.extendedDescription"></markdown>
+    </div>
+    <div class="box" id="key-features" *ngIf="features.length > 0">
+      <h1 class="primary">Key Features</h1>
+      <mat-list>
+        <mat-list-item *ngFor="let feature of features">
+          <mat-icon matListIcon class="primary material-icons-outlined mr-8"
+            >folder_outline</mat-icon
+          >
+          <span>{{ feature }}</span>
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </div>
   <app-plan-card-list [apiVersion]="api"></app-plan-card-list>
 </mat-expansion-panel>

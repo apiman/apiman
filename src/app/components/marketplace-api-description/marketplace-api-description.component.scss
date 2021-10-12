@@ -1,12 +1,8 @@
 .box{
   width: 100%;
   height: 100%;
-}
-
-mat-divider {
-  height: 80%;
-  margin-left: 2em;
-  margin-right: 2em;
+  padding-left: 1%;
+  padding-right: 1%;
 }
 
 mat-panel-title {
@@ -37,12 +33,7 @@ mat-grid-list {
 
 #long-description-tile {
   border: 1px solid rgba(0,0,0,0.2);
-  background: rgba(0,0,0,0.02)
-}
-
-.box {
-  padding-left: 1%;
-  padding-right: 1%
+  background: rgba(0,0,0,0.02);
 }
 
 #key-features {
@@ -68,4 +59,10 @@ mat-grid-list {
 
 .mat-expansion-panel-header.mat-expanded{
   background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 40px;
 }

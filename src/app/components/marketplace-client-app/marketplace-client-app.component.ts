@@ -11,7 +11,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {catchError, switchMap} from 'rxjs/operators';
 import {forkJoin, of} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
-import {KeycloakHelperService} from "../../services/keycloak-helper/keycloak-helper.service";
+import {KeycloakHelperService} from '../../services/keycloak-helper/keycloak-helper.service';
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -23,8 +23,9 @@ export class MarketplaceClientAppComponent implements OnInit {
   dataSource = new MatTableDataSource<IClientSummary>([]);
   clickedRows = new Set<IClientSummary>();
   clientName = '';
-  organizationId = '';
+  organizationId = this.keycloakHelper.getUsername();
   organizations: IOrganizationSummary[] = [];
+  clients: IClientSummary[] = [];
 
   @Output() selectedClients = new EventEmitter<Set<IClientSummary>>();
 
@@ -122,15 +123,27 @@ export class MarketplaceClientAppComponent implements OnInit {
   }
 
   private createTableView(results: [IOrganizationSummary[], IClientSummary[]]) {
-    const clients = results[1];
+    this.clients = results[1];
     this.organizations = results[0];
     if (this.organizations.length > 1) {
       this.displayedColumns = ['org-name', 'name'];
     }
     this.dataSource = new MatTableDataSource(results[1]);
-    if (clients.length === 1) {
+    if (this.clients.length === 1) {
       // if we only have one client we can select it automatically
-      this.selectClient(clients[0]);
+      this.selectClient(this.clients[0]);
     }
+  }
+
+  public isCreateButtonDisabled(): boolean {
+    return (
+      this.clickedRows.size > 0 ||
+      this.clientName.length === 0 ||
+      this.clients.some(
+        (clientSummary) =>
+          clientSummary.name === this.clientName &&
+          clientSummary.organizationId === this.organizationId
+      )
+    );
   }
 }
