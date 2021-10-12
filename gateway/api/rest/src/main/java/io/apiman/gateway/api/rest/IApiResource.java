@@ -27,6 +27,7 @@ import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -35,7 +36,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -121,7 +121,7 @@ public interface IApiResource {
                               @PathParam("version") String version,
                               @Suspended final AsyncResponse response) throws NotAuthorizedException;
 
-    @GET
+    @POST
     @ApiOperation(value = "Probe the state of a policy")
     @ApiResponses(
             @ApiResponse(code = 200, message = "OK", response = IPolicyProbeResponse.class)

@@ -400,10 +400,10 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
-    public Response probeContractPolicy(String organizationId, String clientId, String version, Long contractId, long policyId)
+    public Response probeContractPolicy(String organizationId, String clientId, String version, Long contractId, long policyId, String rawString)
             throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
-        List<IPolicyProbeResponse> probeResponses = contractService.probePolicy(contractId, policyId);
+        List<IPolicyProbeResponse> probeResponses = contractService.probePolicy(contractId, policyId, rawString);
         return Response.ok(probeResponses).build();
     }
 

@@ -561,12 +561,14 @@ public interface IOrganizationResource {
     /**
      * Probe a specific contract's policy state
      */
-    @GET
+    @POST
     @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts/{contractId}/policies/{policyId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response probeContractPolicy(@PathParam("organizationId") String organizationId,
                                     @PathParam("clientId") String clientId, @PathParam("version") String version,
-                                    @PathParam("contractId") Long contractId, @PathParam("policyId") long policyId)
+                                    @PathParam("contractId") Long contractId, @PathParam("policyId") long policyId,
+                                    String rawPayload)
             throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException;
 
     /**

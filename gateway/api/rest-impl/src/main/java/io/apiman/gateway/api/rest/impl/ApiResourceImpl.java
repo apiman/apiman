@@ -28,6 +28,7 @@ import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.apiman.gateway.engine.policies.probe.ProbeRegistry;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.IPolicyProbe;
@@ -50,6 +51,7 @@ import javax.ws.rs.core.Response.Status;
 public class ApiResourceImpl extends AbstractResourceImpl implements IApiResource {
 
     private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ApiResourceImpl.class);
+
     /**
      * Constructor.
      */
@@ -221,7 +223,7 @@ public class ApiResourceImpl extends AbstractResourceImpl implements IApiResourc
                     policyWithProbe.probe(probeConfigRaw, policyConfig.getPolicyJsonConfig(), probeContext, policyContext, probeResult -> {
                         IPolicyProbeResponse probeResponse = probeResult.getResult();
                         LOGGER.debug("Probe response for config {0} -> {1}", probeConfigRaw, probeResponse);
-                        response.resume(Response.ok(probeResponse).build());
+                        response.resume(Response.ok(ProbeRegistry.serialize(probeResponse)).build());
                     });
                 } else {
                     response.resume(Response.status(Status.NOT_IMPLEMENTED.getStatusCode(),

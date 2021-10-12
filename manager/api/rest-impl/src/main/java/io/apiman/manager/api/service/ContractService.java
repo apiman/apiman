@@ -292,7 +292,7 @@ public class ContractService implements DataAccessUtilMixin {
     }
 
     // TODO make properly optimised query for this
-    public List<IPolicyProbeResponse> probePolicy(Long contractId, long policyId)
+    public List<IPolicyProbeResponse> probePolicy(Long contractId, long policyId, String rawPayload)
             throws ClientNotFoundException, ContractNotFoundException {
         ContractBean contract = getContract(contractId);
         ApiVersionBean avb = contract.getApi();
@@ -327,7 +327,7 @@ public class ContractService implements DataAccessUtilMixin {
         for (GatewayBean gateway : gateways) {
             IGatewayLink link = gatewayLinkFactory.create(gateway);
             try {
-                probeResponses.add(link.probe(apiOrg.getId(), avb.getApi().getId(), avb.getVersion(), idxFound, apiKey));
+                probeResponses.add(link.probe(apiOrg.getId(), avb.getApi().getId(), avb.getVersion(), idxFound, apiKey, rawPayload));
             } catch (GatewayAuthenticationException e) {
                 throw new SystemErrorException(e);
             }

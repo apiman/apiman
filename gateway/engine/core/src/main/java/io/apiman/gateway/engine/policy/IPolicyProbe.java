@@ -5,6 +5,9 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.IPolicyProbeRequest;
 import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
+import io.apiman.gateway.engine.policy.IPolicy;
+import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.policy.ProbeContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -20,15 +20,8 @@ import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.api.rest.IClientResource;
 import io.apiman.gateway.api.rest.exceptions.NotAuthorizedException;
-import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.Client;
-import io.apiman.gateway.engine.beans.Contract;
-import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
-import io.apiman.gateway.engine.policy.IPolicy;
-import io.apiman.gateway.engine.policy.IPolicyFactory;
-import io.apiman.gateway.engine.policy.IPolicyProbe;
-import io.apiman.gateway.engine.policy.PolicyContextImpl;
 
 import java.util.HashSet;
 import java.util.Set;
