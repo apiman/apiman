@@ -1,4 +1,5 @@
 import {_module} from "../apimanPlugin";
+import "../directives";
 
 _module.controller("Apiman.ClientOverviewController",
         ['$q', '$scope', '$location', 'PageLifecycle', 'ClientEntityLoader', '$routeParams', 'Configuration',

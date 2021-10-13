@@ -122,6 +122,7 @@ _module.factory('Modals',
 
 
 _module.controller('ModalClientAppDeleteCtrl',
+    ['$location', '$rootScope', '$scope', '$uibModalInstance', 'OrgSvcs', 'Configuration', 'PageLifecycle', 'client', 'params',
     function ($location, $rootScope, $scope, $uibModalInstance, OrgSvcs, Configuration, PageLifecycle, client, params) {
 
         $scope.confirmClientName = '';
@@ -165,7 +166,7 @@ _module.controller('ModalClientAppDeleteCtrl',
         $scope.no = function () {
             $uibModalInstance.dismiss('cancel');
         };
-    });
+    }]);
 
 _module.controller('ModalSelectApiCtrl',
     ['$scope', '$uibModalInstance', 'ApimanSvcs', 'Logger', 'OrgSvcs', 'options',

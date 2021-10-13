@@ -18,8 +18,7 @@
                   </button>
                   <ul class="dropdown-menu" role="menu">
                     <li ng-repeat="apiVersion in versions">
-                      <a href="#"
-                         ng-click="setVersion( apiVersion )">{{ apiVersion.version }}</a>
+                      <a ng-click="setVersion( apiVersion )">{{ apiVersion.version }}</a>
                     </li>
                   </ul>
                 </div>
@@ -33,8 +32,7 @@
                     ng-show="showCtxMenu"
                     style="list-style-type: none; padding-left: 10px; padding-top: 6px;">
                   <li class="dropdown">
-                    <a href="#"
-                       style="text-decoration: none;"
+                    <a style="text-decoration: none;"
                        class="dropdown-toggle dropdown-cog"
                        data-toggle="dropdown">
                       <span class="fa fa-cog"></span>
@@ -43,7 +41,6 @@
                     <ul class="dropdown-menu">
                       <li>
                         <a class="api-delete"
-                           href="#"
                            ng-click="callDelete()"
                            apiman-i18n-key="delete">Delete API</a>
                       </li>
@@ -184,8 +181,7 @@
                   </div>
                   <div class="col-xs-3"
                        style="padding: 0;">
-                    <a href="#"
-                       ng-click="item.done ? return : isCollapsed = !isCollapsed"
+                    <a ng-click="item.done ? return : isCollapsed = !isCollapsed"
                        ng-class="{'invisible-icon': item.done === true}"
                        title="What is this?">
                       <i class="fa fa-info-circle"></i>

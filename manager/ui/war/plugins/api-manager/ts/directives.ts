@@ -1,6 +1,52 @@
 // @ts-nocheck
 import {_module} from "./apimanPlugin";
 
+_module.factory('EntityStatusSvc',
+    ['$rootScope', 'Logger',
+        function($rootScope, Logger) {
+            var entity = null;
+            var entityType = null;
+
+            return {
+                setEntity: function(theEntity, type) {
+                    Logger.debug('Setting the entity: {0} type={1}', theEntity, type);
+                    entity = theEntity;
+                    entityType = type;
+                },
+                getEntity: function() {
+                    return entity;
+                },
+                getEntityStatus: function() {
+                    if (entity) {
+                        return entity.status;
+                    }
+                },
+                getEntityType: function() {
+                    if (!entity) {
+                        Logger.debug('Entity is null!');
+                        return 'n/a';
+                    }
+                    return entityType;
+                },
+                setEntityStatus: function(status) {
+                    if (entity) {
+                        entity.status = status;
+                    }
+                },
+                isEntityDisabled: function() {
+                    if (entity) {
+                        if (entityType == 'client' || entityType == 'clients') {
+                            return entity.status == 'Retired';
+                        } else if (entityType == 'api' || entityType == 'apis') {
+                            return entity.status == 'Retired';
+                        } else {
+                            return (entity.status !== 'Created' && entity.status !== 'Ready');
+                        }
+                    }
+                }
+            };
+        }]);
+
 _module.directive('apimanActionBtn',
     ['Logger', function(Logger) {
         return {
@@ -163,52 +209,6 @@ _module.directive('apimanStatus',
                         Logger.error('Missing entityStatus from $scope - hide/show based on entity status feature is disabled.');
                     }
                 });
-            }
-        };
-    }]);
-
-_module.factory('EntityStatusSvc',
-    ['$rootScope', 'Logger',
-    function($rootScope, Logger) {
-        var entity = null;
-        var entityType = null;
-
-        return {
-            setEntity: function(theEntity, type) {
-                Logger.debug('Setting the entity: {0} type={1}', theEntity, type);
-                entity = theEntity;
-                entityType = type;
-            },
-            getEntity: function() {
-                return entity;
-            },
-            getEntityStatus: function() {
-                if (entity) {
-                    return entity.status;
-                }
-            },
-            getEntityType: function() {
-                if (!entity) {
-                    Logger.debug('Entity is null!');
-                    return 'n/a';
-                }
-                return entityType;
-            },
-            setEntityStatus: function(status) {
-                if (entity) {
-                    entity.status = status;
-                }
-            },
-            isEntityDisabled: function() {
-                if (entity) {
-                    if (entityType == 'client' || entityType == 'clients') {
-                        return entity.status == 'Retired';
-                    } else if (entityType == 'api' || entityType == 'apis') {
-                        return entity.status == 'Retired';
-                    } else {
-                        return (entity.status !== 'Created' && entity.status !== 'Ready');
-                    }
-                }
             }
         };
     }]);
