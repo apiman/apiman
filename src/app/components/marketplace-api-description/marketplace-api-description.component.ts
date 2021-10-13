@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {IApiVersionExt} from '../../interfaces/IApiVersionExt';
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-marketplace-api-description',
@@ -11,17 +12,20 @@ export class MarketplaceApiDescriptionComponent implements OnInit {
   @Input() isLatest!: boolean;
 
   features: string[] = ['fast', 'free', 'fancy features'];
-  shortDescription = '';
+  public markDownText = this.translator.instant('API_DETAILS.NO_EXT_DESCRIPTION');
 
-  constructor() {}
+  constructor(private translator: TranslateService) {}
 
   ngOnInit(): void {
-    this.getShortDescription();
+    if (this.api.extendedDescription)
+      this.markDownText = this.api.extendedDescription;
   }
 
-  private getShortDescription() {
-    if (this.api.api.description) {
-      this.shortDescription = this.api.api.description.substring(0, 240);
-    }
+  hasMdAndFeatures() {
+    return this.markDownText && this.features.length > 0;
+  }
+
+  hasMdOnly() {
+    return this.markDownText && this.features.length === 0
   }
 }

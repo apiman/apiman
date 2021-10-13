@@ -2,17 +2,15 @@
   <mat-expansion-panel-header>
     <mat-panel-title>
       <div id="version-info">
-        Version {{ api.version }} of {{ api.api.name }}
+        {{'COMMON.VERSION' | translate}} {{ api.version }} {{'COMMON.OF' | translate}} {{ api.api.name }}
         <span *ngIf="isLatest" id="latest-tag" class="primary">[latest]</span>
       </div>
       <a *ngIf="api.docsAvailable"
-         [routerLink]="['/swagger', api.api.organization.id, api.api.id,api.version]"
-      >
+         [routerLink]="['/swagger', api.api.organization.id, api.api.id,api.version]">
         <button
           mat-raised-button
           id="docs-button"
-          color="primary"
-        >
+          color="primary">
           {{ "COMMON.API_DOCS" | translate }}
         </button>
       </a>
@@ -23,27 +21,45 @@
       <img
         mat-card-avatar
         alt="Logo"
-        src="https://github.com/apiman/apiman/raw/master/manager/ui/war/plugins/api-manager/img/about-logo.png"
+        src="assets/img/api-man-logo.png"
       />
     </span>
-    <p id="shortDescription">{{ shortDescription }}</p>
+    <p id="shortDescription">{{ api.api.description }}</p>
   </div>
 
-  <div class="container">
+  <!-- Template for MD-Reader -->
+  <ng-template #mdTemplate>
     <div class="box" id="long-description-tile" data-simplebar>
-      <markdown [data]="api.extendedDescription"></markdown>
+      <markdown [data]="markDownText"></markdown>
     </div>
-    <div class="box" id="key-features" *ngIf="features.length > 0">
+  </ng-template>
+
+  <!-- Template for Key Features -->
+  <ng-template #featuresTemplate>
+    <div id="key-features" *ngIf="features.length > 0">
       <h1 class="primary">Key Features</h1>
-      <mat-list>
-        <mat-list-item *ngFor="let feature of features">
-          <mat-icon matListIcon class="primary material-icons-outlined mr-8"
-            >folder_outline</mat-icon
-          >
-          <span>{{ feature }}</span>
-        </mat-list-item>
-      </mat-list>
+      <div>
+        <mat-list>
+          <mat-list-item *ngFor="let feature of features">
+            <mat-icon matListIcon class="primary material-icons-outlined mr-8">star_border</mat-icon>
+            <span>{{ feature }}</span>
+          </mat-list-item>
+        </mat-list>
+      </div>
     </div>
+  </ng-template>
+
+  <!-- Markdown Reader & Key Features -->
+  <div *ngIf="hasMdAndFeatures()" class="md-and-features">
+    <template [ngTemplateOutlet]="mdTemplate"></template>
+    <template [ngTemplateOutlet]="featuresTemplate"></template>
   </div>
+
+  <!-- Markdown only -->
+  <div *ngIf="hasMdOnly()" class="md-only">
+    <template [ngTemplateOutlet]="mdTemplate"></template>
+  </div>
+
+  <!-- Plans -->
   <app-plan-card-list [apiVersion]="api"></app-plan-card-list>
 </mat-expansion-panel>

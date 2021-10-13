@@ -20,7 +20,9 @@
     "ERROR": "Die Daten konnten nicht geladen werden, bitte versuchen Sie es später erneut.",
     "SUCCESS": "Erfolgreich erstellt!",
     "LOGIN_OR_REGISTER": "Anmelden / Registrieren",
-    "LOGOUT": "Abmelden"
+    "LOGOUT": "Abmelden",
+    "VERSION": "Version",
+    "OF": "von"
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",
@@ -113,5 +115,8 @@
     "UNREGISTER_TITLE": "Client löschen",
     "UNREGISTER_SURE": "Sind Sie sich wirklich sicher, dass Sie den Client <b>{{value}}</b> und seine Verträge <span class='warn'>löschen</span> möchten?",
     "UNREGISTER_BTN": "Löschen"
+  },
+  "API_DETAILS": {
+    "NO_EXT_DESCRIPTION": "Für diese API wurde keine erweiterte Beschreibung hinterlegt"
   }
 }

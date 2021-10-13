@@ -20,7 +20,9 @@
     "ERROR": "Data could not be loaded, please try again later.",
     "SUCCESS": "Successfully created!",
     "LOGIN_OR_REGISTER": "Login / Register",
-    "LOGOUT": "Logout"
+    "LOGOUT": "Logout",
+    "VERSION": "Version",
+    "OF": "of"
   },
   "HOME": {
     "TITLE": "KoolBank Api Developer Portal",
@@ -113,5 +115,8 @@
     "UNREGISTER_TITLE": "Remove Client",
     "UNREGISTER_SURE": "Are you really sure you want to <span class='warn'>remove</span> the client <b>{{value}}</b> and its contracts?",
     "UNREGISTER_BTN": "Unregister"
+  },
+  "API_DETAILS": {
+    "NO_EXT_DESCRIPTION": "No further description has been stored for this API"
   }
 }
