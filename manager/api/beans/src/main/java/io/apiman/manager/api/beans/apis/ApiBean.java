@@ -71,7 +71,7 @@ public class ApiBean implements Serializable, Cloneable {
     private String image;
     @Column(name = "description", updatable=true, nullable=true, length=512)
     private String description;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "api_tag",
             joinColumns = { @JoinColumn(name = "api_id"), @JoinColumn(name = "org_id") },
             inverseJoinColumns = @JoinColumn(name = "tag_id")
