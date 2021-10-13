@@ -25,6 +25,9 @@
     <test name="List APIs">test-plan-data/apis/apis/011_list-apis.resttest</test>
     <test name="Get API 1 [3]-">test-plan-data/apis/apis/009_get-api1.resttest</test>
     <test name="Create API (invalid name)">test-plan-data/apis/apis/012_create-invalid-name.resttest</test>
+
+    <test name="Tag API">test-plan-data/apis/apis/013_tag-api.resttest</test>
+    <test name="GET API 1 (Verify Tags)">test-plan-data/apis/apis/014_get-api1-assert-tags.resttest</test>
   </testGroup>
 
   <!-- Test API Version management -->
