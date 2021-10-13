@@ -14,28 +14,16 @@
   <dependencies>
     <!-- Project Libs -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-platforms-war</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>${project.groupId}</groupId>
+          <groupId>io.apiman</groupId>
           <artifactId>apiman-gateway-api-rest</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>${project.groupId}</groupId>
+          <groupId>io.apiman</groupId>
           <artifactId>apiman-gateway-api-rest-impl</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-core-asl</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-mapper-asl</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-jaxrs</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
