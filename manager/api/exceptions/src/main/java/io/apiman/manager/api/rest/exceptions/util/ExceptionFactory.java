@@ -123,6 +123,14 @@ public final class ExceptionFactory {
     }
 
     /**
+     * Creates an exception.
+     * @return the exception
+     */
+    public static ContractAlreadyExistsException contractDuplicateException() {
+        return new ContractAlreadyExistsException(Messages.i18n.format("ContractDuplicate")); //$NON-NLS-1$
+    }
+
+    /**
      * Creates an exception from an client id.
      * @param clientId the client id
      * @return the exception

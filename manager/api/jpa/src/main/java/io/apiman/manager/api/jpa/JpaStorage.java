@@ -165,7 +165,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     csb.getApiId().equals(contract.getApi().getApi().getId()) &&
                     csb.getApiVersion().equals(contract.getApi().getVersion()))
                 {
-                    throw new StorageException("Error creating contract: duplicate contract detected."); //$NON-NLS-1$
+                    throw new IllegalStateException("Error creating contract: duplicate contract detected."); //$NON-NLS-1$
                 }
         }
         super.create(contract);
