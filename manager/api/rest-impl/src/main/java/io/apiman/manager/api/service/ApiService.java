@@ -1080,17 +1080,6 @@ public class ApiService implements DataAccessUtilMixin {
         tryAction(() -> storage.updateApi(api));
     }
 
-    /**
-     * Get the featured APIs
-     * @return list of featured ApiSummaries
-     */
-    public List<ApiSummaryBean> getFeaturedApis() {
-        return query.getApisByTagName("featured")
-                .stream()
-                .map(apiMapper::toSummary)
-                .collect(Collectors.toList());
-    }
-
     // TODO(msavy): put with rest of DTOs when get to that phase
     public static final class ApiDefinitionStream {
         private final ApiDefinitionType definitionType;
