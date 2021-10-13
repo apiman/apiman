@@ -22,7 +22,6 @@ import io.apiman.manager.api.service.ApiService;
 import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
 import io.apiman.manager.api.service.DevPortalService;
 import io.apiman.manager.api.service.OrganizationService;
-import io.apiman.manager.api.service.SearchService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,7 +63,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     @Override
     public List<ApiSummaryBean> getFeaturedApis() {
-        return apiService.getFeaturedApis();
+        return portalService.getFeaturedApis();
     }
 
     @Override
