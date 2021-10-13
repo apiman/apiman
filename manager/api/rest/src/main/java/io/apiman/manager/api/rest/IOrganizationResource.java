@@ -25,6 +25,7 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ApiKeyBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -866,14 +867,6 @@ public interface IOrganizationResource {
     public ApiBeanDto createApi(@PathParam("organizationId") String organizationId, @NotNull NewApiBean bean)
             throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException,
             InvalidNameException;
-
-    // @POST
-    // @Path("{organizationId}/apis")
-    // @Consumes(MediaType.MULTIPART_FORM_DATA)
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public ApiBean createApi(@PathParam("organizationId") String organizationId, @NotNull MultipartFormDataInput multipartInput)
-    //      throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException;
-
     /**
      * Use this endpoint to get a list of all APIs in the Organization.
      * @summary List APIs
@@ -929,16 +922,12 @@ public interface IOrganizationResource {
             @PathParam("apiId") String apiId, UpdateApiBean bean)
             throws ApiNotFoundException, NotAuthorizedException;
 
-    /**
-     * As {@link #updateApi(String, String, UpdateApiBean)}, but with an image to represent the API.
-     */
-    // @PUT
-    // @Path("{organizationId}/apis/{apiId}")
-    // @Consumes(MediaType.MULTIPART_FORM_DATA)
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public void updateApi(@PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
-    //      @NotNull @MultipartForm MultipartFormDataInput multipartInput)
-    //      throws ApiNotFoundException, NotAuthorizedException, IOException;
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{organizationId}/apis/{apiId}/tags")
+    void tagApi(@PathParam("organizationId") String organizationId,
+                @PathParam("apiId") String apiId, KeyValueTagDto bean)
+            throws ApiNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to delete an API.  There are multiple restrictions on this capability.  Specifically,

@@ -76,7 +76,6 @@ public class ApiBean implements Serializable, Cloneable {
             joinColumns = { @JoinColumn(name = "api_id"), @JoinColumn(name = "org_id") },
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    @JsonIgnore
     private Set<KeyValueTag> tags = new HashSet<>();
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;

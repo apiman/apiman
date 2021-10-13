@@ -28,6 +28,7 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ApiKeyBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
@@ -523,24 +524,6 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         return apiService.createApi(organizationId, bean);
     }
 
-    // @Override
-    // public ApiBean createApi(String organizationId, MultipartFormDataInput multipartInput)
-    //      throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
-    //     securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
-    //     Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'api' and 'image'");
-    //
-    //     // Try to do image first as it is probably more likely to fail.
-    //     MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
-    //     BlobRef blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
-    //
-    //     // Simply convert to NewApiBean and store reference.
-    //     InputPart apiPart = MultipartHelper.getRequiredPart(multipartInput, "api", MediaType.APPLICATION_JSON_TYPE);
-    //     // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
-    //     NewApiBean api = apiPart.getBody(NewApiBean.class, null);
-    //     api.setImage(blobRef.getId());
-    //     return apiService.createApi(organizationId, api);
-    // }
-
     @Override
     public List<ApiSummaryBean> listApis(String organizationId) throws OrganizationNotFoundException {
         // No permission check is needed, because this would break All Organizations UI
@@ -561,24 +544,11 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         apiService.updateApi(organizationId, apiId, bean);
     }
 
-    // @Override
-    // public void updateApi(String organizationId, String apiId, MultipartFormDataInput multipartInput)
-    //      throws ApiNotFoundException, NotAuthorizedException, IOException {
-    //     securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
-    //
-    //     Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'api' and 'image'");
-    //
-    //     // Try to do image first as it is probably more likely to fail.
-    //     MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
-    //     BlobRef blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
-    //
-    //     // Simply convert to NewApiBean and store reference.
-    //     InputPart apiPart = MultipartHelper.getRequiredPart(multipartInput, "api", MediaType.APPLICATION_JSON_TYPE);
-    //     // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
-    //     UpdateApiBean update = apiPart.getBody(UpdateApiBean.class, null);
-    //     update.setImage(blobRef.getId());
-    //     apiService.updateApi(organizationId, apiId, update);
-    // }
+    @Override
+    public void tagApi(String organizationId, String apiId, KeyValueTagDto bean) throws ApiNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+        apiService.addTag(organizationId, apiId, bean);
+    }
 
     @Override
     public void deleteApi(String organizationId, String apiId)
