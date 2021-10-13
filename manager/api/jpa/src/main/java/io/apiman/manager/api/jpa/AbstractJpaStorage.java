@@ -29,12 +29,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -58,18 +55,8 @@ public abstract class AbstractJpaStorage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJpaStorage.class);
 
-    // @Inject
-    // @PersistenceContext(unitName = "apiman-manager-api-jpa")
-    // private EntityManager em;
-
     @Inject
     private EntityManagerFactoryAccessor emf;
-
-    @PostConstruct
-    public void construct() {
-        // em = emf.getEntityManager();
-        // System.out.println("em(jpa)=" + em.hashCode());
-    }
 
     /**
      * Constructor.

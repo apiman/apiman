@@ -64,11 +64,6 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
      */
     @Override
     public void init() throws ServletException {
-        // LOGGER.info("Trying to run early.... " + ds.toString());
-
-        JpaStorageInitializer init = new JpaStorageInitializer(config2.getHibernateDataSource(), config2.getHibernateDialect());
-        init.initialize();
-
         Thread t = new Thread(() -> {
             if (isImportEnabled()){
                 File dataDir = getDataDir();

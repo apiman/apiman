@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
 import javax.servlet.DispatcherType;
@@ -227,7 +228,7 @@ public class ManagerApiTestServer {
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
         ds.setPassword("");
-        ds.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;");
+        ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1;");
         Connection connection = ds.getConnection();
         connection.close();
         System.out.println("DataSource created and bound to JNDI.");
