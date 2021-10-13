@@ -1164,7 +1164,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
     @Override
     public List<ApiBean> getApisByTagNameAndValue(String tagKey, String tagValue) {
-        TypedQuery<ApiBean> query = getSession()
+        TypedQuery<ApiBean> query = getActiveEntityManager()
                 .createQuery(
                         "SELECT ApiBean FROM ApiBean avb "
                                 + "JOIN avb.tags tag "
@@ -1179,7 +1179,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     @Override
-    public List<ApiBean> getApisByTagName(@NotNull String tagKey) {
+    public List<ApiBean> getApisByTagName(String tagKey) {
         TypedQuery<ApiBean> query = getActiveEntityManager()
                 .createQuery(
                         "SELECT ApiBean FROM ApiBean avb "
