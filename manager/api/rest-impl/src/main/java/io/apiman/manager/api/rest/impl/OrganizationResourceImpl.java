@@ -583,7 +583,13 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     public ApiVersionBean getApiVersion(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
         // No permission check is needed, because this would break All APIs UI
-        return apiService.getApiVersion(organizationId, apiId, version);
+        ApiVersionBean apiVersion = apiService.getApiVersion(organizationId, apiId, version);
+        if (securityContext.hasPermission(PermissionType.apiView, organizationId)) {
+            apiService.decryptEndpointProperties(apiVersion);
+            return apiVersion;
+        } else {
+            return RestHelper.hideSensitiveDataFromApiVersionBean(apiVersion);
+        }
     }
 
     @Override

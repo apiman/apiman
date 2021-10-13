@@ -483,16 +483,7 @@ public class ApiService implements DataAccessUtilMixin {
     public ApiVersionBean getApiVersion(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
         // No permission check is needed, because this would break All APIs UI
-        return tryAction(() -> {
-            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
-
-            if (securityContext.hasPermission(PermissionType.apiView, organizationId)) {
-                decryptEndpointProperties(apiVersion);
-                return apiVersion;
-            } else {
-                return RestHelper.hideSensitiveDataFromApiVersionBean(apiVersion);
-            }
-        });
+        return tryAction(() -> getApiVersionFromStorage(organizationId, apiId, version));
     }
     
     public ApiVersionStatusBean getApiVersionStatus(String organizationId, String apiId,
@@ -1030,7 +1021,7 @@ public class ApiService implements DataAccessUtilMixin {
     /**
      * Decrypt the endpoint properties
      */
-    private void decryptEndpointProperties(ApiVersionBean versionBean) {
+    public void decryptEndpointProperties(ApiVersionBean versionBean) {
         Map<String, String> endpointProperties = versionBean.getEndpointProperties();
         if (endpointProperties != null) {
             for (Entry<String, String> entry : endpointProperties.entrySet()) {

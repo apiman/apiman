@@ -348,7 +348,7 @@ ALTER TABLE notification_category_preferences ADD CONSTRAINT FKaq4x0n83d83xevui0
 ALTER TABLE developer_mappings ADD CONSTRAINT FKhl2dwc4m0kvisedxfb9crceqd FOREIGN KEY (developer_id) REFERENCES developers (id);
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-4::msavy (generated)
-CREATE TABLE KeyValueTag (id BIGINT AUTO_INCREMENT NOT NULL, key VARCHAR(255) NOT NULL, value VARCHAR(255) NOT NULL, CONSTRAINT KeyValueTagPK PRIMARY KEY (id));
+CREATE TABLE KeyValueTag (id BIGINT AUTO_INCREMENT NOT NULL, key VARCHAR(255) NOT NULL, value VARCHAR(255), CONSTRAINT KeyValueTagPK PRIMARY KEY (id));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-5::msavy (generated)
 CREATE TABLE api_tag (api_id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NOT NULL, tag_id BIGINT NOT NULL, CONSTRAINT PK_API_TAG PRIMARY KEY (api_id, org_id, tag_id));

@@ -17,6 +17,7 @@ import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
+import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.ApiService;
 import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
@@ -75,11 +76,8 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     @Override
     public ApiVersionBean getApiVersion(String orgId, String apiId, String apiVersion) {
-        ApiVersionBean retrieved = apiService.getApiVersion(orgId, apiId, apiVersion);
-        if (!retrieved.isExposeInPortal()) {
-            throw ExceptionFactory.apiVersionNotFoundException(apiId, apiVersion);
-        }
-        return retrieved;
+        ApiVersionBean retrieved = apiVersionMustBeExposedInPortal(orgId, apiId, apiVersion);
+        return RestHelper.hideSensitiveDataFromApiVersionBean(retrieved);
     }
 
     @Override
@@ -113,11 +111,12 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
                 .build();
     }
 
-    private void apiVersionMustBeExposedInPortal(String orgId, String apiId, String apiVersion) {
+    private ApiVersionBean apiVersionMustBeExposedInPortal(String orgId, String apiId, String apiVersion) {
         ApiVersionBean retrieved = apiService.getApiVersion(orgId, apiId, apiVersion);
         if (!retrieved.isExposeInPortal()) {
             throw ExceptionFactory.apiVersionNotFoundException(apiId, apiVersion);
         }
+        return retrieved;
     }
 
     private void mustBeLoggedIn() {

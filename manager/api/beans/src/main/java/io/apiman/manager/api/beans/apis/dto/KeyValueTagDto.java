@@ -1,6 +1,7 @@
 package io.apiman.manager.api.beans.apis.dto;
 
 import java.util.StringJoiner;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 public class KeyValueTagDto {
     @NotNull
     private String key;
+    @Nullable
     private String value;
 
     public String getKey() {
