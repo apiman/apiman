@@ -33,6 +33,7 @@ import io.apiman.manager.api.rest.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
+import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.ApiService;
 import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
@@ -178,7 +179,7 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
         List<ContractSummaryBean> contracts = getAllClientContracts(id);
         for (ContractSummaryBean contract : contracts) {
             ApiVersionBean apiVersion = apiService.getApiVersion(contract.getApiOrganizationId(), contract.getApiId(), contract.getApiVersion());
-            apiVersionBeans.add(apiVersion);
+            apiVersionBeans.add(RestHelper.hideSensitiveDataFromApiVersionBean(apiVersion));
         }
         return apiVersionBeans;
     }

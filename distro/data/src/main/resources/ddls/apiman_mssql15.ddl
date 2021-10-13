@@ -443,7 +443,7 @@ ALTER TABLE developer_mappings ADD CONSTRAINT FKhl2dwc4m0kvisedxfb9crceqd FOREIG
 GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-4::msavy (generated)
-CREATE TABLE KeyValueTag (id bigint IDENTITY (1, 1) NOT NULL, [key] varchar(255) NOT NULL, value varchar(255) NOT NULL, CONSTRAINT KeyValueTagPK PRIMARY KEY (id))
+CREATE TABLE KeyValueTag (id bigint IDENTITY (1, 1) NOT NULL, [key] varchar(255) NOT NULL, value varchar(255), CONSTRAINT KeyValueTagPK PRIMARY KEY (id))
 GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-5::msavy (generated)

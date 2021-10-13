@@ -167,7 +167,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="value" type="VARCHAR(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
