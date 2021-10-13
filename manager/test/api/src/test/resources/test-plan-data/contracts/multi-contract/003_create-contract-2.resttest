@@ -8,11 +8,11 @@ Content-Type: application/json
   "planId" : "PlanB"
 }
 ----
-500
+409
 Content-Type: application/json
 
 {
-  "type": "SystemErrorException",
-  "message": "io.apiman.manager.api.core.exceptions.StorageException: Error creating contract: duplicate contract detected.",
+  "type": "ContractAlreadyExistsException",
+  "message": "Error creating contract: duplicate contract detected.",
   "stacktrace": "*"
 }

@@ -171,7 +171,11 @@ public class ContractService implements DataAccessUtilMixin {
             contract.setStatus(ContractStatus.AwaitingApproval);
         }
 
-        storage.createContract(contract);
+        try {
+            storage.createContract(contract);
+        } catch (IllegalStateException ise) {
+            throw ExceptionFactory.contractDuplicateException();
+        }
         storage.createAuditEntry(AuditUtils.contractCreatedFromClient(contract, securityContext));
         storage.createAuditEntry(AuditUtils.contractCreatedToApi(contract, securityContext));
 

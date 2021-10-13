@@ -83,8 +83,8 @@
 
   <!-- Some Error Cases -->
   <testGroup name="Error Cases">
-    <test name="Request Non-existant Contract">test-plan-data/contracts/error-cases/001_get-contract-404.resttest</test>
-    <test name="Create Contract For Non-Existant Client">test-plan-data/contracts/error-cases/002_create-contract-no-client.resttest</test>
+    <test name="Request Non-existent Contract">test-plan-data/contracts/error-cases/001_get-contract-404.resttest</test>
+    <test name="Create Contract For Non-Existent Client">test-plan-data/contracts/error-cases/002_create-contract-no-client.resttest</test>
   </testGroup>
 
 </testPlan>
