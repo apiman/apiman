@@ -48,7 +48,6 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
     public void accept(String bucketId, RateBucketPeriod period, long limit, long increment, IAsyncResultHandler<RateLimitResponse> handler) {
         RateLimiterBucket bucket;
         RateLimitResponse response = new RateLimitResponse();
-        int reset = 0;
         synchronized (buckets) {
             bucket = buckets.get(bucketId);
             if (bucket == null) {
@@ -63,9 +62,9 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
                 bucket.setCount(bucket.getCount() + increment);
                 bucket.setLast(System.currentTimeMillis());
             }
-            reset = (int) (bucket.getResetMillis(period) / 1000L);
+            int reset = (int) (bucket.getResetMillis(period) / 1000L);
+            response.setReset(reset);
         }
-        response.setReset(reset);
         response.setRemaining(limit - bucket.getCount());
         handler.handle(AsyncResultImpl.create(response));
     }

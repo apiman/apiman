@@ -16,6 +16,9 @@
 
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.config.ConfigDirectoryFinder;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
@@ -27,10 +30,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An implementation of the rate limiter component that is optimized for use
@@ -39,11 +48,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SingleNodeRateLimiterComponent implements IRateLimiterComponent {
 
-    private boolean isPersistent;
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SingleNodeRateLimiterComponent.class);
+    private final boolean isPersistent;
+
+    private final Map<String, RateLimiterBucket> buckets = new HashMap<>();
     private File savedRates;
-    private ConcurrentHashMap<String, RateLimiterBucket> buckets = new ConcurrentHashMap<>();
     private long lastSavedOn;
     private long lastModifiedOn;
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     
     /**
      * Constructor.
@@ -59,11 +71,15 @@ public class SingleNodeRateLimiterComponent implements IRateLimiterComponent {
     public SingleNodeRateLimiterComponent(Map<String, String> config) {
         isPersistent = "true".equals(config.get("persistence.enabled"));  //$NON-NLS-1$//$NON-NLS-2$
         if (isPersistent) {
-            String ratesFilePath = config.get("persistence.file"); //$NON-NLS-1$
-            if (ratesFilePath == null) {
-                throw new RuntimeException("No 'persistence.file' configured - configuration of " + getClass().getName() + " failed."); //$NON-NLS-1$ //$NON-NLS-2$
+            String ratesPathRaw = config.get("persistence.file"); //$NON-NLS-1$
+            Path ratesFilePath;
+            if (ratesPathRaw == null || ratesPathRaw.isBlank()) {
+                ratesFilePath = ConfigDirectoryFinder.getDataDirectory().resolve("apiman-single-node-rate-limiting.properties");
+            } else {
+                ratesFilePath = Paths.get(ratesPathRaw);
             }
-            savedRates = new File(ratesFilePath);
+            LOGGER.info("Rate limiting data will be loaded from {0}", ratesFilePath);
+            savedRates = ratesFilePath.toFile();
             if (savedRates.isFile()) {
                 loadBuckets();
             }
@@ -77,30 +93,31 @@ public class SingleNodeRateLimiterComponent implements IRateLimiterComponent {
     @Override
     public void accept(String bucketId, RateBucketPeriod period, long limit, long increment,
             IAsyncResultHandler<RateLimitResponse> handler) {
-        RateLimiterBucket newBucket = new RateLimiterBucket();
-        RateLimiterBucket existingBucket = buckets.putIfAbsent(bucketId, newBucket);
-        RateLimiterBucket bucket = existingBucket == null ? newBucket : existingBucket;
-        
-        boolean rateModified = bucket.resetIfNecessary(period);
-
+        RateLimiterBucket bucket;
         RateLimitResponse response = new RateLimitResponse();
-        if (bucket.getCount() > limit) {
-            response.setAccepted(false);
-        } else {
-            response.setAccepted(bucket.getCount() < limit);
-            bucket.setCount(bucket.getCount() + increment);
-            bucket.setLast(System.currentTimeMillis());
-            rateModified = true;
+        synchronized (buckets) {
+            bucket = buckets.get(bucketId);
+            if (bucket == null) {
+                bucket = new RateLimiterBucket();
+                buckets.put(bucketId, bucket);
+            }
+            boolean rateModified = bucket.resetIfNecessary(period);
+            if (bucket.getCount() > limit) {
+                response.setAccepted(false);
+            } else {
+                response.setAccepted(bucket.getCount() < limit);
+                bucket.setCount(bucket.getCount() + increment);
+                bucket.setLast(System.currentTimeMillis());
+                rateModified = true;
+            }
+            int reset = (int) (bucket.getResetMillis(period) / 1000L);
+            response.setReset(reset);
+            if (rateModified) {
+                lastModifiedOn = System.currentTimeMillis();
+            }
         }
-        
-        if (rateModified) {
-            lastModifiedOn = System.currentTimeMillis();
-        }
-        
-        int reset = (int) (bucket.getResetMillis(period) / 1000L);
-        response.setReset(reset);
         response.setRemaining(limit - bucket.getCount());
-        handler.handle(AsyncResultImpl.<RateLimitResponse>create(response));
+        handler.handle(AsyncResultImpl.create(response));
     }
 
     /**
@@ -111,27 +128,13 @@ public class SingleNodeRateLimiterComponent implements IRateLimiterComponent {
     private void startBucketSavingThread(Map<String, String> config) {
         String delay = config.get("persistence.delay"); //$NON-NLS-1$
         if (delay == null) {
-            delay = "30"; //$NON-NLS-1$
+            delay = "5"; //$NON-NLS-1$
         }
         String period = config.get("persistence.period"); //$NON-NLS-1$
         if (period == null) {
-            period = "60"; //$NON-NLS-1$
+            period = "10"; //$NON-NLS-1$
         }
-        final long delayL = new Long(delay) * 1000L;
-        final long periodL = new Long(period) * 1000L;
-        
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try { Thread.sleep(delayL); } catch (InterruptedException e) { }
-                boolean done = false;
-                while (!done) {
-                    saveBuckets();
-                    try { Thread.sleep(periodL); } catch (InterruptedException e) { }
-                }
-            }
-        });
-        thread.start();
+        executor.scheduleAtFixedRate(this::saveBuckets, Long.parseLong(delay), Long.parseLong(period), TimeUnit.SECONDS);
     }
 
     /**
@@ -139,14 +142,14 @@ public class SingleNodeRateLimiterComponent implements IRateLimiterComponent {
      */
     private void saveBuckets() {
         if (lastModifiedOn > lastSavedOn) {
-            System.out.println("Persisting current rates to: " + savedRates); //$NON-NLS-1$
+            LOGGER.info("Persisting current rates to: {0}", savedRates); //$NON-NLS-1$
             Properties props = new Properties();
             for (Entry<String, RateLimiterBucket> entry : buckets.entrySet()) {
                 String value = entry.getValue().getCount() + "|" + entry.getValue().getLast(); //$NON-NLS-1$
                 props.setProperty(entry.getKey(), value);
             }
             try (FileWriter writer = new FileWriter(savedRates)) {
-                props.store(writer, "All apiman rate limits"); //$NON-NLS-1$
+                props.store(writer, "All Apiman rate limits"); //$NON-NLS-1$
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -162,18 +165,18 @@ public class SingleNodeRateLimiterComponent implements IRateLimiterComponent {
         try (FileReader reader = new FileReader(savedRates)) {
             props.load(reader);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
         for (Entry<Object, Object> entry : props.entrySet()) {
             String key = entry.getKey().toString();
             String value = entry.getValue().toString();
-            String [] split = value.split("="); //$NON-NLS-1$
-            long count = new Long(split[0]);
-            long last = new Long(split[1]);
+            String [] split = value.split("\\|"); //$NON-NLS-1$
+            long count = Long.parseLong(split[0]);
+            long last = Long.parseLong(split[1]);
             RateLimiterBucket bucket = new RateLimiterBucket();
             bucket.setCount(count);
             bucket.setLast(last);
-            this.buckets.put(key, bucket);
+            buckets.put(key, bucket);
         }
     }
 
