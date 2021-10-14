@@ -1,21 +1,25 @@
 package io.apiman.gateway.engine.policy;
 
-import io.apiman.common.util.JsonUtil;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.IPolicyProbeRequest;
 import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
-import io.apiman.gateway.engine.policy.IPolicy;
-import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.gateway.engine.policy.ProbeContext;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public interface IPolicyProbe<C, P extends IPolicyProbeRequest> extends IPolicy {
-    ObjectMapper mapper = JsonUtil.getObjectMapper();
+    ObjectMapper mapper = JsonMapper
+            .builder()
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .findAndAddModules()
+            .build();
 
     /**
      * Return the class to unmarshall the raw probe request JSON configuration into.

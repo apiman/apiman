@@ -2,11 +2,9 @@
 <deployment>
   <dependencies>
     <module name="org.infinispan" />
-    <module name="org.hibernate" />
     <module name="org.apache.log4j" /> <!-- Remove? -->
     <module name="org.slf4j" /> <!-- Remove? -->
     <module name="org.picketbox" />
-    <module name="org.hibernate.commons-annotations" />
     <module name="org.jboss.logging" services="import"/>
   </dependencies>
   <exclusions>
