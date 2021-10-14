@@ -7,7 +7,7 @@
     <div class="limit-flex">
       <div>
         <p [innerHTML]="'POLICIES.' + policy.policyIdentifier + '.CONDITION_LIGHT' | translate:policy.restrictions"></p>
-        <p><b>TODO</b> / {{policy.restrictions?.limit}}</p>
+        <p><b>{{currentValue}}</b> / {{policy.restrictions?.limit}}</p>
       </div>
       <div class="second">
         <button (click)="setSectionToPolicies()" mat-icon-button color="primary" class="mt-10">

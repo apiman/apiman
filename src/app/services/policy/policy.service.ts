@@ -6,6 +6,7 @@ import {map, switchMap, tap} from "rxjs/operators";
 import {BackendService} from "../backend/backend.service";
 import {forkJoin, Observable, of} from "rxjs";
 import {formatBytes} from "../../shared/utility";
+import {IContractExt} from "../../interfaces/IContractExt";
 
 export interface PolicyHeaders {
   headerLimit: string;
@@ -31,9 +32,9 @@ export class PolicyService {
   };
 
   public readonly policyIds = {
-    'RATE_LIMITING': 'RateLimitingPolicy',
-    'TRANSFER_QUOTA': 'TransferQuotaPolicy'
-  }
+    RATE_LIMITING: 'RateLimitingPolicy',
+    TRANSFER_QUOTA: 'TransferQuotaPolicy'
+  };
 
   constructor(private backendService: BackendService) {}
 
@@ -98,13 +99,13 @@ export class PolicyService {
     const policyConfig = JSON.parse(extendedPolicy.configuration);
     switch (extendedPolicy.definition.id) {
       case this.policyIds.RATE_LIMITING: {
-        extendedPolicy.shortName = 'Rate Limit'
-        extendedPolicy.shortDescription = `${policyConfig.limit} Request${policyConfig.limit > 1 ? 's' : ''} per ${policyConfig.period}`
+        extendedPolicy.shortName = 'Rate Limit';
+        extendedPolicy.shortDescription = `${policyConfig.limit} Request${policyConfig.limit > 1 ? 's' : ''} per ${policyConfig.period}`;
         break;
       }
       case this.policyIds.TRANSFER_QUOTA: {
-        extendedPolicy.shortName = 'Quota'
-        extendedPolicy.shortDescription = `${formatBytes(policyConfig.limit)} per ${policyConfig.period}`
+        extendedPolicy.shortName = 'Quota';
+        extendedPolicy.shortDescription = `${formatBytes(policyConfig.limit)} per ${policyConfig.period}`;
         break;
       }
     }
@@ -126,8 +127,8 @@ export class PolicyService {
       tap(policySummaries => {
         policySummaries.forEach(policySummary => {
           const policySummaryExt = policySummary as IPolicySummaryExt;
-          policySummaryExt.planId = planId
-          policySummaryExt.planVersion = planVersion
+          policySummaryExt.planId = planId;
+          policySummaryExt.planVersion = planVersion;
         })
       })
     )
@@ -189,5 +190,9 @@ export class PolicyService {
     }
 
     policy.headers = newHeaders;
+  }
+
+  public getPolicyProbe(contract: IContractExt, policy: IPolicy): Observable<any> {
+    return this.backendService.getPolicyProbe(contract, policy);
   }
 }
