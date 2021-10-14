@@ -3,6 +3,8 @@ import { IContractExt } from '../../interfaces/IContractExt';
 import { IGaugeChartData } from '../../interfaces/IGaugeChartData';
 import {IPolicyExt} from "../../interfaces/IPolicyExt";
 import {TranslateService} from "@ngx-translate/core";
+import {BackendService} from "../../services/backend/backend.service";
+import {IContract} from "../../interfaces/ICommunication";
 
 @Component({
   selector: 'app-my-apps-policies',
@@ -15,7 +17,10 @@ export class MyAppsPoliciesComponent implements OnInit {
   policies: IPolicyExt[] | undefined;
   gaugeData: IGaugeChartData | undefined;
 
-  constructor(private translator: TranslateService) {}
+  constructor(
+    private translator: TranslateService,
+    private backend: BackendService
+  ) {}
 
   ngOnInit(): void {
     this.extractGaugeData();

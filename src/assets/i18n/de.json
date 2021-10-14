@@ -22,7 +22,8 @@
     "LOGIN_OR_REGISTER": "Anmelden / Registrieren",
     "LOGOUT": "Abmelden",
     "VERSION": "Version",
-    "OF": "von"
+    "OF": "von",
+    "AGREEMENT": "Zustimmung"
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",
@@ -118,5 +119,15 @@
   },
   "API_DETAILS": {
     "NO_EXT_DESCRIPTION": "Für diese API wurde keine erweiterte Beschreibung hinterlegt"
+  },
+  "TERMS": {
+    "PREFIX": "Ich stimme den ",
+    "LINK_TEXT": "Lizenzvereinbarungen",
+    "SUFFIX": " zu"
+  },
+  "PRIVACY": {
+    "PREFIX": "Ich stimme den ",
+    "LINK_TEXT": "Datenschutzbestimmungen",
+    "SUFFIX": " zu"
   }
 }

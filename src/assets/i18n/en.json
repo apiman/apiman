@@ -22,7 +22,8 @@
     "LOGIN_OR_REGISTER": "Login / Register",
     "LOGOUT": "Logout",
     "VERSION": "Version",
-    "OF": "of"
+    "OF": "of",
+    "AGREEMENT": "Agreement"
   },
   "HOME": {
     "TITLE": "KoolBank Api Developer Portal",
@@ -118,5 +119,15 @@
   },
   "API_DETAILS": {
     "NO_EXT_DESCRIPTION": "No further description has been stored for this API"
+  },
+  "TERMS": {
+    "PREFIX": "I accept the ",
+    "LINK_TEXT": "terms and conditions",
+    "SUFFIX": ""
+  },
+  "PRIVACY": {
+    "PREFIX": "I accept the ",
+    "LINK_TEXT": "privacy policy",
+    "SUFFIX": ""
   }
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {IApiVersionExt} from '../../interfaces/IApiVersionExt';
-import {TranslateService} from "@ngx-translate/core";
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-marketplace-api-description',
@@ -11,8 +11,11 @@ export class MarketplaceApiDescriptionComponent implements OnInit {
   @Input() api!: IApiVersionExt;
   @Input() isLatest!: boolean;
 
-  features: string[] = ['fast', 'free', 'fancy features'];
-  public markDownText = this.translator.instant('API_DETAILS.NO_EXT_DESCRIPTION');
+  // TODO get features from backend
+  features: string[] = [];
+  public markDownText = this.translator.instant(
+    'API_DETAILS.NO_EXT_DESCRIPTION'
+  );
 
   constructor(private translator: TranslateService) {}
 

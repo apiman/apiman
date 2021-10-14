@@ -66,11 +66,11 @@
         </mat-card-header>
         <mat-card-content class="mat-card-header-text">
           <app-my-apps-use-api></app-my-apps-use-api>
-          <ng-container *ngFor="let policy of newContractDetails.policies">
+          <ng-container *ngIf="newContractDetails.policies">
             <h4>Policies</h4>
             <!--In this version we will not have more than 2 policies-->
             <div class="policies">
-              <app-policy-card [policy]="policy"></app-policy-card>
+              <app-policy-card *ngFor="let policy of newContractDetails.policies" [policy]="policy"></app-policy-card>
             </div>
           </ng-container>
         </mat-card-content>
@@ -95,11 +95,11 @@
           </mat-card-header>
           <mat-card-content class="mat-card-header-text">
             <app-my-apps-use-api [contract]="contract"></app-my-apps-use-api>
-            <ng-container *ngFor="let policy of newContractDetails.policies">
+            <ng-container *ngIf="newContractDetails.policies">
               <h4>Policies</h4>
               <!--In this version we will not have more than 2 policies-->
               <div class="policies">
-                <app-policy-card [policy]="policy"></app-policy-card>
+                <app-policy-card *ngFor="let policy of newContractDetails.policies" [policy]="policy"></app-policy-card>
               </div>
             </ng-container>
           </mat-card-content>

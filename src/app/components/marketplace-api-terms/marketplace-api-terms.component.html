@@ -1,5 +1,4 @@
-<script src="marketplace-api-terms.component.ts"></script>
-<mat-form-field appearance="fill">
+<mat-form-field *ngIf="terms" appearance="fill">
   <mat-label>Licence Type</mat-label>
   <textarea
     cdkAutosizeMaxRows="20"
@@ -12,27 +11,27 @@
 </mat-form-field>
 
 <mat-card class="mb-20" id="terms-card">
-  <mat-card-title>Agreement</mat-card-title>
+  <mat-card-title>{{ 'COMMON.AGREEMENT' | translate }}</mat-card-title>
   <mat-card-content>
     <p>
       <mat-checkbox
-        color="primary"
-        [(ngModel)]="acceptedTerms"
         (change)="onClick()"
-        >I agree to the
-        <a [href]="termsLink" class="primary" target="_blank"
-          >terms and conditions</a
-        ></mat-checkbox
-      >
+        [(ngModel)]="acceptedTerms"
+        color="primary">
+        <span>{{ 'TERMS.PREFIX' | translate }}</span>
+        <a [href]="termsLink" class="primary" target="_blank">{{'TERMS.LINK_TEXT' | translate}}</a>
+        <span>{{ 'TERMS.SUFFIX' | translate }}</span>
+      </mat-checkbox>
     </p>
     <p>
       <mat-checkbox
-        color="primary"
-        [(ngModel)]="acceptedPrivacyTerms"
         (change)="onClick()"
-        >I accept the
-        <a [href]="privacyLink" class="primary" target="_blank">privacy policy</a></mat-checkbox
-      >
+        [(ngModel)]="acceptedPrivacyTerms"
+        color="primary">
+        <span>{{ 'PRIVACY.PREFIX' | translate }}</span>
+        <a [href]="termsLink" class="primary" target="_blank">{{'PRIVACY.LINK_TEXT' | translate}}</a>
+        <span>{{ 'PRIVACY.SUFFIX' | translate }}</span>
+      </mat-checkbox>
     </p>
   </mat-card-content>
 </mat-card>

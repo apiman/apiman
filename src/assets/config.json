@@ -1,5 +1,5 @@
 {
-  "language": "de",
+  "language": "en",
   "supportedLanguages": ["de", "en"],
   "theme": "custom",
   "hero": {
@@ -43,10 +43,10 @@
     ],
     "separator": "•"
   },
-  "endpoint": "https://vagrantguest/pas/apiman",
+  "endpoint": "https://localhost:8443/apiman",
   "auth": {
-    "url": "https://vagrantguest/pas/keycloak",
-    "realm": "PAS",
+    "url": "https://localhost:8443/auth",
+    "realm": "apiman",
     "clientId": "devportal"
   },
   "terms": {
