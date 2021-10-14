@@ -28,18 +28,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-
-import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER;
-import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS;
-import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS;
-import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_NON_NUMERIC_NUMBERS;
-import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_SINGLE_QUOTES;
-import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_TRAILING_COMMA;
-import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS;
-import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNQUOTED_FIELD_NAMES;
 
 /**
  * A base class for policy impls that uses Jackson to parse configuration info.
@@ -51,24 +39,13 @@ import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNQUOTED_FIE
 public abstract class AbstractMappedPolicy<C> implements IPolicy {
 
     private static final ObjectMapper mapper = JsonMapper
-         .builder()
-         // (mostly) match the JSON5 spec.
-         .enable(ALLOW_UNQUOTED_FIELD_NAMES)
-         .enable(ALLOW_TRAILING_COMMA)
-         .enable(ALLOW_SINGLE_QUOTES)
-         .enable(ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
-         .enable(ALLOW_NON_NUMERIC_NUMBERS)
-         .enable(ALLOW_JAVA_COMMENTS)
-         .enable(ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS)
-         .enable(ALLOW_UNESCAPED_CONTROL_CHARS)
-         // Avoid weird floating point timestamps
-         .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-         // Enable various Java 8 and library data structures to be serialized
-         .addModule(new JavaTimeModule())
-         .addModule(new ParameterNamesModule())
-         .addModule(new Jdk8Module())
-         .build();
+            .builder()
+            // Avoid weird floating point timestamps
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            // Enable various Java 8 and library data structures to be serialized
+            .findAndAddModules()
+            .build();
 
     /**
      * Constructor.
