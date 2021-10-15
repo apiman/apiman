@@ -1,5 +1,6 @@
 import { _module } from './apimanPlugin';
-import SwaggerUIBundle from "swagger-ui-dist/swagger-ui-bundle.js";
+import * as SwaggerUI from 'swagger-ui';
+import 'swagger-ui/dist/swagger-ui.css';
 
 _module.controller("Apiman.ManagerRestApiDefController",
     ['$q', '$rootScope', '$scope', 'PageLifecycle', 'Configuration',
@@ -11,16 +12,13 @@ _module.controller("Apiman.ManagerRestApiDefController",
 
                 $scope.definitionUrl = Configuration.api.endpoint + '/swagger.yaml';
 
-                if (SwaggerUIBundle) {
+                if (SwaggerUI) {
                     $scope.definitionStatus = 'loading';
                     let ui;
                     let swaggerOptions = <any>{
                         url: $scope.definitionUrl,
                         dom_id: "#swagger-ui-container",
                         validatorUrl: "https://online.swagger.io/validator",
-                        presets: [
-                            SwaggerUIBundle.presets.apis
-                        ],
                         layout: "BaseLayout",
                         sorter : "alpha",
 
@@ -46,7 +44,7 @@ _module.controller("Apiman.ManagerRestApiDefController",
                         }
                     };
 
-                    ui = SwaggerUIBundle(swaggerOptions);
+                    ui = SwaggerUI(swaggerOptions);
                     $scope.hasDefinition = true;
                 } else {
                     $scope.hasDefinition = false;

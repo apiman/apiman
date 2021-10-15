@@ -1,6 +1,7 @@
 import {_module} from "../apimanPlugin";
 import angular = require("angular");
-import SwaggerUIBundle from 'swagger-ui-dist/swagger-ui-bundle.js';
+import * as SwaggerUI from 'swagger-ui';
+import 'swagger-ui/dist/swagger-ui.css';
 import URI = require("urijs");
 
 _module.controller("Apiman.ConsumerApiRedirectController",
@@ -174,7 +175,7 @@ _module.controller("Apiman.ConsumerApiDefController",
 
                 PageLifecycle.setPageTitle('consumer-api-def', [ $scope.api.name ]);
 
-                if (($scope.version.definitionType == 'SwaggerJSON' || $scope.version.definitionType == 'SwaggerYAML') && SwaggerUIBundle) {
+                if (($scope.version.definitionType == 'SwaggerJSON' || $scope.version.definitionType == 'SwaggerYAML') && SwaggerUI) {
                     var url = ApiDefinitionSvcs.getApimanDefinitionUrl($scope.params.org, $scope.params.api, $scope.params.version);
                     Logger.debug("!!!!! Using definition URL: {0}", url);
 
@@ -184,9 +185,6 @@ _module.controller("Apiman.ConsumerApiDefController",
                         url: url,
                         dom_id: "#swagger-ui-container",
                         validatorUrl: "https://online.swagger.io/validator",
-                        presets: [
-                            SwaggerUIBundle.presets.apis
-                        ],
                         layout: "BaseLayout",
                         sorter : "alpha",
 
@@ -232,7 +230,7 @@ _module.controller("Apiman.ConsumerApiDefController",
                         swaggerOptions.plugins.push(DisableTryItOutPlugin, DisableAuthorizePlugin);
                     }
 
-                    ui = SwaggerUIBundle(swaggerOptions);
+                    ui = SwaggerUI(swaggerOptions);
                     $scope.hasDefinition = true;
                 } else {
                     $scope.hasDefinition = false;

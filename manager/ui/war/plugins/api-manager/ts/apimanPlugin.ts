@@ -26,8 +26,6 @@ import 'angular-route';
 import 'urijs';
 import 'angular-schema-form';
 import 'angular-scrollable-table/angular-scrollable-table.js';
-import 'swagger-ui-dist/swagger-ui-bundle.js';
-import 'swagger-client';
 
 import 'sugar';
 import 'ng-file-upload';
@@ -72,7 +70,6 @@ import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin
 import '@toast-ui/editor/dist/toastui-editor.css'
 import 'tui-color-picker/dist/tui-color-picker.css'
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css'
-import 'swagger-ui-dist/swagger-ui.css'
 
 /** Load these last to ensure they don't get overriden **/
 import '../css/apiman.css';
