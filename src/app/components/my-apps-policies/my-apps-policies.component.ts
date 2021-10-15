@@ -1,10 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IContractExt } from '../../interfaces/IContractExt';
-import { IGaugeChartData } from '../../interfaces/IGaugeChartData';
-import {IPolicyExt} from "../../interfaces/IPolicyExt";
-import {TranslateService} from "@ngx-translate/core";
-import {BackendService} from "../../services/backend/backend.service";
-import {IContract} from "../../interfaces/ICommunication";
+import {IPolicyExt} from '../../interfaces/IPolicyExt';
+import {TranslateService} from '@ngx-translate/core';
+import {PolicyService} from '../../services/policy/policy.service';
 
 @Component({
   selector: 'app-my-apps-policies',
@@ -15,11 +13,10 @@ export class MyAppsPoliciesComponent implements OnInit {
   @Input() contract?: IContractExt;
 
   policies: IPolicyExt[] | undefined;
-  gaugeData: IGaugeChartData | undefined;
 
   constructor(
     private translator: TranslateService,
-    private backend: BackendService
+    private policyService: PolicyService
   ) {}
 
   ngOnInit(): void {
@@ -27,29 +24,37 @@ export class MyAppsPoliciesComponent implements OnInit {
   }
 
   private extractGaugeData() {
-    if (!this.contract)
+    if (!this.contract) {
       return;
+    }
 
     this.policies = this.contract.policies;
 
     this.policies.forEach((policy: IPolicyExt) => {
-      const period = policy.configAsObject.period;
-
-      policy.mainGaugeData = {
-        name: policy.shortName + ' ' + this.translator.instant('POLICIES.USAGE'),
-        limit: Number.parseInt(policy.restrictions.limit),
-        period,
-        currentValue: 1,
-        infoHeader: `${this.translator.instant('POLICIES.USAGE')} (${period})`
-      };
-
-      policy.timeGaugeData = {
-        name: 'Reset Timer',
-        limit: 24,
-        period: policy.configAsObject.period,
-        currentValue: 1,
-        infoHeader: 'Countdown'
-      };
+      this.policyService
+        .getPolicyProbe(this.contract!, policy)
+        .subscribe((response) => {
+          this.setGaugeDataForPolicy(policy, response);
+        });
     });
+  }
+
+  private setGaugeDataForPolicy(policy: IPolicyExt, response: any) {
+    const period = policy.configAsObject.period;
+    policy.mainGaugeData = {
+      name: policy.shortName + ' ' + this.translator.instant('POLICIES.USAGE'),
+      limit: Number.parseInt(policy.restrictions.limit),
+      period: period,
+      remaining: response[0].status.remaining,
+      infoHeader: `${this.translator.instant('POLICIES.USAGE')} (${period})`
+    };
+
+    policy.timeGaugeData = {
+      name: 'Reset Timer',
+      limit: 3600,
+      period: policy.configAsObject.period,
+      remaining: response[0].status.reset,
+      infoHeader: 'Countdown'
+    };
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import { IGaugeChartData } from '../../../interfaces/IGaugeChartData';
 import { LegendPosition } from '@swimlane/ngx-charts';
 
@@ -7,13 +7,13 @@ import { LegendPosition } from '@swimlane/ngx-charts';
   templateUrl: './gauge-chart.component.html',
   styleUrls: ['./gauge-chart.component.scss'],
 })
-export class GaugeChartComponent implements OnInit {
+export class GaugeChartComponent implements OnInit, OnChanges {
   @Input() gaugeData!: IGaugeChartData;
   @Input() icon?: string;
 
   data: { name: string; value: number }[] = [{ name: '', value: 0 }];
   legend = false;
-  currentValue = 0;
+  liveValue = 0;
   legendPosition = LegendPosition.Below;
   period = '';
   percentage = '';
@@ -28,15 +28,17 @@ export class GaugeChartComponent implements OnInit {
 
   private setupChart() {
     if (this.gaugeData) {
+      const limit = this.gaugeData.limit;
+      const liveValue = limit - this.gaugeData.remaining;
       this.data = [
         {
           name: 'Currently Used',
-          value: this.gaugeData.currentValue,
+          value: liveValue,
         },
       ];
-      this.currentValue = this.gaugeData.currentValue;
+      this.liveValue = liveValue;
       this.period = this.gaugeData.period;
-      this.percentage = ((this.currentValue * 100) / this.gaugeData.limit).toFixed(1);
+      this.percentage = ((liveValue * 100) / this.gaugeData.limit).toFixed(1);
     }
   }
 
@@ -50,5 +52,13 @@ export class GaugeChartComponent implements OnInit {
     const color = getComputedStyle(p).color;
     document.body.removeChild(p);
     this.colorScheme = { domain: [color] };
+  }
+
+  /**
+   * Because the policy probes are loaded async we have to listen to the changes and update the diagram
+   * @param changes
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    this.setupChart();
   }
 }

@@ -1,4 +1,4 @@
-<div class="chart mat-elevation-z2">
+<div class="chart mat-elevation-z2" *ngIf="gaugeData">
   <h3 class="chart-header primary">{{ gaugeData.name }}</h3>
   <mat-divider></mat-divider>
   <div class="ngx-wrapper">
@@ -20,7 +20,7 @@
 
   <div class="infos">
     <div class="text2">{{gaugeData.infoHeader}}</div>
-    <div class="text-big3 letter-spacing">{{ currentValue }} / <span class="primary">{{ gaugeData.limit }}</span></div>
+    <div class="text-big3 letter-spacing">{{ liveValue }} / <span class="primary">{{ gaugeData.limit }}</span></div>
     <div class="info-bottom text-big1">
       <mat-divider></mat-divider>
       <span>{{ percentage }}% used</span>
