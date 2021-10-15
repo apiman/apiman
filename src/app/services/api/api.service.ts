@@ -15,36 +15,19 @@ import {
   providedIn: 'root',
 })
 export class ApiService {
-  apis: IApiSummary[] = [];
-  currentApi!: Observable<IApi>;
-  currentApiVersions!: Observable<IApiVersionSummary[]>;
-
   constructor(private backendService: BackendService) {}
 
-  getFeaturedApis(
-    searchCriteria: ISearchCriteria
-  ): Observable<ISearchResultsApiSummary> {
-    return this.searchApis(searchCriteria).pipe(
-      map((searchResult) => {
-        searchResult.beans = searchResult.beans.slice(0, 4);
-        return searchResult;
-      })
-    );
-  }
-
-  getApi(orgId: string, apiId: string): Observable<IApi> {
-    return (this.currentApi = this.backendService
-      .getApi(orgId, apiId)
-      .pipe(retry(1), catchError(this.handleError)));
+  getFeaturedApis(): Observable<IApiSummary[]> {
+    return this.backendService.getFeaturedApis();
   }
 
   getApiVersionSummaries(
     orgId: string,
     apiId: string
   ): Observable<IApiVersionSummary[]> {
-    return (this.currentApiVersions = this.backendService
+    return this.backendService
       .getApiVersionSummaries(orgId, apiId)
-      .pipe(retry(1), catchError(this.handleError)));
+      .pipe(retry(1), catchError(this.handleError));
   }
 
   searchApis(
@@ -78,14 +61,18 @@ export class ApiService {
   }
 
   isApiDocAvailable(apiSummary: IApiVersion): Observable<boolean> {
-    return this.backendService.headApiDefinition(apiSummary.api.organization.id,
-                                                 apiSummary.api.id,
-                                                 apiSummary.version).pipe(
-      map(() => {
-        return true;
-      }),
-      catchError(() => of(false))
-    );
+    return this.backendService
+      .headApiDefinition(
+        apiSummary.api.organization.id,
+        apiSummary.api.id,
+        apiSummary.version
+      )
+      .pipe(
+        map(() => {
+          return true;
+        }),
+        catchError(() => of(false))
+      );
   }
 
   handleError(error: any): Observable<never> {
