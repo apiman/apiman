@@ -24,18 +24,14 @@
   </div>
 </ng-container>
 <ng-template #NoDataMsg>
-  <ng-container *ngIf="this.ready; else ErrorMsg">
-    <h2 class="align">
-      {{'COMMON.NO_DATA_FOUND' | translate}}
-    </h2>
-  </ng-container>
+  <div *ngIf="this.ready; else ErrorMsg" class="dp-center">
+    <app-no-data [text]="'COMMON.NO_DATA_FOUND' | translate"></app-no-data>
+  </div>
 </ng-template>
 <ng-template #ErrorMsg>
-  <ng-container *ngIf="error">
-    <h2 class="align">
-      {{ 'COMMON.ERROR' | translate }}
-    </h2>
-  </ng-container>
+  <div *ngIf="error" class="dp-center">
+    <app-no-data [text]="'COMMON.ERROR' | translate"></app-no-data>
+  </div>
 </ng-template>
 <div *ngIf="listType === 'api' && totalSize > searchCriteria.paging.pageSize" class="align">
   <mat-paginator
