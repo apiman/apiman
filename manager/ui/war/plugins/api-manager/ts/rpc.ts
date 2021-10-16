@@ -1,10 +1,11 @@
 import angular = require("angular");
 import { BlobRef } from "./model/blob.model";
 import {
-  ApiPlanBean,
-  ApiPlanSummaryBean,
-  ApiVersionBean,
-  UpdateApiVersionBean,
+    ApiBean,
+    ApiPlanBean,
+    ApiPlanSummaryBean,
+    ApiVersionBean, KeyValueTagDto, UpdateApiBean,
+    UpdateApiVersionBean,
 } from "./model/api.model";
 import { ContractAction } from "./model/contract.model";
 
@@ -81,6 +82,20 @@ _module.factory('ContractService', ['$http', 'Configuration', '$q',
 _module.factory('DevPortalService', ['$http', 'Configuration', '$q',
     ($http, Configuration, $q) => {
         return {
+            updateApi: (orgId: string, apiId: string, bean: UpdateApiBean): Promise<any> => {
+                return $http({
+                    method: 'PUT',
+                    url: `${Configuration.api.endpoint}/organizations/${orgId}/apis/${apiId}`,
+                    data: bean
+                });
+            },
+            tagApi: (orgId: string, apiId: string, bean: KeyValueTagDto): Promise<any> => {
+                return $http({
+                    method: 'PUT',
+                    url: `${Configuration.api.endpoint}/organizations/${orgId}/apis/${apiId}/tags`,
+                    data: bean
+                })
+            },
             getApiVersion: (orgId: string, apiId: string, apiVersion: string):  Promise<ApiVersionBean> => {
                 return $http.get(`${Configuration.api.endpoint}/organizations/${orgId}/apis/${apiId}/versions/${apiVersion}`)
                 .then(
@@ -126,7 +141,17 @@ _module.factory('BlobService', ['$http', 'Configuration', '$q',
                     url: `${Configuration.api.endpoint}/blobs`,
                     data: formData
                 }).then(
-                    success => $q.resolve(success.data),
+                    success => {
+                        const data: any = success.data;
+                        const blobRef: BlobRef = {
+                            id: data.id,
+                            name: data.name,
+                            hash: data.hash,
+                            mimeType: data.mimeType,
+                            location: success.headers("Location")
+                        }
+                        return $q.resolve(blobRef);
+                    },
                     failure => $q.reject(failure)
                 )
             }

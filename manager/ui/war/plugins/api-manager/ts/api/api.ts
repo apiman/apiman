@@ -269,15 +269,9 @@ _module.controller("Apiman.ApiEntityController",
         }]);
 
 
-_module.controller('ApiDeleteModalCtrl', function ($location,
-                                                   $rootScope,
-                                                   $scope,
-                                                   $uibModalInstance,
-                                                   ApiSvcs,
-                                                   Configuration,
-                                                   PageLifecycle,
-                                                   api,
-                                                   params) {
+_module.controller('ApiDeleteModalCtrl',
+    ['$location', '$rootScope', '$scope', '$uibModalInstance', 'ApiSvcs', 'Configuration', 'PageLifecycle', 'api', 'params',
+        function ($location, $rootScope, $scope, $uibModalInstance, ApiSvcs, Configuration, PageLifecycle, api, params) {
 
     $scope.api = api;
     $scope.params = params;
@@ -321,4 +315,4 @@ _module.controller('ApiDeleteModalCtrl', function ($location,
     $scope.no = function () {
         $uibModalInstance.dismiss('cancel');
     };
-});
+}]);

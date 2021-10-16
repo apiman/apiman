@@ -293,7 +293,7 @@ _module.controller('ModalSelectApiCtrl',
 
 _module.controller('ModalGetValueCtrl',
     ['$scope', '$uibModalInstance', 'Logger', 'options',
-        ($scope, $uibModalInstance, Logger, options) => {
+        function ($scope, $uibModalInstance, Logger, options) {
             $scope.options = options;
             $scope.title = $scope.options.title;
             $scope.message = $scope.options.message;
@@ -311,7 +311,7 @@ _module.controller('ModalGetValueCtrl',
     ]
 );
 
-export var ModalConfirmCtrl = _module.controller('ModalConfirmCtrl',
+_module.controller('ModalConfirmCtrl',
     ['$scope', '$uibModalInstance', 'Logger', 'options',
         function ($scope, $uibModalInstance, Logger, options) {
 
@@ -335,8 +335,8 @@ _module.controller('ModalErrorCtrl',
         function ($scope, $uibModalInstance, Logger, options) {
 
             $scope.options = options;
-            $scope.title = $scope.options.title;
-            $scope.message = $scope.options.message;
+            $scope.title = options.title;
+            $scope.message = options.message;
 
             $scope.ok = function () {
                 $uibModalInstance.close();

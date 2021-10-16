@@ -61,7 +61,7 @@ export var pageTitles = {
         "page.title.api-def": "Apiman - {0} (Definition)",
         "page.title.api-overview": "Apiman - {0} (Overview)",
         "page.title.api-plans": "Apiman - {0} (Plans)",
-        "page.title.api-devportal": "Apiman - {0} (Dev Portal Config)",
+        "page.title.api-devportal": "Apiman - {0} (v. {1}) (Dev Portal)",
         "page.title.api-policies": "Apiman - {0} (Policies)",
         "page.title.user-activity": "Apiman - {0} (Change Log)",
         "page.title.user-clients": "Apiman - {0} (Client Apps)",
@@ -210,7 +210,7 @@ export var pageTitles = {
                         // Now process all the data packets and bind them to the $scope.
                         var count = 0;
                         angular.forEach(data, function(value, key) {
-                            Logger.debug("|{0}| >> Binding {1} to $scope.", pageName, key);
+                            Logger.info("|{0}| >> Binding {1} to $scope.", pageName, key);
                             this[key] = value;
                             count++;
                         }, $scope);

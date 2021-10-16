@@ -1,3 +1,23 @@
+import {OrganizationBean} from "./organization.model";
+
+export interface ApiBean {
+  organization: OrganizationBean;
+  id: string;
+  name: string;
+  image: string;
+  description: string;
+  tags: KeyValueTagDto[];
+  createdBy: string;
+  createdOn: Date;
+  numPublished: number;
+}
+
+export interface UpdateApiBean {
+  description?: string;
+  image?: string;
+  tags?: KeyValueTagDto[];
+}
+
 export interface ApiPlanSummaryBean {
   planId: string;
   planName: string;
@@ -18,6 +38,11 @@ export interface ApiPlanBean {
   requiresApproval: boolean
 }
 
+export interface KeyValueTagDto {
+  key: string,
+  value?: string
+}
+
 export interface UpdateApiVersionBean {
   endpoint: string;
   endpointType: string; // enum EndpointType
@@ -34,7 +59,7 @@ export interface UpdateApiVersionBean {
 
 export interface ApiVersionBean {
   id: number;
-  //api: ApiBean;
+  api: ApiBean;
   status: string; // Enum ApiStatus
   endpoint: string;
   endpointType: string; //enum EndpointType

@@ -9,7 +9,7 @@
      id="page-content"
      class="page container-pf-nav-pf-vertical container-fluid"
      data-field="page"
-     ng-cloak=""
+     ng-cloak
      ng-show="pageState == 'loaded'">
   <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
   <!-- Entity Summary Row -->
@@ -24,20 +24,40 @@
     <!-- Content -->
     <div class="col-md-10 apiman-entity-content">
       <div class="col-md-10">
+        <!-- Expose in Portal -->
         <div class="title" apiman-i18n-key="dev-portal">Developer Portal</div>
         <div>
-          <span apiman-i18n-key="dev-portal-help">Publish this API via the developer portal?</span>
+          <span apiman-i18n-key="dev-portal-help">Publish this API version via the developer portal?</span>
         </div>
         <div style="padding: 8px; margin-bottom: 10px">
-          <input ng-model="apiVersion.exposeInPortal"
+          <input ng-model="data.apiVersion.exposeInPortal"
                  type="checkbox"
-                 id="expose-in-portal"
-                 ng-disabled="isEntityDisabled()">
+                 id="expose-in-portal">
           <label for="expose-in-portal"
                  apiman-i18n-key="export-in-portal"
-                 style="padding-left: 3px">Expose this API in the developer portal</label>
+                 style="padding-left: 3px">Expose this API version in the developer portal</label>
         </div>
-        <div ng-show="apiVersion.exposeInPortal">
+        <!-- /Expose in Portal -->
+
+        <div ng-show="data.apiVersion.exposeInPortal">
+          <!-- Feature in Portal -->
+          <div class="title" apiman-i18n-key="dev-portal">Feature in the developer portal?</div>
+          <div>
+          <span apiman-i18n-key="feature-api-in-portal-help">Feature this API version in the developer portal?
+            If selected, the API will appear as a default entry on the developer portal landing page.</span>
+          </div>
+          <div style="padding: 8px; margin-bottom: 10px">
+            <input
+                   ng-model="data.isFeaturedApi"
+                   ng-click="updateFeaturedApi()"
+                   type="checkbox"
+                   id="feature-api-in-portal">
+            <label for="feature-api-in-portal"
+                   apiman-i18n-key="feature-api-in-portal"
+                   style="padding-left: 3px">Feature this API</label>
+          </div>
+          <!--/ Feature in Portal -->
+          <!-- Attached plans -->
           <div class="title" apiman-i18n-key="available-plans">Attached Plans</div>
           <div>
             <span apiman-i18n-key="available-plans-help">
@@ -54,14 +74,14 @@
 
           <div class="container-fluid container-cards-pf">
             <div class="row row-cards-pf"  style="display: flex;">
-              <div class="col-xs-6 col-sm-5 col-md-5 container-border" style="display: inline-flex; width: 27em;" ng-repeat="plan in apiVersion.plans">
+              <div class="col-xs-6 col-sm-5 col-md-5 container-border" style="display: inline-flex; width: 27em;" ng-repeat="plan in data.apiVersion.plans">
                 <div class="card-pf card-pf-accented card-pf-aggregate-status">
                   <h2 class="card-pf-title">
-                    {{  planSummaries[$index].planName }}
+                    {{  data.planSummaries[$index].planName }}
                     <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
                   </h2>
                   <div class="card-pf-body text-left">
-                    <p class="card-text">{{ planSummaries[$index].planDescription }}</p>
+                    <p class="card-text">{{ data.planSummaries[$index].planDescription }}</p>
 
 
                     <div>
@@ -92,8 +112,18 @@
             </div>
             <!-- /row -->
           </div>
+          <!-- /Attached plans -->
           <hr />
-        <!-- API description markdown row -->
+          <!-- Image cropper modal and/or image -->
+          <div class="row api-logo-container">
+            <img src="{{ data.latestImage }}" ng-hide="!data.latestImage" alt="API image" />
+            <button class="btn btn-primary" ng-click="openImageCropper()" type="button" data-field="uploadButton">
+              <span class="fa fa-upload"></span> Upload image
+            </button>
+          </div>
+
+          <!-- /image cropper and/or image -->
+          <!-- API version description markdown row -->
         <div class="title" apiman-i18n-key="extended-api-description">Extended API Description</div>
         <div>
             <span apiman-i18n-key="extended-api-description-help">
@@ -105,12 +135,11 @@
         <!-- save -->
         <hr />
         <div apiman-permission="apiEdit"
-             ng-show="!isEntityDisabled()"
              class="actions"
              style="margin-top: 20px">
           <button ng-disabled="!isDirty"
                   class="btn btn-primary"
-                  ng-click="doSave($event)"
+                  ng-click="doSave()"
                   type="submit"
                   data-icon="fa-cog">
             <span ng-show="saving" apiman-i18n-key="saving">Saving</span>
