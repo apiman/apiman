@@ -28,13 +28,13 @@ public class MultipartHelper {
     }
 
     public static MultipartUploadHolder getRequiredImage(@NotNull MultipartFormDataInput multipartInput,
-         @NotNull String partName)
+         @NotNull String partName, long sizeLimitBytes)
          throws IOException {
         InputPart imgPart =  MultipartHelper.getRequiredPart(multipartInput, partName, new MediaType("image", "*"));
         MediaType imgMediaType = imgPart.getMediaType();
         ContentDisposition imgContentDisposition = MultipartHelper.getContentDisposition(imgPart);
         String filename = Optional.ofNullable(imgContentDisposition.getFilename()).orElse("");
-        FileBackedOutputStream fbos = MultipartHelper.transferToFbos(imgPart, 1_048_576); // TODO(msavy): add threshold to config
+        FileBackedOutputStream fbos = MultipartHelper.transferToFbos(imgPart, sizeLimitBytes); // TODO(msavy): add threshold to config
         return new MultipartUploadHolder(filename, fbos, imgMediaType);
     }
 
@@ -69,10 +69,11 @@ public class MultipartHelper {
                 os.write(buff, 0, bytesRead);
                 bytesTransferred += bytesRead;
                 if (bytesTransferred > sizeLimitBytes) {
-                    throw new IllegalArgumentException(
-                         "Provided file is larger than the limit of " + sizeLimitBytes + "b");
+                    RestArgumentVerifier.checkSizeMax(bytesTransferred, sizeLimitBytes, "Provided file is larger than the limit of " + sizeLimitBytes + "b");
                 }
             }
+            // If blob is very small, may be an error or DOS/spam
+            RestArgumentVerifier.checkArgument(bytesTransferred < 10, "Provided file too small");
         } catch (IOException ioe) {
             IOUtils.closeQuietly(os);
             throw new UncheckedIOException(ioe);

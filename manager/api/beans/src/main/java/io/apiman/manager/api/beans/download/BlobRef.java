@@ -11,9 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class BlobRef {
     private String id;
-    @BlobReference
-    @JsonProperty
-    private String location;
     private String name;
     private String mimeType;
     private OffsetDateTime createdOn;
@@ -29,7 +26,6 @@ public class BlobRef {
 
     public BlobRef setId(String id) {
         this.id = id;
-        this.location = id;
         return this;
     }
 

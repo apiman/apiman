@@ -16,7 +16,7 @@
 package io.apiman.manager.api.rest.exceptions;
 
 /**
- * Thrown when the user attempts to create an entity with an invalid name.
+ * Thrown when the user attempts to interact with API using an invalid parameter/input
  *
  * @author eric.wittmann@redhat.com
  */

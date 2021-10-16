@@ -25,6 +25,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.common.annotations.Beta;
+
 /**
  * Developer portal resources.
  * <p>
@@ -34,6 +36,7 @@ import javax.ws.rs.core.Response;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Path("devportal")
+@Beta
 public interface IDeveloperPortalResource {
     @POST
     @Path("apis/search")
