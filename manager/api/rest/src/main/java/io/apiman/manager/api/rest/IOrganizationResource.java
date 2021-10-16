@@ -16,7 +16,6 @@
 
 package io.apiman.manager.api.rest;
 
-import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
 import io.apiman.manager.api.beans.apis.NewApiBean;
@@ -251,14 +250,6 @@ public interface IOrganizationResource {
             NewClientBean bean) throws OrganizationNotFoundException, ClientAlreadyExistsException,
             NotAuthorizedException, InvalidNameException;
 
-    // @POST
-    // @Path("{organizationId}/clients")
-    // @Consumes(MediaType.MULTIPART_FORM_DATA)
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public ClientBean createClient(@PathParam("organizationId") String organizationId, @NotNull MultipartFormDataInput multipartInput)
-    //      throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException;
-
-
     /**
      * Use this endpoint to retrieve information about a single Client by ID.  Note
      * that this only returns information about the Client, not about any particular
@@ -337,14 +328,6 @@ public interface IOrganizationResource {
             @PathParam("clientId") String clientId, UpdateClientBean bean)
             throws ClientNotFoundException, NotAuthorizedException;
 
-    // @PUT
-    // @Path("{organizationId}/clients/{clientId}")
-    // @Consumes(MediaType.MULTIPART_FORM_DATA)
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public void updateClient(@PathParam("organizationId") String organizationId,
-    //      @PathParam("clientId") String clientId, @NotNull MultipartFormDataInput multipartInput)
-    //      throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException,
-    //                  InvalidNameException, IOException;
     /**
      * Use this endpoint to create a new version of the Client.
      * @summary Create Client Version

@@ -33,6 +33,7 @@ public final class ErrorCodes {
     public static final int HTTP_STATUS_CODE_NOT_FOUND      = 404;
     public static final int HTTP_STATUS_CODE_ALREADY_EXISTS = 409;
     public static final int HTTP_STATUS_CODE_INVALID_STATE  = 409;
+    public static final int HTTP_STATUS_CODE_TOO_LARGE      = 413;
     public static final int HTTP_STATUS_CODE_SYSTEM_ERROR   = 500;
 
 

@@ -47,7 +47,7 @@ public final class ExceptionFactory {
      * @param username the username
      * @return the exception
      */
-    public static final UserNotFoundException userNotFoundException(String username) {
+    public static UserNotFoundException userNotFoundException(String username) {
         return new UserNotFoundException(Messages.i18n.format("UserNotFound", username)); //$NON-NLS-1$
     }
 
@@ -55,7 +55,7 @@ public final class ExceptionFactory {
      * Creates a not authorized exception.
      * @return the exception
      */
-    public static final NotAuthorizedException notAuthorizedException() {
+    public static NotAuthorizedException notAuthorizedException() {
         return new NotAuthorizedException(Messages.i18n.format("AccessDenied")); //$NON-NLS-1$
     }
 
@@ -64,7 +64,7 @@ public final class ExceptionFactory {
      * @param organizationName the organization name
      * @return the exception
      */
-    public static final OrganizationAlreadyExistsException organizationAlreadyExistsException(String organizationName) {
+    public static OrganizationAlreadyExistsException organizationAlreadyExistsException(String organizationName) {
         return new OrganizationAlreadyExistsException(Messages.i18n.format("OrganizationAlreadyExists", organizationName)); //$NON-NLS-1$
     }
 
@@ -73,7 +73,7 @@ public final class ExceptionFactory {
      * @param organizationId the organization id
      * @return the exception
      */
-    public static final OrganizationNotFoundException organizationNotFoundException(String organizationId) {
+    public static OrganizationNotFoundException organizationNotFoundException(String organizationId) {
         return new OrganizationNotFoundException(Messages.i18n.format("OrganizationDoesNotExist", organizationId)); //$NON-NLS-1$
     }
 
@@ -82,7 +82,7 @@ public final class ExceptionFactory {
      * @param roleId the role id
      * @return the exception
      */
-    public static final RoleAlreadyExistsException roleAlreadyExistsException(String roleId) {
+    public static RoleAlreadyExistsException roleAlreadyExistsException(String roleId) {
         return new RoleAlreadyExistsException(Messages.i18n.format("RoleAlreadyExists", roleId)); //$NON-NLS-1$
     }
 
@@ -91,7 +91,7 @@ public final class ExceptionFactory {
      * @param roleId the role id
      * @return the exception
      */
-    public static final RoleNotFoundException roleNotFoundException(String roleId) {
+    public static RoleNotFoundException roleNotFoundException(String roleId) {
         return new RoleNotFoundException(Messages.i18n.format("RoleNotFound", roleId)); //$NON-NLS-1$
     }
 
@@ -100,7 +100,7 @@ public final class ExceptionFactory {
      * @param clientName the client name
      * @return the exception
      */
-    public static final ClientAlreadyExistsException clientAlreadyExistsException(String clientName) {
+    public static ClientAlreadyExistsException clientAlreadyExistsException(String clientName) {
         return new ClientAlreadyExistsException(Messages.i18n.format("ClientAlreadyExists", clientName)); //$NON-NLS-1$
     }
 
@@ -110,7 +110,7 @@ public final class ExceptionFactory {
      * @param version the version
      * @return the exception
      */
-    public static final ClientVersionAlreadyExistsException clientVersionAlreadyExistsException(String clientName, String version) {
+    public static ClientVersionAlreadyExistsException clientVersionAlreadyExistsException(String clientName, String version) {
         return new ClientVersionAlreadyExistsException(Messages.i18n.format("clientVersionAlreadyExists", clientName, version)); //$NON-NLS-1$
     }
 
@@ -118,7 +118,7 @@ public final class ExceptionFactory {
      * Creates an exception.
      * @return the exception
      */
-    public static final ContractAlreadyExistsException contractAlreadyExistsException() {
+    public static ContractAlreadyExistsException contractAlreadyExistsException() {
         return new ContractAlreadyExistsException(Messages.i18n.format("ContractAlreadyExists")); //$NON-NLS-1$
     }
 
@@ -135,7 +135,7 @@ public final class ExceptionFactory {
      * @param clientId the client id
      * @return the exception
      */
-    public static final ClientNotFoundException clientNotFoundException(String clientId) {
+    public static ClientNotFoundException clientNotFoundException(String clientId) {
         return new ClientNotFoundException(Messages.i18n.format("ClientDoesNotExist", clientId)); //$NON-NLS-1$
     }
 
@@ -144,7 +144,7 @@ public final class ExceptionFactory {
      * @param contractId the contract id
      * @return the exception
      */
-    public static final ContractNotFoundException contractNotFoundException(Long contractId) {
+    public static ContractNotFoundException contractNotFoundException(Long contractId) {
         return new ContractNotFoundException(Messages.i18n.format("ContractDoesNotExist", contractId)); //$NON-NLS-1$
     }
 
@@ -166,7 +166,7 @@ public final class ExceptionFactory {
      * @param version the client version
      * @return the exception
      */
-    public static final ClientVersionNotFoundException clientVersionNotFoundException(String clientId, String version) {
+    public static ClientVersionNotFoundException clientVersionNotFoundException(String clientId, String version) {
         return new ClientVersionNotFoundException(Messages.i18n.format("clientVersionDoesNotExist", clientId, version)); //$NON-NLS-1$
     }
 
@@ -174,7 +174,7 @@ public final class ExceptionFactory {
      * Creates an invalid client status exception.
      * @return the exception
      */
-    public static final InvalidClientStatusException invalidClientStatusException() {
+    public static InvalidClientStatusException invalidClientStatusException() {
         return new InvalidClientStatusException(Messages.i18n.format("InvalidClientStatus")); //$NON-NLS-1$
     }
 
@@ -187,7 +187,7 @@ public final class ExceptionFactory {
      * @param apiName the API name
      * @return the exception
      */
-    public static final ApiAlreadyExistsException apiAlreadyExistsException(String apiName) {
+    public static ApiAlreadyExistsException apiAlreadyExistsException(String apiName) {
         return new ApiAlreadyExistsException(Messages.i18n.format("ApiAlreadyExists", apiName)); //$NON-NLS-1$
     }
 
@@ -197,7 +197,7 @@ public final class ExceptionFactory {
      * @param version the version
      * @return the exception
      */
-    public static final ApiVersionAlreadyExistsException apiVersionAlreadyExistsException(String apiName, String version) {
+    public static ApiVersionAlreadyExistsException apiVersionAlreadyExistsException(String apiName, String version) {
         return new ApiVersionAlreadyExistsException(Messages.i18n.format("ApiVersionAlreadyExists", apiName, version)); //$NON-NLS-1$
     }
 
@@ -206,7 +206,7 @@ public final class ExceptionFactory {
      * @param apiId the API id
      * @return the exception
      */
-    public static final ApiNotFoundException apiNotFoundException(String apiId) {
+    public static ApiNotFoundException apiNotFoundException(String apiId) {
         return new ApiNotFoundException(Messages.i18n.format("ApiDoesNotExist", apiId)); //$NON-NLS-1$
     }
 
@@ -216,7 +216,7 @@ public final class ExceptionFactory {
      * @param version the API version
      * @return the exception
      */
-    public static final ApiVersionNotFoundException apiVersionNotFoundException(String apiId, String version) {
+    public static ApiVersionNotFoundException apiVersionNotFoundException(String apiId, String version) {
         return new ApiVersionNotFoundException(Messages.i18n.format("ApiVersionDoesNotExist", apiId, version)); //$NON-NLS-1$
     }
 
@@ -226,7 +226,7 @@ public final class ExceptionFactory {
      * @param version the API version
      * @return the exception
      */
-    public static final ApiDefinitionNotFoundException apiDefinitionNotFoundException(String apiId, String version) {
+    public static ApiDefinitionNotFoundException apiDefinitionNotFoundException(String apiId, String version) {
         return new ApiDefinitionNotFoundException(Messages.i18n.format("ApiDefinitionDoesNotExist", apiId, version)); //$NON-NLS-1$
     }
 
@@ -234,7 +234,7 @@ public final class ExceptionFactory {
      * Creates an invalid API status exception.
      * @return the exception
      */
-    public static final InvalidApiStatusException invalidApiStatusException() {
+    public static InvalidApiStatusException invalidApiStatusException() {
         return new InvalidApiStatusException(Messages.i18n.format("InvalidApiStatus")); //$NON-NLS-1$
     }
 
@@ -242,7 +242,7 @@ public final class ExceptionFactory {
      * Creates an invalid plan status exception.
      * @return the exception
      */
-    public static final InvalidPlanStatusException invalidPlanStatusException() {
+    public static InvalidPlanStatusException invalidPlanStatusException() {
         return new InvalidPlanStatusException(Messages.i18n.format("InvalidPlanStatus")); //$NON-NLS-1$
     }
 
@@ -260,7 +260,7 @@ public final class ExceptionFactory {
      * @param memberId the member id
      * @return the exception
      */
-    public static final MemberNotFoundException memberNotFoundException(String memberId) {
+    public static MemberNotFoundException memberNotFoundException(String memberId) {
         return new MemberNotFoundException(Messages.i18n.format("MemberDoesNotExist", memberId)); //$NON-NLS-1$
     }
 
@@ -269,7 +269,7 @@ public final class ExceptionFactory {
      * @param planName the plan name
      * @return the exception
      */
-    public static final PlanAlreadyExistsException planAlreadyExistsException(String planName) {
+    public static PlanAlreadyExistsException planAlreadyExistsException(String planName) {
         return new PlanAlreadyExistsException(Messages.i18n.format("PlanAlreadyExists", planName)); //$NON-NLS-1$
     }
 
@@ -279,7 +279,7 @@ public final class ExceptionFactory {
      * @param version the version
      * @return the exception
      */
-    public static final PlanVersionAlreadyExistsException planVersionAlreadyExistsException(String planName, String version) {
+    public static PlanVersionAlreadyExistsException planVersionAlreadyExistsException(String planName, String version) {
         return new PlanVersionAlreadyExistsException(Messages.i18n.format("PlanVersionAlreadyExists", planName, version)); //$NON-NLS-1$
     }
 
@@ -288,7 +288,7 @@ public final class ExceptionFactory {
      * @param planId the plan id
      * @return the exception
      */
-    public static final PlanNotFoundException planNotFoundException(String planId) {
+    public static PlanNotFoundException planNotFoundException(String planId) {
         return new PlanNotFoundException(Messages.i18n.format("PlanDoesNotExist", planId)); //$NON-NLS-1$
     }
 
@@ -298,7 +298,7 @@ public final class ExceptionFactory {
      * @param version the version id
      * @return the exception
      */
-    public static final PlanVersionNotFoundException planVersionNotFoundException(String planId, String version) {
+    public static PlanVersionNotFoundException planVersionNotFoundException(String planId, String version) {
         return new PlanVersionNotFoundException(Messages.i18n.format("PlanVersionDoesNotExist", planId, version)); //$NON-NLS-1$
     }
 
@@ -307,7 +307,7 @@ public final class ExceptionFactory {
      * @param message the exception message
      * @return the exception
      */
-    public static final ActionException actionException(String message) {
+    public static ActionException actionException(String message) {
         return new ActionException(message);
     }
 
@@ -326,7 +326,7 @@ public final class ExceptionFactory {
      * @param policyId the policy id
      * @return the exception
      */
-    public static final PolicyNotFoundException policyNotFoundException(long policyId) {
+    public static PolicyNotFoundException policyNotFoundException(long policyId) {
         return new PolicyNotFoundException(Messages.i18n.format("PolicyDoesNotExist", policyId)); //$NON-NLS-1$
     }
 
@@ -335,7 +335,7 @@ public final class ExceptionFactory {
      * @param policyDefName the policy definition name
      * @return the exception
      */
-    public static final PolicyDefinitionAlreadyExistsException policyDefAlreadyExistsException(String policyDefName) {
+    public static PolicyDefinitionAlreadyExistsException policyDefAlreadyExistsException(String policyDefName) {
         return new PolicyDefinitionAlreadyExistsException(Messages.i18n.format("PolicyDefinitionAlreadyExists", policyDefName)); //$NON-NLS-1$
     }
 
@@ -344,7 +344,7 @@ public final class ExceptionFactory {
      * @param policyDefId the policy definition id
      * @return the exception
      */
-    public static final PolicyDefinitionNotFoundException policyDefNotFoundException(String policyDefId) {
+    public static PolicyDefinitionNotFoundException policyDefNotFoundException(String policyDefId) {
         return new PolicyDefinitionNotFoundException(Messages.i18n.format("PolicyDefinitionDoesNotExist", policyDefId)); //$NON-NLS-1$
     }
 
@@ -353,7 +353,7 @@ public final class ExceptionFactory {
      * @param message the exception message
      * @return the exception
      */
-    public static final PolicyDefinitionInvalidException policyDefInvalidException(String message) {
+    public static PolicyDefinitionInvalidException policyDefInvalidException(String message) {
         return new PolicyDefinitionInvalidException(message);
     }
 
@@ -362,7 +362,7 @@ public final class ExceptionFactory {
      * @param gatewayName the gateway name
      * @return the exception
      */
-    public static final GatewayAlreadyExistsException gatewayAlreadyExistsException(String gatewayName) {
+    public static GatewayAlreadyExistsException gatewayAlreadyExistsException(String gatewayName) {
         return new GatewayAlreadyExistsException(Messages.i18n.format("GatewayAlreadyExists", gatewayName)); //$NON-NLS-1$
     }
 
@@ -371,7 +371,7 @@ public final class ExceptionFactory {
      * @param gatewayId the gateway id
      * @return the exception
      */
-    public static final GatewayNotFoundException gatewayNotFoundException(String gatewayId) {
+    public static GatewayNotFoundException gatewayNotFoundException(String gatewayId) {
         return new GatewayNotFoundException(Messages.i18n.format("GatewayDoesNotExist", gatewayId)); //$NON-NLS-1$
     }
 
@@ -379,7 +379,7 @@ public final class ExceptionFactory {
      * Creates an exception from an plugin name.
      * @return the exception
      */
-    public static final PluginAlreadyExistsException pluginAlreadyExistsException() {
+    public static PluginAlreadyExistsException pluginAlreadyExistsException() {
         return new PluginAlreadyExistsException(Messages.i18n.format("PluginAlreadyExists")); //$NON-NLS-1$
     }
 
@@ -388,7 +388,7 @@ public final class ExceptionFactory {
      * @param pluginId the plugin id
      * @return the exception
      */
-    public static final PluginNotFoundException pluginNotFoundException(Long pluginId) {
+    public static PluginNotFoundException pluginNotFoundException(Long pluginId) {
         return new PluginNotFoundException(Messages.i18n.format("PluginDoesNotExist", pluginId)); //$NON-NLS-1$
     }
 
@@ -398,7 +398,7 @@ public final class ExceptionFactory {
      * @param coordinates the maven coordinates
      * @return the exception
      */
-    public static final PluginResourceNotFoundException pluginResourceNotFoundException(String resourceName,
+    public static PluginResourceNotFoundException pluginResourceNotFoundException(String resourceName,
             PluginCoordinates coordinates) {
         return new PluginResourceNotFoundException(Messages.i18n.format(
                 "PluginResourceNotFound", resourceName, coordinates.toString())); //$NON-NLS-1$
@@ -409,7 +409,7 @@ public final class ExceptionFactory {
      * @param developerId the developer id
      * @return the exception
      */
-    public static final DeveloperNotFoundException developerNotFoundException(String developerId) {
+    public static DeveloperNotFoundException developerNotFoundException(String developerId) {
         return new DeveloperNotFoundException(Messages.i18n.format("DeveloperNotExist", developerId)); //$NON-NLS-1$
     }
 
@@ -417,7 +417,7 @@ public final class ExceptionFactory {
      * Creates an exception if the developer already exists.
      * @return the exception
      */
-    public static final DeveloperAlreadyExistsException developerAlreadyExistsException(String developerId) {
+    public static DeveloperAlreadyExistsException developerAlreadyExistsException(String developerId) {
         return new DeveloperAlreadyExistsException(Messages.i18n.format("DeveloperAlreadyExists", developerId)); //$NON-NLS-1$
     }
 
@@ -426,7 +426,7 @@ public final class ExceptionFactory {
      * @param message the message
      * @return the exception
      */
-    public static final InvalidMetricCriteriaException invalidMetricCriteriaException(String message) {
+    public static InvalidMetricCriteriaException invalidMetricCriteriaException(String message) {
         return new InvalidMetricCriteriaException(message);
     }
 
@@ -435,7 +435,7 @@ public final class ExceptionFactory {
      * @param message the message
      * @return the exception
      */
-    public static final InvalidNameException invalidNameException(String message) {
+    public static InvalidNameException invalidNameException(String message) {
         return new InvalidNameException(message);
     }
 
@@ -444,7 +444,7 @@ public final class ExceptionFactory {
      * @param message the message
      * @return the exception
      */
-    public static final InvalidVersionException invalidVersionException(String message) {
+    public static InvalidVersionException invalidVersionException(String message) {
         return new InvalidVersionException(message);
     }
 
@@ -471,7 +471,6 @@ public final class ExceptionFactory {
     public static EntityStillActiveException entityStillActiveExceptionApiVersions(Iterator<ApiVersionBean> apis) {
         return new EntityStillActiveException(Messages.i18n.format("EntityStillActiveApis", joinIter(apis))); //$NON-NLS-1$
     }
-
 
     private static <T> String joinList(List<T> items) {
         return items.stream()
