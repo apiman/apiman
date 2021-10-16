@@ -15,7 +15,6 @@ const codeSyntaxHighlight = require("@toast-ui/editor-plugin-code-syntax-highlig
 const colourSyntax = require("@toast-ui/editor-plugin-color-syntax");
 import Cropper from "cropperjs/dist/cropper.esm";
 import "cropperjs/dist/cropper.css"
-import {clone} from "lodash";
 
 
 _module.controller("Apiman.DevPortalController", [
@@ -128,19 +127,54 @@ function devPortalBuisnessLogic(
 
   $rootScope.isDirty = false;
 
-  // Data
+  /** Data **/
   $scope.data = {
     apiVersion: $scope.version as ApiVersionBean, // It's bound magically... Maybe pass in as an arg.
-    planSummaries: [] as ApiPlanSummaryBean[],
+    planSummaries: [] as ApiPlanSummaryBean[], // Will be loaded further down
     isFeaturedApi: isFeaturedApi($scope.version.api)
   }
 
-  // Functions
+  /** Functions **/
   $scope.updateFeaturedApi = invertFeaturedApi;
-
-  // Markdown and cropping
-  let markdownEditor: Editor = null;
   $scope.openImageCropper = openImageCropper;
+
+  // TUI Markdown editor. Will initialise
+  let markdownEditor: Editor = null;
+
+  /** Start biz logic **/
+
+  // Get the API Version Plan summaries
+  DevPortalService.getApiVersionPlans(
+      params.org,
+      params.api,
+      params.version
+  ).then((apiPlans: ApiPlanSummaryBean[]) => {
+    Logger.info("Got plans: {0}", apiPlans);
+    $scope.data.planSummaries.push(...apiPlans);
+    Logger.info("Cloning pristine $scope.data -> dataClone (for restore/reset).")
+    dataClone = angular.copy($scope.data);
+  });
+
+  /**
+   *  Watch `data.apiVersion` for changes by doing a deep comparison
+   */
+  $scope.$watch(
+      "data.apiVersion",
+      (oldValue, newValue) => {
+        if (!angular.equals(oldValue, newValue)) {
+          Logger.debug("Dirty set to true {0} vs {1}", oldValue, newValue);
+          $rootScope.isDirty = true;
+
+          if (newValue.exposeInPortal) {
+            Logger.info("Sending init to editor");
+            if (markdownEditor == null) {
+              initEditor();
+            }
+          }
+        }
+      },
+      true
+  );
 
   /*** Markdown Editor ***/
   function initEditor(): void {
@@ -151,7 +185,7 @@ function devPortalBuisnessLogic(
       previewStyle: "tab",
       usageStatistics: false,
       hooks: {
-        addImageBlobHook: uploadImage,
+        addImageBlobHook: uploadImageFromMarkdownEditor,
       },
       events: {
         // blur: () => editorDirtyCheck,
@@ -195,53 +229,8 @@ function devPortalBuisnessLogic(
   };
 
   /*** End Markdown Editor ***/
-
-  // Get the API Version Plan summaries
-  DevPortalService.getApiVersionPlans(
-    params.org,
-    params.api,
-    params.version
-  ).then((apiPlans: ApiPlanSummaryBean[]) => {
-    Logger.info("Got plans: {0}", apiPlans);
-    $scope.data.planSummaries.push(...apiPlans);
-    Logger.info("Cloning pristine $scope.data -> dataClone (for restore/reset).")
-    dataClone = angular.copy($scope.data);
-  });
-
-  $scope.$watch(
-    "data.apiVersion",
-    (oldValue, newValue) => {
-      if (!angular.equals(oldValue, newValue)) {
-        Logger.debug("Dirty set to true {0} vs {1}", oldValue, newValue);
-        $rootScope.isDirty = true;
-
-        if (newValue.exposeInPortal) {
-          Logger.info("Sending init to editor");
-          if (markdownEditor == null) {
-            initEditor();
-          }
-        }
-      }
-    },
-    true
-  );
-
-  // // Get the API Version and bind to $scope.apiVersion, and initialise MD Editor
-  // DevPortalService.getApiVersion(params.org, params.api, params.version).then(
-  //     (apiVersion: ApiVersionBean) => {
-  //       Logger.info("Got API Version {0}", apiVersion);
-  //       $scope.apiVersion = apiVersion as ApiVersionBean;
-  //
-  //       // Dirty check after loading, otherwise we'll get spurious matches.
-  //
-  //       if (apiVersion.exposeInPortal) {
-  //         Logger.info("Sending init to editor");
-  //         initEditor();
-  //       }
-  //     },
-  //     (failure) => handleFailure(failure)
-  // );
-
+  
+  
   /** Save, and reset **/
   // Reset (copy saved pristine copy back over).
   $scope.reset = () => {
@@ -255,7 +244,7 @@ function devPortalBuisnessLogic(
   });
 
   // Save
-  $scope.doSave = () => {
+  $scope.doSave = function () {
     const markdown: string = markdownEditor.getMarkdown();
     const updateApiVersionBean = {
       extendedDescription: markdown,
@@ -283,15 +272,14 @@ function devPortalBuisnessLogic(
         image: api.image,
         tags: api.tags,
       };
-      DevPortalService.updateApi(params.org, params.api, updateApiBean)
-      .then(
+      DevPortalService.updateApi(params.org, params.api, updateApiBean).then(
         () => Logger.info("Api update succeeded!"),
         (failure) => handleFailure(failure)
       );
     }
   };
 
-  function uploadImage(blob: Blob | File, callback): void {
+  function uploadImageFromMarkdownEditor(blob: Blob | File, callback): void {
     BlobService.uploadBlob(blob)
     .then(
       (blobRef: BlobRef) => {
@@ -327,7 +315,7 @@ function devPortalBuisnessLogic(
     );
   }
 
-  function invertFeaturedApi($event): void {
+  function invertFeaturedApi(): void {
     const api = $scope.data.apiVersion.api;
     const isFeatured: boolean = isFeaturedApi(api);
     const tagsArray: KeyValueTagDto[] = api.tags;
