@@ -92,7 +92,10 @@ public class BlobResourceImpl implements IBlobResource {
         BlobRef blobRef = blobStore.storeBlob(filename, image.getMediaType().toString(), image.getFileBackedOutputStream(), 0);
         // Where the blob can be resolved
         URI location = UriBuilder.fromResource(IBlobResource.class).path(blobRef.getId()).build();
-        return Response.created(location).build();
+        return Response
+                .created(location)
+                .entity(blobRef)
+                .build();
     }
 
     private boolean checkExtension(String ext) {

@@ -13,6 +13,7 @@ import { BlobRef } from "../model/blob.model";
 import Cropper from "cropperjs/dist/cropper.esm";
 import "cropperjs/dist/cropper.css";
 import angular = require("angular");
+import { remove as _remove } from "lodash-es";
 // Use CommonJS syntax for tui stuff
 const toast = require("@toast-ui/editor");
 const codeSyntaxHighlight = require("@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all");
@@ -79,35 +80,44 @@ _module.controller("Apiman.DevPortalController", [
           // $scope.versions = ApiSummaryBean[]
           // $scope.version = ApiVersionBean
 
+          // Get the API Version Plan summaries
+          DevPortalService.getApiVersionPlans(
+              params.org,
+              params.api,
+              params.version
+          ).then((apiPlans: ApiPlanSummaryBean[]) => {
+            Logger.info("Got plan summaries: {0}", apiPlans);
 
 
-          devPortalBuisnessLogic(
-              pageData,
-              $q,
-              $scope,
-              $rootScope,
-              $location,
-              PageLifecycle,
-              ApiEntityLoader,
-              OrgSvcs,
-              ApimanSvcs,
-              $routeParams,
-              Configuration,
-              EntityStatusSvc,
-              DevPortalService,
-              BlobService,
-              Logger,
-              $interval,
-              $uibModal,
-              params
-          );
+            devPortalBusinessLogic(
+                pageData,
+                $q,
+                $scope,
+                $rootScope,
+                $location,
+                PageLifecycle,
+                ApiEntityLoader,
+                OrgSvcs,
+                ApimanSvcs,
+                $routeParams,
+                Configuration,
+                EntityStatusSvc,
+                DevPortalService,
+                BlobService,
+                Logger,
+                $interval,
+                $uibModal,
+                params,
+                apiPlans
+            );
+          });
         }
     );
   },
 ]);
 
 
-function devPortalBuisnessLogic(
+function devPortalBusinessLogic(
     pageData,
     $q,
     $scope,
@@ -125,19 +135,20 @@ function devPortalBuisnessLogic(
     Logger,
     $interval,
     $uibModal,
-    params
+    params,
+    apiPlans: ApiPlanSummaryBean[]
 ) {
-  let dataClone: any; // This will be set after summaries have loaded.
-
   $rootScope.isDirty = false;
 
   /** Data **/
   $scope.data = {
     apiVersion: $scope.version as ApiVersionBean, // $scope.version is bound magically by PageLifecycle... Maybe pass in as an arg.
-    planSummaries: [] as ApiPlanSummaryBean[], // Will be loaded further down
+    planSummaries: apiPlans,
     isFeaturedApi: isFeaturedApi($scope.version.api),
     latestImage: $scope.version.api.image
   }
+  // Original clean copy.
+  const dataClone = angular.copy($scope.data);
 
   /** Functions **/
   $scope.updateFeaturedApi = invertFeaturedApi;
@@ -148,23 +159,11 @@ function devPortalBuisnessLogic(
 
   /** Start biz logic **/
 
-  // Get the API Version Plan summaries
-  DevPortalService.getApiVersionPlans(
-      params.org,
-      params.api,
-      params.version
-  ).then((apiPlans: ApiPlanSummaryBean[]) => {
-    Logger.info("Got plans: {0}", apiPlans);
-    $scope.data.planSummaries.push(...apiPlans);
-    Logger.info("Cloning pristine $scope.data -> dataClone (for restore/reset).")
-    dataClone = angular.copy($scope.data);
-  });
-
   /**
    *  Watch `data.apiVersion` for changes by doing a deep comparison
    */
   $scope.$watch(
-      "data.apiVersion",
+      "data",
       (oldValue, newValue) => {
         if (!angular.equals(oldValue, newValue)) {
           Logger.debug("Dirty set to true {0} vs {1}", oldValue, newValue);
@@ -181,7 +180,7 @@ function devPortalBuisnessLogic(
       true
   );
 
-  /*** Markdown Editor ***/
+  /** Markdown Editor **/
   function initEditor(): void {
     const options: EditorOptions = {
       el: document.querySelector("#editor"),
@@ -232,9 +231,7 @@ function devPortalBuisnessLogic(
       $scope.data.apiVersion.extendedDescription = latestDescription;
     }
   };
-
-  /*** End Markdown Editor ***/
-  
+  /** End Markdown Editor **/
   
   /** Save, and reset **/
   // Reset (copy saved pristine copy back over).
@@ -305,8 +302,7 @@ function devPortalBuisnessLogic(
   function openImageCropperModal(): void {
     const modalInstance = $uibModal.open({
       animation: true,
-      templateUrl:
-        "plugins/api-manager/html/api/api-devportal-cropper-modal.html",
+      templateUrl: "plugins/api-manager/html/api/api-devportal-cropper-modal.html",
       size: "md",
       controller: "Apiman.DevPortalImageCropper",
     });
@@ -314,6 +310,7 @@ function devPortalBuisnessLogic(
     modalInstance.result.then(
       (bmr: BlobModalReturn) => {
         $scope.data.latestImage = bmr.croppedCanvas.toDataURL(bmr.type, 100);
+        console.log("$scope.data.apiVersion.api.image=" + bmr.blobRef.id);
         $scope.data.apiVersion.api.image = bmr.blobRef.id;
       },
       (dismissed) => {}
@@ -326,11 +323,9 @@ function devPortalBuisnessLogic(
     const tagsArray: KeyValueTagDto[] = api.tags;
     // If featured remove featured entry, and vince versa...
     if (isFeatured) {
-      tagsArray.forEach((candidate: KeyValueTagDto, index) => {
-        if (candidate.key === "featured") {
-          tagsArray.splice(index, 1);
-        }
-      });
+      _remove(tagsArray, (candidate) => {
+        return candidate.key === "featured";
+      })
     } else {
       tagsArray.push({ key: "featured" } as KeyValueTagDto);
     }

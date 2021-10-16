@@ -73,7 +73,7 @@ public class MultipartHelper {
                 }
             }
             // If blob is very small, may be an error or DOS/spam
-            RestArgumentVerifier.checkArgument(bytesTransferred < 10, "Provided file too small");
+            RestArgumentVerifier.checkArgument(bytesTransferred > 10, "Provided file too small");
         } catch (IOException ioe) {
             IOUtils.closeQuietly(os);
             throw new UncheckedIOException(ioe);
