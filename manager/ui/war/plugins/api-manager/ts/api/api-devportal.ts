@@ -2,19 +2,21 @@ import { _module } from "../apimanPlugin";
 import {
   ApiBean,
   ApiPlanSummaryBean,
-  ApiVersionBean, KeyValueTagDto, UpdateApiBean,
+  ApiVersionBean,
+  KeyValueTagDto,
+  UpdateApiBean,
   UpdateApiVersionBean,
 } from "../model/api.model";
 import Prism from "prismjs";
 import { Editor, EditorOptions } from "@toast-ui/editor";
 import { BlobRef } from "../model/blob.model";
+import Cropper from "cropperjs/dist/cropper.esm";
+import "cropperjs/dist/cropper.css";
 import angular = require("angular");
 // Use CommonJS syntax for tui stuff
 const toast = require("@toast-ui/editor");
 const codeSyntaxHighlight = require("@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all");
 const colourSyntax = require("@toast-ui/editor-plugin-color-syntax");
-import Cropper from "cropperjs/dist/cropper.esm";
-import "cropperjs/dist/cropper.css"
 
 
 _module.controller("Apiman.DevPortalController", [
@@ -77,6 +79,8 @@ _module.controller("Apiman.DevPortalController", [
           // $scope.versions = ApiSummaryBean[]
           // $scope.version = ApiVersionBean
 
+
+
           devPortalBuisnessLogic(
               pageData,
               $q,
@@ -129,14 +133,15 @@ function devPortalBuisnessLogic(
 
   /** Data **/
   $scope.data = {
-    apiVersion: $scope.version as ApiVersionBean, // It's bound magically... Maybe pass in as an arg.
+    apiVersion: $scope.version as ApiVersionBean, // $scope.version is bound magically by PageLifecycle... Maybe pass in as an arg.
     planSummaries: [] as ApiPlanSummaryBean[], // Will be loaded further down
-    isFeaturedApi: isFeaturedApi($scope.version.api)
+    isFeaturedApi: isFeaturedApi($scope.version.api),
+    latestImage: $scope.version.api.image
   }
 
   /** Functions **/
   $scope.updateFeaturedApi = invertFeaturedApi;
-  $scope.openImageCropper = openImageCropper;
+  $scope.openImageCropper = openImageCropperModal;
 
   // TUI Markdown editor. Will initialise
   let markdownEditor: Editor = null;
@@ -213,7 +218,7 @@ function devPortalBuisnessLogic(
     editorDirtyCheck();
   }, 1000);
 
-  const editorDirtyCheck = (): void => {
+  const editorDirtyCheck = function (): void {
     if (markdownEditor == null) {
       initEditor();
     }
@@ -297,7 +302,7 @@ function devPortalBuisnessLogic(
     Logger.error("failure {0}", failure.data || failure);
   }
 
-  function openImageCropper(): void {
+  function openImageCropperModal(): void {
     const modalInstance = $uibModal.open({
       animation: true,
       templateUrl:
@@ -307,9 +312,9 @@ function devPortalBuisnessLogic(
     });
 
     modalInstance.result.then(
-      (uploadedImage: BlobModalReturn) => {
-        assignCanvas(uploadedImage);
-        $scope.data.apiVersion.api.image = uploadedImage.blobRef;
+      (bmr: BlobModalReturn) => {
+        $scope.data.latestImage = bmr.croppedCanvas.toDataURL(bmr.type, 100);
+        $scope.data.apiVersion.api.image = bmr.blobRef.id;
       },
       (dismissed) => {}
     );
@@ -336,13 +341,6 @@ function devPortalBuisnessLogic(
     const answer = tagsArray.findIndex((elem: KeyValueTagDto) => elem.key === "featured") !== -1;
     console.log(answer);
     return answer;
-  }
-
-  function assignCanvas(canvas: BlobModalReturn) {
-    $scope.data.apiVersion.api.image = canvas.croppedCanvas.toDataURL(
-      canvas.type,
-      100
-    );
   }
 }
 

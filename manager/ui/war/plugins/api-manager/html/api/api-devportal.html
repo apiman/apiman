@@ -116,7 +116,7 @@
           <hr />
           <!-- Image cropper modal and/or image -->
           <div class="row api-logo-container">
-            <img src="{{ data.apiVersion.api.image }}" ng-hide="!apiImage" alt="API image" />
+            <img src="{{ data.latestImage }}" ng-hide="!data.latestImage" alt="API image" />
             <button class="btn btn-primary" ng-click="openImageCropper()" type="button" data-field="uploadButton">
               <span class="fa fa-upload"></span> Upload image
             </button>
