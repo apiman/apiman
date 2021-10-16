@@ -37,8 +37,7 @@ public class UpdateApiBean implements Serializable {
     private static final long serialVersionUID = 8811488441452291116L;
 
     private String description;
-    @JsonIgnore
-    @BlobReference
+    // The image reference
     private String image;
     private Set<KeyValueTagDto> tags;
 

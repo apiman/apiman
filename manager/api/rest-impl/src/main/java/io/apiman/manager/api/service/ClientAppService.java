@@ -200,9 +200,16 @@ public class ClientAppService implements DataAccessUtilMixin {
             }
             if (AuditUtils.valueChanged(clientForUpdate.getImage(), bean.getImage())) {
                 auditData.addChange("image", clientForUpdate.getImage(), bean.getImage()); //$NON-NLS-1$
-                clientForUpdate.setImage(bean.getImage());
                 // As an upload will have happened separately, we need to attach to the blob so that it doesn't get wiped out later.
-                blobstore.attachToBlob(bean.getImage());
+                // Remove old image
+                if (clientForUpdate.getImage() != null) {
+                    blobstore.remove(clientForUpdate.getImage());
+                }
+                // Attach to new image
+                clientForUpdate.setImage(bean.getImage());
+                if (bean.getImage() != null) {
+                    blobstore.attachToBlob(bean.getImage());
+                }
             }
             storage.updateClient(clientForUpdate);
             storage.createAuditEntry(AuditUtils.clientUpdated(clientForUpdate, auditData, securityContext));

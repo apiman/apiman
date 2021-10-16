@@ -20,7 +20,10 @@
       <groupId>io.apiman</groupId>
       <artifactId>apiman-common-plugin</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-logging-core</artifactId>
+    </dependency>
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>javax.enterprise</groupId>

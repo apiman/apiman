@@ -91,11 +91,12 @@ public class SqlBlobStoreService implements IBlobStore {
             long hash = hashBlob(fbos);
 
             BlobEntity blobEntity = new BlobEntity()
-                 .setId(resourceId)
-                 .setName(name)
-                 .setMimeType(mimeType)
-                 .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()))
-                 .setHash(hash);
+                    .setId(resourceId)
+                    .setName(name)
+                    .setMimeType(mimeType)
+                    .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()))
+                    .setReferences(initRefCount)
+                    .setHash(hash);
             // Returned ID might be different to the one we generated if we found a duplicate.
             return toBlobRef(deduplicateOrStore(name, mimeType, hash, blobEntity));
         } catch (StorageException e) {
@@ -122,11 +123,12 @@ public class SqlBlobStoreService implements IBlobStore {
         String resourceId = calculateOid(name);
         long hash = hashBlob(bytes);
         BlobEntity blobEntity = new BlobEntity()
-             .setId(resourceId)
-             .setName(name)
-             .setMimeType(mimeType)
-             .setBlob(BlobProxy.generateProxy(bytes))
-             .setHash(hash);
+                .setId(resourceId)
+                .setName(name)
+                .setMimeType(mimeType)
+                .setBlob(BlobProxy.generateProxy(bytes))
+                .setReferences(initRefCount)
+                .setHash(hash);
         try {
             // Returned ID might be different to the one we generated if we found a duplicate.
             return toBlobRef(deduplicateOrStore(name, mimeType, hash, blobEntity));

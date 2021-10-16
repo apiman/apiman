@@ -93,7 +93,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -283,7 +282,15 @@ public class ApiService implements DataAccessUtilMixin {
             }
             if (AuditUtils.valueChanged(apiForUpdate.getImage(), bean.getImage())) {
                 auditData.addChange("image", apiForUpdate.getImage(), bean.getImage());
+                // Remove old image
+                if (apiForUpdate.getImage() != null) {
+                    blobStore.remove(apiForUpdate.getImage());
+                }
+                // Attach to new image
                 apiForUpdate.setImage(bean.getImage());
+                if (bean.getImage() != null) {
+                    blobStore.attachToBlob(bean.getImage());
+                }
             }
             if (AuditUtils.valueChanged(tagMapper.toDto(apiForUpdate.getTags()), bean.getTags())) {
                 // TODO(msavy): add audit entry.
