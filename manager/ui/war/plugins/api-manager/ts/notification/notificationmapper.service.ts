@@ -80,7 +80,7 @@ class NotificationMapper {
         linkResolver: (notification: ApimanNotification<any>): string => {
           const notificationWithEvent: ApimanNotification<ContractApprovalEvent> = notification;
           const event: ContractApprovalEvent = notificationWithEvent.payload;
-          return `${ApimanGlobals.pluginName}/clients/${event.clientOrgId}/${event.clientId}/${event.clientVersion}/contracts`;
+          return `${ApimanGlobals.pluginName}/orgs/${event.clientOrgId}/clients/${event.clientId}/${event.clientVersion}/contracts`;
         }
       },
     ],
@@ -97,7 +97,7 @@ class NotificationMapper {
         linkResolver: (notification: ApimanNotification<any>): string => {
           const notificationWithEvent: ApimanNotification<ClientVersionStatusEvent> = notification;
           const event: ClientVersionStatusEvent = notificationWithEvent.payload;
-          return `${ApimanGlobals.pluginName}/clients/${event.clientOrgId}/${event.clientId}/${event.clientVersion}`;
+          return `${ApimanGlobals.pluginName}/orgs/${event.clientOrgId}/clients/${event.clientId}/${event.clientVersion}/contracts`;
         }
       },
     ]

@@ -1,0 +1,46 @@
+<div id="image-cropper-container">
+  <div class="modal-header">
+    <h3 class="modal-title">Upload an image</h3>
+  </div>
+  <div class="modal-body">
+    <div style="width: 100%; max-width: 400px; height: 100%; max-height: 400px;" class="row center-block">
+      <canvas id="portal-image-cropper"
+              width="400"
+              height="400"
+              style="display: block; width: 100%; height: 100%;">
+      </canvas>
+    </div>
+    <div class="row text-center">
+      <label class="btn btn-primary btn-upload" for="inputImage" title="Upload image file">
+        <input type="file"
+               ngf-select
+               class="btn btn-default"
+               ngf-change="inputImage($files)"
+               ngf-multiple="false"
+               accept="image/*"
+               id="inputImage"
+               apiman-i18n-key="select" />
+        Choose and crop your image
+      </label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-default"
+      type="button"
+      ng-click="cancel()"
+      apiman-i18n-key="cancel"
+    >
+      Cancel
+    </button>
+    <button
+      class="btn btn-primary"
+      type="button"
+      ng-click="uploadImage()"
+      ng-disabled="uploading"
+      apiman-i18n-key="ok"
+    >
+      <span class="fa fa-upload"></span> Upload
+    </button>
+  </div>
+</div>

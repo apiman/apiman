@@ -210,7 +210,7 @@ export var pageTitles = {
                         // Now process all the data packets and bind them to the $scope.
                         var count = 0;
                         angular.forEach(data, function(value, key) {
-                            Logger.debug("|{0}| >> Binding {1} to $scope.", pageName, key);
+                            Logger.info("|{0}| >> Binding {1} to $scope.", pageName, key);
                             this[key] = value;
                             count++;
                         }, $scope);

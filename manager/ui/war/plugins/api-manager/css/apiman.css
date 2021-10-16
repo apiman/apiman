@@ -2162,3 +2162,10 @@ html, body {height: 100%;}
    cursor: pointer;
  }
 /*End Notifications*/
+
+/*Cropper*/
+.cropper-view-box,
+.cropper-face {
+  border-radius: 50%;
+}
+/*End Cropper*/
