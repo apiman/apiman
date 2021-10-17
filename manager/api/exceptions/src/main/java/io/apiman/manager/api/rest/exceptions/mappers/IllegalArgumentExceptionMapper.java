@@ -1,5 +1,7 @@
 package io.apiman.manager.api.rest.exceptions.mappers;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.exceptions.ErrorBean;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -16,6 +18,7 @@ import javax.ws.rs.ext.Provider;
 @Provider
 @ApplicationScoped
 public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
+    private final IApimanLogger log = ApimanLoggerFactory.getLogger(IllegalArgumentExceptionMapper.class);
 
     public IllegalArgumentExceptionMapper() {
     }
@@ -31,6 +34,7 @@ public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalAr
         ResponseBuilder builder = Response.status(Status.BAD_REQUEST)
                 .header("X-Apiman-Error", "true");
         builder.type(MediaType.APPLICATION_JSON_TYPE);
+        log.error(data, data.getMessage());
         return builder.entity(error).build();
     }
 

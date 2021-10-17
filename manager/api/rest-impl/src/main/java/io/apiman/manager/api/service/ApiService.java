@@ -283,10 +283,14 @@ public class ApiService implements DataAccessUtilMixin {
             if (AuditUtils.valueChanged(apiForUpdate.getImage(), bean.getImage())) {
                 auditData.addChange("image", apiForUpdate.getImage(), bean.getImage());
                 // Remove old image
-                blobStore.remove(apiForUpdate.getImage());
+                if (apiForUpdate.getImage() != null) {
+                    blobStore.remove(apiForUpdate.getImage());
+                }
                 // Attach to new image
                 apiForUpdate.setImage(bean.getImage());
-                blobStore.attachToBlob(bean.getImage());
+                if (bean.getImage() != null) {
+                    blobStore.attachToBlob(bean.getImage());
+                }
             }
             if (AuditUtils.valueChanged(tagMapper.toDto(apiForUpdate.getTags()), bean.getTags())) {
                 // TODO(msavy): add audit entry.
