@@ -1,0 +1,9 @@
+PUT /organizations/Organization1/apis/API1 admin/admin
+Content-Type: application/json
+
+{
+  "image": "${blob-id-1}"
+}
+----
+204
+

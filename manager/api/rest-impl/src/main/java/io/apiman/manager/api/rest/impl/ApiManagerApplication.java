@@ -20,6 +20,7 @@ import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.providers.JacksonObjectMapperProvider;
 import io.apiman.manager.api.providers.eager.EagerProvider;
+import io.apiman.manager.api.rest.exceptions.mappers.IllegalArgumentExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.rest.interceptors.BlobResourceInterceptorProvider;
 import io.apiman.manager.api.rest.interceptors.TotalCountInterceptorProvider;
@@ -82,6 +83,7 @@ public class ApiManagerApplication extends Application {
         classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
         classes.add(RestExceptionMapper.class);
+        classes.add(IllegalArgumentExceptionMapper.class);
 
         registerProviders(
                 JacksonObjectMapperProvider.class,

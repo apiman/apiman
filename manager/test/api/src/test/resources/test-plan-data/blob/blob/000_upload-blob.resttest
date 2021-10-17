@@ -1,0 +1,21 @@
+POST /blobs admin/admin
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryK0tqGVjGnX7JurwW
+
+------WebKitFormBoundaryK0tqGVjGnX7JurwW
+Content-Disposition: form-data; name="image"; filename="blob"
+Content-Type: image/svg
+
+<svg height="100" width="100">
+  <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
+</svg>
+
+------WebKitFormBoundaryK0tqGVjGnX7JurwW--
+
+----
+201
+Content-Type: application/json
+X-RestTest-BindTo-blob-id-1: id
+
+{
+    "mimeType": "image/svg"
+}
