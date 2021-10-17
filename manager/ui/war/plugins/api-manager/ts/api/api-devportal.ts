@@ -145,8 +145,9 @@ function devPortalBusinessLogic(
     apiVersion: $scope.version as ApiVersionBean, // $scope.version is bound magically by PageLifecycle... Maybe pass in as an arg.
     planSummaries: apiPlans,
     isFeaturedApi: isFeaturedApi($scope.version.api),
-    latestImage: $scope.version.api.image
+    latestImage: `${Configuration.api.endpoint}/${$scope.version.api.image}`
   }
+  
   // Original clean copy.
   const dataClone = angular.copy($scope.data);
 
