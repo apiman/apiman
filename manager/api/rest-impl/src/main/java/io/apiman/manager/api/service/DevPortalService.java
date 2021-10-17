@@ -53,9 +53,6 @@ public class DevPortalService implements DataAccessUtilMixin {
     }
 
     public SearchResultsBean<ApiSummaryBean> findExposedApis(SearchCriteriaBean criteria) {
-        if (criteria.getFilters().isEmpty()) {
-            return emptySearchResults();
-        }
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findExposedApis(criteria));
     }

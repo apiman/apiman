@@ -1,6 +1,7 @@
 package io.apiman.manager.api.beans.apis;
 
 import java.util.Objects;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +23,8 @@ public class KeyValueTag {
     @Column(name = "key", nullable = false, updatable = false)
     private String key;
 
-    @Column(name = "value", nullable = false, updatable = false)
+    @Nullable
+    @Column(name = "value", nullable = true, updatable = true)
     private String value;
 
     public KeyValueTag() {

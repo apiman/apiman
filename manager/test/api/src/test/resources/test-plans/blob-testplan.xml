@@ -8,14 +8,11 @@
     <test name="Create API">test-plan-data/blob/create/002_create-api.resttest</test>
   </testGroup>
 
-  <!-- Test API management -->
-  <testGroup name="API Management">
+  <!-- Test blob endpoint -->
+  <testGroup name="Blob handling">
     <test name="Upload blob (SVG image)">test-plan-data/blob/blob/000_upload-blob.resttest</test>
     <test name="Get the uploaded blob">test-plan-data/blob/blob/001_get-blob.resttest</test>
     <test name="Update API to use blob image">test-plan-data/blob/blob/002_update-api-with-image-blob.resttest</test>
     <test name="Verify API has image attached">test-plan-data/blob/blob/003_get-api-assert-image.resttest</test>
-<!--    <test name="Verify API image"></test>-->
-<!--    <test name="Delete API"></test>-->
-<!--    <test name="Verify API image missing"></test>-->
   </testGroup>
 </testPlan>
