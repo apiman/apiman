@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" name="Dev portal tests">
+
+  <!-- Create Organizations -->
+  <testGroup name="Initial Creates">
+  <!-- Setup:
+        Plans: Gold Plan, Silver Plan,
+        APIs: API 1 (both plans attached); PrivateAPI (both plans attached)
+        Api Versions:
+          - API1 - 1.0 - Gold = Exposed + featured
+          - API1 - 2 - No exposed plans
+          - API1 - 3 - Gold + Silver = exposed + featured
+          - PrivateAPI - 1.0 - Not exposed in any way. Should not be found on devportal!
+        -->
+    <test name="Setup via import">test-plan-data/devportal/create/000_setup_via_import.resttest</test>
+  </testGroup>
+
+  <!-- Test dev portal management -->
+  <testGroup name="Dev portal functionality">
+    <test name="Search for all APIs (only APIs with at least 1 exposed version should appear)">test-plan-data/devportal/devportal/000_search_exposed_apis.resttest</test>
+    <test name="Get all featured APIs">test-plan-data/devportal/devportal/001_get-featured-apis.resttest</test>
+  </testGroup>
+</testPlan>

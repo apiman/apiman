@@ -382,6 +382,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void api(ApiBean api) {
         currentApi = api;
         try {
+            api.getTags().forEach(t -> t.setId(null));
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApi") + api.getName()); //$NON-NLS-1$
             api.setOrganization(currentOrg);
             storage.createApi(api);

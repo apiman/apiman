@@ -157,6 +157,7 @@ public class ManagerApiTestServer {
      */
     protected void preStart() throws Exception {
         if (ManagerTestUtils.getTestType() == TestType.jpa) {
+            // TestUtil.setProperty("apiman.hibernate.show_sql", "true");
             TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
             // TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/comp/env/jdbc/ApiManagerDS");
             TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");

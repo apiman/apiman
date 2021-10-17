@@ -18,11 +18,9 @@ package io.apiman.manager.api.war;
 import io.apiman.common.config.ConfigFactory;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.exportimport.read.IImportReader;
-import io.apiman.manager.api.jpa.JpaStorageInitializer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,9 +53,6 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     static {
         config = ConfigFactory.createConfig();
     }
-
-    @Inject
-    private ApiManagerConfig config2;
 
     /**
      * @see javax.servlet.GenericServlet#init()

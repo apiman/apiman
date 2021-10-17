@@ -102,7 +102,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 
 import org.apache.commons.io.IOUtils;
 
@@ -773,19 +772,29 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 .setBeans(beans);
     }
 
+    /**
+     * As we can't use the existing SearchCriteriaBean framework to look into relationships for our searches,
+     * this is a (possibly temporary) solution that tacks on an extra criteria to any devportal search query
+     * that any APIs found must have at least 1 version that is exposed in the developer portal.
+     * <p>
+     * This avoids potentially private APIs appearing in the dev portal.
+     */
     @Override
     public SearchResultsBean<ApiSummaryBean> findExposedApis(SearchCriteriaBean criteria) throws StorageException {
         CriteriaBuilder builder = getActiveEntityManager().getCriteriaBuilder();
-        CriteriaQuery<ApiBean> criteriaQuery = builder.createQuery(ApiBean.class);
+        CriteriaQuery<ApiBean> criteriaQuery = builder.createQuery(ApiBean.class).distinct(true);
         Root<ApiBean> root = criteriaQuery.from(ApiBean.class);
         super.applySearchCriteriaToQuery(criteria, builder, criteriaQuery, root, false);
         SetJoin<ApiBean, ApiVersionBean> versions = root.join(ApiBean_.apiVersionSet, JoinType.INNER);
         Predicate isExposed = builder.equal(versions.get(ApiVersionBean_.exposeInPortal), true);
-        criteriaQuery.where(isExposed);
-        SearchResultsBean<ApiBean> result = super.find(criteria, ApiBean.class);
+        CriteriaQuery<ApiBean> exposedQuery = criteriaQuery.where(isExposed);
+        List<ApiBean> results = getActiveEntityManager()
+                .createQuery(exposedQuery)
+                .getResultList();
+        // TODO(msavy): refactor/add back pagination if we need it
         return new SearchResultsBean<ApiSummaryBean>()
-                .setBeans(apiMapper.toSummary(result.getBeans()))
-                .setTotalSize(result.getTotalSize());
+                .setBeans(apiMapper.toSummary(results))
+                .setTotalSize(results.size());
     }
 
     // TODO(msavy): optimise this
