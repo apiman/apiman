@@ -31,6 +31,7 @@ import java.io.StringWriter;
 import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
@@ -61,7 +62,6 @@ import org.mvel2.MVEL;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.integration.VariableResolverFactory;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -271,10 +271,15 @@ public class TestPlanRunner {
                 assertTextPayload(restTest, response);
             } else if (ctValueFirst.startsWith("application/xml") || ctValueFirst.startsWith("application/wsdl+xml") || ctValueFirst.startsWith("text/xml")) {
                 assertXmlPayload(restTest, response);
-            } else {
-                Assert.fail("Unsupported response payload type: " + ctValueFirst);
+            } else if (ctValueFirst.startsWith("image/")) {
+                assertBinaryEquals(restTest, response);
             }
         }
+    }
+
+    private void assertBinaryEquals(RestTest restTest, Response response) {
+        byte[] expected = restTest.getExpectedResponsePayload().getBytes(StandardCharsets.UTF_8);
+        assertThat(response.binary()).isEqualTo(expected);
     }
 
     /**
