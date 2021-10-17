@@ -2164,8 +2164,12 @@ html, body {height: 100%;}
 /*End Notifications*/
 
 /*Cropper*/
-.cropper-view-box,
-.cropper-face {
+#image-cropper-container .cropper-view-box,
+#image-cropper-container .cropper-face {
+  border-radius: 50%;
+}
+
+img#devportal-api-logo {
   border-radius: 50%;
 }
 /*End Cropper*/

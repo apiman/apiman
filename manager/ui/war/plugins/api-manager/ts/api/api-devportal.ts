@@ -145,15 +145,16 @@ function devPortalBusinessLogic(
     apiVersion: $scope.version as ApiVersionBean, // $scope.version is bound magically by PageLifecycle... Maybe pass in as an arg.
     planSummaries: apiPlans,
     isFeaturedApi: isFeaturedApi($scope.version.api),
-    latestImage: `${Configuration.api.endpoint}/${$scope.version.api.image}`
+    latestImage: $scope.version.api.image
   }
-  
+
   // Original clean copy.
   const dataClone = angular.copy($scope.data);
 
   /** Functions **/
   $scope.updateFeaturedApi = invertFeaturedApi;
   $scope.openImageCropper = openImageCropperModal;
+  $scope.getImageEndpoint = getImageEndpoint;
 
   // TUI Markdown editor. Will initialise
   let markdownEditor: Editor = null;
@@ -293,6 +294,16 @@ function devPortalBusinessLogic(
         Logger.debug("Upload failed: {0}", failed);
       }
     );
+  }
+
+  function getImageEndpoint(): string {
+    if (!$scope.data.latestImage) {
+      return null;
+    } else if ($scope.data.latestImage.startsWith("data")) {
+        return $scope.data.latestImage;
+    } else {
+        return `${Configuration.api.endpoint}/${$scope.data.latestImage}`;
+    }
   }
 
   function handleFailure(failure: any): void {
