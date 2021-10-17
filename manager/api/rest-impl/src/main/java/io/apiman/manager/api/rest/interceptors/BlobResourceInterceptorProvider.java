@@ -73,8 +73,10 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
             if (existingValue == null || existingValue.isBlank()) {
                 LOGGER.debug("Null or blank @BlobRef {0}@{1}", blobRef.getName(), entity.getClass().getCanonicalName());
             } else {
-                String resolvedRef = UriBuilder.fromResource(IBlobResource.class).path(existingValue).build()
-                                               .toString();
+                String resolvedRef = UriBuilder.fromResource(IBlobResource.class)
+                        .path(existingValue)
+                        .build()
+                        .toString();
                 LOGGER.debug("Rewriting response POJO field annotated with resolved @BlobReference: {0} -> {1}", existingValue, resolvedRef);
                 blobRef.set(entity, resolvedRef);
             }

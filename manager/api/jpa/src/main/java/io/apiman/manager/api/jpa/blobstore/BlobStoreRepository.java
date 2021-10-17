@@ -28,8 +28,7 @@ public class BlobStoreRepository extends AbstractJpaStorage {
      * UUID recommended as a component of ID to avoid collisions.
      */
     public void create(@NotNull BlobEntity bean) throws StorageException {
-        Preconditions.requireNonBlank(bean.getId(),
-             "Caller must set ID for blob before storing to ensure they are able to look it up");
+        Preconditions.requireNonBlank(bean.getId(), "Caller must set ID for blob before storing to ensure they are able to look it up");
         super.create(bean);
     }
 
@@ -50,6 +49,7 @@ public class BlobStoreRepository extends AbstractJpaStorage {
     public void deleteById(@NotNull String uid) throws StorageException {
         Preconditions.requireNonBlank(uid, "uid must be non-blank");
         EntityManager em = super.getActiveEntityManager();
+        em.flush();
         em.createQuery("DELETE "
                             + "FROM BlobEntity b "
                             + "WHERE b.references <= 1 "
