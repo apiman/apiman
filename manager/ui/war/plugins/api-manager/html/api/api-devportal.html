@@ -41,7 +41,7 @@
 
         <div ng-show="data.apiVersion.exposeInPortal">
           <!-- Feature in Portal -->
-          <div class="title" apiman-i18n-key="dev-portal">Feature in the developer portal?</div>
+          <div class="title" apiman-i18n-key="dev-portal">Feature In Portal</div>
           <div>
           <span apiman-i18n-key="feature-api-in-portal-help">Feature this API version in the developer portal?
             If selected, the API will appear as a default entry on the developer portal landing page.</span>
@@ -118,12 +118,12 @@
                   <h2 class="card-pf-title">
                     Select a logo for your API
                   </h2>
-                  <h6 class="card-subtitle mb-2 text-left">Selecting a logo is optional. A stand-in image will be provided if no logo is chosen.</h6>
+                  <h6 class="card-subtitle mb-2 text-left"><em>Optional</em>. A stand-in will be provided if no logo is chosen.</h6>
                   <div class="card-pf-body text-center">
                     <img src="{{ getImageEndpoint() }}" ng-hide="!data.latestImage" alt="API image" id="devportal-api-logo" />
                     <span ng-show="!data.latestImage" class="fa fa-file-image-o" style="font-size: 10em;"></span>
                   </div>
-                  <div class="card-pf-footer text-center">
+                  <div class="card-pf-footer text-center" style="margin: 0 -10px !important;">
                     <button class="btn btn-primary" ng-click="openImageCropper()" type="button" data-field="uploadButton">
                       <span class="fa fa-upload"></span> Upload image
                     </button>
