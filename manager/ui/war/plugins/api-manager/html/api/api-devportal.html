@@ -48,10 +48,10 @@
           </div>
           <div style="padding: 8px; margin-bottom: 10px">
             <input
-                   ng-model="data.isFeaturedApi"
-                   ng-click="updateFeaturedApi()"
-                   type="checkbox"
-                   id="feature-api-in-portal">
+                ng-model="data.isFeaturedApi"
+                ng-click="updateFeaturedApi()"
+                type="checkbox"
+                id="feature-api-in-portal">
             <label for="feature-api-in-portal"
                    apiman-i18n-key="feature-api-in-portal"
                    style="padding-left: 3px">Feature this API</label>
@@ -65,10 +65,10 @@
             </span>
           </div>
           <div class="apiman-divider-40"
-               ng-show="plans.length === 0">
+               ng-show="data.planSummaries.length === 0">
             <div class="alert alert-warning">
               <span class="pficon pficon-info"></span>
-              <span apiman-i18n-key="api-plans.no-locked-plans-found">No plans were attached to this API.</span>
+              <span apiman-i18n-key="api-plans.no-locked-plans-found">No plans are attached to this API. Without plans, this API will not appear in the developer portal.</span>
             </div>
           </div>
 
@@ -78,12 +78,10 @@
                 <div class="card-pf card-pf-accented card-pf-aggregate-status">
                   <h2 class="card-pf-title">
                     {{  data.planSummaries[$index].planName }}
-                    <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
                   </h2>
+                  <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
                   <div class="card-pf-body text-left">
                     <p class="card-text">{{ data.planSummaries[$index].planDescription }}</p>
-
-
                     <div>
                       <ul class="list-group list-group-flush">
                         <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.exposeInPortal === true">&#9702; Plan <strong>is available</strong> in the developer portal</li>
@@ -111,55 +109,66 @@
               </div>
             </div>
             <!-- /row -->
-          </div>
-          <!-- /Attached plans -->
-          <hr />
-          <!-- Image cropper modal and/or image -->
-          <div class="row api-logo-container">
-            <img src="{{ data.latestImage }}" ng-hide="!data.latestImage" alt="API image" />
-            <button class="btn btn-primary" ng-click="openImageCropper()" type="button" data-field="uploadButton">
-              <span class="fa fa-upload"></span> Upload image
-            </button>
-          </div>
-
-          <!-- /image cropper and/or image -->
-          <!-- API version description markdown row -->
-        <div class="title" apiman-i18n-key="extended-api-description">Extended API Description</div>
-        <div>
+            <!-- /Attached plans -->
+            <hr />
+            <!-- Image cropper modal and/or image -->
+            <div class="row row-cards-pf api-logo-container">
+              <div class="col-xs-6 col-sm-5 col-md-5 container-border"  style="width: 27em;">
+                <div class="card-pf card-pf-accented card-pf-aggregate-status">
+                  <h2 class="card-pf-title">
+                    Select a logo for your API
+                  </h2>
+                  <h6 class="card-subtitle mb-2 text-left">Selecting a logo is optional. A stand-in image will be provided if no logo is chosen.</h6>
+                  <div class="card-pf-body text-center">
+                    <img src="{{ getImageEndpoint() }}" ng-hide="!data.latestImage" alt="API image" id="devportal-api-logo" />
+                    <span ng-show="!data.latestImage" class="fa fa-file-image-o" style="font-size: 10em;"></span>
+                  </div>
+                  <div class="card-pf-footer text-center">
+                    <button class="btn btn-primary" ng-click="openImageCropper()" type="button" data-field="uploadButton">
+                      <span class="fa fa-upload"></span> Upload image
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+              <!-- /image cropper and/or image -->
+              <!-- API version description markdown row -->
+              <div class="title" apiman-i18n-key="extended-api-description">Extended API Description</div>
+              <div>
             <span apiman-i18n-key="extended-api-description-help">
               Provide a Markdown description of your API to help developers understand how to use your API.
             </span>
-        </div>
-        <div id="editor"></div>
-        <!-- /row -->
-        <!-- save -->
-        <hr />
-        <div apiman-permission="apiEdit"
-             class="actions"
-             style="margin-top: 20px">
-          <button ng-disabled="!isDirty"
-                  class="btn btn-primary"
-                  ng-click="doSave()"
-                  type="submit"
-                  data-icon="fa-cog">
-            <span ng-show="saving" apiman-i18n-key="saving">Saving</span>
-            <span ng-hide="saving" apiman-i18n-key="save">Save</span>
-          </button>
-          <button ng-disabled="!isDirty"
-                  ng-click="reset()"
-                  class="btn btn-default"
-                  data-field="cancelButton"
-                  apiman-i18n-key="cancel">Cancel</button>
-        </div>
-        <!-- /save -->
-        </div>
+              </div>
+              <div id="editor"></div>
+              <!-- /row -->
+              <!-- save -->
+              <hr />
+              <div apiman-permission="apiEdit"
+                   class="actions"
+                   style="margin-top: 20px">
+                <button ng-disabled="!isDirty"
+                        class="btn btn-primary"
+                        ng-click="doSave()"
+                        type="submit"
+                        data-icon="fa-cog">
+                  <span ng-show="saving" apiman-i18n-key="saving">Saving</span>
+                  <span ng-hide="saving" apiman-i18n-key="save">Save</span>
+                </button>
+                <button ng-disabled="!isDirty"
+                        ng-click="reset()"
+                        class="btn btn-default"
+                        data-field="cancelButton"
+                        apiman-i18n-key="cancel">Cancel</button>
+              </div>
+              <!-- /save -->
+            </div>
 
+          </div>
+        </div>
       </div>
     </div>
+    <!-- /Content -->
   </div>
-</div>
-<!-- /Content -->
-</div>
 </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
 </body>
 </html>
