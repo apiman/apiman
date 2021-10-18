@@ -75,7 +75,7 @@ _module.controller("Apiman.DevPortalController", [
         pageData,
         $scope,
         function () {
-          PageLifecycle.setPageTitle("api-devportal", []);
+          PageLifecycle.setPageTitle("api-devportal", [$scope.version.api.name, $scope.version.version]);
           // Magic bindings:
           // $scope.versions = ApiSummaryBean[]
           // $scope.version = ApiVersionBean
@@ -322,7 +322,6 @@ function devPortalBusinessLogic(
     modalInstance.result.then(
       (bmr: BlobModalReturn) => {
         $scope.data.latestImage = bmr.croppedCanvas.toDataURL(bmr.type, 100);
-        console.log("$scope.data.apiVersion.api.image=" + bmr.blobRef.id);
         $scope.data.apiVersion.api.image = bmr.blobRef.id;
       },
       (dismissed) => {}
@@ -356,6 +355,7 @@ _module.controller("Apiman.DevPortalImageCropper",
       function($scope, BlobService, $uibModalInstance, Logger, Modals) {
         $scope.uploadImage = uploadImage;
         $scope.closeModal = closeModal;
+        $scope.dismissModal = dismissModal;
         $scope.inputImage = inputImage;
         $scope.uploading = false;
         let cropper: Cropper = null;
@@ -439,6 +439,10 @@ _module.controller("Apiman.DevPortalImageCropper",
             croppedCanvas: croppedCanvas
           };
           $uibModalInstance.close(returnValue);
+        }
+
+        function dismissModal() {
+          $uibModalInstance.dismiss();
         }
       }]);
 
