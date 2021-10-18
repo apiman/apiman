@@ -329,6 +329,7 @@ export interface IApiSummary {
   id: string;
   name: string;
   description: string;
+  image: string;
 
   /** @format date-time */
   createdOn: string;

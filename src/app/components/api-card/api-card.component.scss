@@ -6,19 +6,34 @@
 }
 
 .api-card-header {
-  padding-left: 3% ;
+  display: grid;
+  grid-template-columns: 1fr 8fr;
+  grid-column-gap: 0.8rem;
 }
 
-.api-card-title {
-  margin-left: -10px;
-}
-
-.api-card-icon {
+.api-card-img {
   background-size: cover;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+
+  // for alt attribute
+  font-size: 0.6rem;
+}
+
+.icon-wrapper{
+  margin: auto;
+  // border: 1px solid green;
+}
+
+.api-card-icon{
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  height: 32px;
 }
 
 .api-card-title {
-  margin-top: 5px;
   font-size: 1.2rem;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -28,7 +43,7 @@
 
 .api-card-content {
   padding: 16px;
-  height: 4em;
+  height: 4rem;
 }
 
 .content-text {
