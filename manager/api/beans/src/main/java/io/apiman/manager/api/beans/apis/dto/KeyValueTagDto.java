@@ -4,10 +4,14 @@ import java.util.StringJoiner;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class KeyValueTagDto {
     @NotNull
     private String key;

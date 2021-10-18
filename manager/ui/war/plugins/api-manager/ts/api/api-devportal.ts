@@ -355,7 +355,7 @@ _module.controller("Apiman.DevPortalImageCropper",
       function($scope, BlobService, $uibModalInstance, Logger, Modals) {
         $scope.uploadImage = uploadImage;
         $scope.closeModal = closeModal;
-        $scope.dismissModal = dismissModal;
+        $scope.dismissUibModal = dismissUibModal;
         $scope.inputImage = inputImage;
         $scope.uploading = false;
         let cropper: Cropper = null;
@@ -441,8 +441,8 @@ _module.controller("Apiman.DevPortalImageCropper",
           $uibModalInstance.close(returnValue);
         }
 
-        function dismissModal() {
-          $uibModalInstance.dismiss();
+        function dismissUibModal() {
+          $uibModalInstance.dismissModal();
         }
       }]);
 
