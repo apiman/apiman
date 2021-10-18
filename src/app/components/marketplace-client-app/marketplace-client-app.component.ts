@@ -81,6 +81,11 @@ export class MarketplaceClientAppComponent implements OnInit {
     // https://material.angular.io/components/table/examples
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    // if only one client is left we select it
+    if (this.dataSource.filteredData.length === 1) {
+      this.selectClient(this.dataSource.filteredData[0]);
+    }
   }
 
   /**
