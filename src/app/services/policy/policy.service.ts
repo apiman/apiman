@@ -96,15 +96,17 @@ export class PolicyService {
   }
 
   private extendPolicy(extendedPolicy: IPolicyExt) {
-    const policyConfig = JSON.parse(extendedPolicy.configuration);
+    const policyConfig = this.getPolicyConfiguration(extendedPolicy);
     switch (extendedPolicy.definition.id) {
       case this.policyIds.RATE_LIMITING: {
         extendedPolicy.shortName = 'Rate Limit';
+        // TODO use i18n strings
         extendedPolicy.shortDescription = `${policyConfig.limit} Request${policyConfig.limit > 1 ? 's' : ''} per ${policyConfig.period}`;
         break;
       }
       case this.policyIds.TRANSFER_QUOTA: {
         extendedPolicy.shortName = 'Quota';
+        // TODO use i18n strings
         extendedPolicy.shortDescription = `${formatBytes(policyConfig.limit)} per ${policyConfig.period}`;
         break;
       }
@@ -145,8 +147,7 @@ export class PolicyService {
   }
 
   public initPolicy(policy: IPolicyExt) {
-    // Config from backend is a JSON object in string representation
-    policy.configAsObject = JSON.parse(policy.configuration);
+    policy.configAsObject = this.getPolicyConfiguration(policy);
 
     switch (policy.definition.id) {
       case this.policyIds.RATE_LIMITING: {
@@ -166,6 +167,12 @@ export class PolicyService {
     }
 
     return policy;
+  }
+
+  private getPolicyConfiguration(policy: IPolicyExt) {
+    // Config from backend is a JSON object in string representation
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return JSON.parse(policy.configuration);
   }
 
   private getRestrictions(limit: string, timeUnit: string){

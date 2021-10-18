@@ -87,7 +87,7 @@ export class PlanCardListComponent implements OnInit {
   }
 
   /**
-   * Checks if the user is logged in and redirects to login in notGlau
+   * Checks if the user is logged in and redirects to login if not logged in
    * @private
    */
   private checkIfUserIsLoggedIn() {
