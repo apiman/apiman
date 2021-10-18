@@ -10,7 +10,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Provider;
@@ -97,6 +99,7 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
     @SuppressWarnings("unchecked")
     private List<FieldAndEntity> searchRecursively(Object root) throws IllegalAccessException {
         List<FieldAndEntity> results = new ArrayList<>();
+        Set<Object> objectsSeen = new HashSet<>();
         Deque<Object> nodesToSearch = new ArrayDeque<>();
         nodesToSearch.push(root);
         while (!nodesToSearch.isEmpty()) {
@@ -106,10 +109,15 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
                 if (f.isAnnotationPresent(BlobReference.class) && f.getType().equals(String.class)) {
                     results.add(new FieldAndEntity(f, currentNode));
                 } else {
-                    if (!f.getType().isEnum() && f.getType().getCanonicalName().startsWith("io.apiman")) {
+                    if (!f.getType().isEnum()
+                                // Is an Apiman entity.
+                                && f.getType().getCanonicalName().startsWith("io.apiman")
+                                // Must not have seen this before (i.e. simple cycle detection).
+                                && !objectsSeen.contains(currentNode)) {
                         Object value = f.get(currentNode);
                         if (value != null) {
                             nodesToSearch.push(value);
+                            objectsSeen.add(value);
                         }
                     }
                 }
