@@ -23,6 +23,7 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.util.ArrayList;
@@ -58,6 +59,9 @@ public abstract class AbstractJpaStorage {
     @Inject
     private EntityManagerFactoryAccessor emf;
 
+    @Inject
+    private ApiManagerConfig config;
+
     /**
      * Constructor.
      */
@@ -65,7 +69,7 @@ public abstract class AbstractJpaStorage {
     }
 
     protected Jdbi getJdbi() {
-        return Jdbi.create(lookupDS("java:/apiman/datasources/apiman-manager"));
+        return Jdbi.create(lookupDS(config.getHibernateDataSource()));
     }
 
     /**
