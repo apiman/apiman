@@ -23,13 +23,14 @@
   display: grid;
   justify-content: space-between;
   align-items: start;
-  grid-template-columns: 1.2fr 11fr;
+  grid-template-columns: auto 11fr;
   grid-column-gap: 0px;
   grid-row-gap: 32px;
 }
 
 .app-api-menu{
   margin-top: 1.6rem;
+  margin-right: 1rem;
   div{
     padding: 8px;
     margin-bottom: 1.4rem;
