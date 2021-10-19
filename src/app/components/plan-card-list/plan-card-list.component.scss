@@ -1,10 +1,8 @@
 #plan-grid {
-  margin-right: 2%;
   display: grid;
   justify-content: center;
-  align-items: stretch;
   grid-template-columns: repeat(auto-fit, 360px);
-  grid-column-gap: 2rem;
+  grid-column-gap: 32px;
   grid-row-gap: 32px;
 }
 
@@ -20,11 +18,6 @@
   }
 }
 
-mat-card-actions {
-  text-align: center;
-  margin-bottom: unset;
-}
-
 p {
   width: 100%;
 }
@@ -34,17 +27,25 @@ p {
 }
 
 .plan-card{
-  border: 1px solid rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .card-header {
-  justify-content: center;
-}
-
-.card-header-content {
   text-align: center;
 }
 
-#sign-up-button {
-  width: 50%;
+.card-header-title {
+  margin: 0.8rem 0 0.4rem 0;
+  font-weight: 500;
+}
+
+.plan-card-actions{
+  margin-top: auto;
+  text-align: center;
+}
+
+.sign-up-button{
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
 }

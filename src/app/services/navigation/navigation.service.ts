@@ -14,20 +14,22 @@ export class NavigationService {
       name: this.translator.instant('MPLACE.TITLE'),
       link: 'marketplace',
       openInNewTab: false,
+      useRouter: true
     },
     {
       name: this.translator.instant('APPS.TITLE'),
       link: 'applications',
       openInNewTab: false,
-    },
+      useRouter: true
+    }
     // To-Do
     // Show account link again once the account page is implemented correctly
     // {
     //   name: this.translator.instant('ACCOUNT.TITLE'),
     //   link: 'account',
     //   openInNewTab: false,
-    // },
-
+    //   useRouter: true
+    // }
   ];
 
   navigationChanged: EventEmitter<INavigation> =
@@ -46,6 +48,7 @@ export class NavigationService {
         name: this.translator.instant('COMMON.HOME'),
         link: 'home',
         openInNewTab: false,
+        useRouter: true
       });
     }
 

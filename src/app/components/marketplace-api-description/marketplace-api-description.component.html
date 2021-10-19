@@ -23,6 +23,8 @@
    <div>{{ api.api.description }}</div>
   </div>
 
+  <h2 class="primary mt-rem-3">{{'API_DETAILS.EXTENDED_DESCRIPTION' | translate}}</h2>
+
   <!-- Template for MD-Reader -->
   <ng-template #mdTemplate>
     <div class="box" id="long-description-tile" data-simplebar>
@@ -33,7 +35,7 @@
   <!-- Template for Key Features -->
   <ng-template #featuresTemplate>
     <div id="key-features" *ngIf="features.length > 0">
-      <h1 class="primary">Key Features</h1>
+      <h2 class="primary">{{'API_DETAILS.KEY_FEATURES' | translate}}</h2>
       <div>
         <mat-list>
           <mat-list-item *ngFor="let feature of features">

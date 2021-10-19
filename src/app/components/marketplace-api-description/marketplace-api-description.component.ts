@@ -13,11 +13,9 @@ export class MarketplaceApiDescriptionComponent implements OnInit {
   @Input() isLatest!: boolean;
   @Input() apiImgUrl!: string;
 
-  // TODO get features from backend
-  features: string[] = [];
-  public markDownText = this.translator.instant(
-    'API_DETAILS.NO_EXT_DESCRIPTION'
-  );
+  // TODO get features from backend as soon as the endpoint is created
+  features = [];
+  public markDownText = this.translator.instant('API_DETAILS.NO_EXT_DESCRIPTION');
 
   constructor(private translator: TranslateService,
               public configService: ConfigService) {

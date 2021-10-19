@@ -41,6 +41,7 @@ export interface ILink {
   name: string;
   link: string;
   openInNewTab: boolean;
+  useRouter?: boolean;
 }
 
 export interface IAuthProvider {

@@ -119,6 +119,9 @@
     "UNREGISTER_BTN": "Unregister"
   },
   "API_DETAILS": {
+    "PLANS": "Plans",
+    "KEY_FEATURES": "Key Features",
+    "EXTENDED_DESCRIPTION": "Extended Description",
     "NO_EXT_DESCRIPTION": "No further description has been stored for this API"
   },
   "TERMS": {

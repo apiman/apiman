@@ -1,6 +1,17 @@
 <div class="row">
   <div class="navigation-links" *ngFor="let link of navigation.links; let last = last">
-    <a [href]="link.link" [target]="link.openInNewTab ? '_blank' : '_self'"><span>{{ link.name }}</span></a>
+    <a *ngIf="!link.useRouter; else noRouterLink" [href]="link.link"
+       [target]="link.openInNewTab ? '_blank' : '_self'">
+      <span>{{ link.name }}</span>
+    </a>
+
+    <ng-template #noRouterLink>
+      <a [routerLink]="link.link"
+         routerLinkActive="primary">
+        <span>{{link.name}}</span>
+      </a>
+    </ng-template>
+
     <span *ngIf="!last" class="navigation-separator">{{navigation.separator}}</span>
   </div>
 </div>

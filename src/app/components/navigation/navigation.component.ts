@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ConfigService } from '../../services/config/config.service';
+import { Component } from '@angular/core';
 import { INavigation } from '../../interfaces/IConfig';
 import { NavigationService } from '../../services/navigation/navigation.service';
 
