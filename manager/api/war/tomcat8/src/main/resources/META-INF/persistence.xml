@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 
-<persistence-unit name="apiman-manager-api-jpa" transaction-type="JTA">
-    <jta-data-source>java:/apiman/datasources/apiman-manager</jta-data-source>
+  <persistence-unit name="apiman-manager-api-jpa" transaction-type="RESOURCE_LOCAL">
+    <non-jta-data-source>java:/apiman/datasources/apiman-manager</non-jta-data-source>
     <class>io.apiman.manager.api.beans.idm.UserBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleMembershipBean</class>
@@ -33,19 +33,14 @@
     <class>io.apiman.manager.api.beans.notifications.NotificationTypeEntity</class>
     <class>io.apiman.manager.api.beans.notifications.NotificationEntity</class>
     <class>io.apiman.manager.api.beans.apis.KeyValueTag</class>
-<!--    <exclude-unlisted-classes>true</exclude-unlisted-classes>-->
-  <properties>
+    <!--    <exclude-unlisted-classes>true</exclude-unlisted-classes>-->
+    <properties>
       <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.id.new_generator_mappings" value="true" />
       <property name="hibernate.order_updates" value="true"/>
+      <!-- TODO(msavy): Can we safely add batch optimiations here too? -->
       <property name="hibernate.connection.autocommit" value="false"/>
-      <property name="hibernate.format_sql" value="true"/>
-<!--      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>-->
-      
-      <!-- Don't allow WF/EAP to manage the persistence unit - vital since we're dynamically setting most of the
-      properties *after* WF/EAP has started! -->
-<!--      <property name="jboss.as.jpa.managed" value="true"/>-->
-      
+<!--      <property name="hibernate.format_sql" value="true"/>-->
     </properties>
   </persistence-unit>
 

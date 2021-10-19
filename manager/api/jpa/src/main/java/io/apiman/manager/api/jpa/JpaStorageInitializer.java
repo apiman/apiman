@@ -70,7 +70,7 @@ public class JpaStorageInitializer {
         DB_TYPE_MAP.put(ApimanOracle12Dialect.class.getName(), "oracle12"); //$NON-NLS-1$
         DB_TYPE_MAP.put(Oracle12cDialect.class.getName(), "oracle12"); //$NON-NLS-1$
         DB_TYPE_MAP.put(Oracle10gDialect.class.getName(), "oracle12"); //$NON-NLS-1$
-
+        // TODO: update these mappings
         DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(), "postgresql9"); //$NON-NLS-1$
         DB_TYPE_MAP.put(PostgreSQL9Dialect.class.getName(), "postgresql9"); //$NON-NLS-1$
         DB_TYPE_MAP.put(PostgreSQL82Dialect.class.getName(), "postgresql9"); //$NON-NLS-1$
@@ -91,7 +91,7 @@ public class JpaStorageInitializer {
         if (dsJndiLocation == null) {
             throw new RuntimeException("Missing datasource JNDI location from JPA storage configuration."); //$NON-NLS-1$
         }
-        ds = lookupDS("java:/apiman/datasources/apiman-manager");
+        ds = lookupDS(dsJndiLocation);
         dbType = DB_TYPE_MAP.get(hibernateDialect);
         if (dbType == null) {
             throw new RuntimeException("Unknown hibernate dialect configured: " + hibernateDialect); //$NON-NLS-1$

@@ -118,6 +118,13 @@
         </includes>
       </unpackOptions>
     </dependencySet>
+    <!-- Default H2 DB driver -->
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>com.h2database:h2:jar</include>
+      </includes>
+    </dependencySet>
   </dependencySets>
   <fileSets>
     <fileSet>

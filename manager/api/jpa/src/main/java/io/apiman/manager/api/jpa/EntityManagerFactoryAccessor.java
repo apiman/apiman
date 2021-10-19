@@ -76,7 +76,7 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         properties.put("hibernate.hbm2ddl.auto", autoValue); //$NON-NLS-1$
         properties.put("hibernate.dialect", dialect); //$NON-NLS-1$
         properties.put("hibernate.connection.handling_mode", "DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT");
-        properties.put("hibernate.transaction.jta.platform", "com.atomikos.icatch.jta.hibernate4.AtomikosPlatform");
+        // properties.put("hibernate.transaction.jta.platform", "com.atomikos.icatch.jta.hibernate4.AtomikosPlatform");
 
         // First try using standard JPA to load the persistence unit.  If that fails, then
         // try using hibernate directly in a couple ways (depends on hibernate version and
