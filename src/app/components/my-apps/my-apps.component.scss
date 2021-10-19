@@ -1,20 +1,17 @@
 .app-header{
   display: grid;
-  justify-content: space-between;
-  align-items: start;
-  grid-template-columns: 0.6fr 6fr 3.4fr;
-  grid-column-gap: 16px;
-  grid-row-gap: 32px;
+  align-items: center;
+  grid-template-columns: 65px 6fr 3.4fr;
+  grid-column-gap: 22px;
 }
 
-.app-icon-wrapper {
-  max-width: 100%;
-  overflow: hidden;
+.app-icon-wrapper{
+  width: 65px;
+  height: 65px;
 }
 
-.app-icon{
-  width: 100%;
-  transform: scale(0.9);
+.client-icon{
+  font-size: 65px;
 }
 
 .app-title{
@@ -111,5 +108,6 @@
 }
 
 .client-card{
+  padding-top: 6px;
   padding-bottom: 1.6rem;
 }
