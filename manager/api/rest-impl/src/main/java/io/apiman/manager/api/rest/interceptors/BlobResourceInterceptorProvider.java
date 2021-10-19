@@ -7,20 +7,29 @@ import io.apiman.manager.api.rest.IBlobResource;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
+import javax.transaction.Transactional;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.ClassUtils;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
-import org.reflections.ReflectionUtils;
+
+import static org.apache.commons.lang3.reflect.FieldUtils.getAllFields;
 
 /**
  * Rewrites a blob's UID into a URL that can be resolved by the browser.
@@ -45,6 +54,7 @@ import org.reflections.ReflectionUtils;
  */
 @Provider
 @ServerInterceptor
+@Transactional // TODO(msavy): Need this while we still return managed beans at the presentation layer, could consider removing when we go full DTO
 public class BlobResourceInterceptorProvider implements WriterInterceptor {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(BlobResourceInterceptorProvider.class);
@@ -101,29 +111,68 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
         List<FieldAndEntity> results = new ArrayList<>();
         Set<Object> objectsSeen = new HashSet<>();
         Deque<Object> nodesToSearch = new ArrayDeque<>();
-        nodesToSearch.push(root);
+        resolveValue(root).forEach(nodesToSearch::push);
         while (!nodesToSearch.isEmpty()) {
             Object currentNode = nodesToSearch.pop();
-            for (Field f : ReflectionUtils.getAllFields(currentNode.getClass())) {
-                f.setAccessible(true);
-                if (f.isAnnotationPresent(BlobReference.class) && f.getType().equals(String.class)) {
-                    results.add(new FieldAndEntity(f, currentNode));
-                } else {
-                    if (!f.getType().isEnum()
-                                // Is an Apiman entity.
-                                && f.getType().getCanonicalName().startsWith("io.apiman")
-                                // Must not have seen this before (i.e. simple cycle detection).
-                                && !objectsSeen.contains(currentNode)) {
+
+            // If is collection-like, then don't scan fields. Just get the values and continue.
+            if (isCollectionLike(currentNode)) {
+                resolveValue(currentNode).forEach(nodesToSearch::add);
+                continue;
+            }
+
+            // If not collection-like, then we'll inspect the fields and see whether there's anything worth looking at.
+            // Must not have seen this before (i.e. simple cycle detection).
+            if (!currentNode.getClass().isEnum() && !objectsSeen.contains(currentNode)) {
+                for (Field f : getAllFields(currentNode.getClass())) {
+                    boolean isAccessible = f.trySetAccessible();
+                    if (f.isAnnotationPresent(BlobReference.class) && f.getType().equals(String.class)) {
+                        results.add(new FieldAndEntity(f, currentNode));
+                    }
+                    if (isAccessible && !shouldBeIgnored(f, currentNode)) {
                         Object value = f.get(currentNode);
                         if (value != null) {
-                            nodesToSearch.push(value);
-                            objectsSeen.add(value);
+                            resolveValue(value).forEach(nodesToSearch::push);
                         }
                     }
                 }
+                objectsSeen.add(currentNode);
+
             }
         }
         return results;
+    }
+
+    private boolean shouldBeIgnored(Field f, Object currentNode) {
+        int modifiers = f.getModifiers();
+        return Modifier.isStatic(modifiers)
+                || ClassUtils.isPrimitiveOrWrapper(f.getType())
+                || f.getType().isAnnotation()
+                || Modifier.isAbstract(modifiers)
+                || Modifier.isInterface(modifiers)
+                || Modifier.isTransient(modifiers)
+                || f.isEnumConstant()
+                || !f.canAccess(currentNode)
+                || f.isAnnotationPresent(JsonIgnore.class);
+    }
+
+    private boolean isCollectionLike(Object obj) {
+        return obj instanceof Map || obj instanceof Collection;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Stream<Object> resolveValue(Object obj) {
+        if (obj == null) {
+            return Stream.empty();
+        } else if (obj instanceof Map) { // TODO not sure if we also need to inspect the keys. Seem a tad unlikely.
+            return ((Map<Object, Object>) obj).values().stream();
+        } else if (obj instanceof Collection) {
+            return ((Collection<Object>) obj).stream();
+        } else if (obj instanceof Object[]) {
+            return Arrays.stream((Object[])obj);
+        } else {
+            return Stream.of(obj);
+        }
     }
 
     private static final class FieldAndEntity {
