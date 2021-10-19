@@ -22,7 +22,8 @@
             *ngIf="cliCon.value[0].client.status === 'Registered' && clientAdminProfile"
             (click)="unregister(cliCon.value[0], cliCon.key)"
             mat-icon-button
-            color="primary">
+            color="primary"
+            matTooltip="{{'APPS.REMOVE_CLIENT_TT' | translate}}">
             <mat-icon>delete</mat-icon>
           </button>
         </div>

@@ -56,7 +56,8 @@
     "UNSUB_FROM_THIS_API": "Von dieser API abmelden",
     "UNSUB": "Abmelden",
     "NO_CLIENTS": "Es konnten keine Clients gefunden werden",
-    "CLIENT_REMOVED": "Der Client und die Verträge wurden entfernt"
+    "CLIENT_REMOVED": "Der Client und die Verträge wurden entfernt",
+    "REMOVE_CLIENT_TT": "Client entfernen"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Aus vorhandenen Anwendugen auswählen"

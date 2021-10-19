@@ -56,7 +56,8 @@
     "UNSUB_FROM_THIS_API": "Unsubscribe from this API",
     "UNSUB": "Unsubscribe",
     "NO_CLIENTS": "Could not find any clients",
-    "CLIENT_REMOVED": "The client and the contracts has been removed"
+    "CLIENT_REMOVED": "The client and the contracts has been removed",
+    "REMOVE_CLIENT_TT": "Remove client"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Select from available Applications"
