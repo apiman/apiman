@@ -9,6 +9,7 @@ import {
   statusColorMap,
 } from '../../interfaces/IStatus';
 import {
+  IApi,
   IClientSummary, IClientVersionSummary,
   IContract,
   IContractSummary, IPermission, IUserPermissions,
@@ -25,6 +26,7 @@ import {TocService} from "../../services/toc/toc.service";
 import {MatDialog} from "@angular/material/dialog";
 import {UnregisterClientComponent} from "../dialogs/unregister-client/unregister-client.component";
 import {SnackbarService} from "../../services/snackbar/snackbar.service";
+import {ConfigService} from "../../services/config/config.service";
 
 @Component({
   selector: 'app-my-apps',
@@ -34,6 +36,7 @@ import {SnackbarService} from "../../services/snackbar/snackbar.service";
 export class MyAppsComponent implements OnInit {
   contracts: IContractExt[] = [];
   clientContractsMap!: Map<string, IContractExt[]>;
+  apiImages = new Map<string, string>();
   contractsLoaded = false;
 
   tocLinks: ITocLink[] = [];
@@ -51,9 +54,9 @@ export class MyAppsComponent implements OnInit {
     private apiService: ApiService,
     public tocService: TocService,
     private dialog: MatDialog,
-    private snackbarService: SnackbarService
-  ) {
-  }
+    private snackbarService: SnackbarService,
+    public configService: ConfigService
+  ) {}
 
   ngOnInit(): void {
     this.setUpHero();
@@ -130,11 +133,21 @@ export class MyAppsComponent implements OnInit {
           }))
         })
       ).subscribe((contracts) => {
+        this.getApiImages(contracts);
         this.spinnerService.stopWaiting();
         this.contractsLoaded = true;
         this.extractContracts(contracts);
         this.generateTocLinks();
       });
+  }
+
+  // TODO: include this in to the main request chain. Reminder: ApiVersions do not have api.api.image property
+  private getApiImages(contracts: IContractExt[]){
+    contracts.forEach((contract: IContractExt) => {
+      this.backend.getApi(contract.api.api.organization.id, contract.api.api.id).subscribe((api: IApi) => {
+        this.apiImages.set(contract.api.api.name, api.image!);
+      });
+    });
   }
 
   /**

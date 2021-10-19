@@ -7,6 +7,7 @@ import {forkJoin} from 'rxjs';
 import { IApi, IApiVersion } from '../../interfaces/ICommunication';
 import {SpinnerService} from "../../services/spinner/spinner.service";
 import {IApiVersionExt} from "../../interfaces/IApiVersionExt";
+import {BackendService} from "../../services/backend/backend.service";
 
 @Component({
   selector: 'app-marketplace-api-details',
@@ -18,13 +19,15 @@ export class MarketplaceApiDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private apiService: ApiService,
     private heroService: HeroService,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private backend: BackendService
   ) {}
 
-  api!: IApi;
+  apiImgUrl?: string;
   apis!: IApiVersionExt[];
 
   ngOnInit(): void {
+    this.getApiImage();
     this.getApiVersions();
     this.setUpHero();
   }
@@ -68,5 +71,14 @@ export class MarketplaceApiDetailsComponent implements OnInit {
         this.spinnerService.stopWaiting();
         this.apis = apiVersions;
       });
+  }
+
+  private getApiImage() {
+    const orgId = this.route.snapshot.paramMap.get('orgId')!;
+    const apiId = this.route.snapshot.paramMap.get('apiId')!;
+
+    this.backend.getApi(orgId, apiId).subscribe((api: IApi) => {
+      this.apiImgUrl = api.image;
+    });
   }
 }

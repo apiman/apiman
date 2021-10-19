@@ -28,6 +28,8 @@
         </div>
       </div>
       <div *ngFor="let contract of cliCon.value" class="app-api">
+
+        <!-- Menu for the API -->
         <div class="app-api-menu">
           <div>
             <span
@@ -59,11 +61,14 @@
 <!--            </span>-->
           </div>
         </div>
+
+        <!-- Menu Section Content -->
         <div class="app-api-content mat-elevation-z2">
           <div class="app-api-header">
-            <div class="app-api-header-icon-wrapper">
-              <mat-icon class="app-api-header-icon" color="primary" material-icons-outlined>api_outline</mat-icon>
-            </div>
+            <app-img-or-icon-selector *ngIf="apiImages.has(contract.api.api.name)"
+                                      [imgUrl]="apiImages.get(contract.api.api.name)"
+                                      [dimension]="'44'">
+            </app-img-or-icon-selector>
             <div class="app-api-header-title" [id]="tocService.formatApiVersionPlanId(contract)">
               <h3 class="primary">
                 {{formatApiVersionPlanTitle(contract)}}

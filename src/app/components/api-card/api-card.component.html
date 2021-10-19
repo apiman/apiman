@@ -1,16 +1,8 @@
 <mat-card class="api-card">
   <div class="api-card-header">
-    <!-- Show img source if available -->
-    <img *ngIf="api.image; else withIcon"
-         class="api-card-img"
-         alt="api logo"
-         [src]="configService.getEndpoint() + '/' + api.image">
-
-    <!-- OR show icon if img not available -->
-    <ng-template #withIcon>
-      <div class="icon-wrapper"><mat-icon color="primary" class="api-card-icon">api</mat-icon></div>
-    </ng-template>
-
+    <app-img-or-icon-selector
+      [imgUrl]="api.image"
+      [dimension]="'32'"></app-img-or-icon-selector>
     <div class="api-card-title primary">{{ api.name }}</div>
   </div>
   <mat-card-content class="api-card-content">

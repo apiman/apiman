@@ -74,13 +74,13 @@ export class KeycloakHelperService {
         this.keycloak
           .updateToken()
           .then(() => {
-            console.log('Token successfully refreshed', new Date());
+            // console.log('Token successfully refreshed', new Date());
             KeycloakHelperService.setTokensToSessionStorage(
               this.keycloak.getKeycloakInstance()
             );
           })
           .catch(() => {
-            console.log('Error refreshing token', new Date());
+            // console.log('Error refreshing token', new Date());
             KeycloakHelperService.clearTokensFromSessionStorage();
           });
       }, Math.min((this.keycloak.getKeycloakInstance().tokenParsed!.exp! - 60) * 1000, 4 * 60 * 1000)); // refresh token minimum every 4 minutes)

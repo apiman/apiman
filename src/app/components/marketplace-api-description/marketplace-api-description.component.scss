@@ -13,17 +13,11 @@ mat-panel-title {
 }
 
 #content-header {
-  display: flex;
-  margin-bottom: 1em;
-  width: 75%;
-
-  #icon {
-    margin: 2em 1.4em 0 0;
-  }
-
-  #shortDescription {
-    margin-top: 2em;
-  }
+  display: grid;
+  margin: 1.0rem 0 1.4rem;
+  align-items: center;
+  grid-template-columns: 44px 1fr;
+  grid-column-gap: 16px;
 }
 
 mat-grid-list {

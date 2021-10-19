@@ -1,0 +1,12 @@
+<!-- Show img source if available -->
+<img *ngIf="imgUrl; else withIcon"
+     id="img"
+     alt="api logo"
+     [src]="this.configService.getEndpoint() + '/' + imgUrl">
+
+<!-- OR show icon if img not available -->
+<ng-template #withIcon>
+  <div class="icon-wrapper">
+    <mat-icon color="primary" id="icon" class="api-icon">api</mat-icon>
+  </div>
+</ng-template>

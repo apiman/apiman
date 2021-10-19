@@ -7,29 +7,8 @@
 
 .api-card-header {
   display: grid;
-  grid-template-columns: 1fr 8fr;
+  grid-template-columns: 32px 1fr;
   grid-column-gap: 0.8rem;
-}
-
-.api-card-img {
-  background-size: cover;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-
-  // for alt attribute
-  font-size: 0.6rem;
-}
-
-.icon-wrapper{
-  margin: auto;
-  // border: 1px solid green;
-}
-
-.api-card-icon{
-  display: flex;
-  align-items: center;
-  font-size: 30px;
   height: 32px;
 }
 

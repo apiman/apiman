@@ -28,6 +28,7 @@ export interface IApi {
   name: string;
   description: string;
   createdBy: string;
+  image?: string;
 
   /** @format date-time */
   createdOn: string;

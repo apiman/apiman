@@ -52,17 +52,18 @@
 
 .app-api-content{
   margin-right: 1rem;
-  padding: 1rem 0;
+  padding-bottom: 1rem ;
 }
 
 .app-api-header{
   display: grid;
   justify-content: space-between;
   align-items: center;
-  grid-template-columns: 0.85fr 8fr 8fr;
+  grid-template-columns: 44px 8fr 8fr;
   grid-column-gap: 16px;
-  grid-row-gap: 32px;
   margin-bottom: 1rem;
+  margin-left: 1rem;
+  margin-top: 0.4rem;
 }
 
 .app-api-header-icon-wrapper{
@@ -71,19 +72,6 @@
   max-width: 100%;
   overflow: hidden;
   width: 48px;
-}
-
-.app-api-header-icon {
-  font-size: 48px;
-}
-
-.app-api-header-icon{
-  width: 100%;
-  border-radius: 50%;
-}
-
-.app-api-header-title{
-
 }
 
 .app-api-header-labels, .app-client-header-labels{

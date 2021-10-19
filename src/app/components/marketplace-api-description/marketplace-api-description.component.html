@@ -17,14 +17,10 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div id="content-header">
-    <span id="icon">
-      <img
-        mat-card-avatar
-        alt="Logo"
-        src="assets/img/api-man-logo.png"
-      />
-    </span>
-    <p id="shortDescription">{{ api.api.description }}</p>
+    <app-img-or-icon-selector [imgUrl]="apiImgUrl"
+                              [dimension]="'44'">
+    </app-img-or-icon-selector>
+   <div>{{ api.api.description }}</div>
   </div>
 
   <!-- Template for MD-Reader -->

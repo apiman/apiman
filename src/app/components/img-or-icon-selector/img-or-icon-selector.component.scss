@@ -1,0 +1,16 @@
+img{
+  background-size: cover;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+
+  // for alt attribute
+  font-size: 0.6rem;
+}
+
+.api-icon{
+  display: flex;
+  align-items: center;
+  font-size: 32px;
+  height: 32px;
+}
