@@ -40,16 +40,12 @@ public class BlobEntity {
     @NaturalId
     private String mimeType;
 
-    // @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
-    @Column(name = "created_on", nullable = false)
-    //@NotNull
+    @Column(name = "created_on", updatable = false)
     private OffsetDateTime createdOn;
 
-    // @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
-    @Column(name = "modified_on", nullable = false)
-    //@NotNull
+    @Column(name = "modified_on")
     private OffsetDateTime modifiedOn;
 
     @Lob
