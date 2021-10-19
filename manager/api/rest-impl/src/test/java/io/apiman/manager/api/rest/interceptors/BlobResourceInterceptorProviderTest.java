@@ -52,7 +52,7 @@ public class BlobResourceInterceptorProviderTest {
                                                                   .setBeans(List.of(avb));
 
         BlobResourceInterceptorProvider interceptorProvider = new BlobResourceInterceptorProvider();
-        interceptorProvider.aroundWriteTo(new DummyWriterContext(avb));
+        interceptorProvider.aroundWriteTo(new DummyWriterContext(searchResults));
 
         assertThat(avb.getApi().getImage()).isEqualTo("blobs/blobaroni/foo-bar-baz_jpeg");
     }

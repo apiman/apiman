@@ -156,6 +156,7 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
         return obj instanceof Map || obj instanceof Collection;
     }
 
+    @SuppressWarnings("unchecked")
     private Stream<Object> resolveValue(Object obj) {
         if (obj == null) {
             return Stream.empty();
