@@ -442,7 +442,7 @@ _module.controller("Apiman.DevPortalImageCropper",
         }
 
         function dismissUibModal() {
-          $uibModalInstance.dismissModal();
+          $uibModalInstance.dismiss();
         }
       }]);
 
