@@ -58,9 +58,7 @@
   align-items: center;
   grid-template-columns: 44px 8fr 8fr;
   grid-column-gap: 16px;
-  margin-bottom: 1rem;
-  margin-left: 1rem;
-  margin-top: 0.4rem;
+  margin: 0.4rem 1rem 1rem 1rem;
 }
 
 .app-api-header-icon-wrapper{
@@ -71,18 +69,14 @@
   width: 48px;
 }
 
-.app-api-header-labels, .app-client-header-labels{
+.app-api-header-labels, .app-client-header-label{
   white-space: nowrap;
-  margin-right: 1.8rem;
   text-align: right;
   span{
-    margin-right: 1rem;
-    padding: 6px;
+    margin-left: 8px;
+    padding: 4px 8px;
     color: white;
   }
-
-
-
   span:last-child{
     margin-right: 0;
   }

@@ -12,12 +12,7 @@
           </h3>
           {{ cliCon.value[0].client.client.description }}
         </div>
-        <div class="app-client-header-labels">
-          <span
-            matTooltip="Client Status"
-            [style]="'background-color: ' + getColorForLabel(cliCon.value[0].client.status)">
-            {{ cliCon.value[0].client.status }}
-          </span>
+        <div class="app-client-header-label">
           <button
             *ngIf="cliCon.value[0].client.status === 'Registered' && clientAdminProfile"
             (click)="unregister(cliCon.value[0], cliCon.key)"
@@ -26,6 +21,10 @@
             matTooltip="{{'APPS.REMOVE_CLIENT_TT' | translate}}">
             <mat-icon>delete</mat-icon>
           </button>
+          <span
+            matTooltip="Client Status"
+            [style]="'background-color: ' + getColorForLabel(cliCon.value[0].client.status)">{{ cliCon.value[0].client.status }}
+          </span>
         </div>
       </div>
       <div *ngFor="let contract of cliCon.value" class="app-api">
