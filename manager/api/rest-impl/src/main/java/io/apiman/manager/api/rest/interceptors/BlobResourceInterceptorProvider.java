@@ -24,6 +24,7 @@ import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 
 import static org.apache.commons.lang3.reflect.FieldUtils.getAllFields;
@@ -118,24 +119,18 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
             }
 
             // If not collection-like, then we'll inspect the fields and see whether there's anything worth looking at.
-            if (!currentNode.getClass().isEnum()
-                        // Within the Apiman namespace
-                        // && currentNode.getClass().getCanonicalName().startsWith("io.apiman"))
-                        // Must not have seen this before (i.e. simple cycle detection).
-                        && !objectsSeen.contains(currentNode)) {
-
+            // Must not have seen this before (i.e. simple cycle detection).
+            if (!currentNode.getClass().isEnum() && !objectsSeen.contains(currentNode)) {
                 for (Field f : getAllFields(currentNode.getClass())) {
-                    if (shouldBeIgnored(f)) {
-                        continue;
-                    }
-                    f.setAccessible(true);
+                    boolean isAccessible = f.trySetAccessible();
                     if (f.isAnnotationPresent(BlobReference.class) && f.getType().equals(String.class)) {
                         results.add(new FieldAndEntity(f, currentNode));
-                    } else {
-                            Object value = f.get(currentNode);
-                            if (value != null) {
-                                resolveValue(value).forEach(nodesToSearch::push);
-                            }
+                    }
+                    if (isAccessible && !shouldBeIgnored(f, currentNode)) {
+                        Object value = f.get(currentNode);
+                        if (value != null) {
+                            resolveValue(value).forEach(nodesToSearch::push);
+                        }
                     }
                 }
                 objectsSeen.add(currentNode);
@@ -145,13 +140,16 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
         return results;
     }
 
-    private boolean shouldBeIgnored(Field f) {
+    private boolean shouldBeIgnored(Field f, Object currentNode) {
         int modifiers = f.getModifiers();
         return Modifier.isStatic(modifiers)
+                || ClassUtils.isPrimitiveOrWrapper(f.getType())
+                || f.getType().isAnnotation()
                 || Modifier.isAbstract(modifiers)
                 || Modifier.isInterface(modifiers)
                 || Modifier.isTransient(modifiers)
-                || f.isEnumConstant();
+                || f.isEnumConstant()
+                || !f.canAccess(currentNode);
     }
 
     private boolean isCollectionLike(Object obj) {
