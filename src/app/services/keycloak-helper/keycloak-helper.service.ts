@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakInstance } from 'keycloak-js';
 import { ConfigService } from '../config/config.service';
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,8 @@ export class KeycloakHelperService {
 
   constructor(
     private readonly keycloak: KeycloakService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private router: Router
   ) {}
 
   /**
@@ -57,7 +59,8 @@ export class KeycloakHelperService {
 
   public logout(): void {
     KeycloakHelperService.clearTokensFromSessionStorage();
-    const url = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/home';
+    // remove current angular route so that the base path is still used
+    const url = window.location.href.replace(this.router.url, '') + '/home';
     this.keycloak.logout(url);
   }
 

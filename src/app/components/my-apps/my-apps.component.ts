@@ -76,11 +76,6 @@ export class MyAppsComponent implements OnInit {
       .getEditableClients()
       .pipe(
         switchMap((clientSummaries: IClientSummary[]) => {
-          if (clientSummaries.length === 0) {
-            this.spinnerService.stopWaiting();
-            this.noDataFound = true;
-            this.contractsLoaded = true;
-          }
 
           return forkJoin(clientSummaries.map(clientSummary => {
             return this.backend.getClientVersions(
@@ -102,6 +97,11 @@ export class MyAppsComponent implements OnInit {
         }),
         switchMap((nestedContractSummaries: IContractSummary[][]) => {
           const contractSummaries: IContractSummary[] = flatArray(nestedContractSummaries)
+          if (contractSummaries.length === 0) {
+            this.spinnerService.stopWaiting();
+            this.noDataFound = true;
+            this.contractsLoaded = true;
+          }
           return forkJoin(contractSummaries.map(contractSummary => {
             return this.backend.getContract(
               contractSummary.clientOrganizationId,
