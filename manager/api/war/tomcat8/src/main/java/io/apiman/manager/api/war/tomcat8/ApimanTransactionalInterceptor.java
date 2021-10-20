@@ -2,6 +2,7 @@ package io.apiman.manager.api.war.tomcat8;
 
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.EntityManagerFactoryAccessor;
+import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 
@@ -24,24 +25,25 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
 
     @Inject
     EntityManagerFactoryAccessor emf;
-    private EntityManager em;
 
     public ApimanTransactionalInterceptor() {
-        System.err.println("Apiman transactional interceptor is running");
+    }
+
+    private EntityManager getEm() {
+        return emf.getEntityManager();
     }
 
     @AroundInvoke
     public Object intercept(InvocationContext ic) throws Exception {
-        em = emf.getEntityManager();
-        if (!em.getTransaction().isActive()) {
+        if (!getEm().getTransaction().isActive()) {
             return invokeInOurTx(ic);
         } else {
-            return invokeInCallerTx(ic, em.getTransaction());
+            return invokeInCallerTx(ic, getEm().getTransaction());
         }
     }
 
     private Object invokeInOurTx(InvocationContext ic) throws Exception {
-        EntityTransaction tx = em.getTransaction();
+        EntityTransaction tx = getEm().getTransaction();
         tx.begin();
         try {
             return ic.proceed();
@@ -56,10 +58,14 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
     private void endTransaction(EntityTransaction tx) throws Exception {
         try {
             if (!tx.getRollbackOnly()) {
-                if (tx.isActive()) {
-                    tx.commit();
-                } else {
-                    System.err.println("Someone else closed the TX?");
+                if (getEm().isOpen() && tx.isActive()) {
+                    try {
+                        tx.commit();
+                    } catch (AbstractRestException e) {  // Emulates the way Apiman handled commit exceptions in earlier versions
+                        throw e;
+                    } catch (Throwable e) {
+                        throw new SystemErrorException(e);
+                    }
                 }
             } else {
                 tx.rollback();
@@ -67,7 +73,9 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
         } catch (Exception e) {
             handleException(e, tx);
         } finally {
-            em.close();
+            if (getEm().isOpen()) {
+                getEm().close();
+            }
         }
     }
 
