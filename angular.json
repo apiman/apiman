@@ -40,7 +40,8 @@
               "src/assets/themes/default.scss",
               "node_modules/swagger-ui/dist/swagger-ui.css",
               "node_modules/simplebar/dist/simplebar.css",
-              "node_modules/prismjs/themes/prism.css"
+              "node_modules/prismjs/themes/prism.css",
+              "node_modules/material-icons/iconfont/material-icons.css"
             ],
             "scripts": [
               "node_modules/marked/lib/marked.js",

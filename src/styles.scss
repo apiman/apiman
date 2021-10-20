@@ -1,6 +1,5 @@
 @use '~@angular/material' as mat;
 @import '~@angular/material/theming';
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined");
 @import 'assets/themes/default';
 @import 'assets/themes/custom';
 @include mat-core();
