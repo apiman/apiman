@@ -1,19 +1,23 @@
 package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
+import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
 
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -84,4 +88,18 @@ public interface IDeveloperPortalResource {
     @Produces({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
     Response getApiDefinition(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("apiVersion") String apiVersion)
             throws ApiVersionNotFoundException;
+
+    @GET
+    @Path("organizations/{orgId}/plans/{planId}/versions/{version}/policies")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PolicySummaryBean> listPlanPolicies(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("version") String version)
+            throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("organizations/{orgId}/plans/{planId}/versions/{version}/policies/{policyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public PolicyBean getPlanPolicy(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("version") String version,
+                                    @PathParam("policyId") long policyId)
+            throws OrganizationNotFoundException, PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
+
 }

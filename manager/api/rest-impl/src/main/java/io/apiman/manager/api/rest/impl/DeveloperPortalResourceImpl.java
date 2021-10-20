@@ -7,15 +7,19 @@ import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.rest.IDeveloperPortalResource;
 import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -23,6 +27,7 @@ import io.apiman.manager.api.service.ApiService;
 import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
 import io.apiman.manager.api.service.DevPortalService;
 import io.apiman.manager.api.service.OrganizationService;
+import io.apiman.manager.api.service.PlanService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,16 +43,18 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     private final IApimanLogger LOG = ApimanLoggerFactory.getLogger(DeveloperPortalResourceImpl.class);
     private ApiService apiService;
+    private PlanService planService;
     private DevPortalService portalService;
     private OrganizationService orgService;
     private ISecurityContext securityContext;
 
     @Inject
     public DeveloperPortalResourceImpl(ApiService apiService,
-                                       DevPortalService portalService,
+                                       PlanService planService, DevPortalService portalService,
                                        OrganizationService orgService,
                                        ISecurityContext securityContext) {
         this.apiService = apiService;
+        this.planService = planService;
         this.portalService = portalService;
         this.orgService = orgService;
         this.securityContext = securityContext;
@@ -109,6 +116,18 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
                 .entity(apiDef.getDefinition())
                 .type(apiDef.getDefinitionType().getMediaType())
                 .build();
+    }
+
+    @Override
+    public List<PolicySummaryBean> listPlanPolicies(String orgId, String planId, String version)
+            throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
+        return planService.listPlanPolicies(orgId, planId, version);
+    }
+
+    @Override
+    public PolicyBean getPlanPolicy(String orgId, String planId, String version, long policyId)
+            throws OrganizationNotFoundException, PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
+        return planService.getPlanPolicy(orgId, planId, version, policyId);
     }
 
     private ApiVersionBean apiVersionMustBeExposedInPortal(String orgId, String apiId, String apiVersion) {
