@@ -2,6 +2,7 @@ package io.apiman.manager.api.war.tomcat8;
 
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.EntityManagerFactoryAccessor;
+import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 
@@ -27,7 +28,6 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
     private EntityManager em;
 
     public ApimanTransactionalInterceptor() {
-        System.err.println("Apiman transactional interceptor is running");
     }
 
     @AroundInvoke
@@ -56,10 +56,14 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
     private void endTransaction(EntityTransaction tx) throws Exception {
         try {
             if (!tx.getRollbackOnly()) {
-                if (tx.isActive()) {
-                    tx.commit();
-                } else {
-                    System.err.println("Someone else closed the TX?");
+                if (em.isOpen() && tx.isActive()) {
+                    try {
+                        tx.commit();
+                    } catch (AbstractRestException e) {  // Emulates the way Apiman handled commit exceptions in earlier versions
+                        throw e;
+                    } catch (Throwable e) {
+                        throw new SystemErrorException(e);
+                    }
                 }
             } else {
                 tx.rollback();
