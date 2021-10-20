@@ -25,23 +25,25 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
 
     @Inject
     EntityManagerFactoryAccessor emf;
-    private EntityManager em;
 
     public ApimanTransactionalInterceptor() {
     }
 
+    private EntityManager getEm() {
+        return emf.getEntityManager();
+    }
+
     @AroundInvoke
     public Object intercept(InvocationContext ic) throws Exception {
-        em = emf.getEntityManager();
-        if (!em.getTransaction().isActive()) {
+        if (!getEm().getTransaction().isActive()) {
             return invokeInOurTx(ic);
         } else {
-            return invokeInCallerTx(ic, em.getTransaction());
+            return invokeInCallerTx(ic, getEm().getTransaction());
         }
     }
 
     private Object invokeInOurTx(InvocationContext ic) throws Exception {
-        EntityTransaction tx = em.getTransaction();
+        EntityTransaction tx = getEm().getTransaction();
         tx.begin();
         try {
             return ic.proceed();
@@ -56,7 +58,7 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
     private void endTransaction(EntityTransaction tx) throws Exception {
         try {
             if (!tx.getRollbackOnly()) {
-                if (em.isOpen() && tx.isActive()) {
+                if (getEm().isOpen() && tx.isActive()) {
                     try {
                         tx.commit();
                     } catch (AbstractRestException e) {  // Emulates the way Apiman handled commit exceptions in earlier versions
@@ -71,7 +73,7 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
         } catch (Exception e) {
             handleException(e, tx);
         } finally {
-            em.close();
+            getEm().close();
         }
     }
 
