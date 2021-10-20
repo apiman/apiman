@@ -18,12 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
+import javax.transaction.Transactional;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.ClassUtils;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 
@@ -52,6 +54,7 @@ import static org.apache.commons.lang3.reflect.FieldUtils.getAllFields;
  */
 @Provider
 @ServerInterceptor
+@Transactional // TODO(msavy): Need this while we still return managed beans at the presentation layer, could consider removing when we go full DTO
 public class BlobResourceInterceptorProvider implements WriterInterceptor {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(BlobResourceInterceptorProvider.class);
@@ -149,7 +152,8 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
                 || Modifier.isInterface(modifiers)
                 || Modifier.isTransient(modifiers)
                 || f.isEnumConstant()
-                || !f.canAccess(currentNode);
+                || !f.canAccess(currentNode)
+                || f.isAnnotationPresent(JsonIgnore.class);
     }
 
     private boolean isCollectionLike(Object obj) {
