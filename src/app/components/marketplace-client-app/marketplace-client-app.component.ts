@@ -40,12 +40,16 @@ export class MarketplaceClientAppComponent implements OnInit {
     this.createOrgAndLoadClients();
   }
 
-  public selectClient(client: IClientSummary): void {
+  public clickClient(client: IClientSummary): void {
+    this.clientName = client.name;
+    this.organizationId = client.organizationId;
+    this.selectClient(client);
+  }
+
+  private selectClient(client: IClientSummary): void {
     // always clear, because at the moment we only allow one client to be selected
     this.clickedRows.clear();
     this.clickedRows.add(client);
-    this.clientName = client.name;
-    this.organizationId = client.organizationId;
     this.selectedClients.emit(this.clickedRows);
   }
 
@@ -136,7 +140,7 @@ export class MarketplaceClientAppComponent implements OnInit {
     this.dataSource = new MatTableDataSource(results[1]);
     if (this.clients.length === 1) {
       // if we only have one client we can select it automatically
-      this.selectClient(this.clients[0]);
+      this.clickClient(this.clients[0]);
     }
   }
 
