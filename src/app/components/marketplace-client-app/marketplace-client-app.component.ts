@@ -146,7 +146,6 @@ export class MarketplaceClientAppComponent implements OnInit {
 
   public isCreateButtonDisabled(): boolean {
     return (
-      this.clickedRows.size > 0 ||
       this.clientName.length === 0 ||
       this.clients.some(
         (clientSummary) =>
