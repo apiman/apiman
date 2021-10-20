@@ -8,6 +8,7 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.mappers.ApiMapper;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -75,7 +76,6 @@ public class DevPortalService implements DataAccessUtilMixin {
                 .collect(Collectors.toList());
     }
 
-
     // TODO Use mapstruct
     private DeveloperApiPlanSummaryDto toDto(String orgId, ApiPlanSummaryBean apiPsb) {
         List<PolicyBean> planPolicies = tryAction(() -> Lists.newArrayList(storage.getAllPolicies(orgId, apiPsb.getPlanId(), apiPsb.getVersion(), PolicyType.Plan)));
@@ -101,5 +101,4 @@ public class DevPortalService implements DataAccessUtilMixin {
         summary.setCreatedOn(psb.getCreatedOn());
         return summary;
     }
-
 }
