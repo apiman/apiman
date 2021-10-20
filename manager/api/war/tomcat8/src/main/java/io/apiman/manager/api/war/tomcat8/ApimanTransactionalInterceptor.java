@@ -73,7 +73,9 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
         } catch (Exception e) {
             handleException(e, tx);
         } finally {
-            getEm().close();
+            if (getEm().isOpen()) {
+                getEm().close();
+            }
         }
     }
 

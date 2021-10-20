@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -58,8 +61,14 @@ import static org.apache.commons.lang3.reflect.FieldUtils.getAllFields;
 public class BlobResourceInterceptorProvider implements WriterInterceptor {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(BlobResourceInterceptorProvider.class);
+    // @Inject EntityManagerFactoryAccessor emf;
 
-    public BlobResourceInterceptorProvider() {}
+    public BlobResourceInterceptorProvider() {
+    }
+
+    // private EntityManager getEm() {
+    //     emf.createEntityManager();
+    // }
 
     /**
      * {@inheritDoc}
@@ -67,7 +76,15 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
     @Override
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
         try {
+            // boolean startedOwnTx = false;
+            // if (!getEm().getTransaction().isActive()) {
+            //     getEm().getTransaction().begin();
+            //     startedOwnTx = true;
+            // }
             rewrite(context);
+            // if (startedOwnTx) {
+            //     getEm().getTransaction().commit();
+            // }
             context.proceed();
         } catch (IllegalAccessException e) {
             throw new IOException(e);
