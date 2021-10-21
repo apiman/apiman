@@ -60,7 +60,7 @@
           <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>${version.com.h2database}</version>
+            <version>1.4.200</version> <!-- 1.4.200 has JSON type, so we can work around liquibase and a custom type definition it still breaking (output works OK for <1.4.200 w/ custom type) -->
           </dependency>
           <dependency>
             <groupId>org.postgresql</groupId>
@@ -220,6 +220,24 @@
               <migrationSqlOutputFile>${basedir}/target/apiman_mssql15.ddl</migrationSqlOutputFile>
               <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
               <url>offline:mssql?version=15&amp;caseSensitive=true&amp;catalog=apiman&amp;changeLogFile=${basedir}/target/changelog/mssql/databasechangelog.csv</url>
+              <username>apiman</username>
+              <password>apiman</password>
+              <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+
+          <!-- Generate MySQL DDL (should work for MariaDB also?) -->
+          <execution>
+            <id>mysql-ddl</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>updateSQL</goal>
+            </goals>
+            <configuration>
+              <migrationSqlOutputFile>${basedir}/target/apiman_mysql8.ddl</migrationSqlOutputFile>
+              <driver>com.mysql.cj.jdbc.Driver</driver>
+              <url>offline:mysql?version=8.0.27&amp;caseSensitive=true&amp;catalog=apiman&amp;changeLogFile=${basedir}/target/changelog/mssql/databasechangelog.csv</url>
               <username>apiman</username>
               <password>apiman</password>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>

@@ -1,21 +1,17 @@
 package io.apiman.manager.api.jpa.model.outbox;
 
 import java.time.OffsetDateTime;
-import java.util.Objects;
 import java.util.StringJoiner;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
-import org.hibernate.Hibernate;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -31,7 +27,7 @@ import org.hibernate.annotations.TypeDef;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Entity
-@TypeDef(name = "jsonb", typeClass = JsonNodeBinaryType.class)
+@TypeDef(name = "json", typeClass = JsonType.class)
 @Table(name = "outbox")
 public class OutboxEventEntity {
 
@@ -61,8 +57,8 @@ public class OutboxEventEntity {
     @NotNull
     private Long eventVersion;
 
-    @Type(type = "jsonb")
-    @Column(name = "payload", columnDefinition = "binary", nullable = false)
+    @Type(type = "json")
+    @Column(name = "payload", columnDefinition = "json", nullable = false)
     @NotNull
     private JsonNode payload;
 
