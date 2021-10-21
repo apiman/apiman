@@ -102,6 +102,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -1101,9 +1102,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ApiVersionBean updateApiVersion(@PathParam("organizationId") String organizationId,
             @PathParam("apiId") String apiId, @PathParam("version") String version,
-            UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException,
-            InvalidApiStatusException;
-
+            UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException;
     /**
      * Use this endpoint to update the API's definition document.  An API
      * definition will vary depending on the type of API, and the type of
