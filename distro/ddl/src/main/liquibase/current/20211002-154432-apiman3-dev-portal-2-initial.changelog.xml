@@ -159,9 +159,9 @@
     </changeSet>
     <!-- tagging bits -->
     <changeSet author="msavy (generated)" id="1633441143380-4">
-        <createTable tableName="KeyValueTag">
+        <createTable tableName="kv_tags">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="KeyValueTagPK"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="kv_tagsPK"/>
             </column>
             <column name="key" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -245,7 +245,7 @@
         <addUniqueConstraint columnNames="hash, mime_type, name" constraintName="UK_4jee67ekw7s4y8spoc58i4dsf" tableName="blob_store"/>
     </changeSet>
     <changeSet author="msavy (generated)" id="1633542267834-15">
-        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="api_tag" constraintName="FK2h64maqscweorti1hta9josl2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="KeyValueTag" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="api_tag" constraintName="FK2h64maqscweorti1hta9josl2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="kv_tags" validate="true"/>
     </changeSet>
     <changeSet author="msavy (generated)" id="1633542267834-16">
         <addForeignKeyConstraint baseColumnNames="api_id,org_id" baseTableName="api_tag" constraintName="FKlpr8yu65omneju5297uqthb6k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id,organization_id" referencedTableName="apis" validate="true"/>

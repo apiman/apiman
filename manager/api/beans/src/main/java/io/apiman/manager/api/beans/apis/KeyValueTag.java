@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.NaturalId;
@@ -14,6 +15,7 @@ import org.hibernate.annotations.NaturalId;
  * Simple tag with value.
  */
 @Entity
+@Table(name = "kv_tags")
 public class KeyValueTag {
     @Id
     @GeneratedValue

@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
@@ -49,6 +50,7 @@ import org.hibernate.dialect.PostgreSQL9Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServer2012Dialect;
 import org.hibernate.dialect.SQLServerDialect;
+import org.jdbi.v3.core.Jdbi;
 
 /**
  * Initializes the database by installing the appropriate DDL for the database in
@@ -64,13 +66,17 @@ public class JpaStorageInitializer {
         DB_TYPE_MAP.put(ApimanH2Dialect.class.getName(), "h2");
         DB_TYPE_MAP.put(H2Dialect.class.getName(), "h2");
 
+        DB_TYPE_MAP.put("io.apiman.manager.api.jpa.ApimanMySQL5Dialect",  "mysql8"); // compatibility but might need to drop this
+        DB_TYPE_MAP.put(ApimanMySQL8Dialect.class.getName(),  "mysql8"); // Hmm
         DB_TYPE_MAP.put(MySQLDialect.class.getName(), "mysql8");
         DB_TYPE_MAP.put(MySQL8Dialect.class.getName(), "mysql8");
 
+        DB_TYPE_MAP.put(ApimanOracle19Dialect.class.getName(),  "oracle19");
         DB_TYPE_MAP.put(OracleDialect.class.getName(), "oracle19");
         DB_TYPE_MAP.put(Oracle8iDialect.class.getName(), "oracle19");
         DB_TYPE_MAP.put(Oracle9iDialect.class.getName(), "oracle19");
 
+        DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(),  "postgresql9");
         DB_TYPE_MAP.put(PostgreSQLDialect.class.getName(), "postgresql9");
         DB_TYPE_MAP.put(PostgreSQL81Dialect.class.getName(), "postgresql9");
         DB_TYPE_MAP.put(PostgreSQL82Dialect.class.getName(), "postgresql9");
@@ -97,8 +103,6 @@ public class JpaStorageInitializer {
             throw new RuntimeException("Missing datasource JNDI location from JPA storage configuration."); 
         }
         ds = lookupDS(dsJndiLocation);
-
-
 
         dbType = DB_TYPE_MAP.get(hibernateDialect);
         if (dbType == null) {
@@ -134,8 +138,6 @@ public class JpaStorageInitializer {
         Boolean isInitialized;
         
         try {
-            //ds.getConnection().setAutoCommit(false);
-
             isInitialized = run.query("SELECT * FROM apis", new ResultSetHandler<Boolean>() {
                 @Override
                 public Boolean handle(ResultSet rs) throws SQLException {
@@ -143,7 +145,7 @@ public class JpaStorageInitializer {
                 }
             });
         } catch (SQLException e) {
-            LOGGER.error(e);
+            LOGGER.trace("Is initialised error: {0}", e);
             isInitialized = false;
         }
         
@@ -153,21 +155,26 @@ public class JpaStorageInitializer {
             LOGGER.info("============================================");
             return;
         }
-        
+
         ClassLoader cl = JpaStorageInitializer.class.getClassLoader();
         URL resource = cl.getResource("ddls/apiman_" + dbType + ".ddl");
-        try (InputStream is = resource.openStream()) {
-            LOGGER.info("=======================================");
-            LOGGER.info("Initializing Apiman Manager database. "  + resource.getPath());
-            DdlParser ddlParser = new DdlParser();
-            List<String> statements = ddlParser.parse(is);
-            for (String sql : statements){
-                LOGGER.info(sql);
-                run.update(sql);
+        Objects.requireNonNull(resource, "DDLs are missing");
+        try {
+            try (InputStream is = resource.openStream()) {
+                LOGGER.info("=======================================");
+                LOGGER.info("Initializing Apiman Manager database. "  + resource.getPath());
+                DdlParser ddlParser = new DdlParser();
+                List<String> statements = ddlParser.parse(is);
+                Jdbi jdbi = Jdbi.create(ds);
+                for (String sql : statements) {
+                    LOGGER.info(sql);
+                    jdbi.useHandle(h -> {
+                        h.createUpdate(sql).execute();
+                        h.commit();
+                    });
+                }
+                LOGGER.info("=======================================");
             }
-            LOGGER.info("=======================================");
-            //run.getDataSource().getConnection().commit();
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

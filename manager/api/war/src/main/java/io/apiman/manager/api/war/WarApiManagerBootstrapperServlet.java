@@ -18,6 +18,7 @@ package io.apiman.manager.api.war;
 import io.apiman.common.config.ConfigFactory;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.exportimport.read.IImportReader;
@@ -49,6 +50,9 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
     @Inject
     private StorageImportDispatcher importer;
 
+    @Inject
+    private IStorage storage;
+
     private static Configuration config;
     static {
         config = ConfigFactory.createConfig();
@@ -59,6 +63,7 @@ public class WarApiManagerBootstrapperServlet extends HttpServlet {
      */
     @Override
     public void init() throws ServletException {
+        storage.toString();
         Thread t = new Thread(() -> {
             if (isImportEnabled()){
                 File dataDir = getDataDir();

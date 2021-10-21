@@ -17,7 +17,7 @@ package io.apiman.manager.api.jpa;
 
 import java.sql.Types;
 
-import org.hibernate.dialect.MySQL5Dialect;
+import org.hibernate.dialect.MySQL8Dialect;
 
 /**
  * A custom mysql dialect to convert BOOLEAN to BIT(1).  This is done automatically
@@ -25,12 +25,12 @@ import org.hibernate.dialect.MySQL5Dialect;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApimanMySQL5Dialect extends MySQL5Dialect {
+public class ApimanMySQL8Dialect extends MySQL8Dialect {
 
     /**
      * Constructor.
      */
-    public ApimanMySQL5Dialect() {
+    public ApimanMySQL8Dialect() {
         registerColumnType(Types.BOOLEAN, "BIT(1)"); //$NON-NLS-1$
     }
 
