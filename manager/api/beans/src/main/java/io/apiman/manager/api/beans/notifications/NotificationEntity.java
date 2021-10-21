@@ -32,9 +32,8 @@ import org.hibernate.annotations.UpdateTimestamp;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Entity
-@TypeDefs({
-     @TypeDef(name = "json", typeClass = JsonType.class)
-})@Table(name = "notifications")
+@TypeDef(name = "json", typeClass = JsonType.class)
+@Table(name = "notifications")
 public class NotificationEntity {
 
     @Id

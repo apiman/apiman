@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 05/10/2021, 14:42
+-- Ran at: 21/10/2021, 12:57
 -- Against: apiman@offline:postgresql?version=9.6.23&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/postgresql/databasechangelog.csv
 -- Liquibase version: 4.4.3
 -- *********************************************************************
@@ -375,4 +375,21 @@ CREATE OPERATOR = (
      procedure = inttobool,
      commutator = =,
      negator = !=
-);
+);-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-6::msavy (generated)
+CREATE TABLE blob_store (id VARCHAR(255) NOT NULL, mrblobby OID NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, hash BIGINT NOT NULL, mime_type VARCHAR(255) NOT NULL, modified_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, name VARCHAR(255) NOT NULL, "references" INTEGER NOT NULL, CONSTRAINT "blob_storePK" PRIMARY KEY (id));
+
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-7::msavy (generated)
+CREATE TABLE outbox (id BIGSERIAL NOT NULL, event_version BIGINT NOT NULL, payload BYTEA NOT NULL, source VARCHAR(255) NOT NULL, subject VARCHAR(255) NOT NULL, time TIMESTAMP WITHOUT TIME ZONE NOT NULL, type VARCHAR(255) NOT NULL, CONSTRAINT "outboxPK" PRIMARY KEY (id));
+
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-8::msavy (generated)
+ALTER TABLE blob_store ADD CONSTRAINT UC_BLOB_STOREID_COL UNIQUE (id);
+
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-10::msavy (generated)
+ALTER TABLE blob_store ADD CONSTRAINT "UK_4jee67ekw7s4y8spoc58i4dsf" UNIQUE (hash, mime_type, name);
+
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-15::msavy (generated)
+ALTER TABLE api_tag ADD CONSTRAINT "FK2h64maqscweorti1hta9josl2" FOREIGN KEY (tag_id) REFERENCES "KeyValueTag" (id);
+
+-- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-16::msavy (generated)
+ALTER TABLE api_tag ADD CONSTRAINT "FKlpr8yu65omneju5297uqthb6k" FOREIGN KEY (api_id, org_id) REFERENCES apis (id, organization_id);
+
