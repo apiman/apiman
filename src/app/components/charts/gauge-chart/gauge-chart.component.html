@@ -15,15 +15,17 @@
   </div>
 
   <div class="info-icon">
-    <mat-icon [inline]="true" color="primary">{{icon}}</mat-icon>
+    <mat-icon class="material-icons-outlined" [inline]="true" color="primary">{{icon}}</mat-icon>
   </div>
 
   <div class="infos">
     <div class="text2">{{gaugeData.infoHeader}}</div>
-    <div class="text-big3 letter-spacing">{{ liveValue }} / <span class="primary">{{ gaugeData.limit }}</span></div>
-    <div class="info-bottom text-big1">
+    <div class="text-big1">
+      {{ gaugeData.currentVal }} / <span class="primary">{{ gaugeData.limit }} {{ gaugeData.unitSuffix}}</span>
+    </div>
+    <div class="text1">
       <mat-divider></mat-divider>
-      <span>{{ percentage }}% used</span>
+      <span>{{gaugeData.bottomText}}</span>
     </div>
   </div>
 </div>

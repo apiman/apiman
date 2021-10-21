@@ -57,7 +57,11 @@
     "UNSUB": "Abmelden",
     "NO_CLIENTS": "Es konnten keine Clients gefunden werden",
     "CLIENT_REMOVED": "Der Client und die Verträge wurden entfernt",
-    "REMOVE_CLIENT_TT": "Client entfernen"
+    "REMOVE_CLIENT_TT": "Client entfernen",
+    "USED": "verbraucht",
+    "RESETS_AT": "Reset am",
+    "FIRST_OF": "1.",
+    "RESETS_EVERY_SECOND": "Resettet jede Sekunde"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Aus vorhandenen Anwendugen auswählen"

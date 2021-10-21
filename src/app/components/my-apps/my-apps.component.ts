@@ -124,7 +124,7 @@ export class MyAppsComponent implements OnInit {
                 return {
                   ...contract,
                   policies: planPolicies.concat(apiPolicies),
-                  section: 'summary',
+                  section: 'policies',
                   managedEndpoint: endpoint.managedEndpoint,
                   docsAvailable: docsAvailable
                 } as IContractExt;
@@ -159,6 +159,9 @@ export class MyAppsComponent implements OnInit {
     this.contracts = this.contracts.concat(contracts);
 
     this.contracts.forEach((contract: IContractExt) => {
+      if (contract.api.api.name !== 'day'){}
+        // return;
+
       const clientNameVersionMapped = (contract.client.client.name + ':' + contract.client.version).toLowerCase();
       const foundContracts = this.clientContractsMap.get(clientNameVersionMapped);
 
@@ -247,12 +250,9 @@ export class MyAppsComponent implements OnInit {
 
   private fetchProfiles() {
     this.backend.getPermissions().subscribe((response: IUserPermissions) => {
-      const found = response.permissions.find((p: IPermission) => {
+      this.clientAdminProfile = response.permissions.some((p: IPermission) => {
         return p.name === 'clientAdmin';
       })
-
-      if (found)
-        this.clientAdminProfile = true;
     });
   }
 }
