@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionMapper;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagMapper;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -591,34 +592,44 @@ public class ApiService implements DataAccessUtilMixin {
         return rval;
     }
     
-    public SearchResultsBean<AuditEntryBean> getApiVersionActivity(String organizationId,
-        String apiId, String version, int page, int pageSize) throws ApiVersionNotFoundException,
-        NotAuthorizedException {
-
+    public SearchResultsBean<AuditEntryBean> getApiVersionActivity(String organizationId, String apiId, String version, int page, int pageSize)
+            throws ApiVersionNotFoundException, NotAuthorizedException {
         PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, apiId, version, ApiBean.class, paging));
     }
 
-
-    public ApiVersionBean updateApiVersion(String organizationId, String apiId, String version,
-         UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException {
+    public ApiVersionBean updateApiVersion(String organizationId, String apiId, String version, UpdateApiVersionBean bean)
+            throws ApiVersionNotFoundException, NotAuthorizedException {
         ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
         return updateApiVersion(avb, bean);
     }
 
-    public ApiVersionBean updateApiVersion(ApiVersionBean avb,
-         UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException {
-
-        if (avb.isPublicAPI()) {
-            if (avb.getStatus() == ApiStatus.Retired) {
-                throw ExceptionFactory.invalidApiStatusException();
+    public ApiVersionBean updateApiVersion(ApiVersionBean avb, UpdateApiVersionBean bean) throws ApiVersionNotFoundException {
+        if (avb.getStatus() == ApiStatus.Published) {
+            // If published and public API, then allow full modification (caveat emptor).
+            if (avb.isPublicAPI()) {
+                return updateApiVersionInternal(avb, bean);
+            } else {
+                // TODO refactor with HTTP PATCH?
+                if (bean.getPlans().size() != avb.getPlans().size()) {
+                    throw new InvalidParameterException("Can not attach or remove plans from an API Version after it has been published");
+                }
+                if (!avb.getPlans().containsAll(bean.getPlans())) {
+                    throw new InvalidParameterException("Plan IDs and versions must not change after publication");
+                }
+                // If published, then mapper copies across only fields that are safe for changed after publication.
+                UpdateApiVersionBean afterPublishUpdate = ApiVersionMapper.INSTANCE.toPublishedUpdateBean(bean);
+                return updateApiVersionInternal(avb, afterPublishUpdate);
             }
         } else {
-            if (avb.getStatus() == ApiStatus.Published || avb.getStatus() == ApiStatus.Retired) {
-                throw ExceptionFactory.invalidApiStatusException();
-            }
+            return updateApiVersionInternal(avb, bean);
         }
+    }
 
+    private ApiVersionBean updateApiVersionInternal(ApiVersionBean avb, UpdateApiVersionBean bean) throws ApiVersionNotFoundException {
+        if (avb.getStatus() == ApiStatus.Retired) {
+            throw ExceptionFactory.invalidApiStatusException();
+        }
         avb.setModifiedBy(securityContext.getCurrentUser());
         avb.setModifiedOn(new Date());
         EntityUpdatedData data = new EntityUpdatedData();
