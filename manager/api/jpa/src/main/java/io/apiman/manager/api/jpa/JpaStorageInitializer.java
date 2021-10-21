@@ -64,13 +64,17 @@ public class JpaStorageInitializer {
         DB_TYPE_MAP.put(ApimanH2Dialect.class.getName(), "h2");
         DB_TYPE_MAP.put(H2Dialect.class.getName(), "h2");
 
+        DB_TYPE_MAP.put("io.apiman.manager.api.jpa.ApimanMySQL5Dialect",  "mysql8"); // compatibility but might need to drop this
+        DB_TYPE_MAP.put(ApimanMySQL8Dialect.class.getName(),  "mysql8"); // Hmm
         DB_TYPE_MAP.put(MySQLDialect.class.getName(), "mysql8");
         DB_TYPE_MAP.put(MySQL8Dialect.class.getName(), "mysql8");
 
+        DB_TYPE_MAP.put(ApimanOracle19Dialect.class.getName(),  "oracle19");
         DB_TYPE_MAP.put(OracleDialect.class.getName(), "oracle19");
         DB_TYPE_MAP.put(Oracle8iDialect.class.getName(), "oracle19");
         DB_TYPE_MAP.put(Oracle9iDialect.class.getName(), "oracle19");
 
+        DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(),  "postgresql9");
         DB_TYPE_MAP.put(PostgreSQLDialect.class.getName(), "postgresql9");
         DB_TYPE_MAP.put(PostgreSQL81Dialect.class.getName(), "postgresql9");
         DB_TYPE_MAP.put(PostgreSQL82Dialect.class.getName(), "postgresql9");

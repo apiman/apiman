@@ -26,12 +26,12 @@ import org.hibernate.dialect.Oracle10gDialect;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-public class ApimanOracle12Dialect extends Oracle10gDialect {
+public class ApimanOracle19Dialect extends Oracle10gDialect {
 
     /**
      * Constructor.
      */
-    public ApimanOracle12Dialect() {
+    public ApimanOracle19Dialect() {
     }
     
     /**

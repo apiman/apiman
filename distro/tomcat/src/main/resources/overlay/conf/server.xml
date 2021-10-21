@@ -55,6 +55,21 @@
       maxWaitMillis="10000"/>
   </GlobalNamingResources>
 
+  <!-- Example PostgreSQL config
+      <Resource
+      name="apiman/datasources/apiman-manager"
+      url="jdbc:postgresql://localhost:5432/postgres"
+      username="postgres"
+      password="apiman-is-super-cool"
+      type="javax.sql.DataSource"
+      driverClassName="org.postgresql.Driver"
+      defaultAutoCommit="false"
+      maxTotal="100"
+      maxIdle="30"
+      maxWaitMillis="10000"/>
+  </GlobalNamingResources>
+  -->
+
   <!-- A "Service" is a collection of one or more "Connectors" that share
        a single "Container" Note:  A "Service" is not itself a "Container",
        so you may not define subcomponents such as "Valves" at this level.
