@@ -50,10 +50,11 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     @Inject
     public DeveloperPortalResourceImpl(ApiService apiService,
-                                       DevPortalService portalService,
+                                       PlanService planService, DevPortalService portalService,
                                        OrganizationService orgService,
                                        ISecurityContext securityContext) {
         this.apiService = apiService;
+        this.planService = planService;
         this.portalService = portalService;
         this.orgService = orgService;
         this.securityContext = securityContext;
