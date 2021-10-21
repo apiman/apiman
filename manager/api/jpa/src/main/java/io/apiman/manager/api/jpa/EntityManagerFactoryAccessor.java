@@ -110,15 +110,12 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
     @Produces
     public EntityManager getEntityManager() {
         if (pcEm != null) {
-            // System.out.println("Using persistent context entity manager");
             return pcEm;
         }
         EntityManager threadLocalEm = threadLocal.get();
         if (threadLocalEm != null && threadLocalEm.isOpen()) {
-            // System.out.println("Return thread local em");
             return threadLocalEm;
         } else {
-            // System.out.println("Return new em");
             EntityManager newEm = emf.createEntityManager();
             threadLocal.set(newEm);
             return newEm;
