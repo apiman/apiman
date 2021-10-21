@@ -2,21 +2,8 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 06/10/2021, 18:44
--- Against: sa@offline:h2?version=1.4.200&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/h2/databasechangelog.csv
--- Liquibase version: 4.4.3
--- *********************************************************************
-
--- "support" JSON
-CREATE domain IF NOT EXISTS json AS text;
-CREATE domain IF NOT EXISTS jsonb AS other;
-
--- *********************************************************************
--- Update Database Script
--- *********************************************************************
--- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 06/10/2021, 19:01
--- Against: sa@offline:h2?version=1.4.200&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/h2/databasechangelog.csv
+-- Ran at: 21/10/2021, 17:08
+-- Against: sa@offline:h2?version=1.4.199&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/h2/databasechangelog.csv
 -- Liquibase version: 4.4.3
 -- *********************************************************************
 
@@ -281,6 +268,10 @@ CREATE INDEX IDX_FK_contracts_s ON contracts(apiv_id);
 -- Changeset src/main/liquibase/current/200-apiman-manager-api.db.indexes.changelog.xml::createIndex-18::apiman
 CREATE INDEX IDX_FK_contracts_a ON contracts(clientv_id);
 
+-- Changeset src/main/liquibase/current/201-add-json-type.changelog.xml::h2-json-type::msavy marc@blackparrotlabs.io
+-- H2 JSON field (needed for versions older than 1.4.200)
+CREATE domain IF NOT EXISTS json AS other;
+
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-6::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE developer_mappings (developer_id VARCHAR(255) NOT NULL, client_id VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL, CONSTRAINT PK_DEVELOPER_MAPPINGS PRIMARY KEY (developer_id, client_id, organization_id));
 
@@ -348,7 +339,7 @@ ALTER TABLE notification_category_preferences ADD CONSTRAINT FKaq4x0n83d83xevui0
 ALTER TABLE developer_mappings ADD CONSTRAINT FKhl2dwc4m0kvisedxfb9crceqd FOREIGN KEY (developer_id) REFERENCES developers (id);
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-4::msavy (generated)
-CREATE TABLE KeyValueTag (id BIGINT AUTO_INCREMENT NOT NULL, key VARCHAR(255) NOT NULL, value VARCHAR(255), CONSTRAINT KeyValueTagPK PRIMARY KEY (id));
+CREATE TABLE kv_tags (id BIGINT AUTO_INCREMENT NOT NULL, key VARCHAR(255) NOT NULL, value VARCHAR(255), CONSTRAINT kv_tagsPK PRIMARY KEY (id));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-5::msavy (generated)
 CREATE TABLE api_tag (api_id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NOT NULL, tag_id BIGINT NOT NULL, CONSTRAINT PK_API_TAG PRIMARY KEY (api_id, org_id, tag_id));
@@ -366,7 +357,8 @@ ALTER TABLE blob_store ADD CONSTRAINT UC_BLOB_STOREID_COL UNIQUE (id);
 ALTER TABLE blob_store ADD CONSTRAINT UK_4jee67ekw7s4y8spoc58i4dsf UNIQUE (hash, mime_type, name);
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-15::msavy (generated)
-ALTER TABLE api_tag ADD CONSTRAINT FK2h64maqscweorti1hta9josl2 FOREIGN KEY (tag_id) REFERENCES KeyValueTag (id);
+ALTER TABLE api_tag ADD CONSTRAINT FK2h64maqscweorti1hta9josl2 FOREIGN KEY (tag_id) REFERENCES kv_tags (id);
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-16::msavy (generated)
 ALTER TABLE api_tag ADD CONSTRAINT FKlpr8yu65omneju5297uqthb6k FOREIGN KEY (api_id, org_id) REFERENCES apis (id, organization_id);
+

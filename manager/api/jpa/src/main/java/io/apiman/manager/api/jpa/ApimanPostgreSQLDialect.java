@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.api.jpa;
 
-import org.hibernate.dialect.PostgreSQL82Dialect;
+import org.hibernate.dialect.PostgreSQL95Dialect;
 
 /**
  * For consistency, a postgresql dialect in the same package as our H2 and MySQL
@@ -23,7 +23,7 @@ import org.hibernate.dialect.PostgreSQL82Dialect;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApimanPostgreSQLDialect extends PostgreSQL82Dialect {
+public class ApimanPostgreSQLDialect extends PostgreSQL95Dialect {
 
     /**
      * Constructor.

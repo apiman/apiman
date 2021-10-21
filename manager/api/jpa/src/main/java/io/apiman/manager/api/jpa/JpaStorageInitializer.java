@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
@@ -49,6 +50,7 @@ import org.hibernate.dialect.PostgreSQL9Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServer2012Dialect;
 import org.hibernate.dialect.SQLServerDialect;
+import org.jdbi.v3.core.Jdbi;
 
 /**
  * Initializes the database by installing the appropriate DDL for the database in
@@ -102,8 +104,6 @@ public class JpaStorageInitializer {
         }
         ds = lookupDS(dsJndiLocation);
 
-
-
         dbType = DB_TYPE_MAP.get(hibernateDialect);
         if (dbType == null) {
             throw new RuntimeException("Unknown hibernate dialect configured: " + hibernateDialect); 
@@ -138,8 +138,6 @@ public class JpaStorageInitializer {
         Boolean isInitialized;
         
         try {
-            //ds.getConnection().setAutoCommit(false);
-
             isInitialized = run.query("SELECT * FROM apis", new ResultSetHandler<Boolean>() {
                 @Override
                 public Boolean handle(ResultSet rs) throws SQLException {
@@ -147,7 +145,7 @@ public class JpaStorageInitializer {
                 }
             });
         } catch (SQLException e) {
-            LOGGER.error(e);
+            LOGGER.trace("Is initialised error: {0}", e);
             isInitialized = false;
         }
         
@@ -157,21 +155,26 @@ public class JpaStorageInitializer {
             LOGGER.info("============================================");
             return;
         }
-        
+
         ClassLoader cl = JpaStorageInitializer.class.getClassLoader();
         URL resource = cl.getResource("ddls/apiman_" + dbType + ".ddl");
-        try (InputStream is = resource.openStream()) {
-            LOGGER.info("=======================================");
-            LOGGER.info("Initializing Apiman Manager database. "  + resource.getPath());
-            DdlParser ddlParser = new DdlParser();
-            List<String> statements = ddlParser.parse(is);
-            for (String sql : statements){
-                LOGGER.info(sql);
-                run.update(sql);
+        Objects.requireNonNull(resource, "DDLs are missing");
+        try {
+            try (InputStream is = resource.openStream()) {
+                LOGGER.info("=======================================");
+                LOGGER.info("Initializing Apiman Manager database. "  + resource.getPath());
+                DdlParser ddlParser = new DdlParser();
+                List<String> statements = ddlParser.parse(is);
+                Jdbi jdbi = Jdbi.create(ds);
+                for (String sql : statements) {
+                    LOGGER.info(sql);
+                    jdbi.useHandle(h -> {
+                        h.createUpdate(sql).execute();
+                        h.commit();
+                    });
+                }
+                LOGGER.info("=======================================");
             }
-            LOGGER.info("=======================================");
-            //run.getDataSource().getConnection().commit();
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

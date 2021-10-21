@@ -63,19 +63,20 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         }
 
         // Get two specific properties from the System (for backward compatibility only)
-        String s = properties.get("hibernate.hbm2ddl.auto"); //$NON-NLS-1$
+        String s = properties.get("hibernate.hbm2ddl.auto");
         if (s == null) {
-            s = "validate"; //$NON-NLS-1$
+            s = "validate";
         }
-        String autoValue = System.getProperty("apiman.hibernate.hbm2ddl.auto", s); //$NON-NLS-1$
-        s = properties.get("hibernate.dialect"); //$NON-NLS-1$
+        String autoValue = System.getProperty("apiman.hibernate.hbm2ddl.auto", s);
+        s = properties.get("hibernate.dialect");
         if (s == null) {
-            s = "org.hibernate.dialect.H2Dialect"; //$NON-NLS-1$
+            s = "org.hibernate.dialect.H2Dialect";
         }
-        String dialect = System.getProperty("apiman.hibernate.dialect", s); //$NON-NLS-1$
-        properties.put("hibernate.hbm2ddl.auto", autoValue); //$NON-NLS-1$
-        properties.put("hibernate.dialect", dialect); //$NON-NLS-1$
-        properties.put("hibernate.connection.handling_mode", "DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT");
+        String dialect = System.getProperty("apiman.hibernate.dialect", s);
+        properties.put("hibernate.hbm2ddl.auto", autoValue);
+        properties.put("hibernate.dialect", dialect);
+        properties.put("hibernate.globally_quoted_identifiers", "true");
+        //properties.put("hibernate.connection.handling_mode", "DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT");
         // properties.put("hibernate.transaction.jta.platform", "com.atomikos.icatch.jta.hibernate4.AtomikosPlatform");
 
         // First try using standard JPA to load the persistence unit.  If that fails, then
@@ -87,10 +88,10 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         }
 
         try {
-            emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+            emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties);
         } catch (Throwable t1) {
             try {
-                emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+                emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties);
             } catch (Throwable t3) {
                 throw t1;
             }
