@@ -227,7 +227,7 @@ export class BackendService {
     planId: string,
     planVersion: string
   ): Observable<IPolicySummaryExt[]> {
-    const path = `organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies`;
+    const path = `devportal/organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies`;
     return this.http.get<IPolicySummaryExt[]>(
       this.generateUrl(path),
       this.httpOptions
@@ -240,7 +240,7 @@ export class BackendService {
     planVersion: string,
     policyId: string
   ): Observable<IPolicy> {
-    const path = `organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies/${policyId}`;
+    const path = `devportal/organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies/${policyId}`;
     return this.http.get<IPolicy>(this.generateUrl(path), this.httpOptions);
   }
 
