@@ -10,7 +10,7 @@
   <name>apiman-distro-ddl</name>
   <properties>
     <version.org.postgresql.jdbc.driver>42.2.24</version.org.postgresql.jdbc.driver>
-    <version.mysql.jdbc.driver>8.0.26</version.mysql.jdbc.driver>
+    <version.mysql.jdbc.driver>8.0.27</version.mysql.jdbc.driver>
     <version.com.oracle.driver>21.3.0.0</version.com.oracle.driver>
     <version.mssql.driver>9.4.0.jre11</version.mssql.driver>
 
@@ -237,7 +237,7 @@
             <configuration>
               <migrationSqlOutputFile>${basedir}/target/apiman_mysql8.ddl</migrationSqlOutputFile>
               <driver>com.mysql.cj.jdbc.Driver</driver>
-              <url>offline:mysql?version=8.0.27&amp;caseSensitive=true&amp;catalog=apiman&amp;changeLogFile=${basedir}/target/changelog/mssql/databasechangelog.csv</url>
+              <url>offline:mysql?version=8&amp;caseSensitive=true&amp;catalog=apiman&amp;changeLogFile=${basedir}/target/changelog/mysql/databasechangelog.csv</url>
               <username>apiman</username>
               <password>apiman</password>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
