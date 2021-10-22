@@ -104,6 +104,16 @@
       <groupId>org.jboss.spec.javax.transaction</groupId>
       <artifactId>jboss-transaction-api_1.2_spec</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId> <!-- probably needed on test only -->
+      <version>6.0.22.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator-cdi</artifactId> <!-- probably needed on test only -->
+      <version>6.0.22.Final</version>
+    </dependency>
 
     <!-- Other Libs -->
     <dependency>
