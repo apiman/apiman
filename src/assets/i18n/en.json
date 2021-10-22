@@ -34,7 +34,8 @@
     "TITLE": "Marketplace",
     "SUBTITLE": "Discover our APIs",
     "SEARCH": "APIs and tags",
-    "LEARN_MORE": "Learn more"
+    "LEARN_MORE": "Learn more",
+    "NO_DESC": "No API description available"
   },
   "ACCOUNT": {
     "TITLE": "Account",

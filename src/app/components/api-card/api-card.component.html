@@ -6,7 +6,10 @@
     <div class="api-card-title primary">{{ api.name }}</div>
   </div>
   <mat-card-content class="api-card-content">
-    <p class="content-text">{{ api.description }}</p>
+    <p *ngIf="api.description; else noDescription" class="content-text">{{ api.description }}</p>
+    <ng-template #noDescription>
+      <app-no-data [text]="'MPLACE.NO_DESC' | translate"></app-no-data>
+    </ng-template>
   </mat-card-content>
   <div>
     <mat-card-actions class="api-card-actions">

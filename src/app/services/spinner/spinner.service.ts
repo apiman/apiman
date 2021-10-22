@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class SpinnerService {
-  private waiting = false;
+  public waiting = false;
 
   constructor() {}
 
@@ -12,20 +12,23 @@ export class SpinnerService {
    * Start waiting and show spinner
    */
   public startWaiting(): void {
-    this.waiting = true;
+    this.setWaiting(true)
   }
 
   /**
    * Stop waiting and hide spinner
    */
   public stopWaiting(): void {
-    this.waiting = false;
+    this.setWaiting(false)
   }
 
   /**
-   * Checks waiting state of spinner
+   * Because of change detection we need a timeout, otherwise console would show several errors
+   * @param waiting
    */
-  public isWaiting(): boolean {
-    return this.waiting;
+  setWaiting(waiting: boolean){
+    setTimeout(() => {
+      this.waiting = waiting;
+    })
   }
 }

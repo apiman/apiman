@@ -34,7 +34,8 @@
     "TITLE": "Marktplatz",
     "SUBTITLE": "Entdecken Sie unsere APIs",
     "SEARCH": "APIs und Tags",
-    "LEARN_MORE": "Mehr"
+    "LEARN_MORE": "Mehr",
+    "NO_DESC": "Keine API-Beschreibung verfügbar"
   },
   "ACCOUNT": {
     "TITLE": "Benutzerkonto",

@@ -20,7 +20,12 @@
     <app-img-or-icon-selector [imgUrl]="apiImgUrl"
                               [dimension]="'44'">
     </app-img-or-icon-selector>
-   <div>{{ api.api.description }}</div>
+   <div *ngIf="api.api.description; else noDesc">{{ api.api.description }}</div>
+    <ng-template #noDesc>
+      <div>
+        <app-no-data [text]="'MPLACE.NO_DESC' | translate"></app-no-data>
+      </div>
+    </ng-template>
   </div>
 
   <h2 class="primary mt-rem-3">{{'API_DETAILS.EXTENDED_DESCRIPTION' | translate}}</h2>
