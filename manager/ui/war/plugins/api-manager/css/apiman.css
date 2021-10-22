@@ -381,9 +381,7 @@ div.page {
 
 .dash-group {
   border: 1px solid rgb(200, 200, 200);
-  width: 49%;
   float: left;
-  margin-top: 20px;
   box-shadow: 2px 2px 3px rgb(221, 221, 221);
 }
 .dash-group:hover {
@@ -430,6 +428,13 @@ div.page {
   color: rgb(217, 82, 79);
 }
 
+#dash-container {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
 .browse-items {
   padding: 0px;
 }
@@ -438,12 +443,9 @@ div.page {
   margin-bottom: 15px;
 }
 .browse-items .item {
-  position: relative;
   padding: 10px;
   border: 1px solid rgb(218, 218, 218);
-  float: left;
-  margin-right: 15px;
-  margin-bottom: 15px;
+  margin-bottom: 3%;
 }
 .browse-items .item.card {
   height: 110px;
@@ -476,7 +478,8 @@ div.page {
 .browse-items .item .ismember {
   position: absolute;
   top: 0;
-  right: 0;
+  /*right: 20px because of bootstrap padding*/
+  right: 20px;
   border: 0;
   width: 57px;
   height: 57px;
