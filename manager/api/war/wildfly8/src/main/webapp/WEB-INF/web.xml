@@ -145,6 +145,13 @@
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
 
+    <web-resource-collection>
+      <web-resource-name>apiman-blobs</web-resource-name>
+      <url-pattern>/blobs</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+      <http-method-omission>GET</http-method-omission>
+    </web-resource-collection>
+
     <auth-constraint>
       <role-name>apiuser</role-name>
     </auth-constraint>
