@@ -1,6 +1,7 @@
 <!-- Show img source if available -->
 <img *ngIf="imgUrl; else withIcon"
      id="img"
+     class="api-img"
      alt="api logo"
      [src]="this.configService.getEndpoint() + '/' + imgUrl">
 

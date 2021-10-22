@@ -3,7 +3,6 @@ import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '../../services/config/config.service';
 import { IHero } from '../../interfaces/IConfig';
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',

@@ -4,7 +4,13 @@ import { ApiService } from '../../services/api/api.service';
 import { HeroService } from '../../services/hero/hero.service';
 import {map, switchMap} from 'rxjs/operators';
 import {forkJoin} from 'rxjs';
-import { IApi, IApiVersion } from '../../interfaces/ICommunication';
+import {
+  IApi,
+  IApiSummary,
+  IApiVersion,
+  ISearchCriteria,
+  ISearchResultsApiSummary
+} from '../../interfaces/ICommunication';
 import {SpinnerService} from "../../services/spinner/spinner.service";
 import {IApiVersionExt} from "../../interfaces/IApiVersionExt";
 import {BackendService} from "../../services/backend/backend.service";
@@ -27,7 +33,6 @@ export class MarketplaceApiDetailsComponent implements OnInit {
   apis!: IApiVersionExt[];
 
   ngOnInit(): void {
-    this.getApiImage();
     this.getApiVersions();
     this.setUpHero();
   }
@@ -70,15 +75,25 @@ export class MarketplaceApiDetailsComponent implements OnInit {
       .subscribe((apiVersions) => {
         this.spinnerService.stopWaiting();
         this.apis = apiVersions;
+        this.getApiImage();
       });
   }
 
   private getApiImage() {
-    const orgId = this.route.snapshot.paramMap.get('orgId')!;
-    const apiId = this.route.snapshot.paramMap.get('apiId')!;
+    const searchCriteria: ISearchCriteria = {
+      filters: [{name: 'name', value: this.apis[0].api.name, operator: 'eq'}],
+      paging: {page: 1, pageSize: 1}
+    };
 
-    this.backend.getApi(orgId, apiId).subscribe((api: IApi) => {
-      this.apiImgUrl = api.image;
+    // TODO: At the moment search endpoint returns every API
+    this.backend.searchApis(searchCriteria).subscribe((summary: ISearchResultsApiSummary) => {
+      const found = summary.beans.find((bean: IApiSummary) => {
+        return bean.name === this.apis[0].api.name;
+      })
+
+      if (found){
+        this.apiImgUrl = found.image;
+      }
     });
   }
 }

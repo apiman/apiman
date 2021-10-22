@@ -51,23 +51,14 @@ export class BackendService {
   /**
    * Searches apis
    */
-  public searchApis(
-    searchCriteria: ISearchCriteria
-  ): Observable<ISearchResultsApiSummary> {
+  public searchApis(searchCriteria: ISearchCriteria): Observable<ISearchResultsApiSummary> {
     const path = 'devportal/apis/search';
-    return this.http.post(
-      this.generateUrl(path),
-      searchCriteria,
-      this.httpOptions
-    ) as Observable<ISearchResultsApiSummary>;
+    return this.http.post(this.generateUrl(path), searchCriteria, this.httpOptions) as Observable<ISearchResultsApiSummary>;
   }
 
   public getFeaturedApis(): Observable<IApiSummary[]> {
     const path = 'devportal/apis/featured';
-    return this.http.get(
-      this.generateUrl(path),
-      this.httpOptions
-    ) as Observable<IApiSummary[]>;
+    return this.http.get(this.generateUrl(path), this.httpOptions) as Observable<IApiSummary[]>;
   }
 
   /**

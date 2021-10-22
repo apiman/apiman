@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ConfigService} from "../../services/config/config.service";
 
 @Component({
@@ -6,11 +6,17 @@ import {ConfigService} from "../../services/config/config.service";
   templateUrl: './img-or-icon-selector.component.html',
   styleUrls: ['./img-or-icon-selector.component.scss']
 })
-export class ImgOrIconSelectorComponent implements AfterViewInit {
+export class ImgOrIconSelectorComponent implements AfterViewInit, OnChanges {
   @Input() imgUrl?: string;
   @Input() dimension?: string;
 
-  constructor(public configService: ConfigService) { }
+  constructor(public configService: ConfigService, private cdr: ChangeDetectorRef) { }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.imgUrl = changes.imgUrl ? changes.imgUrl.currentValue : ''
+    this.cdr.detectChanges();
+    this.resize();
+  }
 
   ngAfterViewInit(): void {
     if (this.dimension)
@@ -19,13 +25,19 @@ export class ImgOrIconSelectorComponent implements AfterViewInit {
 
   private resize() {
     if (this.imgUrl) {
-      // Had to use document because @View Child could not do it with the ngIf in template
-      // TODO: Must fix this later, as multiple elements with these ids could be in document because this component could get used multiple times
-      document.getElementById('img')!.style.width = this.dimension + 'px';
-      document.getElementById('img')!.style.height = this.dimension + 'px';
+      const images = Array.from(document.getElementsByClassName('api-img') as HTMLCollectionOf<HTMLElement>)
+
+      images.forEach((img: HTMLElement) => {
+        img.style.width = this.dimension + 'px';
+        img.style.height = this.dimension + 'px'
+      });
     }else{
-      document.getElementById('icon')!.style.fontSize = this.dimension + 'px';
-      document.getElementById('icon')!.style.height = this.dimension + 'px';
+      const icons = Array.from(document.getElementsByClassName('api-icon') as HTMLCollectionOf<HTMLElement>)
+
+      icons.forEach((icon: HTMLElement) => {
+        icon.style.fontSize = this.dimension + 'px';
+        icon.style.height = this.dimension + 'px'
+      });
     }
   }
 }
