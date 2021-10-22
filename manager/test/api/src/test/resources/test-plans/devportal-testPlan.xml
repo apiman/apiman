@@ -19,5 +19,7 @@
   <testGroup name="Dev portal functionality">
     <test name="Search for all APIs (only APIs with at least 1 exposed version should appear)">test-plan-data/devportal/devportal/000_search_exposed_apis.resttest</test>
     <test name="Get all featured APIs">test-plan-data/devportal/devportal/001_get-featured-apis.resttest</test>
+    <test name="Search for 'LIKE' APIs with non-matching filter">test-plan-data/devportal/devportal/002_search-like-apis-nomatch.resttest</test>
+    <test name="Search for 'LIKE' APIs with match">test-plan-data/devportal/devportal/003_search-like-apis-match.resttest</test>
   </testGroup>
 </testPlan>

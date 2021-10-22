@@ -16,6 +16,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.WriterInterceptor;
@@ -76,15 +78,7 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
     @Override
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
         try {
-            // boolean startedOwnTx = false;
-            // if (!getEm().getTransaction().isActive()) {
-            //     getEm().getTransaction().begin();
-            //     startedOwnTx = true;
-            // }
             rewrite(context);
-            // if (startedOwnTx) {
-            //     getEm().getTransaction().commit();
-            // }
             context.proceed();
         } catch (IllegalAccessException e) {
             throw new IOException(e);
@@ -149,12 +143,11 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
                     if (isAccessible && !shouldBeIgnored(f, currentNode)) {
                         Object value = f.get(currentNode);
                         if (value != null) {
-                            resolveValue(value).forEach(nodesToSearch::push);
+                            resolveValue(value).filter(Objects::nonNull).forEach(nodesToSearch::push);
                         }
                     }
                 }
                 objectsSeen.add(currentNode);
-
             }
         }
         return results;
@@ -170,7 +163,8 @@ public class BlobResourceInterceptorProvider implements WriterInterceptor {
                 || Modifier.isTransient(modifiers)
                 || f.isEnumConstant()
                 || !f.canAccess(currentNode)
-                || f.isAnnotationPresent(JsonIgnore.class);
+                || f.isAnnotationPresent(JsonIgnore.class)
+                || currentNode instanceof StreamingOutput;
     }
 
     private boolean isCollectionLike(Object obj) {
