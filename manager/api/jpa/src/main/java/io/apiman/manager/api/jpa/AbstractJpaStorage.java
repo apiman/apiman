@@ -37,6 +37,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -286,7 +287,7 @@ public abstract class AbstractJpaStorage {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <T> void applySearchCriteriaToQuery(SearchCriteriaBean criteria, CriteriaBuilder builder,
-            CriteriaQuery<?> query, Root<T> from, boolean countOnly) {
+                                                  CriteriaQuery<?> query, From<T, ?> from, boolean countOnly) {
 
         List<SearchCriteriaFilterBean> filters = criteria.getFilters();
         if (filters != null && !filters.isEmpty()) {

@@ -169,6 +169,7 @@ public class JpaStorageInitializer {
                 for (String sql : statements) {
                     LOGGER.info(sql);
                     jdbi.useHandle(h -> {
+                        h.getConnection().setAutoCommit(false);
                         h.createUpdate(sql).execute();
                         h.commit();
                     });

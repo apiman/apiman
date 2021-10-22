@@ -784,17 +784,30 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         CriteriaBuilder builder = getActiveEntityManager().getCriteriaBuilder();
         CriteriaQuery<ApiBean> criteriaQuery = builder.createQuery(ApiBean.class).distinct(true);
         Root<ApiBean> root = criteriaQuery.from(ApiBean.class);
-        super.applySearchCriteriaToQuery(criteria, builder, criteriaQuery, root, false);
-        SetJoin<ApiBean, ApiVersionBean> versions = root.join(ApiBean_.apiVersionSet, JoinType.INNER);
-        Predicate isExposed = builder.equal(versions.get(ApiVersionBean_.exposeInPortal), true);
-        CriteriaQuery<ApiBean> exposedQuery = criteriaQuery.where(isExposed);
+
+        super.applySearchCriteriaToQuery(criteria, builder, criteriaQuery , root, false);
+
+        // If no restrictions were applied
+        // TODO(msavy): tidy this up
+        if (criteriaQuery.getRestriction() != null) {
+            SetJoin<ApiBean, ApiVersionBean> apiVersions = root.join(ApiBean_.apiVersionSet, JoinType.INNER);
+            Predicate isExposed = builder.equal(apiVersions.get(ApiVersionBean_.exposeInPortal), true);
+            Predicate exposedAndCustomRestrictions = builder.and(isExposed, criteriaQuery.getRestriction());
+            CriteriaQuery<ApiBean> combinedWhere = criteriaQuery.where(exposedAndCustomRestrictions);
+        } else {
+            SetJoin<ApiBean, ApiVersionBean> apiVersions = root.join(ApiBean_.apiVersionSet, JoinType.INNER);
+            Predicate isExposed = builder.equal(apiVersions.get(ApiVersionBean_.exposeInPortal), true);
+            CriteriaQuery<ApiBean> exposed = criteriaQuery.where(isExposed);
+        }
+
         List<ApiBean> results = getActiveEntityManager()
-                .createQuery(exposedQuery)
+                .createQuery(criteriaQuery)
                 .getResultList();
-        // TODO(msavy): refactor/add back pagination if we need it
+
         return new SearchResultsBean<ApiSummaryBean>()
                 .setBeans(apiMapper.toSummary(results))
                 .setTotalSize(results.size());
+
     }
 
     // TODO(msavy): optimise this

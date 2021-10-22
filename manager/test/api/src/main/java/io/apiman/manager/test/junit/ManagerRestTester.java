@@ -135,7 +135,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) {
             startServer();
         } else {
-            System.out.println("**** APIMan Server suppressed - assuming running tests against a live server. ****");
+            System.out.println("**** Apiman Server suppressed - assuming running tests against a live server. ****");
         }
     }
 
