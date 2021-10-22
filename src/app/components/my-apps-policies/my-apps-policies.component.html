@@ -1,15 +1,14 @@
 <div class="summary mb-40" *ngFor="let policy of policies">
-  <div class="policies mr-40" *ngIf="policies">
+  <div class="policies" *ngIf="policies">
     <app-policy-card [policy]="policy"></app-policy-card>
   </div>
-  <div class="divider-left">
-    <div class="policy-charts-grid">
-      <div>
-        <app-gauge-chart [gaugeData]="policy.mainGaugeData" [icon]="policy.icon"></app-gauge-chart>
-      </div>
-      <div>
-        <app-gauge-chart [gaugeData]="policy.timeGaugeData" [icon]="'timer'"></app-gauge-chart>
-      </div>
+  <div class="grid-divider"><div></div></div>
+  <div class="policy-charts-grid">
+    <div>
+      <app-gauge-chart [gaugeData]="policy.mainGaugeData" [icon]="policy.icon"></app-gauge-chart>
+    </div>
+    <div>
+      <app-gauge-chart [gaugeData]="policy.timeGaugeData" [icon]="'timer'"></app-gauge-chart>
     </div>
   </div>
 </div>

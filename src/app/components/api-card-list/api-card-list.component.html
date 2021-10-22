@@ -25,12 +25,12 @@
 </ng-container>
 <ng-template #NoDataMsg>
   <div *ngIf="this.ready; else ErrorMsg" class="dp-center">
-    <app-no-data [text]="'COMMON.NO_DATA_FOUND' | translate"></app-no-data>
+    <app-no-data [text]="'COMMON.NO_DATA_FOUND' | translate" [textClass]="'text-big2'"></app-no-data>
   </div>
 </ng-template>
 <ng-template #ErrorMsg>
   <div *ngIf="error" class="dp-center">
-    <app-no-data [text]="'COMMON.ERROR' | translate"></app-no-data>
+    <app-no-data [text]="'COMMON.ERROR' | translate" [textClass]="'text-big2'"></app-no-data>
   </div>
 </ng-template>
 <div *ngIf="listType === 'api' && totalSize > searchCriteria.paging.pageSize" class="align">

@@ -1,5 +1,5 @@
 <div class="summary">
-  <div class="endpoints divider-right">
+  <div class="endpoints">
     <div class="api-endpoint">
       <div>
         <mat-icon class="form-field-pre-icon" color="primary">public</mat-icon>
@@ -8,7 +8,7 @@
         <mat-form-field>
           <input matInput readonly value="{{contract!.managedEndpoint}}" />
           <button
-            [cdkCopyToClipboard]="'test'"
+            [cdkCopyToClipboard]="contract!.managedEndpoint"
             mat-icon-button
             matSuffix
             class="input-icon-btn"
@@ -24,16 +24,13 @@
       </div>
       <div>
         <mat-form-field>
-          <input matInput readonly value="{{contract ? contract.client.apikey : ''}}" />
+          <input matInput readonly value="{{contract!.client.apikey}}" />
           <button
-            [cdkCopyToClipboard]="''"
+            [cdkCopyToClipboard]="contract!.client.apikey"
             mat-icon-button
             matSuffix
-            class="input-icon-btn"
-          >
-            <mat-icon class="input-icon-btn" color="primary"
-              >content_copy</mat-icon
-            >
+            class="input-icon-btn">
+            <mat-icon class="input-icon-btn" color="primary">content_copy</mat-icon>
           </button>
         </mat-form-field>
       </div>
@@ -96,9 +93,15 @@
       </a>
     </div>
   </div>
-  <div class="policies">
+  <div class="grid-divider"><div></div></div>
+  <div *ngIf="contract!.policies.length > 0; else noPolicies" class="policies">
     <ng-container *ngFor="let policy of contract!.policies">
       <app-policy-card-light [policy]="policy" [contract]="contract"></app-policy-card-light>
     </ng-container>
   </div>
+
+  <!-- No policies found for this API -->
+  <ng-template #noPolicies>
+    <app-no-data class="dp-center" [textClass]="'text-big2'" [text]="'APPS.NO_POLICIES_FOR_API' | translate"></app-no-data>
+  </ng-template>
 </div>

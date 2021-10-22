@@ -61,7 +61,8 @@
     "USED": "used",
     "RESETS_AT": "Resets at",
     "FIRST_OF": "1st of",
-    "RESETS_EVERY_SECOND": "Resets every second"
+    "RESETS_EVERY_SECOND": "Resets every second",
+    "NO_POLICIES_FOR_API": "No policies were found for this API"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Select from available Applications"

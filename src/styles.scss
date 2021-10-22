@@ -34,6 +34,17 @@
   .accent-border-color{border-color: $accent !important}
   .warn-border-color{border-color: $warn !important}
 
+  .grid-divider{
+    width: 4rem;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    div{
+      height: 100%;
+      border-right: 2px solid $primary;
+    }
+  }
+
   .form-field-pre-icon{
     min-width: 40px;
   }

@@ -124,7 +124,7 @@ export class MyAppsComponent implements OnInit {
                 return {
                   ...contract,
                   policies: planPolicies.concat(apiPolicies),
-                  section: 'policies',
+                  section: 'summary',
                   managedEndpoint: endpoint.managedEndpoint,
                   docsAvailable: docsAvailable
                 } as IContractExt;

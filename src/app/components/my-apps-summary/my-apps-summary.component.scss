@@ -1,8 +1,8 @@
 .summary{
   display: grid;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  grid-template-columns: 4fr 9fr;
+  grid-template-columns: 4.2fr auto 9fr;
   margin-bottom: 1rem;
 }
 

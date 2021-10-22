@@ -7,6 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class NoDataComponent implements OnInit {
   @Input() text!: string;
+  @Input() textClass?: string;
 
   constructor() { }
 

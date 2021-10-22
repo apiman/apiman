@@ -2,7 +2,7 @@
   display: grid;
   justify-content: space-between;
   align-items: center;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1.24fr auto 2.2fr;
 }
 
 .policies {
@@ -21,6 +21,6 @@ h2, h3 {
 
 .policy-charts-grid{
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   grid-column-gap: 4rem;
 }

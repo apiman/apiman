@@ -61,7 +61,8 @@
     "USED": "verbraucht",
     "RESETS_AT": "Reset am",
     "FIRST_OF": "1.",
-    "RESETS_EVERY_SECOND": "Resettet jede Sekunde"
+    "RESETS_EVERY_SECOND": "Resettet jede Sekunde",
+    "NO_POLICIES_FOR_API": "Für diese API wurden keine Regeln gefunden"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Aus vorhandenen Anwendugen auswählen"
