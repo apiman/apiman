@@ -2,8 +2,6 @@ package io.apiman.manager.api.war.tomcat8;
 
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.EntityManagerFactoryAccessor;
-import io.apiman.manager.api.rest.exceptions.AbstractRestException;
-import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 
 import javax.annotation.Priority;
@@ -74,7 +72,7 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
     }
 
     private void handleException(Exception e, EntityTransaction tx) throws Exception {
-        e.printStackTrace();
+        // e.printStackTrace();
         if (e instanceof RuntimeException || e instanceof StorageException) {
             tx.setRollbackOnly();
             throw e;

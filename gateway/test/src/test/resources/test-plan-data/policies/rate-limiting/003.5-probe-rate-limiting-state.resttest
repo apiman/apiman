@@ -1,4 +1,4 @@
-GET /organizations/Policy_RateLimitingTest/apis/echo/versions/1.0.0/policies/0?apiKey=12345 admin/admin
+POST /organizations/Policy_RateLimitingTest/apis/echo/versions/1.0.0/policies/0?apiKey=12345 admin/admin
 Content-Type: application/json
 X-API-Key: 12345
 
@@ -13,14 +13,16 @@ X-API-Key: 12345
 Content-Type: application/json
 
 {
-	"config": {
-		"limit": 5,
-		"granularity": "Client",
-		"period": "Hour"
-	},
-	"status": {
-		"accepted": true,
-		"remaining": 1
-	},
-	"probeType": "RateLimitingProbeResponse"
+  "RateLimitingProbeResponse": {
+    "config": {
+      "limit": 5,
+      "granularity": "Client",
+      "period": "Hour"
+    },
+    "status": {
+      "accepted": true,
+      "remaining": 1
+    },
+    "probeType": "RateLimitingProbeResponse"
+  }
 }
