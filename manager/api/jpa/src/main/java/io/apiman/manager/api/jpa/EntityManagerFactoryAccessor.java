@@ -75,9 +75,6 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         String dialect = System.getProperty("apiman.hibernate.dialect", s);
         properties.put("hibernate.hbm2ddl.auto", autoValue);
         properties.put("hibernate.dialect", dialect);
-        properties.put("hibernate.globally_quoted_identifiers", "true");
-        //properties.put("hibernate.connection.handling_mode", "DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT");
-        // properties.put("hibernate.transaction.jta.platform", "com.atomikos.icatch.jta.hibernate4.AtomikosPlatform");
 
         // First try using standard JPA to load the persistence unit.  If that fails, then
         // try using hibernate directly in a couple ways (depends on hibernate version and

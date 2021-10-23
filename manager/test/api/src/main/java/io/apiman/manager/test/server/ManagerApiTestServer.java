@@ -62,6 +62,7 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
+import org.jdbi.v3.core.Jdbi;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
 /**
@@ -184,6 +185,14 @@ public class ManagerApiTestServer {
                 } else {
                     ds = createInMemoryDatasource();
                 }
+                try {
+                    // For H2 versions older than 1.4.200 this ensures JSON type exists.
+                    Jdbi.create(ds).useHandle(h -> {
+                        h.getConnection().setAutoCommit(false);
+                        h.execute("CREATE domain IF NOT EXISTS json AS other");
+                        h.commit();
+                    });
+                } catch (Exception e) {}
                 // ctx.bind("java:/comp/env/jdbc/ApiManagerDS", ds);
                 ctx.bind("java:/apiman/datasources/apiman-manager", ds);
             } catch (NameAlreadyBoundException nbe) {
