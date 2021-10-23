@@ -814,8 +814,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<ApiSummaryBean> findExposedApis() throws StorageException {
         List<ApiBean> apisWithExposedVersions = getActiveEntityManager()
-                .createQuery(
-                        "SELECT DISTINCT ApiBean "
+                .createQuery("SELECT DISTINCT ApiBean "
                                 + "FROM ApiBean ab "
                                 + "JOIN ApiVersionBean avb "
                                 + "WHERE ab.id = avb.api.id "
@@ -1750,10 +1749,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             RoleBean prole = get(role.getId(), RoleBean.class);
 
             // First delete all memberships in this role
-            Query query = entityManager.createQuery("DELETE from RoleMembershipBean m WHERE m.roleId = :roleId" );
-            query.setParameter("roleId", role.getId());
-            query.executeUpdate();
-
+            entityManager.createQuery(
+                            "DELETE from RoleMembershipBean m "
+                                    + "WHERE m.roleId = :roleId")
+                    .setParameter("roleId", role.getId())
+                    .executeUpdate();
             // Then delete the role itself.
             super.delete(prole);
         } catch (Throwable t) {
@@ -1792,11 +1792,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
-            Query query = entityManager.createQuery("SELECT m FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" );
-            query.setParameter("roleId", roleId);
-            query.setParameter("userId", userId);
-            query.setParameter("orgId", organizationId);
-            return (RoleMembershipBean) query.getResultStream().findFirst().orElse(null);
+            TypedQuery<RoleMembershipBean> query = entityManager.createQuery(
+                            "SELECT m FROM RoleMembershipBean m "
+                                    + "WHERE m.roleId = :roleId "
+                                    + "AND m.userId = :userId "
+                                    + "AND m.organizationId = :orgId", RoleMembershipBean.class)
+                    .setParameter("roleId", roleId)
+                    .setParameter("userId", userId)
+                    .setParameter("orgId", organizationId);
+            return query.getResultStream().findFirst().orElse(null);
         } catch (Throwable t) {
             throw new StorageException(t);
         }
@@ -1809,11 +1813,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
-            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" );
-            query.setParameter("roleId", roleId);
-            query.setParameter("userId", userId);
-            query.setParameter("orgId", organizationId);
-            query.executeUpdate();
+            entityManager.createQuery(
+                            "DELETE FROM RoleMembershipBean m "
+                                    + "WHERE m.roleId = :roleId "
+                                    + "AND m.userId = :userId "
+                                    + "AND m.organizationId = :orgId")
+                    .setParameter("roleId", roleId)
+                    .setParameter("userId", userId)
+                    .setParameter("orgId", organizationId)
+                    .executeUpdate();
         } catch (Throwable t) {
             throw new StorageException(t);
         }
@@ -1826,10 +1834,13 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
-            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.userId = :userId AND m.organizationId = :orgId" );
-            query.setParameter("userId", userId);
-            query.setParameter("orgId", organizationId);
-            query.executeUpdate();
+            entityManager.createQuery(
+                            "DELETE FROM RoleMembershipBean m "
+                                    + "WHERE m.userId = :userId "
+                                    + "AND m.organizationId = :orgId")
+                    .setParameter("userId", userId)
+                    .setParameter("orgId", organizationId)
+                    .executeUpdate();
         } catch (Throwable t) {
             throw new StorageException(t);
         }
