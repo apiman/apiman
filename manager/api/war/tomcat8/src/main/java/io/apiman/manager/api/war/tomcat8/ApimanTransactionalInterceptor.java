@@ -59,13 +59,7 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
         try {
             if (!tx.getRollbackOnly()) {
                 if (getEm().isOpen() && tx.isActive()) {
-                    try {
-                        tx.commit();
-                    } catch (AbstractRestException e) {  // Emulates the way Apiman handled commit exceptions in earlier versions
-                        throw e;
-                    } catch (Throwable e) {
-                        throw new SystemErrorException(e);
-                    }
+                    tx.commit();
                 }
             } else {
                 tx.rollback();
@@ -85,7 +79,7 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
             tx.setRollbackOnly();
             throw e;
         }
-        throw new SystemErrorException(e);
+        throw e;
     }
 
 

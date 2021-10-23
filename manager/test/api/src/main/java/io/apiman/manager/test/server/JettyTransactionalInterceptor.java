@@ -5,7 +5,6 @@ import io.apiman.manager.api.jpa.EntityManagerFactoryAccessor;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -27,7 +26,7 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
     @Inject
     EntityManagerFactoryAccessor emf;
     private EntityManager em;
-    static ThreadLocal<AtomicInteger> test = ThreadLocal.withInitial(() -> new AtomicInteger(0));
+    //static ThreadLocal<AtomicInteger> test = ThreadLocal.withInitial(() -> new AtomicInteger(0));
 
     //@Inject
     //private TransactionManager tm;
@@ -63,8 +62,8 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
-        int depth = test.get().incrementAndGet();
-        System.out.println(depth);
+        //int depth = test.get().incrementAndGet();
+        //System.out.println(depth);
         try {
             return ic.proceed();
         } catch (Exception e) {
@@ -103,7 +102,7 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
             if (!tx.getRollbackOnly()) {
                 // em.flush();
                 System.out.println("commit");
-                tryAction(tx::commit);
+                tx.commit();
             } else {
                 tx.rollback();
             }
@@ -111,7 +110,7 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
             handleException(e, tx);
         } finally {
             em.close();
-            test.get().decrementAndGet();
+            // test.get().decrementAndGet();
         }
 
         // if (tx.isActive() == Status.STATUS_MARKED_ROLLBACK) {
@@ -127,14 +126,13 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
     }
 
     private void handleException(Exception e, EntityTransaction tx) throws Exception {
-        e.printStackTrace();
+        //e.printStackTrace();
         if (e instanceof RuntimeException || e instanceof StorageException) {
             System.out.println("Rollback only set");
             tx.setRollbackOnly();
             throw e;
         }
-
-        throw new SystemErrorException(e);
+        throw e;
     }
 
 
