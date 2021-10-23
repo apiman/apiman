@@ -63,8 +63,7 @@ X-RestTest-ArrayOrdering: any
     "description": "This is the gateway.",
     "createdBy": "admin",
     "modifiedBy": "admin",
-    "type": "REST",
-    "configuration": "{\"endpoint\":\"http://localhost:7070/mock-gateway\",\"username\":\"admin\",\"password\":\"$CRYPT::j8rdW76Z5gUI0I+9c8/GrA==\"}"
+    "type": "REST"
   }],
   "Plugins": [],
   "Roles": [],
