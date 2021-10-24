@@ -56,7 +56,7 @@ public class ApimanLoggerFactoryRegistry {
                 IDelegateFactory instance = (IDelegateFactory) loggerFactory.newInstance();
                 String name = loggerFactory.getAnnotation(ApimanLoggerFactory.class).value();
                 DELEGATE_FACTORY_MAP.put(name, instance);
-                System.err.println("Logger registered: " + name);
+                // System.err.println("Logger registered: " + name);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }

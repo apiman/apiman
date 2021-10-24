@@ -19,7 +19,7 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.providers.JacksonObjectMapperProvider;
-import io.apiman.manager.api.providers.eager.EagerProvider;
+// import io.apiman.manager.api.providers.eager.EagerProvider;
 import io.apiman.manager.api.rest.exceptions.mappers.IllegalArgumentExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.rest.interceptors.BlobResourceInterceptorProvider;
@@ -89,8 +89,8 @@ public class ApiManagerApplication extends Application {
                 JacksonObjectMapperProvider.class,
                 BlobResourceInterceptorProvider.class,
                 TotalCountInterceptorProvider.class,
-                RestExceptionMapper.class,
-                EagerProvider.class
+                RestExceptionMapper.class
+                // EagerProvider.class
         );
 
         System.out.println("API Manager Application constructor end");
