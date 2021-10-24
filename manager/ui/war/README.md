@@ -8,25 +8,22 @@ To install dependencies on the front-end, run the following:
 
 `yarn install`
 
-This will install NPM dependencies and TS definitions (through an NPM `postinstall` script). No need to install any 
-dependencies globally!
-
 ## Configuration
 
 * Make a copy of *apiman/config.js-SAMPLE* and name it *apiman/config.js*
 * Configure *config.js* to work with your API Manager
 
-_Note_: when running the API Manager UI in gulp, we will use simple BASIC authentication
-with the credentials configured in the *config.js* file you created above.  The *config.js*
+_Note_: when running the API Manager UI in development mode, we will use simple BASIC authentication
+with the credentials configured in the *config.js* file you created above. The *config.js*
 file is local to your machine and not checked into version control.
 
 ## Get Started
 
 To build and run the app:
 
-`npx gulp`
+`yarn serve`
 
-The above script will also monitor for changes, and will rebuild the app accordingly. To see exactly which files are monitored, check the `watch` task in the Gulpfile, located in `/apiman/manager/ui/war/gulpfile.js`.
+Edits should automatically be detected and refresh (although certain HTML edits may require a manual refresh).
 
 ## Contributing
 
