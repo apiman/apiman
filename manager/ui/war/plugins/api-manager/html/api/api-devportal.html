@@ -141,29 +141,34 @@
               </div>
               <div id="editor"></div>
               <!-- /row -->
-              <!-- save -->
-              <hr />
-              <div apiman-permission="apiEdit"
-                   class="actions"
-                   style="margin-top: 20px">
-                <button ng-disabled="!isDirty"
-                        class="btn btn-primary"
-                        ng-click="doSave()"
-                        type="submit"
-                        data-icon="fa-cog">
-                  <span ng-show="saving" apiman-i18n-key="saving">Saving</span>
-                  <span ng-hide="saving" apiman-i18n-key="save">Save</span>
-                </button>
-                <button ng-disabled="!isDirty"
-                        ng-click="reset()"
-                        class="btn btn-default"
-                        data-field="cancelButton"
-                        apiman-i18n-key="cancel">Cancel</button>
-              </div>
-              <!-- /save -->
             </div>
 
+
           </div>
+
+        <!-- save -->
+        <div class="row">
+          <hr />
+          <div apiman-permission="apiEdit"
+               class="actions"
+               style="margin-top: 20px">
+            <button ng-disabled="!isDirty"
+                    class="btn btn-primary"
+                    ng-click="doSave()"
+                    type="submit"
+                    data-icon="fa-cog">
+              <span ng-show="saving" apiman-i18n-key="saving">Saving</span>
+              <span ng-hide="saving" apiman-i18n-key="save">Save</span>
+            </button>
+            <button ng-disabled="!isDirty"
+                    ng-click="reset()"
+                    class="btn btn-default"
+                    data-field="cancelButton"
+                    apiman-i18n-key="cancel">Cancel</button>
+          </div>
+          <!-- /save -->
+        </div>
+
         </div>
       </div>
     </div>
