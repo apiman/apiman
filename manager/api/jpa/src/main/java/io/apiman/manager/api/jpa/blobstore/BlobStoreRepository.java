@@ -55,13 +55,13 @@ public class BlobStoreRepository extends AbstractJpaStorage {
         em.flush();
         em.createQuery("DELETE "
                             + "FROM BlobEntity b "
-                            + "WHERE b.references <= 1 "
+                            + "WHERE b.refCount <= 1 "
                             + "AND b.id = :uid")
           .setParameter("uid", uid)
           .executeUpdate();
 
         em.createQuery("UPDATE BlobEntity b "
-                            + "SET b.references = b.references-1"
+                            + "SET b.refCount = b.refCount-1"
                             + "WHERE b.id = :uid")
           .setParameter("uid", uid)
           .executeUpdate();
@@ -92,7 +92,7 @@ public class BlobStoreRepository extends AbstractJpaStorage {
         Preconditions.requireNonBlank(uid, "uid must be non-blank");
         getActiveEntityManager()
             .createQuery("UPDATE BlobEntity b "
-                           + "SET b.references = b.references+1"
+                           + "SET b.refCount = b.refCount+1"
                            + "WHERE b.id = :uid")
             .setParameter("uid", uid)
             .executeUpdate();
@@ -104,7 +104,7 @@ public class BlobStoreRepository extends AbstractJpaStorage {
         getActiveEntityManager()
                 .createQuery("DELETE FROM BlobEntity b "
                                      + "WHERE b.createdOn < :timeThreshold "
-                                     + "AND b.references <= 0")
+                                     + "AND b.refCount <= 0")
                 .setParameter("timeThreshold", timeThreshold)
                 .executeUpdate();
     }

@@ -345,7 +345,7 @@ CREATE TABLE kv_tags (id BIGINT AUTO_INCREMENT NOT NULL, key VARCHAR(255) NOT NU
 CREATE TABLE api_tag (api_id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NOT NULL, tag_id BIGINT NOT NULL, CONSTRAINT PK_API_TAG PRIMARY KEY (api_id, org_id, tag_id));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-6::msavy (generated)
-CREATE TABLE blob_store (id VARCHAR(255) NOT NULL, mrblobby BLOB NOT NULL, created_on TIMESTAMP NOT NULL, hash BIGINT NOT NULL, mime_type VARCHAR(255) NOT NULL, modified_on TIMESTAMP NOT NULL, name VARCHAR(255) NOT NULL, references INT NOT NULL, CONSTRAINT blob_storePK PRIMARY KEY (id));
+CREATE TABLE blob_store (id VARCHAR(255) NOT NULL, mrblobby BLOB NOT NULL, created_on TIMESTAMP NOT NULL, hash BIGINT NOT NULL, mime_type VARCHAR(255) NOT NULL, modified_on TIMESTAMP NOT NULL, name VARCHAR(255) NOT NULL, ref_count INT NOT NULL, CONSTRAINT blob_storePK PRIMARY KEY (id));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-7::msavy (generated)
 CREATE TABLE outbox (id BIGINT AUTO_INCREMENT NOT NULL, event_version BIGINT NOT NULL, payload BINARY NOT NULL, source VARCHAR(255) NOT NULL, subject VARCHAR(255) NOT NULL, time TIMESTAMP NOT NULL, type VARCHAR(255) NOT NULL, CONSTRAINT outboxPK PRIMARY KEY (id));

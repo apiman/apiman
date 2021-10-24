@@ -99,7 +99,7 @@ public class SqlBlobStoreService implements IBlobStore {
                     .setName(name)
                     .setMimeType(mimeType)
                     .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()))
-                    .setReferences(initRefCount)
+                    .setRefCount(initRefCount)
                     .setHash(hash);
             // Returned ID might be different to the one we generated if we found a duplicate.
             return toBlobRef(deduplicateOrStore(name, mimeType, hash, blobEntity));
@@ -131,7 +131,7 @@ public class SqlBlobStoreService implements IBlobStore {
                 .setName(name)
                 .setMimeType(mimeType)
                 .setBlob(BlobProxy.generateProxy(bytes))
-                .setReferences(initRefCount)
+                .setRefCount(initRefCount)
                 .setHash(hash);
         try {
             // Returned ID might be different to the one we generated if we found a duplicate.
@@ -176,7 +176,7 @@ public class SqlBlobStoreService implements IBlobStore {
                     .setName(blobDto.getName())
                     .setMimeType(blobDto.getMimeType())
                     .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()))
-                    .setReferences(blobDto.getReferences())
+                    .setRefCount(blobDto.getRefCount())
                     .setHash(hash);
             blobStoreRepository.create(blobEntity);
         } catch (IOException ioe) {

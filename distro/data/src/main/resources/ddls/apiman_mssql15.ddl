@@ -451,7 +451,7 @@ CREATE TABLE api_tag (api_id varchar(255) NOT NULL, org_id varchar(255) NOT NULL
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-6::msavy (generated)
-CREATE TABLE blob_store (id varchar(255) NOT NULL, mrblobby varbinary(MAX) NOT NULL, created_on datetime NOT NULL, hash bigint NOT NULL, mime_type varchar(255) NOT NULL, modified_on datetime NOT NULL, name varchar(255) NOT NULL, [references] int NOT NULL, CONSTRAINT blob_storePK PRIMARY KEY (id))
+CREATE TABLE blob_store (id varchar(255) NOT NULL, mrblobby varbinary(MAX) NOT NULL, created_on datetime NOT NULL, hash bigint NOT NULL, mime_type varchar(255) NOT NULL, modified_on datetime NOT NULL, name varchar(255) NOT NULL, ref_count int NOT NULL, CONSTRAINT blob_storePK PRIMARY KEY (id))
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-7::msavy (generated)

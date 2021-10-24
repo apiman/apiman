@@ -208,7 +208,7 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="references" type="INT">
+            <column name="ref_count" type="INT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
