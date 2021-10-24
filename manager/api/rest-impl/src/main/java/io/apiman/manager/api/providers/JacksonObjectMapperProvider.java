@@ -43,7 +43,7 @@ public class JacksonObjectMapperProvider extends JacksonJsonProvider {
             .build();
 
     public JacksonObjectMapperProvider() {
-        System.err.println("Jackson object mapper provider initialised");
+        // System.err.println("Jackson object mapper provider initialised");
     }
 
     @Override

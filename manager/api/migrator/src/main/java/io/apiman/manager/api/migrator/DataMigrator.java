@@ -236,6 +236,11 @@ public class DataMigrator implements IReaderHandler {
         writer.writeDeveloper(node);
     }
 
+    @Override
+    public void onBlob(ObjectNode node) throws IOException {
+        writer.writerBlob(node);
+    }
+
     /**
      * @return the version
      */

@@ -16,6 +16,13 @@
 
 package io.apiman.manager.api.migrator;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -23,13 +30,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -180,6 +180,17 @@ public class JsonDataMigratorWriter implements IDataMigratorWriter {
             sections.add("Developers"); //$NON-NLS-1$
         }
         jg.writeObject(node);
+    }
+
+    @Override
+    public void writerBlob(ObjectNode node) throws IOException {
+        if (!sections.contains("Blobs")) { //$NON-NLS-1$
+            closeFieldArray();
+            jg.writeArrayFieldStart("Blobs"); //$NON-NLS-1$
+            arrayFieldOpen = true;
+            sections.add("Blobs"); //$NON-NLS-1$
+        }
+        jg.writeObject(node);      
     }
 
     /**

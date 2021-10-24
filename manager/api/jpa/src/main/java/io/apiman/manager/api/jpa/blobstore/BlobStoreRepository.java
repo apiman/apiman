@@ -2,7 +2,6 @@ package io.apiman.manager.api.jpa.blobstore;
 
 import io.apiman.common.util.Preconditions;
 import io.apiman.manager.api.beans.blobs.BlobEntity;
-import io.apiman.manager.api.core.IBlobStoreRepository;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.AbstractJpaStorage;
 
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped // TODO -- should be @Alternative?
-public class BlobStoreRepository extends AbstractJpaStorage implements IBlobStoreRepository {
+public class BlobStoreRepository extends AbstractJpaStorage {
 
     public BlobStoreRepository() {
     }
@@ -110,7 +109,6 @@ public class BlobStoreRepository extends AbstractJpaStorage implements IBlobStor
                 .executeUpdate();
     }
 
-    @Override
     public Iterator<BlobEntity> getAll() throws StorageException {
         Query allBlobsQuery = getActiveEntityManager().createQuery("SELECT b FROM BlobEntity b");
         return super.getAll(BlobEntity.class, allBlobsQuery);

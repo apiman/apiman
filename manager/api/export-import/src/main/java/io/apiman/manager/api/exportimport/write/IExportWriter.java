@@ -22,6 +22,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -78,7 +79,7 @@ public interface IExportWriter extends AutoCloseable, Closeable {
 
     // Blobs
     IExportWriter startBlobs();
-    IExportWriter writeBlob(BlobEntity blob);
+    IExportWriter writeBlob(ExportedBlobDto blob);
     IExportWriter endBlobs();
 
     // -----------------------------------

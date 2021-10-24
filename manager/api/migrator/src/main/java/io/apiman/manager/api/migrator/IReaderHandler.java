@@ -16,9 +16,9 @@
 
 package io.apiman.manager.api.migrator;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import java.io.IOException;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * As the data migrator's reader reads the data in the export file,
@@ -43,4 +43,5 @@ public interface IReaderHandler {
 
     void onDeveloper(ObjectNode node) throws IOException;
 
+    void onBlob(ObjectNode node)  throws IOException;
 }

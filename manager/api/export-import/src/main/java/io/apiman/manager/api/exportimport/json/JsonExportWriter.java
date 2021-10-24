@@ -23,6 +23,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -37,7 +38,6 @@ import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.exportimport.GlobalElementsEnum;
 import io.apiman.manager.api.exportimport.OrgElementsEnum;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
-import io.apiman.manager.api.beans.blobs.BlobEntity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +50,10 @@ import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.google.common.io.FileBackedOutputStream;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -65,8 +68,13 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     private final ObjectMapper om = new ObjectMapper();
 
     {
-        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        om.setDateFormat(new ISO8601DateFormat());
+        om.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .setDateFormat(new ISO8601DateFormat())
+                .registerModule(new GuavaModule())
+                .findAndRegisterModules()
+                // Custom module for FileBackedOutputStream
+                .registerModule(new FbosModule());
+
         for (GlobalElementsEnum v : GlobalElementsEnum.values()) {
             finished.put(v, false);
         }
@@ -215,7 +223,7 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     }
 
     @Override
-    public IExportWriter writeBlob(BlobEntity blob) {
+    public IExportWriter writeBlob(ExportedBlobDto blob) {
         writeCheck(GlobalElementsEnum.Blobs);
         writePojo(blob);
         return this;

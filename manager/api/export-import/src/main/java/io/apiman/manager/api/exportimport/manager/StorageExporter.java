@@ -21,11 +21,11 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
-import io.apiman.manager.api.beans.blobs.BlobEntity;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -39,7 +39,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.config.Version;
-import io.apiman.manager.api.core.IBlobStoreRepository;
+import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
@@ -67,7 +67,7 @@ public class StorageExporter {
     private IStorage storage;
 
     @Inject
-    private IBlobStoreRepository blobStoreRepository;
+    private IBlobStore blobStore;
 
     private IExportWriter writer;
 
@@ -427,12 +427,12 @@ public class StorageExporter {
 
     private void exportBlobs() {
         try {
-            Iterator<BlobEntity> iter = blobStoreRepository.getAll();
+            Iterator<ExportedBlobDto> iter = blobStore.getAll();
             writer.startBlobs();
 
             while (iter.hasNext()) {
-                BlobEntity blob = iter.next();
-                logger.info(Messages.i18n.format("StorageExporter.ExportingBlob") + blob); //$NON-NLS-1$
+                ExportedBlobDto blob = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingBlob", blob)); //$NON-NLS-1$
                 writer.writeBlob(blob);
             }
 

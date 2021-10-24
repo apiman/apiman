@@ -2,6 +2,9 @@ package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.download.BlobDto;
 import io.apiman.manager.api.beans.download.BlobRef;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
+
+import java.util.Iterator;
 
 import com.google.common.io.FileBackedOutputStream;
 import org.jetbrains.annotations.NotNull;
@@ -98,4 +101,10 @@ public interface IBlobStore {
      * @return this
      */
     IBlobStore remove(@NotNull String uid);
+
+    // For use in Import-Export only
+    IBlobStore reimportBlob(ExportedBlobDto blob);
+
+    // For use in Import-Export only
+    Iterator<ExportedBlobDto> getAll();
 }

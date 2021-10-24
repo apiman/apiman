@@ -4,7 +4,9 @@ import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.blobs.BlobEntity;
 import io.apiman.manager.api.beans.download.BlobDto;
+import io.apiman.manager.api.beans.download.BlobMapper;
 import io.apiman.manager.api.beans.download.BlobRef;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.time.OffsetDateTime;
+import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,6 +25,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterators;
 import com.google.common.io.FileBackedOutputStream;
 import net.jpountz.xxhash.StreamingXXHash64;
 import net.jpountz.xxhash.XXHashFactory;
@@ -46,12 +50,11 @@ public class SqlBlobStoreService implements IBlobStore {
     private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SqlBlobStoreService.class);
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private BlobStoreRepository blobStoreRepository;
-    private BlobMapper mapper;
+    private BlobMapper mapper = BlobMapper.INSTANCE;
 
     @Inject
-    public SqlBlobStoreService(BlobStoreRepository blobStoreRepository, BlobMapper mapper) {
+    public SqlBlobStoreService(BlobStoreRepository blobStoreRepository) {
         this.blobStoreRepository = blobStoreRepository;
-        this.mapper = mapper;
     }
 
     public SqlBlobStoreService() {
@@ -158,6 +161,36 @@ public class SqlBlobStoreService implements IBlobStore {
         try {
             blobStoreRepository.deleteById(oid);
             return this;
+        } catch (StorageException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public IBlobStore reimportBlob(ExportedBlobDto blobDto) {
+        try {
+            FileBackedOutputStream fbos = blobDto.getBlob();
+            long hash = hashBlob(blobDto.getBlob());
+            BlobEntity blobEntity = new BlobEntity()
+                    .setId(blobDto.getId())
+                    .setName(blobDto.getName())
+                    .setMimeType(blobDto.getMimeType())
+                    .setBlob(BlobProxy.generateProxy(fbos.asByteSource().openStream(), fbos.asByteSource().size()))
+                    .setReferences(blobDto.getReferences())
+                    .setHash(hash);
+            blobStoreRepository.create(blobEntity);
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
+        } catch (StorageException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
+    }
+
+    @Override
+    public Iterator<ExportedBlobDto> getAll() {
+        try {
+            return Iterators.transform(blobStoreRepository.getAll(), mapper::toExportedDto);
         } catch (StorageException e) {
             throw new RuntimeException(e);
         }
