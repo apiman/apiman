@@ -15,6 +15,7 @@ Content-Type: image/svg
 201
 Content-Type: application/json
 X-RestTest-BindTo-blob-id-1: id
+X-RestTest-BindTo-blob-name-1: name
 
 {
     "mimeType": "image/svg"

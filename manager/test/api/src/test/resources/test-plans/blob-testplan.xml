@@ -15,4 +15,8 @@
     <test name="Update API to use blob image">test-plan-data/blob/blob/002_update-api-with-image-blob.resttest</test>
     <test name="Verify API has image attached">test-plan-data/blob/blob/003_get-api-assert-image.resttest</test>
   </testGroup>
+
+  <testGroup name="Blob export/import subsystem">
+    <test name="Full export">test-plan-data/blob/export/000_export.resttest</test>
+  </testGroup>
 </testPlan>
