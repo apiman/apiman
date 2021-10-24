@@ -1,5 +1,6 @@
 package io.apiman.manager.api.jpa.blobstore;
 
+import io.apiman.manager.api.beans.blobs.BlobEntity;
 import io.apiman.manager.api.beans.download.BlobDto;
 
 import java.io.IOException;

@@ -37,6 +37,7 @@ import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.exportimport.GlobalElementsEnum;
 import io.apiman.manager.api.exportimport.OrgElementsEnum;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
+import io.apiman.manager.api.beans.blobs.BlobEntity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -202,6 +203,29 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         validityCheckEnd(GlobalElementsEnum.Developers);
         writeEndArray(GlobalElementsEnum.Developers);
         unlock(GlobalElementsEnum.Developers);
+        return this;
+    }
+
+    @Override
+    public IExportWriter startBlobs() {
+        validityCheckStart(GlobalElementsEnum.Blobs);
+        lock(GlobalElementsEnum.Blobs);
+        writeStartArray(GlobalElementsEnum.Blobs);
+        return this;
+    }
+
+    @Override
+    public IExportWriter writeBlob(BlobEntity blob) {
+        writeCheck(GlobalElementsEnum.Blobs);
+        writePojo(blob);
+        return this;
+    }
+
+    @Override
+    public IExportWriter endBlobs() {
+        validityCheckEnd(GlobalElementsEnum.Blobs);
+        writeEndArray(GlobalElementsEnum.Blobs);
+        unlock(GlobalElementsEnum.Blobs);
         return this;
     }
 

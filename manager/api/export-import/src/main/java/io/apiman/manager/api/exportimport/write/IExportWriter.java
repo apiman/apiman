@@ -33,6 +33,7 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.system.MetadataBean;
+import io.apiman.manager.api.beans.blobs.BlobEntity;
 
 import java.io.Closeable;
 import java.io.InputStream;
@@ -74,6 +75,11 @@ public interface IExportWriter extends AutoCloseable, Closeable {
     IExportWriter startDevelopers();
     IExportWriter writeDeveloper(DeveloperBean bean);
     IExportWriter endDevelopers();
+
+    // Blobs
+    IExportWriter startBlobs();
+    IExportWriter writeBlob(BlobEntity blob);
+    IExportWriter endBlobs();
 
     // -----------------------------------
     // Orgs, apps, plans, APIs, etc...

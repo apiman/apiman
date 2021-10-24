@@ -2,6 +2,7 @@ package io.apiman.manager.api.jpa.blobstore;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.beans.blobs.BlobEntity;
 import io.apiman.manager.api.beans.download.BlobDto;
 import io.apiman.manager.api.beans.download.BlobRef;
 import io.apiman.manager.api.core.IBlobStore;
