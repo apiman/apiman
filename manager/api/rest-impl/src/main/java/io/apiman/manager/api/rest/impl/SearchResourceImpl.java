@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Implementation of the Search API.
@@ -50,6 +51,7 @@ import javax.inject.Inject;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class SearchResourceImpl implements ISearchResource {
 
     private IApiCatalog apiCatalog;
