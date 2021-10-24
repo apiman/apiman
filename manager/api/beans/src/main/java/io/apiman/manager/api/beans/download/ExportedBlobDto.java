@@ -6,16 +6,16 @@ package io.apiman.manager.api.beans.download;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class ExportedBlobDto extends BlobDto {
-    private int references;
+    private int refCount;
 
     public ExportedBlobDto() {}
 
-    public int getReferences() {
-        return references;
+    public int getRefCount() {
+        return refCount;
     }
 
-    public ExportedBlobDto setReferences(int references) {
-        this.references = references;
+    public ExportedBlobDto setRefCount(int refCount) {
+        this.refCount = refCount;
         return this;
     }
 }

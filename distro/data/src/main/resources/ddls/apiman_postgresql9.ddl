@@ -278,7 +278,7 @@ CREATE TABLE developers (id VARCHAR(255) NOT NULL, CONSTRAINT "developersPK" PRI
 CREATE TABLE notification_category_preferences ("NotificationPreferenceEntity_id" BIGINT NOT NULL, category VARCHAR(255));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-9::msavy marc@blackparrotlabs.io (generated)
-CREATE TABLE notification_preferences (id BIGSERIAL NOT NULL, type VARCHAR(255) NOT NULL, "userId" VARCHAR(255) NOT NULL, CONSTRAINT "notification_preferencesPK" PRIMARY KEY (id));
+CREATE TABLE notification_preferences (id BIGSERIAL NOT NULL, type VARCHAR(255) NOT NULL, user_id VARCHAR(255) NOT NULL, CONSTRAINT "notification_preferencesPK" PRIMARY KEY (id));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-10::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE notification_types (type VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, CONSTRAINT "notification_typesPK" PRIMARY KEY (type));
@@ -323,7 +323,7 @@ ALTER TABLE memberships ADD CONSTRAINT "UKfwy6c61bcnvshcsxubanjvi08" UNIQUE (use
 ALTER TABLE plugins ADD CONSTRAINT "UKofbok9ushig9vviq01dnu11x" UNIQUE (group_id, artifact_id);
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-24::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE notification_preferences ADD CONSTRAINT "UserAllowedOnlyOneOfEachNotificationType" UNIQUE ("userId", type);
+ALTER TABLE notification_preferences ADD CONSTRAINT "UserAllowedOnlyOneOfEachNotificationType" UNIQUE (user_id, type);
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-25::msavy marc@blackparrotlabs.io (generated)
 CREATE UNIQUE INDEX "IX_null" ON api_plans(api_version_id, expose_in_portal, plan_id, requires_approval, version);
@@ -341,7 +341,7 @@ CREATE TABLE kv_tags (id BIGSERIAL NOT NULL, key VARCHAR(255) NOT NULL, value VA
 CREATE TABLE api_tag (api_id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NOT NULL, tag_id BIGINT NOT NULL, CONSTRAINT api_tag_pkey PRIMARY KEY (api_id, org_id, tag_id));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-6::msavy (generated)
-CREATE TABLE blob_store (id VARCHAR(255) NOT NULL, mrblobby OID NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, hash BIGINT NOT NULL, mime_type VARCHAR(255) NOT NULL, modified_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, name VARCHAR(255) NOT NULL, "references" INTEGER NOT NULL, CONSTRAINT "blob_storePK" PRIMARY KEY (id));
+CREATE TABLE blob_store (id VARCHAR(255) NOT NULL, mrblobby OID NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, hash BIGINT NOT NULL, mime_type VARCHAR(255) NOT NULL, modified_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, name VARCHAR(255) NOT NULL, ref_count INTEGER NOT NULL, CONSTRAINT "blob_storePK" PRIMARY KEY (id));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-7::msavy (generated)
 CREATE TABLE outbox (id BIGSERIAL NOT NULL, event_version BIGINT NOT NULL, payload BYTEA NOT NULL, source VARCHAR(255) NOT NULL, subject VARCHAR(255) NOT NULL, time TIMESTAMP WITHOUT TIME ZONE NOT NULL, type VARCHAR(255) NOT NULL, CONSTRAINT "outboxPK" PRIMARY KEY (id));

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <datasources>
-  <datasource jndi-name="java:jboss/datasources/apiman-gateway" pool-name="apiman-gateway" enabled="true"
+  <datasource jndi-name="java:/apiman/datasources/apiman-gateway" pool-name="apiman-gateway" enabled="true"
     use-java-context="true">
     <connection-url>jdbc:mysql://MYSQLSERVER:3306/apiman_gateway</connection-url>
     <driver>mysql-connector-java-5.1.33-bin.jar_com.mysql.jdbc.Driver_5_1</driver>

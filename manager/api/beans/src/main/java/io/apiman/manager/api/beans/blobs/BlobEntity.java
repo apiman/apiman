@@ -56,8 +56,8 @@ public class BlobEntity {
     @NaturalId
     private Long hash;
 
-    @Column(name = "references", nullable = false)
-    private int references = -1;
+    @Column(name = "ref_count", nullable = false)
+    private int refCount = -1;
 
     public BlobEntity() {
     }
@@ -125,12 +125,12 @@ public class BlobEntity {
         return this;
     }
 
-    public int getReferences() {
-        return references;
+    public int getRefCount() {
+        return refCount;
     }
 
-    public BlobEntity setReferences(int references) {
-        this.references = references;
+    public BlobEntity setRefCount(int references) {
+        this.refCount = references;
         return this;
     }
 

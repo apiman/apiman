@@ -11,6 +11,6 @@ X-RestTest-ArrayOrdering: any
 		"mimeType": "image/svg",
 		"blob": "PHN2ZyBoZWlnaHQ9IjEwMCIgd2lkdGg9IjEwMCI+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0icmVkIiAvPgo8L3N2Zz4K",
 		"hash": -6312341311784913228,
-		"references": 1
+		"refCount": 1
 	}]
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <datasources>
-  <datasource jndi-name="java:jboss/datasources/apiman-manager" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
+  <datasource jndi-name="java:/apiman/datasources/apiman-manager" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
     <connection-url>jdbc:sqlserver://SQLSERVER:1433;databaseName=apiman;</connection-url>
     <driver>sqljdbc42.jar</driver>
     <pool>

@@ -36,7 +36,7 @@
             <column name="type" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="userId" type="VARCHAR(255)">
+            <column name="user_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -140,7 +140,7 @@
         <addUniqueConstraint columnNames="group_id, artifact_id" constraintName="UKofbok9ushig9vviq01dnu11x" tableName="plugins"/>
     </changeSet>
     <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-24">
-        <addUniqueConstraint columnNames="userId, type" constraintName="UserAllowedOnlyOneOfEachNotificationType" tableName="notification_preferences"/>
+        <addUniqueConstraint columnNames="user_id, type" constraintName="UserAllowedOnlyOneOfEachNotificationType" tableName="notification_preferences"/>
     </changeSet>
     <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-25">
         <createIndex indexName="IX_null" tableName="api_plans" unique="true">
@@ -208,7 +208,7 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="references" type="INT">
+            <column name="ref_count" type="INT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
