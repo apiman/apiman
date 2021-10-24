@@ -1,4 +1,4 @@
-package io.apiman.manager.api.jpa.blobstore;
+package io.apiman.manager.api.beans.blobs;
 
 import java.sql.Blob;
 import java.time.OffsetDateTime;
@@ -8,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 

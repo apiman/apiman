@@ -23,6 +23,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -90,10 +91,11 @@ public interface IImportReaderDispatcher {
 
     void developer(DeveloperBean developer);
 
+    void blob(ExportedBlobDto blob);
+
     // Called when the import is complete
     void close();
 
     // Called to perform a rollback of the storage
     void cancel();
-
 }

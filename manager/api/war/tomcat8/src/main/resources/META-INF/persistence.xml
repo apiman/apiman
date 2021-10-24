@@ -28,7 +28,7 @@
     <class>io.apiman.manager.api.beans.system.MetadataBean</class>
     <class>io.apiman.manager.api.beans.developers.DeveloperBean</class>
     <class>io.apiman.manager.api.beans.developers.DeveloperMappingBean</class>
-    <class>io.apiman.manager.api.jpa.blobstore.BlobEntity</class>
+    <class>io.apiman.manager.api.beans.blobs.BlobEntity</class>
     <class>io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity</class>
     <class>io.apiman.manager.api.beans.notifications.NotificationTypeEntity</class>
     <class>io.apiman.manager.api.beans.notifications.NotificationEntity</class>

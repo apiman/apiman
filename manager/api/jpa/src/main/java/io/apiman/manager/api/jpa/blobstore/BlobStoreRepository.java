@@ -1,13 +1,16 @@
 package io.apiman.manager.api.jpa.blobstore;
 
 import io.apiman.common.util.Preconditions;
+import io.apiman.manager.api.beans.blobs.BlobEntity;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.AbstractJpaStorage;
 
 import java.time.OffsetDateTime;
+import java.util.Iterator;
 import java.util.Objects;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.jetbrains.annotations.NotNull;
@@ -104,5 +107,10 @@ public class BlobStoreRepository extends AbstractJpaStorage {
                                      + "AND b.references <= 0")
                 .setParameter("timeThreshold", timeThreshold)
                 .executeUpdate();
+    }
+
+    public Iterator<BlobEntity> getAll() throws StorageException {
+        Query allBlobsQuery = getActiveEntityManager().createQuery("SELECT b FROM BlobEntity b");
+        return super.getAll(BlobEntity.class, allBlobsQuery);
     }
 }

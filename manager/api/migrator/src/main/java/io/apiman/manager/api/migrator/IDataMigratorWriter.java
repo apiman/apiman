@@ -16,29 +16,30 @@
 
 package io.apiman.manager.api.migrator;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import java.io.IOException;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author eric.wittmann@gmail.com
  */
 public interface IDataMigratorWriter extends AutoCloseable {
 
-    public void writeMetaData(ObjectNode node) throws IOException;
+    void writeMetaData(ObjectNode node) throws IOException;
 
-    public void writeUser(ObjectNode node) throws IOException;
+    void writeUser(ObjectNode node) throws IOException;
     
-    public void writeGateway(ObjectNode node) throws IOException;
+    void writeGateway(ObjectNode node) throws IOException;
     
-    public void writePlugin(ObjectNode node) throws IOException;
+    void writePlugin(ObjectNode node) throws IOException;
     
-    public void writeRole(ObjectNode node) throws IOException;
+    void writeRole(ObjectNode node) throws IOException;
     
-    public void writePolicyDefinition(ObjectNode node) throws IOException;
+    void writePolicyDefinition(ObjectNode node) throws IOException;
     
-    public void writeOrg(ObjectNode node) throws IOException;
+    void writeOrg(ObjectNode node) throws IOException;
 
     void writeDeveloper(ObjectNode node) throws IOException;
 
+    void writerBlob(ObjectNode node) throws IOException;
 }

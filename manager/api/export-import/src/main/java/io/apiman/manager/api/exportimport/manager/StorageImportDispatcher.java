@@ -35,6 +35,7 @@ import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -48,6 +49,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.config.Version;
+import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.exceptions.ImportNotNeededException;
@@ -79,10 +81,12 @@ import javax.transaction.Transactional;
 @Dependent
 @Transactional
 public class StorageImportDispatcher implements IImportReaderDispatcher {
+    private IApimanLogger logger = ApimanLoggerFactory.getLogger(StorageImportDispatcher.class);
 
     @Inject
     private IStorage storage;
-    private IApimanLogger logger = ApimanLoggerFactory.getLogger(StorageImportDispatcher.class);
+    @Inject
+    private IBlobStore blobStore;
 
     @Inject
     private Version version;
@@ -531,6 +535,12 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         } catch (StorageException e) {
             error(e);
         }
+    }
+
+    @Override
+    public void blob(ExportedBlobDto blob) {
+        logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingBlob", blob.getId()));
+        blobStore.reimportBlob(blob);
     }
 
     /**

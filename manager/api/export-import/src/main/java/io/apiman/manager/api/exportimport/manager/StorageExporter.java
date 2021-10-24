@@ -25,6 +25,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -38,6 +39,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.config.Version;
+import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
@@ -63,6 +65,9 @@ public class StorageExporter {
 
     @Inject
     private IStorage storage;
+
+    @Inject
+    private IBlobStore blobStore;
 
     private IExportWriter writer;
 
@@ -93,6 +98,7 @@ public class StorageExporter {
                 exportRoles();
                 exportPolicyDefs();
                 exportDevelopers();
+                exportBlobs();
 
                 exportOrgs();
             logger.info(Messages.i18n.format("StorageExporter.ExportComplete")); //$NON-NLS-1$
@@ -401,9 +407,8 @@ public class StorageExporter {
     }
 
     private void exportDevelopers() {
-        Iterator<DeveloperBean> iter;
         try {
-            iter = storage.getDevelopers();
+            Iterator<DeveloperBean> iter = storage.getDevelopers();
             writer.startDevelopers();
 
             // iter can be null because jpa storage is not implemented
@@ -415,6 +420,23 @@ public class StorageExporter {
 
             writer.endDevelopers();
 
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void exportBlobs() {
+        try {
+            Iterator<ExportedBlobDto> iter = blobStore.getAll();
+            writer.startBlobs();
+
+            while (iter.hasNext()) {
+                ExportedBlobDto blob = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingBlob", blob)); //$NON-NLS-1$
+                writer.writeBlob(blob);
+            }
+
+            writer.endBlobs();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
