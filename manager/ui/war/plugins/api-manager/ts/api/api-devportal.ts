@@ -168,7 +168,7 @@ function devPortalBusinessLogic(
       "data",
       (oldValue, newValue) => {
         if (!angular.equals(oldValue, newValue)) {
-          Logger.debug("Dirty set to true {0} vs {1}", oldValue, newValue);
+          Logger.info("Dirty set to true {0} vs {1}", oldValue, newValue);
           $rootScope.isDirty = true;
 
           if (newValue.exposeInPortal) {
@@ -207,28 +207,33 @@ function devPortalBusinessLogic(
     };
 
     markdownEditor = new toast(options);
-    Logger.info(
-      "Setting extended description to: {0}",
-      $scope.data.apiVersion.extendedDescription
-    );
-    markdownEditor.setMarkdown($scope.data.apiVersion.extendedDescription, true);
+    markdownEditor.setMarkdown("");
+
+    if ($scope.data.apiVersion.extendedDescription) {
+      Logger.info(
+          "Setting extended description to: {0}",
+          $scope.data.apiVersion.extendedDescription
+      );
+      markdownEditor.setMarkdown($scope.data.apiVersion.extendedDescription, true);
+    }
   }
 
   // Dirty check the MD editor pane every 2 seconds (avoids excessive checking).
-  const intervalPromise: Promise<any> = $interval(() => {
-    editorDirtyCheck();
+  const intervalPromise: Promise<any> = $interval(function () {
+    if ($scope.data.apiVersion.exposeInPortal) {
+      editorDirtyCheck();
+    }
   }, 1000);
 
   const editorDirtyCheck = function (): void {
-    if (markdownEditor == null) {
+    if (!markdownEditor) {
       initEditor();
     }
     let latestDescription = markdownEditor.getMarkdown();
     // If original description != latestDescription, and latest poll != previous poll
-    if (
-      dataClone.apiVersion.extendedDescription !== latestDescription &&
-      $scope.data.apiVersion.extendedDescription !== latestDescription
-    ) {
+    if (normaliseString(dataClone.apiVersion.extendedDescription) !== normaliseString(latestDescription) &&
+        normaliseString($scope.data.apiVersion.extendedDescription) !== normaliseString(latestDescription)) {
+      Logger.info("Setting dirty true");
       $rootScope.isDirty = true;
       $scope.data.apiVersion.extendedDescription = latestDescription;
     }
@@ -237,14 +242,21 @@ function devPortalBusinessLogic(
   
   /** Save, and reset **/
   // Reset (copy saved pristine copy back over).
-  $scope.reset = () => {
+  $scope.reset = function () {
+    Logger.info("Resetting");
     $scope.data = angular.copy(dataClone);
-    markdownEditor.setMarkdown($scope.data.apiVersion.extendedDescription, true);
+    markdownEditor.setMarkdown(
+      $scope.data.apiVersion.extendedDescription,
+      true
+    );
     $rootScope.isDirty = false;
   };
 
   $scope.$on("$destroy", function () {
+    console.log("destroy");
     $interval.cancel(intervalPromise);
+    markdownEditor && markdownEditor.reset();
+    markdownEditor && markdownEditor.destroy();
   });
 
   // Save
@@ -348,6 +360,14 @@ function devPortalBusinessLogic(
     const answer = tagsArray.findIndex((elem: KeyValueTagDto) => elem.key === "featured") !== -1;
     console.log(answer);
     return answer;
+  }
+
+  function normaliseString(str: string): string {
+    if (!str || str.length === 0) {
+      return "";
+    } else {
+      return str;
+    }
   }
 }
 
