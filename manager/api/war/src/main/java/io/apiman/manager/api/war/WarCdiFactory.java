@@ -216,7 +216,6 @@ public class WarCdiFactory {
      * @param jpaStorage
      */
     private static JpaStorage initJpaStorage(ApiManagerConfig config, JpaStorage jpaStorage) {
-        System.out.println("Init JPA?");
         if (sJpaStorage == null) {
             sJpaStorage = jpaStorage;
             if (config.isInitializeStorageJPA()) {

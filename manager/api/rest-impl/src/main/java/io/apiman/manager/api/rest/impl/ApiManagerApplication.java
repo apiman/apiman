@@ -16,6 +16,8 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.providers.JacksonObjectMapperProvider;
@@ -44,6 +46,7 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 @ApplicationPath("/")
 @ApplicationScoped
 public class ApiManagerApplication extends Application {
+    private IApimanLogger log = ApimanLoggerFactory.getLogger(ApiManagerApplication.class);
 
     @Inject
     private ExportImportManager manager;
@@ -92,21 +95,17 @@ public class ApiManagerApplication extends Application {
                 RestExceptionMapper.class
                 // EagerProvider.class
         );
-
-        System.out.println("API Manager Application constructor end");
     }
 
     private void registerProviders(Class<?>... classes) {
         for (Class<?> klazz : classes) {
-            System.out.println("Registering provider: " + klazz);
+            log.info("Registering provider: {0}", klazz.getCanonicalName());
             ResteasyProviderFactory.getInstance().register(klazz);
         }
     }
     
     @PostConstruct
     protected void postConstruct() {
-        System.out.println("In postconstruct");
-
         if (manager.isImportExport()) {
             manager.doImportExport();
         }
