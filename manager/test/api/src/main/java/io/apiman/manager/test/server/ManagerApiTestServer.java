@@ -233,7 +233,7 @@ public class ManagerApiTestServer {
      * @throws SQLException
      */
     private static BasicDataSource createInMemoryDatasource() throws SQLException {
-        TestUtil.setProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        TestUtil.setProperty("apiman.hibernate.dialect", "io.apiman.manager.api.jpa.ApimanH2Dialect");
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
