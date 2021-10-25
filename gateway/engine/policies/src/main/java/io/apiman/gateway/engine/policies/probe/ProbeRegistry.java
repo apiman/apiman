@@ -23,6 +23,7 @@ public class ProbeRegistry {
 
     static {
         register(RateLimitingProbeResponse.class);
+        register(TransferQuotaProbeResponse.class);
     }
 
     public static void register(Class<? extends IPolicyProbeResponse> response) {

@@ -34,7 +34,7 @@ import io.apiman.gateway.engine.policies.config.TransferQuotaConfig;
 import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policies.limiting.BucketFactory;
 import io.apiman.gateway.engine.policies.probe.RateLimitingProbeConfig;
-import io.apiman.gateway.engine.policies.probe.RateLimitingProbeResponse;
+import io.apiman.gateway.engine.policies.probe.TransferQuotaProbeResponse;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.IPolicyProbe;
@@ -69,11 +69,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
     }
 
     @Override
-    public Class<RateLimitingProbeConfig> getProbeRequestClass() {
-        return RateLimitingProbeConfig.class;
-    }
-
-    @Override
     public Class<TransferQuotaConfig> getConfigurationClass() {
         return TransferQuotaConfig.class;
     }
@@ -84,21 +79,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
 
     protected String bucketId(RateLimitingProbeConfig request, ProbeContext probeContext, TransferQuotaConfig config) {
         return "XFERQUOTA||" + bucketFactory.bucketId(request, probeContext, config);
-    }
-
-    @Override
-    public void probe(RateLimitingProbeConfig probeRequest, TransferQuotaConfig policyConfig, ProbeContext probeContext, IPolicyContext context,
-                      IAsyncResultHandler<IPolicyProbeResponse> resultHandler) {
-        String bucketId = bucketId(probeRequest, probeContext, policyConfig);
-        IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class);
-        // Ask for rate limit, but don't actually decrement the counter.
-        rateLimiter.accept(bucketId, bucketFactory.getPeriod(policyConfig), policyConfig.getLimit(), 0, rateLimResult -> {
-            RateLimitResponse remaining = rateLimResult.getResult();
-            var probeResult = new RateLimitingProbeResponse()
-                    .setStatus(remaining)
-                    .setConfig(policyConfig);
-            resultHandler.handle(AsyncResultImpl.create(probeResult));
-        });
     }
 
     @Override
@@ -319,5 +299,26 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
      */
     protected String defaultLimitHeader() {
         return DEFAULT_LIMIT_HEADER;
+    }
+
+
+    @Override
+    public Class<RateLimitingProbeConfig> getProbeRequestClass() {
+        return RateLimitingProbeConfig.class;
+    }
+
+    @Override
+    public void probe(RateLimitingProbeConfig probeRequest, TransferQuotaConfig policyConfig, ProbeContext probeContext, IPolicyContext context,
+                      IAsyncResultHandler<IPolicyProbeResponse> resultHandler) {
+        String bucketId = bucketId(probeRequest, probeContext, policyConfig);
+        IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class);
+        // Ask for rate limit, but don't actually decrement the counter.
+        rateLimiter.accept(bucketId, bucketFactory.getPeriod(policyConfig), policyConfig.getLimit(), 0, rateLimResult -> {
+            RateLimitResponse remaining = rateLimResult.getResult();
+            var probeResult = new TransferQuotaProbeResponse()
+                    .setStatus(remaining)
+                    .setConfig(policyConfig);
+            resultHandler.handle(AsyncResultImpl.create(probeResult));
+        });
     }
 }

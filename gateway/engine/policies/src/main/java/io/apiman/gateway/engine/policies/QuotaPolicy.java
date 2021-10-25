@@ -33,7 +33,7 @@ import io.apiman.gateway.engine.policy.IPolicyProbe;
 public class QuotaPolicy extends RateLimitingPolicy
         implements IPolicyProbe<RateLimitingConfig, RateLimitingProbeConfig> {
 
-        private static final String DEFAULT_LIMIT_HEADER = "X-Quota-Limit"; //$NON-NLS-1$
+    private static final String DEFAULT_LIMIT_HEADER = "X-Quota-Limit"; //$NON-NLS-1$
     private static final String DEFAULT_REMAINING_HEADER = "X-Quota-Remaining"; //$NON-NLS-1$
     private static final String DEFAULT_RESET_HEADER = "X-Quota-Reset"; //$NON-NLS-1$
 
