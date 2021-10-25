@@ -19,6 +19,7 @@
     "API_DOCS": "API Dokumentation",
     "ERROR": "Die Daten konnten nicht geladen werden, bitte versuchen Sie es später erneut.",
     "SUCCESS": "Erfolgreich erstellt!",
+    "LOGIN": "Anmelden",
     "LOGIN_OR_REGISTER": "Anmelden / Registrieren",
     "LOGOUT": "Abmelden",
     "VERSION": "Version",
@@ -63,7 +64,8 @@
     "RESETS_AT": "Reset am",
     "FIRST_OF": "1.",
     "RESETS_EVERY_SECOND": "Resettet jede Sekunde",
-    "NO_POLICIES_FOR_API": "Für diese API wurden keine Regeln gefunden"
+    "NO_POLICIES_FOR_API": "Für diese API wurden keine Regeln gefunden",
+    "APPS_AND_APIS": "Apps und APIs"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Aus vorhandenen Anwendugen auswählen"
@@ -82,7 +84,9 @@
     "REDIRECT": "Sie werden wegen einer ungültigen URL umgeleitet",
     "SUCCESS": "Ein Vertrag wurde erfolgreich erstellt",
     "API_KEY_PREVIEW": "Ihnen wird ein API-Key nach der Anmeldung bereitgestellt",
-    "API_ENDPOINT_PREVIEW": "Ihnen wird der Edpoint nach der Anmeldung bereitgestellt"
+    "API_ENDPOINT_PREVIEW": "Ihnen wird der Edpoint nach der Anmeldung bereitgestellt",
+    "LICENSE_TYPE": "Lizenz Typ",
+    "POLICIES": "Regeln"
   },
   "POLICIES": {
     "RATE_LIMIT": {
@@ -120,15 +124,16 @@
     "MORE_INFO": "Du wirst über den aktuellen Status per E-Mail benachrichtigt"
   },
   "DIALOGS": {
-    "UNREGISTER_TITLE": "Client löschen",
-    "UNREGISTER_SURE": "Sind Sie sich wirklich sicher, dass Sie den Client <b>{{value}}</b> und seine Verträge <span class='warn'>löschen</span> möchten?",
-    "UNREGISTER_BTN": "Löschen"
+    "REMOVE_TITLE": "Client löschen",
+    "REMOVE_SURE": "Sind Sie sich wirklich sicher, dass Sie den Client <b>{{value}}</b> und seine Verträge <span class='warn'>löschen</span> möchten?",
+    "REMOVE_BTN": "Löschen"
   },
   "API_DETAILS": {
     "PLANS": "Pläne",
     "KEY_FEATURES": "Vorteile",
     "EXTENDED_DESCRIPTION": "Erweiterte Beschreibung",
-    "NO_EXT_DESCRIPTION": "Für diese API wurde keine erweiterte Beschreibung hinterlegt"
+    "NO_EXT_DESCRIPTION": "Für diese API wurde keine erweiterte Beschreibung hinterlegt",
+    "SIGN_UP": "Sign Up"
   },
   "TERMS": {
     "PREFIX": "Ich stimme den ",

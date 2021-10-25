@@ -6,17 +6,11 @@
   </div>
   <div id="try-it-now-btn">
     <ng-container *ngIf="docsAvailable">
-      <a [routerLink]="[
-          '/swagger',
-          orgId,
-          apiId,
-          apiVersion
-        ]"
-      target="_blank">
+      <a [routerLink]="['/swagger', orgId, apiId, apiVersion]"
+         target="_blank">
         <button
           mat-raised-button
-          color="primary"
-        >
+          color="primary">
           {{ "COMMON.API_DOCS" | translate }}
         </button>
       </a>
@@ -93,11 +87,8 @@
         [cdkCopyToClipboard]="''"
         mat-icon-button
         matSuffix
-        class="input-icon-btn"
-      >
-        <mat-icon class="input-icon-btn" color="primary" [class.disabled]=""
-          >content_copy</mat-icon
-        >
+        class="input-icon-btn">
+        <mat-icon class="input-icon-btn" color="primary" [class.disabled]="">content_copy</mat-icon>
       </button>
     </mat-form-field>
     <mat-form-field>
@@ -108,8 +99,7 @@
         [cdkCopyToClipboard]="''"
         mat-icon-button
         matSuffix
-        class="input-icon-btn"
-      >
+        class="input-icon-btn">
         <mat-icon class="input-icon-btn" color="primary">content_copy</mat-icon>
       </button>
     </mat-form-field>

@@ -19,6 +19,7 @@
     "API_DOCS": "API Documentation",
     "ERROR": "Data could not be loaded, please try again later.",
     "SUCCESS": "Successfully created!",
+    "LOGIN": "Login",
     "LOGIN_OR_REGISTER": "Login / Register",
     "LOGOUT": "Logout",
     "VERSION": "Version",
@@ -63,7 +64,8 @@
     "RESETS_AT": "Resets at",
     "FIRST_OF": "1st of",
     "RESETS_EVERY_SECOND": "Resets every second",
-    "NO_POLICIES_FOR_API": "No policies were found for this API"
+    "NO_POLICIES_FOR_API": "No policies were found for this API",
+    "APPS_AND_APIS": "Apps and APIs"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Select from available Applications"
@@ -82,7 +84,9 @@
     "REDIRECT": "You will be redirected because of an invalid URL",
     "SUCCESS": "A contract has been successfully created",
     "API_KEY_PREVIEW": "You will be provided an API-KEY after sign-up",
-    "API_ENDPOINT_PREVIEW": "You will be provided an endpoint after sign-up"
+    "API_ENDPOINT_PREVIEW": "You will be provided an endpoint after sign-up",
+    "LICENSE_TYPE": "Licence Type",
+    "POLICIES": "Policies"
   },
   "POLICIES": {
     "RATE_LIMIT": {
@@ -120,15 +124,16 @@
     "MORE_INFO": "You will receive an email notification when there is progress in your application"
   },
   "DIALOGS": {
-    "UNREGISTER_TITLE": "Remove Client",
-    "UNREGISTER_SURE": "Are you really sure you want to <span class='warn'>remove</span> the client <b>{{value}}</b> and its contracts?",
-    "UNREGISTER_BTN": "Unregister"
+    "REMOVE_TITLE": "Remove Client",
+    "REMOVE_SURE": "Are you really sure you want to <span class='warn'>remove</span> the client <b>{{value}}</b> and its contracts?",
+    "REMOVE_BTN": "Remove"
   },
   "API_DETAILS": {
     "PLANS": "Plans",
     "KEY_FEATURES": "Key Features",
     "EXTENDED_DESCRIPTION": "Extended Description",
-    "NO_EXT_DESCRIPTION": "No further description has been stored for this API"
+    "NO_EXT_DESCRIPTION": "No further description has been stored for this API",
+    "SIGN_UP": "Sign Up"
   },
   "TERMS": {
     "PREFIX": "I accept the ",
