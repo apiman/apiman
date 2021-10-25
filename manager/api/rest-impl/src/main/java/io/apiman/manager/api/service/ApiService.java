@@ -621,7 +621,7 @@ public class ApiService implements DataAccessUtilMixin {
                 Set<PlanIdVersion> existingPIV = avb.getPlans().stream().map(PlanIdVersion::new).collect(Collectors.toSet());
                 Set<PlanIdVersion> updatedPIV = bean.getPlans().stream().map(PlanIdVersion::new).collect(Collectors.toSet());
 
-                if (!existingPIV.containsAll(updatedPIV)) {
+                if (!existingPIV.equals(updatedPIV)) {
                     throw new InvalidParameterException("Plan IDs and versions must not change after publication");
                 }
                 // If published, then mapper copies across only fields that are safe for changed after publication.
