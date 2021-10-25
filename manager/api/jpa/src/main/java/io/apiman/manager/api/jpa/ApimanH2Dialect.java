@@ -31,6 +31,7 @@ public class ApimanH2Dialect extends H2Dialect {
      */
     public ApimanH2Dialect() {
         registerColumnType(Types.LONGVARCHAR, String.format("varchar(%d)", Integer.MAX_VALUE)); //$NON-NLS-1$
+        registerColumnType(Types.VARBINARY, "BLOB");
     }
 
 }
