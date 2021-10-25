@@ -36,7 +36,7 @@ _module.controller("Apiman.NotificationController", [
       undefined,
       $scope,
       function () {
-        PageLifecycle.setPageTitle("notification.dash", "your notifications");
+        PageLifecycle.setPageTitle("notification-dash", "your notifications");
       }
     );
 
