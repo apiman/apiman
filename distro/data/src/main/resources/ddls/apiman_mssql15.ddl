@@ -455,7 +455,7 @@ CREATE TABLE blob_store (id varchar(255) NOT NULL, mrblobby varbinary(MAX) NOT N
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-7::msavy (generated)
-CREATE TABLE outbox (id bigint IDENTITY (1, 1) NOT NULL, event_version bigint NOT NULL, payload binary(1) NOT NULL, source varchar(255) NOT NULL, subject varchar(255) NOT NULL, time datetime NOT NULL, type varchar(255) NOT NULL, CONSTRAINT outboxPK PRIMARY KEY (id))
+CREATE TABLE outbox (id bigint IDENTITY (1, 1) NOT NULL, event_version bigint NOT NULL, payload JSON NOT NULL, source varchar(255) NOT NULL, subject varchar(255) NOT NULL, time datetime NOT NULL, type varchar(255) NOT NULL, CONSTRAINT outboxPK PRIMARY KEY (id))
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-8::msavy (generated)

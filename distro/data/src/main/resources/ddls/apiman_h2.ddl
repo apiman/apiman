@@ -348,7 +348,7 @@ CREATE TABLE api_tag (api_id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NOT NULL
 CREATE TABLE blob_store (id VARCHAR(255) NOT NULL, mrblobby BLOB NOT NULL, created_on TIMESTAMP NOT NULL, hash BIGINT NOT NULL, mime_type VARCHAR(255) NOT NULL, modified_on TIMESTAMP NOT NULL, name VARCHAR(255) NOT NULL, ref_count INT NOT NULL, CONSTRAINT blob_storePK PRIMARY KEY (id));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-7::msavy (generated)
-CREATE TABLE outbox (id BIGINT AUTO_INCREMENT NOT NULL, event_version BIGINT NOT NULL, payload BINARY NOT NULL, source VARCHAR(255) NOT NULL, subject VARCHAR(255) NOT NULL, time TIMESTAMP NOT NULL, type VARCHAR(255) NOT NULL, CONSTRAINT outboxPK PRIMARY KEY (id));
+CREATE TABLE outbox (id BIGINT AUTO_INCREMENT NOT NULL, event_version BIGINT NOT NULL, payload JSON NOT NULL, source VARCHAR(255) NOT NULL, subject VARCHAR(255) NOT NULL, time TIMESTAMP NOT NULL, type VARCHAR(255) NOT NULL, CONSTRAINT outboxPK PRIMARY KEY (id));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-8::msavy (generated)
 ALTER TABLE blob_store ADD CONSTRAINT UC_BLOB_STOREID_COL UNIQUE (id);
