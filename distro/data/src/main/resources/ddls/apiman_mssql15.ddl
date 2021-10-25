@@ -367,7 +367,7 @@ CREATE TABLE notification_category_preferences (NotificationPreferenceEntity_id 
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-9::msavy marc@blackparrotlabs.io (generated)
-CREATE TABLE notification_preferences (id bigint IDENTITY (1, 1) NOT NULL, type varchar(255) NOT NULL, userId varchar(255) NOT NULL, CONSTRAINT notification_preferencesPK PRIMARY KEY (id))
+CREATE TABLE notification_preferences (id bigint IDENTITY (1, 1) NOT NULL, type varchar(255) NOT NULL, user_id varchar(255) NOT NULL, CONSTRAINT notification_preferencesPK PRIMARY KEY (id))
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-10::msavy marc@blackparrotlabs.io (generated)
@@ -427,7 +427,7 @@ ALTER TABLE plugins ADD CONSTRAINT UKofbok9ushig9vviq01dnu11x UNIQUE (group_id, 
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-24::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE notification_preferences ADD CONSTRAINT UserAllowedOnlyOneOfEachNotificationType UNIQUE (userId, type)
+ALTER TABLE notification_preferences ADD CONSTRAINT UserAllowedOnlyOneOfEachNotificationType UNIQUE (user_id, type)
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-25::msavy marc@blackparrotlabs.io (generated)

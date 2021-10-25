@@ -32,7 +32,7 @@ import org.hibernate.annotations.NaturalId;
      uniqueConstraints = {
           @UniqueConstraint(
                name = "UserAllowedOnlyOneOfEachNotificationType",
-               columnNames = { "userId", "type" }
+               columnNames = { "user_id", "type" }
           )
      }
 )
@@ -43,7 +43,7 @@ public class NotificationPreferenceEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false)
     @NotBlank
     @NaturalId
     private String userId;
