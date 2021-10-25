@@ -179,7 +179,11 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
         List<ContractSummaryBean> contracts = getAllClientContracts(id);
         for (ContractSummaryBean contract : contracts) {
             ApiVersionBean apiVersion = apiService.getApiVersion(contract.getApiOrganizationId(), contract.getApiId(), contract.getApiVersion());
-            apiVersionBeans.add(RestHelper.hideSensitiveDataFromApiVersionBean(apiVersion));
+            if (securityContext.isAdmin()) {
+                apiVersionBeans.add(apiVersion);
+            } else {
+                apiVersionBeans.add(RestHelper.hideSensitiveDataFromApiVersionBean(apiVersion));
+            }
         }
         return apiVersionBeans;
     }
