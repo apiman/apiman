@@ -93,7 +93,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -614,7 +616,12 @@ public class ApiService implements DataAccessUtilMixin {
                 if (bean.getPlans().size() != avb.getPlans().size()) {
                     throw new InvalidParameterException("Can not attach or remove plans from an API Version after it has been published");
                 }
-                if (!avb.getPlans().containsAll(bean.getPlans())) {
+
+                // Collect just the ID and Versions (as these must be the same). Other fields can change freely.
+                Set<PlanIdVersion> existingPIV = avb.getPlans().stream().map(PlanIdVersion::new).collect(Collectors.toSet());
+                Set<PlanIdVersion> updatedPIV = bean.getPlans().stream().map(PlanIdVersion::new).collect(Collectors.toSet());
+
+                if (!existingPIV.containsAll(updatedPIV)) {
                     throw new InvalidParameterException("Plan IDs and versions must not change after publication");
                 }
                 // If published, then mapper copies across only fields that are safe for changed after publication.
@@ -1105,6 +1112,33 @@ public class ApiService implements DataAccessUtilMixin {
 
         public InputStream getDefinition() {
             return definition;
+        }
+    }
+
+    private static final class PlanIdVersion {
+        public final String id;
+        public final String version;
+
+        public PlanIdVersion(ApiPlanBean pvb) {
+            this.id = pvb.getPlanId();
+            this.version = pvb.getVersion();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            PlanIdVersion that = (PlanIdVersion) o;
+            return Objects.equals(id, that.id) && Objects.equals(version, that.version);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, version);
         }
     }
 }

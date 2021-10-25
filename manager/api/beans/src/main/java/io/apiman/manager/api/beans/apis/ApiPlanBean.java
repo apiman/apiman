@@ -106,11 +106,6 @@ public class ApiPlanBean implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(planId, version);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -119,6 +114,12 @@ public class ApiPlanBean implements Serializable {
             return false;
         }
         ApiPlanBean that = (ApiPlanBean) o;
-        return Objects.equals(planId, that.planId) && Objects.equals(version, that.version);
+        return Objects.equals(planId, that.planId) && Objects.equals(version, that.version) && Objects.equals(exposeInPortal,
+                that.exposeInPortal) && Objects.equals(requiresApproval, that.requiresApproval);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(planId, version, exposeInPortal, requiresApproval);
     }
 }
