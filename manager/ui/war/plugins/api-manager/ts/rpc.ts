@@ -69,7 +69,8 @@ _module.factory('ContractService', ['$http', 'Configuration', '$q',
                     url: `${Configuration.api.endpoint}/actions/contracts`,
                     data: {
                         contractId: contractId,
-                        status: 'AwaitingApproval'
+                        status: 'AwaitingApproval',
+                        autoPromote: true
                     } as ContractAction
                 }).then(
                     success => $q.resolve(success.data),
