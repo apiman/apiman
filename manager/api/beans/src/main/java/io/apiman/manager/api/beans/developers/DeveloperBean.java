@@ -44,20 +44,9 @@ public class DeveloperBean implements Serializable {
     private static final long serialVersionUID = 7127400624541487145L;
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator",
-            parameters = {
-                    @Parameter(
-                            name = "uuid_gen_strategy_class",
-                            value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
-                    )
-            }
-    )
     private String id;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "developer_mappings", joinColumns = @JoinColumn(name = "developer_id"))
     private Set<DeveloperMappingBean> clients = new LinkedHashSet<>();
 
