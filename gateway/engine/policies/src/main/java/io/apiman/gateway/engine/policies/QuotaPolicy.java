@@ -15,12 +15,14 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.config.RateLimitingConfig;
 import io.apiman.gateway.engine.policies.i18n.Messages;
+import io.apiman.gateway.engine.policies.probe.RateLimitingProbeConfig;
+import io.apiman.gateway.engine.policy.IPolicyProbe;
 
 /**
  * Similar to the rate limiting policy, but less granular.  Useful primarily
@@ -28,9 +30,10 @@ import io.apiman.gateway.engine.policies.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class QuotaPolicy extends RateLimitingPolicy {
+public class QuotaPolicy extends RateLimitingPolicy
+        implements IPolicyProbe<RateLimitingConfig, RateLimitingProbeConfig> {
 
-    private static final String DEFAULT_LIMIT_HEADER = "X-Quota-Limit"; //$NON-NLS-1$
+        private static final String DEFAULT_LIMIT_HEADER = "X-Quota-Limit"; //$NON-NLS-1$
     private static final String DEFAULT_REMAINING_HEADER = "X-Quota-Remaining"; //$NON-NLS-1$
     private static final String DEFAULT_RESET_HEADER = "X-Quota-Reset"; //$NON-NLS-1$
 
