@@ -137,6 +137,23 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   }
 
   finish(): void {
-    void this.router.navigate(['applications'], {fragment: this.tocService.formatClientId(this.contract!)});
+    this.backend
+      .sendAction({
+        type: 'registerClient',
+        entityVersion: '1.0',
+        organizationId: this.contract!.client.client.organization.id,
+        entityId: this.contract!.client.client.id
+      })
+      .subscribe(
+        () => {
+          // void response
+        },
+        (error) => {
+          this.snackbar.showErrorSnackBar(error.message, error);
+        }
+      );
+    void this.router.navigate(['applications'], {
+      fragment: this.tocService.formatClientId(this.contract!)
+    });
   }
 }
