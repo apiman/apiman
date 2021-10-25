@@ -17,16 +17,17 @@ package io.apiman.manager.api.beans.apis;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.Type;
 
 /**
  * Bean used to store an API definition.
@@ -45,7 +46,8 @@ public class ApiDefinitionBean implements Serializable {
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="api_version_id")
     private ApiVersionBean apiVersion;
-    @Lob
+
+    @Column(name = "data")
     private byte[] data;
 
     /**

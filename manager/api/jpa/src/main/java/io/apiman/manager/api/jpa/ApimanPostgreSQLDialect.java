@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.jpa;
 
+import java.sql.Types;
+
 import org.hibernate.dialect.PostgreSQL95Dialect;
 
 /**
@@ -29,6 +31,6 @@ public class ApimanPostgreSQLDialect extends PostgreSQL95Dialect {
      * Constructor.
      */
     public ApimanPostgreSQLDialect() {
+        super();
     }
-
 }
