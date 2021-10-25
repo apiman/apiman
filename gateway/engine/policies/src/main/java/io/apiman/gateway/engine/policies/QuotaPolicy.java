@@ -15,12 +15,12 @@
  */
 package io.apiman.gateway.engine.policies;
 
-import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.config.RateLimitingConfig;
 import io.apiman.gateway.engine.policies.i18n.Messages;
+import io.apiman.gateway.engine.policies.limiting.BucketFactory.BucketIdBuilderContext;
 import io.apiman.gateway.engine.policies.probe.RateLimitingProbeConfig;
 import io.apiman.gateway.engine.policy.IPolicyProbe;
 
@@ -77,8 +77,8 @@ public class QuotaPolicy extends RateLimitingPolicy
         return DEFAULT_RESET_HEADER;
     }
 
-    protected String createBucketId(ApiRequest request, RateLimitingConfig config) {
-        return "QUOTA||" + bucketId(request, config); //$NON-NLS-1$
+    @Override
+    protected String bucketId(RateLimitingConfig config, BucketIdBuilderContext context) {
+        return "QUOTA||" + super.bucketId(config, context);
     }
-
 }
