@@ -88,7 +88,7 @@ export class ApiCardListComponent implements OnInit {
       queryParams: {
         page: 1,
         pageSize: this.searchCriteria.paging.pageSize,
-        searchTerm: `${searchTerm}`
+        searchTerm: `*${searchTerm}*`
       }
     });
   }
