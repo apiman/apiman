@@ -76,6 +76,9 @@ export class MyAppsComponent implements OnInit {
       .getEditableClients()
       .pipe(
         switchMap((clientSummaries: IClientSummary[]) => {
+          if (clientSummaries.length === 0){
+            this.stopMainRequest();
+          }
 
           return forkJoin(clientSummaries.map(clientSummary => {
             return this.backend.getClientVersions(
@@ -134,11 +137,15 @@ export class MyAppsComponent implements OnInit {
         })
       ).subscribe((contracts) => {
         this.getApiImages(contracts);
-        this.spinnerService.stopWaiting();
-        this.contractsLoaded = true;
+        this.stopMainRequest();
         this.extractContracts(contracts);
         this.generateTocLinks();
       });
+  }
+
+  private stopMainRequest(){
+    this.spinnerService.stopWaiting();
+    this.contractsLoaded = true;
   }
 
   // TODO: include this in to the main request chain. Reminder: ApiVersions do not have api.api.image property

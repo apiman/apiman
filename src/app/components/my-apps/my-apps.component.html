@@ -1,5 +1,9 @@
-<div *ngIf="contractsLoaded && !noDataFound" class="wrapper">
-  <div id="contracts" class="first">
+<div *ngIf="contractsLoaded && contracts.length === 0" class="dp-center">
+  <app-no-data [text]="'APPS.NO_APPS_FOUND' | translate" [textClass]="'text-big2'"></app-no-data>
+</div>
+
+<div *ngIf="contractsLoaded && !noDataFound && contracts.length > 0" class="wrapper">
+    <div id="contracts" class="first">
     <mat-card *ngFor="let cliCon of clientContractsMap | keyvalue" class="mb-40 mat-elevation-z3 client-card" [id]="tocService.formatClientId(cliCon.value[0])">
       <!-- Client Header -->
       <div class="app-header">

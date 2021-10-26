@@ -25,7 +25,7 @@
 </ng-container>
 <ng-template #NoDataMsg>
   <div *ngIf="this.ready; else ErrorMsg" class="dp-center">
-    <app-no-data [text]="'COMMON.NO_DATA_FOUND' | translate" [textClass]="'text-big2'"></app-no-data>
+    <app-no-data [text]="'HOME.NO_APIS_FOUND' | translate" [textClass]="'text-big2'"></app-no-data>
   </div>
 </ng-template>
 <ng-template #ErrorMsg>

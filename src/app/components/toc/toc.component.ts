@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ITocLink} from '../../interfaces/ITocLink';
 import {Router} from "@angular/router";
 
@@ -11,12 +11,14 @@ export class TocComponent implements AfterViewInit{
   @Input() links: ITocLink[] = [];
   linksInViewPort: ITocLink[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
 
   ngAfterViewInit() {
-    if (this.links.length > 0)
+    if (this.links.length > 0) {
       this.links[0].active = true;
+      this.cdr.detectChanges();
+    }
 
     this.scroll(window.location.hash.replace('#', ''));
   }
