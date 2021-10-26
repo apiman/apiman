@@ -22,7 +22,7 @@ _module.controller("Apiman.AdminPluginsController",
             var pageData = {
                 plugins: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'plugins' }, function(plugins) {
-                        angular.forEach(plugins, function(p) {
+                        angular.forEach(plugins.entries(), function(p) {
                             p.isSnapshot = p.version.indexOf("-SNAPSHOT", this.length - "-SNAPSHOT".length) !== -1;
                         });
                         resolve(plugins);
