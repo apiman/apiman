@@ -60,7 +60,7 @@
     "harmon": "^1.4.4",
     "jquery": "3.5.1",
     "js-logger": "1.6.1",
-    "json-editor": "0.7.23",
+    "@json-editor/json-editor": "2.6.0",
     "lodash": "^4.17.15",
     "moment": "2.29.1",
     "ng-file-upload": "9.1.1",

@@ -1,6 +1,7 @@
 import { _module } from './apimanPlugin';
 import angular = require("angular");
 import moment = require("moment");
+import { JSONEditor } from '@json-editor/json-editor/dist/jsoneditor'
 
 export var isRegexpValid = function(v) {
     var valid = true;
@@ -44,9 +45,9 @@ _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
 
             var initEditor = function(schema) {
-                var holder = document.getElementById('json-editor-holder');
+                const holder = document.getElementById('json-editor-holder');
 
-                var editor = new window['JSONEditor'](holder, {
+                const editor = new JSONEditor(holder, {
                     // Disable fetching schemas via ajax
                     ajax: false,
                     // The schema for the editor
@@ -96,16 +97,19 @@ _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
                 var pluginId = $scope.selectedDef.pluginId;
                 var policyDefId = $scope.selectedDef.id;
 
-                PluginSvcs.getPolicyForm(pluginId, policyDefId, function(schema) {
-                    destroyEditor();
-                    initEditor(schema);
-                    $scope.editor.setValue($scope.config);
-                    $scope.schemaState = 'loaded';
-                }, function (error) {
-                    // TODO handle the error better here!
-                    Logger.error(error);
-                    $scope.schemaState = 'loaded';
-                });
+                PluginSvcs.getPolicyForm(pluginId, policyDefId).then(
+                    (schema: string) => {
+                        destroyEditor();
+                        initEditor(schema);
+                        $scope.editor.setValue($scope.config);
+                        $scope.schemaState = 'loaded';
+                    },
+                    error => {
+                        // TODO handle the error better here!
+                        Logger.error(error);
+                        $scope.schemaState = 'loaded';
+                    }
+                );
             };
 
             // Watch for changes to selectedDef - if the user changes from one schema-based policy

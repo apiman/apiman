@@ -6,7 +6,6 @@ window.jQuery = $;
 window.$ = $;
 import 'bootstrap/dist/js/bootstrap.js';
 import 'bootstrap-select/dist/js/bootstrap-select.js';
-import 'json-editor';
 import 'patternfly/dist/js/patternfly.js';
 import 'angular';
 import 'angular-ui-bootstrap/ui-bootstrap.js';

@@ -72,6 +72,13 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
+"@json-editor/json-editor@2.6.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@json-editor/json-editor/-/json-editor-2.6.0.tgz#ee4d687c4ca4794f4ac9246f61fcc01cb3e48c38"
+  integrity sha512-6yWvdpBirBENLdRKSfoCbEzQycZrqegSiWYkRV2X7n9F4PwULmQB0GPuG/7A2FJzwKM8m/Vpz6ywOBNE8jY9dw==
+  dependencies:
+    core-js "^3.12.1"
+
 "@kyleshockey/object-assign-deep@^0.4.2":
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@kyleshockey/object-assign-deep/-/object-assign-deep-0.4.2.tgz#84900f0eefc372798f4751b5262830b8208922ec"
@@ -2110,6 +2117,11 @@ core-js@^2.4.0:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
+
+core-js@^3.12.1:
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.19.0.tgz#9e40098a9bc326c7e81b486abbd5e12b9d275176"
+  integrity sha512-L1TpFRWXZ76vH1yLM+z6KssLZrP8Z6GxxW4auoCj+XiViOzNPJCAuTIkn03BGdFe6Z5clX5t64wRIRypsZQrUg==
 
 core-util-is@1.0.2:
   version "1.0.2"
@@ -4928,11 +4940,6 @@ jsesc@^0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
   integrity sha1-597mbjXW/Bb3EP6R1c9p9w8IkR0=
-
-json-editor@0.7.23:
-  version "0.7.23"
-  resolved "https://registry.yarnpkg.com/json-editor/-/json-editor-0.7.23.tgz#87e5f4e855c7c69f8a2fb83ffd09dfb564c5a6e5"
-  integrity sha1-h+X06FXHxp+KL7g//QnftWTFpuU=
 
 json-parse-better-errors@^1.0.2:
   version "1.0.2"

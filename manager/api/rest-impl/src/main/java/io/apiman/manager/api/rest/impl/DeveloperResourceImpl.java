@@ -74,9 +74,7 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
         IStorage storage,
         IStorageQuery query,
         ISecurityContext securityContext,
-        ContractService contractService,
-        ApiService apiService,
-        ClientAppService clientService
+        ApiService apiService
     ) {
         this.storage = storage;
         this.query = query;
