@@ -221,14 +221,18 @@ _module.factory('UserAuditSvcs', ['$resource', 'Configuration',
     }]);
 
 
-_module.factory('PluginSvcs', ['$resource', 'Configuration',
-    function($resource, Configuration) {
+_module.factory('PluginSvcs', ['$http', 'Configuration', '$q',
+    function($http, Configuration, $q) {
         return {
-            getPolicyForm: function(pluginId, policyDefId, handler, errorHandler) {
-                var endpoint = Configuration.api.endpoint + '/plugins/:pluginId/policyDefs/:policyDefId/form';
-                $resource(endpoint, { pluginId: '@pluginId', policyDefId: '@policyDefId' }).get(
-                    {pluginId: pluginId, policyDefId: policyDefId},
-                    handler, errorHandler);
+            getPolicyForm: function(pluginId, policyDefId): Promise<string> {
+                const endpoint = `${Configuration.api.endpoint}/plugins/${pluginId}/policyDefs/${policyDefId}/form`;
+                return $http({
+                    method: 'GET',
+                    url: endpoint
+                }).then(
+                    ok => $q.resolve(ok.data),
+                    failure => $q.reject(failure)
+                );
             }
         }
     }]);
