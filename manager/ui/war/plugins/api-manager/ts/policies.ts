@@ -1,5 +1,6 @@
 import { _module } from './apimanPlugin';
 import angular = require("angular");
+import moment = require("moment");
 
 export var isRegexpValid = function(v) {
     var valid = true;
@@ -775,7 +776,6 @@ _module.controller('Apiman.URLRewritingFormController',
 _module.controller('Apiman.TimeRestrictedAccessFormController',
     ['$window','$scope', 'Logger', 'EntityStatusSvc',
         ($window, $scope, Logger, EntityStatusSvc) => {
-            var moment=$window.moment;
             var isoTimeFormat="HH:mm:ss";
             var validate = function(config) {
                 var valid = config.rules && config.rules.length > 0;
@@ -817,8 +817,8 @@ _module.controller('Apiman.TimeRestrictedAccessFormController',
                 }
             };
             $scope.resetModel = function() {
-                $scope.timeStart = $window.moment("8:00","hh:mm").toDate();
-                $scope.timeEnd = $window.moment("16:00","hh:mm").toDate();
+                $scope.timeStart = moment("8:00","hh:mm").toDate();
+                $scope.timeEnd = moment("16:00","hh:mm").toDate();
                 $scope.dayStart = $scope.weekdays[0];
                 $scope.dayEnd = $scope.weekdays[4];
                 $scope.selectedPath = undefined;
