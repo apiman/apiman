@@ -125,15 +125,16 @@ _module.controller("Apiman.PlanEntityController",
     }]);
 
 
-_module.controller('PlanDeleteModalCtrl', function ($location,
-                                                                             $rootScope,
-                                                                             $scope,
-                                                                             $uibModalInstance,
-                                                                             OrgSvcs,
-                                                                             Configuration,
-                                                                             PageLifecycle,
-                                                                             organizationId,
-                                                                             plan) {
+_module.controller('PlanDeleteModalCtrl', ['$location', '$rootScope', '$scope', '$uibModalInstance', 'OrgSvcs', 'Configuration', 'PageLifecycle', 'organizationId', 'plan',
+    function ($location,
+             $rootScope,
+             $scope,
+             $uibModalInstance,
+             OrgSvcs,
+             Configuration,
+             PageLifecycle,
+             organizationId,
+             plan) {
 
     $scope.confirmPlanName = '';
     $scope.plan = plan;
@@ -176,4 +177,4 @@ _module.controller('PlanDeleteModalCtrl', function ($location,
     $scope.no = function () {
         $uibModalInstance.dismiss('cancel');
     };
-});
+}]);
