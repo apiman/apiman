@@ -274,9 +274,12 @@ _module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration', '$q
                     { organizationId: orgId, apiId: apiId, version: version });
                 return $http({
                     method: 'GET',
-                    url: endpoint
+                    url: endpoint,
+                    transformResponse: function(data) {
+                        return data;
+                    }
                 }).then(
-                    ok => $q.resolve(JSON.stringify(ok.data)),
+                    ok => $q.resolve(ok.data),
                     failure => $q.reject(failure)
                 );
             },
