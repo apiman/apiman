@@ -43,6 +43,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   ) {
     this.termsEnabled = this.configService.getTerms().enabled;
     this.newContractDetails = this.signUpService.getSignUpInfo();
+
+
   }
 
   ngOnInit(): void {

@@ -53,6 +53,7 @@ export class PlanCardListComponent implements OnInit {
       policies.concat(this.apiPolicies);
     }
 
+    policies.forEach((policy: IPolicyExt) => this.policyService.initPolicy(policy));
     this.signUpService.setSignUpInfo(this.orgId, this.apiVersion, plan, policies, this.apiVersion.docsAvailable);
     this.router.navigate(['/api-signup', this.orgId, this.apiId]);
   }

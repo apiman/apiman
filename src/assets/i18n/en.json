@@ -24,7 +24,8 @@
     "LOGOUT": "Logout",
     "VERSION": "Version",
     "OF": "of",
-    "AGREEMENT": "Agreement"
+    "AGREEMENT": "Agreement",
+    "PER": "per"
   },
   "HOME": {
     "TITLE": "KoolBank Api Developer Portal",
@@ -58,16 +59,16 @@
     "UNSUB_FROM_API": "Unsubscribe from API",
     "UNSUB_FROM_THIS_API": "Unsubscribe from this API",
     "UNSUB": "Unsubscribe",
-    "NO_CLIENTS": "Could not find any clients",
     "CLIENT_REMOVED": "The client and the contracts has been removed",
     "REMOVE_CLIENT_TT": "Remove client",
     "USED": "used",
     "RESETS_AT": "Resets at",
-    "FIRST_OF": "1st of",
     "RESETS_EVERY_SECOND": "Resets every second",
     "NO_POLICIES_FOR_API": "No policies were found for this API",
     "APPS_AND_APIS": "Apps and APIs",
-    "NO_APPS_FOUND": "No applications were found"
+    "NO_APPS_FOUND": "No applications were found",
+    "FAILED_WHILE_FETCHING_CLIENTS": "Failed while fetching applications",
+    "REMOVE_CLIENT_FAILED": "Failed while removing the client"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Select from available Applications"
@@ -91,23 +92,31 @@
     "POLICIES": "Policies"
   },
   "POLICIES": {
-    "RATE_LIMIT": {
+    "RateLimitingPolicy": {
       "TITLE": "Rate Limiting Policy",
       "DESCRIPTION": "You will be rate limited to <b>{{limit}}</b> requests per <b>{{timeUnit}}</b>",
-      "MORE_INFO": "The following headers in the response contain useful information relating to rate limit,",
+      "MORE_INFO": "The following headers in the response contain useful information relating to rate limit:",
       "LIMIT": "Rate limit allowance (per time period)",
       "REMAINING": "Rate limit allowance remaining",
       "RESET": "The time the rate limit will be reset",
       "CONDITION_LIGHT": "<b>{{limit}}</b> requests per <b>{{timeUnit}}</b>"
     },
-    "QUOTA": {
+    "TransferQuotaPolicy": {
       "TITLE": "Quota Policy",
       "DESCRIPTION": "You can transfer a maximum of <b>{{limit}}</b> of data per <b>{{timeUnit}}</b>",
-      "MORE_INFO": "The following headers in the response contain useful information relating to quota limit,",
+      "MORE_INFO": "The following headers in the response contain useful information relating to quota limit:",
       "LIMIT": "Quota limit allowance (per time period)",
       "REMAINING": "Quota limit allowance remaining",
       "RESET": "Quota limit allowance remaining",
       "CONDITION_LIGHT": "<b>{{limit}}</b> data per <b>{{timeUnit}}</b>"
+    },
+    "PERIODS": {
+      "SECOND": "Second",
+      "MINUTE": "Minute",
+      "HOUR": "Hour",
+      "DAY": "Day",
+      "MONTH": "Month",
+      "YEAR": "Year"
     },
     "USAGE": "Usage"
   },

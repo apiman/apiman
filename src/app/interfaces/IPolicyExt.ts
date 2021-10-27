@@ -8,12 +8,12 @@ export interface IPolicyExt extends IPolicy {
   shortDescription: string;
   configAsObject: any;
   icon: string;
-  policyIdentifier: string;
   restrictions: {
     limit: string;
     timeUnit: string;
   }
   headers: any;
   mainGaugeData: IGaugeChartData,
-  timeGaugeData: IGaugeChartData
+  timeGaugeData: IGaugeChartData,
+  probe: any
 }

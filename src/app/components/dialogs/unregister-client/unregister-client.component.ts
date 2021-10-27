@@ -3,6 +3,10 @@ import {IContractExt} from "../../../interfaces/IContractExt";
 import {IAction} from "../../../interfaces/ICommunication";
 import {BackendService} from "../../../services/backend/backend.service";
 import {flatMap} from "rxjs/internal/operators";
+import {catchError} from "rxjs/operators";
+import {EMPTY} from "rxjs";
+import {SnackbarService} from "../../../services/snackbar/snackbar.service";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-unregister-client',
@@ -15,7 +19,9 @@ export class UnregisterClientComponent implements OnInit {
 
   unregisterEmitter = new EventEmitter();
 
-  constructor(private backend: BackendService) { }
+  constructor(private backend: BackendService,
+              private snackbarService: SnackbarService,
+              private translator: TranslateService) { }
 
   ngOnInit(): void { }
 
@@ -29,7 +35,12 @@ export class UnregisterClientComponent implements OnInit {
 
     this.backend.breakAllContracts(action.organizationId, action.entityId, action.entityVersion).pipe(
       flatMap(() => this.backend.sendAction(action)),
-      flatMap(() => this.backend.deleteClient(action.organizationId, action.entityId))
+      flatMap(() => this.backend.deleteClient(action.organizationId, action.entityId)),
+      catchError(() => {
+        console.warn('Deleting Client failed');
+        this.snackbarService.showErrorSnackBar(this.translator.instant('APPS.REMOVE_CLIENT_FAILED'));
+        return EMPTY;
+      })
     ).subscribe(() => {
       this.unregisterEmitter.emit();
     });

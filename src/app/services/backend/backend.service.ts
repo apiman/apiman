@@ -277,6 +277,8 @@ export class BackendService {
   }
 
   public sendAction(action: IAction): Observable<void> {
+    console.log('sendAction');
+
     const path = `actions`;
     return this.http.post<void>(
       this.generateUrl(path),
@@ -295,6 +297,8 @@ export class BackendService {
   }
 
   public deleteClient(organizationId: string, clientId: string) {
+    console.log('deleteClient');
+
     const path = `organizations/${organizationId}/clients/${clientId}`;
     return this.http.delete<void>(this.generateUrl(path), this.httpOptions);
   }

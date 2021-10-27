@@ -1,10 +1,10 @@
 export interface IGaugeChartData {
   name: string;
   currentVal: number;
-  limit: number;
-  unitSuffix: string
+  limit?: number;
+  dividendSuffix?: string
+  divisorSuffix?: string
   period: string;
-  remaining: number;
   infoHeader: string;
-  bottomText: string;
+  bottomText?: string;
 }

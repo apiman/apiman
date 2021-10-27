@@ -24,7 +24,8 @@
     "LOGOUT": "Abmelden",
     "VERSION": "Version",
     "OF": "von",
-    "AGREEMENT": "Zustimmung"
+    "AGREEMENT": "Zustimmung",
+    "PER": "pro"
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",
@@ -58,16 +59,16 @@
     "UNSUB_FROM_API": "Von der API abmelden",
     "UNSUB_FROM_THIS_API": "Von dieser API abmelden",
     "UNSUB": "Abmelden",
-    "NO_CLIENTS": "Es konnten keine Clients gefunden werden",
     "CLIENT_REMOVED": "Der Client und die Verträge wurden entfernt",
     "REMOVE_CLIENT_TT": "Client entfernen",
     "USED": "verbraucht",
     "RESETS_AT": "Reset am",
-    "FIRST_OF": "1.",
     "RESETS_EVERY_SECOND": "Resettet jede Sekunde",
     "NO_POLICIES_FOR_API": "Für diese API wurden keine Regeln gefunden",
     "APPS_AND_APIS": "Apps und APIs",
-    "NO_APPS_FOUND": "Es wurden keine Applications gefunden"
+    "NO_APPS_FOUND": "Es wurden keine Applikationen gefunden",
+    "FAILED_WHILE_FETCHING_CLIENTS": "Fehler beim Laden der Applikationen",
+    "REMOVE_CLIENT_FAILED": "Fehler beim Löschen der Applikation"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Aus vorhandenen Anwendugen auswählen"
@@ -91,23 +92,31 @@
     "POLICIES": "Regeln"
   },
   "POLICIES": {
-    "RATE_LIMIT": {
+    "RateLimitingPolicy": {
       "TITLE": "Rate Limiting Policy",
       "DESCRIPTION": "Die Anfragefrequenz wird beschränkt auf <b>{{limit}}</b> Requests pro <b>{{timeUnit}}</b>",
-      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Requests,",
+      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Requests:",
       "LIMIT": "Rate Limit (pro Zeit)",
       "REMAINING": "Rate Limit verbleibend",
       "RESET": "Die Zeit, bis das Rate Limit zurückgesetzt wird",
       "CONDITION_LIGHT": "<b>{{limit}}</b> Requests pro <b>{{timeUnit}}</b>"
     },
-    "QUOTA": {
+    "TransferQuotaPolicy": {
       "TITLE": "Quota Policy",
       "DESCRIPTION": "Es können maximal <b>{{limit}}<b> Daten pro <b>{{timeUnit}}</b> konsumiert werden",
-      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Requests,",
+      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Requests:",
       "LIMIT": "Quota Limit (pro Zeit)",
       "REMAINING": "Quota Limit verbleibend",
       "RESET": "Die Zeit, bis das Quota Limit zurückgesetzt wird",
       "CONDITION_LIGHT": "<b>{{limit}}</b> Daten pro <b>{{timeUnit}}</b>"
+    },
+    "PERIODS": {
+      "SECOND": "Sekunde",
+      "MINUTE": "Minute",
+      "HOUR": "Stunde",
+      "DAY": "Tag",
+      "MONTH": "Monat",
+      "YEAR": "Jahr"
     },
     "USAGE": "Verbrauch"
   },
@@ -123,7 +132,7 @@
     "APPROVAL": "Bestätigung erforderlich",
     "TITLE": "Vielen Dank!",
     "SUBTITLE": "Dein Auftrag muss von <i>KoolBank</i> noch bestätigt werden",
-    "MORE_INFO": "Du wirst über den aktuellen Status per E-Mail benachrichtigt"
+    "MORE_INFO": "Sie werden über den aktuellen Status per E-Mail benachrichtigt"
   },
   "DIALOGS": {
     "REMOVE_TITLE": "Client löschen",

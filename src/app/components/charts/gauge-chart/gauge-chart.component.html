@@ -5,7 +5,7 @@
     <ngx-charts-gauge
       [results]="data"
       [legend]="legend"
-      [max]="gaugeData.limit"
+      [max]="gaugeData.limit!"
       [legendPosition]="legendPosition"
       [scheme]="colorScheme"
       [view]="[380, 256]"
@@ -21,7 +21,7 @@
   <div class="infos">
     <div class="text2">{{gaugeData.infoHeader}}</div>
     <div class="text-big1">
-      {{ gaugeData.currentVal }} / <span class="primary">{{ gaugeData.limit }} {{ gaugeData.unitSuffix}}</span>
+      {{ gaugeData.currentVal }} {{gaugeData.dividendSuffix}} / <span class="primary">{{ gaugeData.limit }} {{ gaugeData.divisorSuffix}}</span>
     </div>
     <div class="text1">
       <mat-divider></mat-divider>

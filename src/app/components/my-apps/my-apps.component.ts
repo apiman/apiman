@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import { BackendService } from '../../services/backend/backend.service';
@@ -16,8 +16,8 @@ import {
 } from '../../interfaces/ICommunication';
 import { IContractExt } from '../../interfaces/IContractExt';
 import {PolicyService} from "../../services/policy/policy.service";
-import {map, switchMap} from "rxjs/operators";
-import {forkJoin} from "rxjs";
+import {catchError, map, switchMap} from "rxjs/operators";
+import {EMPTY, forkJoin} from "rxjs";
 import {flatArray} from "../../shared/utility";
 import {SpinnerService} from "../../services/spinner/spinner.service";
 import {ApiService} from "../../services/api/api.service";
@@ -27,6 +27,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {UnregisterClientComponent} from "../dialogs/unregister-client/unregister-client.component";
 import {SnackbarService} from "../../services/snackbar/snackbar.service";
 import {ConfigService} from "../../services/config/config.service";
+import {IPolicyExt} from "../../interfaces/IPolicyExt";
 
 @Component({
   selector: 'app-my-apps',
@@ -41,7 +42,7 @@ export class MyAppsComponent implements OnInit {
 
   tocLinks: ITocLink[] = [];
 
-  noDataFound = false;
+  error = false;
 
   clientAdminProfile = false;
 
@@ -55,7 +56,8 @@ export class MyAppsComponent implements OnInit {
     public tocService: TocService,
     private dialog: MatDialog,
     private snackbarService: SnackbarService,
-    public configService: ConfigService
+    public configService: ConfigService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -72,80 +74,96 @@ export class MyAppsComponent implements OnInit {
     this.spinnerService.startWaiting();
     this.contractsLoaded = false;
 
-    this.backend
-      .getEditableClients()
-      .pipe(
-        switchMap((clientSummaries: IClientSummary[]) => {
-          if (clientSummaries.length === 0){
-            this.stopMainRequest();
-          }
+    this.backend.getEditableClients().pipe(
+      switchMap((clientSummaries: IClientSummary[]) => {
+        if (clientSummaries.length === 0){
+          this.stopMainRequest();
+        }
 
-          return forkJoin(clientSummaries.map(clientSummary => {
-            return this.backend.getClientVersions(
-              clientSummary.organizationId,
-              clientSummary.id
-            );
-          }))
-        }),
-        switchMap((nestedClientVersionSummaries: IClientVersionSummary[][])=> {
-          const clientVersionSummaries: IClientVersionSummary[] = flatArray(nestedClientVersionSummaries)
-          return forkJoin(clientVersionSummaries.map(clientVersionSummary => {
-              return this.backend.getContracts(
-                clientVersionSummary.organizationId,
-                clientVersionSummary.id,
-                clientVersionSummary.version
-              );
-            })
+        return forkJoin(clientSummaries.map(clientSummary => {
+          return this.backend.getClientVersions(
+            clientSummary.organizationId,
+            clientSummary.id
           );
-        }),
-        switchMap((nestedContractSummaries: IContractSummary[][]) => {
-          const contractSummaries: IContractSummary[] = flatArray(nestedContractSummaries)
-          if (contractSummaries.length === 0) {
-            this.spinnerService.stopWaiting();
-            this.noDataFound = true;
-            this.contractsLoaded = true;
-          }
-          return forkJoin(contractSummaries.map(contractSummary => {
-            return this.backend.getContract(
-              contractSummary.clientOrganizationId,
-              contractSummary.clientId,
-              contractSummary.clientVersion,
-              contractSummary.contractId
+        }))
+      }),
+      switchMap((nestedClientVersionSummaries: IClientVersionSummary[][])=> {
+        const clientVersionSummaries: IClientVersionSummary[] = flatArray(nestedClientVersionSummaries)
+        return forkJoin(clientVersionSummaries.map(clientVersionSummary => {
+            return this.backend.getContracts(
+              clientVersionSummary.organizationId,
+              clientVersionSummary.id,
+              clientVersionSummary.version
             );
-          }))
-        }),
-        switchMap((contracts: IContract[]) => {
-          return forkJoin(contracts.map(contract => {
-            const orgId = contract.plan.plan.organization.id;
-            return forkJoin([
-              this.policyService.getPlanPolicies(orgId, contract.plan.plan.id, contract.plan.version),
-              this.policyService.getApiPolicies(orgId, contract.api.api.id, contract.api.version),
-              this.backend.getManagedApiEndpoint(orgId, contract.api.api.id, contract.api.version),
-              this.apiService.isApiDocAvailable(contract.api)
-            ]).pipe(
-              map(([planPolicies, apiPolicies, endpoint, docsAvailable]) => {
-                return {
-                  ...contract,
-                  policies: planPolicies.concat(apiPolicies),
-                  section: 'summary',
-                  managedEndpoint: endpoint.managedEndpoint,
-                  docsAvailable: docsAvailable
-                } as IContractExt;
-              })
-            )
-          }))
-        })
-      ).subscribe((contracts) => {
-        this.getApiImages(contracts);
-        this.stopMainRequest();
-        this.extractContracts(contracts);
-        this.generateTocLinks();
-      });
+          })
+        );
+      }),
+      switchMap((nestedContractSummaries: IContractSummary[][]) => {
+        const contractSummaries: IContractSummary[] = flatArray(nestedContractSummaries)
+        if (contractSummaries.length === 0) {
+          this.stopMainRequest();
+        }
+        return forkJoin(contractSummaries.map(contractSummary => {
+          return this.backend.getContract(
+            contractSummary.clientOrganizationId,
+            contractSummary.clientId,
+            contractSummary.clientVersion,
+            contractSummary.contractId
+          );
+        }))
+      }),
+      switchMap((contracts: IContract[]) => {
+        return forkJoin(contracts.map(contract => {
+          const orgId = contract.plan.plan.organization.id;
+          return forkJoin([
+            this.policyService.getPlanPolicies(orgId, contract.plan.plan.id, contract.plan.version),
+            this.policyService.getApiPolicies(orgId, contract.api.api.id, contract.api.version),
+            this.backend.getManagedApiEndpoint(orgId, contract.api.api.id, contract.api.version),
+            this.apiService.isApiDocAvailable(contract.api)
+          ]).pipe(
+            map(([planPolicies, apiPolicies, endpoint, docsAvailable]) => {
+              return {
+                ...contract,
+                policies: planPolicies.concat(apiPolicies),
+                section: 'summary',
+                managedEndpoint: endpoint.managedEndpoint,
+                docsAvailable: docsAvailable
+              } as IContractExt;
+            })
+          )
+        }))
+      }),
+      catchError((err, caught) => {
+        console.warn(err);
+        this.stopMainRequest(true);
+        return EMPTY;
+      })
+    ).subscribe((contracts) => {
+      this.getApiImages(contracts);
+      this.stopMainRequest();
+      this.extractContracts(contracts);
+      this.fetchPolicyProbes();
+      this.generateTocLinks();
+    });
   }
 
-  private stopMainRequest(){
+  private fetchPolicyProbes(){
+    this.contracts.forEach((contract: IContractExt) => {
+      contract.policies.forEach((policy: IPolicyExt) => {
+        this.policyService.getPolicyProbe(contract, policy).subscribe((probes: any) => {
+          policy.probe = probes[0];
+          this.policyService.initPolicy(policy);
+          this.policyService.setGaugeDataForPolicy(policy);
+        })
+      });
+    });
+  }
+
+  private stopMainRequest(setError = false){
     this.spinnerService.stopWaiting();
     this.contractsLoaded = true;
+
+    this.error = setError;
   }
 
   // TODO: include this in to the main request chain. Reminder: ApiVersions do not have api.api.image property
@@ -166,28 +184,26 @@ export class MyAppsComponent implements OnInit {
     this.contracts = this.contracts.concat(contracts);
 
     this.contracts.forEach((contract: IContractExt) => {
-      if (contract.api.api.name !== 'day'){}
-        // return;
-
       const clientNameVersionMapped = (contract.client.client.name + ':' + contract.client.version).toLowerCase();
       const foundContracts = this.clientContractsMap.get(clientNameVersionMapped);
 
-      if (foundContracts) {
-        const contractIfPartOfArray = foundContracts.find((c: IContractExt) => {
-          return c.id === contract.id;
-        });
-
-        if (contractIfPartOfArray) {
-          return;
-        }
-
-        this.clientContractsMap.set(
-          clientNameVersionMapped,
-          foundContracts.concat(contract)
-        );
-      } else {
+      if (!foundContracts) {
         this.clientContractsMap.set(clientNameVersionMapped, [contract]);
+        return;
       }
+
+      const contractIfPartOfArray = foundContracts.find((c: IContractExt) => {
+        return c.id === contract.id;
+      });
+
+      if (contractIfPartOfArray) {
+        return;
+      }
+
+      this.clientContractsMap.set(
+        clientNameVersionMapped,
+        foundContracts.concat(contract)
+      );
     });
 
     // Sort Clients by name
@@ -201,8 +217,13 @@ export class MyAppsComponent implements OnInit {
     });
   }
 
-  setSection(api: any, sectionName: ISection) {
-    api.section = api.section === sectionName ? api.section : sectionName;
+  onSectionChanged(){
+
+  }
+
+  setSection(contract: IContractExt, sectionName: ISection) {
+    contract.section = contract.section === sectionName ? contract.section : sectionName;
+    this.cdr.detectChanges();
   }
 
   getColorForLabel(status: IApiStatus | IClientStatus) {
@@ -261,5 +282,10 @@ export class MyAppsComponent implements OnInit {
         return p.name === 'clientAdmin';
       })
     });
+  }
+
+  onSetSection($event: any) {
+    this.setSection($event.contract, $event.section);
+    this.cdr.detectChanges();
   }
 }

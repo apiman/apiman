@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ISignUpInfo } from '../../interfaces/ISignUpInfo';
 import {IApiPlanSummary, IApiVersion} from '../../interfaces/ICommunication';
 import {IPolicyExt} from "../../interfaces/IPolicyExt";
+import {PolicyService} from "../policy/policy.service";
 
 @Injectable({
   providedIn: 'root',

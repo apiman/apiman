@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {IPolicyExt} from '../../interfaces/IPolicyExt';
 import {PolicyService} from '../../services/policy/policy.service';
 import {IContractExt} from '../../interfaces/IContractExt';
@@ -13,30 +13,16 @@ export class PolicyCardLightComponent implements OnInit {
   @Input() policy!: IPolicyExt;
   @Input() contract?: IContractExt;
 
-  // string because of bytes
-  currentValue = '0';
+  @Output() sectionChanged = new EventEmitter();
 
-  constructor(private policyService: PolicyService) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this.policy = this.policyService.initPolicy(this.policy);
-    this.setCurrentValue();
-  }
+  ngOnInit(): void {}
 
   setSectionToPolicies() {
-    if (this.contract) this.contract.section = 'policies';
-  }
+    if (!this.contract)
+      return
 
-  setCurrentValue() {
-    this.policyService.getPolicyProbe(this.contract!, this.policy).subscribe(
-      (probeResult) => {
-        if (this.policy.policyIdentifier === this.policyService.policyIds.TRANSFER_QUOTA) {
-          this.currentValue = formatBytes((probeResult[0].config.limit - probeResult[0].status.remaining));
-        } else {
-          this.currentValue = String(probeResult[0].config.limit - probeResult[0].status.remaining);
-        }
-      },
-      (error) => console.warn(error)
-    );
+    this.sectionChanged.emit({contract: this.contract, section: 'policies'})
   }
 }

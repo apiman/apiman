@@ -57,7 +57,7 @@
         <mat-card-content class="mat-card-header-text">
           <app-my-apps-use-api></app-my-apps-use-api>
           <ng-container *ngIf="newContractDetails.policies">
-            <h4>{{"WIZZARD.POLICIES" | translate}}</h4>
+            <h4>{{"WIZARD.POLICIES" | translate}}</h4>
             <!--In this version we will not have more than 2 policies-->
             <div class="policies">
               <app-policy-card *ngFor="let policy of newContractDetails.policies" [policy]="policy"></app-policy-card>

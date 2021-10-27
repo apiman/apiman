@@ -1,8 +1,8 @@
 <div *ngIf="contractsLoaded && contracts.length === 0" class="dp-center">
-  <app-no-data [text]="'APPS.NO_APPS_FOUND' | translate" [textClass]="'text-big2'"></app-no-data>
+  <app-no-data [text]="(error ? 'APPS.FAILED_WHILE_FETCHING_CLIENTS' : 'APPS.NO_APPS_FOUND') | translate" [textClass]="'text-big2'"></app-no-data>
 </div>
 
-<div *ngIf="contractsLoaded && !noDataFound && contracts.length > 0" class="wrapper">
+<div *ngIf="contractsLoaded && contracts.length > 0" class="wrapper">
     <div id="contracts" class="first">
     <mat-card *ngFor="let cliCon of clientContractsMap | keyvalue" class="mb-40 mat-elevation-z3 client-card" [id]="tocService.formatClientId(cliCon.value[0])">
       <!-- Client Header -->
@@ -96,6 +96,7 @@
             <app-my-apps-summary
               *ngIf="contract.section === 'summary'"
               [contract]="contract"
+              (sectionChangedEmitter)="onSetSection($event)"
             ></app-my-apps-summary>
             <app-my-apps-use-api
               *ngIf="contract.section === 'use-api'"
@@ -115,8 +116,4 @@
     </mat-card>
   </div>
   <div class="second"><app-toc [links]="tocLinks"></app-toc></div>
-</div>
-
-<div *ngIf="contractsLoaded && noDataFound" class="dp-center">
-  <app-no-data [text]="'APPS.NO_CLIENTS' | translate" [textClass]="'text-big2'"></app-no-data>
 </div>

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import { IGaugeChartData } from '../../../interfaces/IGaugeChartData';
 import { LegendPosition } from '@swimlane/ngx-charts';
 
@@ -15,8 +15,7 @@ export class GaugeChartComponent implements OnInit, OnChanges {
   data: { name: string; value: number }[] = [{ name: '', value: 0 }];
   legend = false;
   legendPosition = LegendPosition.Below;
-  period = '';
-  colorScheme: any | undefined;
+  colorScheme?: any;
 
   disableValueLabel = () => '';
 
@@ -28,7 +27,6 @@ export class GaugeChartComponent implements OnInit, OnChanges {
   private setupChart() {
     if (this.gaugeData) {
       this.data = [{name: 'Currently Used', value: this.gaugeData.currentVal}]
-      this.period = this.gaugeData.period;
     }
   }
 

@@ -1,3 +1,8 @@
+export interface IFormattedBytes{
+  value: number;
+  unit: string;
+}
+
 export function flatArray(array: any[][]): any[] {
   let flattenedArray: any[] = []
   flattenedArray = flattenedArray.concat(...array)
@@ -15,4 +20,13 @@ export function formatBytes(bytes: number, decimals = 0): string {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+export function formatBytesAsObject(bytes: number, decimals = 0): IFormattedBytes{
+  const formattedBytes = formatBytes(bytes, decimals).split(' ');
+
+  return {
+    value: Number.parseInt(formattedBytes[0]),
+    unit: formattedBytes[1]
+  }
 }
