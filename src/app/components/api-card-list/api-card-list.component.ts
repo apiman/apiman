@@ -35,6 +35,7 @@ export class ApiCardListComponent implements OnInit {
   };
 
   @Input() listType = '';
+  allowPagination = false;
 
   constructor(
     public apiService: ApiService,

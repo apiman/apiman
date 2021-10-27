@@ -34,7 +34,7 @@
   </div>
 </ng-template>
 <div *ngIf="listType === 'api' && totalSize > searchCriteria.paging.pageSize" class="align">
-  <mat-paginator
+  <mat-paginator *ngIf="allowPagination"
     [length]="totalSize"
     [pageSize]="searchCriteria.paging.pageSize"
     [pageSizeOptions]="[4, 8, 12, 16, totalSize]"
