@@ -27,10 +27,46 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ManagerRestTester.class)
 @ManagerRestTestGatewayLog(
-        "GET:/mock-gateway/system/status\n" +
-        "PUT:/mock-gateway/apis\n" +
-        "GET:/mock-gateway/system/status\n" +
-        "PUT:/mock-gateway/clients\n"
+        "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
   )
 public class ImportTest {
 
