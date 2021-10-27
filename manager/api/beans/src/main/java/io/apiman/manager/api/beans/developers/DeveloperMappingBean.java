@@ -17,6 +17,7 @@
 package io.apiman.manager.api.beans.developers;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
@@ -80,5 +81,21 @@ public class DeveloperMappingBean implements Serializable {
         return "DeveloperMappingBean [clientId=" + clientId + ",organizationId=" + organizationId + "]";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DeveloperMappingBean that = (DeveloperMappingBean) o;
+        return Objects.equals(clientId, that.clientId) && Objects.equals(organizationId, that.organizationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clientId, organizationId);
+    }
 }
 

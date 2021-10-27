@@ -68,7 +68,7 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
         GenericOptionsParser optParser = new GenericOptionsParser(config);
         this.maxCacheSize = optParser.getLong(
             keys("maxCacheSize"),
-            0L,
+                10 * 1024 * 1024L,
             Predicates.greaterThanZeroLong(),
             Predicates.greaterThanZeroMsg()
         );

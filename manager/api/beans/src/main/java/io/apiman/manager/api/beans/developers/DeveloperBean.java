@@ -18,6 +18,7 @@ package io.apiman.manager.api.beans.developers;
 
 import java.io.Serializable;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -98,5 +99,22 @@ public class DeveloperBean implements Serializable {
     @Override
     public String toString() {
         return "DeveloperBean [id=" + id + ",clients=" + clients + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DeveloperBean that = (DeveloperBean) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
