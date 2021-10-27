@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.NaturalId;
 
 /**
  * Simple tag with value.
@@ -21,7 +20,6 @@ public class KeyValueTag {
     @GeneratedValue
     private Long id;
 
-    @NaturalId
     @Column(name = "key", nullable = false, updatable = false)
     private String key;
 
