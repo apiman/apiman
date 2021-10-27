@@ -27,18 +27,57 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ManagerRestTester.class)
 @ManagerRestTestGatewayLog(
-        "GET:/mock-gateway/system/status\n" +
-        "PUT:/mock-gateway/apis\n" +
-        "GET:/mock-gateway/system/status\n" +
-        "PUT:/mock-gateway/clients\n"
+        "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/apis\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
+          + "GET:/mock-gateway/system/status\n"
+          + "PUT:/mock-gateway/clients\n"
   )
 public class ImportTest {
 
-  @ManagerRestTestPlan("test-plans/import-testPlan.xml")
+  @ManagerRestTestPlan("test-plans/import/import-testPlan.xml")
   public void importTestPlan(){}
 
   // Order=1 to add a second test case
-  @ManagerRestTestPlan(value = "test-plans/importDeveloper-testPlan.xml", order = 1)
+  @ManagerRestTestPlan(value = "test-plans/import/importDeveloper-testPlan.xml", order = 1)
   public void importDeveloperTestPlan(){}
+
+  @ManagerRestTestPlan(value = "test-plans/import/import-julian-testPlan.xml", order = 2)
+  public void importJulianExample(){}
 
 }
