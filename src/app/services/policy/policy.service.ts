@@ -110,15 +110,17 @@ export class PolicyService {
   private extendPolicy(extendedPolicy: IPolicyExt) {
     const perTranslated = this.translator.instant('COMMON.PER');
     const policyConfig = this.getPolicyConfiguration(extendedPolicy);
+    const periodTranslated = this.getTranslationForPeriod(policyConfig.period);
+
     switch (extendedPolicy.definition.id) {
       case this.policyIds.RATE_LIMIT: {
         extendedPolicy.shortName = 'Rate Limit';
-        extendedPolicy.shortDescription = `${policyConfig.limit} Request${policyConfig.limit > 1 ? 's' : ''} ${perTranslated} ${policyConfig.period}`;
+        extendedPolicy.shortDescription = `${policyConfig.limit} Request${policyConfig.limit > 1 ? 's' : ''} ${perTranslated} ${periodTranslated}`;
         break;
       }
       case this.policyIds.T_QUOTA: {
         extendedPolicy.shortName = 'Quota';
-        extendedPolicy.shortDescription = `${formatBytes(policyConfig.limit)} ${perTranslated} ${policyConfig.period}`;
+        extendedPolicy.shortDescription = `${formatBytes(policyConfig.limit)} ${perTranslated} ${periodTranslated}`;
         break;
       }
     }
