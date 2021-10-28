@@ -126,14 +126,18 @@ _module.controller('Apiman.ApiDefController',
                 var dirty = false;
 
                 Logger.debug("Model def type: {1}   UI Def type: {0}", $scope.definitionType, $scope.selectedDefinitionType.value);
+                if ($scope.definitionType === undefined) {
+                    return;
+                }
 
-                if ($scope.apiDefinition != $scope.updatedApiDefinition) {
+
                     Logger.debug("**** dirty because of api def");
+                if ($scope.apiDefinition !== $scope.updatedApiDefinition) {
                     dirty = true;
                 }
 
-                if ($scope.selectedDefinitionType.value != $scope.definitionType) {
                     Logger.debug("**** dirty because of def type: {0} != {1}", $scope.selectedDefinitionType.value, $scope.definitionType);
+                if ($scope.selectedDefinitionType.value !== $scope.definitionType) {
                     dirty = true;
                 }
 
