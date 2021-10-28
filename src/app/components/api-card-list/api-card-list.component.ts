@@ -109,30 +109,27 @@ export class ApiCardListComponent implements OnInit {
     this.ready = false;
     this.error = false;
 
-    this.apiService
-      .searchApis(this.searchCriteria)
-      .pipe(
-        // map from SearchResultsBeanApiSummaryBean to IApiSummary[]
-        map((searchResult) => {
-          this.totalSize = searchResult.totalSize;
-          return searchResult.beans;
-        }),
+    this.apiService.searchApis(this.searchCriteria).pipe(
+      // map from SearchResultsBeanApiSummaryBean to IApiSummary[]
+      map((searchResult) => {
+        this.totalSize = searchResult.totalSize;
+        return searchResult.beans;
+      }),
 
-        switchMap((apiSummaries: IApiSummary[]) => {
-          return this.checkApisDocsInApiVersions(apiSummaries);
-        })
-      )
-      .subscribe(
-        (apiList: IApiSummaryExt[]) => {
-          this.apis = apiList;
-          this.loadingSpinnerService.stopWaiting();
-          this.ready = true;
-        },
-        () => {
-          this.error = true;
-          this.loadingSpinnerService.stopWaiting();
-        }
-      );
+      switchMap((apiSummaries: IApiSummary[]) => {
+        return this.checkApisDocsInApiVersions(apiSummaries);
+      })
+    ).subscribe(
+      (apiList: IApiSummaryExt[]) => {
+        this.apis = apiList;
+        this.loadingSpinnerService.stopWaiting();
+        this.ready = true;
+      },
+      () => {
+        this.error = true;
+        this.loadingSpinnerService.stopWaiting();
+      }
+    );
   }
 
   private getFeaturedApiList() {

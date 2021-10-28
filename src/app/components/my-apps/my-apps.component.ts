@@ -12,7 +12,7 @@ import {
   IApi,
   IClientSummary, IClientVersionSummary,
   IContract,
-  IContractSummary, IPermission, IUserPermissions,
+  IContractSummary, IPermission, ISearchCriteria, ISearchResultsApiSummary, IUserPermissions,
 } from '../../interfaces/ICommunication';
 import { IContractExt } from '../../interfaces/IContractExt';
 import {PolicyService} from "../../services/policy/policy.service";
@@ -175,8 +175,13 @@ export class MyAppsComponent implements OnInit {
   // TODO: include this in to the main request chain. Reminder: ApiVersions do not have api.api.image property
   private getApiImages(contracts: IContractExt[]){
     contracts.forEach((contract: IContractExt) => {
-      this.backend.getApi(contract.api.api.organization.id, contract.api.api.id).subscribe((api: IApi) => {
-        this.apiImages.set(contract.api.api.name, api.image!);
+      const searchCriteria:  ISearchCriteria = {
+        filters: [{name: 'name', value: contract.api.api.name, operator: 'like'}],
+        paging: {page: 1, pageSize: 1}
+      };
+
+      this.backend.searchApis(searchCriteria).subscribe((apiSummaries: ISearchResultsApiSummary) => {
+        this.apiImages.set(contract.api.api.name, apiSummaries.beans[0].image);
       });
     });
   }

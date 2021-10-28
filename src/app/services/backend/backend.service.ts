@@ -14,7 +14,7 @@ import {
   IClientSummary,
   IClientVersionSummary,
   IContract,
-  IContractSummary,
+  IContractSummary, ICurrentUser,
   INewContract,
   INewOrganization,
   IOrganization,
@@ -310,6 +310,11 @@ export class BackendService {
       {apiKey: contract.client.apikey},
       this.httpOptions
     ) as Observable<any>;
+  }
+
+  public getCurrentUser() {
+    const path = 'users/currentuser/info';
+    return this.http.get<ICurrentUser>(this.generateUrl(path), this.httpOptions);
   }
 
   /********* Helper **********/
