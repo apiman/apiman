@@ -150,7 +150,13 @@ export class MyAppsComponent implements OnInit {
   private fetchPolicyProbes(){
     this.contracts.forEach((contract: IContractExt) => {
       contract.policies.forEach((policy: IPolicyExt) => {
-        this.policyService.getPolicyProbe(contract, policy).subscribe((probes: any) => {
+        this.policyService.getPolicyProbe(contract, policy).pipe(
+          catchError((err) => {
+            console.warn(err);
+            this.policyService.initPolicy(policy);
+            return EMPTY;
+          })
+        ).subscribe((probes: any) => {
           policy.probe = probes[0];
           this.policyService.initPolicy(policy);
           this.policyService.setGaugeDataForPolicy(policy);

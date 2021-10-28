@@ -218,6 +218,9 @@ export class PolicyService {
   }
 
   public setGaugeDataForPolicy(policy: IPolicyExt) {
+    if (!policy.probe)
+      return;
+
     policy.mainGaugeData = this.generateMainGaugeData(policy);
     policy.timeGaugeData = this.generateTimeGaugeData(policy);
   }

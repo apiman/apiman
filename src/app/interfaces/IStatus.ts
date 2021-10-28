@@ -4,7 +4,8 @@ export type IClientStatus =
   | 'Ready'
   | 'Retired'
   | 'AwaitingApproval'
-  | 'Registered';
+  | 'Registered'
+  | 'Unregistered';
 export type IStatusColors = 'mediumseagreen' | 'darkred' | 'coral';
 
 export type ApiStatusColorMap = Map<IApiStatus | IClientStatus, IStatusColors>;
@@ -16,6 +17,7 @@ export const statusColorMap: ApiStatusColorMap = new Map<
   ['Created', 'coral'],
   ['Ready', 'mediumseagreen'],
   ['Retired', 'darkred'],
+  ['Unregistered', 'darkred'],
   ['Published', 'mediumseagreen'],
   ['AwaitingApproval', 'coral'],
   ['Registered', 'mediumseagreen'],

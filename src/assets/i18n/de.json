@@ -29,7 +29,7 @@
   },
   "HOME": {
     "TITLE": "KoolBank Api Entwickler Portal",
-    "SUBTITLE": "Featured APIs",
+    "SUBTITLE": "Hervorgehobene APIs",
     "SHOW_ALL": "Zeige alles",
     "NO_APIS_FOUND": "Es wurden keine APIs gefunden"
   },
@@ -68,7 +68,8 @@
     "APPS_AND_APIS": "Apps und APIs",
     "NO_APPS_FOUND": "Es wurden keine Applikationen gefunden",
     "FAILED_WHILE_FETCHING_CLIENTS": "Fehler beim Laden der Applikationen",
-    "REMOVE_CLIENT_FAILED": "Fehler beim Löschen der Applikation"
+    "REMOVE_CLIENT_FAILED": "Fehler beim Löschen der Applikation",
+    "NO_PROBES": "Fehler beim Anfragen der aktuellen Policy-Daten"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Aus vorhandenen Anwendugen auswählen"
@@ -102,7 +103,7 @@
       "CONDITION_LIGHT": "<b>{{limit}}</b> Requests pro <b>{{timeUnit}}</b>"
     },
     "TransferQuotaPolicy": {
-      "TITLE": "Quota Policy",
+      "TITLE": "Transfer Quota Policy",
       "DESCRIPTION": "Es können maximal <b>{{limit}}<b> Daten pro <b>{{timeUnit}}</b> konsumiert werden",
       "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Requests:",
       "LIMIT": "Quota Limit (pro Zeit)",

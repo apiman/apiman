@@ -501,7 +501,7 @@ export interface IClientVersion {
   /** @format int64 */
   id: number;
   client: IClient;
-  status: 'Created' | 'Ready' | 'Registered' | 'Retired' | 'AwaitingApproval';
+  status: 'Created' | 'Ready' | 'Registered' | 'Retired' | 'AwaitingApproval' | 'Unregistered';
   version: string;
   createdBy: string;
 

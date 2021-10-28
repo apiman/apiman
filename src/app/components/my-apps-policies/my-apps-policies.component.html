@@ -3,7 +3,7 @@
     <app-policy-card [policy]="policy"></app-policy-card>
   </div>
   <div class="grid-divider"><div></div></div>
-  <div class="policy-charts-grid">
+  <div class="policy-charts-grid" *ngIf="policy.probe; else noProbe">
     <div>
       <app-gauge-chart [gaugeData]="policy.mainGaugeData" [icon]="policy.icon"></app-gauge-chart>
     </div>
@@ -12,3 +12,9 @@
     </div>
   </div>
 </div>
+
+<ng-template #noProbe>
+  <div class="dp-center">
+    <app-no-data [text]="'APPS.NO_PROBES' | translate" [textClass]="'text-big2'"></app-no-data>
+  </div>
+</ng-template>

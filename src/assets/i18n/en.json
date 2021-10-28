@@ -68,7 +68,8 @@
     "APPS_AND_APIS": "Apps and APIs",
     "NO_APPS_FOUND": "No applications were found",
     "FAILED_WHILE_FETCHING_CLIENTS": "Failed while fetching applications",
-    "REMOVE_CLIENT_FAILED": "Failed while removing the client"
+    "REMOVE_CLIENT_FAILED": "Failed while removing the client",
+    "NO_PROBES": "Failed while fetching the current policy data"
   },
   "CLIENT_CREATE" : {
     "SELECT": "Select from available Applications"
@@ -102,7 +103,7 @@
       "CONDITION_LIGHT": "<b>{{limit}}</b> requests per <b>{{timeUnit}}</b>"
     },
     "TransferQuotaPolicy": {
-      "TITLE": "Quota Policy",
+      "TITLE": "Transfer Quota Policy",
       "DESCRIPTION": "You can transfer a maximum of <b>{{limit}}</b> of data per <b>{{timeUnit}}</b>",
       "MORE_INFO": "The following headers in the response contain useful information relating to quota limit:",
       "LIMIT": "Quota limit allowance (per time period)",
