@@ -119,7 +119,7 @@ export class PolicyService {
         break;
       }
       case this.policyIds.T_QUOTA: {
-        extendedPolicy.shortName = 'Quota';
+        extendedPolicy.shortName = 'Transfer Quota';
         extendedPolicy.shortDescription = `${formatBytes(policyConfig.limit)} ${perTranslated} ${periodTranslated}`;
         break;
       }
