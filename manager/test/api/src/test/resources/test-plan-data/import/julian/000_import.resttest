@@ -3153,35 +3153,297 @@ Content-Type: text/plain;charset=utf-8
 X-RestTest-RegexMatching: true
 
 INFO: ----------------------------
-INFO: Starting apiman data import: .*apiman_import_migrated.*\.json
-INFO: Importing a user: importeduser
+INFO: Starting apiman data import: .*apiman_import_migrated.*\.json\Q
+INFO: Importing a user: admin
 INFO: Importing a gateway: The Gateway
-INFO: Importing an organization: Organization 1
-INFO:   Importing a plan: Plan 1
+INFO: Importing a role: API Developer
+INFO: Importing a role: Client App Developer
+INFO: Importing a role: Organization Owner
+INFO: Importing a policy definition: Authorization Policy
+INFO: Importing a policy definition: BASIC Authentication Policy
+INFO: Importing a policy definition: Caching Resources Policy
+INFO: Importing a policy definition: IP Blacklist Policy
+INFO: Importing a policy definition: IP Whitelist Policy
+INFO: Importing a policy definition: Ignored Resources Policy
+INFO: Importing a policy definition: Quota Policy
+INFO: Importing a policy definition: Rate Limiting Policy
+INFO: Importing a policy definition: Time Restricted Access Policy
+INFO: Importing a policy definition: Transfer Quota Policy
+INFO: Importing a policy definition: URL Rewriting Policy
+INFO: Importing a blob: 46d2-be8b-02a22dfe72ae/admin1635150441005_jpeg
+INFO: Importing an organization: admin
+INFO:   Importing a role membership: admin+OrganizationOwner=>admin
+INFO:   Importing a plan: admin-plan
 INFO:     Importing a plan version: 1.0
-INFO:     Importing an API: API 1
+INFO:       Importing a plan policy: Transfer Quota Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: day
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: endpoint
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: hour
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: kb
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Transfer Quota Policy
+INFO:   Importing a plan: mb
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Transfer Quota Policy
+INFO:   Importing a plan: minute
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: month
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: neu
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Transfer Quota Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: second
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: second-plan
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: test-plan
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: year
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:     Importing an API: day
 INFO:     Importing an API version: 1.0
-INFO:      Importing API definition \(schema\)
-INFO:   Importing a client: Client 1
+INFO:     Importing an API: endpoint
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: hour
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: kb
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: mb
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: minute
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: month
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: second
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: year
+INFO:     Importing an API version: 1.0
+INFO:   Importing a client: day
 INFO:     Importing a client version: 1.0
-INFO:   Importing an audit entry: 1
-INFO:   Importing an audit entry: 2
-INFO:   Importing an audit entry: 4
-INFO:   Importing an audit entry: 5
-INFO:   Importing an audit entry: 6
-INFO:   Importing an audit entry: 8
-INFO:   Importing an audit entry: 9
-INFO:   Importing an audit entry: 11
-INFO:   Importing an audit entry: 12
-INFO:   Importing an audit entry: 13
-INFO:   Importing an audit entry: 15
-INFO:   Importing an audit entry: 16
-INFO:   Importing an audit entry: 17
+INFO:   Importing a client: endoint
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: hour
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: kb
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: mb
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: minute
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: month
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: second
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: year
+INFO:     Importing a client version: 1.0
+INFO:   Importing an audit entry: 1052
+INFO:   Importing an audit entry: 1053
+INFO:   Importing an audit entry: 1054
+INFO:   Importing an audit entry: 1055
+INFO:   Importing an audit entry: 1056
+INFO:   Importing an audit entry: 1057
+INFO:   Importing an audit entry: 1058
+INFO:   Importing an audit entry: 1059
+INFO:   Importing an audit entry: 1060
+INFO:   Importing an audit entry: 1061
+INFO:   Importing an audit entry: 1062
+INFO:   Importing an audit entry: 1063
+INFO:   Importing an audit entry: 1064
+INFO:   Importing an audit entry: 1065
+INFO:   Importing an audit entry: 1066
+INFO:   Importing an audit entry: 1067
+INFO:   Importing an audit entry: 1068
+INFO:   Importing an audit entry: 1069
+INFO:   Importing an audit entry: 1070
+INFO:   Importing an audit entry: 1071
+INFO:   Importing an audit entry: 1072
+INFO:   Importing an audit entry: 1073
+INFO:   Importing an audit entry: 1074
+INFO:   Importing an audit entry: 1075
+INFO:   Importing an audit entry: 1076
+INFO:   Importing an audit entry: 1077
+INFO:   Importing an audit entry: 1078
+INFO:   Importing an audit entry: 1079
+INFO:   Importing an audit entry: 1080
+INFO:   Importing an audit entry: 1081
+INFO:   Importing an audit entry: 1082
+INFO:   Importing an audit entry: 1083
+INFO:   Importing an audit entry: 1084
+INFO:   Importing an audit entry: 1085
+INFO:   Importing an audit entry: 1086
+INFO:   Importing an audit entry: 1087
+INFO:   Importing an audit entry: 1088
+INFO:   Importing an audit entry: 1089
+INFO:   Importing an audit entry: 1090
+INFO:   Importing an audit entry: 1091
+INFO:   Importing an audit entry: 1092
+INFO:   Importing an audit entry: 1093
+INFO:   Importing an audit entry: 1094
+INFO:   Importing an audit entry: 1095
+INFO:   Importing an audit entry: 1096
+INFO:   Importing an audit entry: 1097
+INFO:   Importing an audit entry: 1098
+INFO:   Importing an audit entry: 1099
+INFO:   Importing an audit entry: 1100
+INFO:   Importing an audit entry: 1101
+INFO:   Importing an audit entry: 1102
+INFO:   Importing an audit entry: 1103
+INFO:   Importing an audit entry: 1104
+INFO:   Importing an audit entry: 1105
+INFO:   Importing an audit entry: 1106
+INFO:   Importing an audit entry: 1107
+INFO:   Importing an audit entry: 1108
+INFO:   Importing an audit entry: 1109
+INFO:   Importing an audit entry: 1110
+INFO:   Importing an audit entry: 1111
+INFO:   Importing an audit entry: 1112
+INFO:   Importing an audit entry: 1113
+INFO:   Importing an audit entry: 1114
+INFO:   Importing an audit entry: 1115
+INFO:   Importing an audit entry: 1116
+INFO:   Importing an audit entry: 1117
+INFO:   Importing an audit entry: 1118
+INFO:   Importing an audit entry: 1119
+INFO:   Importing an audit entry: 1120
+INFO:   Importing an audit entry: 1121
+INFO:   Importing an audit entry: 1122
+INFO:   Importing an audit entry: 1123
+INFO:   Importing an audit entry: 1124
+INFO:   Importing an audit entry: 1125
+INFO:   Importing an audit entry: 1126
+INFO:   Importing an audit entry: 1127
+INFO:   Importing an audit entry: 1128
+INFO:   Importing an audit entry: 1129
+INFO:   Importing an audit entry: 1130
+INFO:   Importing an audit entry: 1131
+INFO:   Importing an audit entry: 1132
+INFO:   Importing an audit entry: 1133
+INFO:   Importing an audit entry: 1134
+INFO:   Importing an audit entry: 1135
+INFO:   Importing an audit entry: 1136
+INFO:   Importing an audit entry: 1137
+INFO:   Importing an audit entry: 1138
+INFO:   Importing an audit entry: 1139
+INFO:   Importing an audit entry: 1140
+INFO:   Importing an audit entry: 1141
+INFO:   Importing an audit entry: 1142
+INFO:   Importing an audit entry: 1143
+INFO:   Importing an audit entry: 1144
+INFO:   Importing an audit entry: 1145
+INFO:   Importing an audit entry: 1146
+INFO:   Importing an audit entry: 1147
+INFO:   Importing an audit entry: 1148
+INFO:   Importing an audit entry: 1149
+INFO:   Importing an audit entry: 1150
+INFO:   Importing an audit entry: 1151
+INFO:   Importing an audit entry: 1152
+INFO:   Importing an audit entry: 1153
+INFO:   Importing an audit entry: 1154
+INFO:   Importing an audit entry: 1155
+INFO:   Importing an audit entry: 1156
+INFO:   Importing an audit entry: 1157
+INFO:   Importing an audit entry: 1158
+INFO:   Importing an audit entry: 1159
+INFO:   Importing an audit entry: 1160
+INFO:   Importing an audit entry: 1161
+INFO:   Importing an audit entry: 1162
+INFO:   Importing an audit entry: 1163
+INFO:   Importing an audit entry: 1164
+INFO:   Importing an audit entry: 1165
+INFO:   Importing an audit entry: 1166
+INFO:   Importing an audit entry: 1167
+INFO:   Importing an audit entry: 1168
+INFO:   Importing an audit entry: 1169
+INFO:   Importing an audit entry: 1170
+INFO:   Importing an audit entry: 1171
+INFO:   Importing an audit entry: 1172
+INFO:   Importing an audit entry: 1173
+INFO:   Importing an audit entry: 1174
+INFO:   Importing an audit entry: 1175
+INFO:   Importing an audit entry: 1176
+INFO:   Importing an audit entry: 1177
+INFO:   Importing an audit entry: 1178
+INFO:   Importing an audit entry: 1179
+INFO:   Importing an audit entry: 1180
+INFO:   Importing an audit entry: 1181
+INFO:   Importing an audit entry: 1182
+INFO:   Importing an audit entry: 1183
+INFO:   Importing an audit entry: 1184
+INFO:   Importing an audit entry: 1185
+INFO:   Importing an audit entry: 1186
+INFO:   Importing an audit entry: 1187
+INFO:   Importing an audit entry: 1188
+INFO:   Importing an audit entry: 1189
+INFO:   Importing an audit entry: 1190
+INFO:   Importing an audit entry: 1191
+INFO:   Importing an audit entry: 1192
+INFO:   Importing an audit entry: 1193
+INFO:   Importing an audit entry: 1194
+INFO:   Importing an audit entry: 1195
+INFO:   Importing an audit entry: 1204
+INFO:   Importing an audit entry: 1206
+INFO:   Importing an audit entry: 1208
+INFO:   Importing an audit entry: 1209
+INFO:   Importing an audit entry: 1210
+INFO:   Importing an audit entry: 1212
+INFO:   Importing an audit entry: 1213
+INFO:   Importing an audit entry: 1214
+INFO:   Importing an audit entry: 1215
+INFO:   Importing an audit entry: 1216
+INFO:   Importing an audit entry: 1218
+INFO:   Importing an audit entry: 1219
+INFO:   Importing an audit entry: 1221
+INFO:   Importing an audit entry: 1223
+INFO:   Importing an audit entry: 1224
+INFO:   Importing an audit entry: 1226
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
 INFO: Importing a client contract.
 INFO: Publishing APIs to the gateway.
-INFO:  Publishing API: Organization1 / API1 -> 1.0
+INFO:  Publishing API: admin / second -> 1.0
+INFO:  Publishing API: admin / hour -> 1.0
+INFO:  Publishing API: admin / minute -> 1.0
+INFO:  Publishing API: admin / month -> 1.0
+INFO:  Publishing API: admin / year -> 1.0
+INFO:  Publishing API: admin / day -> 1.0
+INFO:  Publishing API: admin / mb -> 1.0
+INFO:  Publishing API: admin / kb -> 1.0
+INFO:  Publishing API: admin / endpoint -> 1.0
 INFO: Registering clients in the gateway.
-INFO:  Registering app: Organization1 / Client1 -> 1.0
+INFO:  Registering app: admin / second -> 1.0
+INFO:  Registering app: admin / hour -> 1.0
+INFO:  Registering app: admin / minute -> 1.0
+INFO:  Registering app: admin / month -> 1.0
+INFO:  Registering app: admin / year -> 1.0
+INFO:  Registering app: admin / day -> 1.0
+INFO:  Registering app: admin / mb -> 1.0
+INFO:  Registering app: admin / kb -> 1.0
+INFO:  Registering app: admin / endoint -> 1.0
 INFO: -----------------------------------
 INFO: Data import completed successfully!
-INFO: -----------------------------------
+INFO: -----------------------------------\E
