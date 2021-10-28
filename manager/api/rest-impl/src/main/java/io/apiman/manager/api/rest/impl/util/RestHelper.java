@@ -127,6 +127,12 @@ public final class RestHelper {
         apiVersion.setDefinitionType(apiVersionBean.getDefinitionType());
         apiVersion.setExposeInPortal(apiVersionBean.isExposeInPortal());
         apiVersion.setExtendedDescription(apiVersionBean.getExtendedDescription());
+        //dates
+        apiVersion.setCreatedOn(apiVersionBean.getCreatedOn());
+        apiVersion.setModifiedOn(apiVersionBean.getModifiedOn());
+        apiVersion.setPublishedOn(apiVersionBean.getPublishedOn());
+        apiVersion.setRetiredOn(apiVersionBean.getRetiredOn());
+
         return apiVersion;
     }
 
