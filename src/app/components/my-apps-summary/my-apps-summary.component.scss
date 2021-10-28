@@ -32,7 +32,7 @@ mat-form-field{
 .policies{
   display: grid;
   justify-content: space-evenly;
-  align-items: start;
+  align-items: stretch;
   grid-template-columns: 38% 38%;
   grid-row-gap: 2rem;
 }
