@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-  version="2.5">
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
 
   <resource-env-ref>
     <!-- Enable Weld CDI, also needs META-INF/context.xml entry -->
     <resource-env-ref-name>BeanManager</resource-env-ref-name>
     <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
   </resource-env-ref>
-  
+
   <!-- Locale Filter -->
   <filter>
     <filter-name>LocaleFilter</filter-name>
@@ -100,12 +101,113 @@
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/actions/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/system/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/gateways/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/organizations/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/plugins/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/policyDefs/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/roles/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/search/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/users/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+
+    <auth-constraint>
+      <role-name>apiuser</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/gateways/*</url-pattern>
+      <http-method>GET</http-method>
+    </web-resource-collection>
+
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/developers/*</url-pattern>
+    </web-resource-collection>
+
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/search/clients></url-pattern>
+    </web-resource-collection>
+
+    <auth-constraint>
+      <role-name>devportaluser</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>apiman-blobs</web-resource-name>
+      <url-pattern>/blobs</url-pattern>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>apiman-org-create</web-resource-name>
+      <url-pattern>/devportal/organizations</url-pattern>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>apiuser</role-name>
+    </auth-constraint>
+  </security-constraint>
   <login-config>
+    <!-- The realm-name has nothing to do with the keycloak realm, it is the name of the realm if you are using tomcats own auth -->
     <auth-method>BASIC</auth-method>
     <realm-name>${env.APIMAN_AUTH_REALM:apiman}</realm-name>
   </login-config>
   <security-role>
     <role-name>apiuser</role-name>
+  </security-role>
+  <security-role>
+    <role-name>devportaluser</role-name>
   </security-role>
 
 </web-app>
