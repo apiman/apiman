@@ -6,7 +6,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master]
+    branches: [master, 3.x]
   pull_request:
     paths-ignore:
       - '.github/**'
@@ -14,7 +14,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master]
+    branches: [master, 3.x]
 
 jobs:
   build-verify:
@@ -23,7 +23,7 @@ jobs:
     if: github.repository_owner == 'Apiman'
     strategy:
       matrix:
-        java: [ 8, 11, 17-ea ]
+        java: [ 8, 11, 17 ]
         integration-suite:
           # Default, empty string to avoid setting
           - name: Default configuration (JPA)
@@ -34,7 +34,7 @@ jobs:
           # Vert.x in-memory gateway
           - name: Vert.x with in-memory registry
             command: -Dapiman.gateway-test.config=vertx3-mem
-          # Vert.x elasticsearch
+          # Vert.x elasticsearch gateway
           - name: Vert.x with Elasticsearch registry
             command: -Dapiman.gateway-test.config=vertx3-es
           # Vert.x file/static
@@ -103,10 +103,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Set up JDK 8 (for deploying assets, docker builds, etc)
+      - name: Set up JDK 11 (for deploying assets, docker builds, etc)
         uses: actions/setup-java@v1
         with:
-          java-version: 8
+          java-version: 11
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
@@ -138,10 +138,10 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Set up JDK 8 (for deploying assets, docker builds, etc)
+      - name: Set up JDK 11 (for deploying assets, docker builds, etc)
         uses: actions/setup-java@v1
         with:
-          java-version: 8
+          java-version: 11
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
