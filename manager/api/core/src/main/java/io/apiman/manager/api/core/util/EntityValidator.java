@@ -88,13 +88,21 @@ public class EntityValidator implements IApiValidator, IClientValidator {
 
     @Override
     public ClientStatus determineStatus(ClientVersionBean cvb, List<ContractBean> contracts) {
-        if (contracts.isEmpty()) {
-            return ClientStatus.Created;
-        }
+        ClientStatus currentStatus = cvb.getStatus();
+
         boolean anyAwaitingApproval = contracts.stream().anyMatch(c -> c.getStatus() == ContractStatus.AwaitingApproval);
         if (anyAwaitingApproval) {
             return ClientStatus.AwaitingApproval;
         }
+        // If already registered, then continue to be registered (indicates some number of contracts are still active on gateway).
+        if (currentStatus == ClientStatus.Registered) {
+            return ClientStatus.Registered;
+        }
+        // No contracts and not registered, then just created state
+        if (contracts.isEmpty()) {
+            return ClientStatus.Created;
+        }
+        // Ready to be published
         return ClientStatus.Ready;
     }
 
