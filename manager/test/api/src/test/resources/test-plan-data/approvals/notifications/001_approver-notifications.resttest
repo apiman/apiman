@@ -23,10 +23,10 @@ Content-Type: application/json
 			"fullName": "Admin",
 			"email": "admin@example.org"
 		},
-		"source": "http://somepage/here/",
+		"source": "/apiman/notifications/contracts/approvals",
 		"payload": {
 			"headers": {
-				"source": "/a/b/c",
+				"source": "/apiman/events/contracts/approvals",
 				"type": "io.apiman.manager.api.beans.events.ContractCreatedEvent",
 				"subject": "request",
 				"eventVersion": 1,
@@ -59,10 +59,10 @@ Content-Type: application/json
 			"fullName": "Admin",
 			"email": "admin@example.org"
 		},
-		"source": "http://somepage/here/",
+		"source": "/apiman/notifications/contracts/approvals",
 		"payload": {
 			"headers": {
-				"source": "/a/b/c",
+				"source": "/apiman/events/contracts/approvals",
 				"type": "io.apiman.manager.api.beans.events.ContractCreatedEvent",
 				"subject": "request",
 				"eventVersion": 1,

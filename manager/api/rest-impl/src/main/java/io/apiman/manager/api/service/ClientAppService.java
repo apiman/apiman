@@ -532,7 +532,7 @@ public class ClientAppService implements DataAccessUtilMixin {
         ApimanEventHeaders headers = ApimanEventHeaders
              .builder()
              .setId(UUID.randomUUID().toString().substring(8))
-             .setSource(URI.create("/a/b/c"))
+             .setSource(URI.create("/apiman/events/clients"))
              .setSubject("status.change")
              .build();
 

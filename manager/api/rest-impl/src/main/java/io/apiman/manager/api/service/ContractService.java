@@ -442,7 +442,7 @@ public class ContractService implements DataAccessUtilMixin {
         ApimanEventHeaders headers = ApimanEventHeaders
              .builder()
              .setId(UUID.randomUUID().toString())
-             .setSource(URI.create("/a/b/c"))
+             .setSource(URI.create("/apiman/events/contracts/approvals"))
              .setSubject("request")
              .build();
 

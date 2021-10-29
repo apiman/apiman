@@ -48,7 +48,7 @@ public class NewAccountNotificationProducer implements INotificationProducer {
                            .setReason(APIMAN_ACCOUNT_APPROVAL_REQUEST)
                            .setReasonMessage("A new account needs approval to gain access " + signupEvent.getUsername())
                            .setCategory(NotificationCategory.USER_ADMINISTRATION)
-                           .setSource("http://somepage/here/")
+                           .setSource("/apiman/notifications/account/approvals")
                            .setPayload(signupEvent);
 
             notificationService.sendNotification(newNotification);

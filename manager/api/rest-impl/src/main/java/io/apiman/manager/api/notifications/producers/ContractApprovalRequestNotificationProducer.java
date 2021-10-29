@@ -52,7 +52,7 @@ public class ContractApprovalRequestNotificationProducer implements INotificatio
                            .setReason(APIMAN_CLIENT_CONTRACT_REASON)
                            .setReasonMessage("Signup request for API")
                            .setCategory(NotificationCategory.API_ADMINISTRATION)
-                           .setSource("http://somepage/here/")
+                           .setSource("/apiman/notifications/contracts/approvals")
                            .setPayload(signupEvent);
 
             LOGGER.debug("Sending notification for approval of contract {0} from client {1} version {2}",

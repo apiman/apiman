@@ -54,7 +54,7 @@ public class ClientAppStatusNotificationProducer implements INotificationProduce
                            .setReason(APIMAN_CLIENT_STATUS_CHANGE)
                            .setReasonMessage("Client was published")
                            .setCategory(NotificationCategory.API_ADMINISTRATION)
-                           .setSource("/resources/something/here/")
+                           .setSource("/apiman/notifications/clients/status")
                            .setPayload(signupEvent);
 
             LOGGER.debug("Sending notification for client app registration: {0}", newNotification);
