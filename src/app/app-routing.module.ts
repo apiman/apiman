@@ -21,6 +21,7 @@ const routes: Routes = [
   {
     path: 'api-signup/:orgId/:apiId',
     component: MarketplaceSignupStepperComponent,
+    canActivate: [AuthGuard]
   },
   { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
   { path: 'applications', component: MyAppsComponent, canActivate: [AuthGuard] },
