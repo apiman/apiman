@@ -23,10 +23,10 @@ Content-Type: application/json
 			"fullName": "Bruce Wayne",
 			"email": "bwayne@wayne-enterprises.com"
 		},
-		"source": "/resources/something/here/",
+		"source": "/apiman/notifications/clients/status",
 		"payload": {
 			"headers": {
-				"source": "/a/b/c",
+				"source": "/apiman/events/clients",
 				"type": "io.apiman.manager.api.beans.events.ClientVersionStatusEvent",
 				"subject": "status.change",
 				"eventVersion": 1,
@@ -49,10 +49,10 @@ Content-Type: application/json
 			"fullName": "Bruce Wayne",
 			"email": "bwayne@wayne-enterprises.com"
 		},
-		"source": "http://somepage/here/",
+		"source": "/apiman/notifications/contracts/approvals",
 		"payload": {
 			"headers": {
-				"source": "/a/b/c",
+				"source": "/apiman/events/contracts/approvals",
 				"type": "io.apiman.manager.api.beans.events.ContractApprovalEvent",
 				"subject": "approval",
 				"eventVersion": 1,
@@ -86,10 +86,10 @@ Content-Type: application/json
 			"fullName": "Bruce Wayne",
 			"email": "bwayne@wayne-enterprises.com"
 		},
-		"source": "http://somepage/here/",
+		"source": "/apiman/notifications/contracts/approvals",
 		"payload": {
 			"headers": {
-				"source": "/a/b/c",
+				"source": "/apiman/events/contracts/approvals",
 				"type": "io.apiman.manager.api.beans.events.ContractApprovalEvent",
 				"subject": "approval",
 				"eventVersion": 1,

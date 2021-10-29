@@ -178,7 +178,7 @@ public class ActionService implements DataAccessUtilMixin {
         ApimanEventHeaders headers = ApimanEventHeaders
              .builder()
              .setId(UUID.randomUUID().toString().substring(8))
-             .setSource(URI.create("/a/b/c"))
+             .setSource(URI.create("/apiman/events/contracts/approvals"))
              .setSubject("approval")
              .build();
 
@@ -310,8 +310,7 @@ public class ActionService implements DataAccessUtilMixin {
             if (gateway == null) {
                 throw new GatewayNotFoundException();
             }
-            IGatewayLink link = gatewayLinkFactory.create(gateway);
-            return link;
+            return gatewayLinkFactory.create(gateway);
         } catch (GatewayNotFoundException e) {
             throw e;
         } catch (Exception e) {

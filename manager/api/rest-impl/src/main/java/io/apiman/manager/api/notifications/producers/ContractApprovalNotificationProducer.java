@@ -51,7 +51,7 @@ public class ContractApprovalNotificationProducer implements INotificationProduc
         CreateNotificationDto newNotification = new CreateNotificationDto()
              .setRecipient(List.of(planAdmins))
              .setCategory(NotificationCategory.API_ADMINISTRATION)
-             .setSource("http://somepage/here/")
+             .setSource("/apiman/notifications/contracts/approvals")
              .setPayload(approvalEvent);
 
         if (approvalEvent.isApproved()) {
