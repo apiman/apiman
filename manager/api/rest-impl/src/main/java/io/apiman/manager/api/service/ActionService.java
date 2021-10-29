@@ -511,13 +511,22 @@ public class ActionService implements DataAccessUtilMixin {
             throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound")); //$NON-NLS-1$
         }
         try {
-            contractBeans = query.getClientContracts(orgId, clientId, clientVersion);
+            contractBeans = query.getClientContracts(orgId, clientId, clientVersion)
+                    .stream()
+                    .peek(c -> {
+                        if (c.getStatus() != ContractStatus.Created) {
+                            LOGGER.debug("Will not try to delete contract {0} from gateway(s) as it is not in 'Created' state", c);
+                        }
+                    })
+                    .filter(c -> c.getStatus() == ContractStatus.Created)
+                    .collect(Collectors.toList());
+
         } catch (StorageException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ClientNotFound"), e); //$NON-NLS-1$
         }
 
-        // Validate that it's ok to perform this action - client must be Ready.
-        if (versionBean.getStatus() != ClientStatus.Registered) {
+        // Validate that it's ok to perform this action - client must be either registered or awaiting approval (or there's nothing to unregister)
+        if (versionBean.getStatus() != ClientStatus.Registered && versionBean.getStatus() != ClientStatus.AwaitingApproval) {
             throw ExceptionFactory.actionException(Messages.i18n.format("InvalidClientStatus")); //$NON-NLS-1$
         }
 
@@ -532,8 +541,7 @@ public class ActionService implements DataAccessUtilMixin {
         try {
             Map<String, IGatewayLink> links = new HashMap<>();
             for (ContractSummaryBean contractBean : contractBeans) {
-                ApiVersionBean svb = storage.getApiVersion(contractBean.getApiOrganizationId(),
-                     contractBean.getApiId(), contractBean.getApiVersion());
+                ApiVersionBean svb = storage.getApiVersion(contractBean.getApiOrganizationId(), contractBean.getApiId(), contractBean.getApiVersion());
                 Set<ApiGatewayBean> gateways = svb.getGateways();
                 if (gateways == null) {
                     throw new PublishingException("No gateways specified for API: " + svb.getApi().getName()); //$NON-NLS-1$

@@ -263,7 +263,7 @@ public class ContractService implements DataAccessUtilMixin {
     private void deleteContractsInternal(String organizationId, String clientId, String clientVersion, List<ContractBean> allContracts, List<ContractBean> contractsToDelete)
             throws Exception {
         Preconditions.checkArgument(allContracts.size() > 0, "Must have at least 1 contract if you want to delete");
-        Preconditions.checkArgument(allContracts.size() > 0, "Must nominate at least 1 contract to delete");
+        Preconditions.checkArgument(contractsToDelete.size() > 0, "Must nominate at least 1 contract to delete");
         for (ContractBean contract : contractsToDelete) {
             Long contractId = contract.getId();
             if (!contract.getClient().getClient().getOrganization().getId().equals(organizationId)) {
