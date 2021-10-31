@@ -1,4 +1,3 @@
-// // Browserify imports
 import * as $ from 'jquery'
 // @ts-ignore
 window.jQuery = $;
@@ -21,6 +20,7 @@ import 'angular-animate';
 import 'angular-route';
 import 'angular-schema-form';
 import 'angular-scrollable-table/angular-scrollable-table.js';
+import 'oclazyload';
 
 import 'ng-file-upload';
 
@@ -64,6 +64,7 @@ export const _module: IModule = angular.module(ApimanGlobals.pluginName, [
     'ngFileUpload',
     'ngAnimate',
     'scrollable-table',
+    'oc.lazyLoad',
     // Apiman
     'ApimanRPC',
     'ApimanFilters',
@@ -78,256 +79,281 @@ export const _module: IModule = angular.module(ApimanGlobals.pluginName, [
 _module.config([
     '$locationProvider',
     '$routeProvider',
-    'uiSelectConfig', ($locationProvider,
-                       $routeProvider,
-                       uiSelectConfig) => {
-        var path = 'plugins/api-manager/html/';
-        var prefix = '/api-manager';
+    'uiSelectConfig',
+    '$ocLazyLoadProvider',
+    function ($locationProvider,
+              $routeProvider,
+              uiSelectConfig,
+              $ocLazyLoadProvider) {
+
+        const path = 'plugins/api-manager/html/';
+        const prefix = '/api-manager';
 
         uiSelectConfig.theme = 'select2';
         uiSelectConfig.searchEnabled = false;
 
+        $ocLazyLoadProvider.config({
+            debug: true
+        });
+
         // Define Routes
 
         $routeProvider
-            .when(prefix + '/', {
-                templateUrl: path + 'dash.html'
-            })
-            .when(prefix + '/about', {
-                templateUrl: path + 'about.html'
-            })
-            .when(prefix + '/profile', {
-                templateUrl: path + 'user/user-profile.html'
-            })
-            .when(prefix + '/admin/gateways', {
-                templateUrl: path + 'admin/admin-gateways.html'
-            })
-            .when(prefix + '/admin/plugins', {
-                templateUrl: path + 'admin/admin-plugins.html'
-            })
-            .when(prefix + '/admin/policyDefs', {
-                templateUrl: path + 'admin/admin-policyDefs.html'
-            })
-            .when(prefix + '/admin/roles', {
-                templateUrl: path + 'admin/admin-roles.html'
-            })
-            .when(prefix + '/admin/export', {
-                templateUrl: path + 'admin/admin-export.html'
-            })
-            .when(prefix + '/admin/gateways/:gateway', {
-                templateUrl: path + 'forms/edit-gateway.html'
-            })
-            .when(prefix + '/admin/plugins/:plugin', {
-                templateUrl: path + 'forms/edit-plugin.html'
-            })
-            .when(prefix + '/admin/policyDefs/:policyDef', {
-                templateUrl: path + 'forms/edit-policyDef.html'
-            })
-            .when(prefix + '/admin/roles/:role', {
-                templateUrl: path + 'forms/edit-role.html'
-            })
-            .when(prefix + '/notifications', {
-                templateUrl: path + 'notifications/notifications-dash.html'
-            })
-            .when(prefix + '/orgs/:org/:type/:id/:ver/policies/:policy', {
-                templateUrl: path + 'forms/edit-policy.html'
-            })
-            .when(prefix + '/orgs/:org/:type/:id/:ver/new-policy', {
-                templateUrl: path + 'forms/new-policy.html'
-            })
-            .when(prefix + '/orgs/:org/clients/:client', {
-                templateUrl: path + 'client/client.html'
-            })
-            .when(prefix + '/orgs/:org/clients/:client/:version', {
-                templateUrl: path + 'client/client-overview.html'
-            })
-            .when(prefix + '/orgs/:org/clients/:client/:version/contracts', {
-                templateUrl: path + 'client/client-contracts.html'
-            })
-            .when(prefix + '/orgs/:org/clients/:client/:version/apis', {
-                templateUrl: path + 'client/client-apis.html'
-            })
-            .when(prefix + '/orgs/:org/clients/:client/:version/metrics', {
-                templateUrl: path + 'client/client-metrics.html'
-            })
-            .when(prefix + '/orgs/:org/clients/:client/:version/policies', {
-                templateUrl: path + 'client/client-policies.html'
-            })
-            .when(prefix + '/orgs/:org/clients/:client/:version/activity', {
-                templateUrl: path + 'client/client-activity.html'
-            })
-            .when(prefix + '/orgs/:org/clients/:client/:version/new-version', {
-                templateUrl: path + 'forms/new-clientversion.html'
-            })
-            .when(prefix + '/orgs/:org/plans/:plan', {
-                templateUrl: path + 'plan/plan.html'
-            })
-            .when(prefix + '/orgs/:org/plans/:plan/:version', {
-                templateUrl: path + 'plan/plan-overview.html'
-            })
-            .when(prefix + '/orgs/:org/plans/:plan/:version/policies', {
-                templateUrl: path + 'plan/plan-policies.html'
-            })
-            .when(prefix + '/orgs/:org/plans/:plan/:version/activity', {
-                templateUrl: path + 'plan/plan-activity.html'
-            })
-            .when(prefix + '/orgs/:org/plans/:plan/:version/new-version', {
-                templateUrl: path + 'forms/new-planversion.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api', {
-                templateUrl: path + 'api/api.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version', {
-                templateUrl: path + 'api/api-overview.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version/impl', {
-                templateUrl: path + 'api/api-impl.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version/def', {
-                templateUrl: path + 'api/api-def.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version/plans', {
-                templateUrl: path + 'api/api-plans.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version/devportal', {
-                templateUrl: path + 'api/api-devportal.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version/policies', {
-                templateUrl: path + 'api/api-policies.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version/endpoint', {
-                templateUrl: path + 'api/api-endpoint.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version/contracts', {
-                templateUrl: path + 'api/api-contracts.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version/metrics', {
-                templateUrl: path + 'api/api-metrics.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version/activity', {
-                templateUrl: path + 'api/api-activity.html'
-            })
-            .when(prefix + '/orgs/:org/apis/:api/:version/new-version', {
-                templateUrl: path + 'forms/new-apiversion.html'
-            })
-            .when(prefix + '/orgs/:org/import/apis', {
-                templateUrl: path + 'api/import-apis.html'
-            })
-            .when(prefix + '/catalog/api-catalog', {
-                templateUrl: path + 'catalog/api-catalog.html'
-            })
-            .when(prefix + '/catalog/api-catalog/:name/def', {
-                templateUrl: path + 'catalog/api-catalog-def.html'
-            })
-            .when(prefix + '/browse/orgs', {
-                templateUrl: path + 'consumer/consumer-orgs.html'
-            })
-            .when(prefix + '/browse/apis', {
-                templateUrl: path + 'consumer/consumer-apis.html'
-            })
-            .when(prefix + '/browse/orgs/:org', {
-                templateUrl: path + 'consumer/consumer-org.html'
-            })
-            .when(prefix + '/browse/orgs/:org/:api', {
-                templateUrl: path + 'consumer/consumer-api-redirect.html'
-            })
-            .when(prefix + '/browse/orgs/:org/:api/:version', {
-                templateUrl: path + 'consumer/consumer-api.html'
-            })
-            .when(prefix + '/browse/orgs/:org/:api/:version/def', {
-                templateUrl: path + 'consumer/consumer-api-def.html'
-            })
-            .when(prefix + '/new-client', {
-                templateUrl: path + 'forms/new-client.html'
-            })
-            .when(prefix + '/new-contract', {
-                templateUrl: path + 'forms/new-contract.html'
-            })
-            .when(prefix + '/new-gateway', {
-                templateUrl: path + 'forms/new-gateway.html'
-            })
-            .when(prefix + '/new-org', {
-                templateUrl: path + 'forms/new-org.html'
-            })
-            .when(prefix + '/new-plan', {
-                templateUrl: path + 'forms/new-plan.html'
-            })
-            .when(prefix + '/new-plugin', {
-                templateUrl: path + 'forms/new-plugin.html'
-            })
-            .when(prefix + '/new-role', {
-                templateUrl: path + 'forms/new-role.html'
-            })
-            .when(prefix + '/new-api', {
-                templateUrl: path + 'forms/new-api.html'
-            })
-            .when(prefix + '/import-policyDefs', {
-                templateUrl: path + 'forms/import-policyDefs.html'
-            })
-            .when(prefix + '/orgs/:org', {
-                templateUrl: path + 'org/org.html'
-            })
-            .when(prefix + '/orgs/:org/plans', {
-                templateUrl: path + 'org/org-plans.html'
-            })
-            .when(prefix + '/orgs/:org/apis', {
-                templateUrl: path + 'org/org-apis.html'
-            })
-            .when(prefix + '/orgs/:org/clients', {
-                templateUrl: path + 'org/org-clients.html'
-            })
-            .when(prefix + '/orgs/:org/members', {
-                templateUrl: path + 'org/org-members.html'
-            })
-            .when(prefix + '/orgs/:org/manage-members', {
-                templateUrl: path + 'org/org-manage-members.html'
-            })
-            .when(prefix + '/orgs/:org/activity', {
-                templateUrl: path + 'org/org-activity.html'
-            })
-            .when(prefix + '/orgs/:org/new-member', {
-                templateUrl: path + 'org/org-new-member.html'
-            })
-            .when(prefix + '/users/:user', {
-                templateUrl: path + 'user/user.html'
-            })
-            .when(prefix + '/users/:user/activity', {
-                templateUrl: path + 'user/user-activity.html'
-            })
-            .when(prefix + '/users/:user/clients', {
-                templateUrl: path + 'user/user-clients.html'
-            })
-            .when(prefix + '/users/:user/orgs', {
-                templateUrl: path + 'user/user-orgs.html'
-            })
-            .when(prefix + '/users/:user/apis', {
-                templateUrl: path + 'user/user-apis.html'
-            })
-            .when(prefix + '/errors/invalid_server', {
-                templateUrl: path + 'errors/invalid_server.html'
-            })
-            .when(prefix + '/errors/400', {
-                templateUrl: path + 'errors/400.html'
-            })
-            .when(prefix + '/errors/403', {
-                templateUrl: path + 'errors/403.html'
-            })
-            .when(prefix + '/errors/404', {
-                templateUrl: path + 'errors/404.html'
-            })
-            .when(prefix + '/errors/409', {
-                templateUrl: path + 'errors/409.html'
-            })
-            .when(prefix + '/errors/409-8002', {
-                templateUrl: path + 'errors/409-8002.html'
-            })
-            .when(prefix + '/errors/500', {
-                templateUrl: path + 'errors/500.html'
-            })
-            .when(prefix + '/def', {
-                templateUrl: path + 'rest-documentation.html'
-            })
-            .otherwise({redirectTo: prefix + '/'});
+        .when(prefix + '/', {
+            templateUrl: path + 'dash.html'
+        })
+        .when(prefix + '/about', {
+            templateUrl: path + 'about.html'
+        })
+        .when(prefix + '/profile', {
+            templateUrl: path + 'user/user-profile.html'
+        })
+        .when(prefix + '/admin/gateways', {
+            templateUrl: path + 'admin/admin-gateways.html'
+        })
+        .when(prefix + '/admin/plugins', {
+            templateUrl: path + 'admin/admin-plugins.html'
+        })
+        .when(prefix + '/admin/policyDefs', {
+            templateUrl: path + 'admin/admin-policyDefs.html'
+        })
+        .when(prefix + '/admin/roles', {
+            templateUrl: path + 'admin/admin-roles.html'
+        })
+        .when(prefix + '/admin/export', {
+            templateUrl: path + 'admin/admin-export.html'
+        })
+        .when(prefix + '/admin/gateways/:gateway', {
+            templateUrl: path + 'forms/edit-gateway.html'
+        })
+        .when(prefix + '/admin/plugins/:plugin', {
+            templateUrl: path + 'forms/edit-plugin.html'
+        })
+        .when(prefix + '/admin/policyDefs/:policyDef', {
+            templateUrl: path + 'forms/edit-policyDef.html'
+        })
+        .when(prefix + '/admin/roles/:role', {
+            templateUrl: path + 'forms/edit-role.html'
+        })
+        .when(prefix + '/notifications', {
+            templateUrl: path + 'notifications/notifications-dash.html'
+        })
+        .when(prefix + '/orgs/:org/:type/:id/:ver/policies/:policy', {
+            templateUrl: path + 'forms/edit-policy.html'
+        })
+        .when(prefix + '/orgs/:org/:type/:id/:ver/new-policy', {
+            templateUrl: path + 'forms/new-policy.html'
+        })
+        .when(prefix + '/orgs/:org/clients/:client', {
+            templateUrl: path + 'client/client.html'
+        })
+        .when(prefix + '/orgs/:org/clients/:client/:version', {
+            templateUrl: path + 'client/client-overview.html'
+        })
+        .when(prefix + '/orgs/:org/clients/:client/:version/contracts', {
+            templateUrl: path + 'client/client-contracts.html'
+        })
+        .when(prefix + '/orgs/:org/clients/:client/:version/apis', {
+            templateUrl: path + 'client/client-apis.html'
+        })
+        .when(prefix + '/orgs/:org/clients/:client/:version/metrics', {
+            templateUrl: path + 'client/client-metrics.html'
+        })
+        .when(prefix + '/orgs/:org/clients/:client/:version/policies', {
+            templateUrl: path + 'client/client-policies.html'
+        })
+        .when(prefix + '/orgs/:org/clients/:client/:version/activity', {
+            templateUrl: path + 'client/client-activity.html'
+        })
+        .when(prefix + '/orgs/:org/clients/:client/:version/new-version', {
+            templateUrl: path + 'forms/new-clientversion.html'
+        })
+        .when(prefix + '/orgs/:org/plans/:plan', {
+            templateUrl: path + 'plan/plan.html'
+        })
+        .when(prefix + '/orgs/:org/plans/:plan/:version', {
+            templateUrl: path + 'plan/plan-overview.html'
+        })
+        .when(prefix + '/orgs/:org/plans/:plan/:version/policies', {
+            templateUrl: path + 'plan/plan-policies.html'
+        })
+        .when(prefix + '/orgs/:org/plans/:plan/:version/activity', {
+            templateUrl: path + 'plan/plan-activity.html'
+        })
+        .when(prefix + '/orgs/:org/plans/:plan/:version/new-version', {
+            templateUrl: path + 'forms/new-planversion.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api', {
+            templateUrl: path + 'api/api.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version', {
+            templateUrl: path + 'api/api-overview.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version/impl', {
+            templateUrl: path + 'api/api-impl.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version/def', {
+            templateUrl: path + 'api/api-def.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version/plans', {
+            templateUrl: path + 'api/api-plans.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version/devportal', {
+            templateUrl: path + 'api/api-devportal.html',
+            // Resolves are completed before Angular tries to load the controller.
+            resolve: {
+                /**
+                 * Lazy load the devportal to avoid dragging in dependencies many visitors won't use.
+                 *
+                 * For the settings we're stuck using, `require.ensure([], f())` which seems to be the only
+                 * method that works with Webpack; the newer and recommended require-with-promise doesn't seem
+                 * to function properly (no chunk is produced).
+                 */
+                lazyLoad: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return require.ensure([], require => {
+                                const entity = require(/* webpackChunkName: "devportal.chunk" */ './api/api-devportal.ts')
+                                return $ocLazyLoad.load(entity.DevPortalController);
+                            }
+                        );
+                }]
+            }
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version/policies', {
+            templateUrl: path + 'api/api-policies.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version/endpoint', {
+            templateUrl: path + 'api/api-endpoint.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version/contracts', {
+            templateUrl: path + 'api/api-contracts.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version/metrics', {
+            templateUrl: path + 'api/api-metrics.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version/activity', {
+            templateUrl: path + 'api/api-activity.html'
+        })
+        .when(prefix + '/orgs/:org/apis/:api/:version/new-version', {
+            templateUrl: path + 'forms/new-apiversion.html'
+        })
+        .when(prefix + '/orgs/:org/import/apis', {
+            templateUrl: path + 'api/import-apis.html'
+        })
+        .when(prefix + '/catalog/api-catalog', {
+            templateUrl: path + 'catalog/api-catalog.html'
+        })
+        .when(prefix + '/catalog/api-catalog/:name/def', {
+            templateUrl: path + 'catalog/api-catalog-def.html'
+        })
+        .when(prefix + '/browse/orgs', {
+            templateUrl: path + 'consumer/consumer-orgs.html'
+        })
+        .when(prefix + '/browse/apis', {
+            templateUrl: path + 'consumer/consumer-apis.html'
+        })
+        .when(prefix + '/browse/orgs/:org', {
+            templateUrl: path + 'consumer/consumer-org.html'
+        })
+        .when(prefix + '/browse/orgs/:org/:api', {
+            templateUrl: path + 'consumer/consumer-api-redirect.html'
+        })
+        .when(prefix + '/browse/orgs/:org/:api/:version', {
+            templateUrl: path + 'consumer/consumer-api.html'
+        })
+        .when(prefix + '/browse/orgs/:org/:api/:version/def', {
+            templateUrl: path + 'consumer/consumer-api-def.html'
+        })
+        .when(prefix + '/new-client', {
+            templateUrl: path + 'forms/new-client.html'
+        })
+        .when(prefix + '/new-contract', {
+            templateUrl: path + 'forms/new-contract.html'
+        })
+        .when(prefix + '/new-gateway', {
+            templateUrl: path + 'forms/new-gateway.html'
+        })
+        .when(prefix + '/new-org', {
+            templateUrl: path + 'forms/new-org.html'
+        })
+        .when(prefix + '/new-plan', {
+            templateUrl: path + 'forms/new-plan.html'
+        })
+        .when(prefix + '/new-plugin', {
+            templateUrl: path + 'forms/new-plugin.html'
+        })
+        .when(prefix + '/new-role', {
+            templateUrl: path + 'forms/new-role.html'
+        })
+        .when(prefix + '/new-api', {
+            templateUrl: path + 'forms/new-api.html'
+        })
+        .when(prefix + '/import-policyDefs', {
+            templateUrl: path + 'forms/import-policyDefs.html'
+        })
+        .when(prefix + '/orgs/:org', {
+            templateUrl: path + 'org/org.html'
+        })
+        .when(prefix + '/orgs/:org/plans', {
+            templateUrl: path + 'org/org-plans.html'
+        })
+        .when(prefix + '/orgs/:org/apis', {
+            templateUrl: path + 'org/org-apis.html'
+        })
+        .when(prefix + '/orgs/:org/clients', {
+            templateUrl: path + 'org/org-clients.html'
+        })
+        .when(prefix + '/orgs/:org/members', {
+            templateUrl: path + 'org/org-members.html'
+        })
+        .when(prefix + '/orgs/:org/manage-members', {
+            templateUrl: path + 'org/org-manage-members.html'
+        })
+        .when(prefix + '/orgs/:org/activity', {
+            templateUrl: path + 'org/org-activity.html'
+        })
+        .when(prefix + '/orgs/:org/new-member', {
+            templateUrl: path + 'org/org-new-member.html'
+        })
+        .when(prefix + '/users/:user', {
+            templateUrl: path + 'user/user.html'
+        })
+        .when(prefix + '/users/:user/activity', {
+            templateUrl: path + 'user/user-activity.html'
+        })
+        .when(prefix + '/users/:user/clients', {
+            templateUrl: path + 'user/user-clients.html'
+        })
+        .when(prefix + '/users/:user/orgs', {
+            templateUrl: path + 'user/user-orgs.html'
+        })
+        .when(prefix + '/users/:user/apis', {
+            templateUrl: path + 'user/user-apis.html'
+        })
+        .when(prefix + '/errors/invalid_server', {
+            templateUrl: path + 'errors/invalid_server.html'
+        })
+        .when(prefix + '/errors/400', {
+            templateUrl: path + 'errors/400.html'
+        })
+        .when(prefix + '/errors/403', {
+            templateUrl: path + 'errors/403.html'
+        })
+        .when(prefix + '/errors/404', {
+            templateUrl: path + 'errors/404.html'
+        })
+        .when(prefix + '/errors/409', {
+            templateUrl: path + 'errors/409.html'
+        })
+        .when(prefix + '/errors/409-8002', {
+            templateUrl: path + 'errors/409-8002.html'
+        })
+        .when(prefix + '/errors/500', {
+            templateUrl: path + 'errors/500.html'
+        })
+        .when(prefix + '/def', {
+            templateUrl: path + 'rest-documentation.html'
+        })
+        .otherwise({redirectTo: prefix + '/'});
 
         $locationProvider.html5Mode(true);
     }]);
@@ -482,7 +508,6 @@ import "./model/api.model.ts"
 import "./model/contract.model.ts"
 import "./apimanGlobals.ts"
 import "./api/api-policies.ts"
-import "./api/api-devportal.ts"
 import "./api/api-overview.ts"
 import "./api/api-endpoint.ts"
 import "./api/api.ts"
