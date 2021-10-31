@@ -32,8 +32,7 @@ const toast = require("@toast-ui/editor");
 const codeSyntaxHighlight = require("@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all");
 const colourSyntax = require("@toast-ui/editor-plugin-color-syntax");
 
-
-_module.controller("Apiman.DevPortalController", [
+export const DevPortalController = _module.controller("Apiman.DevPortalController", [
   "$q",
   "$scope",
   "$rootScope",
