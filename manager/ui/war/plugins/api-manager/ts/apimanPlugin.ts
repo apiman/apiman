@@ -4,6 +4,7 @@ import * as $ from 'jquery'
 window.jQuery = $;
 // @ts-ignore
 window.$ = $;
+
 import 'bootstrap/dist/js/bootstrap.js';
 import 'bootstrap-select/dist/js/bootstrap-select.js';
 import 'patternfly/dist/js/patternfly.js';
@@ -14,31 +15,18 @@ import 'ui-select/dist/select.js';
 import 'angular-clipboard';
 import 'angular-resource';
 import 'ng-sortable/dist/ng-sortable.js';
-import 'd3';
-import 'c3/c3.js';
 import 'angular-xeditable-npm/dist/js/xeditable.js';
 import 'angular-sanitize';
 import 'angular-animate';
-import 'js-logger';
-import 'lodash';
 import 'angular-route';
-import 'urijs';
 import 'angular-schema-form';
 import 'angular-scrollable-table/angular-scrollable-table.js';
 
-import 'sugar';
 import 'ng-file-upload';
-import 'moment';
-import 'moment/min/locales';
-import * as dayjs from 'dayjs';
-const relativeTime = require('dayjs/plugin/relativeTime');
-dayjs.extend(relativeTime)
 // Markdown editor and code highlight plugin (for editor)
 import '@toast-ui/editor';
 import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all';
 import 'prismjs';
-
-// End browserify imports
 
 import angular = require("angular");
 import {ApimanGlobals} from "./apimanGlobals";
@@ -95,7 +83,6 @@ export const _module: IModule = angular.module(ApimanGlobals.pluginName, [
     'ApimanCurrentUser',
     'ApimanModals'
 ]);
-
 
 _module.config([
     '$locationProvider',
@@ -399,10 +386,13 @@ _module.run([
     '$rootScope',
     'SystemSvcs',
     'Configuration',
-    '$location', ($rootScope,
-                  SystemSvcs,
-                  Configuration,
-                  $location) => {
+    '$location',
+    'Logger',
+    ($rootScope,
+     SystemSvcs,
+     Configuration,
+     $location,
+     Logger) => {
 
         $rootScope.isDirty = false;
 
@@ -420,29 +410,28 @@ _module.run([
 // Load the configuration jsonp script
 $.getScript('apiman/config.js')
     .done((script, textStatus) => {
-        ApimanGlobals.Logger.info('Loaded the config.js config!');
+        console.log('Loaded the config.js config!');
     })
     .fail((response) => {
-        ApimanGlobals.Logger.debug('Error fetching configuration: ', response);
+        console.log('Error fetching configuration: ', response);
     })
     .always(() => {
         // Load the i18n jsonp script
         $.getScript('apiman/translations.js').done((script, textStatus) => {
-            ApimanGlobals.Logger.info('Loaded the translations.js bundle!');
+            console.log('Loaded the translations.js bundle!');
 
             angular.element(document).ready(function () {
                 console.log("Angular bootstrap running");
                 angular.bootstrap(document, ['api-manager']);
             });
         }).fail((response) => {
-            ApimanGlobals.Logger.debug('Error fetching translations: ', response);
+            console.log('Error fetching translations: ', response);
         });
     });
 
 
 /** Imitating the old way of magically including everything (not best practice now, but
  * don't have time to manually do the includes in each file yet **/
-// import "./filters.ts"
 import "./policies.ts"
 import "./forms/new-org.ts"
 import "./forms/new-gateway.ts"
@@ -480,16 +469,11 @@ import "./plan/plan-overview.ts"
 import "./plan/plan.ts"
 import "./plan/plan-policies.ts"
 import "./catalog/api-catalog.ts"
-// import "./modals.ts"
-// import "./lifecycle.ts"
-// import "./translation.ts"
 import "./admin/admin-gateways.ts"
 import "./admin/admin-policyDefs.ts"
 import "./admin/admin-roles.ts"
 import "./admin/admin-export.ts"
 import "./admin/admin-plugins.ts"
-// import "./rpc.ts"
-// import "./directives.ts"
 import "./user/user-profile.ts"
 import "./user/user-apis.ts"
 import "./user/user-orgs.ts"
@@ -498,8 +482,6 @@ import "./user/user.ts"
 import "./user/user-clients.ts"
 import "./dash.ts"
 import "./about.ts"
-// import "./logger.ts"
-// import "./currentuser.ts"
 import "./navbar.ts"
 import "./rest-documentation.ts"
 import "./model/checklist.model.ts"
@@ -532,5 +514,4 @@ import "./client/client-metrics.ts"
 import "./client/client-apis.ts"
 import "./client/client.ts"
 import "./client/client-activity.ts"
-// import "./configuration.ts"
 import "./sidebar.ts"

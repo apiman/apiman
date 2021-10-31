@@ -59,8 +59,13 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
     },
+    optimization: {
+      splitChunks: {
+        chunks: 'all'
+      },
+    },
     output: {
-      filename: 'apiman-manager-ui.js',
+      filename: 'apiman-manager-ui-[name].js',
       path: path.resolve(__dirname, 'dist'),
       clean: true
     }

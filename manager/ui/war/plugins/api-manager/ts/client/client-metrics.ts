@@ -1,12 +1,11 @@
 import {_module} from "../apimanPlugin";
 import angular = require("angular");
 import {NINETY_DAYS, ONE_DAY, ONE_HOUR, SEVEN_DAYS, THIRTY_DAYS} from "../api/api-metrics";
-import Logger from "js-logger";
 import c3 = require("c3");
 
 _module.controller("Apiman.ClientMetricsController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ClientEntityLoader', '$routeParams', 'MetricsSvcs', 'Configuration',
-        function ($q, $scope, $location, PageLifecycle, ClientEntityLoader, $routeParams, MetricsSvcs, Configuration) {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ClientEntityLoader', '$routeParams', 'MetricsSvcs', 'Configuration', 'Logger',
+        function ($q, $scope, $location, PageLifecycle, ClientEntityLoader, $routeParams, MetricsSvcs, Configuration, Logger) {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'metrics';

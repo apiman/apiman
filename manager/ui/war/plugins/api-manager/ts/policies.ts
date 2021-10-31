@@ -1,6 +1,7 @@
 import { _module } from './apimanPlugin';
 import angular = require("angular");
-import moment = require("moment");
+import { format, parseISO } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz'
 import { JSONEditor } from '@json-editor/json-editor/dist/jsoneditor'
 
 export var isRegexpValid = function(v) {
@@ -796,7 +797,7 @@ _module.controller('Apiman.TimeRestrictedAccessFormController',
                 if (!$scope.config.rules) {
                     $scope.config.rules = [];
                 }
-                var timeStart = moment($scope.timeStart).utc().format(isoTimeFormat);
+                var timeStart = parseISO($scope.timeStart);
                 var timeEnd = moment($scope.timeEnd).utc().format(isoTimeFormat);
                 var rule = {
                     'timeStart' : timeStart,
