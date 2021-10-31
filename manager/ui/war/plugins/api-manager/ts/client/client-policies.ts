@@ -1,5 +1,4 @@
 import {_module} from "../apimanPlugin";
-import Logger from "js-logger";
 import angular = require("angular");
 
 _module.controller("Apiman.ClientPoliciesController",
@@ -15,7 +14,8 @@ _module.controller("Apiman.ClientPoliciesController",
             'Configuration',
             'EntityStatusSvc',
             'CurrentUser',
-        function ($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, $routeParams, Configuration, EntityStatusSvc, CurrentUser) {
+            'Logger',
+        function ($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, $routeParams, Configuration, EntityStatusSvc, CurrentUser, Logger) {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'policies';

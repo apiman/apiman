@@ -1,7 +1,7 @@
 import { _module } from './apimanPlugin';
 import angular = require("angular");
-import moment = require("moment");
 import { JSONEditor } from '@json-editor/json-editor/dist/jsoneditor'
+import { DateTime } from 'luxon';
 
 export var isRegexpValid = function(v) {
     var valid = true;
@@ -796,8 +796,8 @@ _module.controller('Apiman.TimeRestrictedAccessFormController',
                 if (!$scope.config.rules) {
                     $scope.config.rules = [];
                 }
-                var timeStart = moment($scope.timeStart).utc().format(isoTimeFormat);
-                var timeEnd = moment($scope.timeEnd).utc().format(isoTimeFormat);
+                const timeStart = DateTime.fromISO($scope.timeStart).toUTC().toFormat(isoTimeFormat);
+                const timeEnd = DateTime.fromISO($scope.timeEnd).toUTC().toFormat(isoTimeFormat)
                 var rule = {
                     'timeStart' : timeStart,
                     'timeEnd' : timeEnd,
@@ -821,15 +821,15 @@ _module.controller('Apiman.TimeRestrictedAccessFormController',
                 }
             };
             $scope.resetModel = function() {
-                $scope.timeStart = moment("8:00","hh:mm").toDate();
-                $scope.timeEnd = moment("16:00","hh:mm").toDate();
+                $scope.timeStart = DateTime.fromObject({ hour: 8 }).toFormat("hh:mm");
+                $scope.timeEnd = DateTime.fromObject({ hour: 16 }).toFormat("hh:mm");
                 $scope.dayStart = $scope.weekdays[0];
                 $scope.dayEnd = $scope.weekdays[4];
                 $scope.selectedPath = undefined;
             };
             $scope.resetModel();
             $scope.formatToTime = function(time){
-                return moment.utc(time,isoTimeFormat).local().format("HH:mm");
+                return DateTime.fromISO(time).toLocal().toFormat("HH:mm");
             };
             $scope.getDayIndex = function(day){
                 return $scope.weekdays.indexOf(day)+1;

@@ -7,6 +7,19 @@ import {
   UpdateApiBean,
   UpdateApiVersionBean,
 } from "../model/api.model";
+
+// CSS
+import 'prismjs/themes/prism.css'
+import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css'
+import '@toast-ui/editor/dist/toastui-editor.css'
+import 'tui-color-picker/dist/tui-color-picker.css'
+import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css'
+
+// Markdown editor and code highlight plugin (for editor)
+import '@toast-ui/editor';
+import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all';
+import 'prismjs';
+
 import Prism from "prismjs";
 import { Editor, EditorOptions } from "@toast-ui/editor";
 import { BlobRef } from "../model/blob.model";

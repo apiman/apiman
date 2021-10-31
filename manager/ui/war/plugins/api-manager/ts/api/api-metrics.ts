@@ -1,5 +1,5 @@
 import angular = require("angular");
-import c3 = require("c3");
+import * as c3 from 'c3'
 import { _module } from '../apimanPlugin'
 
     export const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
