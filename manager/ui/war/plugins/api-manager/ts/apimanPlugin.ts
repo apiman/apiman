@@ -23,10 +23,6 @@ import 'angular-schema-form';
 import 'angular-scrollable-table/angular-scrollable-table.js';
 
 import 'ng-file-upload';
-// Markdown editor and code highlight plugin (for editor)
-import '@toast-ui/editor';
-import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all';
-import 'prismjs';
 
 import angular = require("angular");
 import {ApimanGlobals} from "./apimanGlobals";
@@ -52,11 +48,6 @@ import 'angular-scrollable-table/scrollable-table.css'
 import 'angular-ui-bootstrap/ui-bootstrap-csp.css'
 import 'ui-select/dist/select.css'
 import 'select2/select2.css'
-import 'prismjs/themes/prism.css'
-import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css'
-import '@toast-ui/editor/dist/toastui-editor.css'
-import 'tui-color-picker/dist/tui-color-picker.css'
-import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css'
 
 /** Load these last to ensure they don't get overriden **/
 import '../css/apiman.css';

@@ -65,7 +65,7 @@ module.exports = (env, argv) => {
       },
     },
     output: {
-      filename: 'apiman-manager-ui-[name].js',
+      filename: 'apiman-manager-ui-[name]-[contenthash].js',
       path: path.resolve(__dirname, 'dist'),
       clean: true
     }

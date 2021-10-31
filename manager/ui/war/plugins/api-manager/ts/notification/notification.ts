@@ -5,7 +5,7 @@ import {
   NotificationCriteriaBean,
 } from "../model/notifications.model";
 import { NotificationLayoutMetadata } from "./notificationmapper.service";
-import * as dayjs from 'dayjs';
+import { DateTime } from "luxon";
 
 _module.controller("Apiman.NotificationController", [
   "$location",
@@ -81,8 +81,7 @@ _module.controller("Apiman.NotificationController", [
     };
 
     $scope.humanRelativeDate = function (humanRelativeDate): string {
-      // @ts-ignore
-      return dayjs().to(dayjs(humanRelativeDate));
+      return DateTime.fromISO(humanRelativeDate).toRelative();
     }
 
     $scope.deleteNotification = (notification: ApimanNotification<any>): void => {
