@@ -57,7 +57,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <!-- Plugin Versions -->
-    <version.ant>1.10.11</version.ant>
+    <version.ant>1.10.12</version.ant>
     <version.antrun.plugin>1.7</version.antrun.plugin>
     <version.assembly.plugin>3.3.0</version.assembly.plugin>
     <version.buildhelper.plugin>3.2.0</version.buildhelper.plugin>
