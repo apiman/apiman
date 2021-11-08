@@ -15,7 +15,6 @@
     <docker.wildfly.version>wildfly</docker.wildfly.version>
     <docker.base-image>jboss/wildfly:20.0.1.Final</docker.base-image>
     <docker.target-image-name>apiman/on-wildfly:latest</docker.target-image-name>
-    <docker.target-image-name.alias>wildfly-master</docker.target-image-name.alias>
   </properties>
 
   <dependencies>
@@ -55,7 +54,8 @@
       <artifactId>apiman-distro-tools</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
-    </dependency><!-- Keycloak -->
+    </dependency>
+    <!-- Keycloak -->
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-server-overlay</artifactId>
@@ -167,7 +167,7 @@
                 <images>
                   <image>
                     <name>${docker.target-image-name}</name>
-                    <alias>${docker.target-image-name.alias}</alias>
+                    <alias>${git.commit.id}</alias>
                     <build>
                       <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
                       <assembly>
@@ -186,7 +186,7 @@
                         </inline>
                       </assembly>
                       <tags>
-                        <tag>wildfly-master</tag>
+                        <tag>${git.commit.id}</tag>
                       </tags>
                     </build>
                     <run>
