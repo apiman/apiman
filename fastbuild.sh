@@ -1,9 +1,8 @@
-#!/usr/bin/bash
+#!/bin/bash
 set -o nounset
 set -o errtrace
 set -e
 set -x
-
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
@@ -23,7 +22,7 @@ cd $SCRIPT_DIR
 cd parent
 $MVN clean install
 cd $SCRIPT_DIR
-$MVN clean install -DskipTests -Dmaven.javadoc.skip -nsu -Pinstall-all-wildfly
+$MVN clean install -DskipTests -Dmaven.javadoc.skip -nsu -Pinstall-all-wildfly -Pdocker
 
 echo "Done"
 

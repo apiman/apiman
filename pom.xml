@@ -548,15 +548,17 @@
             <goals>
               <goal>revision</goal>
             </goals>
+            <phase>initialize</phase>
           </execution>
         </executions>
         <configuration>
+          <injectAllReactorProjects>true</injectAllReactorProjects>
           <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
           <dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
           <dateFormatTimeZone>UTC</dateFormatTimeZone>
           <verbose>false</verbose>
           <generateGitPropertiesFile>false</generateGitPropertiesFile>
-          <skipPoms>true</skipPoms>
+          <skipPoms>false</skipPoms>
           <injectAllReactorProjects>false</injectAllReactorProjects>
           <failOnNoGitDirectory>false</failOnNoGitDirectory>
           <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>

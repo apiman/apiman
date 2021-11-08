@@ -1,26 +1,71 @@
 version: "3.9"
 services:
+    reverse-proxy:
+        image: traefik:v2.5
+        container_name: traefik
+        command: --providers.docker --entrypoints.http.address=:8080 --log.level=DEBUG
+        ports:
+        - "8877:8080"
+        volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+
     keycloak:
+        container_name: keycloak
         image:
-            quay.io/keycloak/keycloak:13.0.0
-        ports: 
-            - "8081:8080"
-            - "8444:8443"
+            quay.io/keycloak/keycloak:15.0.2
         environment:
             KEYCLOAK_USER: admin
             KEYCLOAK_PASSWORD: admin123!
             KEYCLOAK_IMPORT: /tmp/apiman-realm-for-keycloak.json
-            KEYCLOAK_FRONTEND_URL: http://${HOSTNAME}:2772/auth
+            KEYCLOAK_FRONTEND_URL: http://${HOSTNAME}:8877/auth
             PROXY_ADDRESS_FORWARDING: 'true'
-#            KEYCLOAK_LOGLEVEL: DEBUG
+    #            KEYCLOAK_LOGLEVEL: DEBUG
         volumes: 
             - ${PWD}/apiman-realm-for-keycloak.json:/tmp/apiman-realm-for-keycloak.json
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.keycloak.rule=Host(`${HOSTNAME}`)
+            - traefik.http.routers.keycloak.entrypoints=http
+            - traefik.http.routers.keycloak.rule=PathPrefix(`/auth`)
+            - traefik.http.routers.keycloak.service=keycloak-service  
+            - traefik.http.services.keycloak-service.loadbalancer.server.port=8080
+
     apiman:
-        image:
-            apiman/on-wildfly:wildfly-master
-        ports:
-            - "8085:8080"
+        container_name: apiman
+        image: ${APIMAN_IMAGE_ID}
+        # ports:
+        #     - "8085:8080"
         depends_on:
             - keycloak
         environment:
-            APIMAN_AUTH_URL: http://${HOSTNAME}:2772/auth
+            APIMAN_AUTH_URL: http://keycloak:8080/auth
+        labels:
+            - traefik.enable=true
+            # Apiman UI
+            - traefik.http.routers.apiman-ui.rule=Host(`${HOSTNAME}`)
+            - traefik.http.routers.apiman-ui.entrypoints=http
+            - traefik.http.routers.apiman-ui.rule=PathPrefix(`/apimanui`)
+            - traefik.http.routers.apiman-ui.service=apiman-ui-service   
+            - traefik.http.services.apiman-ui-service.loadbalancer.server.port=8080
+            # Apiman Manager API
+            - traefik.http.routers.apiman-api.rule=Host(`${HOSTNAME}`)
+            - traefik.http.routers.apiman-api.entrypoints=http
+            - traefik.http.routers.apiman-api.rule=PathPrefix(`/apiman`)
+            - traefik.http.routers.apiman-api.service=apiman-api-service
+            - traefik.http.services.apiman-api-service.loadbalancer.server.port=8080
+            # Apiman Gateway
+            - traefik.http.routers.apiman-gateway.rule=Host(`${HOSTNAME}`)
+            - traefik.http.routers.apiman-gateway.entrypoints=http
+            - traefik.http.routers.apiman-gateway.rule=PathPrefix(`/apiman-gateway`)
+            - traefik.http.routers.apiman-gateway.service=apiman-gateway-service
+            - traefik.http.services.apiman-gateway-service.loadbalancer.server.port=8080
+            # Apiman Gateway API
+            - traefik.http.routers.apiman-gateway-api.rule=Host(`${HOSTNAME}`)
+            - traefik.http.routers.apiman-gateway-api.entrypoints=http
+            - traefik.http.routers.apiman-gateway-api.rule=PathPrefix(`/apiman-gateway-api`)
+            - traefik.http.routers.apiman-gateway-api.service=apiman-gateway-api-service
+            - traefik.http.services.apiman-gateway-api-service.loadbalancer.server.port=8080
+
+# networks:
+#   proxy:
+#     external: false
