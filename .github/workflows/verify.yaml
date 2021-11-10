@@ -6,7 +6,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master]
+    branches: [3.x]
   pull_request:
     paths-ignore:
       - '.github/**'
@@ -14,7 +14,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master]
+    branches: [3.x]
 
 jobs:
   build-verify:
@@ -23,26 +23,20 @@ jobs:
     if: github.repository_owner == 'Apiman'
     strategy:
       matrix:
-        java: [ 8, 11, 17-ea ]
+        java: [ 11, 17 ]
         integration-suite:
           # Default, empty string to avoid setting
           - name: Default configuration (JPA)
             command: " "
           # Servlet elasticsearch
-          - name: Servlet with Elasticsearch registry
-            command: -Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es
+          - name: Servlet with Elasticsearch gateway
+            command: -Dapiman.gateway-test.config=servlet-es
           # Vert.x in-memory gateway
           - name: Vert.x with in-memory registry
             command: -Dapiman.gateway-test.config=vertx3-mem
           # Vert.x elasticsearch
           - name: Vert.x with Elasticsearch registry
             command: -Dapiman.gateway-test.config=vertx3-es
-          # Vert.x file/static
-          - name: Vert.x with immutable file registry
-            command: -Dapiman.gateway-test.config=vertx3-file
-#           # AMG (API Management Gateway / EAP)
-#           - name: AMG 1
-#             command: -Dapiman.gateway-test.config=amg-1
 
     steps:
       - name: Checkout Code
@@ -103,10 +97,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Set up JDK 8 (for deploying assets, docker builds, etc)
+      - name: Set up JDK 11 (for deploying assets, docker builds, etc)
         uses: actions/setup-java@v1
         with:
-          java-version: 8
+          java-version: 11
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
@@ -120,54 +114,3 @@ jobs:
         env: 
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_DASHBOARD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  publish-snapshots:
-    name: Publish master snapshot artifacts
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
-    needs: [ build-verify ]
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Set up JDK 8 (for deploying assets, docker builds, etc)
-        uses: actions/setup-java@v1
-        with:
-          java-version: 8
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-
-      - name: 'Apiman Parent: Build and deploy POM/BOM & Deploy to OSSRH'
-        run: |
-          cd parent
-          sh ../mvnw -B clean install
-          sh ../mvnw -B deploy
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-
-      - name: 'Apiman: Build and Publish Docker Images & Deploy OSSRH Snapshots'
-        run: |
-          ./mvnw -B clean package docker:build -P docker -DskipTests
-          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker push apiman/on-wildfly:latest
-          
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
-          docker tag apiman/on-wildfly:latest ghcr.io/apiman/on-wildfly:latest
-          docker push ghcr.io/apiman/on-wildfly:latest
-          
-          ./mvnw -B deploy -DskipTests -Dmaven.test.skip=true
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
