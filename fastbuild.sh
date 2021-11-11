@@ -22,7 +22,7 @@ cd $SCRIPT_DIR
 cd parent
 $MVN clean install
 cd $SCRIPT_DIR
-$MVN clean install -DskipTests -Dmaven.javadoc.skip -nsu -Pinstall-all-wildfly -Pdocker
+$MVN clean install -DskipTests -Dmaven.javadoc.skip -nsu -Pinstall-all-wildfly -Pdocker -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
 
 echo "Done"
 
