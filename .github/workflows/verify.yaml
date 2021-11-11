@@ -68,10 +68,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Build Project
-        run: |
-          cd parent && sh ../mvnw -B clean install && cd ..
-          ./mvnw clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
+      - name: Build Project (including /parent)
+        run: ./fastbuild.sh
 
       - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
         run: ./mvnw test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
