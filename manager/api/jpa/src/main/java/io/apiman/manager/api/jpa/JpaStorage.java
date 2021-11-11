@@ -1136,13 +1136,18 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * {@inheritDoc}
      */
     @Override
-    public InputStream getApiDefinition(String orgId, String apiId, String version) throws StorageException {
+    public InputStream getApiDefinition(String orgId, String apiId, String apiVersion) throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT v from ApiDefinitionBean v JOIN v.apiVersion av JOIN av.api api WHERE api.id = :apiId";
-            Query query = entityManager.createQuery(jpql);
-            query.setParameter("apiId", apiId);
-            ApiDefinitionBean apiDef = (ApiDefinitionBean) query.getSingleResult();
+            String jpql = "SELECT v from ApiDefinitionBean v "
+                                  + "JOIN v.apiVersion av "
+                                  + "JOIN av.api api "
+                                  + "WHERE api.id = :apiId "
+                                  + "AND av.version = :apiVersion";
+            TypedQuery<ApiDefinitionBean> query = entityManager.createQuery(jpql, ApiDefinitionBean.class)
+                    .setParameter("apiId", apiId)
+                    .setParameter("apiVersion", apiVersion);
+            ApiDefinitionBean apiDef = query.getSingleResult();
             return new ByteArrayInputStream(apiDef.getData());
         } catch (NoResultException e) {
             return null;
