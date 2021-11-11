@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.beans.policies;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -76,4 +77,20 @@ public class PolicyDefinitionTemplateBean {
         return "PolicyDefinitionTemplateBean [language=" + language + ", template=" + template + "]";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PolicyDefinitionTemplateBean that = (PolicyDefinitionTemplateBean) o;
+        return Objects.equals(language, that.language) && Objects.equals(template, that.template);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(language, template);
+    }
 }

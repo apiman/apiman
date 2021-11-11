@@ -40,6 +40,16 @@ import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.es.beans.ApiDefinitionBean;
 import io.apiman.manager.api.es.beans.PoliciesBean;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.lang3.StringUtils;
@@ -47,11 +57,6 @@ import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-import java.util.*;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -256,7 +261,7 @@ public class EsMarshallingTest {
     public void testMarshallPolicyDefinitionBean() throws Exception {
         PolicyDefinitionBean bean = createBean(PolicyDefinitionBean.class);
         XContentBuilder builder = EsMarshalling.marshall(bean);
-        Assert.assertEquals("{\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"form\":\"FORM\",\"formType\":\"Default\",\"icon\":\"ICON\",\"pluginId\":17,\"policyImpl\":\"POLICYIMPL\",\"deleted\":false,\"templates\":[{\"language\":\"LANGUAGE\",\"template\":\"TEMPLATE\"},{\"language\":\"LANGUAGE\",\"template\":\"TEMPLATE\"}]}", Strings.toString(builder));
+        Assert.assertEquals("{\"id\":\"ID\",\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"form\":\"FORM\",\"formType\":\"Default\",\"icon\":\"ICON\",\"pluginId\":17,\"policyImpl\":\"POLICYIMPL\",\"deleted\":false,\"templates\":[{\"language\":\"LANGUAGE\",\"template\":\"TEMPLATE\"}]}", Strings.toString(builder));
     }
 
     /**
