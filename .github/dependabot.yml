@@ -1,14 +1,62 @@
 version: 2
+
 updates:
+# Master
   - package-ecosystem: "maven"
-    directory: "/" # Location of package manifests
+    target-branch: "master"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "V: Apiman 2"
+      - "dependencies"
+      - "java"
+      
+  - package-ecosystem: "maven"
+    target-branch: "master"
+    directory: "/parent"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: org.eclipse.jetty:jetty-*
+        versions:
+          - "<10"
+    labels:
+      - "V: Apiman 2"
+      - "dependencies"
+      - "java"
+      
+# 3.x 
+  - package-ecosystem: "maven"
+    target-branch: "3.x"
+    directory: "/"
     schedule:
       interval: "daily"
+    labels:
+      - "V: Apiman 3"
+      - "dependencies"
+      - "java"
+  
   - package-ecosystem: "maven"
-    directory: "/parent" # Location of package manifests
+    target-branch: "3.x"
+    directory: "/parent"
     schedule:
       interval: "daily"
     ignore:
       - dependency-name: org.eclipse.jetty:jetty-*
         versions:
-          - ">= 9"
+          - "<10"
+    labels:
+      - "V: Apiman 3"
+      - "dependencies"
+      - "java"
+      
+  -  package-ecosystem: "npm"
+     target-branch: "3.x"
+     directory: "manager/ui/war"
+      schedule:
+      interval: "daily"
+     labels:
+       - "V: Apiman 3"
+       - "dependencies"
+       - "javascript"
