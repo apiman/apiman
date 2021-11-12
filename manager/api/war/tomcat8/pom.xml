@@ -107,7 +107,7 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId> <!-- probably needed on test only -->
-      <version>6.0.22.Final</version>
+      <version>7.0.1.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
