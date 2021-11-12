@@ -559,7 +559,6 @@
           <verbose>false</verbose>
           <generateGitPropertiesFile>false</generateGitPropertiesFile>
           <skipPoms>false</skipPoms>
-          <injectAllReactorProjects>false</injectAllReactorProjects>
           <failOnNoGitDirectory>false</failOnNoGitDirectory>
           <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
           <useNativeGit>false</useNativeGit>
