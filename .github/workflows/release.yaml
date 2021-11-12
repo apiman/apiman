@@ -280,14 +280,12 @@ jobs:
       - name: Commit Changes for Apiman Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
         run: |
           cd apiman
-          git add .
-          git commit -m "Automated commit for Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
+          git commit -am "Automated commit for Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
           git push
       - name: Commit Changes for Apiman Plugins Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
         run: |
           cd plugins
-          git add .
-          git commit -m "Automated commit for Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
+          git commit -am "Automated commit for Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
           git push
 
       # Update project website with new version
