@@ -125,7 +125,7 @@ jobs:
   publish-snapshots:
     name: Publish master snapshot artifacts
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
+    if: startsWith(github.ref, 'refs/heads/') && github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
     needs: [ build-verify ]
 
     steps:
@@ -141,6 +141,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+            
       - name: Set up JDK 11 (for deploying assets, docker builds, etc)
         uses: actions/setup-java@v1
         with:
