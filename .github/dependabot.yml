@@ -9,7 +9,7 @@ updates:
       interval: "weekly"
     labels:
       - "V: Apiman 2"
-      - "dependencies"
+      - "dependency"
       - "java"
       
   - package-ecosystem: "maven"
@@ -23,7 +23,7 @@ updates:
           - "<10"
     labels:
       - "V: Apiman 2"
-      - "dependencies"
+      - "dependency"
       - "java"
       
 # 3.x 
@@ -34,7 +34,7 @@ updates:
       interval: "daily"
     labels:
       - "V: Apiman 3"
-      - "dependencies"
+      - "dependency"
       - "java"
   
   - package-ecosystem: "maven"
@@ -48,7 +48,7 @@ updates:
           - "<10"
     labels:
       - "V: Apiman 3"
-      - "dependencies"
+      - "dependency"
       - "java"
       
   - package-ecosystem: "npm"
@@ -58,5 +58,5 @@ updates:
       interval: "daily"
     labels:
       - "V: Apiman 3"
-      - "dependencies"
+      - "dependency"
       - "javascript"
