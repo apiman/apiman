@@ -51,12 +51,12 @@ updates:
       - "dependencies"
       - "java"
       
-  -  package-ecosystem: "npm"
-     target-branch: "3.x"
-     directory: "manager/ui/war"
-      schedule:
+  - package-ecosystem: "npm"
+    target-branch: "3.x"
+    directory: "manager/ui/war"
+    schedule:
       interval: "daily"
-     labels:
-       - "V: Apiman 3"
-       - "dependencies"
-       - "javascript"
+    labels:
+      - "V: Apiman 3"
+      - "dependencies"
+      - "javascript"
