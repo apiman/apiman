@@ -1,8 +1,8 @@
 ---
 name: Bug report
-about: Create a bug report to help us improve
+about: "\U0001F41E Create a bug report to help us improve Apiman"
 title: ''
-labels: bug
+labels: 'T: Bug'
 assignees: ''
 
 ---
