@@ -29,7 +29,7 @@
       <div class="row">
         <div class="col-md-12" id="dash-container">
 
-          <div class="dash-group">
+          <div class="dash-group" id="org">
             <div class="title">
               <i class="fa fa-shield"></i>
               <span apiman-i18n-key="organizations">Organizations</span>
@@ -49,7 +49,7 @@
             </div>
           </div>
 
-          <div class="dash-group pull-right">
+          <div class="dash-group pull-right" id="apis">
             <div class="title">
               <i class="fa fa-puzzle-piece"></i>
               <span apiman-i18n-key="apis">APIs</span>
@@ -69,7 +69,7 @@
             </div>
           </div>
 
-          <div class="dash-group">
+          <div class="dash-group" id="clients">
             <div class="title">
               <i class="fa fa-gears"></i>
               <span apiman-i18n-key="clients">Client Apps</span>
@@ -88,7 +88,7 @@
             </div>
           </div>
 
-          <div class="dash-group dash-admin-group pull-right" data-field="adminDashPanel" ng-show="isAdmin">
+          <div class="dash-group dash-admin-group pull-right" id="admin" data-field="adminDashPanel" ng-show="isAdmin">
             <div class="title">
               <i class="fa fa-gavel"></i>
               <span apiman-i18n-key="system-administration">System Administration</span>
