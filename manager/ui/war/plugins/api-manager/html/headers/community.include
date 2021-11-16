@@ -56,7 +56,7 @@
         <ul class="list-group">
 
             <!--APIs-->
-            <li class="list-group-item secondary-nav-item-pf" id="sidebar-apis" data-target="#apis-secondary" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
+            <li class="list-group-item secondary-nav-item-pf" id="apiman-sidebar-apis" data-target="#apis-secondary" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
                 <a>
                     <span class="fa fa-puzzle-piece" data-toggle="tooltip" title="APIs"></span>
                     <span class="list-group-item-value" apiman-i18n-key="apis">APIs</span>
@@ -67,22 +67,22 @@
                         <span apiman-i18n-key="apis">APIs</span>
                     </div>
                     <ul class="list-group">
-                        <li class="list-group-item" id="sidebar-apis-manage" data-target="#apis-my_apis-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-apis-manage" data-target="#apis-my_apis-tertiary">
                             <a href="{{ pluginName }}/users/{{ username }}/apis">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.my-apis">My APIs</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-apis-consume" data-target="#apis-all_apis-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-apis-consume" data-target="#apis-all_apis-tertiary">
                             <a href="{{ pluginName }}/browse/apis">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.find-api">All APIs</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-api-catalog" data-target="#apis-catalog-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-apis-catalog" data-target="#apis-catalog-tertiary">
                             <a href="{{ pluginName }}/catalog/api-catalog">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.browse-importable-apis">API Catalog</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-api-new" data-target="#apis-new_api-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-apis-new" data-target="#apis-new_api-tertiary">
                             <a href="{{ pluginName }}/new-api">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.create-api">New API</span>
                             </a>
@@ -92,7 +92,7 @@
             </li>
 
             <!--Clients-->
-            <li class="list-group-item secondary-nav-item-pf" id="sidebar-clients" data-target="#clients-secondary" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
+            <li class="list-group-item secondary-nav-item-pf" id="apiman-sidebar-clients" data-target="#clients-secondary" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
                 <a>
                     <span class="fa fa-gears" data-toggle="tooltip" title="Clients"></span>
                     <span class="list-group-item-value" apiman-i18n-key="client-apps">Clients</span>
@@ -103,17 +103,17 @@
                         <span apiman-i18n-key="client-apps">Clients</span>
                     </div>
                     <ul class="list-group">
-                        <li class="list-group-item" id="sidebar-clients-manage" data-target="#clients-my_clients-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-clients-manage" data-target="#clients-my_clients-tertiary">
                             <a href="{{ pluginName }}/users/{{ username }}/clients">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.my-clients">My Clients</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-clients-new-contract" data-target="#apis-new_contract-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-clients-new-contract" data-target="#apis-new_contract-tertiary">
                             <a href="{{ pluginName }}/new-contract">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.new-contract">New Contract</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-clients-new" data-target="#apis-new_client-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-clients-new" data-target="#apis-new_client-tertiary">
                             <a href="{{ pluginName }}/new-client">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.new-client">New Client</span>
                             </a>
@@ -123,7 +123,7 @@
             </li>
 
             <!--Organizations-->
-            <li class="list-group-item secondary-nav-item-pf" id="sidebar-org" data-target="#orgs-secondary" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
+            <li class="list-group-item secondary-nav-item-pf" id="apiman-sidebar-orgs" data-target="#orgs-secondary" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
                 <a>
                     <span class="fa fa-shield" data-toggle="tooltip" title="Organizations"></span>
                     <span class="list-group-item-value" apiman-i18n-key="organizations">Organizations</span>
@@ -134,17 +134,17 @@
                         <span apiman-i18n-key="organizations">Organizations</span>
                     </div>
                     <ul class="list-group">
-                        <li class="list-group-item" id="sidebar-org-my-orgs" data-target="#clients-my_clients-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-orgs-my-orgs" data-target="#clients-my_clients-tertiary">
                             <a href="{{ pluginName }}/users/{{ username }}/orgs">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.my-orgs">My Organizations</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-org-browse" data-target="#apis-new_contract-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-orgs-browse" data-target="#apis-new_contract-tertiary">
                             <a href="{{ pluginName }}/browse/orgs">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.browse-orgs">All Organizations</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-org-new" data-target="#apis-new_client-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-orgs-new" data-target="#apis-new_client-tertiary">
                             <a href="{{ pluginName }}/new-org" ng-hide="noCreateOrg || !isAdmin">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.create-new-org">New Organization</span>
                             </a>
@@ -154,7 +154,7 @@
             </li>
 
             <!--Administration-->
-            <li class="list-group-item secondary-nav-item-pf" id="sidebar-admin" data-target="#admin-secondary" ng-show="isAdmin" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
+            <li class="list-group-item secondary-nav-item-pf" id="apiman-sidebar-admin" data-target="#admin-secondary" ng-show="isAdmin" ng-mouseover="onMouseEnter($event)" ng-mouseleave="onMouseLeave()">
                 <a>
                     <span class="fa fa-gavel" data-toggle="tooltip" title="Administration"></span>
                     <span class="list-group-item-value" apiman-i18n-key="system-administration">Administration</span>
@@ -166,27 +166,27 @@
                         <span apiman-i18n-key="system-administration">Administration</span>
                     </div>
                     <ul class="list-group">
-                        <li class="list-group-item" id="sidebar-admin-roles" data-target="#admin-manage_roles-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-admin-roles" data-target="#admin-manage_roles-tertiary">
                             <a href="{{ pluginName }}/admin/roles">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.manage-roles">Manage Roles</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-admin-policyDefs" data-target="#admin-manage_policies-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-admin-policyDefs" data-target="#admin-manage_policies-tertiary">
                             <a href="{{ pluginName }}/admin/policyDefs">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.manage-policyDefs">Manage Policy Definitions</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-admin-gateways" data-target="#admin-manage_gateway-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-admin-gateways" data-target="#admin-manage_gateway-tertiary">
                             <a href="{{ pluginName }}/admin/gateways">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.manage-gateways">Manage Gateways</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-admin-plugins" data-target="#admin-manage_plugins-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-admin-plugins" data-target="#admin-manage_plugins-tertiary">
                             <a href="{{ pluginName }}/admin/plugins">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.manage-plugins">Manage Plugins</span>
                             </a>
                         </li>
-                        <li class="list-group-item" id="sidebar-admin-export" data-target="#admin-manage_export-tertiary">
+                        <li class="list-group-item" id="apiman-sidebar-admin-export" data-target="#admin-manage_export-tertiary">
                             <a href="{{ pluginName }}/admin/export">
                                 <span class="list-group-item-value" apiman-i18n-key="export-import-data">Export&sol;Import Data</span>
                             </a>
