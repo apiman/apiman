@@ -12,8 +12,8 @@ describe('Apiman e2e UI smoke test', () => {
     });
 
     it('Create the Organization via NavBar and edit the description', () => {
-        cy.get('[title="Organizations"]').click();
-        cy.contains('New Organization').click();
+        cy.get('#apiman-sidebar-orgs').trigger('mouseover');
+        cy.get('#apiman-sidebar-orgs-new').click();
         cy.get('.btn-primary').should('be.disabled');
         cy.get('#apiman-entityname').type('TestOrganization');
         cy.get('#apiman-description').type('Description of TestOrganization');
@@ -39,8 +39,8 @@ describe('Apiman e2e UI smoke test', () => {
     })
 
     it('Recreate the Organization via Button', () => {
-        cy.get('[title="Organizations"]').click();
-        cy.contains('My Organizations').click();
+        cy.get('#apiman-sidebar-orgs').trigger('mouseover');
+        cy.get('#apiman-sidebar-orgs-my-orgs').click();
         cy.get('#new-org').click();
         cy.get('.btn-primary').should('be.disabled');
         cy.get('#apiman-entityname').click();
@@ -104,8 +104,8 @@ describe('Apiman e2e UI smoke test', () => {
     })
 
     it('Create the API via NavBar and edit the description', () => {
-        cy.get('[title="APIs"]').click();
-        cy.contains('New API').click();
+        cy.get('#apiman-sidebar-apis').trigger('mouseover');
+        cy.get('#apiman-sidebar-apis-new').click();
         cy.get('#create-api').should('be.disabled');
         cy.get('#apiman-entityname').type('TestApi');
         cy.get('#apiman-description').click();
@@ -157,8 +157,8 @@ describe('Apiman e2e UI smoke test', () => {
     })
 
     it('Create the Client via NavBar and edit the description', () => {
-        cy.get('[title="Clients"]').click();
-        cy.contains('New Client').click();
+        cy.get('#apiman-sidebar-clients').trigger('mouseover');
+        cy.get('#apiman-sidebar-clients-new').click();
         cy.get('#apiman-entityname').type('TestClient');
         cy.get('#apiman-description').type('Description of TestClient');
         cy.get('#create-client').click();
