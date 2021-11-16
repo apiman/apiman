@@ -9,7 +9,6 @@ import io.apiman.manager.api.jpa.AbstractJpaStorage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
@@ -49,6 +48,7 @@ import org.apache.commons.lang3.StringUtils;
 public class TransactionalOutboxService extends AbstractJpaStorage {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(TransactionalOutboxService.class);
     private static final ObjectMapper OM = new ObjectMapper();
+    private boolean outboxActive = true;
 
     public TransactionalOutboxService() {}
 
@@ -68,6 +68,11 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
      * @param apimanEvent any {@link IVersionedApimanEvent} (usually fired by CDI observable subsystem).
      */
     public void onEvent(@Observes IVersionedApimanEvent apimanEvent) {
+        if (!outboxActive) {
+            LOGGER.trace("Outbox has been set as inactive, skipping event: {0}", apimanEvent);
+            return;
+        }
+
         ApimanEventHeaders headers = apimanEvent.getHeaders();
         String eventType = getType(apimanEvent);
 
@@ -83,6 +88,27 @@ public class TransactionalOutboxService extends AbstractJpaStorage {
         em.persist(outboxEvent);
         em.remove(outboxEvent);
         LOGGER.debug("Persisted event to transactional outbox & immediately deleted {0}", outboxEvent);
+    }
+
+    /**
+     * Disable the outbox. Any events received whilst disabled will <strong>not</strong> be inserted. Any listeners to the outbox will not receive updates.
+     * <p>
+     * It may be useful to disable the outbox when performing any operation which may replay existing data (for example, running an import from a file) where we don't
+     * want this to be emitted beyond the boundaries of the system.
+     */
+    public TransactionalOutboxService disable() {
+        this.outboxActive = false;
+        return this;
+    }
+
+    /**
+     * Enable the outbox. Any events received whilst will <strong>will</strong> be inserted.
+     * <p>
+     * The outbox is enabled by default.
+     */
+    public TransactionalOutboxService enable() {
+        this.outboxActive = true;
+        return this;
     }
 
     // Serialize into Jackson JsonNode. Hibernate can serialize this into JSONB.

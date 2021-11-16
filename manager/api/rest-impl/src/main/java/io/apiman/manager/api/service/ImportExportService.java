@@ -1,6 +1,8 @@
 package io.apiman.manager.api.service;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.events.EventService;
 import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
 import io.apiman.manager.api.exportimport.read.IImportReader;
@@ -24,20 +26,36 @@ import org.apache.commons.io.IOUtils;
 @Transactional
 @ApplicationScoped
 public class ImportExportService {
-
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ImportExportService.class);
     private DataMigrator migrator;
     private StorageImportDispatcher importer;
+    private EventService eventService;
 
     @Inject
-    public ImportExportService(DataMigrator migrator, StorageImportDispatcher importer) {
+    public ImportExportService(DataMigrator migrator, StorageImportDispatcher importer, EventService eventService) {
         this.migrator = migrator;
         this.importer = importer;
+        this.eventService = eventService;
     }
 
     public ImportExportService() {
     }
 
     public void fullImport(File importFile, IApimanLogger logger) throws IOException {
+        eventService.lock();
+        try {
+            eventService.deactivate();
+            LOGGER.debug("Acquired exclusive lock on EventService and have deactivated event dispatch (all events will be dropped)");
+            doImport(importFile, logger);
+        } finally {
+            eventService.activate();
+            eventService.unlock();
+            LOGGER.debug("Unlocked EventService and re-enabled event dispatch (events will now be sent)");
+        }
+    }
+
+    private void doImport(File importFile, IApimanLogger logger) throws IOException {
+
         File migratedImportFile = File.createTempFile("apiman_import_migrated", ".json"); //$NON-NLS-1$ //$NON-NLS-2$
         migratedImportFile.deleteOnExit();
 
