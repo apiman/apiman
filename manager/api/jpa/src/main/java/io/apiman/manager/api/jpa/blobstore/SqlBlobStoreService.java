@@ -50,7 +50,7 @@ public class SqlBlobStoreService implements IBlobStore {
     private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SqlBlobStoreService.class);
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private BlobStoreRepository blobStoreRepository;
-    private BlobMapper mapper = BlobMapper.INSTANCE;
+    private final BlobMapper mapper = BlobMapper.INSTANCE;
 
     @Inject
     public SqlBlobStoreService(BlobStoreRepository blobStoreRepository) {
