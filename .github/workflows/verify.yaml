@@ -48,17 +48,11 @@ jobs:
           fetch-depth: 0
 
       - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
+          distribution: adopt
           java-version: ${{ matrix.java }}
-
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -105,8 +99,10 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Set up JDK 11 (for deploying assets, docker builds, etc)
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
+          distribution: adopt
+          cache: maven
           java-version: 11
           server-id: ossrh
           server-username: MAVEN_USERNAME
