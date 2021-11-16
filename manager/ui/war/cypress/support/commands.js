@@ -32,8 +32,8 @@ Cypress.Commands.add('typeLogin', (user, pw) => {
 })
 
 Cypress.Commands.add('visitTestOrganization', () => {
-    cy.get('[title="Organizations"]').click();
-    cy.contains('My Organizations').click();
+    cy.get('#apiman-sidebar-orgs').trigger('mouseover');
+    cy.get('#apiman-sidebar-orgs-my-orgs').click();
     cy.contains('TestOrganization').click();
 })
 
