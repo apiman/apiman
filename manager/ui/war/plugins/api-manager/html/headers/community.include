@@ -194,6 +194,15 @@
                     </ul>
                 </div>
             </li>
+             <!--Notifications-->
+            <li class="list-group-item" data-target="#admin-secondary">
+                <a href="{{ pluginName }}/notifications">
+                    <span class="fa fa-bell" data-toggle="tooltip" title="Notifications"></span>
+                    <span class="list-group-item-value" apiman-i18n-key="notifications">Notifications
+                        <span ng-show="userNotificationCount > 0">{{ '(' + userNotificationCount + ')'}}</span>
+                    </span>
+                </a>
+            </li>
         </ul>
     </div>
 </div>
