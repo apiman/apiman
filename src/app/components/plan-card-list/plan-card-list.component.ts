@@ -25,8 +25,7 @@ export class PlanCardListComponent implements OnInit {
     private planService: PlanService,
     private policyService: PolicyService,
     private signUpService: SignUpService,
-    private router: Router,
-    private keycloak: KeycloakService
+    private router: Router
   ) {}
 
   planPoliciesMap = new Map<string, IPolicyExt[]>();
@@ -41,8 +40,6 @@ export class PlanCardListComponent implements OnInit {
   }
 
   onSignUp(plan: IApiPlanSummary): void {
-    this.checkIfUserIsLoggedIn();
-
     const policies: IPolicyExt[] = [];
     const planIdVersionMapped = plan.planId + ':' + plan.version;
     const foundPlanPolicies = this.planPoliciesMap.get(planIdVersionMapped);
@@ -109,18 +106,6 @@ export class PlanCardListComponent implements OnInit {
         );
       } else {
         this.planPoliciesMap.set(planIdVersionMapped, [extendedPolicy]);
-      }
-    });
-  }
-
-  /**
-   * Checks if the user is logged in and redirects to login if not logged in
-   * @private
-   */
-  private checkIfUserIsLoggedIn(): void {
-    void this.keycloak.isLoggedIn().then((loggedIn) => {
-      if (!loggedIn) {
-        void this.keycloak.login();
       }
     });
   }

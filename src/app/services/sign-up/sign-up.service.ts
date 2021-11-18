@@ -7,10 +7,11 @@ import { IPolicyExt } from '../../interfaces/IPolicy';
   providedIn: 'root'
 })
 export class SignUpService {
-  private signUpInfo: ISignUpInfo = {} as ISignUpInfo;
-
+  private readonly key = 'APIMAN_NEW_CONTRACT_DETAILS';
   public getSignUpInfo(): ISignUpInfo {
-    return this.signUpInfo;
+    return JSON.parse(
+      window.sessionStorage.getItem(this.key) as string
+    ) as ISignUpInfo;
   }
 
   public setSignUpInfo(
@@ -20,12 +21,15 @@ export class SignUpService {
     policies: IPolicyExt[],
     docsAvailable: boolean
   ): void {
-    this.signUpInfo = {
-      apiVersion: apiVersion,
-      plan: plan,
-      organizationId: orgId,
-      policies: policies,
-      docsAvailable: docsAvailable
-    };
+    window.sessionStorage.setItem(
+      this.key,
+      JSON.stringify({
+        apiVersion: apiVersion,
+        plan: plan,
+        organizationId: orgId,
+        policies: policies,
+        docsAvailable: docsAvailable
+      })
+    );
   }
 }
