@@ -1,5 +1,6 @@
 html {
-  overflow: auto;
+  /*Disable overflow to keep header fixed*/
+  overflow: hidden;
 }
 body {
   line-height: normal;
