@@ -33,12 +33,11 @@ export class MarketplaceApiDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getApiVersions();
-    this.setUpHero();
   }
 
   private setUpHero() {
     this.heroService.setUpHero({
-      title: this.route.snapshot.paramMap.get('apiId') ?? '',
+      title: this.apis[0].api.name,
       subtitle: ''
     });
   }
@@ -79,6 +78,7 @@ export class MarketplaceApiDetailsComponent implements OnInit {
       .subscribe((apiVersions) => {
         this.spinnerService.stopWaiting();
         this.apis = apiVersions;
+        this.setUpHero();
         this.getApiImage();
       });
   }
