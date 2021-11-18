@@ -8,7 +8,7 @@ describe('SwaggerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SwaggerComponent],
+      declarations: [SwaggerComponent]
     }).compileComponents();
   });
 

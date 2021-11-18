@@ -40,28 +40,39 @@ import { GaugeChartComponent } from './components/charts/gauge-chart/gauge-chart
 import { IConfig } from './interfaces/IConfig';
 import { ApprovalComponent } from './components/approval/approval.component';
 import { ThemeService } from './services/theme/theme.service';
-import {TocComponent} from "./components/toc/toc.component";
-import {PolicyCardLightComponent} from "./components/policy-card-light/policy-card-light.component";
-import {NoDataComponent} from "./components/no-data/no-data.component";
-import {UnregisterClientComponent} from "./components/dialogs/unregister-client/unregister-client.component";
-import {ImgOrIconSelectorComponent} from "./components/img-or-icon-selector/img-or-icon-selector.component";
+import { TocComponent } from './components/toc/toc.component';
+import { PolicyCardLightComponent } from './components/policy-card-light/policy-card-light.component';
+import { NoDataComponent } from './components/no-data/no-data.component';
+import { UnregisterClientComponent } from './components/dialogs/unregister-client/unregister-client.component';
+import { ImgOrIconSelectorComponent } from './components/img-or-icon-selector/img-or-icon-selector.component';
 
-export function initializeApp(configService: ConfigService, devPortalInitializer: InitializerService, keycloakHelper: KeycloakHelperService, themeService: ThemeService): () => Promise<any> {
-  return () => new Promise((resolve, reject) => {
-    /* At first fetch the configuration file */
-    configService.readAndEvaluateConfig().then((config: IConfig) => {
-
-      /* After you can list the promises, which depend on the config here */
-      return Promise.all([devPortalInitializer.initLanguage(), keycloakHelper.initKeycloak(), themeService.initTheme(config.theme)]).then(() => {
-        resolve(true);
-      }).catch((e: Error) => {
-        reject(e);
+export function initializeApp(
+  configService: ConfigService,
+  devPortalInitializer: InitializerService,
+  keycloakHelper: KeycloakHelperService,
+  themeService: ThemeService
+): () => Promise<boolean> {
+  return () =>
+    new Promise((resolve, reject) => {
+      /* At first fetch the configuration file */
+      void configService.readAndEvaluateConfig().then((config: IConfig) => {
+        /* After you can list the promises, which depend on the config here */
+        return Promise.all([
+          devPortalInitializer.initLanguage(),
+          keycloakHelper.initKeycloak(),
+          themeService.initTheme(config.theme)
+        ])
+          .then(() => {
+            resolve(true);
+          })
+          .catch((e: Error) => {
+            reject(e);
+          });
       });
     });
-  })
 }
 
-export function createTranslateLoader(http: HttpClient) {
+export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
@@ -104,7 +115,7 @@ export function createTranslateLoader(http: HttpClient) {
     AppRoutingModule,
     BrowserAnimationsModule,
     MarkdownModule.forRoot({
-      sanitize: SecurityContext.NONE,
+      sanitize: SecurityContext.NONE
     }),
     FormsModule,
     HttpClientModule,
@@ -113,11 +124,11 @@ export function createTranslateLoader(http: HttpClient) {
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
-        deps: [HttpClient],
-      },
+        deps: [HttpClient]
+      }
     }),
     ReactiveFormsModule,
-    NgxChartsModule,
+    NgxChartsModule
   ],
   providers: [
     {
@@ -128,10 +139,10 @@ export function createTranslateLoader(http: HttpClient) {
         ConfigService,
         InitializerService,
         KeycloakHelperService,
-        ThemeService,
-      ],
-    },
+        ThemeService
+      ]
+    }
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

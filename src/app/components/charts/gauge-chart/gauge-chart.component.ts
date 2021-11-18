@@ -1,11 +1,11 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { IGaugeChartData } from '../../../interfaces/IGaugeChartData';
 import { LegendPosition } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-gauge-chart',
   templateUrl: './gauge-chart.component.html',
-  styleUrls: ['./gauge-chart.component.scss'],
+  styleUrls: ['./gauge-chart.component.scss']
 })
 export class GaugeChartComponent implements OnInit, OnChanges {
   @Input() gaugeData!: IGaugeChartData;
@@ -15,9 +15,9 @@ export class GaugeChartComponent implements OnInit, OnChanges {
   data: { name: string; value: number }[] = [{ name: '', value: 0 }];
   legend = false;
   legendPosition = LegendPosition.Below;
-  colorScheme?: any;
+  colorScheme = '';
 
-  disableValueLabel = () => '';
+  disableValueLabel = (): string => '';
 
   ngOnInit(): void {
     this.getPrimaryColor();
@@ -26,7 +26,9 @@ export class GaugeChartComponent implements OnInit, OnChanges {
 
   private setupChart() {
     if (this.gaugeData) {
-      this.data = [{name: 'Currently Used', value: this.gaugeData.currentVal}]
+      this.data = [
+        { name: 'Currently Used', value: this.gaugeData.currentVal }
+      ];
     }
   }
 
@@ -39,14 +41,13 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     document.body.appendChild(p);
     const color = getComputedStyle(p).color;
     document.body.removeChild(p);
-    this.colorScheme = { domain: [color] };
+    this.colorScheme = color;
   }
 
   /**
    * Because the policy probes are loaded async we have to listen to the changes and update the diagram
-   * @param changes
    */
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.setupChart();
   }
 }

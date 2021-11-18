@@ -8,7 +8,7 @@ describe('MarketplaceApiDescriptionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MarketplaceApiDescriptionComponent],
+      declarations: [MarketplaceApiDescriptionComponent]
     }).compileComponents();
   });
 

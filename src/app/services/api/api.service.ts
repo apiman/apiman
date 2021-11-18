@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { BackendService } from '../backend/backend.service';
-import {Observable, of, throwError} from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, retry, switchMap } from 'rxjs/operators';
 import {
   IApiSummary,
   IApiVersion,
   IApiVersionSummary,
   ISearchCriteria,
-  ISearchResultsApiSummary,
+  ISearchResultsApiSummary
 } from '../../interfaces/ICommunication';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ApiService {
   constructor(private backendService: BackendService) {}
@@ -24,17 +25,23 @@ export class ApiService {
     orgId: string,
     apiId: string
   ): Observable<IApiVersionSummary[]> {
-    return this.backendService
-      .getApiVersionSummaries(orgId, apiId)
-      .pipe(retry(1), catchError(this.handleError));
+    return (
+      this.backendService
+        .getApiVersionSummaries(orgId, apiId)
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        .pipe(retry(1), catchError(this.handleError))
+    );
   }
 
   searchApis(
     searchCriteria: ISearchCriteria
   ): Observable<ISearchResultsApiSummary> {
-    return this.backendService
-      .searchApis(searchCriteria)
-      .pipe(retry(1), catchError(this.handleError));
+    return (
+      this.backendService
+        .searchApis(searchCriteria)
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        .pipe(retry(1), catchError(this.handleError))
+    );
   }
 
   getApiVersion(
@@ -74,7 +81,7 @@ export class ApiService {
       );
   }
 
-  handleError(error: any): Observable<never> {
+  handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       // client-side error

@@ -8,9 +8,8 @@ describe('NoDataComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NoDataComponent ]
-    })
-    .compileComponents();
+      declarations: [NoDataComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

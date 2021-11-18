@@ -1,7 +1,7 @@
 <div class="container">
   <form>
     <mat-form-field *ngIf="organizations.length > 1" class="mr-20">
-      <mat-label>{{ "COMMON.ORGANIZATION" | translate }}</mat-label>
+      <mat-label>{{ 'COMMON.ORGANIZATION' | translate }}</mat-label>
       <mat-select [(ngModel)]="organizationId" name="orgSelect">
         <mat-option *ngFor="let org of organizations" [value]="org.id">
           {{ org.name }}
@@ -9,26 +9,30 @@
       </mat-select></mat-form-field
     >
     <mat-form-field>
-      <mat-label>{{ "COMMON.SEARCH" | translate }}</mat-label>
+      <mat-label>{{ 'COMMON.SEARCH' | translate }}</mat-label>
       <input
         matInput
         [(ngModel)]="clientName"
         name="input"
-        (keyup)="applyFilter($event)"
-      />
+        (keyup)="applyFilter($event)" />
     </mat-form-field>
   </form>
-  <button mat-raised-button color="primary" class="ml-20" [disabled]="isCreateButtonDisabled()" (click)="addClient()">
-    {{ "COMMON.CREATE" | translate }}
+  <button
+    mat-raised-button
+    color="primary"
+    class="ml-20"
+    [disabled]="isCreateButtonDisabled()"
+    (click)="addClient()">
+    {{ 'COMMON.CREATE' | translate }}
   </button>
 </div>
 
-<p class="primary">{{ "CLIENT_CREATE.SELECT" | translate }}</p>
+<p class="primary">{{ 'CLIENT_CREATE.SELECT' | translate }}</p>
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z2 mt-20 mb-20">
   <!-- Org Name Column - only displayed if user has more than 1 -->
   <ng-container matColumnDef="org-name">
     <th mat-header-cell *matHeaderCellDef>
-      {{ "COMMON.ORGANIZATION" | translate }}
+      {{ 'COMMON.ORGANIZATION' | translate }}
     </th>
     <td mat-cell *matCellDef="let element">
       <span [class.primary]="clickedRows.has(element)">{{
@@ -40,7 +44,7 @@
   <!-- Name Column -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
-      {{ "COMMON.APPLICATION" | translate }}
+      {{ 'COMMON.APPLICATION' | translate }}
     </th>
     <td mat-cell *matCellDef="let element">
       <span [class.primary]="clickedRows.has(element)">{{ element.name }}</span>
@@ -51,11 +55,10 @@
   <tr
     mat-row
     *matRowDef="let row; columns: displayedColumns"
-    (click)="clickClient(row)"
-  ></tr>
+    (click)="clickClient(row)"></tr>
   <tr class="mat-row" *matNoDataRow>
     <td class="mat-cell" colspan="2">
-      {{ "COMMON.NO_DATA_FOUND" | translate }}
+      {{ 'COMMON.NO_DATA_FOUND' | translate }}
     </td>
   </tr>
 </table>

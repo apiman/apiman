@@ -6,23 +6,26 @@
     <div class="api-card-title primary">{{ api.name }}</div>
   </div>
   <mat-card-content class="api-card-content">
-    <p *ngIf="api.description; else noDescription" class="content-text">{{ api.description }}</p>
+    <p *ngIf="api.description; else noDescription" class="content-text">
+      {{ api.description }}
+    </p>
     <ng-template #noDescription>
       <app-no-data [text]="'MPLACE.NO_DESC' | translate"></app-no-data>
     </ng-template>
   </mat-card-content>
   <div>
     <mat-card-actions class="api-card-actions">
-      <a *ngIf="api.docsAvailable"
-        [routerLink]="['/swagger', api.organizationId, api.id, api.latestVersion]"
-        target="_blank"
-      >
-        <button
-          mat-raised-button
-          color="primary"
-          class="api-card-button"
-        >
-          {{ "COMMON.API_DOCS" | translate }}
+      <a
+        *ngIf="api.docsAvailable"
+        [routerLink]="[
+          '/swagger',
+          api.organizationId,
+          api.id,
+          api.latestVersion
+        ]"
+        target="_blank">
+        <button mat-raised-button color="primary" class="api-card-button">
+          {{ 'COMMON.API_DOCS' | translate }}
         </button>
       </a>
 
@@ -30,9 +33,8 @@
         mat-raised-button
         color="primary"
         class="api-card-button"
-        [routerLink]="['/api-details', api.organizationId, api.id]"
-      >
-        {{ "MPLACE.LEARN_MORE" | translate }}
+        [routerLink]="['/api-details', api.organizationId, api.id]">
+        {{ 'MPLACE.LEARN_MORE' | translate }}
       </button>
     </mat-card-actions>
   </div>

@@ -1,16 +1,23 @@
 <div
   #heroImage
   id="hero-image"
-  [ngClass]="{ 'hero-large': heroService.hero.large }"
->
+  [ngClass]="{ 'hero-large': heroService.hero.large }">
   <div id="hero-overlay">
     <div #heroOverlay id="hero-text">
       <h1 class="mt-40" #heroTitle>{{ heroService.hero.title }}</h1>
       <p #heroSubtitle>{{ heroService.hero.subtitle }}</p>
     </div>
     <div id="hero-btn">
-      <button #loginBtn (click)="login()" [hidden]="loggedIn" id="login-btn">{{'COMMON.LOGIN' | translate}}</button>
-      <button #logoutBtn (click)="logout()" [hidden]="!loggedIn" id="logout-btn">{{'COMMON.LOGOUT' | translate}}</button>
+      <button #loginBtn (click)="login()" [hidden]="loggedIn" id="login-btn">
+        {{ 'COMMON.LOGIN' | translate }}
+      </button>
+      <button
+        #logoutBtn
+        (click)="logout()"
+        [hidden]="!loggedIn"
+        id="logout-btn">
+        {{ 'COMMON.LOGOUT' | translate }}
+      </button>
     </div>
   </div>
 </div>

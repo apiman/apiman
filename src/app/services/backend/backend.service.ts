@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {ConfigService} from '../config/config.service';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ConfigService } from '../config/config.service';
 import {
   IAction,
   IApi,
@@ -14,7 +14,8 @@ import {
   IClientSummary,
   IClientVersionSummary,
   IContract,
-  IContractSummary, ICurrentUser,
+  IContractSummary,
+  ICurrentUser,
   INewContract,
   INewOrganization,
   IOrganization,
@@ -25,8 +26,9 @@ import {
   ISearchResultsApiSummary,
   IUserPermissions
 } from '../../interfaces/ICommunication';
-import {IPolicySummaryExt} from '../../interfaces/IPolicySummaryExt';
-import {KeycloakHelperService} from '../keycloak-helper/keycloak-helper.service';
+import { IPolicySummaryExt } from '../../interfaces/IPolicySummaryExt';
+import { KeycloakHelperService } from '../keycloak-helper/keycloak-helper.service';
+import { IPolicyProbe } from '../../interfaces/IPolicy';
 
 @Injectable({
   providedIn: 'root'
@@ -51,14 +53,23 @@ export class BackendService {
   /**
    * Searches apis
    */
-  public searchApis(searchCriteria: ISearchCriteria): Observable<ISearchResultsApiSummary> {
+  public searchApis(
+    searchCriteria: ISearchCriteria
+  ): Observable<ISearchResultsApiSummary> {
     const path = 'devportal/apis/search';
-    return this.http.post(this.generateUrl(path), searchCriteria, this.httpOptions) as Observable<ISearchResultsApiSummary>;
+    return this.http.post(
+      this.generateUrl(path),
+      searchCriteria,
+      this.httpOptions
+    ) as Observable<ISearchResultsApiSummary>;
   }
 
   public getFeaturedApis(): Observable<IApiSummary[]> {
     const path = 'devportal/apis/featured';
-    return this.http.get(this.generateUrl(path), this.httpOptions) as Observable<IApiSummary[]>;
+    return this.http.get(
+      this.generateUrl(path),
+      this.httpOptions
+    ) as Observable<IApiSummary[]>;
   }
 
   /**
@@ -261,9 +272,12 @@ export class BackendService {
     organizationId: string,
     apiId: string,
     apiVersion: string
-  ): Observable<any> {
+  ): Observable<never> {
     const path = `devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
-    return this.http.head(this.generateUrl(path), this.httpOptions);
+    return this.http.head(
+      this.generateUrl(path),
+      this.httpOptions
+    ) as Observable<never>;
   }
 
   public getPermissions(): Observable<IUserPermissions> {
@@ -296,25 +310,32 @@ export class BackendService {
     return this.http.delete<void>(this.generateUrl(path), this.httpOptions);
   }
 
-  public deleteClient(organizationId: string, clientId: string) {
-    console.log('deleteClient');
-
+  public deleteClient(
+    organizationId: string,
+    clientId: string
+  ): Observable<void> {
     const path = `organizations/${organizationId}/clients/${clientId}`;
     return this.http.delete<void>(this.generateUrl(path), this.httpOptions);
   }
 
-  public getPolicyProbe(contract: IContract, policy: IPolicy): Observable<any> {
+  public getPolicyProbe(
+    contract: IContract,
+    policy: IPolicy
+  ): Observable<IPolicyProbe[]> {
     const path = `organizations/${contract.client.client.organization.id}/clients/${contract.client.id}/versions/${contract.client.version}/contracts/${contract.id}/policies/${policy.id}`;
     return this.http.post(
       this.generateUrl(path),
-      {apiKey: contract.client.apikey},
+      { apiKey: contract.client.apikey },
       this.httpOptions
-    ) as Observable<any>;
+    ) as Observable<IPolicyProbe[]>;
   }
 
-  public getCurrentUser() {
+  public getCurrentUser(): Observable<ICurrentUser> {
     const path = 'users/currentuser/info';
-    return this.http.get<ICurrentUser>(this.generateUrl(path), this.httpOptions);
+    return this.http.get<ICurrentUser>(
+      this.generateUrl(path),
+      this.httpOptions
+    );
   }
 
   /********* Helper **********/

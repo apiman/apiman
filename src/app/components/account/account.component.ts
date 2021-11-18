@@ -7,7 +7,7 @@ import { KeycloakProfile } from 'keycloak-js';
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
-  styleUrls: ['./account.component.scss'],
+  styleUrls: ['./account.component.scss']
 })
 export class AccountComponent implements OnInit {
   public userProfile: KeycloakProfile | null = null;
@@ -18,19 +18,19 @@ export class AccountComponent implements OnInit {
     private keycloakHelper: KeycloakHelperService
   ) {}
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
     this.setUpHero();
     this.userProfile = await this.keycloakHelper.getUserProfile();
   }
 
   private setUpHero() {
     this.heroService.setUpHero({
-      title: this.translator.instant('ACCOUNT.TITLE'),
-      subtitle: this.translator.instant('ACCOUNT.SUBTITLE'),
+      title: this.translator.instant('ACCOUNT.TITLE') as string,
+      subtitle: this.translator.instant('ACCOUNT.SUBTITLE') as string
     });
   }
 
-  public logout() {
+  public logout(): void {
     this.keycloakHelper.logout();
   }
 }

@@ -1,4 +1,4 @@
-import {IPolicySummary} from "./ICommunication";
+import { IPolicySummary } from './ICommunication';
 
 export interface IPolicySummaryExt extends IPolicySummary {
   planId: string;

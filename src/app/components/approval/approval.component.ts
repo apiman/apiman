@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-approval',
   templateUrl: './approval.component.html',
-  styleUrls: ['./approval.component.scss'],
+  styleUrls: ['./approval.component.scss']
 })
 export class ApprovalComponent implements OnInit {
   constructor(
@@ -19,7 +19,8 @@ export class ApprovalComponent implements OnInit {
 
   private setUpHero() {
     this.heroService.setUpHero({
-      title: this.translator.instant('APPROVAL.APPROVAL'),
+      title: this.translator.instant('APPROVAL.APPROVAL') as string,
+      subtitle: ''
     });
   }
 }

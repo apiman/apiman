@@ -3,8 +3,7 @@
   <div class="align">
     <span
       class="footer-links"
-      *ngFor="let link of footer.links; let last = last"
-    >
+      *ngFor="let link of footer.links; let last = last">
       <a *ngIf="link.openInNewTab" [href]="link.link" target="_blank">
         <span>{{ link.name }}</span>
       </a>

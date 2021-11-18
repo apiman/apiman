@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class SpinnerService {
   public waiting = false;
@@ -12,23 +12,23 @@ export class SpinnerService {
    * Start waiting and show spinner
    */
   public startWaiting(): void {
-    this.setWaiting(true)
+    this.setWaiting(true);
   }
 
   /**
    * Stop waiting and hide spinner
    */
   public stopWaiting(): void {
-    this.setWaiting(false)
+    this.setWaiting(false);
   }
 
   /**
    * Because of change detection we need a timeout, otherwise console would show several errors
    * @param waiting
    */
-  setWaiting(waiting: boolean){
+  setWaiting(waiting: boolean): void {
     setTimeout(() => {
       this.waiting = waiting;
-    })
+    });
   }
 }

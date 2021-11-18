@@ -13,14 +13,14 @@ export interface IConfig {
 export interface IHero {
   title: string;
   subtitle: string;
-  heroImgUrl: string;
-  large: boolean;
-  fontColor: {
+  heroImgUrl?: string;
+  large?: boolean;
+  fontColor?: {
     title: string;
     subtitle: string;
   };
-  overlayColor: string;
-  buttonColor: {
+  overlayColor?: string;
+  buttonColor?: {
     login: string;
     logout: string;
   };

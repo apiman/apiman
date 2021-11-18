@@ -1,5 +1,3 @@
-import { statusColorMap } from './IStatus';
-
 export interface IAction {
   type:
     | 'publishAPI'
@@ -225,7 +223,9 @@ export interface IAuditEntry {
 }
 
 export interface ISearchResults {
-  beans: object[];
+  /*Don't use `object` as a type. The `object` type is currently hard to use ([see this issue](https://github.com/microsoft/TypeScript/issues/21732)).
+  Consider using `Record<string, unknown>` instead, as it allows you to more easily inspect and use the keys  @typescript-eslint/ban-types*/
+  beans: Record<string, unknown>;
 
   /** @format int32 */
   totalSize: number;
@@ -501,7 +501,13 @@ export interface IClientVersion {
   /** @format int64 */
   id: number;
   client: IClient;
-  status: 'Created' | 'Ready' | 'Registered' | 'Retired' | 'AwaitingApproval' | 'Unregistered';
+  status:
+    | 'Created'
+    | 'Ready'
+    | 'Registered'
+    | 'Retired'
+    | 'AwaitingApproval'
+    | 'Unregistered';
   version: string;
   createdBy: string;
 

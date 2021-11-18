@@ -8,9 +8,8 @@ describe('ImgOrIconSelectorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ImgOrIconSelectorComponent ]
-    })
-    .compileComponents();
+      declarations: [ImgOrIconSelectorComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

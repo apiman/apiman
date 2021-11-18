@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { ISignUpInfo } from '../../interfaces/ISignUpInfo';
-import {IApiPlanSummary, IApiVersion} from '../../interfaces/ICommunication';
-import {IPolicyExt} from "../../interfaces/IPolicyExt";
-import {PolicyService} from "../policy/policy.service";
+import { IApiPlanSummary, IApiVersion } from '../../interfaces/ICommunication';
+import { IPolicyExt } from '../../interfaces/IPolicy';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class SignUpService {
-  signUpInfo?: ISignUpInfo;
+  private signUpInfo: ISignUpInfo = {} as ISignUpInfo;
 
   public getSignUpInfo(): ISignUpInfo {
-    return this.signUpInfo!;
+    return this.signUpInfo;
   }
 
   public setSignUpInfo(

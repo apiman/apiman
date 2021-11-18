@@ -1,11 +1,13 @@
 <ng-container *ngIf="plans.length > 0">
-  <h2 class="primary mt-rem-3">{{'API_DETAILS.PLANS' | translate}}</h2>
+  <h2 class="primary mt-rem-3">{{ 'API_DETAILS.PLANS' | translate }}</h2>
 </ng-container>
 <div id="plan-grid">
   <ng-container *ngFor="let plan of plans">
     <div class="plan-card mat-elevation-z2">
       <div class="card-header">
-        <div class="card-header-title primary text-big1">{{ plan.planName }}</div>
+        <div class="card-header-title primary text-big1">
+          {{ plan.planName }}
+        </div>
         <div class="card-header-content">{{ plan.planDescription }}</div>
       </div>
       <div class="card-content" [ngSwitch]="plan.planId + ':' + plan.version">
@@ -34,8 +36,12 @@
       <div class="plan-card-actions">
         <div>
           <mat-divider></mat-divider>
-          <button class="sign-up-button" mat-raised-button color="primary" (click)="onSignUp(plan)">
-            {{'API_DETAILS.SIGN_UP' | translate}}
+          <button
+            class="sign-up-button"
+            mat-raised-button
+            color="primary"
+            (click)="onSignUp(plan)">
+            {{ 'API_DETAILS.SIGN_UP' | translate }}
           </button>
         </div>
       </div>

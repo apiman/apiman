@@ -8,7 +8,7 @@ import { AccountComponent } from './components/account/account.component';
 import { MyAppsComponent } from './components/my-apps/my-apps.component';
 import { AuthGuard } from './guards/auth.guard';
 import { SwaggerComponent } from './components/swagger/swagger.component';
-import {ApprovalComponent} from "./components/approval/approval.component";
+import { ApprovalComponent } from './components/approval/approval.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: 'marketplace', component: MarketplaceComponent },
   {
     path: 'api-details/:orgId/:apiId',
-    component: MarketplaceApiDetailsComponent,
+    component: MarketplaceApiDetailsComponent
   },
   {
     path: 'api-signup/:orgId/:apiId',
@@ -24,13 +24,17 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
-  { path: 'applications', component: MyAppsComponent, canActivate: [AuthGuard] },
+  {
+    path: 'applications',
+    component: MyAppsComponent,
+    canActivate: [AuthGuard]
+  },
   { path: 'swagger/:orgId/:apiId/:apiVersion', component: SwaggerComponent },
-  { path: 'approval', component: ApprovalComponent },
+  { path: 'approval', component: ApprovalComponent }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class AppRoutingModule {}

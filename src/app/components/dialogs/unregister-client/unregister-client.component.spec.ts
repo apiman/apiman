@@ -8,9 +8,8 @@ describe('UnregisterClientComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ UnregisterClientComponent ]
-    })
-    .compileComponents();
+      declarations: [UnregisterClientComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

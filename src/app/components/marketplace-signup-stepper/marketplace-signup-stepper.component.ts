@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   IClientSummary,
   INewContract,
-  IPolicy,
+  IPolicy
 } from '../../interfaces/ICommunication';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ConfigService } from '../../services/config/config.service';
@@ -15,19 +15,20 @@ import { BackendService } from '../../services/backend/backend.service';
 import { MatStepper } from '@angular/material/stepper';
 import { IContractExt } from '../../interfaces/IContractExt';
 import { map, switchMap } from 'rxjs/operators';
-import { TocService} from '../../services/toc/toc.service';
+import { TocService } from '../../services/toc/toc.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
   templateUrl: './marketplace-signup-stepper.component.html',
-  styleUrls: ['./marketplace-signup-stepper.component.scss'],
+  styleUrls: ['./marketplace-signup-stepper.component.scss']
 })
 export class MarketplaceSignupStepperComponent implements OnInit {
   selectedClients = new Set<IClientSummary>();
   agreedTermsAndPrivacy: boolean | undefined;
   termsEnabled: boolean;
   newContractDetails: ISignUpInfo;
-  contract: IContractExt | undefined;
+  contract: IContractExt;
   policies: IPolicy[] = [];
 
   constructor(
@@ -43,8 +44,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   ) {
     this.termsEnabled = this.configService.getTerms().enabled;
     this.newContractDetails = this.signUpService.getSignUpInfo();
-
-
+    this.contract = {} as IContractExt;
   }
 
   ngOnInit(): void {
@@ -53,32 +53,36 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   }
 
   private setUpHero() {
+    const translation: string = this.translator.instant(
+      'COMMON.SIGNUP'
+    ) as string;
+
     this.heroService.setUpHero({
       title: this.newContractDetails.apiVersion.api.name,
-      subtitle: this.newContractDetails.plan.planName + ' ' + this.translator.instant('COMMON.SIGNUP'),
+      subtitle: `${this.newContractDetails.plan.planName} ${translation}`
     });
   }
 
-  checkApplications($event: Set<IClientSummary>) {
+  checkApplications($event: Set<IClientSummary>): void {
     this.selectedClients = $event;
   }
 
-  checkTerms($event: boolean) {
+  checkTerms($event: boolean): void {
     this.agreedTermsAndPrivacy = $event;
   }
 
-  nextAfterClientSelect() {
+  nextAfterClientSelect(): void {
     if (this.selectedClients.size == 0) {
       this.snackbar.showErrorSnackBar(
-        this.translator.instant('WIZARD.APPLICATION_ERROR')
+        this.translator.instant('WIZARD.APPLICATION_ERROR') as string
       );
     }
   }
 
-  nextAfterTermsAgreed() {
+  nextAfterTermsAgreed(): void {
     if (!this.agreedTermsAndPrivacy)
       this.snackbar.showErrorSnackBar(
-        this.translator.instant('WIZARD.TERMS_ERROR')
+        this.translator.instant('WIZARD.TERMS_ERROR') as string
       );
   }
 
@@ -90,42 +94,47 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       !this.newContractDetails.plan
     ) {
       this.snackbar.showErrorSnackBar(
-        this.translator.instant('WIZARD.REDIRECT')
+        this.translator.instant('WIZARD.REDIRECT') as string
       );
       void this.router.navigate(['home']);
     }
   }
 
   createContract(stepper: MatStepper): void {
-    const client: IClientSummary = this.selectedClients.values().next().value;
+    const client: IClientSummary = this.selectedClients.values().next()
+      .value as IClientSummary;
 
     const contract: INewContract = {
       apiOrgId: this.newContractDetails.organizationId,
       apiId: this.newContractDetails.apiVersion.api.id,
       apiVersion: this.newContractDetails.apiVersion.version,
-      planId: this.newContractDetails.plan.planId,
+      planId: this.newContractDetails.plan.planId
     };
 
     this.backend
-      .createContract(client.organizationId, client.id, '1.0', contract).pipe(
-        switchMap(contract => {
-          return this.backend.getManagedApiEndpoint(
-            contract.api.api.organization.id,
-            contract.api.api.id,
-            contract.api.version).pipe(
-              map(endpoint => {
+      .createContract(client.organizationId, client.id, '1.0', contract)
+      .pipe(
+        switchMap((contract) => {
+          return this.backend
+            .getManagedApiEndpoint(
+              contract.api.api.organization.id,
+              contract.api.api.id,
+              contract.api.version
+            )
+            .pipe(
+              map((endpoint) => {
                 return {
                   ...contract,
                   managedEndpoint: endpoint.managedEndpoint
                 } as IContractExt;
               })
-          )
+            );
         })
       )
       .subscribe(
         (contract: IContractExt) => {
           this.snackbar.showPrimarySnackBar(
-            this.translator.instant('WIZARD.SUCCESS')
+            this.translator.instant('WIZARD.SUCCESS') as string
           );
           this.contract = contract;
           if ('AwaitingApproval' === this.contract.client.status) {
@@ -134,7 +143,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
             stepper.next();
           }
         },
-        (error) => this.snackbar.showErrorSnackBar(error.message, error)
+        (error: HttpErrorResponse) =>
+          this.snackbar.showErrorSnackBar(error.message, error)
       );
   }
 
@@ -143,19 +153,19 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       .sendAction({
         type: 'registerClient',
         entityVersion: '1.0',
-        organizationId: this.contract!.client.client.organization.id,
-        entityId: this.contract!.client.client.id
+        organizationId: this.contract.client.client.organization.id,
+        entityId: this.contract.client.client.id
       })
       .subscribe(
         () => {
           // void response
         },
-        (error) => {
+        (error: HttpErrorResponse) => {
           this.snackbar.showErrorSnackBar(error.message, error);
         }
       );
     void this.router.navigate(['applications'], {
-      fragment: this.tocService.formatClientId(this.contract!)
+      fragment: this.tocService.formatClientId(this.contract)
     });
   }
 }

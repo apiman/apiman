@@ -1,17 +1,14 @@
 <!-- Try it now -->
 <div class="grid">
   <div>
-    <h4>{{ "COMMON.API_DOCS" | translate }}</h4>
+    <h4>{{ 'COMMON.API_DOCS' | translate }}</h4>
     <p [innerHTML]="'DESCRIPTIONS.TRY_IT_OUT' | translate"></p>
   </div>
   <div id="try-it-now-btn">
     <ng-container *ngIf="docsAvailable">
-      <a [routerLink]="['/swagger', orgId, apiId, apiVersion]"
-         target="_blank">
-        <button
-          mat-raised-button
-          color="primary">
-          {{ "COMMON.API_DOCS" | translate }}
+      <a [routerLink]="['/swagger', orgId, apiId, apiVersion]" target="_blank">
+        <button mat-raised-button color="primary">
+          {{ 'COMMON.API_DOCS' | translate }}
         </button>
       </a>
     </ng-container>
@@ -21,7 +18,7 @@
 <!-- Key -->
 <div class="grid">
   <div>
-    <h4>{{ "APPS.API_KEY" | translate }}</h4>
+    <h4>{{ 'APPS.API_KEY' | translate }}</h4>
     <p [innerHTML]="'DESCRIPTIONS.API_KEY' | translate"></p>
   </div>
   <div>
@@ -30,15 +27,13 @@
         matInput
         readonly
         value="{{ apiKey }}"
-        [placeholder]="'COMMON.HTTP_HEADER' | translate"
-      />
+        [placeholder]="'COMMON.HTTP_HEADER' | translate" />
       <button
         [disabled]="disableButtons"
         [cdkCopyToClipboard]="apiKey"
         mat-icon-button
         matSuffix
-        class="input-icon-btn"
-      >
+        class="input-icon-btn">
         <mat-icon class="input-icon-btn" color="primary">content_copy</mat-icon>
       </button>
     </mat-form-field>
@@ -48,7 +43,7 @@
 <!-- API Endpoint -->
 <div class="grid">
   <div>
-    <h4>{{ "APPS.ENDPOINT" | translate }}</h4>
+    <h4>{{ 'APPS.ENDPOINT' | translate }}</h4>
     <p [innerHTML]="'DESCRIPTIONS.API_ENDPOINT' | translate"></p>
   </div>
   <div>
@@ -57,15 +52,13 @@
         matInput
         readonly
         value="{{ endpoint }}"
-        [placeholder]="'COMMON.QUERY_PARAMETER' | translate"
-      />
+        [placeholder]="'COMMON.QUERY_PARAMETER' | translate" />
       <button
         [disabled]="disableButtons"
         [cdkCopyToClipboard]="endpoint"
         mat-icon-button
         matSuffix
-        class="input-icon-btn"
-      >
+        class="input-icon-btn">
         <mat-icon color="primary">content_copy</mat-icon>
       </button>
     </mat-form-field>
@@ -75,7 +68,7 @@
 <!-- Authentication -->
 <div class="grid" *ngIf="hasOAuth">
   <div>
-    <h4>{{ "APPS.AUTHENTICATION" | translate }}</h4>
+    <h4>{{ 'APPS.AUTHENTICATION' | translate }}</h4>
     <p [innerHTML]="'DESCRIPTIONS.O_AUTH' | translate"></p>
   </div>
   <div>
@@ -88,7 +81,9 @@
         mat-icon-button
         matSuffix
         class="input-icon-btn">
-        <mat-icon class="input-icon-btn" color="primary" [class.disabled]="">content_copy</mat-icon>
+        <mat-icon class="input-icon-btn" color="primary" [class.disabled]=""
+          >content_copy</mat-icon
+        >
       </button>
     </mat-form-field>
     <mat-form-field>

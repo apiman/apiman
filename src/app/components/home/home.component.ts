@@ -7,7 +7,7 @@ import { IHero } from '../../interfaces/IConfig';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
   hero: IHero;
@@ -23,10 +23,10 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.hero.title = this.translator.instant(
       this.configService.config.hero.title
-    );
+    ) as string;
     this.hero.subtitle = this.translator.instant(
       this.configService.config.hero.subtitle
-    );
+    ) as string;
     this.setUpHero();
   }
 

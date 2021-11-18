@@ -9,23 +9,27 @@
       [legendPosition]="legendPosition"
       [scheme]="colorScheme"
       [view]="[380, 256]"
-      [valueFormatting]="disableValueLabel"
-    >
+      [valueFormatting]="disableValueLabel">
     </ngx-charts-gauge>
   </div>
 
   <div class="info-icon">
-    <mat-icon class="material-icons-outlined" [inline]="true" color="primary">{{icon}}</mat-icon>
+    <mat-icon class="material-icons-outlined" [inline]="true" color="primary">{{
+      icon
+    }}</mat-icon>
   </div>
 
   <div class="infos">
-    <div class="text2">{{gaugeData.infoHeader}}</div>
+    <div class="text2">{{ gaugeData.infoHeader }}</div>
     <div class="text-big1">
-      {{ gaugeData.currentVal }} {{gaugeData.dividendSuffix}} / <span class="primary">{{ gaugeData.limit }} {{ gaugeData.divisorSuffix}}</span>
+      {{ gaugeData.currentVal }} {{ gaugeData.dividendSuffix }} /
+      <span class="primary"
+        >{{ gaugeData.limit }} {{ gaugeData.divisorSuffix }}</span
+      >
     </div>
     <div class="text1">
       <mat-divider></mat-divider>
-      <span>{{gaugeData.bottomText}}</span>
+      <span>{{ gaugeData.bottomText }}</span>
     </div>
   </div>
 </div>

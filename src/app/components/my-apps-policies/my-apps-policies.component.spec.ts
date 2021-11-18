@@ -8,7 +8,7 @@ describe('MyAppsPoliciesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MyAppsPoliciesComponent],
+      declarations: [MyAppsPoliciesComponent]
     }).compileComponents();
   });
 

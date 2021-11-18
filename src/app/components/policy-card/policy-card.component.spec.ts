@@ -8,9 +8,8 @@ describe('PolicyCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PolicyCardComponent ]
-    })
-    .compileComponents();
+      declarations: [PolicyCardComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -8,7 +8,7 @@ describe('MyAppsSummaryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MyAppsSummaryComponent],
+      declarations: [MyAppsSummaryComponent]
     }).compileComponents();
   });
 

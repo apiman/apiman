@@ -8,7 +8,7 @@ describe('MyAppsManageApiComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MyAppsManageApiComponent],
+      declarations: [MyAppsManageApiComponent]
     }).compileComponents();
   });
 

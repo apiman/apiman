@@ -1,5 +1,5 @@
 import { IContract } from './ICommunication';
-import { IPolicyExt } from './IPolicyExt';
+import { IPolicyExt } from './IPolicy';
 
 /**
  * Extends the Contract interface

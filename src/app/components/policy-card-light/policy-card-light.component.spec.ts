@@ -8,9 +8,8 @@ describe('PolicyCardLightComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PolicyCardLightComponent ]
-    })
-    .compileComponents();
+      declarations: [PolicyCardLightComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

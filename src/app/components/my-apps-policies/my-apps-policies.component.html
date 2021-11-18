@@ -5,16 +5,22 @@
   <div class="grid-divider"><div></div></div>
   <div class="policy-charts-grid" *ngIf="policy.probe; else noProbe">
     <div>
-      <app-gauge-chart [gaugeData]="policy.mainGaugeData" [icon]="policy.icon"></app-gauge-chart>
+      <app-gauge-chart
+        [gaugeData]="policy.mainGaugeData"
+        [icon]="policy.icon"></app-gauge-chart>
     </div>
     <div>
-      <app-gauge-chart [gaugeData]="policy.timeGaugeData" [icon]="'timer'"></app-gauge-chart>
+      <app-gauge-chart
+        [gaugeData]="policy.timeGaugeData"
+        [icon]="'timer'"></app-gauge-chart>
     </div>
   </div>
 </div>
 
 <ng-template #noProbe>
   <div class="dp-center">
-    <app-no-data [text]="'APPS.NO_PROBES' | translate" [textClass]="'text-big2'"></app-no-data>
+    <app-no-data
+      [text]="'APPS.NO_PROBES' | translate"
+      [textClass]="'text-big2'"></app-no-data>
   </div>
 </ng-template>

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ThemeService {
-  initTheme(theme: string) {
+  initTheme(theme: string): void {
     document.body.classList.add('theme-' + theme);
   }
 }

@@ -1,9 +1,9 @@
 <ng-container *ngIf="apis">
   <mat-accordion>
-    <app-marketplace-api-description *ngFor="let api of apis; first as isLatest"
+    <app-marketplace-api-description
+      *ngFor="let api of apis; first as isLatest"
       [isLatest]="isLatest"
       [api]="api"
-      [apiImgUrl]="apiImgUrl!"
-    ></app-marketplace-api-description>
+      [apiImgUrl]="apiImgUrl!"></app-marketplace-api-description>
   </mat-accordion>
 </ng-container>

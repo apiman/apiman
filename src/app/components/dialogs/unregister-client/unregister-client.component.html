@@ -1,9 +1,16 @@
-<h3 mat-dialog-title>{{'DIALOGS.REMOVE_TITLE' | translate:clientNameVersion}}</h3>
+<h3 mat-dialog-title>
+  {{ 'DIALOGS.REMOVE_TITLE' | translate: clientNameVersion }}
+</h3>
 <mat-dialog-content>
-  <span [innerHTML]="'DIALOGS.REMOVE_SURE' | translate:clientNameVersion"></span>
+  <span
+    [innerHTML]="'DIALOGS.REMOVE_SURE' | translate: clientNameVersion"></span>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-flat-button mat-dialog-close color="accent">{{'COMMON.CANCEL' | translate}}</button>
-  <button mat-flat-button (click)="onUnregister()" color="warn">{{'DIALOGS.REMOVE_BTN' | translate}}</button>
+  <button mat-flat-button mat-dialog-close color="accent">
+    {{ 'COMMON.CANCEL' | translate }}
+  </button>
+  <button mat-flat-button (click)="onUnregister()" color="warn">
+    {{ 'DIALOGS.REMOVE_BTN' | translate }}
+  </button>
 </mat-dialog-actions>

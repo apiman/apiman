@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-my-apps-use-api',
   templateUrl: './my-apps-use-api.component.html',
-  styleUrls: ['./my-apps-use-api.component.scss'],
+  styleUrls: ['./my-apps-use-api.component.scss']
 })
 export class MyAppsUseApiComponent implements OnInit, OnChanges {
   @Input() contract?: IContractExt;
@@ -26,10 +26,10 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
   oAuthClientSecret = '';
 
   previewText = {
-    apiKey: <string>this.translator.instant('WIZARD.API_KEY_PREVIEW'),
-    endpoint: <string>this.translator.instant('WIZARD.API_ENDPOINT_PREVIEW'),
+    apiKey: this.translator.instant('WIZARD.API_KEY_PREVIEW') as string,
+    endpoint: this.translator.instant('WIZARD.API_ENDPOINT_PREVIEW') as string,
     oAuthServerUrl: 'http://example.org/auth/realms/example/foo',
-    oAuthClientSecret: '73b985d1-98b8-4d80-a89d-9dbee3b21a17',
+    oAuthClientSecret: '73b985d1-98b8-4d80-a89d-9dbee3b21a17'
   };
   disableButtons = false;
   hasOAuth = false;

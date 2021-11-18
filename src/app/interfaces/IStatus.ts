@@ -20,5 +20,5 @@ export const statusColorMap: ApiStatusColorMap = new Map<
   ['Unregistered', 'darkred'],
   ['Published', 'mediumseagreen'],
   ['AwaitingApproval', 'coral'],
-  ['Registered', 'mediumseagreen'],
+  ['Registered', 'mediumseagreen']
 ]);

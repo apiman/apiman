@@ -2,25 +2,30 @@
   <mat-expansion-panel-header>
     <mat-panel-title>
       <div id="version-info">
-        {{'COMMON.VERSION' | translate}} {{ api.version }} {{'COMMON.OF' | translate}} {{ api.api.name }}
+        {{ 'COMMON.VERSION' | translate }} {{ api.version }}
+        {{ 'COMMON.OF' | translate }} {{ api.api.name }}
         <span *ngIf="isLatest" id="latest-tag" class="primary">[latest]</span>
       </div>
-      <a *ngIf="api.docsAvailable"
-         [routerLink]="['/swagger', api.api.organization.id, api.api.id,api.version]">
-        <button
-          mat-raised-button
-          id="docs-button"
-          color="primary">
-          {{ "COMMON.API_DOCS" | translate }}
+      <a
+        *ngIf="api.docsAvailable"
+        [routerLink]="[
+          '/swagger',
+          api.api.organization.id,
+          api.api.id,
+          api.version
+        ]">
+        <button mat-raised-button id="docs-button" color="primary">
+          {{ 'COMMON.API_DOCS' | translate }}
         </button>
       </a>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div id="content-header">
-    <app-img-or-icon-selector [imgUrl]="apiImgUrl"
-                              [dimension]="'44'">
+    <app-img-or-icon-selector [imgUrl]="apiImgUrl" [dimension]="'44'">
     </app-img-or-icon-selector>
-   <div *ngIf="api.api.description; else noDesc">{{ api.api.description }}</div>
+    <div *ngIf="api.api.description; else noDesc">
+      {{ api.api.description }}
+    </div>
     <ng-template #noDesc>
       <div>
         <app-no-data [text]="'MPLACE.NO_DESC' | translate"></app-no-data>
@@ -28,7 +33,9 @@
     </ng-template>
   </div>
 
-  <h2 class="primary mt-rem-3">{{'API_DETAILS.EXTENDED_DESCRIPTION' | translate}}</h2>
+  <h2 class="primary mt-rem-3">
+    {{ 'API_DETAILS.EXTENDED_DESCRIPTION' | translate }}
+  </h2>
 
   <!-- Template for MD-Reader -->
   <ng-template #mdTemplate>
@@ -40,11 +47,13 @@
   <!-- Template for Key Features -->
   <ng-template #featuresTemplate>
     <div id="key-features" *ngIf="features.length > 0">
-      <h2 class="primary">{{'API_DETAILS.KEY_FEATURES' | translate}}</h2>
+      <h2 class="primary">{{ 'API_DETAILS.KEY_FEATURES' | translate }}</h2>
       <div>
         <mat-list>
           <mat-list-item *ngFor="let feature of features">
-            <mat-icon matListIcon class="primary material-icons-outlined mr-8">star_border</mat-icon>
+            <mat-icon matListIcon class="primary material-icons-outlined mr-8"
+              >star_border</mat-icon
+            >
             <span>{{ feature }}</span>
           </mat-list-item>
         </mat-list>
@@ -53,13 +62,13 @@
   </ng-template>
 
   <!-- Markdown Reader & Key Features -->
-  <div *ngIf="hasMdAndFeatures()" class="md-and-features">
+  <div *ngIf="hasFeatures()" class="md-and-features">
     <template [ngTemplateOutlet]="mdTemplate"></template>
     <template [ngTemplateOutlet]="featuresTemplate"></template>
   </div>
 
   <!-- Markdown only -->
-  <div *ngIf="hasMdOnly()" class="md-only">
+  <div *ngIf="!hasFeatures()" class="md-only">
     <template [ngTemplateOutlet]="mdTemplate"></template>
   </div>
 

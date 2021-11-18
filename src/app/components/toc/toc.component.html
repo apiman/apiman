@@ -1,11 +1,19 @@
 <div class="toc divider-left" (window:scroll)="onWindowScroll()">
   <ul>
-    <li><span><b>{{'APPS.APPS_AND_APIS' | translate}}</b></span></li>
+    <li>
+      <span
+        ><b>{{ 'APPS.APPS_AND_APIS' | translate }}</b></span
+      >
+    </li>
     <li *ngFor="let link of links">
-      <a (click)="scroll(link.destination)" class="pointer"><span [class.primary]="link.active">{{ link.name }}</span></a>
+      <a (click)="scroll(link.destination)" class="pointer"
+        ><span [class.primary]="link.active">{{ link.name }}</span></a
+      >
       <ul *ngIf="link.subLinks">
         <li *ngFor="let subLink of link.subLinks">
-          <a (click)="scroll(subLink.destination)" class="pointer"><span [class.primary]="subLink.active">{{ subLink.name }}</span></a>
+          <a (click)="scroll(subLink.destination)" class="pointer"
+            ><span [class.primary]="subLink.active">{{ subLink.name }}</span></a
+          >
         </li>
       </ul>
     </li>

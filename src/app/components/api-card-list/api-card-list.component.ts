@@ -1,12 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ApiService} from '../../services/api/api.service';
-import {PageEvent} from '@angular/material/paginator';
-import {map, switchMap} from 'rxjs/operators';
-import {forkJoin, Observable, of} from 'rxjs';
-import {SpinnerService} from '../../services/spinner/spinner.service';
-import {IApiSummary, ISearchCriteria} from '../../interfaces/ICommunication';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {IApiSummaryExt} from '../../interfaces/IApiSummaryExt';
+import { Component, Input, OnInit } from '@angular/core';
+import { ApiService } from '../../services/api/api.service';
+import { PageEvent } from '@angular/material/paginator';
+import { map, switchMap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { SpinnerService } from '../../services/spinner/spinner.service';
+import { IApiSummary, ISearchCriteria } from '../../interfaces/ICommunication';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { IApiSummaryExt } from '../../interfaces/IApiSummaryExt';
 
 @Component({
   selector: 'app-api-card-list',
@@ -52,20 +52,22 @@ export class ApiCardListComponent implements OnInit {
 
   handleQueryParams(): void {
     this.route.queryParams.subscribe((params: Params) => {
-      if (params.page) {
-        this.searchCriteria.paging.page = params.page;
+      if (params && params.page) {
+        this.searchCriteria.paging.page = params.page as number;
         this.pageIndex = params.page - 1;
       } else {
         this.searchCriteria.paging.page = 1;
       }
-      if (params.pageSize) {
-        this.searchCriteria.paging.pageSize = params.pageSize;
+      if (params && params.pageSize) {
+        this.searchCriteria.paging.pageSize = params.pageSize as number;
       } else {
         this.searchCriteria.paging.pageSize = 8;
       }
-      if (params.searchTerm) {
-        this.searchTerm = params.searchTerm.replaceAll('*', '');
-        this.searchCriteria.filters[0].value = params.searchTerm;
+      let searchTerm = '';
+      if (params && params.searchTerm) {
+        searchTerm = params.searchTerm as string;
+        this.searchTerm = searchTerm.replaceAll('*', '');
+        this.searchCriteria.filters[0].value = searchTerm;
       } else {
         this.searchTerm = '';
         this.searchCriteria.filters[0].value = '*';
@@ -79,13 +81,15 @@ export class ApiCardListComponent implements OnInit {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any
   OnInput(event: any): void {
-    this.searchTerm = event.target.value;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    this.searchTerm = event.target.value as string;
     this.search(this.searchTerm);
   }
 
-  public search(searchTerm: string) {
-    this.router.navigate(['/marketplace'], {
+  public search(searchTerm: string): void {
+    void this.router.navigate(['/marketplace'], {
       queryParams: {
         page: 1,
         pageSize: this.searchCriteria.paging.pageSize,
@@ -95,7 +99,7 @@ export class ApiCardListComponent implements OnInit {
   }
 
   OnPageChange(event: PageEvent): void {
-    this.router.navigate(['/marketplace'], {
+    void this.router.navigate(['/marketplace'], {
       queryParams: {
         page: event.pageIndex + 1,
         pageSize: event.pageSize,
@@ -109,27 +113,30 @@ export class ApiCardListComponent implements OnInit {
     this.ready = false;
     this.error = false;
 
-    this.apiService.searchApis(this.searchCriteria).pipe(
-      // map from SearchResultsBeanApiSummaryBean to IApiSummary[]
-      map((searchResult) => {
-        this.totalSize = searchResult.totalSize;
-        return searchResult.beans;
-      }),
+    this.apiService
+      .searchApis(this.searchCriteria)
+      .pipe(
+        // map from SearchResultsBeanApiSummaryBean to IApiSummary[]
+        map((searchResult) => {
+          this.totalSize = searchResult.totalSize;
+          return searchResult.beans;
+        }),
 
-      switchMap((apiSummaries: IApiSummary[]) => {
-        return this.checkApisDocsInApiVersions(apiSummaries);
-      })
-    ).subscribe(
-      (apiList: IApiSummaryExt[]) => {
-        this.apis = apiList;
-        this.loadingSpinnerService.stopWaiting();
-        this.ready = true;
-      },
-      () => {
-        this.error = true;
-        this.loadingSpinnerService.stopWaiting();
-      }
-    );
+        switchMap((apiSummaries: IApiSummary[]) => {
+          return this.checkApisDocsInApiVersions(apiSummaries);
+        })
+      )
+      .subscribe(
+        (apiList: IApiSummaryExt[]) => {
+          this.apis = apiList;
+          this.loadingSpinnerService.stopWaiting();
+          this.ready = true;
+        },
+        () => {
+          this.error = true;
+          this.loadingSpinnerService.stopWaiting();
+        }
+      );
   }
 
   private getFeaturedApiList() {

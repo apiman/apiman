@@ -1,16 +1,27 @@
 <mat-card *ngIf="policy">
   <mat-card-header>
-    <mat-icon color="primary" mat-card-avatar>{{policy.icon}}</mat-icon>
-    <mat-card-title>{{policy.shortName}}</mat-card-title>
+    <mat-icon color="primary" mat-card-avatar>{{ policy.icon }}</mat-icon>
+    <mat-card-title>{{ policy.shortName }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <div class="limit-flex">
       <div>
-        <p [innerHTML]="'POLICIES.' + policy.definition.id + '.CONDITION_LIGHT' | translate:policy.restrictions"></p>
-        <p><b>{{policy.mainGaugeData?.currentVal}}</b> / {{policy.restrictions?.limit}}</p>
+        <p
+          [innerHTML]="
+            'POLICIES.' + policy.definition.id + '.CONDITION_LIGHT'
+              | translate: policy.restrictions
+          "></p>
+        <p>
+          <b>{{ policy.mainGaugeData?.currentVal }}</b> /
+          {{ policy.restrictions?.limit }}
+        </p>
       </div>
       <div class="second">
-        <button (click)="setSectionToPolicies()" mat-icon-button color="primary" class="mt-10">
+        <button
+          (click)="setSectionToPolicies()"
+          mat-icon-button
+          color="primary"
+          class="mt-10">
           <mat-icon>info</mat-icon>
         </button>
       </div>

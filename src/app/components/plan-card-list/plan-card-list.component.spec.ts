@@ -8,7 +8,7 @@ describe('PlanCardListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PlanCardListComponent],
+      declarations: [PlanCardListComponent]
     }).compileComponents();
   });
 

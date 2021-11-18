@@ -7,9 +7,15 @@
       [placeholder]="'MPLACE.SEARCH' | translate"
       class="search-input"
       [value]="searchTerm"
-      (input)="OnInput($event)"
-    />
-    <button *ngIf="searchTerm.length > 0" mat-button matSuffix mat-icon-button aria-label="Clear" color="primary" (click)="search('')">
+      (input)="OnInput($event)" />
+    <button
+      *ngIf="searchTerm.length > 0"
+      mat-button
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      color="primary"
+      (click)="search('')">
       <mat-icon>clear</mat-icon>
     </button>
   </mat-form-field>
@@ -19,32 +25,37 @@
     <app-api-card
       *ngFor="let api of apis"
       [api]="api"
-      class="api-card"
-    ></app-api-card>
+      class="api-card"></app-api-card>
   </div>
 </ng-container>
 <ng-template #NoDataMsg>
   <div *ngIf="this.ready; else ErrorMsg" class="dp-center">
-    <app-no-data [text]="'HOME.NO_APIS_FOUND' | translate" [textClass]="'text-big2'"></app-no-data>
+    <app-no-data
+      [text]="'HOME.NO_APIS_FOUND' | translate"
+      [textClass]="'text-big2'"></app-no-data>
   </div>
 </ng-template>
 <ng-template #ErrorMsg>
   <div *ngIf="error" class="dp-center">
-    <app-no-data [text]="'COMMON.ERROR' | translate" [textClass]="'text-big2'"></app-no-data>
+    <app-no-data
+      [text]="'COMMON.ERROR' | translate"
+      [textClass]="'text-big2'"></app-no-data>
   </div>
 </ng-template>
-<div *ngIf="listType === 'api' && totalSize > searchCriteria.paging.pageSize" class="align">
-  <mat-paginator *ngIf="allowPagination"
+<div
+  *ngIf="listType === 'api' && totalSize > searchCriteria.paging.pageSize"
+  class="align">
+  <mat-paginator
+    *ngIf="allowPagination"
     [length]="totalSize"
     [pageSize]="searchCriteria.paging.pageSize"
     [pageSizeOptions]="[4, 8, 12, 16, totalSize]"
     [pageIndex]="pageIndex"
-    (page)="OnPageChange($event)"
-  >
+    (page)="OnPageChange($event)">
   </mat-paginator>
 </div>
 <div id="show-all-wrapper" *ngIf="listType === 'featuredApi' && ready">
   <button mat-raised-button color="primary" [routerLink]="['/marketplace']">
-    {{ "HOME.SHOW_ALL" | translate }}
+    {{ 'HOME.SHOW_ALL' | translate }}
   </button>
 </div>

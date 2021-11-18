@@ -4,20 +4,20 @@ import { ConfigService } from '../config/config.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class NavigationService {
   navigation: INavigation;
 
   links: ILink[] = [
     {
-      name: this.translator.instant('MPLACE.TITLE'),
+      name: this.translator.instant('MPLACE.TITLE') as string,
       link: 'marketplace',
       openInNewTab: false,
       useRouter: true
     },
     {
-      name: this.translator.instant('APPS.TITLE'),
+      name: this.translator.instant('APPS.TITLE') as string,
       link: 'applications',
       openInNewTab: false,
       useRouter: true
@@ -45,7 +45,7 @@ export class NavigationService {
   private initLinks(): INavigation {
     if (this.configService.getShowHomeLink()) {
       this.links.unshift({
-        name: this.translator.instant('COMMON.HOME'),
+        name: this.translator.instant('COMMON.HOME') as string,
         link: 'home',
         openInNewTab: false,
         useRouter: true

@@ -1,23 +1,30 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class SnackbarService {
   readonly snackbarDuration = 6000;
 
   constructor(private snackBar: MatSnackBar) {}
 
-  public showPrimarySnackBar(msg: string, action?: string) {
+  public showPrimarySnackBar(msg: string, action?: string): void {
     this.showCustomSnackBar(msg, action);
   }
 
-  public showErrorSnackBar(msg: string, error?: any, action?: string) {
-    console.error(error);
+  public showErrorSnackBar(
+    msg: string,
+    error?: HttpErrorResponse,
+    action?: string
+  ): void {
+    if (error) {
+      console.error(error);
+    }
     this.showCustomSnackBar(msg, action, {
       duration: this.snackbarDuration,
-      panelClass: ['warn-bg'],
+      panelClass: ['warn-bg']
     });
   }
 
@@ -26,9 +33,9 @@ export class SnackbarService {
     action = '',
     config: MatSnackBarConfig = {
       duration: this.snackbarDuration,
-      panelClass: ['primary-bg'],
+      panelClass: ['primary-bg']
     }
-  ) {
+  ): void {
     this.snackBar.open(msg, action, config);
   }
 }

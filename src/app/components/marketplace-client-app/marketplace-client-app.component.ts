@@ -1,17 +1,17 @@
-import {Component, EventEmitter, Output, OnInit} from '@angular/core';
-import {BackendService} from '../../services/backend/backend.service';
-import {MatTableDataSource} from '@angular/material/table';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { BackendService } from '../../services/backend/backend.service';
+import { MatTableDataSource } from '@angular/material/table';
 import {
   IClient,
   IClientSummary,
   IOrganizationSummary
 } from '../../interfaces/ICommunication';
-import {SnackbarService} from '../../services/snackbar/snackbar.service';
-import {HttpErrorResponse} from '@angular/common/http';
-import {catchError, switchMap} from 'rxjs/operators';
-import {forkJoin, of} from 'rxjs';
-import {TranslateService} from '@ngx-translate/core';
-import {KeycloakHelperService} from '../../services/keycloak-helper/keycloak-helper.service';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { catchError, switchMap } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { KeycloakHelperService } from '../../services/keycloak-helper/keycloak-helper.service';
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -61,11 +61,13 @@ export class MarketplaceClientAppComponent implements OnInit {
       this.organizations.length > 1
         ? this.organizationId
         : this.keycloakHelper.getUsername();
-    this.backend.createClient(orgId, this.clientName)
+    this.backend
+      .createClient(orgId, this.clientName)
       .pipe(
         switchMap((client: IClient) => {
+          console.log(client.id + 'created');
           this.snackbar.showPrimarySnackBar(
-            this.translator.instant('COMMON.SUCCESS')
+            this.translator.instant('COMMON.SUCCESS') as string
           );
           return this.loadClients();
         })
@@ -74,8 +76,8 @@ export class MarketplaceClientAppComponent implements OnInit {
         (results: [IOrganizationSummary[], IClientSummary[]]) => {
           this.createTableView(results);
         },
-        (error) => {
-          this.snackbar.showErrorSnackBar(error.error.message);
+        (error: HttpErrorResponse) => {
+          this.snackbar.showErrorSnackBar(error.message, error);
         }
       );
   }
@@ -118,7 +120,7 @@ export class MarketplaceClientAppComponent implements OnInit {
         (error) => {
           console.warn(error);
           this.snackbar.showErrorSnackBar(
-            this.translator.instant('COMMON.ERROR')
+            this.translator.instant('COMMON.ERROR') as string
           );
         }
       );

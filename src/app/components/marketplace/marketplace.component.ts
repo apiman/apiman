@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-marketplace',
   templateUrl: './marketplace.component.html',
-  styleUrls: ['./marketplace.component.scss'],
+  styleUrls: ['./marketplace.component.scss']
 })
 export class MarketplaceComponent implements OnInit {
   constructor(
@@ -19,8 +19,8 @@ export class MarketplaceComponent implements OnInit {
 
   private initHero() {
     this.heroService.setUpHero({
-      title: this.translator.instant('MPLACE.TITLE'),
-      subtitle: this.translator.instant('MPLACE.SUBTITLE'),
+      title: this.translator.instant('MPLACE.TITLE') as string,
+      subtitle: this.translator.instant('MPLACE.SUBTITLE') as string
     });
   }
 }

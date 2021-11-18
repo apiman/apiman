@@ -5,12 +5,15 @@
       [completed]="selectedClients.size >= 1">
       <mat-card>
         <mat-card-header>
-          <mat-card-title>{{"WIZARD.FIRST_STEP_TITLE" | translate}}</mat-card-title>
+          <mat-card-title>{{
+            'WIZARD.FIRST_STEP_TITLE' | translate
+          }}</mat-card-title>
         </mat-card-header>
         <mat-card-content class="mat-card-header-text">
           <app-marketplace-client-app
-            (selectedClients)="checkApplications($event)"
-          ></app-marketplace-client-app>
+            (selectedClients)="
+              checkApplications($event)
+            "></app-marketplace-client-app>
         </mat-card-content>
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
@@ -19,7 +22,7 @@
             color="primary"
             matStepperNext
             (click)="nextAfterClientSelect()">
-            {{ "COMMON.NEXT" | translate }}
+            {{ 'COMMON.NEXT' | translate }}
           </button>
         </mat-card-actions>
       </mat-card>
@@ -31,11 +34,14 @@
       <mat-card>
         <mat-card-header>
           <mat-card-title>{{
-            "WIZARD.SECOND_STEP_TITLE" | translate
+            'WIZARD.SECOND_STEP_TITLE' | translate
           }}</mat-card-title>
         </mat-card-header>
         <mat-card-content class="mat-card-header-text">
-          <app-marketplace-api-terms (agreedTermsAndPrivacy)="checkTerms($event)"></app-marketplace-api-terms>
+          <app-marketplace-api-terms
+            (agreedTermsAndPrivacy)="
+              checkTerms($event)
+            "></app-marketplace-api-terms>
         </mat-card-content>
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
@@ -44,7 +50,7 @@
             matStepperNext
             color="primary"
             (click)="nextAfterTermsAgreed()">
-            {{ "COMMON.NEXT" | translate }}
+            {{ 'COMMON.NEXT' | translate }}
           </button>
         </mat-card-actions>
       </mat-card>
@@ -52,15 +58,19 @@
     <mat-step label="{{ 'WIZARD.THIRD_STEP_LABEL' | translate }}">
       <mat-card>
         <mat-card-header>
-          <mat-card-title>{{"WIZARD.THIRD_STEP_TITLE" | translate}}</mat-card-title>
+          <mat-card-title>{{
+            'WIZARD.THIRD_STEP_TITLE' | translate
+          }}</mat-card-title>
         </mat-card-header>
         <mat-card-content class="mat-card-header-text">
           <app-my-apps-use-api></app-my-apps-use-api>
           <ng-container *ngIf="newContractDetails.policies">
-            <h4>{{"WIZARD.POLICIES" | translate}}</h4>
+            <h4>{{ 'WIZARD.POLICIES' | translate }}</h4>
             <!--In this version we will not have more than 2 policies-->
             <div class="policies">
-              <app-policy-card *ngFor="let policy of newContractDetails.policies" [policy]="policy"></app-policy-card>
+              <app-policy-card
+                *ngFor="let policy of newContractDetails.policies"
+                [policy]="policy"></app-policy-card>
             </div>
           </ng-container>
         </mat-card-content>
@@ -69,19 +79,22 @@
           <button
             mat-raised-button
             (click)="createContract(stepper)"
-            color="primary"
-          >
-            {{ "COMMON.CONFIRM" | translate }}
+            color="primary">
+            {{ 'COMMON.CONFIRM' | translate }}
           </button>
         </mat-card-actions>
       </mat-card>
     </mat-step>
     <mat-step>
-      <ng-template matStepLabel>{{ 'WIZARD.FORTH_STEP_LABEL' | translate }}</ng-template>
+      <ng-template matStepLabel>{{
+        'WIZARD.FORTH_STEP_LABEL' | translate
+      }}</ng-template>
       <ng-template matStepContent>
         <mat-card>
           <mat-card-header>
-            <mat-card-title>{{ "WIZARD.FORTH_STEP_TITLE" | translate }}</mat-card-title>
+            <mat-card-title>{{
+              'WIZARD.FORTH_STEP_TITLE' | translate
+            }}</mat-card-title>
           </mat-card-header>
           <mat-card-content class="mat-card-header-text">
             <app-my-apps-use-api [contract]="contract"></app-my-apps-use-api>
@@ -89,14 +102,16 @@
               <h4>Policies</h4>
               <!--In this version we will not have more than 2 policies-->
               <div class="policies">
-                <app-policy-card *ngFor="let policy of newContractDetails.policies" [policy]="policy"></app-policy-card>
+                <app-policy-card
+                  *ngFor="let policy of newContractDetails.policies"
+                  [policy]="policy"></app-policy-card>
               </div>
             </ng-container>
           </mat-card-content>
           <mat-divider></mat-divider>
           <mat-card-actions class="right">
             <button mat-raised-button color="primary" (click)="finish()">
-              {{ "COMMON.FINISH" | translate }}
+              {{ 'COMMON.FINISH' | translate }}
             </button>
           </mat-card-actions>
         </mat-card>

@@ -1,12 +1,12 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { ConfigService } from '../../services/config/config.service';
 
 @Component({
   selector: 'app-marketplace-api-terms',
   templateUrl: './marketplace-api-terms.component.html',
-  styleUrls: ['./marketplace-api-terms.component.scss'],
+  styleUrls: ['./marketplace-api-terms.component.scss']
 })
-export class MarketplaceApiTermsComponent implements OnInit {
+export class MarketplaceApiTermsComponent {
   @Output() agreedTermsAndPrivacy = new EventEmitter<boolean>();
   acceptedTerms = false;
   acceptedPrivacyTerms = false;
@@ -21,9 +21,7 @@ export class MarketplaceApiTermsComponent implements OnInit {
     this.privacyLink = this.configService.getTerms().privacyLink;
   }
 
-  ngOnInit(): void {}
-
-  onClick() {
+  onClick(): void {
     this.agreedTermsAndPrivacy.emit(
       this.acceptedPrivacyTerms && this.acceptedTerms
     );

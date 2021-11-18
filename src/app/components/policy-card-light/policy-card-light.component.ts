@@ -1,15 +1,13 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {IPolicyExt} from '../../interfaces/IPolicyExt';
-import {PolicyService} from '../../services/policy/policy.service';
-import {IContractExt} from '../../interfaces/IContractExt';
-import {formatBytes} from "../../shared/utility";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { IPolicyExt } from '../../interfaces/IPolicy';
+import { IContractExt } from '../../interfaces/IContractExt';
 
 @Component({
   selector: 'app-policy-card-light',
   templateUrl: './policy-card-light.component.html',
   styleUrls: ['./policy-card-light.component.scss']
 })
-export class PolicyCardLightComponent implements OnInit {
+export class PolicyCardLightComponent {
   @Input() policy!: IPolicyExt;
   @Input() contract?: IContractExt;
 
@@ -17,12 +15,9 @@ export class PolicyCardLightComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {}
+  setSectionToPolicies(): void {
+    if (!this.contract) return;
 
-  setSectionToPolicies() {
-    if (!this.contract)
-      return
-
-    this.sectionChanged.emit({contract: this.contract, section: 'policies'})
+    this.sectionChanged.emit({ contract: this.contract, section: 'policies' });
   }
 }

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import { BackendService } from '../../services/backend/backend.service';
@@ -6,28 +6,33 @@ import { ISection } from '../../interfaces/ISection';
 import {
   IApiStatus,
   IClientStatus,
-  statusColorMap,
+  IStatusColors,
+  statusColorMap
 } from '../../interfaces/IStatus';
 import {
-  IApi,
-  IClientSummary, IClientVersionSummary,
+  IClientSummary,
+  IClientVersionSummary,
   IContract,
-  IContractSummary, IPermission, ISearchCriteria, ISearchResultsApiSummary, IUserPermissions,
+  IContractSummary,
+  IPermission,
+  ISearchCriteria,
+  ISearchResultsApiSummary,
+  IUserPermissions
 } from '../../interfaces/ICommunication';
 import { IContractExt } from '../../interfaces/IContractExt';
-import {PolicyService} from "../../services/policy/policy.service";
-import {catchError, map, switchMap} from "rxjs/operators";
-import {EMPTY, forkJoin} from "rxjs";
-import {flatArray} from "../../shared/utility";
-import {SpinnerService} from "../../services/spinner/spinner.service";
-import {ApiService} from "../../services/api/api.service";
-import {ITocLink} from "../../interfaces/ITocLink";
-import {TocService} from "../../services/toc/toc.service";
-import {MatDialog} from "@angular/material/dialog";
-import {UnregisterClientComponent} from "../dialogs/unregister-client/unregister-client.component";
-import {SnackbarService} from "../../services/snackbar/snackbar.service";
-import {ConfigService} from "../../services/config/config.service";
-import {IPolicyExt} from "../../interfaces/IPolicyExt";
+import { PolicyService } from '../../services/policy/policy.service';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { EMPTY, forkJoin } from 'rxjs';
+import { flatArray } from '../../shared/utility';
+import { SpinnerService } from '../../services/spinner/spinner.service';
+import { ApiService } from '../../services/api/api.service';
+import { ITocLink } from '../../interfaces/ITocLink';
+import { TocService } from '../../services/toc/toc.service';
+import { MatDialog } from '@angular/material/dialog';
+import { UnregisterClientComponent } from '../dialogs/unregister-client/unregister-client.component';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { ConfigService } from '../../services/config/config.service';
+import { IPolicyExt, IPolicyProbe } from '../../interfaces/IPolicy';
 
 @Component({
   selector: 'app-my-apps',
@@ -74,98 +79,127 @@ export class MyAppsComponent implements OnInit {
     this.spinnerService.startWaiting();
     this.contractsLoaded = false;
 
-    this.backend.getEditableClients().pipe(
-      switchMap((clientSummaries: IClientSummary[]) => {
-        if (clientSummaries.length === 0){
-          this.stopMainRequest();
-        }
+    this.backend
+      .getEditableClients()
+      .pipe(
+        switchMap((clientSummaries: IClientSummary[]) => {
+          if (clientSummaries.length === 0) {
+            this.stopMainRequest();
+          }
 
-        return forkJoin(clientSummaries.map(clientSummary => {
-          return this.backend.getClientVersions(
-            clientSummary.organizationId,
-            clientSummary.id
-          );
-        }))
-      }),
-      switchMap((nestedClientVersionSummaries: IClientVersionSummary[][])=> {
-        const clientVersionSummaries: IClientVersionSummary[] = flatArray(nestedClientVersionSummaries)
-        return forkJoin(clientVersionSummaries.map(clientVersionSummary => {
-            return this.backend.getContracts(
-              clientVersionSummary.organizationId,
-              clientVersionSummary.id,
-              clientVersionSummary.version
-            );
-          })
-        );
-      }),
-      switchMap((nestedContractSummaries: IContractSummary[][]) => {
-        const contractSummaries: IContractSummary[] = flatArray(nestedContractSummaries)
-        if (contractSummaries.length === 0) {
-          this.stopMainRequest();
-        }
-        return forkJoin(contractSummaries.map(contractSummary => {
-          return this.backend.getContract(
-            contractSummary.clientOrganizationId,
-            contractSummary.clientId,
-            contractSummary.clientVersion,
-            contractSummary.contractId
-          );
-        }))
-      }),
-      switchMap((contracts: IContract[]) => {
-        return forkJoin(contracts.map(contract => {
-          const orgId = contract.plan.plan.organization.id;
-          return forkJoin([
-            this.policyService.getPlanPolicies(orgId, contract.plan.plan.id, contract.plan.version),
-            this.policyService.getApiPolicies(orgId, contract.api.api.id, contract.api.version),
-            this.backend.getManagedApiEndpoint(orgId, contract.api.api.id, contract.api.version),
-            this.apiService.isApiDocAvailable(contract.api)
-          ]).pipe(
-            map(([planPolicies, apiPolicies, endpoint, docsAvailable]) => {
-              return {
-                ...contract,
-                policies: planPolicies.concat(apiPolicies),
-                section: 'summary',
-                managedEndpoint: endpoint.managedEndpoint,
-                docsAvailable: docsAvailable
-              } as IContractExt;
+          return forkJoin(
+            clientSummaries.map((clientSummary) => {
+              return this.backend.getClientVersions(
+                clientSummary.organizationId,
+                clientSummary.id
+              );
             })
-          )
-        }))
-      }),
-      catchError((err, caught) => {
-        console.warn(err);
-        this.stopMainRequest(true);
-        return EMPTY;
-      })
-    ).subscribe((contracts) => {
-      this.getApiImages(contracts);
-      this.stopMainRequest();
-      this.extractContracts(contracts);
-      this.fetchPolicyProbes();
-      this.generateTocLinks();
-    });
+          );
+        }),
+        switchMap((nestedClientVersionSummaries: IClientVersionSummary[][]) => {
+          const clientVersionSummaries: IClientVersionSummary[] = flatArray(
+            nestedClientVersionSummaries
+          ) as IClientVersionSummary[];
+          return forkJoin(
+            clientVersionSummaries.map((clientVersionSummary) => {
+              return this.backend.getContracts(
+                clientVersionSummary.organizationId,
+                clientVersionSummary.id,
+                clientVersionSummary.version
+              );
+            })
+          );
+        }),
+        switchMap((nestedContractSummaries: IContractSummary[][]) => {
+          const contractSummaries: IContractSummary[] = flatArray(
+            nestedContractSummaries
+          ) as IContractSummary[];
+          if (contractSummaries.length === 0) {
+            this.stopMainRequest();
+          }
+          return forkJoin(
+            contractSummaries.map((contractSummary) => {
+              return this.backend.getContract(
+                contractSummary.clientOrganizationId,
+                contractSummary.clientId,
+                contractSummary.clientVersion,
+                contractSummary.contractId
+              );
+            })
+          );
+        }),
+        switchMap((contracts: IContract[]) => {
+          return forkJoin(
+            contracts.map((contract) => {
+              const orgId = contract.plan.plan.organization.id;
+              return forkJoin([
+                this.policyService.getPlanPolicies(
+                  orgId,
+                  contract.plan.plan.id,
+                  contract.plan.version
+                ),
+                this.policyService.getApiPolicies(
+                  orgId,
+                  contract.api.api.id,
+                  contract.api.version
+                ),
+                this.backend.getManagedApiEndpoint(
+                  orgId,
+                  contract.api.api.id,
+                  contract.api.version
+                ),
+                this.apiService.isApiDocAvailable(contract.api)
+              ]).pipe(
+                map(([planPolicies, apiPolicies, endpoint, docsAvailable]) => {
+                  return {
+                    ...contract,
+                    policies: planPolicies.concat(apiPolicies),
+                    section: 'summary',
+                    managedEndpoint: endpoint.managedEndpoint,
+                    docsAvailable: docsAvailable
+                  } as IContractExt;
+                })
+              );
+            })
+          );
+        }),
+        catchError((err) => {
+          console.warn(err);
+          this.stopMainRequest(true);
+          return EMPTY;
+        })
+      )
+      .subscribe((contracts) => {
+        this.getApiImages(contracts);
+        this.stopMainRequest();
+        this.extractContracts(contracts);
+        this.fetchPolicyProbes();
+        this.generateTocLinks();
+      });
   }
 
-  private fetchPolicyProbes(){
+  private fetchPolicyProbes() {
     this.contracts.forEach((contract: IContractExt) => {
       contract.policies.forEach((policy: IPolicyExt) => {
-        this.policyService.getPolicyProbe(contract, policy).pipe(
-          catchError((err) => {
-            console.warn(err);
+        this.policyService
+          .getPolicyProbe(contract, policy)
+          .pipe(
+            catchError((err) => {
+              console.warn(err);
+              this.policyService.initPolicy(policy);
+              return EMPTY;
+            })
+          )
+          .subscribe((probes: IPolicyProbe[]) => {
+            policy.probe = probes[0];
             this.policyService.initPolicy(policy);
-            return EMPTY;
-          })
-        ).subscribe((probes: any) => {
-          policy.probe = probes[0];
-          this.policyService.initPolicy(policy);
-          this.policyService.setGaugeDataForPolicy(policy);
-        })
+            this.policyService.setGaugeDataForPolicy(policy);
+          });
       });
     });
   }
 
-  private stopMainRequest(setError = false){
+  private stopMainRequest(setError = false) {
     this.spinnerService.stopWaiting();
     this.contractsLoaded = true;
 
@@ -173,16 +207,23 @@ export class MyAppsComponent implements OnInit {
   }
 
   // TODO: include this in to the main request chain. Reminder: ApiVersions do not have api.api.image property
-  private getApiImages(contracts: IContractExt[]){
+  private getApiImages(contracts: IContractExt[]) {
     contracts.forEach((contract: IContractExt) => {
-      const searchCriteria:  ISearchCriteria = {
-        filters: [{name: 'name', value: contract.api.api.name, operator: 'like'}],
-        paging: {page: 1, pageSize: 1}
+      const searchCriteria: ISearchCriteria = {
+        filters: [
+          { name: 'name', value: contract.api.api.name, operator: 'like' }
+        ],
+        paging: { page: 1, pageSize: 1 }
       };
 
-      this.backend.searchApis(searchCriteria).subscribe((apiSummaries: ISearchResultsApiSummary) => {
-        this.apiImages.set(contract.api.api.name, apiSummaries.beans[0].image);
-      });
+      this.backend
+        .searchApis(searchCriteria)
+        .subscribe((apiSummaries: ISearchResultsApiSummary) => {
+          this.apiImages.set(
+            contract.api.api.name,
+            apiSummaries.beans[0].image
+          );
+        });
     });
   }
 
@@ -195,8 +236,14 @@ export class MyAppsComponent implements OnInit {
     this.contracts = this.contracts.concat(contracts);
 
     this.contracts.forEach((contract: IContractExt) => {
-      const clientNameVersionMapped = (contract.client.client.name + ':' + contract.client.version).toLowerCase();
-      const foundContracts = this.clientContractsMap.get(clientNameVersionMapped);
+      const clientNameVersionMapped = (
+        contract.client.client.name +
+        ':' +
+        contract.client.version
+      ).toLowerCase();
+      const foundContracts = this.clientContractsMap.get(
+        clientNameVersionMapped
+      );
 
       if (!foundContracts) {
         this.clientContractsMap.set(clientNameVersionMapped, [contract]);
@@ -218,31 +265,42 @@ export class MyAppsComponent implements OnInit {
     });
 
     // Sort Clients by name
-    this.clientContractsMap = new Map([...this.clientContractsMap.entries()].sort());
+    this.clientContractsMap = new Map(
+      [...this.clientContractsMap.entries()].sort()
+    );
   }
 
   private setUpHero() {
     this.heroService.setUpHero({
-      title: this.translator.instant('APPS.TITLE'),
-      subtitle: this.translator.instant('APPS.SUBTITLE')
+      title: this.translator.instant('APPS.TITLE') as string,
+      subtitle: this.translator.instant('APPS.SUBTITLE') as string
     });
   }
 
-  onSectionChanged(){
-
-  }
-
-  setSection(contract: IContractExt, sectionName: ISection) {
-    contract.section = contract.section === sectionName ? contract.section : sectionName;
+  setSection(contract: IContractExt, sectionName: ISection): void {
+    contract.section =
+      contract.section === sectionName ? contract.section : sectionName;
     this.cdr.detectChanges();
   }
 
-  getColorForLabel(status: IApiStatus | IClientStatus) {
+  getColorForLabel(
+    status: IApiStatus | IClientStatus
+  ): IStatusColors | undefined {
     return statusColorMap.get(status);
   }
 
   formatClientContractTitle(key: string): string {
-    return this.clientContractsMap.get(key)![0].client.client.name + ' - ' + this.clientContractsMap.get(key)![0].client.version;
+    if (this.clientContractsMap.has(key)) {
+      return (
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.clientContractsMap.get(key)![0].client.client.name +
+        ' - ' +
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.clientContractsMap.get(key)![0].client.version
+      );
+    } else {
+      return '';
+    }
   }
 
   private generateTocLinks() {
@@ -257,30 +315,36 @@ export class MyAppsComponent implements OnInit {
     });
   }
 
-  private generateTocSubLinks(contracts: IContractExt[]): ITocLink[]{
-    let subLinks: ITocLink[] = [];
+  private generateTocSubLinks(contracts: IContractExt[]): ITocLink[] {
+    const subLinks: ITocLink[] = [];
 
     contracts.forEach((contract: IContractExt) => {
       subLinks.push({
         name: this.formatApiVersionPlanTitle(contract),
         destination: this.tocService.formatApiVersionPlanId(contract)
-      })
+      });
     });
 
     return subLinks;
   }
 
-  formatApiVersionPlanTitle(contract: IContractExt) {
+  formatApiVersionPlanTitle(contract: IContractExt): string {
     return `${contract.api.api.name} ${contract.api.version} - ${contract.plan.plan.name}`;
   }
 
-  unregister(contract: IContractExt, clientNameVersion: string) {
-    const dialogRef = this.dialog.open(UnregisterClientComponent, {autoFocus: false});
+  unregister(contract: IContractExt, clientNameVersion: string): void {
+    const dialogRef = this.dialog.open(UnregisterClientComponent, {
+      autoFocus: false
+    });
     dialogRef.componentInstance.contract = contract;
-    dialogRef.componentInstance.clientNameVersion = {value: this.formatClientContractTitle(clientNameVersion)}
+    dialogRef.componentInstance.clientNameVersion = {
+      value: this.formatClientContractTitle(clientNameVersion)
+    };
 
     dialogRef.componentInstance.unregisterEmitter.subscribe(() => {
-      this.snackbarService.showPrimarySnackBar(this.translator.instant('APPS.CLIENT_REMOVED'))
+      this.snackbarService.showPrimarySnackBar(
+        this.translator.instant('APPS.CLIENT_REMOVED') as string
+      );
       this.fetchContracts();
 
       dialogRef.close();
@@ -291,11 +355,11 @@ export class MyAppsComponent implements OnInit {
     this.backend.getPermissions().subscribe((response: IUserPermissions) => {
       this.clientAdminProfile = response.permissions.some((p: IPermission) => {
         return p.name === 'clientAdmin';
-      })
+      });
     });
   }
 
-  onSetSection($event: any) {
+  onSetSection($event: { contract: IContractExt; section: ISection }): void {
     this.setSection($event.contract, $event.section);
     this.cdr.detectChanges();
   }

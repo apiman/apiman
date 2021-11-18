@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {HeroService} from '../../services/hero/hero.service';
-import {TranslateService} from '@ngx-translate/core';
-import {ConfigService} from '../../services/config/config.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { HeroService } from '../../services/hero/hero.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfigService } from '../../services/config/config.service';
 import SwaggerUI from 'swagger-ui';
 
 @Component({
@@ -25,12 +25,12 @@ export class SwaggerComponent implements OnInit {
   /**
    * Load the swagger definition and display it with the swagger ui bundle library on component initialization
    */
-  ngOnInit() {
-    const organizationId = this.route.snapshot.paramMap.get('orgId');
-    const apiId = this.route.snapshot.paramMap.get('apiId');
-    const apiVersion = this.route.snapshot.paramMap.get('apiVersion');
+  ngOnInit(): void {
+    const organizationId = this.route.snapshot.paramMap.get('orgId') ?? '';
+    const apiId: string = this.route.snapshot.paramMap.get('apiId') ?? '';
+    const apiVersion = this.route.snapshot.paramMap.get('apiVersion') ?? '';
     this.heroService.setUpHero({
-      title: this.translator.instant('COMMON.API_DOCS'),
+      title: this.translator.instant('COMMON.API_DOCS') as string,
       subtitle: `${apiId} - ${apiVersion}`
     });
 
@@ -43,10 +43,10 @@ export class SwaggerComponent implements OnInit {
       docExpansion: 'list',
       operationsSorter: 'alpha',
       tryItOutEnabled: false,
-      requestInterceptor: (request: any) => {
+      requestInterceptor: (request: SwaggerUI.Request) => {
         return request;
       },
-      responseInterceptor: (response: any) => {
+      responseInterceptor: (response: SwaggerUI.Response) => {
         return response;
       },
       onComplete: () => {}

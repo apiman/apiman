@@ -1,5 +1,5 @@
 <mat-form-field *ngIf="terms" appearance="fill">
-  <mat-label>{{'WIZARD.LICENCE_TYPE' | translate}}</mat-label>
+  <mat-label>{{ 'WIZARD.LICENCE_TYPE' | translate }}</mat-label>
   <textarea
     cdkAutosizeMaxRows="20"
     cdkAutosizeMinRows="1"
@@ -19,7 +19,9 @@
         [(ngModel)]="acceptedTerms"
         color="primary">
         <span>{{ 'TERMS.PREFIX' | translate }}</span>
-        <a [href]="termsLink" class="primary" target="_blank">{{'TERMS.LINK_TEXT' | translate}}</a>
+        <a [href]="termsLink" class="primary" target="_blank">{{
+          'TERMS.LINK_TEXT' | translate
+        }}</a>
         <span>{{ 'TERMS.SUFFIX' | translate }}</span>
       </mat-checkbox>
     </p>
@@ -29,7 +31,9 @@
         [(ngModel)]="acceptedPrivacyTerms"
         color="primary">
         <span>{{ 'PRIVACY.PREFIX' | translate }}</span>
-        <a [href]="termsLink" class="primary" target="_blank">{{'PRIVACY.LINK_TEXT' | translate}}</a>
+        <a [href]="termsLink" class="primary" target="_blank">{{
+          'PRIVACY.LINK_TEXT' | translate
+        }}</a>
         <span>{{ 'PRIVACY.SUFFIX' | translate }}</span>
       </mat-checkbox>
     </p>
