@@ -199,9 +199,10 @@ function devPortalBusinessLogic(
     const options: EditorOptions = {
       el: document.querySelector("#editor"),
       height: "500px",
-      initialEditType: "markdown",
+      initialEditType: "wysiwyg",
       previewStyle: "tab",
       usageStatistics: false,
+      autofocus: false,
       hooks: {
         addImageBlobHook: uploadImageFromMarkdownEditor,
       },
@@ -216,17 +217,17 @@ function devPortalBusinessLogic(
         target: "_blank",
         rel: "noopener",
       },
+      initialValue: ""
     };
 
     markdownEditor = new toast(options);
-    markdownEditor.setMarkdown("");
 
     if ($scope.data.apiVersion.extendedDescription) {
       Logger.info(
           "Setting extended description to: {0}",
           $scope.data.apiVersion.extendedDescription
       );
-      markdownEditor.setMarkdown($scope.data.apiVersion.extendedDescription, true);
+      markdownEditor.setMarkdown($scope.data.apiVersion.extendedDescription, false);
     }
   }
 
@@ -251,7 +252,7 @@ function devPortalBusinessLogic(
     }
   };
   /** End Markdown Editor **/
-  
+
   /** Save, and reset **/
   // Reset (copy saved pristine copy back over).
   $scope.reset = function () {
@@ -259,7 +260,7 @@ function devPortalBusinessLogic(
     $scope.data = angular.copy(dataClone);
     markdownEditor.setMarkdown(
       $scope.data.apiVersion.extendedDescription,
-      true
+      false
     );
     $rootScope.isDirty = false;
   };
@@ -369,7 +370,6 @@ function devPortalBusinessLogic(
   function isFeaturedApi(apiBean: ApiBean): boolean {
     const tagsArray: KeyValueTagDto[] = apiBean.tags;
     const answer = tagsArray.findIndex((elem: KeyValueTagDto) => elem.key === "featured") !== -1;
-    console.log(answer);
     return answer;
   }
 
