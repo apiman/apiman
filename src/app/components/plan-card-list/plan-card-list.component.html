@@ -37,6 +37,7 @@
         <div>
           <mat-divider></mat-divider>
           <button
+            *ngIf="apiVersion.status === 'Published'"
             class="sign-up-button"
             mat-raised-button
             color="primary"

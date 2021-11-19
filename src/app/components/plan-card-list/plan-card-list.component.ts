@@ -9,7 +9,6 @@ import { switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { flatArray } from '../../shared/utility';
 import { IApiVersionExt } from '../../interfaces/IApiVersionExt';
-import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-plan-card-list',
