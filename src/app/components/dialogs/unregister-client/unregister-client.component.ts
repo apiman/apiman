@@ -47,7 +47,7 @@ export class UnregisterClientComponent {
         catchError(() => {
           console.warn('Deleting Client failed');
           this.snackbarService.showErrorSnackBar(
-            this.translator.instant('APPS.REMOVE_CLIENT_FAILED') as string
+            this.translator.instant('APPS.REMOVE_APPLICATION_FAILED') as string
           );
           return EMPTY;
         })

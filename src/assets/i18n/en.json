@@ -18,7 +18,7 @@
     "HTTP_HEADER": "As HTTP Request Header",
     "API_DOCS": "API Documentation",
     "ERROR": "Data could not be loaded, please try again later.",
-    "SUCCESS": "Successfully created!",
+    "SUCCESS": "Successfully created.",
     "LOGIN": "Login",
     "LOGIN_OR_REGISTER": "Login / Register",
     "LOGOUT": "Logout",
@@ -28,7 +28,7 @@
     "PER": "per"
   },
   "HOME": {
-    "TITLE": "KoolBank Api Developer Portal",
+    "TITLE": "API Developer Portal",
     "SUBTITLE": "Featured APIs",
     "SHOW_ALL": "Show all",
     "NO_APIS_FOUND": "No APIs were found"
@@ -59,19 +59,19 @@
     "UNSUB_FROM_API": "Unsubscribe from API",
     "UNSUB_FROM_THIS_API": "Unsubscribe from this API",
     "UNSUB": "Unsubscribe",
-    "CLIENT_REMOVED": "The client and the contracts has been removed",
-    "REMOVE_CLIENT_TT": "Remove client",
+    "APPLICATION_REMOVED": "The application and its related contracts have been removed",
+    "REMOVE_APPLICATION_TOOLTIP": "Remove application",
     "USED": "used",
     "RESETS_AT": "Resets at",
     "RESETS_EVERY_SECOND": "Resets every second",
-    "NO_POLICIES_FOR_API": "No policies were found for this API",
+    "NO_POLICIES_FOR_API": "No policies found for this API",
     "APPS_AND_APIS": "Apps and APIs",
     "NO_APPS_FOUND": "No applications were found",
-    "FAILED_WHILE_FETCHING_CLIENTS": "Failed while fetching applications",
-    "REMOVE_CLIENT_FAILED": "Failed while removing the client",
+    "FAILED_WHILE_FETCHING_APPLICATIONS": "Failed while fetching applications",
+    "REMOVE_APPLICATION_FAILED": "Failed while removing the application",
     "NO_PROBES": "Failed while fetching the current policy data"
   },
-  "CLIENT_CREATE" : {
+  "APPLICATION_CREATE": {
     "SELECT": "Select from available Applications"
   },
   "WIZARD": {
@@ -84,10 +84,10 @@
     "THIRD_STEP_TITLE": "Summary",
     "FORTH_STEP_TITLE": "Confirmation",
     "APPLICATION_ERROR": "You have to select one application first",
-    "TERMS_ERROR": "You have to accept the service terms",
+    "TERMS_ERROR": "Please accept the service terms",
     "REDIRECT": "You will be redirected because of an invalid URL",
     "SUCCESS": "A contract has been successfully created",
-    "API_KEY_PREVIEW": "You will be provided an API-KEY after sign-up",
+    "API_KEY_PREVIEW": "You will be provided an API key after sign-up",
     "API_ENDPOINT_PREVIEW": "You will be provided an endpoint after sign-up",
     "LICENSE_TYPE": "Licence Type",
     "POLICIES": "Policies"
@@ -95,7 +95,7 @@
   "POLICIES": {
     "RateLimitingPolicy": {
       "TITLE": "Rate Limiting Policy",
-      "DESCRIPTION": "You will be rate limited to <b>{{limit}}</b> requests per <b>{{timeUnit}}</b>",
+      "DESCRIPTION": "Requests are limited to <b>{{limit}}</b> requests per <b>{{timeUnit}}</b>",
       "MORE_INFO": "The following headers in the response contain useful information relating to rate limit:",
       "LIMIT": "Rate limit allowance (per time period)",
       "REMAINING": "Rate limit allowance remaining",
@@ -108,7 +108,7 @@
       "MORE_INFO": "The following headers in the response contain useful information relating to quota limit:",
       "LIMIT": "Quota limit allowance (per time period)",
       "REMAINING": "Quota limit allowance remaining",
-      "RESET": "Quota limit allowance remaining",
+      "RESET": "The time the quota limit will be reset",
       "CONDITION_LIGHT": "<b>{{limit}}</b> data per <b>{{timeUnit}}</b>"
     },
     "PERIODS": {
@@ -123,21 +123,18 @@
   },
   "DESCRIPTIONS": {
     "TRY_IT_OUT": "Displays the Open API definition (Swagger) and allows for making test calls if the API is available.",
-    "API_KEY": "When an API contract is created, the system generates a unique API Key. <br>This API Key is unique per application and the same for all contracts of this application. <br>All requests made to the API must include this API Key.",
+    "API_KEY": "When an API contract is created, the system generates a unique API Key. <br>This API Key is unique per application and the same for all contracts of this application.<br> All requests made to the API must include this API Key.",
     "API_ENDPOINT": "One important aspect of all APIs that are managed by the API Gateway is the security that the API Gateway provides. <br>The API can be accessed with this URL.",
-    "OAUTH": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et",
-    "DISABLE_API": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
-    "UNREGISTER_API": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
   },
   "APPROVAL": {
     "APPROVAL": "Approval Required",
-    "TITLE": "Thank you!",
-    "SUBTITLE": "Your subscription is awaiting approval by <i>KoolBank</i>",
+    "TITLE": "Thank you.",
+    "SUBTITLE": "Your subscription is awaiting approval",
     "MORE_INFO": "You will receive an email notification when there is progress in your application"
   },
   "DIALOGS": {
-    "REMOVE_TITLE": "Remove Client",
-    "REMOVE_SURE": "Are you really sure you want to <span class='warn'>remove</span> the client <b>{{value}}</b> and its contracts?",
+    "REMOVE_TITLE": "Remove Application",
+    "REMOVE_SURE": "Are you sure you want to <span class='warn'>remove</span> the application <b>{{value}}</b> and all of its contracts?",
     "REMOVE_BTN": "Remove"
   },
   "API_DETAILS": {

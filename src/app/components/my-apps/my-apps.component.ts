@@ -315,7 +315,7 @@ export class MyAppsComponent implements OnInit {
 
     dialogRef.componentInstance.unregisterEmitter.subscribe(() => {
       this.snackbarService.showPrimarySnackBar(
-        this.translator.instant('APPS.CLIENT_REMOVED') as string
+        this.translator.instant('APPS.APPLICATION_REMOVED') as string
       );
       this.fetchContracts();
 

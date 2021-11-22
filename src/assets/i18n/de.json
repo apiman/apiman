@@ -18,7 +18,7 @@
     "HTTP_HEADER": "Als HTTP Request Header",
     "API_DOCS": "API Dokumentation",
     "ERROR": "Die Daten konnten nicht geladen werden, bitte versuchen Sie es später erneut.",
-    "SUCCESS": "Erfolgreich erstellt!",
+    "SUCCESS": "Erfolgreich erstellt.",
     "LOGIN": "Anmelden",
     "LOGIN_OR_REGISTER": "Anmelden / Registrieren",
     "LOGOUT": "Abmelden",
@@ -28,9 +28,9 @@
     "PER": "pro"
   },
   "HOME": {
-    "TITLE": "KoolBank Api Entwickler Portal",
+    "TITLE": "API Entwickler Portal",
     "SUBTITLE": "Hervorgehobene APIs",
-    "SHOW_ALL": "Zeige alles",
+    "SHOW_ALL": "Alles zeigen",
     "NO_APIS_FOUND": "Es wurden keine APIs gefunden"
   },
   "MPLACE": {
@@ -48,30 +48,30 @@
     "TITLE": "Meine Apps",
     "SUBTITLE": "API-Gruppen",
     "SUMMARY": "Überblick",
-    "USE_API": "API benutzen",
-    "POLICIES": "Regeln",
+    "USE_API": "API verwenden",
+    "POLICIES": "Policys",
     "MANAGE_API": "API verwalten",
     "API_KEY": "API Key",
-    "ENDPOINT": "Endpoint",
+    "ENDPOINT": "Endpunkt",
     "AUTHENTICATION": "Authentifizierung",
     "DISABLE_THIS_API": "Diese API deaktivieren",
     "DISABLE_API": "Deaktivieren",
     "UNSUB_FROM_API": "Von der API abmelden",
     "UNSUB_FROM_THIS_API": "Von dieser API abmelden",
     "UNSUB": "Abmelden",
-    "CLIENT_REMOVED": "Der Client und die Verträge wurden entfernt",
-    "REMOVE_CLIENT_TT": "Client entfernen",
+    "APPLICATION_REMOVED": "Die Applikation und die zugehörigen Verträge wurden entfernt",
+    "REMOVE_APPLICATION_TOOLTIP": "Applikation entfernen",
     "USED": "verbraucht",
-    "RESETS_AT": "Reset am",
-    "RESETS_EVERY_SECOND": "Resettet jede Sekunde",
-    "NO_POLICIES_FOR_API": "Für diese API wurden keine Regeln gefunden",
+    "RESETS_AT": "Wird zurückgesetzt am",
+    "RESETS_EVERY_SECOND": "Wird jede Sekunde zurückgesetzt",
+    "NO_POLICIES_FOR_API": "Für diese API wurden keine Policys gefunden",
     "APPS_AND_APIS": "Apps und APIs",
     "NO_APPS_FOUND": "Es wurden keine Applikationen gefunden",
-    "FAILED_WHILE_FETCHING_CLIENTS": "Fehler beim Laden der Applikationen",
-    "REMOVE_CLIENT_FAILED": "Fehler beim Löschen der Applikation",
+    "FAILED_WHILE_FETCHING_APPLICATIONS": "Fehler beim Laden der Applikationen",
+    "REMOVE_APPLICATION_FAILED": "Fehler beim Löschen der Applikation",
     "NO_PROBES": "Fehler beim Anfragen der aktuellen Policy-Daten"
   },
-  "CLIENT_CREATE" : {
+  "APPLICATION_CREATE": {
     "SELECT": "Aus vorhandenen Anwendugen auswählen"
   },
   "WIZARD": {
@@ -86,29 +86,29 @@
     "APPLICATION_ERROR": "Sie müssen zuerst eine Anwendung auswählen",
     "TERMS_ERROR": "Sie müssen den Lizenzvereinbarungen zustimmen",
     "REDIRECT": "Sie werden wegen einer ungültigen URL umgeleitet",
-    "SUCCESS": "Ein Vertrag wurde erfolgreich erstellt",
-    "API_KEY_PREVIEW": "Ihnen wird ein API-Key nach der Anmeldung bereitgestellt",
-    "API_ENDPOINT_PREVIEW": "Ihnen wird der Edpoint nach der Anmeldung bereitgestellt",
-    "LICENSE_TYPE": "Lizenz Typ",
-    "POLICIES": "Regeln"
+    "SUCCESS": "Der Vertrag wurde erfolgreich erstellt",
+    "API_KEY_PREVIEW": "Nach der Anmeldung wird Ihnen ein API-Key bereitgestellt",
+    "API_ENDPOINT_PREVIEW": "Nach der Anmeldung wird Ihnen der Endpoint bereitgestellt",
+    "LICENSE_TYPE": "Lizenztyp",
+    "POLICIES": "Policys"
   },
   "POLICIES": {
     "RateLimitingPolicy": {
       "TITLE": "Rate Limiting Policy",
-      "DESCRIPTION": "Die Anfragefrequenz wird beschränkt auf <b>{{limit}}</b> Requests pro <b>{{timeUnit}}</b>",
-      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Requests:",
-      "LIMIT": "Rate Limit (pro Zeit)",
-      "REMAINING": "Rate Limit verbleibend",
-      "RESET": "Die Zeit, bis das Rate Limit zurückgesetzt wird",
-      "CONDITION_LIGHT": "<b>{{limit}}</b> Requests pro <b>{{timeUnit}}</b>"
+      "DESCRIPTION": "Die Anfragefrequenz wird beschränkt auf <b>{{limit}}</b> Anfragen pro <b>{{timeUnit}}</b>",
+      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Breschränkung:",
+      "LIMIT": "Beschränkung (pro Zeit)",
+      "REMAINING": "Verbleibende Anzahl Anfragen",
+      "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird",
+      "CONDITION_LIGHT": "<b>{{limit}}</b> Anfragen pro <b>{{timeUnit}}</b>"
     },
     "TransferQuotaPolicy": {
       "TITLE": "Transfer Quota Policy",
       "DESCRIPTION": "Es können maximal <b>{{limit}}<b> Daten pro <b>{{timeUnit}}</b> konsumiert werden",
-      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Requests:",
-      "LIMIT": "Quota Limit (pro Zeit)",
-      "REMAINING": "Quota Limit verbleibend",
-      "RESET": "Die Zeit, bis das Quota Limit zurückgesetzt wird",
+      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Beschränkung:",
+      "LIMIT": "Maximale Datenmenge (pro Zeit)",
+      "REMAINING": "Verbleibende Datenmenge",
+      "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird",
       "CONDITION_LIGHT": "<b>{{limit}}</b> Daten pro <b>{{timeUnit}}</b>"
     },
     "PERIODS": {
@@ -122,29 +122,26 @@
     "USAGE": "Verbrauch"
   },
   "DESCRIPTIONS": {
-    "TRY_IT_OUT": "Öffnet die Open API Defintion (Swagger) und erlaubt es Testaufrufe der API durchzuführen.",
-    "API_KEY": "Wenn ein API Contract erstellt wird, erzeugt das System einen eindeutigen API Key. <br>Dieser API-Key ist pro Anwendung eindeutig und für alle Contracts dieser Anwendung gleich. <br>Alle Aufrufe dieser API müssen diesen API-Key beinhalten.",
-    "API_ENDPOINT": "Ein wichtiger Aspekt für alle vom API Gateway verwalteten APIs ist die Sicherheit des API Gateways. <br>Die API kann über diese URL aufgerufen werden",
-    "OAUTH": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et",
-    "DISABLE_API": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
-    "UNREGISTER_API": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+    "TRY_IT_OUT": "Öffnet die Open API Defintion (Swagger). Hier können Sie Testaufrufe auf die API durchführen.",
+    "API_KEY": "Wenn ein API-Vertrag erstellt wird, erzeugt das System einen eindeutigen API-Key. <br>Dieser API-Key ist pro Anwendung eindeutig und für alle Verträge dieser Anwendung gleich.<br> Alle Aufrufe dieser API müssen diesen API-Key beinhalten.",
+    "API_ENDPOINT": "Ein wichtiger Aspekt für alle vom API Gateway verwalteten APIs ist die Sicherheit des API Gateways. <br>Die API kann über diese URL aufgerufen werden"
   },
   "APPROVAL": {
     "APPROVAL": "Bestätigung erforderlich",
-    "TITLE": "Vielen Dank!",
-    "SUBTITLE": "Dein Auftrag muss von <i>KoolBank</i> noch bestätigt werden",
+    "TITLE": "Vielen Dank.",
+    "SUBTITLE": "Dein Auftrag muss noch bestätigt werden",
     "MORE_INFO": "Sie werden über den aktuellen Status per E-Mail benachrichtigt"
   },
   "DIALOGS": {
-    "REMOVE_TITLE": "Client löschen",
-    "REMOVE_SURE": "Sind Sie sich wirklich sicher, dass Sie den Client <b>{{value}}</b> und seine Verträge <span class='warn'>löschen</span> möchten?",
+    "REMOVE_TITLE": "Applikation löschen",
+    "REMOVE_SURE": "Sind Sie sicher, dass Sie die Applikation <b>{{value}}</b> und all ihre Verträge <span class='warn'>löschen</span> möchten?",
     "REMOVE_BTN": "Löschen"
   },
   "API_DETAILS": {
     "PLANS": "Pläne",
     "KEY_FEATURES": "Vorteile",
-    "EXTENDED_DESCRIPTION": "Erweiterte Beschreibung",
-    "NO_EXT_DESCRIPTION": "Für diese API wurde keine erweiterte Beschreibung hinterlegt",
+    "EXTENDED_DESCRIPTION": "Ausführliche Beschreibung",
+    "NO_EXT_DESCRIPTION": "Für diese API wurde keine ausführliche Beschreibung hinterlegt",
     "SIGN_UP": "Sign Up"
   },
   "TERMS": {

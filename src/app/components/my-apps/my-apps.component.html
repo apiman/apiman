@@ -1,7 +1,7 @@
 <div *ngIf="contractsLoaded && contracts.length === 0" class="dp-center">
   <app-no-data
     [text]="
-      (error ? 'APPS.FAILED_WHILE_FETCHING_CLIENTS' : 'APPS.NO_APPS_FOUND')
+      (error ? 'APPS.FAILED_WHILE_FETCHING_APPLICATIONS' : 'APPS.NO_APPS_FOUND')
         | translate
     "
     [textClass]="'text-big2'"></app-no-data>
@@ -30,7 +30,7 @@
             (click)="unregister(cliCon.value[0], cliCon.key)"
             mat-icon-button
             color="primary"
-            matTooltip="{{ 'APPS.REMOVE_CLIENT_TT' | translate }}">
+            matTooltip="{{ 'APPS.REMOVE_APPLICATION_TOOLTIP' | translate }}">
             <mat-icon>delete</mat-icon>
           </button>
           <span
