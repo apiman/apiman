@@ -142,7 +142,7 @@ export class PolicyService {
       );
   }
 
-  private extendPolicy(extendedPolicy: IPolicyExt) {
+  public extendPolicy(extendedPolicy: IPolicyExt): void {
     const perTranslated = this.translator.instant('COMMON.PER') as string;
     const policyConfig = this.getPolicyConfiguration(extendedPolicy);
     const periodTranslated = this.getTranslationForPeriod(policyConfig.period);

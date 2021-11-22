@@ -1,3 +1,5 @@
+import { IPolicyExt } from './IPolicy';
+
 export interface IAction {
   type:
     | 'publishAPI'
@@ -186,6 +188,7 @@ export interface IApiPlanSummary {
   planName: string;
   planDescription: string;
   version: string;
+  planPolicies: IPolicyExt[];
 }
 
 export interface IAuditEntry {

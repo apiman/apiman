@@ -6,6 +6,7 @@ import {
   IApiSummary,
   IApiVersion,
   IApiVersionSummary,
+  IContract,
   ISearchCriteria,
   ISearchResultsApiSummary
 } from '../../interfaces/ICommunication';
@@ -79,6 +80,19 @@ export class ApiService {
         }),
         catchError(() => of(false))
       );
+  }
+
+  // Reminder: ApiVersions do not have api.api.image property
+  // Therefore we need to use the search endpoint to receive the image
+  getApiImage(contract: IContract): Observable<ISearchResultsApiSummary> {
+    const searchCriteria: ISearchCriteria = {
+      filters: [
+        { name: 'name', value: contract.api.api.name, operator: 'like' }
+      ],
+      paging: { page: 1, pageSize: 1 }
+    };
+
+    return this.backendService.searchApis(searchCriteria);
   }
 
   handleError(error: HttpErrorResponse): Observable<never> {

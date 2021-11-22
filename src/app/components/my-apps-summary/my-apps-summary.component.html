@@ -93,12 +93,7 @@
     </div>
   </div>
   <div class="grid-divider"><div></div></div>
-  <div
-    *ngIf="
-      contract!.policies.length > 0 && contract!.policies[0].probe;
-      else noPolicies
-    "
-    class="policies">
+  <div *ngIf="contract!.policies.length > 0; else noPolicies" class="policies">
     <ng-container *ngFor="let policy of contract!.policies">
       <app-policy-card-light
         [policy]="policy"

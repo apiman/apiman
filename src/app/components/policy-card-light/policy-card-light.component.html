@@ -5,26 +5,34 @@
   </mat-card-header>
   <mat-card-content>
     <div class="limit-flex">
-      <div>
-        <p
-          [innerHTML]="
-            'POLICIES.' + policy.definition.id + '.CONDITION_LIGHT'
-              | translate: policy.restrictions
-          "></p>
-        <p>
-          <b>{{ policy.mainGaugeData?.currentVal }}</b> /
-          {{ policy.restrictions?.limit }}
-        </p>
-      </div>
-      <div class="second">
-        <button
-          (click)="setSectionToPolicies()"
-          mat-icon-button
-          color="primary"
-          class="mt-10">
-          <mat-icon>info</mat-icon>
-        </button>
-      </div>
+      <ng-container *ngIf="!policy.probe; else probe">
+        <div id="spinner" style="display: flex; justify-content: center">
+          <mat-spinner strokeWidth="3" diameter="40"></mat-spinner>
+        </div>
+      </ng-container>
+
+      <ng-template #probe>
+        <div>
+          <p
+            [innerHTML]="
+              'POLICIES.' + policy.definition.id + '.CONDITION_LIGHT'
+                | translate: policy.restrictions
+            "></p>
+          <p>
+            <b>{{ policy.mainGaugeData?.currentVal }}</b> /
+            {{ policy.restrictions?.limit }}
+          </p>
+        </div>
+        <div class="second">
+          <button
+            (click)="setSectionToPolicies()"
+            mat-icon-button
+            color="primary"
+            class="mt-10">
+            <mat-icon>info</mat-icon>
+          </button>
+        </div>
+      </ng-template>
     </div>
   </mat-card-content>
 </mat-card>

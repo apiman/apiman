@@ -5,10 +5,9 @@ import { SignUpService } from '../../services/sign-up/sign-up.service';
 import { IApiPlanSummary } from '../../interfaces/ICommunication';
 import { IPolicyExt } from '../../interfaces/IPolicy';
 import { PolicyService } from '../../services/policy/policy.service';
-import { switchMap } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
-import { flatArray } from '../../shared/utility';
 import { IApiVersionExt } from '../../interfaces/IApiVersionExt';
+import { KeycloakService } from 'keycloak-angular';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-plan-card-list',
@@ -27,7 +26,6 @@ export class PlanCardListComponent implements OnInit {
     private router: Router
   ) {}
 
-  planPoliciesMap = new Map<string, IPolicyExt[]>();
   apiPolicies: IPolicyExt[] = [];
   orgId = '';
   apiId = '';
@@ -39,17 +37,7 @@ export class PlanCardListComponent implements OnInit {
   }
 
   onSignUp(plan: IApiPlanSummary): void {
-    const policies: IPolicyExt[] = [];
-    const planIdVersionMapped = plan.planId + ':' + plan.version;
-    const foundPlanPolicies = this.planPoliciesMap.get(planIdVersionMapped);
-
-    if (foundPlanPolicies) {
-      policies.push(...foundPlanPolicies);
-    }
-    if (this.apiPolicies.length > 0) {
-      policies.concat(this.apiPolicies);
-    }
-
+    const policies: IPolicyExt[] = plan.planPolicies;
     policies.forEach((policy: IPolicyExt) =>
       this.policyService.initPolicy(policy)
     );
@@ -67,45 +55,17 @@ export class PlanCardListComponent implements OnInit {
     this.planService
       .getPlans(this.orgId, this.apiId, this.apiVersion.version)
       .pipe(
-        switchMap((apiPlanSummaries: IApiPlanSummary[]) => {
-          this.plans = apiPlanSummaries;
-          return forkJoin(
-            apiPlanSummaries.map((apiPlanSummary) => {
-              return this.policyService.getPlanPolicies(
-                this.orgId,
-                apiPlanSummary.planId,
-                apiPlanSummary.version
-              );
-            })
-          );
+        map((apiPlanSummaries: IApiPlanSummary[]) => {
+          apiPlanSummaries.forEach((apiPlanSummary) => {
+            apiPlanSummary.planPolicies.forEach((policy: IPolicyExt) => {
+              this.policyService.extendPolicy(policy);
+            });
+          });
+          return apiPlanSummaries;
         })
       )
-      .subscribe((nestedExtendedPolicies: IPolicyExt[][]) => {
-        const extendedPolicies: IPolicyExt[] = flatArray(
-          nestedExtendedPolicies
-        ) as IPolicyExt[];
-        this.extractPolicies(extendedPolicies);
+      .subscribe((apiPlanSummaries: IApiPlanSummary[]) => {
+        this.plans = apiPlanSummaries;
       });
-    this.policyService
-      .getApiPolicies(this.orgId, this.apiId, this.apiVersion.version)
-      .subscribe((extendedApiPolicies: IPolicyExt[]) => {
-        this.apiPolicies = this.apiPolicies.concat(extendedApiPolicies);
-      });
-  }
-
-  private extractPolicies(extendedPolicies: IPolicyExt[]) {
-    extendedPolicies.forEach((extendedPolicy) => {
-      const planIdVersionMapped =
-        extendedPolicy.planId + ':' + extendedPolicy.planVersion;
-      const foundPolicies = this.planPoliciesMap.get(planIdVersionMapped);
-      if (foundPolicies) {
-        this.planPoliciesMap.set(
-          planIdVersionMapped,
-          foundPolicies.concat(extendedPolicy)
-        );
-      } else {
-        this.planPoliciesMap.set(planIdVersionMapped, [extendedPolicy]);
-      }
-    });
   }
 }

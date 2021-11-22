@@ -12,25 +12,12 @@
       </div>
       <div class="card-content" [ngSwitch]="plan.planId + ':' + plan.version">
         <mat-list>
-          <ng-container *ngIf="apiPolicies.length > 0">
-            <mat-list-item *ngFor="let policy of apiPolicies">
-              <p>
-                {{ policy.shortName }}
-                <span class="right">{{ policy.shortDescription }}</span>
-              </p>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-          </ng-container>
-          <ng-container *ngFor="let planPolicies of planPoliciesMap | keyvalue">
-            <ng-container *ngSwitchCase="planPolicies.key">
-              <mat-list-item *ngFor="let policy of planPolicies.value">
-                <p>
-                  {{ policy.shortName }}
-                  <span class="right">{{ policy.shortDescription }}</span>
-                </p>
-              </mat-list-item>
-            </ng-container>
-          </ng-container>
+          <mat-list-item *ngFor="let policy of plan.planPolicies">
+            <p>
+              {{ policy.shortName }}
+              <span class="right">{{ policy.shortDescription }}</span>
+            </p>
+          </mat-list-item>
         </mat-list>
       </div>
       <div class="plan-card-actions">

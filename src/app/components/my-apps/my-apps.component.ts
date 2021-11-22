@@ -136,28 +136,39 @@ export class MyAppsComponent implements OnInit {
                   contract.plan.plan.id,
                   contract.plan.version
                 ),
-                this.policyService.getApiPolicies(
-                  orgId,
-                  contract.api.api.id,
-                  contract.api.version
-                ),
+
                 this.backend.getManagedApiEndpoint(
                   orgId,
                   contract.api.api.id,
                   contract.api.version
                 ),
-                this.apiService.isApiDocAvailable(contract.api)
+                this.apiService.isApiDocAvailable(contract.api),
+                this.apiService.getApiImage(contract)
               ]).pipe(
-                map(([planPolicies, apiPolicies, endpoint, docsAvailable]) => {
-                  return {
-                    ...contract,
-                    policies: planPolicies.concat(apiPolicies),
-                    section: 'summary',
-                    managedEndpoint: endpoint.managedEndpoint,
-                    docsAvailable: docsAvailable,
-                    deletable: this.isDeleteAllowed(contract)
+                map(
+                  ([
+                    planPolicies,
+                    endpoint,
+                    docsAvailable,
+                    apiSearchResult
+                  ]) => {
+                    planPolicies.forEach((planPolicy) => {
+                      this.policyService.initPolicy(planPolicy);
+                    });
+                    this.apiImages.set(
+                      contract.api.api.name,
+                      apiSearchResult.beans[0].image
+                    );
+                    return {
+                      ...contract,
+                      policies: planPolicies,
+                      section: 'summary',
+                      managedEndpoint: endpoint.managedEndpoint,
+                      docsAvailable: docsAvailable,
+                      deletable: this.isDeleteAllowed(contract)
                   } as IContractExt;
-                })
+                  }
+                )
               );
             })
           );
@@ -169,7 +180,6 @@ export class MyAppsComponent implements OnInit {
         })
       )
       .subscribe((contracts) => {
-        this.getApiImages(contracts);
         this.stopMainRequest();
         this.extractContracts(contracts);
         this.fetchPolicyProbes();
@@ -185,13 +195,11 @@ export class MyAppsComponent implements OnInit {
           .pipe(
             catchError((err) => {
               console.warn(err);
-              this.policyService.initPolicy(policy);
               return EMPTY;
             })
           )
           .subscribe((probes: IPolicyProbe[]) => {
             policy.probe = probes[0];
-            this.policyService.initPolicy(policy);
             this.policyService.setGaugeDataForPolicy(policy);
           });
       });
@@ -203,27 +211,6 @@ export class MyAppsComponent implements OnInit {
     this.contractsLoaded = true;
 
     this.error = setError;
-  }
-
-  // TODO: include this in to the main request chain. Reminder: ApiVersions do not have api.api.image property
-  private getApiImages(contracts: IContractExt[]) {
-    contracts.forEach((contract: IContractExt) => {
-      const searchCriteria: ISearchCriteria = {
-        filters: [
-          { name: 'name', value: contract.api.api.name, operator: 'like' }
-        ],
-        paging: { page: 1, pageSize: 1 }
-      };
-
-      this.backend
-        .searchApis(searchCriteria)
-        .subscribe((apiSummaries: ISearchResultsApiSummary) => {
-          this.apiImages.set(
-            contract.api.api.name,
-            apiSummaries.beans[0].image
-          );
-        });
-    });
   }
 
   /**
