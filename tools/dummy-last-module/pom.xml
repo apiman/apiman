@@ -3,28 +3,21 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.apiman</groupId>
-    <artifactId>apiman</artifactId>
-    <version>2.1.3-SNAPSHOT</version>
+    <artifactId>apiman-tools</artifactId>
+    <version>2.1.2-SNAPSHOT</version>
   </parent>
-  <artifactId>apiman-tools</artifactId>
-  <packaging>pom</packaging>
-  <name>apiman-tools</name>
-  <modules>
-    <module>ddl</module>
-    <module>i18n</module>
-    <module>jdbc</module>
-    <module>ldap</module>
-    <module>server-all</module>
-    <module>services</module>
-    <module>dummy-last-module</module>
-  </modules>
+  <artifactId>apiman-tools-dummy-last-module</artifactId>
+  <name>apiman-tools-dummy-last-module</name>
+  <description>Dummy last module in Maven build to work around issues with nexus-staging-maven-plugin. See: https://issues.sonatype.org/browse/NEXUS-9138</description>
+  <dependencies>    
+  </dependencies>
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
-          <skip>true</skip>
+          <skip>false</skip>
         </configuration>
       </plugin>
       <plugin>
@@ -32,7 +25,8 @@
         <artifactId>nexus-staging-maven-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
-          <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+          <!-- Ensure we DO deploy the last module in the reactor to avoid triggering https://issues.sonatype.org/browse/NEXUS-9138 -->
+          <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>
         </configuration>
       </plugin>
     </plugins>
