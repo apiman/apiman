@@ -14,16 +14,13 @@ import { ConfigService } from '../../services/config/config.service';
   styleUrls: ['./img-or-icon-selector.component.scss']
 })
 export class ImgOrIconSelectorComponent implements AfterViewInit, OnChanges {
-  @Input() imgUrl = '';
+  @Input() imgUrl: string | undefined = '';
   @Input() dimension = '';
 
   constructor(
     public configService: ConfigService,
     private cdr: ChangeDetectorRef
-  ) {
-    // this.imgUrl = '';
-    // this.dimension = '';
-  }
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.imgUrl = changes.imgUrl ? (changes.imgUrl.currentValue as string) : '';

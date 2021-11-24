@@ -14,9 +14,7 @@ import {
   IClientVersionSummary,
   IContract,
   IContractSummary,
-  IPermission,
-  ISearchCriteria,
-  ISearchResultsApiSummary
+  IPermission
 } from '../../interfaces/ICommunication';
 import { IContractExt } from '../../interfaces/IContractExt';
 import { PolicyService } from '../../services/policy/policy.service';
@@ -42,7 +40,6 @@ import { PermissionsService } from '../../services/permissions/permissions.servi
 export class MyAppsComponent implements OnInit {
   contracts: IContractExt[] = [];
   clientContractsMap!: Map<string, IContractExt[]>;
-  apiImages = new Map<string, string>();
   contractsLoaded = false;
 
   tocLinks: ITocLink[] = [];
@@ -127,8 +124,14 @@ export class MyAppsComponent implements OnInit {
           );
         }),
         switchMap((contracts: IContract[]) => {
+          // Filter out contracts with apis which are not exposed in developer portal
+          const filteredContracts: IContract[] = contracts.filter(
+            (contract) => {
+              return contract.api.exposeInPortal;
+            }
+          );
           return forkJoin(
-            contracts.map((contract) => {
+            filteredContracts.map((contract) => {
               const orgId = contract.plan.plan.organization.id;
               return forkJoin([
                 this.policyService.getPlanPolicies(
@@ -142,33 +145,22 @@ export class MyAppsComponent implements OnInit {
                   contract.api.api.id,
                   contract.api.version
                 ),
-                this.apiService.isApiDocAvailable(contract.api),
-                this.apiService.getApiImage(contract)
+                this.apiService.isApiDocAvailable(contract.api)
               ]).pipe(
-                map(
-                  ([
-                    planPolicies,
-                    endpoint,
-                    docsAvailable,
-                    apiSearchResult
-                  ]) => {
-                    planPolicies.forEach((planPolicy) => {
-                      this.policyService.initPolicy(planPolicy);
-                    });
-                    this.apiImages.set(
-                      contract.api.api.name,
-                      apiSearchResult.beans[0].image
-                    );
-                    return {
-                      ...contract,
-                      policies: planPolicies,
-                      section: 'summary',
-                      managedEndpoint: endpoint.managedEndpoint,
-                      docsAvailable: docsAvailable,
-                      deletable: this.isDeleteAllowed(contract)
+                map(([planPolicies, endpoint, docsAvailable]) => {
+                  planPolicies.forEach((planPolicy) => {
+                    this.policyService.initPolicy(planPolicy);
+                  });
+
+                  return {
+                    ...contract,
+                    policies: planPolicies,
+                    section: 'summary',
+                    managedEndpoint: endpoint.managedEndpoint,
+                    docsAvailable: docsAvailable,
+                    deletable: this.isDeleteAllowed(contract)
                   } as IContractExt;
-                  }
-                )
+                })
               );
             })
           );
@@ -276,17 +268,13 @@ export class MyAppsComponent implements OnInit {
   }
 
   formatClientContractTitle(key: string): string {
-    if (this.clientContractsMap.has(key)) {
-      return (
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.clientContractsMap.get(key)![0].client.client.name +
-        ' - ' +
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.clientContractsMap.get(key)![0].client.version
-      );
-    } else {
-      return '';
-    }
+    return (
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.clientContractsMap.get(key)![0].client.client.name +
+      ' - ' +
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.clientContractsMap.get(key)![0].client.version
+    );
   }
 
   private generateTocLinks() {

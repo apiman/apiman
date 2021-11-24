@@ -81,8 +81,7 @@
         <div class="app-api-content mat-elevation-z2">
           <div class="app-api-header">
             <app-img-or-icon-selector
-              *ngIf="apiImages.has(contract.api.api.name)"
-              [imgUrl]="apiImages.get(contract.api.api.name)!"
+              [imgUrl]="contract.api.api.image"
               [dimension]="'44'">
             </app-img-or-icon-selector>
             <div

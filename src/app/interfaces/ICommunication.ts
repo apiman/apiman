@@ -85,6 +85,7 @@ export interface IApiVersion {
   disableKeysStrip: boolean;
   definitionUrl: string;
   extendedDescription: string;
+  exposeInPortal: boolean;
 }
 
 export interface IOrganization {

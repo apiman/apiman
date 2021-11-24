@@ -6,7 +6,6 @@ import { IApiPlanSummary } from '../../interfaces/ICommunication';
 import { IPolicyExt } from '../../interfaces/IPolicy';
 import { PolicyService } from '../../services/policy/policy.service';
 import { IApiVersionExt } from '../../interfaces/IApiVersionExt';
-import { KeycloakService } from 'keycloak-angular';
 import { map } from 'rxjs/operators';
 
 @Component({
