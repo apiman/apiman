@@ -33,15 +33,23 @@ import java.util.TreeMap;
  */
 public class AbstractMessages {
 
-    private static final List<String> FORMATS = Collections.unmodifiableList(Collections.singletonList("java.properties")); //$NON-NLS-1$
+    private static final List<String> FORMATS = Collections.singletonList("java.properties"); //$NON-NLS-1$
 
-    private static Map<String, ResourceBundle> bundles = new HashMap<>();
+    private static final Map<String, ResourceBundle> bundles = new HashMap<>();
 
-    private Class<? extends AbstractMessages> clazz;
-    private static ThreadLocal<Locale> tlocale = new ThreadLocal<>();
+    private final Class<? extends AbstractMessages> clazz;
+    private static final ThreadLocal<Locale> tlocale = new ThreadLocal<>();
+
+    /**
+     * Set the message locale.
+     */
     public static void setLocale(Locale locale) {
         tlocale.set(locale);
     }
+
+    /**
+     * Clear the message locale.
+     */
     public static void clearLocale() {
         tlocale.set(null);
     }
@@ -98,7 +106,7 @@ public class AbstractMessages {
      * thread local value, if set, or else the system default locale.
      * @return the locale
      */
-    public Locale getLocale() {
+    public static Locale getLocale() {
         if (tlocale.get() != null) {
             return tlocale.get();
         } else {

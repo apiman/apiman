@@ -37,14 +37,15 @@ public class AccountSignupApprovalEmailNotification implements INotificationHand
         NotificationDto<AccountSignupEvent> signupNotification = (NotificationDto<AccountSignupEvent>) rawNotification;
         Map<String, Object> templateMap = buildTemplateMap(signupNotification);
 
-        EmailNotificationTemplate template = mailNotificationService
-             .findTemplateFor(signupNotification.getReason())
-             .or(() -> mailNotificationService.findTemplateFor(signupNotification.getCategory()))
-             .orElseThrow();
-
         // Beware, for this instance, the user might not actually exist in Apiman (yet or at all) as it could have come
         // from the underlying IDM -- be careful if calling for Apiman's members, etc.
         UserDto recipient = rawNotification.getRecipient();
+
+        EmailNotificationTemplate template = mailNotificationService
+             .findTemplateFor(signupNotification.getReason(), recipient.getLocale())
+             .or(() -> mailNotificationService.findTemplateFor(signupNotification.getCategory(), recipient.getLocale()))
+             .orElseThrow();
+
         var mail = SimpleEmail
              .builder()
              .setRecipient(recipient)

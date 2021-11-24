@@ -18,7 +18,7 @@ package io.apiman.manager.api.beans.idm;
 
 import java.io.Serializable;
 import java.util.Date;
-
+import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -41,9 +41,12 @@ public class UserBean implements Serializable {
     private String username;
     @Column(name = "full_name")
     private String fullName;
+    @Column(name = "email")
     private String email;
     @Column(name = "joined_on", updatable=false)
     private Date joinedOn;
+    @Column(name = "locale") // TODO: maybe should be required and we can fix through import migration?
+    private String locale;
 
     // Used only when returning information about the current user
     @Transient
@@ -154,6 +157,27 @@ public class UserBean implements Serializable {
      */
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    /**
+     * Get locale language tag
+     *
+     * @see Locale#toLanguageTag()
+     * @return the locale
+     */
+    public String getLocale() {
+        return locale;
+    }
+
+    /**
+     * Set locale
+     *
+     * @param locale the locale language tag
+     * @see Locale#toLanguageTag()
+     */
+    public UserBean setLocale(String locale) {
+        this.locale = locale;
+        return this;
     }
 
     /* (non-Javadoc)

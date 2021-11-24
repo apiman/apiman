@@ -20,12 +20,15 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.idm.UserDto;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 
 /**
@@ -65,7 +68,6 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
             return null;
         }
     }
-
     /**
      * {@inheritDoc}
      */
@@ -75,6 +77,18 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
         org.keycloak.KeycloakSecurityContext session = (org.keycloak.KeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
         if (session != null) {
             return session.getToken().getEmail();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Locale getLocale() {
+        HttpServletRequest request = servletRequest.get();
+        org.keycloak.KeycloakSecurityContext session = (org.keycloak.KeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
+        if (session != null) {
+            return Optional.ofNullable(LocaleUtils.toLocale(session.getToken().getLocale()))
+                    .orElse(request.getLocale());
         } else {
             return null;
         }

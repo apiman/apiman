@@ -8,7 +8,9 @@ import io.apiman.manager.api.war.WarApiManagerConfig;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -82,6 +84,7 @@ public class SimpleMailNotificationServiceTest {
              .builder()
              .setToEmail("marc@blackparrotlabs.io")
              .setToName("Marc")
+             .setLocale(Locale.ENGLISH)
              .setTemplate(template)
              .setTemplateVariables(templateVars)
              .setHeaders(Map.of("X-Super-Secret", "BPL"))
@@ -148,6 +151,8 @@ public class SimpleMailNotificationServiceTest {
              .builder()
              .setToEmail("marc@blackparrotlabs.io")
              .setToName("Marc")
+             .setLocale(Locale.ENGLISH)
+             .setTemplate(template)
              .setTemplate(template)
              .setTemplateVariables(templateVars)
              .setHeaders(Map.of("X-Super-Secret", "BPL"))
@@ -170,7 +175,7 @@ public class SimpleMailNotificationServiceTest {
     @Test
     public void Read_the_email_notification_templates_from_file() {
         SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
-        Optional<EmailNotificationTemplate> tplOpt = service.findTemplateFor("test.notification.reason");
+        Optional<EmailNotificationTemplate> tplOpt = service.findTemplateFor("test.notification.reason", Locale.ENGLISH);
 
         assertThat(tplOpt).isPresent();
     }
@@ -178,7 +183,7 @@ public class SimpleMailNotificationServiceTest {
     @Test
     public void Template_is_looked_up_by_longest_reason_prefix() {
         SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
-        EmailNotificationTemplate tpl = service.findTemplateFor("test.notification.reason.blah").orElseThrow();
+        EmailNotificationTemplate tpl = service.findTemplateFor("test.notification.reason.blah", Locale.ENGLISH).orElseThrow();
 
         assertThat(tpl.getNotificationReason())
              .isEqualTo("test.notification.reason");
@@ -190,7 +195,7 @@ public class SimpleMailNotificationServiceTest {
     @Test
     public void Template_is_looked_up_by_exact_reason() {
         SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
-        EmailNotificationTemplate tpl = service.findTemplateFor("test.notification.reason").orElseThrow();
+        EmailNotificationTemplate tpl = service.findTemplateFor("test.notification.reason", Locale.ENGLISH).orElseThrow();
 
         assertThat(tpl.getNotificationReason())
              .isEqualTo("test.notification.reason");
@@ -202,7 +207,9 @@ public class SimpleMailNotificationServiceTest {
     @Test
     public void All_templates_matching_reason_prefix_are_returned_in_order() {
         SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
-        List<EmailNotificationTemplate> allTemplates = service.findAllTemplatesFor("test.notification.reason");
+        List<Map<Locale, EmailNotificationTemplate>> allTemplatesAndLocales = service.findAllTemplatesFor("test.notification.reason");
+
+        Collection<EmailNotificationTemplate> allTemplates = allTemplatesAndLocales.get(0).values();
 
         assertThat(allTemplates)
              //.containsOnlyKeys("test.notification", "test.notification.reason")

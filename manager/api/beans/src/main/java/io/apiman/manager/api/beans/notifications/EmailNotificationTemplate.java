@@ -23,6 +23,9 @@ public class EmailNotificationTemplate {
 
     // @Column(name = "notification_template_body", nullable = false, length = 10000)
     // @NotBlank
+
+    private String locale;
+
     private String htmlBody;
 
     private String plainBody;
@@ -93,6 +96,15 @@ public class EmailNotificationTemplate {
     public EmailNotificationTemplate setCategory(
          NotificationCategory category) {
         this.category = category;
+        return this;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public EmailNotificationTemplate setLocale(String locale) {
+        this.locale = locale;
         return this;
     }
 

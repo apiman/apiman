@@ -32,13 +32,13 @@ public class ContractApprovalEmailNotification implements INotificationHandler {
     public void handle(NotificationDto<? extends IVersionedApimanEvent> notif) {
         NotificationDto<ContractApprovalEvent> notification = (NotificationDto<ContractApprovalEvent>) notif;
         Map<String, Object> templateMap = buildTemplateMap(notification);
+        UserDto recipient = notification.getRecipient();
 
         EmailNotificationTemplate template = mailNotificationService
-             .findTemplateFor(notification.getReason())
-             .or(() -> mailNotificationService.findTemplateFor(notification.getCategory()))
+             .findTemplateFor(notification.getReason(), recipient.getLocale())
+             .or(() -> mailNotificationService.findTemplateFor(notification.getCategory(), recipient.getLocale()))
              .orElseThrow();
 
-        UserDto recipient = notification.getRecipient();
         var mail = SimpleEmail
              .builder()
              .setRecipient(recipient)
