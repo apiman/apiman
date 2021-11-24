@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { IGaugeChartData } from '../../../interfaces/IGaugeChartData';
 import { LegendPosition } from '@swimlane/ngx-charts';
+import { Color } from '@swimlane/ngx-charts/lib/utils/color-sets';
 
 @Component({
   selector: 'app-gauge-chart',
@@ -15,7 +16,7 @@ export class GaugeChartComponent implements OnInit, OnChanges {
   data: { name: string; value: number }[] = [{ name: '', value: 0 }];
   legend = false;
   legendPosition = LegendPosition.Below;
-  colorScheme = '';
+  colorScheme: Color = {} as Color;
 
   disableValueLabel = (): string => '';
 
@@ -41,7 +42,7 @@ export class GaugeChartComponent implements OnInit, OnChanges {
     document.body.appendChild(p);
     const color = getComputedStyle(p).color;
     document.body.removeChild(p);
-    this.colorScheme = color;
+    this.colorScheme = { domain: [color] } as Color;
   }
 
   /**
