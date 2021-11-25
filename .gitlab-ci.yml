@@ -37,4 +37,5 @@ stages:
 
 test:
   script:
-    - ''
+    - 'npm ci'
+    - 'npx -p @angular/cli ng lint'
