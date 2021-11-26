@@ -1,5 +1,6 @@
 package io.apiman.manager.api.service;
 
+import io.apiman.common.config.options.GenericOptionsParser;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.JsonUtil;
@@ -19,12 +20,14 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.INotificationRepository;
 import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.notifications.mappers.NotificationMapper;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
@@ -47,7 +50,7 @@ import org.jetbrains.annotations.Nullable;
 public class NotificationService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(NotificationService.class);
-
+    private NotificationServiceConfig config;
     private IStorage storage;
     private INotificationRepository notificationRepository;
     private NotificationMapper notificationMapper;
@@ -56,16 +59,18 @@ public class NotificationService implements DataAccessUtilMixin {
 
     @Inject
     public NotificationService(
-         IStorage storage,
-         INotificationRepository notificationRepository,
-         NotificationMapper notificationMapper,
-         Event<NotificationDto<?>> notificationDispatcher,
-         ISecurityContext securityContext) {
+            ApiManagerConfig config,
+            IStorage storage,
+            INotificationRepository notificationRepository,
+            NotificationMapper notificationMapper,
+            Event<NotificationDto<?>> notificationDispatcher,
+            ISecurityContext securityContext) {
         this.storage = storage;
         this.notificationRepository = notificationRepository;
         this.notificationMapper = notificationMapper;
         this.notificationDispatcher = notificationDispatcher;
         this.securityContext = securityContext;
+        this.config = new NotificationServiceConfig(config.getNotificationsConfig());
     }
 
     public NotificationService() {
@@ -133,6 +138,11 @@ public class NotificationService implements DataAccessUtilMixin {
      * @param newNotification the new notification.
      */
     public void sendNotification(@NotNull CreateNotificationDto newNotification) {
+        if (!config.isEnabled()) {
+            LOGGER.trace("Notifications subsystem is disabled. Notification {0} will not be sent", newNotification);
+            return;
+        }
+
         LOGGER.debug("Creating new notification(s): {0}", newNotification);
 
         List<UserDto> resolvedRecipients = calculateRecipients(newNotification.getRecipient());
@@ -247,6 +257,24 @@ public class NotificationService implements DataAccessUtilMixin {
              .setRecipient(user)
              .setSource(newNotification.getSource())
              .setPayload(event);
+    }
+
+    private static final class NotificationServiceConfig extends GenericOptionsParser {
+        static final boolean DEFAULT_NOTIFICATIONS_ENABLED = true;
+        private boolean enabled;
+
+        public NotificationServiceConfig(Map<String, String> options) {
+            super(options);
+            parseOptions();
+        }
+
+        private void parseOptions() {
+            this.enabled = getBool(keys("enable"), DEFAULT_NOTIFICATIONS_ENABLED);
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
     }
 
 }

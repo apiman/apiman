@@ -52,6 +52,8 @@ public abstract class ApiManagerConfig {
 
     public static final String APIMAN_MANAGER_FEATURES_ORG_CREATE_ADMIN_ONLY = "apiman-manager.config.features.org-create-admin-only"; //$NON-NLS-1$
 
+    public static final String APIMAN_MANAGER_CONFIG_NOTIFICATIONS = "apiman-manager.config.notifications";
+
     /*
      * Database/hibernate properties
      */
@@ -147,6 +149,10 @@ public abstract class ApiManagerConfig {
             }
         }
         return rval;
+    }
+
+    public Map<String, String> getNotificationsConfig() {
+        return getPrefixedProperties(APIMAN_MANAGER_CONFIG_NOTIFICATIONS);
     }
 
     public boolean isAdminOnlyOrgCreationEnabled() {
