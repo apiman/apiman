@@ -25,6 +25,11 @@ import io.apiman.manager.ui.server.beans.ApiAuthType;
 public interface IUIConfig {
 
     /**
+     * @return true if the notifications UI elements should be enabled.
+     */
+    boolean isNotificationsEnabled();
+
+    /**
      * Returns true if the metrics UI should be enabled.
      */
     public boolean isMetricsEnabled();
