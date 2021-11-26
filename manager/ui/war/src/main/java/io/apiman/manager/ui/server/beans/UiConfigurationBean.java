@@ -25,6 +25,7 @@ public class UiConfigurationBean {
 
     private String header;
     private Boolean metrics;
+    private Boolean notifications;
     private String platform = "community"; //$NON-NLS-1$
     private String backToConsole;
     private Boolean adminOnlyOrgCreation;
@@ -47,6 +48,22 @@ public class UiConfigurationBean {
      */
     public void setHeader(String header) {
         this.header = header;
+    }
+
+    /**
+     * @return true if notifications subsystem enabled, else false
+     */
+    public Boolean getNotifications() {
+        return notifications;
+    }
+
+    /**
+     * Indicate whether the notification system is enabled/disabled to UI
+     *
+     * @param notifications status of notification system
+     */
+    public void setNotifications(Boolean notifications) {
+        this.notifications = notifications;
     }
 
     /**

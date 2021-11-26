@@ -34,6 +34,7 @@ public class UIConfig implements IUIConfig {
     public static final String APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR = "apiman-manager-ui.api.authentication.token.generator"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_UI_ENABLE_METRICS = "apiman-manager-ui.metrics.enable"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_UI_ENABLE_NOTIFICATIONS = "apiman-manager.config.notifications.enable"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_UI_PLATFORM = "apiman-manager-ui.platform"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_UI_ORG_CREATE_ADMIN_ONLY = "apiman-manager-ui.org-create-admin-only"; //$NON-NLS-1$
 
@@ -48,6 +49,14 @@ public class UIConfig implements IUIConfig {
      * Constructor.
      */
     public UIConfig() {
+    }
+
+    /**
+     * @return true if notifications UI elements should be shown, else false.
+     */
+    @Override
+    public boolean isNotificationsEnabled() {
+        return config.getBoolean(UIConfig.APIMAN_MANAGER_UI_ENABLE_NOTIFICATIONS, true);
     }
 
     /**
