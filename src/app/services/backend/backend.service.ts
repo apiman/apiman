@@ -23,8 +23,7 @@ import {
   IPolicy,
   IPolicySummary,
   ISearchCriteria,
-  ISearchResultsApiSummary,
-  IUserPermissions
+  ISearchResultsApiSummary
 } from '../../interfaces/ICommunication';
 import { IPolicySummaryExt } from '../../interfaces/IPolicySummaryExt';
 import { KeycloakHelperService } from '../keycloak-helper/keycloak-helper.service';
@@ -278,16 +277,6 @@ export class BackendService {
       this.generateUrl(path),
       this.httpOptions
     ) as Observable<never>;
-  }
-
-  public getPermissions(): Observable<IUserPermissions> {
-    const userId = this.keycloakHelper.getUsername();
-
-    const path = `users/${userId}/permissions`;
-    return this.http.get<IUserPermissions>(
-      this.generateUrl(path),
-      this.httpOptions
-    );
   }
 
   public sendAction(action: IAction): Observable<void> {

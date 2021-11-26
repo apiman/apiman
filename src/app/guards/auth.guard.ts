@@ -6,6 +6,7 @@ import { BackendService } from '../services/backend/backend.service';
 import { ICurrentUser } from '../interfaces/ICommunication';
 import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
+import { PermissionsService } from '../services/permissions/permissions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class AuthGuard extends KeycloakAuthGuard {
     protected readonly router: Router,
     protected readonly keycloakAngular: KeycloakService,
     private keycloakHelper: KeycloakHelperService,
-    private backend: BackendService
+    private backend: BackendService,
+    private permissionsService: PermissionsService
   ) {
     super(router, keycloakAngular);
   }
@@ -40,6 +42,7 @@ export class AuthGuard extends KeycloakAuthGuard {
         )
         .subscribe((user: ICurrentUser) => {
           console.log('Logged in with user: ', user);
+          this.permissionsService.setPermissions(user.permissions);
         });
     }
     return Promise.resolve(this.authenticated);

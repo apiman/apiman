@@ -16,8 +16,7 @@ import {
   IContractSummary,
   IPermission,
   ISearchCriteria,
-  ISearchResultsApiSummary,
-  IUserPermissions
+  ISearchResultsApiSummary
 } from '../../interfaces/ICommunication';
 import { IContractExt } from '../../interfaces/IContractExt';
 import { PolicyService } from '../../services/policy/policy.service';
@@ -33,6 +32,7 @@ import { UnregisterClientComponent } from '../dialogs/unregister-client/unregist
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ConfigService } from '../../services/config/config.service';
 import { IPolicyExt, IPolicyProbe } from '../../interfaces/IPolicy';
+import { PermissionsService } from '../../services/permissions/permissions.service';
 
 @Component({
   selector: 'app-my-apps',
@@ -49,8 +49,6 @@ export class MyAppsComponent implements OnInit {
 
   error = false;
 
-  clientAdminProfile = false;
-
   constructor(
     private spinnerService: SpinnerService,
     private heroService: HeroService,
@@ -62,12 +60,12 @@ export class MyAppsComponent implements OnInit {
     private dialog: MatDialog,
     private snackbarService: SnackbarService,
     public configService: ConfigService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private permissionsService: PermissionsService
   ) {}
 
   ngOnInit(): void {
     this.setUpHero();
-    this.fetchProfiles();
     this.fetchContracts();
   }
 
@@ -156,7 +154,8 @@ export class MyAppsComponent implements OnInit {
                     policies: planPolicies.concat(apiPolicies),
                     section: 'summary',
                     managedEndpoint: endpoint.managedEndpoint,
-                    docsAvailable: docsAvailable
+                    docsAvailable: docsAvailable,
+                    deletable: this.isDeleteAllowed(contract)
                   } as IContractExt;
                 })
               );
@@ -351,12 +350,15 @@ export class MyAppsComponent implements OnInit {
     });
   }
 
-  private fetchProfiles() {
-    this.backend.getPermissions().subscribe((response: IUserPermissions) => {
-      this.clientAdminProfile = response.permissions.some((p: IPermission) => {
-        return p.name === 'clientAdmin';
-      });
-    });
+  private isDeleteAllowed(contract: IContract): boolean {
+    const clientAdminOrganizations =
+      this.permissionsService.getAllowedOrganizations({
+        name: 'clientAdmin'
+      } as IPermission);
+    return (
+      contract.client.status === 'Registered' &&
+      clientAdminOrganizations.includes(contract.client.client.organization.id)
+    );
   }
 
   onSetSection($event: { contract: IContractExt; section: ISection }): void {

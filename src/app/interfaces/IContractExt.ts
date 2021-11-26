@@ -11,4 +11,5 @@ export interface IContractExt extends IContract {
   section: 'summary' | 'use-api' | 'policies' | 'manage-api';
   policies: IPolicyExt[];
   docsAvailable: boolean;
+  deletable: boolean;
 }

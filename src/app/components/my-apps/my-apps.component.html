@@ -26,10 +26,7 @@
         </div>
         <div class="app-client-header-label">
           <button
-            *ngIf="
-              cliCon.value[0].client.status === 'Registered' &&
-              clientAdminProfile
-            "
+            *ngIf="cliCon.value[0].deletable"
             (click)="unregister(cliCon.value[0], cliCon.key)"
             mat-icon-button
             color="primary"
