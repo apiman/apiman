@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.common.annotations.Beta;
+import io.swagger.annotations.Api;
 
 /**
  * Developer portal resources.
@@ -40,6 +41,7 @@ import com.google.common.annotations.Beta;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Path("devportal")
+@Api("Devportal")
 @Beta
 public interface IDeveloperPortalResource {
     @POST
