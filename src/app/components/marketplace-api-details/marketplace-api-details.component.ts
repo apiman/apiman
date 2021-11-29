@@ -20,15 +20,9 @@ import { ApiService } from '../../services/api/api.service';
 import { HeroService } from '../../services/hero/hero.service';
 import { map, switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
-import {
-  IApiSummary,
-  IApiVersion,
-  ISearchCriteria,
-  ISearchResultsApiSummary
-} from '../../interfaces/ICommunication';
+import { IApiVersion } from '../../interfaces/ICommunication';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { IApiVersionExt } from '../../interfaces/IApiVersionExt';
-import { BackendService } from '../../services/backend/backend.service';
 
 @Component({
   selector: 'app-marketplace-api-details',
@@ -40,8 +34,7 @@ export class MarketplaceApiDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private apiService: ApiService,
     private heroService: HeroService,
-    private spinnerService: SpinnerService,
-    private backend: BackendService
+    private spinnerService: SpinnerService
   ) {}
 
   apiImgUrl?: string;
@@ -95,27 +88,6 @@ export class MarketplaceApiDetailsComponent implements OnInit {
         this.spinnerService.stopWaiting();
         this.apis = apiVersions;
         this.setUpHero();
-        this.getApiImage();
-      });
-  }
-
-  private getApiImage() {
-    const searchCriteria: ISearchCriteria = {
-      filters: [{ name: 'name', value: this.apis[0].api.name, operator: 'eq' }],
-      paging: { page: 1, pageSize: 1 }
-    };
-
-    // TODO: At the moment search endpoint returns every API
-    this.backend
-      .searchApis(searchCriteria)
-      .subscribe((summary: ISearchResultsApiSummary) => {
-        const found = summary.beans.find((bean: IApiSummary) => {
-          return bean.name === this.apis[0].api.name;
-        });
-
-        if (found) {
-          this.apiImgUrl = found.image;
-        }
       });
   }
 }

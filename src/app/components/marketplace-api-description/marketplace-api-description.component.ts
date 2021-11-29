@@ -27,7 +27,6 @@ import { ConfigService } from '../../services/config/config.service';
 export class MarketplaceApiDescriptionComponent implements OnInit {
   @Input() api!: IApiVersionExt;
   @Input() isLatest!: boolean;
-  @Input() apiImgUrl!: string;
 
   // TODO get features from backend as soon as the endpoint is created
   features = [];

@@ -37,7 +37,7 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div id="content-header">
-    <app-img-or-icon-selector [imgUrl]="apiImgUrl" [dimension]="'44'">
+    <app-img-or-icon-selector [imgUrl]="api.api.image" [dimension]="'44'">
     </app-img-or-icon-selector>
     <div *ngIf="api.api.description; else noDesc">
       {{ api.api.description }}
