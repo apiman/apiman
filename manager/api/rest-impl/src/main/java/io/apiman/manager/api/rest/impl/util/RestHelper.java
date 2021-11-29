@@ -107,6 +107,7 @@ public final class RestHelper {
         api.setId(apiVersionBean.getApi().getId());
         api.setName(apiVersionBean.getApi().getName());
         api.setDescription(apiVersionBean.getApi().getDescription());
+        api.setImage(apiVersionBean.getApi().getImage());
 
         OrganizationBean org = new OrganizationBean();
         org.setId(apiVersionBean.getApi().getOrganization().getId());
