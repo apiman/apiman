@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'Apiman'
     env:
-      APIMAN_RELEASE_VERION: 2.1.0.Final
+      APIMAN_RELEASE_VERION: 2.1.2.Final
     steps:
       - uses: actions/checkout@v2
       - name: Build the Docker images
@@ -32,7 +32,7 @@ jobs:
     if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
     needs: [ build-verify ]
     env:
-      APIMAN_RELEASE_VERION: 2.1.0.Final
+      APIMAN_RELEASE_VERION: 2.1.2.Final
     steps:
       - uses: actions/checkout@v2
       - name: Build the Docker images
