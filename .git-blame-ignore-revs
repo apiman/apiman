@@ -1,2 +1,5 @@
 # ignore the apply of eslint/prettier style on the project
 26056269403f237505a1b5783dbf3f333fbe50ca
+
+# ignore line separator change and copyright
+24e2ae2ea9229933e46fd7a28977929928554f04
