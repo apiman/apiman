@@ -166,6 +166,15 @@ export class BackendService {
     );
   }
 
+  public getViewableClients(): Observable<IClientSummary[]> {
+    const username = this.keycloakHelper.getUsername();
+    const path = `users/${username}/viewable-clients`;
+    return this.http.get<IClientSummary[]>(
+      this.generateUrl(path),
+      this.httpOptions
+    );
+  }
+
   public getClientVersions(
     organizationId: string,
     clientId: string

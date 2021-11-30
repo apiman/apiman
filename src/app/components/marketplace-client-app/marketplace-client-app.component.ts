@@ -129,6 +129,7 @@ export class MarketplaceClientAppComponent implements OnInit {
   private loadClients() {
     return forkJoin([
       this.backend.getClientOrgs(),
+      // we only need clients with clientEdit otherwise you cannot create a contract with that client
       this.backend.getEditableClients()
     ]);
   }

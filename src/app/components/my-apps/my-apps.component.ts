@@ -19,7 +19,7 @@ import {
 import { IContractExt } from '../../interfaces/IContractExt';
 import { PolicyService } from '../../services/policy/policy.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { EMPTY, forkJoin } from 'rxjs';
+import { merge, EMPTY, forkJoin } from 'rxjs';
 import { flatArray } from '../../shared/utility';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { ApiService } from '../../services/api/api.service';
@@ -73,9 +73,7 @@ export class MyAppsComponent implements OnInit {
 
     this.spinnerService.startWaiting();
     this.contractsLoaded = false;
-
-    this.backend
-      .getEditableClients()
+    merge(this.backend.getEditableClients(), this.backend.getViewableClients())
       .pipe(
         switchMap((clientSummaries: IClientSummary[]) => {
           if (clientSummaries.length === 0) {
