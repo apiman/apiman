@@ -1,4 +1,4 @@
-FROM node:14.17.6 as base
+FROM node:16.13.1 as base
 MAINTAINER florian.volk@scheer-group.com
 
 # Start with npm tasks
@@ -13,7 +13,7 @@ COPY . .
 RUN npm run build-production
 
 # Stage 2
-FROM nginx:1.21.3-alpine
+FROM nginx:1.21.4-alpine
 MAINTAINER florian.volk@scheer-group.com
 EXPOSE 80 443
 
