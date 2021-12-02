@@ -15,7 +15,6 @@
  */
 
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { BackendService } from '../../services/backend/backend.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ISignUpInfo } from '../../interfaces/ISignUpInfo';
 import { SignUpService } from '../../services/sign-up/sign-up.service';
@@ -35,11 +34,12 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
   apiId = '';
   apiVersion = '';
   docsAvailable = false;
-
-  apiKey = '';
+  apiKey: string | null = null;
+  apiKeyUi = '';
   endpoint = '';
   oAuthServerUrl = '';
   oAuthClientSecret = '';
+  target = '_self';
 
   previewText = {
     apiKey: this.translator.instant('WIZARD.API_KEY_PREVIEW') as string,
@@ -51,7 +51,6 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
   hasOAuth = false;
 
   constructor(
-    private backend: BackendService,
     private snackbar: SnackbarService,
     private signUpService: SignUpService,
     private translator: TranslateService
@@ -70,15 +69,16 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
   private initProperties() {
     if (this.contract) {
       this.disableButtons = false;
-      this.apiKey = `X-API-Key: ${this.contract.client.apikey}`;
-      this.endpoint = `${this.contract.managedEndpoint}?apikey=${this.contract.client.apikey}`;
+      this.apiKey = this.contract.client.apikey;
+      this.apiKeyUi = `X-API-Key: ${this.apiKey}`;
+      this.endpoint = `${this.contract.managedEndpoint}?apikey=${this.apiKey}`;
       this.orgId = this.contract.api.api.organization.id;
       this.apiId = this.contract.api.api.id;
       this.apiVersion = this.contract.api.version;
       this.docsAvailable = this.contract.docsAvailable;
     } else {
       this.disableButtons = true;
-      this.apiKey = this.previewText.apiKey;
+      this.apiKeyUi = this.previewText.apiKey;
       this.endpoint = this.previewText.endpoint;
       this.oAuthServerUrl = this.previewText.oAuthServerUrl;
       this.oAuthClientSecret = this.previewText.oAuthClientSecret;
@@ -86,6 +86,7 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
       this.apiId = this.newContractDetails.apiVersion.api.id;
       this.apiVersion = this.newContractDetails.apiVersion.version;
       this.docsAvailable = this.newContractDetails.docsAvailable;
+      this.target = '_blank';
     }
   }
 }

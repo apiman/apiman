@@ -21,12 +21,17 @@
     <p [innerHTML]="'DESCRIPTIONS.TRY_IT_OUT' | translate"></p>
   </div>
   <div id="try-it-now-btn">
-    <ng-container *ngIf="docsAvailable">
-      <a [routerLink]="['/swagger', orgId, apiId, apiVersion]" target="_blank">
-        <button mat-raised-button color="primary">
-          {{ 'COMMON.API_DOCS' | translate }}
-        </button>
-      </a>
+    <ng-container *ngIf="docsAvailable && contract">
+      <app-api-documentation-buttons
+        [contract]="contract"
+        [downloadEnabled]="true"
+        [target]="target"></app-api-documentation-buttons>
+    </ng-container>
+    <ng-container *ngIf="docsAvailable && !contract">
+      <app-api-documentation-buttons
+        [apiVersion]="newContractDetails.apiVersion"
+        [downloadEnabled]="true"
+        [target]="target"></app-api-documentation-buttons>
     </ng-container>
   </div>
 </div>
@@ -42,11 +47,11 @@
       <input
         matInput
         readonly
-        value="{{ apiKey }}"
+        value="{{ apiKeyUi }}"
         [placeholder]="'COMMON.HTTP_HEADER' | translate" />
       <button
         [disabled]="disableButtons"
-        [cdkCopyToClipboard]="apiKey"
+        [cdkCopyToClipboard]="apiKeyUi"
         mat-icon-button
         matSuffix
         class="input-icon-btn">

@@ -111,4 +111,63 @@ export class ApiService {
     console.warn(errorMessage);
     return throwError(errorMessage);
   }
+
+  /**
+   * This method will download the definition file of an API
+   */
+  downloadDefinitionFile(
+    organizationId: string,
+    apiId: string,
+    apiVersion: string,
+    definitionType: string
+  ): void {
+    this.backendService
+      .getApiDefinition(organizationId, apiId, apiVersion)
+      .subscribe((data) => {
+        this.downloadFile(data, apiId, apiVersion, definitionType);
+      });
+  }
+
+  /**
+   * This method will create and name the definition file and creates the download
+   * The name pattern is: apiName-apiVersion.fileEnding e.g. Petstore-1.0.json
+   * @param data the definition as blob
+   * @param apiId the name of the API
+   * @param apiVersion the version of the API
+   * @param definitionType the definition type of the API (SwaggerJSON, SwaggerYAML, WSDL)
+   */
+  private downloadFile(
+    data: Blob,
+    apiId: string,
+    apiVersion: string,
+    definitionType: string
+  ): void {
+    let type = 'text/json';
+    let fileEnding = '.json';
+    switch (definitionType) {
+      case 'SwaggerJSON':
+        type = 'text/json';
+        fileEnding = '.json';
+        break;
+      case 'SwaggerYAML':
+        type = 'text/yaml';
+        fileEnding = '.yaml';
+        break;
+      case 'WSDL':
+        type = 'text/xml';
+        fileEnding = '.wsdl';
+        break;
+    }
+
+    const downloadLink = document.createElement('a');
+    const blob = new Blob([data], { type });
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.setAttribute(
+      'download',
+      apiId + '-' + apiVersion + fileEnding
+    );
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
 }

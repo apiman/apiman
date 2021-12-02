@@ -57,7 +57,7 @@ export class AuthGuard extends KeycloakAuthGuard {
           })
         )
         .subscribe((user: ICurrentUser) => {
-          console.log('Logged in with user: ', user);
+          console.log('Logged in with user: ' + user.username, user);
           this.permissionsService.setPermissions(user.permissions);
         });
     }

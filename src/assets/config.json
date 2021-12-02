@@ -43,10 +43,10 @@
     ],
     "separator": "•"
   },
-  "endpoint": "https://localhost:8443/apiman",
+  "endpoint": "https://vagrantguest/pas/apiman",
   "auth": {
-    "url": "https://localhost:8443/auth",
-    "realm": "apiman",
+    "url": "https://vagrantguest/pas/keycloak",
+    "realm": "PAS",
     "clientId": "devportal"
   },
   "terms": {

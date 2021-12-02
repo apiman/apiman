@@ -1,4 +1,4 @@
-/*
+/*!
  * Copyright 2021 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,8 @@
  *  imitations under the License.
  */
 
-import { IApiSummary, IApiVersion } from './ICommunication';
-
-export interface IApiSummaryExt extends IApiSummary {
-  docsAvailable: boolean;
-  latestApiVersion: IApiVersion;
+#download-btn {
+  min-width: unset;
+  padding: 0 8px;
+  margin-left: 5px;
 }

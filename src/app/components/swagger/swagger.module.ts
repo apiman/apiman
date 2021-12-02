@@ -14,9 +14,14 @@
  *  imitations under the License.
  */
 
-import { IApiSummary, IApiVersion } from './ICommunication';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-export interface IApiSummaryExt extends IApiSummary {
-  docsAvailable: boolean;
-  latestApiVersion: IApiVersion;
-}
+import { SwaggerRoutingModule } from './swagger-routing.module';
+import { SwaggerComponent } from './swagger.component';
+
+@NgModule({
+  declarations: [SwaggerComponent],
+  imports: [CommonModule, SwaggerRoutingModule]
+})
+export class SwaggerModule {}

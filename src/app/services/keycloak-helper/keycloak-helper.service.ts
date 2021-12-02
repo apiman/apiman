@@ -29,8 +29,9 @@ export class KeycloakHelperService {
   private executed = false;
   private username?: string;
 
-  private readonly TOKEN = 'KEYCLOAK_SESSION_STORAGE_TOKEN';
-  private readonly REFRESH_TOKEN = 'KEYCLOAK_SESSION_STORAGE_REFRESH_TOKEN';
+  private readonly TOKEN = 'APIMAN_DEVPORTAL_KEYCLOAK_SESSION_STORAGE_TOKEN';
+  private readonly REFRESH_TOKEN =
+    'APIMAN_DEVPORTAL_KEYCLOAK_SESSION_STORAGE_REFRESH_TOKEN';
 
   constructor(
     private readonly keycloak: KeycloakService,
@@ -51,12 +52,12 @@ export class KeycloakHelperService {
       initOptions: {
         onLoad: 'check-sso',
         checkLoginIframe: false,
-        token: window.sessionStorage.getItem(this.TOKEN) ?? '',
-        refreshToken: window.sessionStorage.getItem(this.REFRESH_TOKEN) ?? ''
+        token: localStorage.getItem(this.TOKEN) ?? '',
+        refreshToken: localStorage.getItem(this.REFRESH_TOKEN) ?? ''
       },
       loadUserProfileAtStartUp: true, // because of https://github.com/mauriciovigolo/keycloak-angular/pull/269
       enableBearerInterceptor: true,
-      bearerExcludedUrls: ['/assets', '/clients/public'] //TODO
+      bearerExcludedUrls: ['/assets']
     });
   }
 
@@ -84,17 +85,16 @@ export class KeycloakHelperService {
    * Could be triggered multiple times but should only execute once
    */
   public setAndUpdateTokens(): void {
-    if (!this.executed) {
-      this.setTokensToSessionStorage(this.keycloak.getKeycloakInstance());
+    if (!this.executed && this.keycloak.getKeycloakInstance().tokenParsed) {
+      this.setTokensToLocalStorage(this.keycloak.getKeycloakInstance());
       setInterval(() => {
         this.keycloak
           .updateToken()
           .then(() => {
-            // console.log('Token successfully refreshed', new Date());
-            this.setTokensToSessionStorage(this.keycloak.getKeycloakInstance());
+            this.setTokensToLocalStorage(this.keycloak.getKeycloakInstance());
           })
           .catch(() => {
-            // console.log('Error refreshing token', new Date());
+            console.error('Error refreshing token', new Date());
             this.clearTokensFromSessionStorage();
           });
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -103,17 +103,23 @@ export class KeycloakHelperService {
     this.executed = true;
   }
 
-  private setTokensToSessionStorage(keycloakInstance: KeycloakInstance) {
-    window.sessionStorage.setItem(this.TOKEN, keycloakInstance.token ?? '');
-    window.sessionStorage.setItem(
+  private setTokensToLocalStorage(keycloakInstance: KeycloakInstance) {
+    localStorage.setItem(this.TOKEN, keycloakInstance.token ?? '');
+    localStorage.setItem(
       this.REFRESH_TOKEN,
       keycloakInstance.refreshToken ?? ''
     );
   }
 
+  public getTokenFromLocalStorage(): string {
+    // we have to trigger the method here to make sure the tokens are set after a login
+    this.setAndUpdateTokens();
+    return localStorage.getItem(this.TOKEN) ?? '';
+  }
+
   private clearTokensFromSessionStorage() {
-    window.sessionStorage.removeItem(this.TOKEN);
-    window.sessionStorage.removeItem(this.REFRESH_TOKEN);
+    localStorage.removeItem(this.TOKEN);
+    localStorage.removeItem(this.REFRESH_TOKEN);
   }
 
   public getUsername(): string {

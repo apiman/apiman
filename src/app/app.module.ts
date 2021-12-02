@@ -44,7 +44,6 @@ import { AccountComponent } from './components/account/account.component';
 import { MyAppsComponent } from './components/my-apps/my-apps.component';
 import { KeycloakAngularModule } from 'keycloak-angular';
 import { KeycloakHelperService } from './services/keycloak-helper/keycloak-helper.service';
-import { SwaggerComponent } from './components/swagger/swagger.component';
 import { MarketplaceClientAppComponent } from './components/marketplace-client-app/marketplace-client-app.component';
 import { MyAppsSummaryComponent } from './components/my-apps-summary/my-apps-summary.component';
 import { MyAppsUseApiComponent } from './components/my-apps-use-api/my-apps-use-api.component';
@@ -61,6 +60,7 @@ import { PolicyCardLightComponent } from './components/policy-card-light/policy-
 import { NoDataComponent } from './components/no-data/no-data.component';
 import { UnregisterClientComponent } from './components/dialogs/unregister-client/unregister-client.component';
 import { ImgOrIconSelectorComponent } from './components/img-or-icon-selector/img-or-icon-selector.component';
+import { ApiDocumentationButtonsComponent } from './components/api-documentation-buttons/api-documentation-buttons.component';
 
 export function initializeApp(
   configService: ConfigService,
@@ -109,7 +109,6 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     PlanCardListComponent,
     AccountComponent,
     MyAppsComponent,
-    SwaggerComponent,
     MarketplaceClientAppComponent,
     MyAppsSummaryComponent,
     MyAppsUseApiComponent,
@@ -122,7 +121,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     TocComponent,
     NoDataComponent,
     UnregisterClientComponent,
-    ImgOrIconSelectorComponent
+    ImgOrIconSelectorComponent,
+    ApiDocumentationButtonsComponent
   ],
   imports: [
     KeycloakAngularModule,

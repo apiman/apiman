@@ -22,18 +22,10 @@
         {{ 'COMMON.OF' | translate }} {{ api.api.name }}
         <span *ngIf="isLatest" id="latest-tag" class="primary">[latest]</span>
       </div>
-      <a
+      <app-api-documentation-buttons
         *ngIf="api.docsAvailable"
-        [routerLink]="[
-          '/swagger',
-          api.api.organization.id,
-          api.api.id,
-          api.version
-        ]">
-        <button mat-raised-button id="docs-button" color="primary">
-          {{ 'COMMON.API_DOCS' | translate }}
-        </button>
-      </a>
+        [apiVersion]="api"
+        [downloadEnabled]="true"></app-api-documentation-buttons>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div id="content-header">

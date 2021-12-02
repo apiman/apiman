@@ -23,7 +23,6 @@ import { MarketplaceComponent } from './components/marketplace/marketplace.compo
 import { AccountComponent } from './components/account/account.component';
 import { MyAppsComponent } from './components/my-apps/my-apps.component';
 import { AuthGuard } from './guards/auth.guard';
-import { SwaggerComponent } from './components/swagger/swagger.component';
 import { ApprovalComponent } from './components/approval/approval.component';
 
 const routes: Routes = [
@@ -45,7 +44,11 @@ const routes: Routes = [
     component: MyAppsComponent,
     canActivate: [AuthGuard]
   },
-  { path: 'swagger/:orgId/:apiId/:apiVersion', component: SwaggerComponent },
+  {
+    path: 'swagger/:orgId/:apiId/:apiVersion',
+    loadChildren: () =>
+      import('./components/swagger/swagger.module').then((m) => m.SwaggerModule)
+  },
   { path: 'approval', component: ApprovalComponent }
 ];
 

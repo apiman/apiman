@@ -304,6 +304,17 @@ export class BackendService {
     ) as Observable<never>;
   }
 
+  public getApiDefinition(
+    organizationId: string,
+    apiId: string,
+    apiVersion: string
+  ): Observable<Blob> {
+    const path = `devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
+    return this.http.get(this.generateUrl(path), {
+      responseType: 'blob'
+    });
+  }
+
   public sendAction(action: IAction): Observable<void> {
     console.log('sendAction');
 

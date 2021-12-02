@@ -20,6 +20,7 @@ import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '../../services/config/config.service';
 import SwaggerUI from 'swagger-ui';
+import { KeycloakHelperService } from '../../services/keycloak-helper/keycloak-helper.service';
 
 @Component({
   selector: 'app-swagger',
@@ -27,13 +28,17 @@ import SwaggerUI from 'swagger-ui';
   styleUrls: ['./swagger.component.scss']
 })
 export class SwaggerComponent implements OnInit {
+  private readonly apiKeyHeader = 'X-API-Key';
   endpoint = '';
+  isPublicApi = false;
+  isTryEnabled = false;
 
   constructor(
     private route: ActivatedRoute,
     private heroService: HeroService,
     private translator: TranslateService,
-    private config: ConfigService
+    private config: ConfigService,
+    private keycloakHelperService: KeycloakHelperService
   ) {
     this.endpoint = config.getEndpoint();
   }
@@ -42,33 +47,101 @@ export class SwaggerComponent implements OnInit {
    * Load the swagger definition and display it with the swagger ui bundle library on component initialization
    */
   ngOnInit(): void {
-    const organizationId = this.route.snapshot.paramMap.get('orgId') ?? '';
-    const apiId: string = this.route.snapshot.paramMap.get('apiId') ?? '';
-    const apiVersion = this.route.snapshot.paramMap.get('apiVersion') ?? '';
+    const { organizationId, apiId, apiVersion, apiKey } = this.getRouteParams();
+
     this.heroService.setUpHero({
       title: this.translator.instant('COMMON.API_DOCS') as string,
       subtitle: `${apiId} - ${apiVersion}`
     });
 
-    const swaggerURL = `${this.endpoint}/devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
-
     const swaggerOptions: SwaggerUI.SwaggerUIOptions = {
       dom_id: '#swagger-editor',
       layout: 'BaseLayout',
-      url: swaggerURL,
+      url: `${this.endpoint}/devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`,
       docExpansion: 'list',
       operationsSorter: 'alpha',
-      tryItOutEnabled: false,
+      tryItOutEnabled: true,
+      supportedSubmitMethods: this.getSupportedMethods(),
       requestInterceptor: (request: SwaggerUI.Request) => {
+        this.setAuthorizationHeader(request);
+        this.setApiKeyHeader(apiKey, request);
         return request;
       },
       responseInterceptor: (response: SwaggerUI.Response) => {
         return response;
       },
-      onComplete: () => {}
+      onComplete: () => {
+        swaggerUI.preauthorizeApiKey(this.apiKeyHeader, apiKey);
+      }
     };
 
+    this.setDisableAuth(swaggerOptions);
+
     // Loads the swagger ui with its options
-    SwaggerUI(swaggerOptions);
+    const swaggerUI = SwaggerUI(swaggerOptions);
+  }
+
+  private setApiKeyHeader(apiKey: string | null, request: SwaggerUI.Request) {
+    if (!this.isPublicApi && apiKey != null) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      request.headers[this.apiKeyHeader] = apiKey;
+    }
+  }
+
+  private setAuthorizationHeader(request: SwaggerUI.Request) {
+    const token = this.keycloakHelperService.getTokenFromLocalStorage();
+    if (token.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      request.headers.Authorization = 'Bearer ' + token;
+    }
+  }
+
+  private setDisableAuth(swaggerOptions: SwaggerUI.SwaggerUIOptions) {
+    if (!this.isTryEnabled) {
+      // See https://github.com/swagger-api/swagger-ui/issues/3725
+      const DisableAuthorizePlugin = () => ({
+        wrapComponents: { authorizeBtn: () => () => null }
+      });
+      swaggerOptions.plugins = [];
+      swaggerOptions.plugins.push(DisableAuthorizePlugin);
+    }
+  }
+
+  private getRouteParams() {
+    const organizationId = this.route.snapshot.paramMap.get('orgId') ?? '';
+    const apiId: string = this.route.snapshot.paramMap.get('apiId') ?? '';
+    const apiVersion = this.route.snapshot.paramMap.get('apiVersion') ?? '';
+    const clientId = this.route.snapshot.queryParamMap.get('clientId') ?? '';
+    const apiKey = localStorage.getItem(
+      `APIMAN_DEVPORTAL-${organizationId}-${apiId}-${apiVersion}-${clientId}`
+    );
+
+    this.isPublicApi = JSON.parse(
+      this.route.snapshot.queryParamMap.get('publicApi') ?? 'false'
+    ) as boolean;
+
+    this.isTryEnabled = JSON.parse(
+      this.route.snapshot.queryParamMap.get('try') ?? 'false'
+    ) as boolean;
+
+    return { organizationId, apiId, apiVersion, apiKey };
+  }
+
+  private getSupportedMethods(): SwaggerUI.SupportedHTTPMethods[] {
+    const submitMethods: SwaggerUI.SupportedHTTPMethods[] = [
+      'get',
+      'put',
+      'post',
+      'delete',
+      'options',
+      'head',
+      'patch',
+      'trace'
+    ];
+    if (this.isTryEnabled) {
+      return submitMethods;
+    } else {
+      return [];
+    }
   }
 }

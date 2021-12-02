@@ -192,7 +192,7 @@ export class ApiCardListComponent implements OnInit {
                   map((docsAvailable) => {
                     return {
                       ...apiSummary,
-                      latestVersion: latestApiVersion.version,
+                      latestApiVersion: latestApiVersion,
                       docsAvailable: docsAvailable
                     } as IApiSummaryExt;
                   })

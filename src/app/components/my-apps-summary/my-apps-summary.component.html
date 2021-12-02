@@ -94,18 +94,9 @@
       </div>
     </div>
     <div class="view-docs" *ngIf="contract && contract.docsAvailable">
-      <a
-        [routerLink]="[
-          '/swagger',
-          contract.api.api.organization.id,
-          contract.api.api.id,
-          contract.api.version
-        ]"
-        target="_blank">
-        <button mat-raised-button color="primary">
-          {{ 'COMMON.API_DOCS' | translate }}
-        </button>
-      </a>
+      <app-api-documentation-buttons
+        [contract]="contract"
+        [downloadEnabled]="true"></app-api-documentation-buttons>
     </div>
   </div>
   <div class="grid-divider"><div></div></div>
