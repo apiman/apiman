@@ -474,3 +474,6 @@ ALTER TABLE api_tag ADD CONSTRAINT FK2h64maqscweorti1hta9josl2 FOREIGN KEY (tag_
 ALTER TABLE api_tag ADD CONSTRAINT FKlpr8yu65omneju5297uqthb6k FOREIGN KEY (api_id, org_id) REFERENCES apis (id, organization_id)
     GO
 
+-- Changeset src/main/liquibase/current/20211206-add-locale-to-user-profile.xml::add-locale-to-use-profile::msavy marc@blackparrotlabs.io (manual changeset)
+ALTER TABLE users ADD locale varchar(255)
+    GO

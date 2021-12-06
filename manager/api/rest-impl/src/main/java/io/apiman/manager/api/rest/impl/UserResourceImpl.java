@@ -127,7 +127,7 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
                     user.setEmail(""); //$NON-NLS-1$
                 }
                 user.setJoinedOn(new Date());
-                if (securityContext.getLocale() != null && user.getLocale() != null) {
+                if (securityContext.getLocale() != null && user.getLocale() == null) {
                     user.setLocale(securityContext.getLocale().toLanguageTag());
                 }
                 storage.createUser(user);
