@@ -45,7 +45,6 @@ public class ContractApprovalRequestEmailNotification implements INotificationHa
         UserDto recipient = signupNotification.getRecipient();
         EmailNotificationTemplate template = mailNotificationService
              .findTemplateFor(signupNotification.getReason(), recipient.getLocale())
-             .or(() -> mailNotificationService.findTemplateFor(signupNotification.getCategory(), recipient.getLocale()))
              .orElseThrow();
 
         Map<String, Object> templateMap = buildTemplateMap(signupNotification);

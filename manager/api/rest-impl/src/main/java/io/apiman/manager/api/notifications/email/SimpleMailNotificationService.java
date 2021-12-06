@@ -12,6 +12,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -24,7 +25,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.common.collect.Maps;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,7 +56,7 @@ public class SimpleMailNotificationService {
     // String -> Map<Locale, EmailNotificationTemplate>
     private final PatriciaTrie<Map<Locale,EmailNotificationTemplate>> reasonTrie = new PatriciaTrie<>();
     // NotificationCategory -> List<Map<Locale, EmailNotificationTemplate>>
-    private final Map<NotificationCategory, List<Map<Locale, EmailNotificationTemplate>>> categoryToTemplateMap = new HashMap<>();
+    private final Map<NotificationCategory, Map<Locale, List<EmailNotificationTemplate>>> categoryToTemplateMap = new HashMap<>();
     // All locales we have a template for (e.g. en, fr, de, etc).
     private Set<Locale> supportedLocales;
 
@@ -152,8 +152,7 @@ public class SimpleMailNotificationService {
      * returned (it is the longest match).
      *
      * <p>Correspondingly, if an exact template match is not found, the prefix will be shortened until a matching
-     * template is found, or we determine there is no suitable template. In the latter case, use of
-     * {@link #findTemplateFor(NotificationCategory, Locale)} may provide a suitable alternative (or a very generic template).
+     * template is found, or we determine there is no suitable template.
      *
      * @param reasonKey the reason to find a template for
      * @param locale the locale to resolve
@@ -181,7 +180,7 @@ public class SimpleMailNotificationService {
      *
      * @return Sorted map of prefix and corresponding template. Empty if no matches are found.
      */
-    public List<Map<Locale, EmailNotificationTemplate>> findAllTemplatesFor(@NotNull String reasonKey) {
+    public Map<Locale, List<EmailNotificationTemplate>> findAllTemplatesFor(@NotNull String reasonKey) {
         String fromKey = null;
         String[] elems = reasonKey.split("\\.");
         if (elems.length == 1) {
@@ -189,35 +188,46 @@ public class SimpleMailNotificationService {
         } else {
             fromKey = elems[0];
         }
-        List<Map<Locale, EmailNotificationTemplate>> list = new ArrayList<>(reasonTrie.subMap(fromKey, reasonKey.substring(0, reasonKey.length()-1)).values());
-        list.add(reasonTrie.select(reasonKey).getValue());
-        return list;
-    }
 
-    /**
-     * Get first template for a reason category (generally more coarse-grained).
-     *
-     * @param category the category to get a template for
-     * @return template, if a suitable one is found, otherwise empty
-     */
-    public Optional<EmailNotificationTemplate> findTemplateFor(@NotNull NotificationCategory category, @NotNull Locale locale) {
-        if (categoryToTemplateMap.containsKey(category)) {
-            return Optional.ofNullable(categoryToTemplateMap.get(category))
-                    .map(list -> list.get(0))
-                    .map(localeMap -> localeMap.get(locale));
+        List<Map<Locale, EmailNotificationTemplate>> subMapCollection = new ArrayList<>(reasonTrie.subMap(fromKey, reasonKey.substring(0, reasonKey.length() - 1)).values());
+        Map<Locale, EmailNotificationTemplate> selectMap = reasonTrie.select(reasonKey).getValue();
+        subMapCollection.add(selectMap);
+
+        Map<Locale, List<EmailNotificationTemplate>> results = new HashMap<>();
+
+        for (Map<Locale, EmailNotificationTemplate> map : subMapCollection) {
+            for (Entry<Locale, EmailNotificationTemplate> entry : map.entrySet()) {
+                results.computeIfAbsent(entry.getKey(), value -> new ArrayList<>()).add(entry.getValue());
+            }
         }
-        return Optional.empty();
+
+        return results;
     }
 
-    /**
-     * Get all templates for a reason category (generally more coarse-grained).
-     *
-     * @param category the category to get a template for
-     * @return template, if a suitable one is found, otherwise empty
-     */
-    public List<Map<Locale, EmailNotificationTemplate>> findAllTemplatesFor(@NotNull NotificationCategory category) {
-        return categoryToTemplateMap.get(category);
-    }
+    // /**
+    //  * Get first template for a reason category (generally more coarse-grained).
+    //  *
+    //  * @param category the category to get a template for
+    //  * @return template, if a suitable one is found, otherwise empty
+    //  */
+    // public Optional<EmailNotificationTemplate> findTemplateFor(@NotNull NotificationCategory category, @NotNull Locale locale) {
+    //     if (categoryToTemplateMap.containsKey(category)) {
+    //         return Optional.ofNullable(categoryToTemplateMap.get(category))
+    //                 .map(list -> list.get(0))
+    //                 .map(localeMap -> localeMap.get(0));
+    //     }
+    //     return Optional.empty();
+    // }
+
+    // /**
+    //  * Get all templates for a reason category (generally more coarse-grained).
+    //  *
+    //  * @param category the category to get a template for
+    //  * @return template, if a suitable one is found, otherwise empty
+    //  */
+    // public List<Map<Locale, EmailNotificationTemplate>> findAllTemplatesFor(@NotNull NotificationCategory category) {
+    //     return categoryToTemplateMap.get(category);
+    // }
 
     private void readEmailNotificationTemplatesFromFile() {
         Path file = config.getConfigDirectory().resolve("email-notification-templates.json");
@@ -233,6 +243,7 @@ public class SimpleMailNotificationService {
             supportedLocales = localeTplMap.keySet().stream()
                     .map(Locale::forLanguageTag)
                     .collect(Collectors.toSet());
+
             localeTplMap.forEach(this::processReasonMap);
         } catch (IOException ioe) {
             throw new UncheckedIOException(ioe);
@@ -245,14 +256,18 @@ public class SimpleMailNotificationService {
             tpl.setLocale(localeTag);
             Locale locale = Locale.forLanguageTag(localeTag);
             reasonTrie.computeIfAbsent(reason, (val) -> new HashMap<>(5)).put(locale, tpl);
-            // categoryToTemplateMap.computeIfAbsent(reason, (val) -> new List<Map<Locale, EmailNotificationTemplate>>() {
-            // })
+            // For each category we now have multiple locales, so we have an extra layer before we get to our list of notification templates.
+            Map<Locale, List<EmailNotificationTemplate>> catLocales = categoryToTemplateMap.computeIfAbsent(tpl.getCategory(), val -> new HashMap<>());
+            // Instantiate the list if not already there. We have: category -> locale -> list<templates>
+            catLocales.computeIfAbsent(locale, val -> new ArrayList<>()).add(tpl);
             LOGGER.trace("Adding template ({0}): reason {1} -> {2}", locale, tpl.getNotificationReason(), tpl);
             LOGGER.trace("Adding template ({0}): category {1} -> {2}", locale, tpl.getCategory(), tpl);
         });
     }
 
-    private static final class ReasonMap extends HashMap<String, EmailNotificationTemplate> {
-
-    }
+    /**
+     * Map: Reason code -> email notification template.
+     * Helpful for making Jackson deserialization a bit easier.
+     */
+    private static final class ReasonMap extends HashMap<String, EmailNotificationTemplate> { }
 }

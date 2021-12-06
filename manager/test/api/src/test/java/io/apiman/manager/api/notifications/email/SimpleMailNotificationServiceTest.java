@@ -207,9 +207,9 @@ public class SimpleMailNotificationServiceTest {
     @Test
     public void All_templates_matching_reason_prefix_are_returned_in_order() {
         SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
-        List<Map<Locale, EmailNotificationTemplate>> allTemplatesAndLocales = service.findAllTemplatesFor("test.notification.reason");
+        Map<Locale, List<EmailNotificationTemplate>> allTemplatesAndLocales = service.findAllTemplatesFor("test.notification.reason");
 
-        Collection<EmailNotificationTemplate> allTemplates = allTemplatesAndLocales.get(0).values();
+        Collection<EmailNotificationTemplate> allTemplates = allTemplatesAndLocales.get(Locale.ENGLISH);
 
         assertThat(allTemplates)
              //.containsOnlyKeys("test.notification", "test.notification.reason")

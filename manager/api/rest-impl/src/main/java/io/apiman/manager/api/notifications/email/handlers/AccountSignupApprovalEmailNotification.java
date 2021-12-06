@@ -43,7 +43,6 @@ public class AccountSignupApprovalEmailNotification implements INotificationHand
 
         EmailNotificationTemplate template = mailNotificationService
              .findTemplateFor(signupNotification.getReason(), recipient.getLocale())
-             .or(() -> mailNotificationService.findTemplateFor(signupNotification.getCategory(), recipient.getLocale()))
              .orElseThrow();
 
         var mail = SimpleEmail

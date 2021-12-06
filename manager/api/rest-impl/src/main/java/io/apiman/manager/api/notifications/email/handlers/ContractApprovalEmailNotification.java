@@ -36,7 +36,6 @@ public class ContractApprovalEmailNotification implements INotificationHandler {
 
         EmailNotificationTemplate template = mailNotificationService
              .findTemplateFor(notification.getReason(), recipient.getLocale())
-             .or(() -> mailNotificationService.findTemplateFor(notification.getCategory(), recipient.getLocale()))
              .orElseThrow();
 
         var mail = SimpleEmail

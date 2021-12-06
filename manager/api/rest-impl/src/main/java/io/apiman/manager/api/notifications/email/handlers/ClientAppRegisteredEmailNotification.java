@@ -40,7 +40,6 @@ public class ClientAppRegisteredEmailNotification implements INotificationHandle
 
         EmailNotificationTemplate template = mailNotificationService
              .findTemplateFor(notification.getReason(), recipient.getLocale())
-             .or(() -> mailNotificationService.findTemplateFor(notification.getCategory(), recipient.getLocale()))
              .orElseThrow();
 
         var mail = SimpleEmail
