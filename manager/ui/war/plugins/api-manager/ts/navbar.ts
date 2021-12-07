@@ -13,6 +13,7 @@ _module.controller("Apiman.NavbarController",
         window.location.href = Configuration.ui.backToConsole;
       };
       $scope.userNotificationCount = null;
+      $scope.notificationsEnabled = Configuration.ui.notifications;
 
       NotificationService.getNotificationCount(Configuration.user.username).then(
           (count) => {
