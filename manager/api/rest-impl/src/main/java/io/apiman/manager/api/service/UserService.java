@@ -54,6 +54,9 @@ public class UserService implements DataAccessUtilMixin {
         if (user.getFullName() != null) {
             updatedUser.setFullName(user.getFullName());
         }
+        if (user.getLocale() != null) {
+            updatedUser.setLocale(user.getLocale());
+        }
         tryAction(() -> storage.updateUser(updatedUser));
     }
 

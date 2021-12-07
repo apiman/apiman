@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.idm.UserDto;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
@@ -61,6 +62,11 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
      */
     protected static void clearPermissions() {
         AbstractSecurityContext.clearPermissions();
+    }
+
+    @Override
+    public Locale getLocale() {
+        return servletRequest.get().getLocale();
     }
 
     /**

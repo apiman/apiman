@@ -1,5 +1,6 @@
 package io.apiman.manager.api.beans.idm;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.StringJoiner;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +17,8 @@ public class UserDto {
     private String fullName;
     @NotBlank
     private String email;
+    @NotBlank
+    private Locale locale = Locale.getDefault();
 
     public UserDto() {
     }
@@ -56,6 +59,15 @@ public class UserDto {
         return this;
     }
 
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public UserDto setLocale(Locale locale) {
+        this.locale = locale;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -76,10 +88,11 @@ public class UserDto {
     @Override
     public String toString() {
         return new StringJoiner(", ", UserDto.class.getSimpleName() + "[", "]")
-             .add("id='" + id + "'")
-             .add("username='" + username + "'")
-             .add("fullName='" + fullName + "'")
-             .add("email='" + email + "'")
-             .toString();
+                .add("id='" + id + "'")
+                .add("username='" + username + "'")
+                .add("fullName='" + fullName + "'")
+                .add("email='" + email + "'")
+                .add("locale=" + locale)
+                .toString();
     }
 }

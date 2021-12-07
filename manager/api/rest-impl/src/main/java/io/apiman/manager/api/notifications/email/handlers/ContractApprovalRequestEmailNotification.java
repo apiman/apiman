@@ -11,7 +11,6 @@ import io.apiman.manager.api.notifications.producers.ContractApprovalRequestNoti
 import io.apiman.manager.api.providers.eager.EagerLoaded;
 
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -20,7 +19,7 @@ import javax.inject.Inject;
  */
 @EagerLoaded
 @ApplicationScoped
-public class ContractApprovalRequestEmailNotification implements INotificationHandler  {
+public class ContractApprovalRequestEmailNotification implements INotificationHandler {
 
     private SimpleMailNotificationService mailNotificationService;
 
@@ -43,13 +42,12 @@ public class ContractApprovalRequestEmailNotification implements INotificationHa
     }
 
     private void approvalRequiredNotification(NotificationDto<ContractCreatedEvent> signupNotification) {
+        UserDto recipient = signupNotification.getRecipient();
         EmailNotificationTemplate template = mailNotificationService
-             .findTemplateFor(signupNotification.getReason())
-             .or(() -> mailNotificationService.findTemplateFor(signupNotification.getCategory()))
+             .findTemplateFor(signupNotification.getReason(), recipient.getLocale())
              .orElseThrow();
 
         Map<String, Object> templateMap = buildTemplateMap(signupNotification);
-        UserDto recipient = signupNotification.getRecipient();
 
         var mail = SimpleEmail
              .builder()
