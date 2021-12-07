@@ -16,8 +16,8 @@
 
 import { Injectable } from '@angular/core';
 import { BackendService } from '../backend/backend.service';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, map, retry, switchMap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry, switchMap } from 'rxjs/operators';
 import {
   IApiSummary,
   IApiVersion,
@@ -82,19 +82,11 @@ export class ApiService {
     );
   }
 
-  isApiDocAvailable(apiSummary: IApiVersion): Observable<boolean> {
-    return this.backendService
-      .headApiDefinition(
-        apiSummary.api.organization.id,
-        apiSummary.api.id,
-        apiSummary.version
-      )
-      .pipe(
-        map(() => {
-          return true;
-        }),
-        catchError(() => of(false))
-      );
+  isApiDocAvailable(apiVersion: IApiVersion): boolean {
+    return (
+      apiVersion.definitionType === 'SwaggerYAML' ||
+      apiVersion.definitionType === 'SwaggerJSON'
+    );
   }
 
   handleError(error: HttpErrorResponse): Observable<never> {

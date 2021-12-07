@@ -292,18 +292,6 @@ export class BackendService {
     return this.http.get<IPolicy>(this.generateUrl(path), this.httpOptions);
   }
 
-  public headApiDefinition(
-    organizationId: string,
-    apiId: string,
-    apiVersion: string
-  ): Observable<never> {
-    const path = `devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
-    return this.http.head(
-      this.generateUrl(path),
-      this.httpOptions
-    ) as Observable<never>;
-  }
-
   public getApiDefinition(
     organizationId: string,
     apiId: string,

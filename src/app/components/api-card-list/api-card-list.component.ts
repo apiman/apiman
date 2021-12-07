@@ -187,16 +187,13 @@ export class ApiCardListComponent implements OnInit {
           return this.apiService
             .getLatestApiVersion(apiSummary.organizationId, apiSummary.id)
             .pipe(
-              switchMap((latestApiVersion) => {
-                return this.apiService.isApiDocAvailable(latestApiVersion).pipe(
-                  map((docsAvailable) => {
-                    return {
-                      ...apiSummary,
-                      latestApiVersion: latestApiVersion,
-                      docsAvailable: docsAvailable
-                    } as IApiSummaryExt;
-                  })
-                );
+              map((latestApiVersion) => {
+                return {
+                  ...apiSummary,
+                  latestApiVersion: latestApiVersion,
+                  docsAvailable:
+                    this.apiService.isApiDocAvailable(latestApiVersion)
+                } as IApiSummaryExt;
               })
             );
         })

@@ -18,9 +18,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api/api.service';
 import { HeroService } from '../../services/hero/hero.service';
-import { map, switchMap } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
-import { IApiVersion } from '../../interfaces/ICommunication';
+import { switchMap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import {
+  IApiVersion,
+  IApiVersionSummary
+} from '../../interfaces/ICommunication';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { IApiVersionExt } from '../../interfaces/IApiVersionExt';
 
@@ -58,9 +61,9 @@ export class MarketplaceApiDetailsComponent implements OnInit {
     this.apiService
       .getApiVersionSummaries(orgId, apiId)
       .pipe(
-        switchMap((apiVersionSummaries) => {
+        switchMap((apiVersionSummaries: IApiVersionSummary[]) => {
           return forkJoin(
-            apiVersionSummaries.map((apiVersionSummary) => {
+            apiVersionSummaries.map((apiVersionSummary: IApiVersionSummary) => {
               return this.apiService.getApiVersion(
                 apiVersionSummary.organizationId,
                 apiVersionSummary.id,
@@ -71,20 +74,16 @@ export class MarketplaceApiDetailsComponent implements OnInit {
         }),
         switchMap((apiVersions: IApiVersion[]) => {
           return forkJoin(
-            apiVersions.map((apiVersion) => {
-              return this.apiService.isApiDocAvailable(apiVersion).pipe(
-                map((docsAvailable) => {
-                  return {
-                    ...apiVersion,
-                    docsAvailable: docsAvailable
-                  } as IApiVersionExt;
-                })
-              );
+            apiVersions.map((apiVersion: IApiVersion) => {
+              return of({
+                ...apiVersion,
+                docsAvailable: this.apiService.isApiDocAvailable(apiVersion)
+              }) as Observable<IApiVersionExt>;
             })
           );
         })
       )
-      .subscribe((apiVersions) => {
+      .subscribe((apiVersions: IApiVersionExt[]) => {
         this.spinnerService.stopWaiting();
         this.apis = apiVersions;
         this.setUpHero();

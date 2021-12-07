@@ -158,10 +158,9 @@ export class MyAppsComponent implements OnInit {
                   orgId,
                   contract.api.api.id,
                   contract.api.version
-                ),
-                this.apiService.isApiDocAvailable(contract.api)
+                )
               ]).pipe(
-                map(([planPolicies, endpoint, docsAvailable]) => {
+                map(([planPolicies, endpoint]) => {
                   planPolicies.forEach((planPolicy) => {
                     this.policyService.initPolicy(planPolicy);
                   });
@@ -171,7 +170,9 @@ export class MyAppsComponent implements OnInit {
                     policies: planPolicies,
                     section: 'summary',
                     managedEndpoint: endpoint.managedEndpoint,
-                    docsAvailable: docsAvailable,
+                    docsAvailable: this.apiService.isApiDocAvailable(
+                      contract.api
+                    ),
                     deletable: this.isDeleteAllowed(contract)
                   } as IContractExt;
                 })
