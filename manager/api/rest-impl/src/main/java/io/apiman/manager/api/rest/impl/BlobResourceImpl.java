@@ -87,7 +87,7 @@ public class BlobResourceImpl implements IBlobResource {
          Preconditions.checkArgument(checkExtension(image.getFilename()), "Must have a recognised image extension");
         */
         Preconditions.checkArgument(checkExtension(image.getMediaType().getSubtype()), "Must have a recognised image content type (" + IMAGE_SUBTYPES_ALLOWED + ")");
-        String filename = securityContext.getCurrentUser()  + System.currentTimeMillis() + "." + image.getMediaType().getSubtype();
+        String filename = System.currentTimeMillis() + "." + image.getMediaType().getSubtype();
         // Blob is unreferenced and will be deleted if nobody attaches to it.
         BlobRef blobRef = blobStore.storeBlob(filename, image.getMediaType().toString(), image.getFileBackedOutputStream(), 0);
         // Where the blob can be resolved
