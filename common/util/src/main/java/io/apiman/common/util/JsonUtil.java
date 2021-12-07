@@ -2,6 +2,7 @@ package io.apiman.common.util;
 
 import java.io.UncheckedIOException;
 import java.util.Collection;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,11 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import org.checkerframework.checker.units.qual.K;
 
 import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER;
 import static com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS;
@@ -72,11 +75,28 @@ public class JsonUtil {
         }
     }
 
+    public static <T> T toPojo(String payload, Class<T> klazz) {
+        try {
+            return OM.readValue(payload, klazz);
+        } catch (JsonProcessingException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static <T, C extends Collection<T>> C toPojo(String payload, Class<T> klazz, Class<? extends Collection> collectionKlazz) {
         try {
             CollectionType type = OM.getTypeFactory().constructCollectionType(collectionKlazz, klazz);
             return (C) OM.readValue(payload, type);
+        } catch (JsonProcessingException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <K, V, C extends Map<K, V>> C toPojo(String payload, Class<K> keyKlazz, Class<V> objectKlazz, Class<? extends Map> mapKlazz) {
+        try {
+            MapType type = OM.getTypeFactory().constructMapType(mapKlazz, keyKlazz, objectKlazz);
+            return OM.readValue(payload, type);
         } catch (JsonProcessingException e) {
             throw new UncheckedIOException(e);
         }

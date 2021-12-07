@@ -1,0 +1,10 @@
+{
+  "en": {
+    "apiman.account.signup.approval.request": {
+      "subject": "Action required: New account signup {event.userId} needs activation",
+      "htmlBody": "Hi {notification.recipient.fullName}",
+      "plainBody": "Hi {notification.recipient.fullName}",
+      "category": "USER_ADMINISTRATION"
+    }
+  }
+}

@@ -57,6 +57,7 @@ public class CurrentUserBean extends UserBean {
         setFullName(user.getFullName());
         setJoinedOn(user.getJoinedOn());
         setUsername(user.getUsername());
+        setLocale(user.getLocale());
     }
 
     /* (non-Javadoc)

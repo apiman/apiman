@@ -16,10 +16,11 @@
 package io.apiman.manager.api.security;
 
 import io.apiman.manager.api.beans.idm.PermissionType;
-import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -127,4 +128,9 @@ public interface ISecurityContext {
      * Find all users in an org who have a specific permission
      */
     List<UserDto> getUsersWithPermission(PermissionType permission, String orgName);
+
+    /**
+     * Get Locale from security context (e.g. token, browser headers).
+     */
+    Locale getLocale();
 }

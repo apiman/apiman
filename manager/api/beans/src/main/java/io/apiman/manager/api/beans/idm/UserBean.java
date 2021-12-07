@@ -18,7 +18,8 @@ package io.apiman.manager.api.beans.idm;
 
 import java.io.Serializable;
 import java.util.Date;
-
+import java.util.Locale;
+import java.util.StringJoiner;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -41,9 +42,12 @@ public class UserBean implements Serializable {
     private String username;
     @Column(name = "full_name")
     private String fullName;
+    @Column(name = "email")
     private String email;
     @Column(name = "joined_on", updatable=false)
     private Date joinedOn;
+    @Column(name = "locale") // TODO: maybe should be required and we can fix through import migration?
+    private String locale;
 
     // Used only when returning information about the current user
     @Transient
@@ -156,13 +160,35 @@ public class UserBean implements Serializable {
         this.admin = admin;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * Get locale language tag
+     *
+     * @see Locale#toLanguageTag()
+     * @return the locale
      */
+    public String getLocale() {
+        return locale;
+    }
+
+    /**
+     * Set locale
+     *
+     * @param locale the locale language tag
+     * @see Locale#toLanguageTag()
+     */
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
     @Override
-    @SuppressWarnings("nls")
     public String toString() {
-        return "UserBean [username=" + username + ", fullName=" + fullName + ", email=" + email
-                + ", joinedOn=" + joinedOn + ", admin=" + admin + "]";
+        return new StringJoiner(", ", UserBean.class.getSimpleName() + "[", "]")
+                .add("username='" + username + "'")
+                .add("fullName='" + fullName + "'")
+                .add("email='" + email + "'")
+                .add("joinedOn=" + joinedOn)
+                .add("locale='" + locale + "'")
+                .add("admin=" + admin)
+                .toString();
     }
 }

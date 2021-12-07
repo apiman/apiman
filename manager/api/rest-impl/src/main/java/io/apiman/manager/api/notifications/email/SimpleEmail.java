@@ -5,6 +5,7 @@ import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.notifications.EmailNotificationTemplate;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
 import javax.validation.constraints.NotBlank;
@@ -23,14 +24,16 @@ import org.jetbrains.annotations.Nullable;
 public class SimpleEmail {
     private String toName;
     private String toEmail;
+    private Locale locale;
     private Map<String, String> headers;
     private EmailNotificationTemplate template;
     private Map<String, Object> templateVariables;
 
-    SimpleEmail(String toName, String toEmail, Map<String, String> headers, EmailNotificationTemplate template,
-         Map<String, Object> templateVariables) {
+    SimpleEmail(String toName, String toEmail, Locale locale, Map<String, String> headers, EmailNotificationTemplate template,
+                Map<String, Object> templateVariables) {
         this.toName = toName;
         this.toEmail = toEmail;
+        this.locale = locale;
         this.headers = headers;
         this.template = template;
         this.templateVariables = templateVariables;
@@ -58,6 +61,13 @@ public class SimpleEmail {
      */
     public String getToEmail() {
         return toEmail;
+    }
+
+    /**
+     * Get email locale (useful for i18n).
+     */
+    public Locale getLocale() {
+        return locale;
     }
 
     /**
@@ -99,6 +109,8 @@ public class SimpleEmail {
         @NotBlank
         private String toEmail;
         @NotNull
+        private Locale locale;
+        @NotNull
         private Map<String, String> headers = Collections.emptyMap();
         @NotNull
         private EmailNotificationTemplate template;
@@ -134,11 +146,20 @@ public class SimpleEmail {
             return this;
         }
 
+
         /**
          * Set email template.
          */
         public Builder setTemplate(EmailNotificationTemplate template) {
             this.template = template;
+            return this;
+        }
+
+        /**
+         * Locale to use for email (e.g. template i18n).
+         */
+        public Builder setLocale(Locale locale) {
+            this.locale = locale;
             return this;
         }
 
@@ -165,9 +186,10 @@ public class SimpleEmail {
             if (userDto != null) {
                 this.toName = userDto.getFullName();
                 this.toEmail = userDto.getEmail();
+                this.locale = userDto.getLocale();
             }
             beanValidate(this);
-            return new SimpleEmail(toName, toEmail, headers, template, templateVariables);
+            return new SimpleEmail(toName, toEmail, locale, headers, template, templateVariables);
         }
 
         @Override
@@ -175,6 +197,7 @@ public class SimpleEmail {
             return new StringJoiner(", ", Builder.class.getSimpleName() + "[", "]")
                  .add("toName='" + toName + "'")
                  .add("toEmail='" + toEmail + "'")
+                 .add("locale='" + locale + "'")
                  .add("headers=" + headers)
                  .add("template=" + template)
                  .add("templateVariables=" + templateVariables)

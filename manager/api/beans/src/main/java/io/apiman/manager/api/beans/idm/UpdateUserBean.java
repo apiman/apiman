@@ -17,6 +17,8 @@
 package io.apiman.manager.api.beans.idm;
 
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * The bean used when updating a user.
@@ -29,6 +31,7 @@ public class UpdateUserBean implements Serializable {
 
     private String fullName;
     private String email;
+    private String locale;
 
     /**
      * Constructor.
@@ -64,12 +67,47 @@ public class UpdateUserBean implements Serializable {
         this.email = email;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * @return the preferred locale
      */
+    public String getLocale() {
+        return locale;
+    }
+
+    /**
+     * This should be a valid IANA language subtag (e.g. en, en-GB, de, etc).
+     *
+     * @see <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Locale.html">Java Locale</a>
+     * @see <a href="https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry">IANA subtag registry</a>
+     * @param locale the user's preferred locale
+     */
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
     @Override
-    @SuppressWarnings("nls")
     public String toString() {
-        return "UpdateUserBean [fullName=" + fullName + ", email=" + email + "]";
+        return new StringJoiner(", ", UpdateUserBean.class.getSimpleName() + "[", "]")
+                .add("fullName='" + fullName + "'")
+                .add("email='" + email + "'")
+                .add("locale='" + locale + "'")
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UpdateUserBean that = (UpdateUserBean) o;
+        return Objects.equals(fullName, that.fullName) && Objects.equals(email, that.email) && Objects.equals(locale, that.locale);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fullName, email, locale);
     }
 }

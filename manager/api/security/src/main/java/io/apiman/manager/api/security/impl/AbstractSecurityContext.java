@@ -31,6 +31,7 @@ import io.apiman.manager.api.security.i18n.Messages;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -220,6 +221,8 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
             throw new RuntimeException(e);
         }
     }
+
+    public abstract Locale getLocale();
 
     /**
      * {@inheritDoc}
