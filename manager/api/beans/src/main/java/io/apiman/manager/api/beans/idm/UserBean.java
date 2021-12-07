@@ -19,6 +19,7 @@ package io.apiman.manager.api.beans.idm;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Locale;
+import java.util.StringJoiner;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -175,18 +176,19 @@ public class UserBean implements Serializable {
      * @param locale the locale language tag
      * @see Locale#toLanguageTag()
      */
-    public UserBean setLocale(String locale) {
+    public void setLocale(String locale) {
         this.locale = locale;
-        return this;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
-    @SuppressWarnings("nls")
     public String toString() {
-        return "UserBean [username=" + username + ", fullName=" + fullName + ", email=" + email
-                + ", joinedOn=" + joinedOn + ", admin=" + admin + "]";
+        return new StringJoiner(", ", UserBean.class.getSimpleName() + "[", "]")
+                .add("username='" + username + "'")
+                .add("fullName='" + fullName + "'")
+                .add("email='" + email + "'")
+                .add("joinedOn=" + joinedOn)
+                .add("locale='" + locale + "'")
+                .add("admin=" + admin)
+                .toString();
     }
 }
