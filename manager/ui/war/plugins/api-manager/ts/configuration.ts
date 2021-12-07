@@ -46,14 +46,17 @@ angular.module('ApimanConfiguration', [])
             };
         }
 
-        if (cdata.ui.metrics == undefined || cdata.ui.metrics == null) {
+        if (cdata.ui.metrics == undefined) {
             cdata.ui.metrics = true;
         }
-        if (cdata.ui.platform == undefined || cdata.ui.platform == null) {
+        if (cdata.ui.platform == undefined) {
             cdata.ui.platform = "community";
         }
-        if (cdata.ui.adminOnlyOrgCreation == undefined || cdata.ui.adminOnlyOrgCreation == null) {
+        if (cdata.ui.adminOnlyOrgCreation == undefined) {
             cdata.ui.adminOnlyOrgCreation = false;
+        }
+        if (cdata.ui.notifications == undefined) {
+            cdata.ui.notifications = false;
         }
 
         return cdata;
