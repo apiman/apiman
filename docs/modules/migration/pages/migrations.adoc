@@ -3,6 +3,10 @@
 Notes for upgrading to newer versions of Apiman. 
 Unless stated otherwise, the instructions assume that you are upgrading sequentially version to version.
 
+== Migrating to 2.1.2.Final
+
+No special action should be required, although backing up is always recommended.
+
 == Migrating to 2.1.1.Final
 
 No special action should be required, although backing up is always recommended.
