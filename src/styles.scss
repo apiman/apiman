@@ -16,8 +16,8 @@
 
 @use '~@angular/material' as mat;
 @import '~@angular/material/theming';
-@import 'assets/themes/default';
-@import 'assets/themes/custom';
+@import 'src/themes/default';
+@import 'src/themes/custom';
 @include mat-core();
 
 /***** THEMING *****/

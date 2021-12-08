@@ -1,0 +1,123 @@
+/*!
+ * Copyright 2021 Scheer PAS Schweiz AG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  imitations under the License.
+ */
+
+@import 'node_modules/@angular/material/theming';
+@include mat-core();
+
+$custom-primary: (
+  50: var(--primary-20),
+  100: var(--primary-20),
+  200: var(--primary-40),
+  300: var(--primary-60),
+  400: var(--primary-80),
+  500: var(--primary),
+  600: var(--dark-primary-40),
+  700: var(--dark-primary-60),
+  800: var(--dark-primary-80),
+  900: var(--dark-primary),
+  A100: var(--primary-40),
+  A200: var(--primary-60),
+  A400: var(--primary-80),
+  A700: var(--primary),
+  contrast: (
+    50: var(--primary-warn-contrast),
+    100: var(--primary-warn-contrast),
+    200: var(--primary-warn-contrast),
+    300: var(--primary-warn-contrast),
+    400: var(--primary-warn-contrast),
+    500: var(--primary-warn-contrast),
+    600: var(--primary-warn-contrast),
+    700: var(--primary-warn-contrast),
+    800: var(--primary-warn-contrast),
+    900: var(--primary-warn-contrast),
+    A100: var(--primary-warn-contrast),
+    A200: var(--primary-warn-contrast),
+    A400: var(--primary-warn-contrast),
+    A700: var(--primary-warn-contrast),
+  )
+);
+
+$custom-warn: (
+  50: var(--warn-20),
+  100: var(--warn-20),
+  200: var(--warn-40),
+  300: var(--warn-60),
+  400: var(--warn-80),
+  500: var(--warn),
+  600: var(--dark-warn-40),
+  700: var(--dark-warn-60),
+  800: var(--dark-warn-80),
+  900: var(--dark-warn),
+  A100: var(--warn-40),
+  A200: var(--warn-60),
+  A400: var(--warn-80),
+  A700: var(--warn),
+  contrast: (
+    50: var(--primary-warn-contrast),
+    100: var(--primary-warn-contrast),
+    200: var(--primary-warn-contrast),
+    300: var(--primary-warn-contrast),
+    400: var(--primary-warn-contrast),
+    500: var(--primary-warn-contrast),
+    600: var(--primary-warn-contrast),
+    700: var(--primary-warn-contrast),
+    800: var(--primary-warn-contrast),
+    900: var(--primary-warn-contrast),
+    A100: var(--primary-warn-contrast),
+    A200: var(--primary-warn-contrast),
+    A400: var(--primary-warn-contrast),
+    A700: var(--primary-warn-contrast),
+  )
+);
+
+$custom-accent: (
+  50: var(--accent-20),
+  100: var(--accent-20),
+  200: var(--accent-40),
+  300: var(--accent-60),
+  400: var(--accent-80),
+  500: var(--accent),
+  600: var(--dark-accent-40),
+  700: var(--dark-accent-60),
+  800: var(--dark-accent-80),
+  900: var(--dark-accent),
+  A100: var(--accent-40),
+  A200: var(--accent-60),
+  A400: var(--accent-80),
+  A700: var(--accent),
+  contrast: (
+    50: var(--acccent-contrast-60),
+    100: var(--acccent-contrast-60),
+    200: var(--acccent-contrast-60),
+    300: var(--acccent-contrast-60),
+    400: var(--acccent-contrast-60),
+    500: var(--acccent-contrast-60),
+    600: var(--acccent-contrast-80),
+    700: var(--acccent-contrast-80),
+    800: var(--acccent-contrast-80),
+    900: var(--acccent-contrast-80),
+    A100: var(--acccent-contrast-80),
+    A200: var(--acccent-contrast-80),
+    A400: var(--acccent-contrast-80),
+    A700: var(--acccent-contrast-80),
+  )
+);
+
+$primary-palette: mat-palette($custom-primary);
+$accent-palette: mat-palette($custom-accent);
+$warn-palette: mat-palette($custom-warn);
+
+$theme-custom: mat-light-theme($primary-palette,$accent-palette, $warn-palette);

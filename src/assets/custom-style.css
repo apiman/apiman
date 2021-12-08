@@ -1,0 +1,64 @@
+/*
+ * Copyright 2021 Scheer PAS Schweiz AG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  imitations under the License.
+ */
+
+:root {
+  /* Put the color values for you primary, accent and warning to define your color theme */
+  --primary: rgba(41, 150, 204, 1);
+  --primary-80: rgba(41, 150, 204, .8);
+  --primary-60: rgba(41, 150, 204, .6);
+  --primary-40: rgba(41, 150, 204, .4);
+  --primary-20: rgba(41, 150, 204, .2);
+
+  --accent: rgba(186, 182, 185, 1);
+  --accent-80: rgba(186, 182, 185, .8);
+  --accent-60: rgba(186, 182, 185, .6);
+  --accent-40: rgba(186, 182, 185, .4);
+  --accent-20: rgba(186, 182, 185, .2);
+
+  --warn: rgba(208, 50, 55, 1);
+  --warn-80: rgba(208, 50, 55, .8);
+  --warn-60: rgba(208, 50, 55, .6);
+  --warn-40: rgba(208, 50, 55, .4);
+  --warn-20: rgba(208, 50, 55, .2);
+
+  --primary-warn-contrast: rgba(255, 255, 255, 1);
+
+  --dark-primary: rgba(5, 97, 141, 1);
+  --dark-primary-80: rgba(5, 97, 141, .8);
+  --dark-primary-60: rgba(5, 97, 141, .6);
+  --dark-primary-40: rgba(5, 97, 141, .4);
+  --dark-primary-20: rgba(5, 97, 141, .2);
+
+  --dark-accent: rgba(106, 116, 127, 1);
+  --dark-accent-80: rgba(106, 116, 127, .8);
+  --dark-accent-60: rgba(106, 116, 127, .6);
+  --dark-accent-40: rgba(106, 116, 127, .4);
+  --dark-accent-20: rgba(106, 116, 127, .2);
+
+  --acccent-contrast: rgba(0, 0, 0, 1);
+  --acccent-contrast-80: rgba(0, 0, 0, .8);
+  --acccent-contrast-60: rgba(0, 0, 0, .6);
+  --acccent-contrast-40: rgba(0, 0, 0, .4);
+  --acccent-contrast-20: rgba(0, 0, 0, .2);
+
+  --dark-warn: rgba(172, 30, 28, 1);
+  --dark-warn-80: rgba(172, 30, 28, .8);
+  --dark-warn-60: rgba(172, 30, 28, .6);
+  --dark-warn-40: rgba(172, 30, 28, .4);
+  --dark-warn-20: rgba(172, 30, 28, .2);
+}
+
+/* Place your custom styles below this comment */
