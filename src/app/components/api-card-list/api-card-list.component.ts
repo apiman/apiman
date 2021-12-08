@@ -14,11 +14,11 @@
  *  imitations under the License.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api/api.service';
 import { PageEvent } from '@angular/material/paginator';
-import { map, switchMap } from 'rxjs/operators';
-import { forkJoin, Observable, of } from 'rxjs';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { forkJoin, fromEvent, Observable, of } from 'rxjs';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { IApiSummary, ISearchCriteria } from '../../interfaces/ICommunication';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -29,7 +29,7 @@ import { IApiSummaryExt } from '../../interfaces/IApiSummaryExt';
   templateUrl: './api-card-list.component.html',
   styleUrls: ['./api-card-list.component.scss']
 })
-export class ApiCardListComponent implements OnInit {
+export class ApiCardListComponent implements OnInit, AfterViewInit {
   apis: IApiSummaryExt[] = [];
   totalSize = 0;
   ready = false;
@@ -66,6 +66,20 @@ export class ApiCardListComponent implements OnInit {
     this.handleQueryParams();
   }
 
+  ngAfterViewInit(): void {
+    const searchBox = document.getElementById('search-input');
+    fromEvent(searchBox as HTMLElement, 'keyup')
+      .pipe(
+        // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access
+        map((event: any) => event.currentTarget.value as string),
+        debounceTime(300)
+      )
+      .subscribe((searchStr) => {
+        this.searchTerm = searchStr;
+        this.search(this.searchTerm);
+      });
+  }
+
   handleQueryParams(): void {
     this.route.queryParams.subscribe((params: Params) => {
       if (params && params.page) {
@@ -95,13 +109,6 @@ export class ApiCardListComponent implements OnInit {
         this.getFeaturedApiList();
       }
     });
-  }
-
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any
-  OnInput(event: any): void {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    this.searchTerm = event.target.value as string;
-    this.search(this.searchTerm);
   }
 
   public search(searchTerm: string): void {
