@@ -24,6 +24,7 @@ import {
   ITerms
 } from '../../interfaces/IConfig';
 import { HttpClient } from '@angular/common/http';
+import * as JSON5 from 'json5';
 
 @Injectable({
   providedIn: 'root'
@@ -34,16 +35,17 @@ export class ConfigService {
   constructor(private http: HttpClient) {}
 
   async readAndEvaluateConfig(): Promise<IConfig> {
-    this.config = <IConfig>(
-      await this.http.get('assets/config.json').toPromise()
-    );
-
+    const configAsJson5String = await this.http
+      .get('assets/config.json5', { responseType: 'text' })
+      .toPromise();
     try {
-      JSON.stringify(this.config);
+      this.config = JSON5.parse(configAsJson5String);
     } catch (e) {
+      if (e instanceof SyntaxError) {
+        console.error(e.message + '\n' + configAsJson5String);
+      }
       throw Error('Invalid Config File');
     }
-
     return this.config;
   }
 

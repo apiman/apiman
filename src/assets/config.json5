@@ -1,22 +1,33 @@
 {
-  "language": "de",
+  // set language the API Developer Portal is running in
+  "language": "en",
+  // if new languages are available add them here (must exist in assets/i18n)
   "supportedLanguages": ["de", "en"],
+  // do not change this
   "theme": "custom",
+  // config options for header
   "hero": {
     "title": "HOME.TITLE",
     "subtitle": "HOME.SUBTITLE",
+    // header image to use, must exist in respective assets folder (see chapter "Images")
     "heroImgUrl": "assets/img/header.jpeg",
+    // enforces a min height visible header image
     "large": true,
     "fontColor": {
+      // your api developers portal name and rendered color
       "title": "white",
+      // based on navigation (e.g. Marketplace) the color to be used, displayed below the title of your developer portal
       "subtitle": "white"
     },
+    // set background color with transparency for your header title/subtitle
     "overlayColor": "rgba(0, 0, 0, 0)",
+    // overrides default color for login/logout button
     "buttonColor": {
       "login": "rgba(41, 150, 204, 1)",
       "logout": "rgba(41, 150, 204, 1)"
     }
   },
+  // config options for navigation below header
   "navigation": {
     "showHomeLink": true,
     "links": [
@@ -28,7 +39,9 @@
     ],
     "separator": ""
   },
+  // config options for footer
   "footer": {
+    // additional links to be shown in footer
     "links": [
       {
         "name": "Apiman",
@@ -41,16 +54,21 @@
         "openInNewTab": true
       }
     ],
+    // tell the application how the menu separator should look like
     "separator": "•"
   },
+  // specify the entrypoint to the API Management Manager: This is MANDATORY for communication with backend
   "endpoint": "https://vagrantguest/pas/apiman",
+  // set authentication details when pressing "login" telling where to redirect for SSO login with keycloak
   "auth": {
     "url": "https://vagrantguest/pas/keycloak",
     "realm": "PAS",
     "clientId": "devportal"
   },
+  // set your desired terms and conditions for API subscriptions here. Could be disabled so no such infos will be shown.
   "terms": {
     "enabled": true,
+    // both provided links will always be opened in a new browser tab
     "termsLink": "https://www.apache.org/licenses/LICENSE-2.0",
     "privacyLink": "https://www.apache.org/licenses/LICENSE-2.0"
   }

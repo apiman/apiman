@@ -26,6 +26,7 @@
     "@ngx-translate/http-loader": "^6.0.0",
     "@swimlane/ngx-charts": "^19.0.1",
     "constant-case": "^3.0.4",
+    "json5": "^2.2.0",
     "keycloak-angular": "^8.4.0",
     "keycloak-js": "^15.0.2",
     "material-icons": "^1.10.0",
