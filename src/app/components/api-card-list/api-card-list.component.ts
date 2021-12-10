@@ -14,11 +14,11 @@
  *  imitations under the License.
  */
 
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api/api.service';
 import { PageEvent } from '@angular/material/paginator';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
-import { forkJoin, fromEvent, Observable, of } from 'rxjs';
+import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { IApiSummary, ISearchCriteria } from '../../interfaces/ICommunication';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -29,12 +29,13 @@ import { IApiSummaryExt } from '../../interfaces/IApiSummaryExt';
   templateUrl: './api-card-list.component.html',
   styleUrls: ['./api-card-list.component.scss']
 })
-export class ApiCardListComponent implements OnInit, AfterViewInit {
+export class ApiCardListComponent implements OnInit, OnDestroy {
   apis: IApiSummaryExt[] = [];
   totalSize = 0;
   ready = false;
   error = false;
   searchTerm = '';
+  searchTermNotifier = new Subject();
   pageIndex = 0;
   searchCriteria: ISearchCriteria = {
     filters: [
@@ -63,21 +64,15 @@ export class ApiCardListComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.apis = [];
     this.searchTerm = '';
+    this.initSearchDebounce();
     this.handleQueryParams();
   }
 
-  ngAfterViewInit(): void {
-    const searchBox = document.getElementById('search-input');
-    fromEvent(searchBox as HTMLElement, 'keyup')
-      .pipe(
-        // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access
-        map((event: any) => event.currentTarget.value as string),
-        debounceTime(300)
-      )
-      .subscribe((searchStr) => {
-        this.searchTerm = searchStr;
-        this.search(this.searchTerm);
-      });
+  private initSearchDebounce() {
+    // https://m.clearbluedesign.com/how-to-simple-angular-debounce-using-rxjs-e7b86fde6167
+    this.searchTermNotifier.pipe(debounceTime(300)).subscribe(() => {
+      this.search(this.searchTerm);
+    });
   }
 
   handleQueryParams(): void {
@@ -139,6 +134,8 @@ export class ApiCardListComponent implements OnInit, AfterViewInit {
     this.apiService
       .searchApis(this.searchCriteria)
       .pipe(
+        // takeUntil cancels the search if a new search input is made
+        takeUntil(this.searchTermNotifier),
         // map from SearchResultsBeanApiSummaryBean to IApiSummary[]
         map((searchResult) => {
           this.totalSize = searchResult.totalSize;
@@ -208,5 +205,9 @@ export class ApiCardListComponent implements OnInit, AfterViewInit {
     } else {
       return of([]) as Observable<IApiSummaryExt[]>;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.searchTermNotifier.complete();
   }
 }
