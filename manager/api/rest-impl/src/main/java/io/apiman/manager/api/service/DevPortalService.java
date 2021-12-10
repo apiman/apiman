@@ -8,7 +8,6 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.mappers.ApiMapper;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -22,8 +21,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import com.google.common.collect.Lists;
-
-import static io.apiman.manager.api.service.SearchService.emptySearchResults;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
@@ -63,8 +60,8 @@ public class DevPortalService implements DataAccessUtilMixin {
      * @return list of featured ApiSummaries
      */
     public List<ApiSummaryBean> getFeaturedApis() {
-        return query.getApisByTagName("featured")
-                .stream()
+        return query.getApisByTagName("featured").stream()
+                .filter(api -> query.isAnyApiVersionExposed(api.getId()))
                 .map(apiMapper::toSummary)
                 .collect(Collectors.toList());
     }

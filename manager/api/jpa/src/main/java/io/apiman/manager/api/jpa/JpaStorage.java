@@ -823,6 +823,21 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         return apiMapper.toSummary(apisWithExposedVersions);
     }
 
+    @Override
+    public boolean isAnyApiVersionExposed(String apiId) {
+        Long result = getJdbi()
+                .withHandle(handle -> handle
+                        .createQuery("SELECT COUNT(*) "
+                                         + "FROM API_VERSIONS av "
+                                         + "WHERE av.api_id = :apiId "
+                                         + "AND av.expose_in_portal = true")
+                        .bind("apiId", apiId)
+                        .mapTo(long.class)
+                        .one()
+                );
+        return result > 0;
+    }
+
     /**
      * {@inheritDoc}
      */
