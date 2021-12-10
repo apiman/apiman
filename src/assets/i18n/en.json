@@ -90,7 +90,8 @@
     "API_KEY_PREVIEW": "You will be provided an API key after sign-up",
     "API_ENDPOINT_PREVIEW": "You will be provided an endpoint after sign-up",
     "LICENSE_TYPE": "Licence Type",
-    "POLICIES": "Policies"
+    "POLICIES": "Policies",
+    "CONTRACT_EXISTS": "There is already an contract for this API with the selected application"
   },
   "POLICIES": {
     "RateLimitingPolicy": {

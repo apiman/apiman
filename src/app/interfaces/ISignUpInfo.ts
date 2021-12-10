@@ -21,6 +21,5 @@ export interface ISignUpInfo {
   apiVersion: IApiVersion;
   plan: IApiPlanSummary;
   policies: IPolicyExt[];
-  organizationId: string;
   docsAvailable: boolean;
 }

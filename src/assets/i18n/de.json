@@ -90,7 +90,8 @@
     "API_KEY_PREVIEW": "Nach der Anmeldung wird Ihnen ein API-Key bereitgestellt",
     "API_ENDPOINT_PREVIEW": "Nach der Anmeldung wird Ihnen der Endpoint bereitgestellt",
     "LICENSE_TYPE": "Lizenztyp",
-    "POLICIES": "Policys"
+    "POLICIES": "Policys",
+    "CONTRACT_EXISTS": "Es besteht schon ein Vertrag für diese API mit der ausgewählten Applikation"
   },
   "POLICIES": {
     "RateLimitingPolicy": {

@@ -82,7 +82,7 @@ export class MyAppsUseApiComponent implements OnInit, OnChanges {
       this.endpoint = this.previewText.endpoint;
       this.oAuthServerUrl = this.previewText.oAuthServerUrl;
       this.oAuthClientSecret = this.previewText.oAuthClientSecret;
-      this.orgId = this.newContractDetails.organizationId;
+      this.orgId = this.newContractDetails.apiVersion.api.organization.id;
       this.apiId = this.newContractDetails.apiVersion.api.id;
       this.apiVersion = this.newContractDetails.apiVersion.version;
       this.docsAvailable = this.newContractDetails.docsAvailable;

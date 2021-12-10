@@ -20,6 +20,7 @@ import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
   IClientSummary,
+  IContractSummary,
   INewContract,
   IPolicy
 } from '../../interfaces/ICommunication';
@@ -87,31 +88,56 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     this.agreedTermsAndPrivacy = $event;
   }
 
-  nextAfterClientSelect(): void {
+  nextAfterClientSelect(stepper: MatStepper): void {
     if (this.selectedClients.size == 0) {
-      this.snackbar.showErrorSnackBar(
-        this.translator.instant('WIZARD.APPLICATION_ERROR') as string
-      );
+      this.printUserError('WIZARD.APPLICATION_ERROR');
+    } else {
+      this.checkIfContractAlreadyExists(stepper);
     }
   }
 
-  nextAfterTermsAgreed(): void {
-    if (!this.agreedTermsAndPrivacy)
-      this.snackbar.showErrorSnackBar(
-        this.translator.instant('WIZARD.TERMS_ERROR') as string
+  private checkIfContractAlreadyExists(stepper: MatStepper) {
+    const client: IClientSummary = this.selectedClients.values().next()
+      .value as IClientSummary;
+    this.backend
+      .getContracts(client.organizationId, client.id, '1.0')
+      .subscribe(
+        (contractSummaries: IContractSummary[]) => {
+          if (
+            contractSummaries.some((summary: IContractSummary) => {
+              return (
+                summary.apiId === this.newContractDetails.apiVersion.api.id &&
+                summary.apiOrganizationId ===
+                  this.newContractDetails.apiVersion.api.organization.id &&
+                summary.apiVersion ===
+                  this.newContractDetails.apiVersion.version
+              );
+            })
+          ) {
+            this.printUserError('WIZARD.CONTRACT_EXISTS');
+          } else {
+            stepper.next();
+          }
+        },
+        (error: HttpErrorResponse) => {
+          this.snackbar.showErrorSnackBar(error.message, error);
+        }
       );
+  }
+
+  nextAfterTermsAgreed(): void {
+    if (!this.agreedTermsAndPrivacy) {
+      this.printUserError('WIZARD.TERMS_ERROR');
+    }
   }
 
   private checkNavigationAllowed(): void {
     if (
       !this.newContractDetails ||
-      !this.newContractDetails.organizationId ||
       !this.newContractDetails.apiVersion ||
       !this.newContractDetails.plan
     ) {
-      this.snackbar.showErrorSnackBar(
-        this.translator.instant('WIZARD.REDIRECT') as string
-      );
+      this.printUserError('WIZARD.REDIRECT');
       void this.router.navigate(['home']);
     }
   }
@@ -121,7 +147,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       .value as IClientSummary;
 
     const contract: INewContract = {
-      apiOrgId: this.newContractDetails.organizationId,
+      apiOrgId: this.newContractDetails.apiVersion.api.organization.id,
       apiId: this.newContractDetails.apiVersion.api.id,
       apiVersion: this.newContractDetails.apiVersion.version,
       planId: this.newContractDetails.plan.planId
@@ -149,9 +175,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       )
       .subscribe(
         (contract: IContractExt) => {
-          this.snackbar.showPrimarySnackBar(
-            this.translator.instant('WIZARD.SUCCESS') as string
-          );
+          this.printUserError('WIZARD.SUCCESS');
           this.contract = contract;
           if ('AwaitingApproval' === this.contract.client.status) {
             void this.router.navigate(['approval']);
@@ -183,5 +207,9 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     void this.router.navigate(['applications'], {
       fragment: this.tocService.formatClientId(this.contract)
     });
+  }
+
+  private printUserError(key: string): void {
+    this.snackbar.showErrorSnackBar(this.translator.instant(key) as string);
   }
 }

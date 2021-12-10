@@ -16,9 +16,7 @@
 
 <div id="center">
   <mat-stepper #stepper linear>
-    <mat-step
-      label="{{ 'WIZARD.FIRST_STEP_LABEL' | translate }}"
-      [completed]="selectedClients.size >= 1">
+    <mat-step label="{{ 'WIZARD.FIRST_STEP_LABEL' | translate }}">
       <mat-card>
         <mat-card-header>
           <mat-card-title>{{
@@ -36,8 +34,7 @@
           <button
             mat-raised-button
             color="primary"
-            matStepperNext
-            (click)="nextAfterClientSelect()">
+            (click)="nextAfterClientSelect(stepper)">
             {{ 'COMMON.NEXT' | translate }}
           </button>
         </mat-card-actions>
