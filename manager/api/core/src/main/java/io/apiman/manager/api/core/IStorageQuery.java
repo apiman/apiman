@@ -91,7 +91,15 @@ public interface IStorageQuery {
      */
     public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria) throws StorageException;
 
+    /**
+     * Find APIs that are exposed in the developer portal using criteria.
+     */
     public SearchResultsBean<ApiSummaryBean> findExposedApis(SearchCriteriaBean criteria) throws StorageException;
+
+    /**
+     * Determine whether a given API has any API Versions exposed in the developer portal.
+     */
+    boolean isAnyApiVersionExposed(String apiId);
 
     /**
      * Finds plans (within an organization) with the given criteria.
