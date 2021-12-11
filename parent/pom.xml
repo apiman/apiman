@@ -137,7 +137,7 @@
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.32</version.org.slf4j>
     <version.org.testcontainers>1.16.0</version.org.testcontainers>
-    <version.io.netty>4.1.69.Final</version.io.netty>
+    <version.io.netty>4.1.71.Final</version.io.netty>
     <version.io.swagger>1.6.2</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.10</version.io.vertx>
