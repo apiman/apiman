@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM eclipse-temurin:11.0.13_8-jre-alpine
 
 MAINTAINER florian.volk@scheer-group.com
 EXPOSE 8080 8081

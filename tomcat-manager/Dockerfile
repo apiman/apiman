@@ -1,4 +1,4 @@
-FROM tomcat:9.0.52-jdk11-adoptopenjdk-hotspot
+FROM tomcat:9.0.56-jdk11-temurin
 
 MAINTAINER florian.volk@scheer-group.com
 EXPOSE 8080 8443
