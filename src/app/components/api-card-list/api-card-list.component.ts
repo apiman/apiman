@@ -152,7 +152,9 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
           this.loadingSpinnerService.stopWaiting();
           this.ready = true;
         },
-        () => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+        (err: any) => {
+          console.error(err);
           this.error = true;
           this.loadingSpinnerService.stopWaiting();
         }
@@ -177,7 +179,9 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
           this.loadingSpinnerService.stopWaiting();
           this.ready = true;
         },
-        () => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+        (err: any) => {
+          console.error(err);
           this.error = true;
           this.loadingSpinnerService.stopWaiting();
         }
