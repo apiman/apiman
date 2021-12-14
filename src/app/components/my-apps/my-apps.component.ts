@@ -35,7 +35,7 @@ import {
 import { IContractExt } from '../../interfaces/IContractExt';
 import { PolicyService } from '../../services/policy/policy.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { merge, EMPTY, forkJoin } from 'rxjs';
+import { EMPTY, forkJoin, of } from 'rxjs';
 import { flatArray } from '../../shared/utility';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { ApiService } from '../../services/api/api.service';
@@ -89,13 +89,19 @@ export class MyAppsComponent implements OnInit {
 
     this.spinnerService.startWaiting();
     this.contractsLoaded = false;
-    merge(this.backend.getEditableClients(), this.backend.getViewableClients())
+    forkJoin([
+      this.backend.getEditableClients(),
+      this.backend.getViewableClients()
+    ])
       .pipe(
+        switchMap((clientSummaries: IClientSummary[][]) => {
+          return of(MyAppsComponent.getUniqueClients(clientSummaries));
+        }),
         switchMap((clientSummaries: IClientSummary[]) => {
           if (clientSummaries.length === 0) {
             this.stopMainRequest();
           }
-
+          console.log(clientSummaries);
           return forkJoin(
             clientSummaries.map((clientSummary) => {
               return this.backend.getClientVersions(
@@ -192,6 +198,18 @@ export class MyAppsComponent implements OnInit {
         this.fetchPolicyProbes();
         this.generateTocLinks();
       });
+  }
+
+  private static getUniqueClients(clientSummaries: IClientSummary[][]) {
+    const clients: IClientSummary[] = flatArray(
+      clientSummaries
+    ) as IClientSummary[];
+
+    return [
+      ...new Map(
+        clients.map((clientSummary) => [clientSummary.id, clientSummary])
+      ).values()
+    ];
   }
 
   private fetchPolicyProbes() {
