@@ -175,7 +175,9 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       )
       .subscribe(
         (contract: IContractExt) => {
-          this.printUserError('WIZARD.SUCCESS');
+          this.snackbar.showPrimarySnackBar(
+            this.translator.instant('WIZARD.SUCCESS') as string
+          );
           this.contract = contract;
           if ('AwaitingApproval' === this.contract.client.status) {
             void this.router.navigate(['approval']);
