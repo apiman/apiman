@@ -1,6 +1,6 @@
 {
   "name": "devportal",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
