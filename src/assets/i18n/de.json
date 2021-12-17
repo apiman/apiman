@@ -69,7 +69,8 @@
     "NO_APPS_FOUND": "Es wurden keine Applikationen gefunden",
     "FAILED_WHILE_FETCHING_APPLICATIONS": "Fehler beim Laden der Applikationen",
     "REMOVE_APPLICATION_FAILED": "Fehler beim Löschen der Applikation",
-    "NO_PROBES": "Fehler beim Anfragen der aktuellen Policy-Daten"
+    "NO_PROBES": "Fehler beim Anfragen der aktuellen Policy-Daten",
+    "RETIRED_API": "Diese API kann nicht mehr verwendet werden."
   },
   "APPLICATION_CREATE": {
     "SELECT": "Aus vorhandenen Anwendugen auswählen"

@@ -69,7 +69,8 @@
     "NO_APPS_FOUND": "No applications were found",
     "FAILED_WHILE_FETCHING_APPLICATIONS": "Failed while fetching applications",
     "REMOVE_APPLICATION_FAILED": "Failed while removing the application",
-    "NO_PROBES": "Failed while fetching the current policy data"
+    "NO_PROBES": "Failed while fetching the current policy data",
+    "RETIRED_API": "This API is retired and can no longer be used."
   },
   "APPLICATION_CREATE": {
     "SELECT": "Select from available Applications"

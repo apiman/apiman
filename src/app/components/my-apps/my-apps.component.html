@@ -69,19 +69,21 @@
               {{ 'APPS.SUMMARY' | translate }}
             </span>
           </div>
-          <div>
-            <span
-              (click)="setSection(contract, 'use-api')"
-              [ngClass]="{ primary: contract.section === 'use-api' }">
-              {{ 'APPS.USE_API' | translate }}
-            </span>
-          </div>
-          <div *ngIf="contract.policies.length > 0">
-            <span
-              (click)="setSection(contract, 'policies')"
-              [ngClass]="{ primary: contract.section === 'policies' }">
-              {{ 'APPS.POLICIES' | translate }}
-            </span>
+          <div *ngIf="contract!.api.status !== 'Retired'">
+            <div>
+              <span
+                (click)="setSection(contract, 'use-api')"
+                [ngClass]="{ primary: contract.section === 'use-api' }">
+                {{ 'APPS.USE_API' | translate }}
+              </span>
+            </div>
+            <div *ngIf="contract.policies.length > 0">
+              <span
+                (click)="setSection(contract, 'policies')"
+                [ngClass]="{ primary: contract.section === 'policies' }">
+                {{ 'APPS.POLICIES' | translate }}
+              </span>
+            </div>
           </div>
           <div>
             <!--            TODO Add this later -->

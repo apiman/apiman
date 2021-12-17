@@ -14,7 +14,9 @@
   ~  imitations under the License.
   -->
 
-<div class="summary">
+<div
+  class="summary"
+  *ngIf="contract!.api.status !== 'Retired'; else apiRetired">
   <div class="endpoints">
     <div class="api-endpoint">
       <div>
@@ -117,3 +119,11 @@
       [text]="'APPS.NO_POLICIES_FOR_API' | translate"></app-no-data>
   </ng-template>
 </div>
+<ng-template #apiRetired>
+  <app-no-data
+    class="dp-center"
+    style="display: grid"
+    [textClass]="'text-big3'"
+    [text]="'APPS.RETIRED_API' | translate">
+  </app-no-data>
+</ng-template>

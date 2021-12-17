@@ -16,11 +16,12 @@
 
 import { Injectable } from '@angular/core';
 import { BackendService } from '../backend/backend.service';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, retry, switchMap } from 'rxjs/operators';
 import {
   IApiSummary,
   IApiVersion,
+  IApiVersionEndpointSummary,
   IApiVersionSummary,
   ISearchCriteria,
   ISearchResultsApiSummary
@@ -80,6 +81,20 @@ export class ApiService {
         );
       })
     );
+  }
+
+  getManagedApiEndpoint(
+    orgId: string,
+    apiId: string,
+    apiVersion: string
+  ): Observable<IApiVersionEndpointSummary> {
+    return this.backendService
+      .getManagedApiEndpoint(orgId, apiId, apiVersion)
+      .pipe(
+        catchError(() => {
+          return of({} as IApiVersionEndpointSummary);
+        })
+      );
   }
 
   isApiDocAvailable(apiVersion: IApiVersion): boolean {

@@ -160,7 +160,7 @@ export class MyAppsComponent implements OnInit {
                   contract.plan.version
                 ),
 
-                this.backend.getManagedApiEndpoint(
+                this.apiService.getManagedApiEndpoint(
                   orgId,
                   contract.api.api.id,
                   contract.api.version
@@ -207,7 +207,10 @@ export class MyAppsComponent implements OnInit {
 
     return [
       ...new Map(
-        clients.map((clientSummary) => [clientSummary.id, clientSummary])
+        clients.map((clientSummary) => [
+          clientSummary.organizationId + clientSummary.id,
+          clientSummary
+        ])
       ).values()
     ];
   }
