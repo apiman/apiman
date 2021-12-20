@@ -152,10 +152,10 @@
     <!-- Sun and javax dependencies to maintain compatibility with Java 9+ module changes -->
     <version.com.sun.xml.ws>2.3.4</version.com.sun.xml.ws>
     <version.javax.json.javax.json-api>1.1.4</version.javax.json.javax.json-api>
-    <version.javax.xml.bind>2.3.3</version.javax.xml.bind>
+    <version.javax.xml.bind>3.0.1</version.javax.xml.bind>
     <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
     <version.info.picocli>4.6.1</version.info.picocli>
-    <version.apache.maven.maven-artifact>3.8.2</version.apache.maven.maven-artifact>
+    <version.apache.maven.maven-artifact>3.8.4</version.apache.maven.maven-artifact>
   </properties>
 
   <reporting>
