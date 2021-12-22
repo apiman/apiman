@@ -79,7 +79,7 @@
                     <antversion property="antversion" />
                     <echo>Ant Version: ${antversion}</echo>
 
-                    <property name="wildfly.version" value="20.0.1.Final"/>
+                    <property name="wildfly.version" value="23.0.2.Final"/>
 
                     <property name="appserver.id" value="wildfly" />
                     <property name="apiman.wildfly.download.url" value="https://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip" />
