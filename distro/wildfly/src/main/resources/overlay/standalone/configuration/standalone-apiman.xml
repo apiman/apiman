@@ -22,7 +22,6 @@
         <extension module="org.jboss.as.transactions"/>
         <extension module="org.jboss.as.webservices"/>
         <extension module="org.jboss.as.weld"/>
-        <extension module="org.wildfly.extension.batch.jberet"/>
         <extension module="org.wildfly.extension.bean-validation"/>
         <extension module="org.wildfly.extension.clustering.web"/>
         <extension module="org.wildfly.extension.core-management"/>
@@ -30,11 +29,6 @@
         <extension module="org.wildfly.extension.ee-security"/>
         <extension module="org.wildfly.extension.elytron"/>
         <extension module="org.wildfly.extension.io"/>
-        <extension module="org.wildfly.extension.microprofile.config-smallrye"/>
-        <extension module="org.wildfly.extension.microprofile.health-smallrye"/>
-        <extension module="org.wildfly.extension.microprofile.jwt-smallrye"/>
-        <extension module="org.wildfly.extension.microprofile.metrics-smallrye"/>
-        <extension module="org.wildfly.extension.microprofile.opentracing-smallrye"/>
         <extension module="org.wildfly.extension.request-controller"/>
         <extension module="org.wildfly.extension.security.manager"/>
         <extension module="org.wildfly.extension.undertow"/>
@@ -55,12 +49,12 @@
     <management>
         <security-realms>
             <security-realm name="UndertowRealm">
-              <server-identities>
-                <ssl>
-                  <keystore path="apiman.jks" relative-to="jboss.server.config.dir" keystore-password="secret"
-                    alias="apimancert" key-password="secret" />
-                </ssl>
-              </server-identities>
+                <server-identities>
+                    <ssl>
+                        <keystore path="apiman.jks" relative-to="jboss.server.config.dir" keystore-password="secret"
+                          alias="apimancert" key-password="secret" />
+                    </ssl>
+                </server-identities>
             </security-realm>
             <security-realm name="ManagementRealm">
                 <authentication>
@@ -121,14 +115,14 @@
                 <level name="INFO"/>
                 <formatter>
                     <!-- Uncomment to log as JSON. See formatter section below. -->
-<!--                    <named-formatter name="JSON"/> -->
+                    <!--                    <named-formatter name="JSON"/> -->
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
             </console-handler>
             <periodic-rotating-file-handler name="FILE" autoflush="true">
                 <formatter>
-                <!-- Uncomment to log as JSON. See formatter section below. -->
-<!--                    <named-formatter name="JSON"/> -->
+                    <!-- Uncomment to log as JSON. See formatter section below. -->
+                    <!--                    <named-formatter name="JSON"/> -->
                     <named-formatter name="PATTERN"/>
                 </formatter>
                 <file relative-to="jboss.server.log.dir" path="server.log"/>
@@ -163,21 +157,10 @@
             <formatter name="COLOR-PATTERN">
                 <pattern-formatter pattern="%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"/>
             </formatter>
-<!--            Default JSON format. More advanced customisations available. Refer to WildFly/EAP docs. -->
-<!--            <formatter name="JSON">-->
-<!--                <json-formatter/>-->
-<!--            </formatter>-->
-        </subsystem>
-        <subsystem xmlns="urn:jboss:domain:batch-jberet:2.0">
-            <default-job-repository name="in-memory"/>
-            <default-thread-pool name="batch"/>
-            <job-repository name="in-memory">
-                <in-memory/>
-            </job-repository>
-            <thread-pool name="batch">
-                <max-threads count="10"/>
-                <keepalive-time time="30" unit="seconds"/>
-            </thread-pool>
+            <!--            Default JSON format. More advanced customisations available. Refer to WildFly/EAP docs. -->
+            <!--            <formatter name="JSON">-->
+            <!--                <json-formatter/>-->
+            <!--            </formatter>-->
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:bean-validation:1.0"/>
         <subsystem xmlns="urn:jboss:domain:core-management:1.0"/>
@@ -279,7 +262,7 @@
             <statistics enabled="${wildfly.ejb3.statistics-enabled:${wildfly.statistics-enabled:false}}"/>
             <log-system-exceptions value="true"/>
         </subsystem>
-        <subsystem xmlns="urn:wildfly:elytron:10.0" final-providers="combined-providers" disallowed-providers="OracleUcrypto">
+        <subsystem xmlns="urn:wildfly:elytron:13.0" final-providers="combined-providers" disallowed-providers="OracleUcrypto">
             <providers>
                 <aggregate-providers name="combined-providers">
                     <providers name="elytron"/>
@@ -378,40 +361,38 @@
                 </mechanism-provider-filtering-sasl-server-factory>
                 <provider-sasl-server-factory name="global"/>
             </sasl>
+            <tls>
+                <key-stores>
+                    <key-store name="applicationKS">
+                        <credential-reference clear-text="password"/>
+                        <implementation type="JKS"/>
+                        <file path="application.keystore" relative-to="jboss.server.config.dir"/>
+                    </key-store>
+                </key-stores>
+                <key-managers>
+                    <key-manager name="applicationKM" key-store="applicationKS" generate-self-signed-certificate-host="localhost">
+                        <credential-reference clear-text="password"/>
+                    </key-manager>
+                </key-managers>
+                <server-ssl-contexts>
+                    <server-ssl-context name="applicationSSC" key-manager="applicationKM"/>
+                </server-ssl-contexts>
+            </tls>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:infinispan:10.0">
-            <cache-container name="web" default-cache="passivation" module="org.wildfly.clustering.web.infinispan">
+        <subsystem xmlns="urn:jboss:domain:infinispan:12.0">
+            <cache-container name="ejb" default-cache="passivation" aliases="sfsb" modules="org.wildfly.clustering.ejb.infinispan">
                 <local-cache name="passivation">
-                    <file-store passivation="true" purge="false"/>
-                </local-cache>
-                <local-cache name="sso"/>
-                <local-cache name="routing"/>
-            </cache-container>
-            <cache-container name="server" default-cache="default" module="org.wildfly.clustering.server">
-                <local-cache name="default"/>
-            </cache-container>
-            <cache-container name="ejb" aliases="sfsb" default-cache="passivation" module="org.wildfly.clustering.ejb.infinispan">
-                <local-cache name="passivation">
+                    <locking isolation="REPEATABLE_READ"/>
+                    <transaction mode="BATCH"/>
                     <file-store passivation="true" purge="false"/>
                 </local-cache>
             </cache-container>
-            <cache-container name="hibernate" module="org.infinispan.hibernate-cache">
-                <local-cache name="entity">
-                    <object-memory size="10000"/>
-                    <expiration max-idle="100000"/>
-                </local-cache>
-                <local-cache name="local-query">
-                    <object-memory size="10000"/>
-                    <expiration max-idle="100000"/>
-                </local-cache>
-                <local-cache name="timestamps"/>
-            </cache-container>
-            <cache-container name="keycloak">
+            <cache-container name="keycloak" modules="org.keycloak.keycloak-model-infinispan">
                 <local-cache name="realms">
-                    <object-memory size="10000"/>
+                    <heap-memory size="10000"/>
                 </local-cache>
                 <local-cache name="users">
-                    <object-memory size="10000"/>
+                    <heap-memory size="10000"/>
                 </local-cache>
                 <local-cache name="sessions"/>
                 <local-cache name="authenticationSessions"/>
@@ -421,16 +402,44 @@
                 <local-cache name="loginFailures"/>
                 <local-cache name="work"/>
                 <local-cache name="authorization">
-                    <object-memory size="10000"/>
+                    <heap-memory size="10000"/>
                 </local-cache>
                 <local-cache name="keys">
-                    <object-memory size="1000"/>
+                    <heap-memory size="1000"/>
                     <expiration max-idle="3600000"/>
                 </local-cache>
                 <local-cache name="actionTokens">
-                    <object-memory size="-1"/>
+                    <heap-memory size="-1"/>
                     <expiration interval="300000" max-idle="-1"/>
                 </local-cache>
+            </cache-container>
+            <cache-container name="server" default-cache="default" modules="org.wildfly.clustering.server">
+                <local-cache name="default">
+                    <transaction mode="BATCH"/>
+                </local-cache>
+            </cache-container>
+            <cache-container name="web" default-cache="passivation" modules="org.wildfly.clustering.web.infinispan">
+                <local-cache name="passivation">
+                    <locking isolation="REPEATABLE_READ"/>
+                    <transaction mode="BATCH"/>
+                    <file-store passivation="true" purge="false"/>
+                </local-cache>
+                <local-cache name="sso">
+                    <locking isolation="REPEATABLE_READ"/>
+                    <transaction mode="BATCH"/>
+                </local-cache>
+                <local-cache name="routing"/>
+            </cache-container>
+            <cache-container name="hibernate" modules="org.infinispan.hibernate-cache">
+                <local-cache name="entity">
+                    <heap-memory size="10000"/>
+                    <expiration max-idle="100000"/>
+                </local-cache>
+                <local-cache name="local-query">
+                    <heap-memory size="10000"/>
+                    <expiration max-idle="100000"/>
+                </local-cache>
+                <local-cache name="timestamps"/>
             </cache-container>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:io:3.0">
@@ -466,9 +475,13 @@
         <subsystem xmlns="urn:jboss:domain:jpa:1.1">
             <jpa default-datasource="" default-extended-persistence-inheritance="DEEP"/>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:jsf:1.1"/>
         <subsystem xmlns="urn:jboss:domain:keycloak-server:1.1">
             <web-context>auth</web-context>
+            <providers>
+                <provider>
+                    classpath:${jboss.home.dir}/providers/*
+                </provider>
+            </providers>
             <master-realm-name>master</master-realm-name>
             <scheduled-task-interval>900</scheduled-task-interval>
             <theme>
@@ -477,15 +490,6 @@
                 <cacheTemplates>true</cacheTemplates>
                 <dir>${jboss.home.dir}/themes</dir>
             </theme>
-            <spi name="hostname">
-                <default-provider>default</default-provider>
-                <provider name="default" enabled="true">
-                    <properties>
-                        <property name="frontendUrl" value="${keycloak.frontendUrl:}"/>
-                        <property name="forceBackendUrlToFrontendUrl" value="false"/>
-                    </properties>
-                </provider>
-            </spi>
             <spi name="eventsStore">
                 <provider name="jpa" enabled="true">
                     <properties>
@@ -537,20 +541,24 @@
                     </properties>
                 </provider>
             </spi>
+            <spi name="x509cert-lookup">
+                <default-provider>${keycloak.x509cert.lookup.provider:default}</default-provider>
+                <provider name="default" enabled="true"/>
+            </spi>
+            <spi name="hostname">
+                <default-provider>default</default-provider>
+                <provider name="default" enabled="true">
+                    <properties>
+                        <property name="frontendUrl" value="${keycloak.frontendUrl:}"/>
+                        <property name="forceBackendUrlToFrontendUrl" value="false"/>
+                    </properties>
+                </provider>
+            </spi>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:mail:4.0">
             <mail-session name="default" jndi-name="java:jboss/mail/Default">
                 <smtp-server outbound-socket-binding-ref="mail-smtp"/>
             </mail-session>
-        </subsystem>
-        <subsystem xmlns="urn:wildfly:microprofile-config-smallrye:1.0"/>
-        <subsystem xmlns="urn:wildfly:microprofile-health-smallrye:2.0" security-enabled="false" empty-liveness-checks-status="${env.MP_HEALTH_EMPTY_LIVENESS_CHECKS_STATUS:UP}" empty-readiness-checks-status="${env.MP_HEALTH_EMPTY_READINESS_CHECKS_STATUS:UP}"/>
-        <subsystem xmlns="urn:wildfly:microprofile-jwt-smallrye:1.0"/>
-        <subsystem xmlns="urn:wildfly:microprofile-metrics-smallrye:2.0" security-enabled="false" exposed-subsystems="*" prefix="${wildfly.metrics.prefix:wildfly}"/>
-        <subsystem xmlns="urn:wildfly:microprofile-opentracing-smallrye:2.0" default-tracer="jaeger">
-            <jaeger-tracer name="jaeger">
-                <sampler-configuration sampler-type="const" sampler-param="1.0"/>
-            </jaeger-tracer>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <remote-naming/>
@@ -652,34 +660,34 @@
         <subsystem xmlns="urn:jboss:domain:weld:4.0"/>
         <!-- Apiman's Keycloak client adapter configuration. -->
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
-          <secure-deployment name="apiman.war">
-            <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
-            <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
-            <resource>apiman</resource>
-            <credential name="secret">password</credential>
-            <disable-trust-manager>true</disable-trust-manager>
-            <bearer-only>true</bearer-only>
-            <enable-basic-auth>true</enable-basic-auth>
-            <principal-attribute>preferred_username</principal-attribute>
-          </secure-deployment>
-          <secure-deployment name="apimanui.war">
-            <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
-            <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
-            <resource>apimanui</resource>
-            <credential name="secret">password</credential>
-            <disable-trust-manager>true</disable-trust-manager>
-            <principal-attribute>preferred_username</principal-attribute>
-          </secure-deployment>
-          <secure-deployment name="apiman-gateway-api.war">
-            <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
-            <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
-            <resource>apiman-gateway-api</resource>
-            <credential name="secret">password</credential>
-            <disable-trust-manager>true</disable-trust-manager>
-            <bearer-only>true</bearer-only>
-            <enable-basic-auth>true</enable-basic-auth>
-            <principal-attribute>preferred_username</principal-attribute>
-          </secure-deployment>
+            <secure-deployment name="apiman.war">
+                <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
+                <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
+                <resource>apiman</resource>
+                <credential name="secret">password</credential>
+                <disable-trust-manager>true</disable-trust-manager>
+                <bearer-only>true</bearer-only>
+                <enable-basic-auth>true</enable-basic-auth>
+                <principal-attribute>preferred_username</principal-attribute>
+            </secure-deployment>
+            <secure-deployment name="apimanui.war">
+                <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
+                <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
+                <resource>apimanui</resource>
+                <credential name="secret">password</credential>
+                <disable-trust-manager>true</disable-trust-manager>
+                <principal-attribute>preferred_username</principal-attribute>
+            </secure-deployment>
+            <secure-deployment name="apiman-gateway-api.war">
+                <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
+                <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
+                <resource>apiman-gateway-api</resource>
+                <credential name="secret">password</credential>
+                <disable-trust-manager>true</disable-trust-manager>
+                <bearer-only>true</bearer-only>
+                <enable-basic-auth>true</enable-basic-auth>
+                <principal-attribute>preferred_username</principal-attribute>
+            </secure-deployment>
         </subsystem>
     </profile>
     <interfaces>

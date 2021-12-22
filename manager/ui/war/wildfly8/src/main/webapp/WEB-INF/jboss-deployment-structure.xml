@@ -1,5 +1,9 @@
 <jboss-deployment-structure>
   <deployment>
+    <exclusions>
+      <module name="org.apache.log4j" />
+      <module name="org.apache.logging.log4j.api" />
+    </exclusions>
     <exclude-subsystems>
       <subsystem name="webservices" />
     </exclude-subsystems>
