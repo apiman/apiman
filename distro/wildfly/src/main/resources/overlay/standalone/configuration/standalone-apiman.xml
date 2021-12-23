@@ -48,14 +48,6 @@
     </system-properties>
     <management>
         <security-realms>
-            <security-realm name="UndertowRealm">
-                <server-identities>
-                    <ssl>
-                        <keystore path="apiman.jks" relative-to="jboss.server.config.dir" keystore-password="secret"
-                          alias="apimancert" key-password="secret" />
-                    </ssl>
-                </server-identities>
-            </security-realm>
             <security-realm name="ManagementRealm">
                 <authentication>
                     <local default-user="$local" skip-group-loading="true"/>
@@ -68,7 +60,11 @@
             <security-realm name="ApplicationRealm">
                 <server-identities>
                     <ssl>
-                        <keystore path="application.keystore" relative-to="jboss.server.config.dir" keystore-password="password" alias="server" key-password="password" generate-self-signed-certificate-host="localhost"/>
+                        <keystore path="apiman.jks"
+                          relative-to="jboss.server.config.dir"
+                          keystore-password="secret"
+                          alias="apimancert"
+                          key-password="secret"/>
                     </ssl>
                 </server-identities>
                 <authentication>
@@ -363,15 +359,15 @@
             </sasl>
             <tls>
                 <key-stores>
-                    <key-store name="applicationKS">
-                        <credential-reference clear-text="password"/>
+                    <key-store name="httpsKS">
+                        <credential-reference clear-text="secret" />
                         <implementation type="JKS"/>
-                        <file path="application.keystore" relative-to="jboss.server.config.dir"/>
+                        <file path="apiman.jks" relative-to="jboss.server.config.dir" />
                     </key-store>
                 </key-stores>
                 <key-managers>
-                    <key-manager name="applicationKM" key-store="applicationKS" generate-self-signed-certificate-host="localhost">
-                        <credential-reference clear-text="password"/>
+                    <key-manager name="applicationKM" key-store="httpsKS">
+                        <credential-reference clear-text="secret" />
                     </key-manager>
                 </key-managers>
                 <server-ssl-contexts>
