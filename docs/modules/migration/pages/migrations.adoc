@@ -71,7 +71,7 @@ Please pay close attention to the instructions, as Elasticsearch can be very sel
 
 TIP: Consider backing up your data before taking any action.
 
-==== Discarding Metrics (5.X to 7.X)
+==== Option 1: Discarding Metrics (5.X to 7.X)
 
 WARNING: This will result in data loss, please ensure this data is not important before dropping any indices.
 
@@ -83,7 +83,7 @@ If the existing metrics are not important for you:
 .. `apiman_gateway`
 . Use the latest 7.X version of Elasticsearch for a fresh start
 
-==== Keeping Metrics (5.X to 7.X)
+==== Option 2: Keeping Metrics (5.X to 7.X)
 
 NOTE: Enabling the Elasticsearch `xpack` features may change the license that you are running Elasticsearch under. Users should perform appropriate due diligence.
 
