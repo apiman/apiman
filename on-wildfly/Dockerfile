@@ -1,5 +1,5 @@
 # Use WildFly image as the base
-FROM jboss/wildfly:20.0.1.Final
+FROM quay.io/wildfly/wildfly:23.0.2.Final
 
 MAINTAINER Marc Savy <marc.savy@redhat.com>
 EXPOSE 8080 8443
