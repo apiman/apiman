@@ -3,6 +3,33 @@
 Notes for upgrading to newer versions of Apiman. 
 Unless stated otherwise, the instructions assume that you are upgrading sequentially version to version.
 
+== Migrating to 2.2.0.Final
+
+=== WildFly & Keycloak
+
+We have bumped WildFly to 23.0.2.Final and Keycloak to 15.1.1.Final for security reasons.
+
+If you are using the Apiman WildFly distribution and customised `apiman-standalone.xml` you _may_ need to update your definition file.
+This is because of changes in the WildFly platform rather than Apiman itself.
+
+Presently, we bundle Keycloak in some of our Apiman quickstart distributions. 
+This is now Keycloak version 15.1.1.Final.
+
+https://github.com/apiman/apiman/commit/e645b9990ae26f5de15fdaabb1e55b1cbb2b05f3#diff-01645d81b443f3ac51ce6ad78abc3b73f51852ecb9f229a6a968699fcac4c7b2[See the diff of the `standalone-apiman.xml` to understand what has changed]. 
+This mostly relates to changes in the way SSL/TLS is handled in the underlying WildFly platform.
+
+[NOTE]
+====
+Most production deployments should unbundle Keycloak and Apiman. 
+
+In a release in the near future, we will stop bundling Keycloak and Apiman in the quickstarts, and instead we will provide a Docker Compose file that is much more representative of a real-world deployment.
+
+This will also mean Apiman is not forced to stay in sync with Keycloak Server releases. 
+We hope this will be more convenient for users and the Apiman team.
+====
+
+Please visit our https://github.com/apiman/apiman/discussions[GitHub Discussions forum] if you have issues.
+
 == Migrating to 2.1.5.Final
 
 No special action should be required, although backing up is always recommended.
