@@ -1,5 +1,5 @@
 /*!
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *  imitations under the License.
  */
 
-#hero-image{
+#hero-image {
   height: 19vh;
   background-position: center;
   background-repeat: no-repeat;
@@ -22,7 +22,7 @@
   position: relative;
 }
 
-#hero-text {
+#hero-overlay-box {
   position: absolute;
   top: 22px;
   left: 3%;
@@ -39,19 +39,6 @@
   position: absolute;
   top: 22px;
   right: 3%;
-}
-
-#login-btn,#logout-btn{
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  color: white;
-  border: 1px solid white;
-  padding: 0px 15px;
-  background-color: rgba(0, 0, 0, 0);
-  border-radius: 4px;
-  line-height: 34px;
 }
 
 .hero-large {

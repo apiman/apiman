@@ -9,23 +9,8 @@
   "hero": {
     "title": "HOME.TITLE",
     "subtitle": "HOME.SUBTITLE",
-    // header image to use, must exist in respective assets folder (see chapter "Images")
-    "heroImgUrl": "assets/img/header.jpeg",
     // enforces a min height visible header image
-    "large": true,
-    "fontColor": {
-      // your api developers portal name and rendered color
-      "title": "white",
-      // based on navigation (e.g. Marketplace) the color to be used, displayed below the title of your developer portal
-      "subtitle": "white"
-    },
-    // set background color with transparency for your header title/subtitle
-    "overlayColor": "rgba(0, 0, 0, 0)",
-    // overrides default color for login/logout button
-    "buttonColor": {
-      "login": "rgba(41, 150, 204, 1)",
-      "logout": "rgba(41, 150, 204, 1)"
-    }
+    "large": false,
   },
   // config options for navigation below header
   "navigation": {

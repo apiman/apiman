@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2022 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -14,23 +14,24 @@
   ~  imitations under the License.
   -->
 
-<div
-  #heroImage
-  id="hero-image"
-  [ngClass]="{ 'hero-large': heroService.hero.large }">
+<div id="hero-image" [ngClass]="{ 'hero-large': heroService.hero.large }">
   <div id="hero-overlay">
-    <div #heroOverlay id="hero-text">
-      <h1 class="mt-40" #heroTitle>{{ heroService.hero.title }}</h1>
-      <p #heroSubtitle>{{ heroService.hero.subtitle }}</p>
+    <div id="hero-overlay-box">
+      <h1 class="mt-40" id="hero-title">{{ heroService.hero.title }}</h1>
+      <p id="hero-subtitle">{{ heroService.hero.subtitle }}</p>
     </div>
     <div id="hero-btn">
-      <button #loginBtn (click)="login()" [hidden]="loggedIn" id="login-btn">
+      <button
+        mat-raised-button
+        (click)="login()"
+        *ngIf="!loggedIn"
+        id="login-btn">
         {{ 'COMMON.LOGIN' | translate }}
       </button>
       <button
-        #logoutBtn
+        mat-raised-button
         (click)="logout()"
-        [hidden]="!loggedIn"
+        *ngIf="loggedIn"
         id="logout-btn">
         {{ 'COMMON.LOGOUT' | translate }}
       </button>
