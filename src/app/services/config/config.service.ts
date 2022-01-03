@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -39,10 +39,12 @@ export class ConfigService {
       .get('assets/config.json5', { responseType: 'text' })
       .toPromise();
     try {
-      this.config = JSON5.parse(configAsJson5String);
+      if (configAsJson5String != null) {
+        this.config = JSON5.parse(configAsJson5String);
+      }
     } catch (e) {
       if (e instanceof SyntaxError) {
-        console.error(e.message + '\n' + configAsJson5String);
+        console.error(e.message);
       }
       throw Error('Invalid Config File');
     }

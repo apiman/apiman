@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@ import { Component, EventEmitter } from '@angular/core';
 import { IContractExt } from '../../../interfaces/IContractExt';
 import { IAction } from '../../../interfaces/ICommunication';
 import { BackendService } from '../../../services/backend/backend.service';
-import { flatMap } from 'rxjs/internal/operators';
-import { catchError } from 'rxjs/operators';
+import { catchError, mergeMap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -56,8 +55,8 @@ export class UnregisterClientComponent {
         action.entityVersion
       )
       .pipe(
-        flatMap(() => this.backend.sendAction(action)),
-        flatMap(() =>
+        mergeMap(() => this.backend.sendAction(action)),
+        mergeMap(() =>
           this.backend.deleteClient(action.organizationId, action.entityId)
         ),
         catchError(() => {
