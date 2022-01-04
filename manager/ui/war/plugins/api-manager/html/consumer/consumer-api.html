@@ -7,8 +7,8 @@
 
   <body>
   <div>
-    
-    <div ng-include="headerInclude"></div>   
+
+    <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ConsumerApiController" class="page container-pf-nav-pf-vertical container-fluid" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
@@ -25,7 +25,7 @@
           <h1 class="consumer-top-header" apiman-i18n-key="api-details">API Details</h1>
         </div>
         <div class="col-md-12">
-          <div class="vspacer-10" />
+          <div class="vspacer-10"></div>
         </div>
       </div>
       <div class="row">
@@ -51,7 +51,7 @@
               been published by its owner.
             </div>
             <div ng-show="(version.definitionType == 'SwaggerJSON' || version.definitionType == 'SwaggerYAML')">
-              <div class="vspacer-10" />
+              <div class="vspacer-10"></div>
               <a href="{{ pluginName }}/browse/orgs/{{params.org}}/{{params.api}}/{{params.version}}/def">
                 <i class="fa fa-fw fa-sitemap"></i>
                 <span apiman-i18n-key="view-api-def">View API Definition</span>
@@ -59,17 +59,17 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Right column -->
         <div class="col-md-8">
           <div class="consumer-section">
-          
+
             <div ng-show="version.status != 'Published'">
               <p class="apiman-no-entities-description" apiman-i18n-key="version-not-published">This version of the
                 selected API is not yet published. You will not be able to create a contract until the API provider
                 published this version of the API.</p>
             </div>
-          
+
             <div id="managed-endpoint-wrap" ng-show="version.publicAPI && version.status == 'Published'">
               <h3 apiman-i18n-key="public-endpoint" class="consumer-header">Public Endpoint</h3>
               <p class="apiman-label-faded" apiman-i18n-key="consumer-api.public-api-warning">
@@ -126,12 +126,12 @@
                   </div>
                   <!-- Sub-section - policy chain -->
                   <div class="panel-collapse collapse apiman-policy-chain" id="collapse{{ $index }}" style="margin-top: 15px" >
-                  
+
                     <div ng-hide="chains[plan.planId]">
                       <div class="spinner spinner-sm pull-left"></div>
                       <span apiman-i18n-key="loading-policy-chain" style="margin-left: 5px">Loading policy chain...</span>
                     </div>
-                  
+
                     <div class="apiman-policies" ng-show="chains[plan.planId]">
                       <div class="container-fluid apiman-summaryrow" ng-repeat="policy in chains[plan.planId]">
                         <div class="row">
@@ -150,16 +150,16 @@
                         </div>
                       </div>
                     </div> <!-- /policy chain -->
-                    
+
                   </div>
                   <hr />
                 </div>
-              
+
               </div>
             </div>
           </div>
         </div> <!-- /right-column -->
-        
+
       </div>
     </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
   </div>
