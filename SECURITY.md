@@ -11,6 +11,8 @@ The following versions of Apiman are being supported in the community.
 | <= 2.1.x | :x:                |
 | 1.x     | :x:                |
 
+If you are using a downstream distribution, you should contact your specific vendor to find out which versions are supported.
+
 ## Reporting a Vulnerability
 
 Please report Apiman vulnerabilities to either of our leads via email:
