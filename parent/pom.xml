@@ -61,7 +61,7 @@
     <version.antrun.plugin>1.7</version.antrun.plugin>
     <version.assembly.plugin>3.3.0</version.assembly.plugin>
     <version.buildhelper.plugin>3.2.0</version.buildhelper.plugin>
-    <version.buildnumber.plugin>1.4</version.buildnumber.plugin>
+    <version.buildnumber.plugin>3.0.0</version.buildnumber.plugin>
     <version.clean.plugin>3.1.0</version.clean.plugin>
     <version.com.qmino.miredot-plugin>1.6.2</version.com.qmino.miredot-plugin>
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
