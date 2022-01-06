@@ -77,6 +77,10 @@ export class ConfigService {
     return this.config.endpoint;
   }
 
+  getBackendRoles(): string[] {
+    return this.config.backendRoles;
+  }
+
   getAuth(): IAuthProvider {
     return { ...this.config.auth };
   }

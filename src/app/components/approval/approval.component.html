@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2022 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -14,8 +14,16 @@
   ~  imitations under the License.
   -->
 
-<div class="center mt-40">
-  <h1 class="mt-40" [innerHTML]="'APPROVAL.TITLE' | translate"></h1>
-  <h2 [innerHTML]="'APPROVAL.SUBTITLE' | translate"></h2>
-  <h4 [innerHTML]="'APPROVAL.MORE_INFO' | translate"></h4>
+<div class="center mt-40" *ngIf="apiApproval; else account">
+  <h1 class="mt-40" [innerHTML]="'APPROVAL.API.TITLE' | translate"></h1>
+  <h2 [innerHTML]="'APPROVAL.API.SUBTITLE' | translate"></h2>
+  <h4 [innerHTML]="'APPROVAL.API.MORE_INFO' | translate"></h4>
 </div>
+
+<ng-template #account>
+  <div class="center mt-40">
+    <h1 class="mt-40" [innerHTML]="'APPROVAL.ACCOUNT.TITLE' | translate"></h1>
+    <h2 [innerHTML]="'APPROVAL.ACCOUNT.SUBTITLE' | translate"></h2>
+    <h4 [innerHTML]="'APPROVAL.ACCOUNT.MORE_INFO' | translate"></h4>
+  </div>
+</ng-template>

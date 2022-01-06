@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { IPermission } from '../../interfaces/ICommunication';
+import { ICurrentUser, IPermission } from '../../interfaces/ICommunication';
+import { BackendService } from '../backend/backend.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,16 @@ import { IPermission } from '../../interfaces/ICommunication';
 export class PermissionsService {
   private permissions: IPermission[] = [];
 
-  constructor() {}
+  constructor(private backend: BackendService) {}
 
-  public setPermissions(permissions: IPermission[]): void {
+  public updateUserPermissions(): void {
+    this.backend.getCurrentUser().subscribe((user: ICurrentUser) => {
+      console.log('Logged in as user: ' + user.username, user);
+      this.setPermissions(user.permissions);
+    });
+  }
+
+  private setPermissions(permissions: IPermission[]): void {
     this.permissions = permissions;
   }
 

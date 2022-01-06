@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import { MarketplaceComponent } from './components/marketplace/marketplace.compo
 import { AccountComponent } from './components/account/account.component';
 import { MyAppsComponent } from './components/my-apps/my-apps.component';
 import { AuthGuard } from './guards/auth.guard';
-import { ApprovalComponent } from './components/approval/approval.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 
 const routes: Routes = [
@@ -50,12 +49,19 @@ const routes: Routes = [
     loadChildren: () =>
       import('./components/swagger/swagger.module').then((m) => m.SwaggerModule)
   },
-  { path: 'approval', component: ApprovalComponent },
+  {
+    path: 'approval',
+    loadChildren: () =>
+      import('./components/approval/approval.module').then(
+        (m) => m.ApprovalModule
+      )
+  },
   {
     path: 'notifications',
     component: NotificationsComponent,
     canActivate: [AuthGuard]
-  }
+  },
+  { path: '**', redirectTo: '/home' }
 ];
 
 @NgModule({

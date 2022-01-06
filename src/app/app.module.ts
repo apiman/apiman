@@ -53,7 +53,6 @@ import { PolicyCardComponent } from './components/policy-card/policy-card.compon
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { GaugeChartComponent } from './components/charts/gauge-chart/gauge-chart.component';
 import { IConfig } from './interfaces/IConfig';
-import { ApprovalComponent } from './components/approval/approval.component';
 import { ThemeService } from './services/theme/theme.service';
 import { TocComponent } from './components/toc/toc.component';
 import { PolicyCardLightComponent } from './components/policy-card-light/policy-card-light.component';
@@ -120,7 +119,6 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     PolicyCardComponent,
     PolicyCardLightComponent,
     GaugeChartComponent,
-    ApprovalComponent,
     TocComponent,
     NoDataComponent,
     UnregisterClientComponent,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,22 +43,33 @@ export class KeycloakHelperService {
    * Init keycloak setting, this is called via APP Initializer
    */
   public initKeycloak(): Promise<boolean> {
-    return this.keycloak.init({
-      config: {
-        url: this.configService.getAuth().url,
-        realm: this.configService.getAuth().realm,
-        clientId: this.configService.getAuth().clientId
-      },
-      initOptions: {
-        onLoad: 'check-sso',
-        checkLoginIframe: false,
-        token: localStorage.getItem(this.TOKEN) ?? '',
-        refreshToken: localStorage.getItem(this.REFRESH_TOKEN) ?? ''
-      },
-      loadUserProfileAtStartUp: true, // because of https://github.com/mauriciovigolo/keycloak-angular/pull/269
-      enableBearerInterceptor: true,
-      bearerExcludedUrls: ['/assets']
-    });
+    return this.keycloak
+      .init({
+        config: {
+          url: this.configService.getAuth().url,
+          realm: this.configService.getAuth().realm,
+          clientId: this.configService.getAuth().clientId
+        },
+        initOptions: {
+          onLoad: 'check-sso',
+          checkLoginIframe: false,
+          token: localStorage.getItem(this.TOKEN) ?? '',
+          refreshToken: localStorage.getItem(this.REFRESH_TOKEN) ?? ''
+        },
+        loadUserProfileAtStartUp: true, // because of https://github.com/mauriciovigolo/keycloak-angular/pull/269
+        enableBearerInterceptor: true,
+        bearerExcludedUrls: ['/assets']
+      })
+      .catch((error) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (error.error && error.error === 'access_denied') {
+          // if we got an access_denied we still can init the keycloak library
+          return true;
+        } else {
+          console.error(error);
+          throw error;
+        }
+      });
   }
 
   public async getUserProfile(): Promise<KeycloakProfile | null> {

@@ -128,10 +128,18 @@
     "API_ENDPOINT": "One important aspect of all APIs that are managed by the API Gateway is the security that the API Gateway provides. <br>The API can be accessed with this URL."
   },
   "APPROVAL": {
-    "APPROVAL": "Approval Required",
-    "TITLE": "Thank you.",
-    "SUBTITLE": "Your subscription is awaiting approval",
-    "MORE_INFO": "You will receive an email notification when there is progress in your application"
+    "API": {
+      "HERO_TITLE": "Approval Required",
+      "TITLE": "Thank you",
+      "SUBTITLE": "Your subscription is awaiting approval",
+      "MORE_INFO": "You will receive an email notification when there is progress in your application"
+    },
+    "ACCOUNT": {
+      "HERO_TITLE": "Approval Required",
+      "TITLE": "Thank you",
+      "SUBTITLE": "Your account is awaiting approval",
+      "MORE_INFO": "You will receive an email notification when there is progress"
+    }
   },
   "DIALOGS": {
     "REMOVE_TITLE": "Remove Application",

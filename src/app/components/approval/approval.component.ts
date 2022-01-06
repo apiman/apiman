@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-approval',
@@ -24,18 +26,34 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./approval.component.scss']
 })
 export class ApprovalComponent implements OnInit {
+  apiApproval = true;
+  private titleKey = 'APPROVAL.API.HERO_TITLE';
+
   constructor(
     private heroService: HeroService,
-    private translator: TranslateService
+    private translator: TranslateService,
+    private router: Router,
+    private keycloak: KeycloakService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.setUpApiOrAccountApprovalPage();
     this.setUpHero();
+  }
+
+  private async setUpApiOrAccountApprovalPage() {
+    if (this.router.url.includes('/approval/account')) {
+      if (await this.keycloak.isLoggedIn()) {
+        await this.router.navigate(['home']);
+      }
+      this.apiApproval = false;
+      this.titleKey = 'APPROVAL.ACCOUNT.HERO_TITLE';
+    }
   }
 
   private setUpHero() {
     this.heroService.setUpHero({
-      title: this.translator.instant('APPROVAL.APPROVAL') as string,
+      title: this.translator.instant(this.titleKey) as string,
       subtitle: ''
     });
   }

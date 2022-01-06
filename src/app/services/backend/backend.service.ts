@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import {
   IAction,
@@ -45,6 +45,7 @@ import {
 import { IPolicySummaryExt } from '../../interfaces/IPolicySummaryExt';
 import { KeycloakHelperService } from '../keycloak-helper/keycloak-helper.service';
 import { IPolicyProbe } from '../../interfaces/IPolicy';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -385,10 +386,14 @@ export class BackendService {
 
   public getCurrentUser(): Observable<ICurrentUser> {
     const path = 'users/currentuser/info';
-    return this.http.get<ICurrentUser>(
-      this.generateUrl(path),
-      this.httpOptions
-    );
+    return this.http
+      .get<ICurrentUser>(this.generateUrl(path), this.httpOptions)
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          return EMPTY;
+        })
+      );
   }
 
   /********* Helper **********/

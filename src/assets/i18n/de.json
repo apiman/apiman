@@ -128,10 +128,18 @@
     "API_ENDPOINT": "Ein wichtiger Aspekt für alle vom API Gateway verwalteten APIs ist die Sicherheit des API Gateways. <br>Die API kann über diese URL aufgerufen werden"
   },
   "APPROVAL": {
-    "APPROVAL": "Bestätigung erforderlich",
-    "TITLE": "Vielen Dank.",
-    "SUBTITLE": "Dein Auftrag muss noch bestätigt werden",
-    "MORE_INFO": "Sie werden über den aktuellen Status per E-Mail benachrichtigt"
+    "API": {
+      "HERO_TITLE": "Bestätigung erforderlich",
+      "TITLE": "Vielen Dank",
+      "SUBTITLE": "Dein Auftrag muss noch bestätigt werden",
+      "MORE_INFO": "Sie werden über den aktuellen Status per E-Mail benachrichtigt"
+    },
+    "ACCOUNT": {
+      "HERO_TITLE": "Bestätigung erforderlich",
+      "TITLE": "Vielen Dank",
+      "SUBTITLE": "Dein Account muss noch bestätigt werden",
+      "MORE_INFO": "Sie werden über den aktuellen Status per E-Mail benachrichtigt"
+    }
   },
   "DIALOGS": {
     "REMOVE_TITLE": "Applikation löschen",

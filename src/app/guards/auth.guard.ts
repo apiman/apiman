@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,11 +18,9 @@ import { Injectable } from '@angular/core';
 import { Router, UrlTree } from '@angular/router';
 import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
 import { KeycloakHelperService } from '../services/keycloak-helper/keycloak-helper.service';
-import { BackendService } from '../services/backend/backend.service';
-import { ICurrentUser } from '../interfaces/ICommunication';
-import { catchError } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
 import { PermissionsService } from '../services/permissions/permissions.service';
+import { ConfigService } from '../services/config/config.service';
+import { SnackbarService } from '../services/snackbar/snackbar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,35 +30,33 @@ export class AuthGuard extends KeycloakAuthGuard {
     protected readonly router: Router,
     protected readonly keycloakAngular: KeycloakService,
     private keycloakHelper: KeycloakHelperService,
-    private backend: BackendService,
-    private permissionsService: PermissionsService
+    private permissionsService: PermissionsService,
+    private config: ConfigService,
+    private snackbar: SnackbarService
   ) {
     super(router, keycloakAngular);
   }
 
   async isAccessAllowed(): Promise<boolean | UrlTree> {
+    // Force the user to log in if currently unauthenticated
     if (!this.authenticated) {
       await this.keycloakAngular.login({
         redirectUri: window.location.href
       });
-    } else {
-      // we are logged in and can set the tokens
-      this.keycloakHelper.setAndUpdateTokens();
-
-      this.backend
-        .getCurrentUser()
-        .pipe(
-          catchError((err) => {
-            console.warn(err);
-            this.authenticated = false;
-            return EMPTY;
-          })
-        )
-        .subscribe((user: ICurrentUser) => {
-          console.log('Logged in with user: ' + user.username, user);
-          this.permissionsService.setPermissions(user.permissions);
-        });
     }
-    return Promise.resolve(this.authenticated);
+
+    // the user needs this roles so that backend calls will pass
+    const requiredRoles = this.config.getBackendRoles();
+    if (!requiredRoles.every((role: string) => this.roles.includes(role))) {
+      // TODO: change to error page
+      this.snackbar.showErrorSnackBar('Not enough permission');
+      return this.router.createUrlTree(['/home']);
+    }
+
+    // we are logged in and can set the tokens and fetch permissions
+    this.keycloakHelper.setAndUpdateTokens();
+    this.permissionsService.updateUserPermissions();
+
+    return this.authenticated;
   }
 }
