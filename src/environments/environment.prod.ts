@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,5 +15,6 @@
  */
 
 export const environment = {
-  production: true
+  production: true,
+  configFilePath: 'assets/config.json5'
 };

@@ -47,3 +47,6 @@ Thumbs.db
 
 # Cache
 .cache
+
+# Local config
+src/assets/local-config.json5

@@ -20,7 +20,10 @@ EXPOSE 80 443
 # one of pas-service|pas-app|database|xuml-service|python-service|other
 LABEL com.scheer-pas.container-type="pas-app"
 
+# copy files in the ngninx server folder
 COPY --from=base /usr/src/app/dist/devportal /usr/share/nginx/html
+# copy config to different folder to run envsubst before starting
+COPY --from=base /usr/src/app/dist/devportal/assets/config.json5 /usr/share/devportal/assets/config.json5
 
 #copy ssl keys
 COPY docker/tls.crt /etc/ssl/certs/tls.crt

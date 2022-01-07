@@ -26,6 +26,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import * as JSON5 from 'json5';
 import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,7 @@ export class ConfigService {
 
   async readAndEvaluateConfig(): Promise<IConfig> {
     const configAsJson5String = await firstValueFrom(
-      this.http.get('assets/config.json5', { responseType: 'text' })
+      this.http.get(environment.configFilePath, { responseType: 'text' })
     );
 
     try {

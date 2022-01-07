@@ -43,12 +43,12 @@
     "separator": "•"
   },
   // specify the entrypoint to the API Management Manager: This is MANDATORY for communication with backend
-  "endpoint": "https://vagrantguest/pas/apiman",
+  "endpoint": "${ENDPOINT}",
   // the SSO role that the manager endpoint requires
   "backendRoles": ["view-profile", "apiuser"],
   // set authentication details when pressing "login" telling where to redirect for SSO login with keycloak
   "auth": {
-    "url": "https://vagrantguest/pas/keycloak",
+    "url": "${AUTH_URL}",
     "realm": "PAS",
     "clientId": "devportal"
   },

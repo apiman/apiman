@@ -1,0 +1,9 @@
+/cypress/
+/dist/
+/docu/
+/node_modules/
+
+/.angular/
+/.cache/
+/.idea/
+/.run/
