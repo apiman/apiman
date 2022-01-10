@@ -64,7 +64,7 @@
 /* set color for login/logout button */
 #login-btn, #logout-btn {
   color: var(--primary);
-  background-color: var(--acccent-contrast);
+  background-color: var(--primary-warn-contrast);
   /* optional if a button border is needed */
   border: 1px solid var(--primary);
 }
