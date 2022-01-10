@@ -7,7 +7,7 @@ include:
     ref: master
     file: "/templates/build-push-linux-general.yml"
   - project: "gitlab/pipeline/jobs/node"
-    ref: master
+    ref: node-16
     file:
       # this is needed for al the other node templates to work
       - "/templates/base.yml"

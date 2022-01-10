@@ -27,6 +27,7 @@
     <mat-form-field>
       <mat-label>{{ 'COMMON.SEARCH' | translate }}</mat-label>
       <input
+        id="client-input"
         matInput
         [(ngModel)]="clientName"
         name="input"
@@ -34,6 +35,7 @@
     </mat-form-field>
   </form>
   <button
+    id="register-client-btn"
     mat-raised-button
     color="primary"
     class="ml-20"

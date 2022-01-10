@@ -14,7 +14,7 @@
   ~  imitations under the License.
   -->
 
-<mat-card class="api-card">
+<mat-card id="api-card_{{ api.id }}" class="api-card">
   <div class="api-card-header">
     <app-img-or-icon-selector
       [imgUrl]="api.image"
@@ -32,10 +32,12 @@
   <div>
     <mat-card-actions class="api-card-actions">
       <app-api-documentation-buttons
+        id="swagger-btn"
         *ngIf="api.docsAvailable"
         [apiVersion]="api.latestApiVersion"></app-api-documentation-buttons>
 
       <button
+        id="details-btn"
         mat-raised-button
         color="primary"
         class="api-card-button"

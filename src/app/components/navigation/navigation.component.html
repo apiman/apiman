@@ -14,11 +14,13 @@
   ~  imitations under the License.
   -->
 
-<div class="row">
+<div id="navbar" class="row">
   <div
+    id="navbar-link-{{ link.name.toLowerCase() }}"
     class="navigation-links"
     *ngFor="let link of navigation.links; let last = last">
     <a
+      id="navbar-link-href-{{ link.name.toLowerCase() }}"
       *ngIf="!link.useRouter; else noRouterLink"
       [href]="link.link"
       [target]="link.openInNewTab ? '_blank' : '_self'">
@@ -26,7 +28,10 @@
     </a>
 
     <ng-template #noRouterLink>
-      <a [routerLink]="link.link" routerLinkActive="primary">
+      <a
+        id="navbar-link-router-{{ link.name.toLowerCase() }}"
+        [routerLink]="link.link"
+        routerLinkActive="primary">
         <span>{{ link.name }}</span>
       </a>
     </ng-template>

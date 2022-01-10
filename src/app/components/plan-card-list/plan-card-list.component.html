@@ -19,7 +19,7 @@
 </ng-container>
 <div id="plan-grid">
   <ng-container *ngFor="let plan of plans">
-    <div class="plan-card mat-elevation-z2">
+    <div id="plan-card-{{ plan.planName }}" class="plan-card mat-elevation-z2">
       <div class="card-header">
         <div class="card-header-title primary text-big1">
           {{ plan.planName }}
@@ -42,6 +42,7 @@
         <div>
           <mat-divider></mat-divider>
           <button
+            id="sign-up-btn"
             *ngIf="apiVersion.status === 'Published'"
             class="sign-up-button"
             mat-raised-button

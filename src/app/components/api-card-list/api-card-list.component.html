@@ -18,6 +18,7 @@
   <mat-form-field id="search-form-field">
     <mat-icon matPrefix color="primary">search</mat-icon>
     <input
+      id="search-input"
       matInput
       type="search"
       [placeholder]="'MPLACE.SEARCH' | translate"
@@ -71,7 +72,11 @@
   </mat-paginator>
 </div>
 <div id="show-all-wrapper" *ngIf="listType === 'featuredApi' && ready">
-  <button mat-raised-button color="primary" [routerLink]="['/marketplace']">
+  <button
+    id="show-all-btn"
+    mat-raised-button
+    color="primary"
+    [routerLink]="['/marketplace']">
     {{ 'HOME.SHOW_ALL' | translate }}
   </button>
 </div>

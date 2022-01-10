@@ -36,6 +36,7 @@
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
           <button
+            id="next-step-btn"
             mat-raised-button
             color="primary"
             (click)="nextAfterClientSelect(stepper)">
@@ -63,6 +64,7 @@
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
           <button
+            id="next-step-btn"
             mat-raised-button
             matStepperNext
             color="primary"
@@ -96,6 +98,7 @@
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
           <button
+            id="confirm-btn"
             mat-raised-button
             (click)="createContract(stepper)"
             color="primary">
@@ -129,7 +132,11 @@
           </mat-card-content>
           <mat-divider></mat-divider>
           <mat-card-actions class="right">
-            <button mat-raised-button color="primary" (click)="finish()">
+            <button
+              id="finish-btn"
+              mat-raised-button
+              color="primary"
+              (click)="finish()">
               {{ 'COMMON.FINISH' | translate }}
             </button>
           </mat-card-actions>

@@ -31,6 +31,7 @@
   <mat-card-content>
     <p>
       <mat-checkbox
+        id="terms-and-conditions-checkbox"
         (change)="onClick()"
         [(ngModel)]="acceptedTerms"
         color="primary">
@@ -43,6 +44,7 @@
     </p>
     <p>
       <mat-checkbox
+        id="privacy-policy-checkbox"
         (change)="onClick()"
         [(ngModel)]="acceptedPrivacyTerms"
         color="primary">
