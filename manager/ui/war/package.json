@@ -90,7 +90,7 @@
     "webpack": "^5.64.1",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.0",
-    "webpack-dev-server": "^4.5.0"
+    "webpack-dev-server": "^4.7.3"
   },
   "optionalDependencies": {
     "fsevents": "2.3.2"
