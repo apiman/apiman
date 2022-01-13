@@ -14,7 +14,7 @@
       </div>
       <div class="row">
         <div class="col-md-8">
-          	<input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control" 
+          	<input id="path" style="width:100%" name="path" ng-model="pathPattern" class="form-control"
           		type="text" apiman-i18n-key="time-restricted-access.enter-path" placeholder="(/path/to/.*)" ng-disabled="isEntityDisabled()">
         </div>
       </div>
@@ -32,18 +32,18 @@
          <div class="col-md-3">
           <label apiman-i18n-key="day-start">From day of the week</label>
           <div style="margin-top:20px;">
-            <select apiman-select-picker ng-model="dayStart" class="selectpicker" data-width="110" 
+            <select apiman-select-picker ng-model="dayStart" class="selectpicker" data-width="110"
                 data-live-search="false" ng-disabled="isEntityDisabled()">
-                <option ng-repeat="dayname in weekdays">{{dayname}}</option>  
+                <option ng-repeat="dayname in weekdays">{{dayname}}</option>
             </select>
           </div>
         </div>
         <div class="col-md-3">
           <label apiman-i18n-key="day-end">To day of the week</label>
           <div style="margin-top:20px;">
-            <select apiman-select-picker ng-model="dayEnd" class="selectpicker" data-width="110" 
+            <select apiman-select-picker ng-model="dayEnd" class="selectpicker" data-width="110"
                 data-live-search="false" ng-disabled="isEntityDisabled()">
-                <option ng-repeat="dayname in weekdays">{{dayname}}</option>  
+                <option ng-repeat="dayname in weekdays">{{dayname}}</option>
             </select>
           </div>
         </div>
@@ -65,17 +65,21 @@
   <table class="table table-striped table-bordered">
     <thead>
       <tr>
-        <th width="50%" apiman-i18n-key="path">Path</th>
-        <th width="50%" apiman-i18n-key="accessible-utc">Accessible (UTC)</th>
-        <th width="1%"></th>
+        <th width="33%" apiman-i18n-key="path">Path</th>
+        <th width="33%" apiman-i18n-key="accessible-local-time">Accessible (Local Time <strong>{{offsetName}}</strong>)</th>
+        <th width="33%" apiman-i18n-key="accessible-utc">Accessible (<strong>UTC</strong>)</th>
+        <th width="1%">Remove</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="item in config.rules | orderBy: 'pathPattern'">
         <td>{{ item.pathPattern }}</td>
+        <td> {{formatToLocalTime(item.timeStart)}}-{{formatToLocalTime(item.timeEnd)}}
+              from {{getDayForIndex(item.dayStart)}} to {{getDayForIndex(item.dayEnd)}}
+        </td>
         <td> {{formatToTime(item.timeStart)}}-{{formatToTime(item.timeEnd)}}
-              from {{getDayForIndex(item.dayStart)}} to {{getDayForIndex(item.dayEnd)}}  
-          </td>
+              from {{getDayForIndex(item.dayStart)}} to {{getDayForIndex(item.dayEnd)}}
+        </td>
         <td>
           <button ng-click="remove(item)" class="btn btn-default" ng-disabled="isEntityDisabled()">
             <i class="fa fa-times fa-fw"></i>
@@ -92,5 +96,4 @@
       </tr>
     </tbody>
   </table>
-  
 </div>

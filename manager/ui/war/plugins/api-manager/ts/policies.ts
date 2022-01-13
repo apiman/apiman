@@ -17,7 +17,7 @@ export var isRegexpValid = function(v) {
 
 _module.controller('Apiman.DefaultPolicyConfigFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        function ($scope, Logger, EntityStatusSvc) {
             var validateRaw = function(config) {
                 var valid = true;
                 try {
@@ -41,7 +41,7 @@ _module.controller('Apiman.DefaultPolicyConfigFormController',
 
 _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
     ['$scope', 'Logger', 'PluginSvcs', 'EntityStatusSvc',
-        ($scope, Logger, PluginSvcs, EntityStatusSvc) => {
+        function ($scope, Logger, PluginSvcs, EntityStatusSvc) {
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
 
             var initEditor = function(schema) {
@@ -132,7 +132,7 @@ _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
 
 _module.controller('Apiman.RateLimitingFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = true;
 
@@ -170,7 +170,7 @@ _module.controller('Apiman.RateLimitingFormController',
 
 _module.controller('Apiman.QuotaFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = true;
                 if (config.limit) {
@@ -207,7 +207,7 @@ export var GB = 1024 * 1024 * 1024;
 
 _module.controller('Apiman.TransferQuotaFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        function ($scope, Logger, EntityStatusSvc) {
             $scope.limitDenomination = 'B';
 
             if ($scope.config && $scope.config.limit) {
@@ -291,7 +291,7 @@ _module.controller('Apiman.TransferQuotaFormController',
 
 _module.controller('Apiman.IPListFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = true;
                 $scope.setValid(valid);
@@ -343,7 +343,7 @@ _module.controller('Apiman.IPListFormController',
 
 _module.controller('Apiman.IgnoredResourcesFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = config.rules && config.rules.length > 0;
                 $scope.setValid(valid);
@@ -389,7 +389,7 @@ _module.controller('Apiman.IgnoredResourcesFormController',
 
 _module.controller('Apiman.BasicAuthFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 if (!config) {
                     return;
@@ -574,7 +574,7 @@ _module.controller('Apiman.BasicAuthFormController',
 
 _module.controller('Apiman.AuthorizationFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = config.rules && config.rules.length > 0;
 
@@ -637,7 +637,7 @@ _module.controller('Apiman.AuthorizationFormController',
 
 _module.controller('Apiman.CachingFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = false;
 
@@ -689,7 +689,7 @@ _module.controller('Apiman.CachingFormController',
 
 _module.controller('Apiman.CachingResourcesFormController',
     ['$scope', 'EntityStatusSvc',
-        ($scope, EntityStatusSvc) => {
+        function ($scope, EntityStatusSvc) {
             let validate = function(config) {
                 let valid = false;
 
@@ -743,7 +743,7 @@ _module.controller('Apiman.CachingResourcesFormController',
 
 _module.controller('Apiman.URLRewritingFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = true;
 
@@ -776,10 +776,11 @@ _module.controller('Apiman.URLRewritingFormController',
         }]);
 
 
-
+// used in time-restricted-access.include
 _module.controller('Apiman.TimeRestrictedAccessFormController',
     ['$window','$scope', 'Logger', 'EntityStatusSvc',
-        ($window, $scope, Logger, EntityStatusSvc) => {
+        function ($window, $scope, Logger, EntityStatusSvc) {
+            $scope.offsetName = DateTime.local().offsetNameShort;
             var isoTimeFormat="HH:mm:ss";
             var validate = function(config) {
                 var valid = config.rules && config.rules.length > 0;
@@ -796,8 +797,8 @@ _module.controller('Apiman.TimeRestrictedAccessFormController',
                 if (!$scope.config.rules) {
                     $scope.config.rules = [];
                 }
-                const timeStart = DateTime.fromISO($scope.timeStart).toUTC().toFormat(isoTimeFormat);
-                const timeEnd = DateTime.fromISO($scope.timeEnd).toUTC().toFormat(isoTimeFormat)
+                const timeStart = DateTime.fromJSDate($scope.timeStart).toUTC().toFormat(isoTimeFormat);
+                const timeEnd = DateTime.fromJSDate($scope.timeEnd).toUTC().toFormat(isoTimeFormat)
                 var rule = {
                     'timeStart' : timeStart,
                     'timeEnd' : timeEnd,
@@ -821,15 +822,18 @@ _module.controller('Apiman.TimeRestrictedAccessFormController',
                 }
             };
             $scope.resetModel = function() {
-                $scope.timeStart = DateTime.fromObject({ hour: 8 }).toFormat("hh:mm");
-                $scope.timeEnd = DateTime.fromObject({ hour: 16 }).toFormat("hh:mm");
+                $scope.timeStart = DateTime.fromObject({ hour: 8 }).toJSDate();
+                $scope.timeEnd = DateTime.fromObject({ hour: 16 }).toJSDate();
                 $scope.dayStart = $scope.weekdays[0];
                 $scope.dayEnd = $scope.weekdays[4];
                 $scope.selectedPath = undefined;
             };
             $scope.resetModel();
-            $scope.formatToTime = function(time){
-                return DateTime.fromISO(time).toLocal().toFormat("HH:mm");
+            $scope.formatToTime = function(utcTime){
+                return DateTime.fromISO(utcTime, {zone: 'utc'}).toFormat("HH:mm");
+            };
+            $scope.formatToLocalTime = function(utcTime){
+                return DateTime.fromISO(utcTime, {zone: 'utc'}).toLocal().toFormat("HH:mm");
             };
             $scope.getDayIndex = function(day){
                 return $scope.weekdays.indexOf(day)+1;
