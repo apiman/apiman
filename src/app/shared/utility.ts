@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -49,4 +49,12 @@ export function formatBytesAsObject(
     value: Number.parseInt(formattedBytes[0]),
     unit: formattedBytes[1]
   };
+}
+
+export function removeCssClass(selctor: string, className: string): void {
+  // const elements = Array.from(document.getElementsByClassName(className));
+  const elements = Array.from(document.querySelectorAll(selctor));
+  elements.forEach((element: Element) => {
+    element.classList.remove(className);
+  });
 }

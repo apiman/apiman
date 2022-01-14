@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2022 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -31,8 +31,10 @@
           <mat-list-item *ngFor="let policy of plan.planPolicies">
             <p>
               {{ policy.shortName }}
-              <span class="right">{{ policy.shortDescription }}</span>
             </p>
+            <app-rate-quota-policy-short-limit
+              [policy]="policy"
+              [bold]="false"></app-rate-quota-policy-short-limit>
           </mat-list-item>
         </mat-list>
       </div>

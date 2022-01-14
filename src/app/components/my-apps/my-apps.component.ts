@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -168,7 +168,7 @@ export class MyAppsComponent implements OnInit {
               ]).pipe(
                 map(([planPolicies, endpoint]) => {
                   planPolicies.forEach((planPolicy) => {
-                    this.policyService.initPolicy(planPolicy);
+                    this.policyService.extendPolicy(planPolicy);
                   });
 
                   return {

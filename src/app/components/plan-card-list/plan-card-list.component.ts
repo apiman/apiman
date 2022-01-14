@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -52,15 +52,11 @@ export class PlanCardListComponent implements OnInit {
   }
 
   onSignUp(plan: IApiPlanSummary): void {
-    const policies: IPolicyExt[] = plan.planPolicies;
-    policies.forEach((policy: IPolicyExt) =>
-      this.policyService.initPolicy(policy)
-    );
     this.signUpService.setSignUpInfo(
       this.orgId,
       this.apiVersion,
       plan,
-      policies,
+      plan.planPolicies,
       this.apiVersion.docsAvailable
     );
     void this.router.navigate(['/api-signup', this.orgId, this.apiId]);
@@ -72,6 +68,10 @@ export class PlanCardListComponent implements OnInit {
       .pipe(
         map((apiPlanSummaries: IApiPlanSummary[]) => {
           apiPlanSummaries.forEach((apiPlanSummary) => {
+            // in v1 only certain policies will be displayed
+            apiPlanSummary.planPolicies = this.policyService.filterPolicies(
+              apiPlanSummary.planPolicies
+            );
             apiPlanSummary.planPolicies.forEach((policy: IPolicyExt) => {
               this.policyService.extendPolicy(policy);
             });

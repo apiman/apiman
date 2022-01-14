@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ export class PolicyService {
 
   public readonly policyIds = {
     RATE_LIMIT: 'RateLimitingPolicy',
-    T_QUOTA: 'TransferQuotaPolicy'
+    TRANSFER_QUOTA: 'TransferQuotaPolicy'
   };
 
   constructor(
@@ -86,58 +86,10 @@ export class PolicyService {
         }
       }),
       // in v1 only certain policies will be displayed
-      switchMap((extendedPolicies: IPolicyExt[]) => {
+      map((extendedPolicies: IPolicyExt[]) => {
         return this.filterPolicies(extendedPolicies);
       })
     );
-  }
-
-  public getApiPolicies(
-    orgId: string,
-    apiId: string,
-    apiVersion: string
-  ): Observable<IPolicyExt[]> {
-    return this.backendService
-      .getApiPolicySummaries(orgId, apiId, apiVersion)
-      .pipe(
-        switchMap((extendedPolicySummaries: IPolicySummaryExt[]) => {
-          if (extendedPolicySummaries.length > 0) {
-            return forkJoin(
-              extendedPolicySummaries.map((extendedPolicySummary) => {
-                return this.getExtendedApiPolicy(
-                  orgId,
-                  apiId,
-                  apiVersion,
-                  extendedPolicySummary.id.toString()
-                );
-              })
-            );
-          } else {
-            return of([] as IPolicyExt[]);
-          }
-        }),
-        // in v1 only certain policies will be displayed
-        switchMap((extendedPolicies: IPolicyExt[]) => {
-          return this.filterPolicies(extendedPolicies);
-        })
-      );
-  }
-
-  private getExtendedApiPolicy(
-    orgId: string,
-    apiId: string,
-    apiVersion: string,
-    apiPolicyId: string
-  ) {
-    return this.backendService
-      .getApiPolicy(orgId, apiId, apiVersion, apiPolicyId)
-      .pipe(
-        map((policy: IPolicy) => {
-          const extendedPolicy: IPolicyExt = policy as IPolicyExt;
-          this.extendPolicy(extendedPolicy);
-          return extendedPolicy;
-        })
-      );
   }
 
   private getExtendedPlanPolicy(
@@ -158,24 +110,28 @@ export class PolicyService {
       );
   }
 
-  public extendPolicy(extendedPolicy: IPolicyExt): void {
-    const perTranslated = this.translator.instant('COMMON.PER') as string;
-    const policyConfig = this.getPolicyConfiguration(extendedPolicy);
-    const periodTranslated = this.getTranslationForPeriod(policyConfig.period);
+  public extendPolicy(policy: IPolicyExt): void {
+    policy.configAsObject = this.getPolicyConfiguration(policy);
 
-    switch (extendedPolicy.definition.id) {
+    switch (policy.definition.id) {
       case this.policyIds.RATE_LIMIT: {
-        extendedPolicy.shortName = 'Rate Limit';
-        extendedPolicy.shortDescription = `${policyConfig.limit} Request${
-          policyConfig.limit > 1 ? 's' : ''
-        } ${perTranslated} ${periodTranslated}`;
+        this.checkHeaders(policy, this.rateLimitPolicyHeaders);
+        policy.icon = 'tune';
+        policy.shortName = 'Rate Limit';
+        policy.restrictions = {
+          limit: policy.configAsObject.limit.toString(),
+          timeUnit: this.getTranslationForPeriod(policy.configAsObject.period)
+        };
         break;
       }
-      case this.policyIds.T_QUOTA: {
-        extendedPolicy.shortName = 'Transfer Quota';
-        extendedPolicy.shortDescription = `${formatBytes(
-          policyConfig.limit
-        )} ${perTranslated} ${periodTranslated}`;
+      case this.policyIds.TRANSFER_QUOTA: {
+        this.checkHeaders(policy, this.transferQuotaPolicyHeaders);
+        policy.icon = 'import_export';
+        policy.shortName = 'Transfer Quota';
+        policy.restrictions = {
+          limit: formatBytes(policy.configAsObject.limit),
+          timeUnit: this.getTranslationForPeriod(policy.configAsObject.period)
+        };
         break;
       }
     }
@@ -210,59 +166,18 @@ export class PolicyService {
       );
   }
 
-  private filterPolicies(
-    extendedPolicies: IPolicyExt[]
-  ): Observable<IPolicyExt[]> {
-    const filteredExtendedPolicies: IPolicyExt[] = [];
-    extendedPolicies.forEach((extendedPolicy) => {
-      if (
-        [this.policyIds.RATE_LIMIT, this.policyIds.T_QUOTA].includes(
-          extendedPolicy.definition.id
-        )
-      ) {
-        filteredExtendedPolicies.push(extendedPolicy);
-      }
+  public filterPolicies(extendedPolicies: IPolicyExt[]): IPolicyExt[] {
+    return extendedPolicies.filter((extendedPolicy: IPolicyExt) => {
+      return [
+        this.policyIds.RATE_LIMIT,
+        this.policyIds.TRANSFER_QUOTA
+      ].includes(extendedPolicy.definition.id);
     });
-    return of(filteredExtendedPolicies);
-  }
-
-  public initPolicy(policy: IPolicyExt): IPolicyExt {
-    policy.configAsObject = this.getPolicyConfiguration(policy);
-
-    switch (policy.definition.id) {
-      case this.policyIds.RATE_LIMIT: {
-        this.checkHeaders(policy, this.rateLimitPolicyHeaders);
-        policy.icon = 'tune';
-        policy.restrictions = {
-          limit: policy.configAsObject.limit.toString(),
-          timeUnit: this.getTranslationForPeriod(policy.configAsObject.period)
-        };
-        break;
-      }
-      case this.policyIds.T_QUOTA: {
-        this.checkHeaders(policy, this.transferQuotaPolicyHeaders);
-        policy.icon = 'import_export';
-        policy.restrictions = {
-          limit: formatBytes(policy.configAsObject.limit),
-          timeUnit: this.getTranslationForPeriod(policy.configAsObject.period)
-        };
-        break;
-      }
-    }
-
-    return policy;
   }
 
   private getPolicyConfiguration(policy: IPolicyExt): IPolicyConfiguration {
     // Config from backend is a JSON object in string representation
     return JSON.parse(policy.configuration) as IPolicyConfiguration;
-  }
-
-  private getRestrictions(limit: number, timeUnit: string) {
-    return {
-      limit: limit,
-      timeUnit: timeUnit
-    };
   }
 
   public checkHeaders(
@@ -342,7 +257,7 @@ export class PolicyService {
     switch (policy.definition.id) {
       case this.policyIds.RATE_LIMIT:
         return this.generateDataForRateLimit(policy);
-      case this.policyIds.T_QUOTA:
+      case this.policyIds.TRANSFER_QUOTA:
         return this.generateDataForQuota(policy);
       default:
         return;

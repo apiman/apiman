@@ -24,8 +24,7 @@
     "LOGOUT": "Logout",
     "VERSION": "Version",
     "OF": "of",
-    "AGREEMENT": "Agreement",
-    "PER": "per"
+    "AGREEMENT": "Agreement"
   },
   "HOME": {
     "TITLE": "API Developer Portal",
@@ -102,7 +101,7 @@
       "LIMIT": "Rate limit allowance (per time period)",
       "REMAINING": "Rate limit allowance remaining",
       "RESET": "The time the rate limit will be reset",
-      "CONDITION_LIGHT": "<b>{{limit}}</b> requests per <b>{{timeUnit}}</b>"
+      "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> requests per <span class='bold'>{{timeUnit}}</span>"
     },
     "TransferQuotaPolicy": {
       "TITLE": "Transfer Quota Policy",
@@ -111,7 +110,7 @@
       "LIMIT": "Quota limit allowance (per time period)",
       "REMAINING": "Quota limit allowance remaining",
       "RESET": "The time the quota limit will be reset",
-      "CONDITION_LIGHT": "<b>{{limit}}</b> data per <b>{{timeUnit}}</b>"
+      "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> data per <span class='bold'>{{timeUnit}}</span>"
     },
     "PERIODS": {
       "SECOND": "Second",

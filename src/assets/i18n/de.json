@@ -24,8 +24,7 @@
     "LOGOUT": "Abmelden",
     "VERSION": "Version",
     "OF": "von",
-    "AGREEMENT": "Zustimmung",
-    "PER": "pro"
+    "AGREEMENT": "Zustimmung"
   },
   "HOME": {
     "TITLE": "API Entwickler Portal",
@@ -102,7 +101,7 @@
       "LIMIT": "Beschränkung (pro Zeit)",
       "REMAINING": "Verbleibende Anzahl Anfragen",
       "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird",
-      "CONDITION_LIGHT": "<b>{{limit}}</b> Anfragen pro <b>{{timeUnit}}</b>"
+      "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> Anfragen pro <span class='bold'>{{timeUnit}}</span>"
     },
     "TransferQuotaPolicy": {
       "TITLE": "Transfer Quota Policy",
@@ -111,7 +110,7 @@
       "LIMIT": "Maximale Datenmenge (pro Zeit)",
       "REMAINING": "Verbleibende Datenmenge",
       "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird",
-      "CONDITION_LIGHT": "<b>{{limit}}</b> Daten pro <b>{{timeUnit}}</b>"
+      "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> Daten pro <span class='bold'>{{timeUnit}}</span>"
     },
     "PERIODS": {
       "SECOND": "Sekunde",

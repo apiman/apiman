@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ export interface IPolicyExt extends IPolicy {
   planId: string;
   planVersion: string;
   shortName: string;
-  shortDescription: string;
   configAsObject: IPolicyConfiguration;
   icon: string;
   restrictions: {
