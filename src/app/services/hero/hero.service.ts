@@ -18,6 +18,11 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { ConfigService } from '../config/config.service';
 import { IHero } from '../../interfaces/IConfig';
 import { Title } from '@angular/platform-browser';
+import { NotificationService } from '../notification/notification.service';
+import { SnackbarService } from '../snackbar/snackbar.service';
+import { KeycloakService } from 'keycloak-angular';
+import { EMPTY, from } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +33,9 @@ export class HeroService {
 
   constructor(
     private configService: ConfigService,
+    private notificationService: NotificationService,
+    private snackbarService: SnackbarService,
+    private keycloakService: KeycloakService,
     private titleService: Title
   ) {
     this.hero = configService.getHero();
@@ -37,8 +45,29 @@ export class HeroService {
     this.hero.large = hero.large ?? false;
     this.hero.title = hero.title ?? '';
     this.hero.subtitle = hero.subtitle ?? '';
-
+    this.updateNotificationCount(false);
     this.titleService.setTitle(this.hero.title);
     this.heroChanged.emit(this.hero);
+  }
+
+  updateNotificationCount(emitEvent: boolean): void {
+    this.hero.notificationCount = '0';
+
+    from(this.keycloakService.isLoggedIn())
+      .pipe(
+        switchMap((isLoggedIn) => {
+          if (isLoggedIn) {
+            return this.notificationService.headNotifications();
+          } else {
+            return EMPTY;
+          }
+        })
+      )
+      .subscribe((resp) => {
+        this.hero.notificationCount = resp.headers.get('total-count') ?? '0';
+        if (emitEvent) {
+          this.heroChanged.emit(this.hero);
+        }
+      });
   }
 }

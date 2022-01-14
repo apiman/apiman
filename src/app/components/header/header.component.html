@@ -20,20 +20,33 @@
       <h1 class="mt-40" id="hero-title">{{ heroService.hero.title }}</h1>
       <p id="hero-subtitle">{{ heroService.hero.subtitle }}</p>
     </div>
-    <div id="hero-btn">
+    <div id="hero-actions">
+      <div id="hero-actions-logged-in" *ngIf="loggedIn">
+        <mat-icon
+          id="hero-notifications"
+          matBadge="{{ heroService.hero.notificationCount }}"
+          matBadgeColor="warn"
+          [matBadgeHidden]="heroService.hero.notificationCount === '0'"
+          [routerLink]="['/notifications']">
+          notifications
+        </mat-icon>
+        <button
+          id="hero-logout-btn"
+          mat-raised-button
+          (click)="logout()"
+          *ngIf="loggedIn"
+          id="logout-btn">
+          {{ 'COMMON.LOGOUT' | translate }}
+        </button>
+      </div>
+
       <button
+        id="hero-login-btn"
         mat-raised-button
         (click)="login()"
         *ngIf="!loggedIn"
         id="login-btn">
         {{ 'COMMON.LOGIN' | translate }}
-      </button>
-      <button
-        mat-raised-button
-        (click)="logout()"
-        *ngIf="loggedIn"
-        id="logout-btn">
-        {{ 'COMMON.LOGOUT' | translate }}
       </button>
     </div>
   </div>

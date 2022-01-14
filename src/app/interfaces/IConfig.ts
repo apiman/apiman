@@ -40,6 +40,7 @@ export interface IHero {
     login: string;
     logout: string;
   };
+  notificationCount?: string;
 }
 
 export interface INavigation {

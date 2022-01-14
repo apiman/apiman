@@ -154,5 +154,29 @@
     "PREFIX": "I accept the ",
     "LINK_TEXT": "privacy policy",
     "SUFFIX": ""
+  },
+  "NOTIFICATION": {
+    "TITLE": "Notifications",
+    "COLUMN_TITLE": {
+      "CATEGORY": "Category",
+      "MESSAGE": "Message",
+      "DATE": "Date",
+      "ACTION": "Mark As Read"
+    },
+    "MESSAGE": {
+      "API": {
+        "SIGN_UP_APPROVED": "Your API Sign-Up for {{ payload.apiId }} in your application {{ payload.clientId }} has been approved.",
+        "SIGN_UP_REJECTED": "Your API Sign-Up for {{ payload.apiId }} in your application {{ payload.clientId }} has been rejected."
+      },
+      "APP": {
+        "REGISTERED": "Your Application {{payload.clientId}} has been registered."
+      }
+    },
+    "STATUS": {
+      "READ": "Read",
+      "UNREAD": "Unread",
+      "ALL": "All"
+    },
+    "NO_DATA": "There are no notifications available!"
   }
 }

@@ -1,0 +1,62 @@
+table {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.mat-column-Category {
+  width: 10%;
+  text-align: center;
+
+}
+
+.mat-column-Message {
+  width: 60%;
+  padding-left: 2rem;
+
+}
+
+.mat-column-Date {
+  width: 10%;
+  padding-left: 2rem;
+  text-align: center;
+
+}
+
+.mat-column-Action {
+  width: 10%;
+  text-align: center;
+
+}
+
+.notifications-message:hover {
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.theme-custom .mat-button {
+  color: black
+}
+
+.mat-row .mat-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+}
+
+.mat-row:hover .mat-cell {
+  border-color: currentColor;
+}
+
+.notifications-actions {
+  margin: 5%;
+}
+
+.table-actions {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: center;
+}
+
+.no-data-wrapper {
+  display: grid;
+  justify-content: center;
+}

@@ -24,6 +24,7 @@ import { AccountComponent } from './components/account/account.component';
 import { MyAppsComponent } from './components/my-apps/my-apps.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ApprovalComponent } from './components/approval/approval.component';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -49,7 +50,12 @@ const routes: Routes = [
     loadChildren: () =>
       import('./components/swagger/swagger.module').then((m) => m.SwaggerModule)
   },
-  { path: 'approval', component: ApprovalComponent }
+  { path: 'approval', component: ApprovalComponent },
+  {
+    path: 'notifications',
+    component: NotificationsComponent,
+    canActivate: [AuthGuard]
+  }
 ];
 
 @NgModule({

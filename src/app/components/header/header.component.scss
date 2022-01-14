@@ -35,10 +35,26 @@
   }
 }
 
-#hero-btn {
+#hero-actions {
+  display: grid;
   position: absolute;
   top: 22px;
   right: 3%;
+}
+
+#hero-actions-logged-in {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+#hero-notifications {
+  right: 20%;
+  top: 20%;
+  grid-column: 1;
+  cursor: pointer;
+}
+
+#hero-logout-btn {
+  grid-column: 2;
 }
 
 .hero-large {

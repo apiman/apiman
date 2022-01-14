@@ -984,3 +984,72 @@ export interface IUpdateUser {
   fullName: string;
   email: string;
 }
+
+export interface ISearchResultsNotifications {
+  beans: INotificationsDto[];
+
+  /** @format int32 */
+  totalSize: number;
+}
+
+export interface INotificationsDto {
+  /** @format int64 */
+  id: number;
+  category:
+    | 'USER_ADMINISTRATION'
+    | 'API_ADMINISTRATION'
+    | 'API_LIFECYCLE'
+    | 'OTHER';
+  reason: string;
+  reasonMessage: string;
+  status: 'OPEN' | 'USER_DISMISSED' | 'SYSTEM_DISMISSED';
+
+  /** @format date-time */
+  createdOn: string;
+
+  /** @format date-time */
+  modifiedOn: string;
+  recipient: IUserDto;
+  source: string;
+  payload: INotificationPayload;
+}
+
+export interface INotificationPayload {
+  headers?: IApimanEventHeaders;
+  clientOrgId?: string;
+  clientId?: string;
+  clientVersion?: string;
+  apiOrgId?: string;
+  apiId?: string;
+  apiVersion?: string;
+  contractId?: string;
+  planId?: string;
+  planVersion?: string;
+  approved?: boolean;
+  rejectionReason?: string;
+  newStatus?: string;
+  previousStatus?: string;
+}
+
+export interface IApimanEventHeaders {
+  id?: string;
+
+  /** @format uri */
+  source?: string;
+  type?: string;
+  subject?: string;
+
+  /** @format date-time */
+  time?: string;
+
+  /** @format int64 */
+  eventVersion?: number;
+  otherProperties?: unknown;
+}
+
+export interface IUserDto {
+  id?: string;
+  username?: string;
+  fullName?: string;
+  email?: string;
+}

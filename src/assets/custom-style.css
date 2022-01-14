@@ -69,6 +69,10 @@
   border: 1px solid var(--primary);
 }
 
+#hero-notifications {
+  color: var(--primary-warn-contrast);
+}
+
 /* set hero image, must exist in respective assets folder */
 #hero-image {
   background-image: url("img/header.jpeg");

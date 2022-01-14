@@ -15,7 +15,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import {
@@ -39,7 +39,8 @@ import {
   IPolicy,
   IPolicySummary,
   ISearchCriteria,
-  ISearchResultsApiSummary
+  ISearchResultsApiSummary,
+  ISearchResultsNotifications
 } from '../../interfaces/ICommunication';
 import { IPolicySummaryExt } from '../../interfaces/IPolicySummaryExt';
 import { KeycloakHelperService } from '../keycloak-helper/keycloak-helper.service';
@@ -312,6 +313,45 @@ export class BackendService {
       action,
       this.httpOptions
     );
+  }
+
+  public putNotifications(
+    userName: string,
+    notificationId: number
+  ): Observable<HttpResponse<string>> {
+    const path = `users/${userName}/notifications`;
+    const body = {
+      notificationIds: [notificationId],
+      status: 'USER_DISMISSED'
+    };
+    return this.http.put(this.generateUrl(path), body, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      observe: 'response'
+    }) as Observable<HttpResponse<string>>;
+  }
+
+  public postNotifications(
+    userName: string,
+    searchCriteria: ISearchCriteria
+  ): Observable<ISearchResultsNotifications> {
+    const path = `users/${userName}/notifications`;
+    return this.http.post(
+      this.generateUrl(path),
+      searchCriteria,
+      this.httpOptions
+    ) as Observable<ISearchResultsNotifications>;
+  }
+
+  public headNotifications(userName: string): Observable<HttpResponse<string>> {
+    const path = `users/${userName}/notifications`;
+    return this.http.head(this.generateUrl(path), {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      observe: 'response'
+    }) as Observable<HttpResponse<string>>;
   }
 
   public breakAllContracts(

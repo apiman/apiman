@@ -62,6 +62,8 @@ import { UnregisterClientComponent } from './components/dialogs/unregister-clien
 import { ImgOrIconSelectorComponent } from './components/img-or-icon-selector/img-or-icon-selector.component';
 import { ApiDocumentationButtonsComponent } from './components/api-documentation-buttons/api-documentation-buttons.component';
 import { RateQuotaPolicyShortLimitComponent } from './components/policies/rate-quota-policy-short-limit/rate-quota-policy-short-limit.component';
+import { MatBadgeModule } from '@angular/material/badge';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 
 export function initializeApp(
   configService: ConfigService,
@@ -124,7 +126,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     UnregisterClientComponent,
     ImgOrIconSelectorComponent,
     ApiDocumentationButtonsComponent,
-    RateQuotaPolicyShortLimitComponent
+    RateQuotaPolicyShortLimitComponent,
+    NotificationsComponent
   ],
   imports: [
     KeycloakAngularModule,
@@ -146,7 +149,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
       }
     }),
     ReactiveFormsModule,
-    NgxChartsModule
+    NgxChartsModule,
+    MatBadgeModule
   ],
   providers: [
     {

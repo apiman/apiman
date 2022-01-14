@@ -154,5 +154,29 @@
     "PREFIX": "Ich stimme den ",
     "LINK_TEXT": "Datenschutzbestimmungen",
     "SUFFIX": " zu"
+  },
+  "NOTIFICATION": {
+    "TITLE": "Benachrichtigungen",
+    "COLUMN_TITLE": {
+      "CATEGORY": "Kategorie",
+      "MESSAGE": "Nachricht",
+      "DATE": "Datum",
+      "ACTION": "Als gelesen markieren"
+    },
+    "MESSAGE": {
+      "API": {
+        "SIGN_UP_APPROVED": "Ihr API-Sign Up für {{ payload.apiId }} in Ihrer Applikation {{ payload.clientId }} wurde genehmigt.",
+        "SIGN_UP_REJECTED": "Ihr API-Sign Up für {{ payload.apiId }} in Ihrer Applikation {{ payload.clientId }} wurde abgelehnt."
+      },
+      "APP": {
+        "REGISTERED": "Ihre Applikation {{ payload.clientId }} wurde registriert."
+      }
+    },
+    "STATUS": {
+      "READ": "Gelesen",
+      "UNREAD": "Ungelesen",
+      "ALL": "Alle"
+    },
+    "NO_DATA": "Es sind keine Benachrichtigungen vorhanden!"
   }
 }
