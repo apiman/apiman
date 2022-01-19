@@ -40,6 +40,7 @@ import org.hibernate.annotations.Parameter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "developers")
 @Entity
+@Deprecated
 public class DeveloperBean implements Serializable {
 
     private static final long serialVersionUID = 7127400624541487145L;
