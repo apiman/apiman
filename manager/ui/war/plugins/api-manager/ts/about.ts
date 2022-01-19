@@ -6,7 +6,7 @@ _module.controller("Apiman.AboutController",
         PageLifecycle.loadPage('About', undefined, undefined, $scope, function() {
             $scope.github = "https://github.com/apiman/apiman";
             $scope.site = "https://apiman.io/";
-            $scope.userGuide = "https://www.apiman.io/latest/user-guide.html";
+            $scope.userGuide = "https://www.apiman.io/apiman-docs/";
             $scope.tutorials = "https://www.apiman.io/latest/tutorials.html";
             $scope.version = Configuration.apiman.version;
             $scope.builtOn = Configuration.apiman.builtOn;
