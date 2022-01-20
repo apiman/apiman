@@ -18,6 +18,7 @@ package io.apiman.manager.api.rest;
 
 import io.apiman.common.util.MediaType;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.developers.DeveloperApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.developers.UpdateDeveloperBean;
 import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
@@ -182,7 +183,7 @@ public interface IDeveloperResource {
     @GET
     @Path("{developerId}/apis")
     @Produces(MediaType.APPLICATION_JSON)
-    List<ApiVersionBean> getAllApiVersions(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
+    List<DeveloperApiVersionBeanDto> getAllApiVersions(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to retrieve the API Definition if the user has a contract to

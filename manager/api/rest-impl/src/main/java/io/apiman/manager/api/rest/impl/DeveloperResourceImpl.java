@@ -19,7 +19,9 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.developers.DeveloperApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.developers.DeveloperMapper;
 import io.apiman.manager.api.beans.developers.DeveloperMappingBean;
 import io.apiman.manager.api.beans.developers.UpdateDeveloperBean;
 import io.apiman.manager.api.beans.summary.ClientVersionSummaryBean;
@@ -37,13 +39,12 @@ import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.ApiService;
 import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
-import io.apiman.manager.api.service.ClientAppService;
-import io.apiman.manager.api.service.ContractService;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -170,7 +171,7 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
     }
 
     @Override
-    public List<ApiVersionBean> getAllApiVersions(String id) throws DeveloperNotFoundException, NotAuthorizedException {
+    public List<DeveloperApiVersionBeanDto> getAllApiVersions(String id) throws DeveloperNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(id);
 
         List<ApiVersionBean> apiVersionBeans = new ArrayList<>();
@@ -183,7 +184,9 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
                 apiVersionBeans.add(RestHelper.hideSensitiveDataFromApiVersionBean(apiVersion));
             }
         }
-        return apiVersionBeans;
+        return apiVersionBeans.stream()
+                .map(DeveloperMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
