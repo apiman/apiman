@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 02/03/2022, 15:15
+-- Ran at: 11/03/2022, 16:36
 -- Against: apiman@offline:mssql?version=15&caseSensitive=true&catalog=apiman&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/mssql/databasechangelog.csv
 -- Liquibase version: 4.6.2
 -- *********************************************************************
@@ -500,5 +500,34 @@ GO
 
 -- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646232783603-7::msavy (generated)
 ALTER TABLE notification_preferences ADD CONSTRAINT FKt9qjvmcl36i14utm5uptyqg84 FOREIGN KEY (user_id) REFERENCES users (username)
+GO
+
+-- Changeset src/main/liquibase/current/xxxx.xml::drop-constraints-on-old-expose-in-portal::msavy
+DROP INDEX IX_null ON api_plans
+GO
+
+-- Changeset src/main/liquibase/current/xxxx.xml::1647015740776-8::msavy (generated)
+DECLARE @sql [nvarchar](MAX)
+SELECT @sql = N'ALTER TABLE api_plans DROP CONSTRAINT ' + QUOTENAME([df].[name]) FROM [sys].[columns] AS [c] INNER JOIN [sys].[default_constraints] AS [df] ON [df].[object_id] = [c].[default_object_id] WHERE [c].[object_id] = OBJECT_ID(N'api_plans') AND [c].[name] = N'expose_in_portal'
+EXEC sp_executesql @sql
+GO
+
+ALTER TABLE api_plans DROP COLUMN expose_in_portal
+GO
+
+DECLARE @sql [nvarchar](MAX)
+SELECT @sql = N'ALTER TABLE api_versions DROP CONSTRAINT ' + QUOTENAME([df].[name]) FROM [sys].[columns] AS [c] INNER JOIN [sys].[default_constraints] AS [df] ON [df].[object_id] = [c].[default_object_id] WHERE [c].[object_id] = OBJECT_ID(N'api_versions') AND [c].[name] = N'expose_in_portal'
+EXEC sp_executesql @sql
+GO
+
+ALTER TABLE api_versions DROP COLUMN expose_in_portal
+GO
+
+-- Changeset src/main/liquibase/current/xxxx.xml::1646489262610-4::msavy (generated)
+CREATE TABLE discoverability (id varchar(255) NOT NULL, api_id varchar(255), api_version_id bigint, discoverability varchar(255), org_id varchar(255), plan_id varchar(255), plan_version_id bigint, CONSTRAINT discoverabilityPK PRIMARY KEY (id))
+GO
+
+-- Changeset src/main/liquibase/current/xxxx.xml::1646489262610-12::msavy (generated)
+ALTER TABLE api_plans ADD CONSTRAINT FK4l9jtg7k49arpmodilny0d87b FOREIGN KEY (api_version_id) REFERENCES discoverability (api_version_id)
 GO
 

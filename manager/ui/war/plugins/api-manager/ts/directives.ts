@@ -1,5 +1,6 @@
 // @ts-nocheck
 import {_module} from "./apimanPlugin";
+import {Discoverability} from "./model/api.model";
 
 _module.factory('EntityStatusSvc',
     ['$rootScope', 'Logger',
@@ -633,3 +634,62 @@ _module.directive('httpMethodCachingSelect',
         };
     }]);
 
+_module.directive('apimanDiscoverabilitySelect',
+    ['Logger', function(Logger) {
+        return {
+            templateUrl: 'plugins/api-manager/html/directives/discoverabilitySelect.html',
+            replace: true,
+            restrict: 'E',
+            controllerAs: 'ctrl',
+            bindToController: true,
+            scope: {
+                onDiscoverabilityChange: '=',
+                initialValue: '=',
+                plan: '='
+            },
+            controller: ['$scope', "$uibModal", function($scope, $uibModal) {
+                $scope.getShortDescription = getShortDescription;
+                $scope.openModal = openModal;
+                $scope.currentValue = $scope.ctrl.initialValue;
+
+                function openModal() {
+                    const modalInstance = $uibModal.open({
+                            animation: true,
+                            templateUrl: "plugins/api-manager/html/modals/selectDiscoverabilityModal.html",
+                            controller: "DiscoverabilityCtrl",
+                            size: "md",
+                            resolve: {
+                                options: function() {
+                                    return {
+                                        discoverability: $scope.currentValue || $scope.ctrl.initialValue
+                                    }
+                                }
+                            }
+                        });
+
+                        modalInstance.result.then(
+                            (newLevel: Discoverability) => {
+                                $scope.currentValue = newLevel;
+                                console.log("Calling function?");
+                                $scope.ctrl.onDiscoverabilityChange({
+                                    plan: $scope.ctrl.plan,
+                                    level: newLevel
+                                });
+                            },
+                            (dismissed) => {}
+                        );
+                }
+
+                function getShortDescription(): string {
+                    let shortNames: { [key: string]: string } = {
+                        [Discoverability.ORG_MEMBERS]: "Organization members only",
+                        [Discoverability.FULL_PLATFORM_MEMBERS]: "Full platform members",
+                        [Discoverability.ANONYMOUS]: "Anonymous API users",
+                        [Discoverability.PORTAL]: "Expose in portal",
+                    };
+                    // We may get a null when a plan hasn't yet been attached, so show the default.
+                    return shortNames[$scope.ctrl.currentValue || $scope.ctrl.initialValue || 'ORG_MEMBERS'];
+                }
+            }]
+        };
+    }]);

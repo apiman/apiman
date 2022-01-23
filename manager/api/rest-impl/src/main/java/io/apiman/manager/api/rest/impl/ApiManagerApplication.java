@@ -22,6 +22,7 @@ import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.providers.JacksonObjectMapperProvider;
 // import io.apiman.manager.api.providers.eager.EagerProvider;
+import io.apiman.manager.api.rest.exceptions.mappers.BeanValidationExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.IllegalArgumentExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.rest.interceptors.BlobResourceInterceptorProvider;
@@ -87,6 +88,7 @@ public class ApiManagerApplication extends Application {
 
         classes.add(RestExceptionMapper.class);
         classes.add(IllegalArgumentExceptionMapper.class);
+        classes.add(BeanValidationExceptionMapper.class);
 
         registerProviders(
                 JacksonObjectMapperProvider.class,

@@ -8,6 +8,7 @@
     <class>io.apiman.manager.api.beans.idm.UserBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleMembershipBean</class>
+    <class>io.apiman.manager.api.beans.idm.DiscoverabilityEntity</class>
     <class>io.apiman.manager.api.beans.orgs.OrganizationBean</class>
     <class>io.apiman.manager.api.beans.clients.ClientBean</class>
     <class>io.apiman.manager.api.beans.clients.ClientVersionBean</class>

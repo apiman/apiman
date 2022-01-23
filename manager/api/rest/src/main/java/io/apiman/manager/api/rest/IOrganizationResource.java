@@ -16,7 +16,6 @@
 
 package io.apiman.manager.api.rest;
 
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
 import io.apiman.manager.api.beans.apis.NewApiBean;
 import io.apiman.manager.api.beans.apis.NewApiDefinitionBean;
@@ -24,6 +23,7 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ApiKeyBean;
@@ -98,11 +98,11 @@ import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 
 import java.util.List;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -975,8 +975,8 @@ public interface IOrganizationResource {
     @Path("{organizationId}/apis/{apiId}/versions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiVersionBean createApiVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("apiId") String apiId, NewApiVersionBean bean)
+    public ApiVersionBeanDto createApiVersion(@PathParam("organizationId") String organizationId,
+                                              @PathParam("apiId") String apiId, NewApiVersionBean bean)
             throws ApiNotFoundException, NotAuthorizedException, InvalidVersionException,
             ApiVersionAlreadyExistsException;
 
@@ -1012,7 +1012,7 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiVersionBean getApiVersion(@PathParam("organizationId") String organizationId,
+    public ApiVersionBeanDto getApiVersion(@PathParam("organizationId") String organizationId,
             @PathParam("apiId") String apiId, @PathParam("version") String version)
             throws ApiVersionNotFoundException;
 
@@ -1100,9 +1100,10 @@ public interface IOrganizationResource {
     @Path("{organizationId}/apis/{apiId}/versions/{version}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiVersionBean updateApiVersion(@PathParam("organizationId") String organizationId,
+    public ApiVersionBeanDto updateApiVersion(@PathParam("organizationId") String organizationId,
             @PathParam("apiId") String apiId, @PathParam("version") String version,
-            UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException;
+            @Valid UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException;
+
     /**
      * Use this endpoint to update the API's definition document.  An API
      * definition will vary depending on the type of API, and the type of

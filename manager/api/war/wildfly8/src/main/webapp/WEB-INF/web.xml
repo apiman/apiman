@@ -153,7 +153,7 @@
     </web-resource-collection>
 
     <auth-constraint>
-      <role-name>apiuser</role-name>
+      <role-name>*</role-name>
     </auth-constraint>
   </security-constraint>
 
@@ -189,23 +189,6 @@
   <security-role>
     <role-name>devportaluser</role-name>
   </security-role>
-
-<!--  <context-param>-->
-<!--    <param-name>resteasy.scan.providers</param-name>-->
-<!--    <param-value>true</param-value>-->
-<!--  </context-param>-->
-<!--  <context-param>-->
-<!--    <param-name>resteasy.scan.resources</param-name>-->
-<!--    <param-value>true</param-value>-->
-<!--  </context-param>-->
-<!--  <context-param>-->
-<!--    <param-name>resteasy.scan</param-name>-->
-<!--    <param-value>true</param-value>-->
-<!--  </context-param>-->
-<!--  <context-param>-->
-<!--    <param-name>javax.ws.rs.core.Application</param-name>-->
-<!--    <param-value>io.apiman.manager.api.rest.impl.ApiManagerApplication</param-value>-->
-<!--  </context-param>-->
   <context-param>
     <param-name>org.jboss.weld.construction.relaxed</param-name>
     <param-value>true</param-value>

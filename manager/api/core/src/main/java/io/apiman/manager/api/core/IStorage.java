@@ -18,6 +18,7 @@ package io.apiman.manager.api.core;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.view.OrgApiPlanView;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
@@ -26,6 +27,7 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -38,7 +40,6 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
-import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
@@ -79,9 +80,6 @@ public interface IStorage {
     public void createGateway(GatewayBean gateway) throws StorageException;
     public void createPlugin(PluginBean plugin) throws StorageException;
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
-
-    // TODO(msavy): optimise this
-    List<ApiSummaryBean> findExposedApis() throws StorageException;
 
     public void createAuditEntry(AuditEntryBean entry) throws StorageException;
     public void createDownload(DownloadBean download) throws StorageException;
@@ -172,6 +170,7 @@ public interface IStorage {
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException;
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException;
     public void deleteMemberships(String userId, String organizationId) throws StorageException;
+    List<OrgApiPlanView> getOrgApiPlansWithDiscoverability(String orgId, Set<DiscoverabilityLevel> visibilities);
 
     /*
      * Export related storage methods (get-all)
@@ -218,10 +217,12 @@ public interface IStorage {
 
     void flush();
 
-    /**
-     * Get an object reference by its key without speaking to the database (key-only skeleton).
-     *
-     * <p>This is particularly useful when you want to persist a related entity without first having to look it up in the database.
-     */
+    <T> T merge(T o);
+
+        /**
+         * Get an object reference by its key without speaking to the database (key-only skeleton).
+         *
+         * <p>This is particularly useful when you want to persist a related entity without first having to look it up in the database.
+         */
     <T> T getEntityObjectReference(Class<T> klazz, Object primaryKey);
 }

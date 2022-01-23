@@ -8,6 +8,7 @@
       <module name="org.hibernate.commons-annotations" />
       <module name="org.jboss.logging" services="import"/>
       <module name="org.jboss.resteasy.resteasy-jaxrs"/>
+      <module name="com.h2database.h2" services="import"/>
     </dependencies>
     <exclude-subsystems>
       <subsystem name="webservices" />

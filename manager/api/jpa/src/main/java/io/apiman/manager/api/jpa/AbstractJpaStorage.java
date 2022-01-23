@@ -30,19 +30,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.From;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
 
+import com.blazebit.persistence.CriteriaBuilder;
+import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.PagedList;
+import com.blazebit.persistence.PaginatedCriteriaBuilder;
 import org.hibernate.Session;
 import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
@@ -63,6 +62,9 @@ public abstract class AbstractJpaStorage {
     @Inject
     private ApiManagerConfig config;
 
+    @Inject
+    private CriteriaBuilderFactory criteriaBuilderFactory;
+
     /**
      * Constructor.
      */
@@ -71,6 +73,10 @@ public abstract class AbstractJpaStorage {
 
     protected Jdbi getJdbi() {
         return Jdbi.create(lookupDS(config.getHibernateDataSource()));
+    }
+
+    protected CriteriaBuilderFactory getCriteriaBuilderFactory() {
+        return criteriaBuilderFactory;
     }
 
     /**
@@ -204,17 +210,19 @@ public abstract class AbstractJpaStorage {
      * @throws StorageException if a storage problem occurs while storing a bean
      */
     public <T> T get(String organizationId, String id, Class<T> type) throws StorageException {
-        T rval;
-        EntityManager entityManager = getActiveEntityManager();
         try {
+            EntityManager entityManager = getActiveEntityManager();
             OrganizationBean orgBean = entityManager.find(OrganizationBean.class, organizationId);
             Object key = new OrganizationBasedCompositeId(orgBean, id);
-            rval = entityManager.find(type, key);
+            return entityManager.find(type, key);
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
-        return rval;
+    }
+
+    protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, List<OrderByBean> uniqueOrderIdentifiers, Class<T> type) throws StorageException {
+        return find(criteria, uniqueOrderIdentifiers, (criteriaBuilder) -> {}, type, type.getSimpleName());
     }
 
     /**
@@ -223,9 +231,11 @@ public abstract class AbstractJpaStorage {
      * @param type
      * @throws StorageException if a storage problem occurs while storing a bean
      */
-    protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
-        SearchResultsBean<T> results = new SearchResultsBean<>();
-        EntityManager entityManager = getActiveEntityManager();
+    protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria,
+                                            List<OrderByBean> uniqueOrderIdentifiers,
+                                            Consumer<CriteriaBuilder<T>> builderCallback,
+                                            Class<T> type,
+                                            String typeAlias) throws StorageException {
         try {
             // Set some default in the case that paging information was not included in the request.
             PagingBean paging = criteria.getPaging();
@@ -236,33 +246,35 @@ public abstract class AbstractJpaStorage {
             int pageSize = paging.getPageSize();
             int start = (page - 1) * pageSize;
 
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<T> criteriaQuery = builder.createQuery(type);
-            Root<T> from = criteriaQuery.from(type);
-            applySearchCriteriaToQuery(criteria, builder, criteriaQuery, from, false);
-            TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
-            typedQuery.setFirstResult(start);
-            typedQuery.setMaxResults(pageSize+1);
-            boolean hasMore = false;
+            CriteriaBuilder<T> cb = criteriaBuilderFactory
+                            .create(getActiveEntityManager(), type)
+                            .from(type, typeAlias);
 
-            // Now query for the actual results
-            List<T> resultList = typedQuery.getResultList();
+            // Apply filters from user-provided criteria.
+            cb = applySearchCriteriaToQuery(typeAlias, criteria, cb, false);
 
-            // Check if we got back more than we actually needed.
-            if (resultList.size() > pageSize) {
-                resultList.remove(resultList.size() - 1);
-                hasMore = true;
+            // Allow caller to modify the query, for example to add permissions constraints.
+            builderCallback.accept(cb);
+
+            // TODO(msavy): migrate to keyset pagination.
+            PaginatedCriteriaBuilder<T> paginatedCb = cb.page(start, pageSize);
+
+            /*
+             * Add an orderBy of unique identifiers *last* in the query; this is required for pagination to work properly.
+             *
+             * The tuple formed by the fields in this orderBy clause MUST be unique, otherwise BlazePersistence will throw an exception.
+             *
+             * Without a unique tuple, the ordering may be unstable, which can cause pagination to behave unpredictably.
+             */
+            for (OrderByBean order : uniqueOrderIdentifiers) {
+                paginatedCb = paginatedCb.orderBy(order.getName(), order.isAscending());
             }
 
-            // If there are more results than we needed, then we will need to do another
-            // query to determine how many rows there are in total
-            int totalSize = start + resultList.size();
-            if (hasMore) {
-                totalSize = executeCountQuery(criteria, entityManager, type);
-            }
-            results.setTotalSize(totalSize);
-            results.setBeans(resultList);
-            return results;
+            PagedList<T> resultList = paginatedCb.getResultList();
+
+            return new SearchResultsBean<T>()
+                    .setTotalSize(Math.toIntExact(resultList.getTotalSize()))
+                    .setBeans(resultList);
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -270,67 +282,55 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * Gets a count of the number of rows that would be returned by the search.
-     */
-    protected <T> int executeCountQuery(SearchCriteriaBean criteria, EntityManager entityManager, Class<T> type) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
-        Root<T> from = countQuery.from(type);
-        countQuery.select(builder.count(from));
-        applySearchCriteriaToQuery(criteria, builder, countQuery, from, true);
-        TypedQuery<Long> query = entityManager.createQuery(countQuery);
-        return query.getSingleResult().intValue();
-    }
-
-    /**
      * Applies the criteria found in the {@link SearchCriteriaBean} to the JPA query.
+     * @return
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected <T> void applySearchCriteriaToQuery(SearchCriteriaBean criteria, CriteriaBuilder builder,
-                                                  CriteriaQuery<?> query, From<T, ?> from, boolean countOnly) {
-
+    protected <T> CriteriaBuilder<T> applySearchCriteriaToQuery(String rootAlias, SearchCriteriaBean criteria, CriteriaBuilder<T> cb, boolean countOnly) {
         List<SearchCriteriaFilterBean> filters = criteria.getFilters();
         if (filters != null && !filters.isEmpty()) {
-            List<Predicate> predicates = new ArrayList<>();
             for (SearchCriteriaFilterBean filter : filters) {
+                final String name = cb.getPath(filter.getName()).getPath();
                 if (filter.getOperator() == SearchCriteriaFilterOperator.eq) {
-                    Path<Object> path = from.get(filter.getName());
-                    Class<?> pathc = path.getJavaType();
-                    if (pathc.isAssignableFrom(String.class)) {
-                        predicates.add(builder.equal(path, filter.getValue()));
-                    } else if (pathc.isEnum()) {
-                        predicates.add(builder.equal(path, Enum.valueOf((Class)pathc, filter.getValue())));
+                    com.blazebit.persistence.Path path = cb.getPath(filter.getName());
+                    Class<?> pathKlazz = path.getJavaType();
+                    if (pathKlazz.isEnum()) {
+                        cb = cb.where(name).eq(Enum.valueOf((Class) pathKlazz, filter.getValue()));
+                    } else {
+                        cb = cb.where(name).eq(filter.getValue());
                     }
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.bool_eq) {
-                    predicates.add(builder.equal(from.<Boolean>get(filter.getName()), Boolean.valueOf(filter.getValue())));
+                    cb = cb.where(name).eq(Boolean.valueOf(filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.gt) {
-                    predicates.add(builder.greaterThan(from.<Long>get(filter.getName()), Long.valueOf(filter.getValue())));
+                    cb = cb.where(name).gt(Long.valueOf(filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.gte) {
-                    predicates.add(builder.greaterThanOrEqualTo(from.<Long>get(filter.getName()), Long.valueOf(filter.getValue())));
+                    cb = cb.where(name).ge(Long.valueOf(filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.lt) {
-                    predicates.add(builder.lessThan(from.<Long>get(filter.getName()), Long.valueOf(filter.getValue())));
+                    cb = cb.where(name).lt(Long.valueOf(filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.lte) {
-                    predicates.add(builder.lessThanOrEqualTo(from.<Long>get(filter.getName()), Long.valueOf(filter.getValue())));
+                    cb = cb.where(name).le(Long.valueOf(filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.neq) {
-                    predicates.add(builder.notEqual(from.get(filter.getName()), filter.getValue()));
+                    cb = cb.where(name).notEq(Long.valueOf(filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.like) {
-                    predicates.add(builder.like(builder.upper(from.<String>get(filter.getName())), filter.getValue().toUpperCase().replace('*', '%')));
+                    cb = cb.where(name).like(false).value(filter.getValue().toUpperCase().replace('*', '%')).noEscape();
                 }
             }
-            query.where(predicates.toArray(new Predicate[0]));
         }
+
         OrderByBean orderBy = criteria.getOrderBy();
         if (orderBy != null && !countOnly) {
             if (orderBy.isAscending()) {
-                query.orderBy(builder.asc(from.get(orderBy.getName())));
+                cb = cb.orderByAsc(orderBy.getName());
             } else {
-                query.orderBy(builder.desc(from.get(orderBy.getName())));
+                cb = cb.orderByDesc(orderBy.getName());
             }
         }
+
+        return cb;
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> Optional<T> getOne(Query query) {
+    protected <T> Optional<T> getOne(TypedQuery<T> query) {
         List<T> resultList = (List<T>) query.getResultList();
 
         if (resultList.size() > 1) {
@@ -344,11 +344,12 @@ public abstract class AbstractJpaStorage {
         return Optional.of(resultList.get(0));
     }
 
+
     /**
      * Allows iterating over all entities of a given type.
      * @author eric.wittmann@redhat.com
      */
-    private class EntityIterator<T> implements Iterator<T> {
+    private static class EntityIterator<T> implements Iterator<T> {
 
         private Query query;
         private int pageIndex = 0;

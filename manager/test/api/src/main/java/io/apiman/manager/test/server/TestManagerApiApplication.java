@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.test.server;
 
+import io.apiman.manager.api.rest.exceptions.mappers.BeanValidationExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.IllegalArgumentExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.rest.impl.ActionResourceImpl;
@@ -68,7 +69,7 @@ public class TestManagerApiApplication extends ApiManagerApplication {
 
         classes.add(RestExceptionMapper.class);
         classes.add(IllegalArgumentExceptionMapper.class);
-
+        classes.add(BeanValidationExceptionMapper.class);
     }
 
     @Override

@@ -2,9 +2,10 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
@@ -21,7 +22,6 @@ import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
-import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.ApiService;
 import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
@@ -77,14 +77,16 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public List<ApiVersionSummaryBean> listApiVersions(String orgId, String apiId) {
         return apiService.listApiVersions(orgId, apiId).stream()
-                .filter(ApiVersionSummaryBean::isExposeInPortal)
+                .filter(this::isDiscoverableInPortal)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ApiVersionBean getApiVersion(String orgId, String apiId, String apiVersion) {
-        ApiVersionBean retrieved = apiVersionMustBeExposedInPortal(orgId, apiId, apiVersion);
-        return RestHelper.hideSensitiveDataFromApiVersionBean(retrieved);
+    public ApiVersionBeanDto getApiVersion(String orgId, String apiId, String apiVersion) {
+        ApiVersionBeanDto retrieved = apiVersionMustBeExposedInPortal(orgId, apiId, apiVersion);
+        // return RestHelper.hideSensitiveDataFromApiVersionBean(retrieved);
+        // TODO(msavy): make new projection for this --^.
+        return retrieved;
     }
 
     @Override
@@ -130,9 +132,10 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
         return planService.getPlanPolicy(orgId, planId, version, policyId);
     }
 
-    private ApiVersionBean apiVersionMustBeExposedInPortal(String orgId, String apiId, String apiVersion) {
-        ApiVersionBean retrieved = apiService.getApiVersion(orgId, apiId, apiVersion);
-        if (!retrieved.isExposeInPortal()) {
+    private ApiVersionBeanDto apiVersionMustBeExposedInPortal(String orgId, String apiId, String apiVersion) {
+        ApiVersionBeanDto retrieved = apiService.getApiVersion(orgId, apiId, apiVersion);
+        DiscoverabilityLevel discoverability = retrieved.getPublicDiscoverability();
+        if (discoverability != DiscoverabilityLevel.PORTAL) {
             throw ExceptionFactory.apiVersionNotFoundException(apiId, apiVersion);
         }
         return retrieved;
@@ -142,5 +145,9 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
         if (securityContext.getCurrentUser() == null) {
             throw ExceptionFactory.notAuthorizedException();
         }
+    }
+
+    private boolean isDiscoverableInPortal(ApiVersionSummaryBean avsb) {
+        return avsb.getPublicDiscoverability() == DiscoverabilityLevel.PORTAL;
     }
 }

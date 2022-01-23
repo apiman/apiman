@@ -16,8 +16,8 @@
 package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.idm.OrgsPermissionConstraint;
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -73,7 +73,7 @@ public interface IStorageQuery {
      * @return found orgs
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria) throws StorageException;
+    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint) throws StorageException;
 
     /**
      * Finds clients by the provided criteria.
@@ -81,7 +81,7 @@ public interface IStorageQuery {
      * @return found clients
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria) throws StorageException;
+    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint) throws StorageException;
 
     /**
      * Finds APIs by the provided criteria.
@@ -89,17 +89,7 @@ public interface IStorageQuery {
      * @return found APIs
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria) throws StorageException;
-
-    /**
-     * Find APIs that are exposed in the developer portal using criteria.
-     */
-    public SearchResultsBean<ApiSummaryBean> findExposedApis(SearchCriteriaBean criteria) throws StorageException;
-
-    /**
-     * Determine whether a given API has any API Versions exposed in the developer portal.
-     */
-    boolean isAnyApiVersionExposed(String apiId);
+    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint) throws StorageException;
 
     /**
      * Finds plans (within an organization) with the given criteria.
@@ -108,7 +98,7 @@ public interface IStorageQuery {
      * @return found plans
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria) throws StorageException;
+    public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria,  OrgsPermissionConstraint permissionConstraint) throws StorageException;
 
     /**
      * Gets the audit log for an entity.
@@ -204,6 +194,7 @@ public interface IStorageQuery {
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public List<ApiSummaryBean> getApisInOrg(String organizationId) throws StorageException;
+
 
     /**
      * Returns all API versions for a given API.
@@ -358,4 +349,5 @@ public interface IStorageQuery {
      * @throws StorageException if an exception occurs during storage attempt
      */
     public Set<PermissionBean> getPermissions(String userId) throws StorageException;
+
 }

@@ -1,4 +1,5 @@
 import angular = require("angular");
+import {Discoverability} from "./model/api.model";
 
 const _module = angular.module('ApimanModals', ['ApimanLogger', 'ApimanRPC']);
 
@@ -341,6 +342,42 @@ _module.controller('ModalErrorCtrl',
             $scope.ok = function () {
                 $uibModalInstance.close();
             };
+        }
+    ]
+);
+
+_module.controller('DiscoverabilityCtrl',
+    ['$scope', '$uibModalInstance', 'options',
+        function ($scope, $uibModalInstance, options) {
+            $scope.selectedDiscoverability = options.discoverability || "ORG_MEMBERS";
+            $scope.isVisible = isVisible;
+            $scope.isVisibleInt = isVisibleInt;
+            $scope.ok = ok;
+            $scope.cancel = cancel;
+
+            const rankings = {
+                [Discoverability.ORG_MEMBERS]: 1,
+                [Discoverability.FULL_PLATFORM_MEMBERS]: 2,
+                [Discoverability.ANONYMOUS]: 3,
+                [Discoverability.PORTAL]: 4,
+            };
+
+            function ok() {
+                $uibModalInstance.close($scope.selectedDiscoverability);
+            }
+
+            function cancel() {
+                $uibModalInstance.dismiss();
+            }
+
+            function isVisible(level: string): boolean {
+                const rank = rankings[Discoverability[level]];
+                return rank <= rankings[$scope.selectedDiscoverability];
+            }
+
+            function isVisibleInt(): number {
+                return rankings[Discoverability[$scope.selectedDiscoverability]];
+            }
         }
     ]
 );

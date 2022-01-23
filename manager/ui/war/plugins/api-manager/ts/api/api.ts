@@ -1,4 +1,5 @@
 import {_module} from "../apimanPlugin";
+import {ApiVersionBean} from "../model/api.model";
 
 _module.controller("Apiman.ApiRedirectController",
     ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams',
@@ -39,7 +40,7 @@ _module.factory('ApiEntityLoader',
                                 EntityStatusSvc.setEntity(version, 'api');
                                 resolve(version);
                             }, reject);
-                        }),
+                        }) as ApiVersionBean,
                         versions: $q(function(resolve, reject) {
                             OrgSvcs.query({ organizationId: params.org, entityType: 'apis', entityId: params.api, versionsOrActivity: 'versions' }, resolve, reject);
                         })

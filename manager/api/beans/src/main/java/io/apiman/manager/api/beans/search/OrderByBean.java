@@ -29,6 +29,11 @@ public class OrderByBean implements Serializable {
     private boolean ascending;
     private String name;
 
+    public OrderByBean(boolean ascending, String name) {
+        this.ascending = ascending;
+        this.name = name;
+    }
+
     /**
      * Constructor.
      */

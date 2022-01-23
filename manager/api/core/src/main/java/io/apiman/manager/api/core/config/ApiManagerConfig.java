@@ -341,6 +341,10 @@ public abstract class ApiManagerConfig {
         return config.getString(APIMAN_MANAGER_UI_ENDPOINT, "http://localhost:8080/apimanui/api-manager/");
     }
 
+    public Map<String, String> getIdmDiscoverabilityMappings() {
+        return getPrefixedProperties("apiman-manager.idm.discoverability.");
+    }
+
     /**
      * Gets a map of properties prefixed by the given string.
      */

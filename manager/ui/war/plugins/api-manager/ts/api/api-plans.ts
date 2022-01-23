@@ -1,19 +1,21 @@
 import {_module} from "../apimanPlugin";
+import {ApiVersionBean} from "../model/api.model";
 import _ = require("lodash");
 import angular = require("angular");
 
 _module.controller('Apiman.ApiPlansController',
-    ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Configuration',
-        function ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Configuration) {
+    ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Configuration', '$uibModal',
+        function ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Configuration, $uibModal) {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
             $scope.tab = 'plans';
-            $scope.version = params.version;
+            $scope.version = params.version as ApiVersionBean;
             $scope.updatedApi = new Object();
             $scope.showMetrics = Configuration.ui.metrics;
+            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
 
-            var lockedPlans = [];
+            let lockedPlans = [];
 
             var getSelectedPlans = function() {
                 var selectedPlans = [];
@@ -26,6 +28,8 @@ _module.controller('Apiman.ApiPlansController',
 
                         selectedPlan.planId = plan.id;
                         selectedPlan.version = plan.selectedVersion;
+                        selectedPlan.discoverability = plan.discoverability;
+                        selectedPlan.requiresApproval = plan.requiresApproval;
                         selectedPlans.push(selectedPlan);
                     }
                 }
@@ -33,9 +37,8 @@ _module.controller('Apiman.ApiPlansController',
                 return selectedPlans;
             };
 
-            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
-
-            var pageData = ApiEntityLoader.getCommonData($scope, $location);
+            // version = ApiVersion and versions = ApiSummaryBean?
+            let pageData = ApiEntityLoader.getCommonData($scope, $location);
 
             if (params.version != null) {
                 pageData = angular.extend(pageData, {
@@ -47,7 +50,7 @@ _module.controller('Apiman.ApiPlansController',
                             angular.forEach(plans, function(plan) {
                                 promises.push($q(function(resolve, reject) {
                                     OrgSvcs.query({ organizationId: params.org, entityType: 'plans', entityId: plan.id, versionsOrActivity: 'versions' }, function(planVersions) {
-                                        //for each plan find the versions that are locked
+                                        // For each plan find the versions that are locked, as these are the ones that are available for being attached to an ApiVersion
                                         var lockedVersions = [];
 
                                         for (var j = 0; j < planVersions.length; j++) {
@@ -104,7 +107,10 @@ _module.controller('Apiman.ApiPlansController',
                         var p1 = newValue.plans[i];
                         var p2 = $scope.version.plans[i];
 
-                        if (p1.planId != p2.planId || p1.version != p2.version) {
+                        if (p1.planId != p2.planId ||
+                            p1.version != p2.version ||
+                            p1.discoverability != p2.discoverability||
+                            p1.requiresApproval != p2.requiresApproval) {
                             $rootScope.isDirty = true;
                         }
                     }
@@ -119,6 +125,10 @@ _module.controller('Apiman.ApiPlansController',
                 //console.log('changedVersion: ' + JSON.stringify(item));
             };
 
+            $scope.setDiscoverability = function(change): void {
+                change.plan.discoverability = change.level;
+            }
+
             $scope.reset = function() {
                 $scope.updatedApi.publicAPI = $scope.version.publicAPI;
 
@@ -129,6 +139,8 @@ _module.controller('Apiman.ApiPlansController',
                         if (lockedPlans[i].id == $scope.version.plans[j].planId) {
                             lockedPlans[i].checked = true;
                             lockedPlans[i].selectedVersion = $scope.version.plans[j].version;
+                            lockedPlans[i].discoverability = $scope.version.plans[j].discoverability;
+                            lockedPlans[i].requiresApproval = $scope.version.plans[j].requiresApproval;
                             break;
                         }
                     }
