@@ -51,10 +51,17 @@
           <diffIncludeCatalog>false</diffIncludeCatalog>
         </configuration>
         <dependencies>
+          <!-- need for h2 triggers -->
+          <dependency>
+            <groupId>io.apiman</groupId>
+            <artifactId>apiman-manager-api-jpa</artifactId>
+            <version>${project.version}</version>
+          </dependency>
           <!-- Database drivers -->
           <dependency>
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-52</artifactId>
+            <version>${version.com.vladmihalcea.hibernate-types}</version>
           </dependency>
           <dependency>
             <groupId>com.h2database</groupId>

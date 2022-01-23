@@ -102,6 +102,18 @@ public class ManagerApiTestServer {
         server.start();
         long endTime = System.currentTimeMillis();
         System.out.println("******* Started in " + (endTime - startTime) + "ms");
+        postStart();
+    }
+
+    protected void postStart() throws SQLException {
+        // Jdbi.create(ds).useHandle(h -> {
+        //     h.getConnection().setAutoCommit(false);
+        //     // TODO(msavy): Add to liquibase
+        //     h.execute("CREATE TRIGGER api_plans_discoverability_trigger "
+        //                       + "AFTER INSERT ON api_plans FOR EACH ROW "
+        //                       + "CALL \"io.apiman.manager.api.jpa.h2.DiscoverabilityTrigger\" ");
+        //     h.commit();
+        // });
     }
 
     /**
@@ -130,6 +142,7 @@ public class ManagerApiTestServer {
      */
     protected void preStart() throws Exception {
         if (ManagerTestUtils.getTestType() == TestType.jpa) {
+            TestUtil.setProperty("hibernate.hbm2ddl.import_files", "import.sql");
             TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
             TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");
             TestUtil.setProperty("apiman-manager.config.features.rest-response-should-contain-stacktraces", "true");
@@ -182,7 +195,7 @@ public class ManagerApiTestServer {
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
         ds.setPassword("");
-        ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1;");
+        ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1;TRACE_LEVEL_SYSTEM_OUT=3");
         Connection connection = ds.getConnection();
         connection.close();
         System.out.println("DataSource created and bound to JNDI.");

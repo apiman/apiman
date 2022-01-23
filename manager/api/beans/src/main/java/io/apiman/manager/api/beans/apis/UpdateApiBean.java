@@ -17,6 +17,7 @@ package io.apiman.manager.api.beans.apis;
 
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.download.BlobReference;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -40,6 +41,7 @@ public class UpdateApiBean implements Serializable {
     // The image reference
     private String image;
     private Set<KeyValueTagDto> tags;
+    private DiscoverabilityLevel publicApiDiscoverability;
 
     /**
      * Constructor.
@@ -76,6 +78,15 @@ public class UpdateApiBean implements Serializable {
 
     public UpdateApiBean setTags(Set<KeyValueTagDto> tags) {
         this.tags = tags;
+        return this;
+    }
+
+    public DiscoverabilityLevel getPublicApiDiscoverability() {
+        return publicApiDiscoverability;
+    }
+
+    public UpdateApiBean setPublicApiDiscoverability(DiscoverabilityLevel publicApiDiscoverability) {
+        this.publicApiDiscoverability = publicApiDiscoverability;
         return this;
     }
 

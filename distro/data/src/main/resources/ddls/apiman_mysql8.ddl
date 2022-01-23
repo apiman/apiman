@@ -2,7 +2,7 @@
 --  Update Database Script
 --  *********************************************************************
 --  Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
---  Ran at: 02/03/2022, 15:15
+--  Ran at: 11/03/2022, 16:36
 --  Against: apiman@offline:mysql?version=8&caseSensitive=true&catalog=apiman&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/mysql/databasechangelog.csv
 --  Liquibase version: 4.6.2
 --  *********************************************************************
@@ -380,4 +380,18 @@ DROP TABLE notification_types;
 
 --  Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646232783603-7::msavy (generated)
 ALTER TABLE notification_preferences ADD CONSTRAINT FKt9qjvmcl36i14utm5uptyqg84 FOREIGN KEY (user_id) REFERENCES users (username);
+
+--  Changeset src/main/liquibase/current/xxxx.xml::drop-constraints-on-old-expose-in-portal::msavy
+DROP INDEX IX_null ON api_plans;
+
+--  Changeset src/main/liquibase/current/xxxx.xml::1647015740776-8::msavy (generated)
+ALTER TABLE api_plans DROP COLUMN expose_in_portal;
+
+ALTER TABLE api_versions DROP COLUMN expose_in_portal;
+
+--  Changeset src/main/liquibase/current/xxxx.xml::1646489262610-4::msavy (generated)
+CREATE TABLE discoverability (id VARCHAR(255) NOT NULL, api_id VARCHAR(255) NULL, api_version_id BIGINT NULL, discoverability VARCHAR(255) NULL, org_id VARCHAR(255) NULL, plan_id VARCHAR(255) NULL, plan_version_id BIGINT NULL, CONSTRAINT discoverabilityPK PRIMARY KEY (id));
+
+--  Changeset src/main/liquibase/current/xxxx.xml::1646489262610-12::msavy (generated)
+ALTER TABLE api_plans ADD CONSTRAINT FK4l9jtg7k49arpmodilny0d87b FOREIGN KEY (api_version_id) REFERENCES discoverability (api_version_id);
 

@@ -1,5 +1,6 @@
 package io.apiman.manager.api.service;
 
+import io.apiman.manager.api.beans.idm.OrgsPermissionConstraint;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -11,22 +12,23 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Search with permissions and visibility-related constraints.
  *
+ * @see SearchCriteriaUtil
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@ApplicationScoped
 @Transactional
 public class SearchService implements DataAccessUtilMixin {
 
-    private static final SearchResultsBean<?> EMPTY_SEARCH_RESULTS = new SearchResultsBean<>();
     private IStorageQuery query;
 
     @Inject
@@ -36,19 +38,19 @@ public class SearchService implements DataAccessUtilMixin {
 
     public SearchService() {}
 
-    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(@NotNull SearchCriteriaBean criteria) {
+    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(@NotNull SearchCriteriaBean criteria, OrgsPermissionConstraint constraints) {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
-        return tryAction(() -> query.findOrganizations(criteria));
+        return tryAction(() -> query.findOrganizations(criteria, constraints));
     }
 
-    public SearchResultsBean<ClientSummaryBean> findClients(@NotNull SearchCriteriaBean criteria) {
+    public SearchResultsBean<ClientSummaryBean> findClients(@NotNull SearchCriteriaBean criteria, OrgsPermissionConstraint constraints) {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
-        return tryAction(() -> query.findClients(criteria));
+        return tryAction(() -> query.findClients(criteria, constraints));
     }
 
-    public SearchResultsBean<ApiSummaryBean> findApis(@NotNull SearchCriteriaBean criteria) {
+    public SearchResultsBean<ApiSummaryBean> findApis(@NotNull SearchCriteriaBean criteria, OrgsPermissionConstraint constraints) {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
-        return tryAction(() -> query.findApis(criteria));
+        return tryAction(() -> query.findApis(criteria, constraints));
     }
 
     public SearchResultsBean<UserBean> findUsers(@NotNull SearchCriteriaBean criteria) {
@@ -61,8 +63,4 @@ public class SearchService implements DataAccessUtilMixin {
         return tryAction(() -> query.findRoles(criteria));
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> SearchResultsBean<T> emptySearchResults() {
-        return (SearchResultsBean<T>) EMPTY_SEARCH_RESULTS;
-    }
 }

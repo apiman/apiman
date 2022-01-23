@@ -15,15 +15,15 @@
  */
 package io.apiman.manager.api.beans.apis;
 
-import io.apiman.manager.api.beans.apis.dto.ApiPlanBeanDto;
+import io.apiman.manager.api.beans.apis.dto.UpdateApiPlanDto;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
+import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -46,9 +46,9 @@ public class UpdateApiVersionBean implements Serializable {
     private Boolean parsePayload;
     private Boolean publicAPI;
     private Boolean disableKeysStrip;
-    private Set<ApiPlanBeanDto> plans;
+    private @Valid Set<UpdateApiPlanDto> plans;
     private String extendedDescription;
-    private Boolean exposeInPortal;
+    private DiscoverabilityLevel publicDiscoverability;
 
     /**
      * Constructor.
@@ -115,14 +115,14 @@ public class UpdateApiVersionBean implements Serializable {
     /**
      * @return the plans
      */
-    public Set<ApiPlanBeanDto> getPlans() {
+    public Set<UpdateApiPlanDto> getPlans() {
         return plans;
     }
 
     /**
      * @param plans the plans to set
      */
-    public void setPlans(Set<ApiPlanBeanDto> plans) {
+    public void setPlans(Set<UpdateApiPlanDto> plans) {
         this.plans = plans;
     }
 
@@ -187,13 +187,12 @@ public class UpdateApiVersionBean implements Serializable {
         return this;
     }
 
-    public Boolean isExposeInPortal() {
-        return exposeInPortal;
+    public DiscoverabilityLevel getPublicDiscoverability() {
+        return publicDiscoverability;
     }
 
-    public UpdateApiVersionBean setExposeInPortal(Boolean exposeInPortal) {
-        this.exposeInPortal = exposeInPortal;
-        return this;
+    public void setPublicDiscoverability(DiscoverabilityLevel publicDiscoverability) {
+        this.publicDiscoverability = publicDiscoverability;
     }
 
     @Override
@@ -209,14 +208,13 @@ public class UpdateApiVersionBean implements Serializable {
                        && Objects.equals(endpointProperties, that.endpointProperties) && Objects.equals(gateways, that.gateways)
                        && Objects.equals(parsePayload, that.parsePayload) && Objects.equals(publicAPI, that.publicAPI) && Objects.equals(
                 disableKeysStrip, that.disableKeysStrip) && Objects.equals(plans, that.plans) && Objects.equals(extendedDescription,
-                that.extendedDescription) && Objects.equals(exposeInPortal, that.exposeInPortal);
+                that.extendedDescription);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(endpoint, endpointType, endpointContentType, endpointProperties, gateways, parsePayload, publicAPI, disableKeysStrip, plans,
-                extendedDescription,
-                exposeInPortal);
+                extendedDescription);
     }
 
     @Override
@@ -232,7 +230,7 @@ public class UpdateApiVersionBean implements Serializable {
                 .add("disableKeysStrip=" + disableKeysStrip)
                 .add("plans=" + plans)
                 .add("extendedDescription='" + extendedDescription + "'")
-                .add("exposeInPortal=" + exposeInPortal)
+                .add("publicDiscoverability=" + publicDiscoverability)
                 .toString();
     }
 }

@@ -101,7 +101,7 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
     @Override
     @Produces
     public EntityManagerFactory getEntityManagerFactory() {
-        return emf;
+        return getEntityManager().getEntityManagerFactory();
     }
 
     @Produces

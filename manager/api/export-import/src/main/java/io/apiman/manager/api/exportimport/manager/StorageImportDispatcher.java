@@ -29,6 +29,7 @@ import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionMapper;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
@@ -111,6 +112,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     private Map<String, IGatewayLink> gatewayLinkCache = new HashMap<>();
 
     private MetadataBean currentMetadata = new MetadataBean();
+
+    private ApiVersionMapper apiVersionMapper = ApiVersionMapper.INSTANCE;
 
     /**
      * Constructor.

@@ -47,6 +47,8 @@ import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
@@ -62,15 +64,14 @@ public class WarCdiFactory {
     private static IEsClientFactory sStorageEsClientFactory;
     private static JpaStorage sJpaStorage;
 
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {}
+
     @Produces @ApplicationScoped
     public static INewUserBootstrapper provideNewUserBootstrapper(WarApiManagerConfig config, IPluginRegistry pluginRegistry) {
         String type = config.getNewUserBootstrapperType();
         if (type == null) {
-            return new INewUserBootstrapper() {
-                @Override
-                public void bootstrapUser(UserBean user, IStorage storage) throws StorageException {
-                    // Do nothing special.
-                }
+            return (user, storage) -> {
+                // Do nothing special.
             };
         } else {
             try {

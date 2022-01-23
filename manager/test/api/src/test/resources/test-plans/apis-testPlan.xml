@@ -64,6 +64,7 @@
     <test name="Get Version 1.0 (back to 1 plan)">test-plan-data/apis/plans/011_get-version-1.0.resttest</test>
     <test name="Update API Plans (error 500)">test-plan-data/apis/plans/012_update-version-1.0-plans-500.resttest</test>
     <test name="Get API Plans">test-plan-data/apis/plans/013_get-api-plans.resttest</test>
+    <test name="Update API Plans with null version field (error 500)">test-plan-data/apis/plans/014_update-version-1.0-plans-null-500.resttest</test>
   </testGroup>
 
   <!-- Test API Policy management -->

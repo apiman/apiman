@@ -1,6 +1,6 @@
 package io.apiman.manager.api.rest;
 
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
@@ -70,7 +70,7 @@ public interface IDeveloperPortalResource {
     @GET
     @Path("organizations/{orgId}/apis/{apiId}/versions/{apiVersion}")
     @Produces(MediaType.APPLICATION_JSON)
-    ApiVersionBean getApiVersion(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("apiVersion") String apiVersion)
+    ApiVersionBeanDto getApiVersion(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("apiVersion") String apiVersion)
             throws ApiVersionNotFoundException;
 
     @GET

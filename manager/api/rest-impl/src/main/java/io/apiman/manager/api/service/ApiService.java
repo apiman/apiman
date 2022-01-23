@@ -21,10 +21,12 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
-import io.apiman.manager.api.beans.apis.dto.ApiPlanBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionMapper;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionUpdateMapper;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagMapper;
+import io.apiman.manager.api.beans.apis.dto.UpdateApiPlanDto;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.audit.data.EntityUpdatedData;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
@@ -87,6 +89,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,15 +98,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
 
 import static java.util.stream.Collectors.toList;
@@ -113,6 +117,7 @@ import static java.util.stream.Collectors.toList;
  */
 @ApplicationScoped
 @Transactional
+@ParametersAreNonnullByDefault
 public class ApiService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ApiService.class);
@@ -264,9 +269,8 @@ public class ApiService implements DataAccessUtilMixin {
     public List<ApiSummaryBean> listApis(String organizationId) throws OrganizationNotFoundException {
         // make sure the org exists
         organizationService.getOrg(organizationId);
-
+        // TODO(msavy): refactor to return an appropriate record rather than stripping stuff.
         return tryAction(() -> {
-            // Hide sensitive data and set only needed data for the UI
             if (securityContext.hasPermission(PermissionType.orgView, organizationId)) {
                 return query.getApisInOrg(organizationId);
             } else {
@@ -274,7 +278,7 @@ public class ApiService implements DataAccessUtilMixin {
             }
         });
     }
-    
+
     public void updateApi(String organizationId, String apiId, UpdateApiBean bean)
         throws ApiNotFoundException, NotAuthorizedException {
 
@@ -307,27 +311,27 @@ public class ApiService implements DataAccessUtilMixin {
         });
     }
     
-    public ApiVersionBean createApiVersion(String organizationId, String apiId,
-        NewApiVersionBean bean) throws ApiNotFoundException, NotAuthorizedException,
+    public ApiVersionBeanDto createApiVersion(String organizationId, String apiId,
+                                              NewApiVersionBean newApiVersion) throws ApiNotFoundException, NotAuthorizedException,
         InvalidVersionException, ApiVersionAlreadyExistsException {
 
-        FieldValidator.validateVersion(bean.getVersion());
+        FieldValidator.validateVersion(newApiVersion.getVersion());
 
         ApiVersionBean newVersion = tryAction(() -> {
             GatewaySummaryBean gateway = getSingularGateway();
 
             ApiBean api = getApiFromStorage(organizationId, apiId);
 
-            if (storage.getApiVersion(organizationId, apiId, bean.getVersion()) != null) {
-                throw ExceptionFactory.apiVersionAlreadyExistsException(apiId, bean.getVersion());
+            if (storage.getApiVersion(organizationId, apiId, newApiVersion.getVersion()) != null) {
+                throw ExceptionFactory.apiVersionAlreadyExistsException(apiId, newApiVersion.getVersion());
             }
 
-            return createApiVersionInternal(bean, api, gateway);
+            return createApiVersionInternal(newApiVersion, api, gateway);
         });
 
-        if (bean.isClone() && bean.getCloneVersion() != null) {
+        if (newApiVersion.isClone() && newApiVersion.getCloneVersion() != null) {
             try {
-                ApiVersionBean cloneSource = getApiVersion(organizationId, apiId, bean.getCloneVersion());
+                ApiVersionBean cloneSource = storage.getApiVersion(organizationId, apiId, newApiVersion.getCloneVersion());
                 //storage.flush();
 
                 // Clone primary attributes of the API version unless those attributes
@@ -335,41 +339,39 @@ public class ApiService implements DataAccessUtilMixin {
                 // sent as part of the "create version" payload take precedence over the
                 // cloned attributes.
                 UpdateApiVersionBean updatedApi = new UpdateApiVersionBean();
-                if (bean.getEndpoint() == null) {
+                if (newApiVersion.getEndpoint() == null) {
                     updatedApi.setEndpoint(cloneSource.getEndpoint());
                 }
-                if (bean.getEndpointType() == null) {
+                if (newApiVersion.getEndpointType() == null) {
                     updatedApi.setEndpointType(cloneSource.getEndpointType());
                 }
-                if (bean.getEndpointContentType() == null) {
+                if (newApiVersion.getEndpointContentType() == null) {
                     updatedApi.setEndpointContentType(cloneSource.getEndpointContentType());
                 }
                 updatedApi.setEndpointProperties(cloneSource.getEndpointProperties());
                 updatedApi.setGateways(cloneSource.getGateways());
-                if (bean.getPlans() == null) {
-                    Set<ApiPlanBeanDto> plans = ApiVersionMapper.INSTANCE.toDto(cloneSource.getPlans());
+                if (newApiVersion.getPlans() == null) {
+                    Set<UpdateApiPlanDto> plans = ApiVersionMapper.INSTANCE.toDto2(cloneSource.getPlans());
                     updatedApi.setPlans(plans);
                 }
-                if (bean.getPublicAPI() == null) {
+                if (newApiVersion.getPublicAPI() == null) {
                     updatedApi.setPublicAPI(cloneSource.isPublicAPI());
                 }
-                if (bean.getParsePayload() == null) {
+                if (newApiVersion.getParsePayload() == null) {
                     updatedApi.setParsePayload(cloneSource.isParsePayload());
                 }
-                if (bean.getExtendedDescription() == null) {
+                if (newApiVersion.getExtendedDescription() == null) {
                     updatedApi.setExtendedDescription(cloneSource.getExtendedDescription());
                 }
-                if (bean.getExposeInPortal() == null) {
-                    updatedApi.setExposeInPortal(cloneSource.isExposeInPortal());
-                }
-                newVersion = updateApiVersion(newVersion, updatedApi);
 
-                if (bean.getDefinitionUrl() == null) {
+                ApiVersionBean updated = updateApiVersion(newVersion, updatedApi);
+
+                if (newApiVersion.getDefinitionUrl() == null) {
                     // Clone the API definition document
                     InputStream definition = null;
                     try {
-                        definition = getApiDefinition(organizationId, apiId, bean.getCloneVersion()).getDefinition();
-                        setApiDefinition(organizationId, apiId, newVersion.getVersion(),
+                        definition = getApiDefinition(organizationId, apiId, newApiVersion.getCloneVersion()).getDefinition();
+                        setApiDefinition(organizationId, apiId, updated.getVersion(),
                             cloneSource.getDefinitionType(), definition, cloneSource.getDefinitionUrl());
                     } catch (ApiDefinitionNotFoundException svnfe) {
                         // This is ok - it just means the API doesn't have one, so do nothing.
@@ -381,13 +383,13 @@ public class ApiService implements DataAccessUtilMixin {
                 }
 
                 // Clone all API policies
-                List<PolicySummaryBean> policies = listApiPolicies(organizationId, apiId, bean.getCloneVersion());
+                List<PolicySummaryBean> policies = listApiPolicies(organizationId, apiId, newApiVersion.getCloneVersion());
                 for (PolicySummaryBean policySummary : policies) {
-                    PolicyBean policy = getApiPolicy(organizationId, apiId, bean.getCloneVersion(), policySummary.getId());
+                    PolicyBean policy = getApiPolicy(organizationId, apiId, newApiVersion.getCloneVersion(), policySummary.getId());
                     NewPolicyBean npb = new NewPolicyBean();
                     npb.setDefinitionId(policy.getDefinition().getId());
                     npb.setConfiguration(policy.getConfiguration());
-                    createApiPolicy(organizationId, apiId, newVersion.getVersion(), npb);
+                    createApiPolicy(organizationId, apiId, updated.getVersion(), npb);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -399,14 +401,13 @@ public class ApiService implements DataAccessUtilMixin {
             }
         }
 
-        return newVersion;
+        return apiVersionMapper.toDto(newVersion);
     }
 
     /**
      * Creates an API version.
      */
-    protected ApiVersionBean createApiVersionInternal(NewApiVersionBean bean,
-        ApiBean api, GatewaySummaryBean gateway) throws Exception, StorageException {
+    protected ApiVersionBean createApiVersionInternal(NewApiVersionBean bean, ApiBean api, GatewaySummaryBean gateway) throws Exception {
         if (!BeanUtils.isValidVersion(bean.getVersion())) {
             throw new StorageException("Invalid/illegal API version: " + bean.getVersion()); //$NON-NLS-1$
         }
@@ -424,7 +425,7 @@ public class ApiService implements DataAccessUtilMixin {
         newVersion.setEndpointContentType(bean.getEndpointContentType());
         newVersion.setDefinitionUrl(bean.getDefinitionUrl());
         newVersion.setExtendedDescription(bean.getExtendedDescription());
-        newVersion.setExposeInPortal(BooleanUtils.toBoolean(bean.getExposeInPortal()));
+
         if (bean.getPublicAPI() != null) {
             newVersion.setPublicAPI(bean.getPublicAPI());
         }
@@ -493,15 +494,15 @@ public class ApiService implements DataAccessUtilMixin {
         return newVersion;
     }
     
-    public ApiVersionBean getApiVersion(String organizationId, String apiId, String version)
+    public ApiVersionBeanDto getApiVersion(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
-        // No permission check is needed, because this would break All APIs UI
-        return tryAction(() -> getApiVersionFromStorage(organizationId, apiId, version));
+        ApiVersionBean avb = tryAction(() -> getApiVersionFromStorage(organizationId, apiId, version));
+        return apiVersionMapper.toDto(avb);
     }
     
     public ApiVersionStatusBean getApiVersionStatus(String organizationId, String apiId,
         String version) throws ApiVersionNotFoundException, NotAuthorizedException {
-        ApiVersionBean versionBean = getApiVersion(organizationId, apiId, version);
+        ApiVersionBean versionBean = getApiVersionFromStorage(organizationId, apiId, version);
         List<PolicySummaryBean> policies = listApiPolicies(organizationId, apiId, version);
         return apiValidator.getStatus(versionBean, policies);
     }
@@ -510,7 +511,7 @@ public class ApiService implements DataAccessUtilMixin {
     public ApiDefinitionStream getApiDefinition(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
        return tryAction(() -> {
-            ApiVersionBean apiVersion = getApiVersion(organizationId, apiId, version);
+            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
 
             InputStream definition = storage.getApiDefinition(apiVersion);
             if (definition == null) {
@@ -603,36 +604,38 @@ public class ApiService implements DataAccessUtilMixin {
         return tryAction(() -> query.auditEntity(organizationId, apiId, version, ApiBean.class, paging));
     }
 
-    public ApiVersionBean updateApiVersion(String organizationId, String apiId, String version, UpdateApiVersionBean bean)
+    public ApiVersionBeanDto updateApiVersion(String organizationId, String apiId, String version, UpdateApiVersionBean update)
             throws ApiVersionNotFoundException, NotAuthorizedException {
-        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
-        return updateApiVersion(avb, bean);
+        ApiVersionBean avb = getApiVersionFromStorage(organizationId, apiId, version);
+        return apiVersionMapper.toDto(updateApiVersion(avb, update));
     }
 
-    public ApiVersionBean updateApiVersion(ApiVersionBean avb, UpdateApiVersionBean bean) throws ApiVersionNotFoundException {
+    private ApiVersionBean updateApiVersion(ApiVersionBean avb, UpdateApiVersionBean update) throws ApiVersionNotFoundException {
         if (avb.getStatus() == ApiStatus.Published) {
             // If published and public API, then allow full modification (caveat emptor).
             if (avb.isPublicAPI()) {
-                return updateApiVersionInternal(avb, bean);
+                return updateApiVersionInternal(avb, update);
             } else {
+                Set<UpdateApiPlanDto> updatePlans = Optional.ofNullable(update.getPlans()).orElse(Collections.emptySet());
+
                 // TODO refactor with HTTP PATCH?
-                if (bean.getPlans().size() != avb.getPlans().size()) {
+                if (updatePlans.size() != avb.getPlans().size()) {
                     throw new InvalidParameterException("Can not attach or remove plans from an API Version after it has been published");
                 }
 
                 // Collect just the ID and Versions (as these must be the same). Other fields can change freely.
                 Set<PlanIdVersion> existingPIV = avb.getPlans().stream().map(PlanIdVersion::new).collect(Collectors.toSet());
-                Set<PlanIdVersion> updatedPIV = bean.getPlans().stream().map(PlanIdVersion::new).collect(Collectors.toSet());
+                Set<PlanIdVersion> updatedPIV = updatePlans.stream().map(PlanIdVersion::new).collect(Collectors.toSet());
 
                 if (!existingPIV.equals(updatedPIV)) {
                     throw new InvalidParameterException("Plan IDs and versions must not change after publication");
                 }
-                // If published, then mapper copies across only fields that are safe for changed after publication.
-                UpdateApiVersionBean afterPublishUpdate = ApiVersionMapper.INSTANCE.toPublishedUpdateBean(bean);
+                // If published, then mapper copies across only fields that are safe for change after publication.
+                UpdateApiVersionBean afterPublishUpdate = ApiVersionMapper.INSTANCE.toPublishedUpdateBean(update);
                 return updateApiVersionInternal(avb, afterPublishUpdate);
             }
         } else {
-            return updateApiVersionInternal(avb, bean);
+            return updateApiVersionInternal(avb, update);
         }
     }
 
@@ -642,28 +645,41 @@ public class ApiService implements DataAccessUtilMixin {
         }
         avb.setModifiedBy(securityContext.getCurrentUser());
         avb.setModifiedOn(new Date());
-        Set<ApiPlanBean> updatedPlans = apiVersionMapper.fromDto(update.getPlans());
         EntityUpdatedData data = new EntityUpdatedData();
         if (AuditUtils.valueChanged(avb.getPlans(), update.getPlans())) {
-            data.addChange("plans", AuditUtils.asString_ApiPlanBeans(avb.getPlans()), AuditUtils.asString_ApiPlanBeans(updatedPlans)); //$NON-NLS-1$
-            if (avb.getPlans() == null) {
-                avb.setPlans(new HashSet<>());
-            }
+            Set<ApiPlanBean> updateEntities = update.getPlans()
+                    .stream()
+                    .map(dto -> ApiVersionUpdateMapper.INSTANCE.fromDto(dto, avb))
+                    .collect(Collectors.toSet());
 
+            data.addChange("plans", AuditUtils.asString_ApiPlanBeans(avb.getPlans()), AuditUtils.asString_ApiPlanBeans(updateEntities)); //$NON-NLS-1$
             if (update.getPlans() != null) {
-                Set<ApiPlanBeanDto> merged = new HashSet<>();
-                Set<ApiPlanBeanDto> existingPlans = apiVersionMapper.toDto(avb.getPlans());
-                // existingPlans.retainAll(bean.getPlans());
-                for (ApiPlanBeanDto updatedPlan : update.getPlans()) {
-                    existingPlans.stream()
-                            .filter(ep -> ep.equals(updatedPlan))
+                // Work around: https://hibernate.atlassian.net/browse/HHH-3799
+                // Step 1: Set intersection
+                Set<UpdateApiPlanDto> existingAsDto = ApiVersionUpdateMapper.INSTANCE.toDto(avb.getPlans());
+                existingAsDto.retainAll(update.getPlans());
+
+                // Step 2: Upsert
+                Set<ApiPlanBean> mergedPlans = new HashSet<>();
+                for (ApiPlanBean updateApb : updateEntities) {
+                    existingAsDto.stream()
+                            .map(e -> ApiVersionUpdateMapper.INSTANCE.fromDto(e, avb))
+                            .filter(e -> e.equals(updateApb))
                             .findAny()
                             .ifPresentOrElse(
-                                    ep -> merged.add(apiVersionMapper.merge(updatedPlan, ep)),
-                                    () -> merged.add(updatedPlan)
+                                    // Merge (existing element to be updated)
+                                    ep -> {
+                                        ApiVersionUpdateMapper.INSTANCE.merge(updateApb, ep);
+                                        mergedPlans.add(ep);
+                                    },
+                                    // Insert (new element)
+                                    () -> {
+                                        mergedPlans.add(updateApb);
+                                    }
                             );
                 }
-                avb.setPlans(apiVersionMapper.fromDto(merged));
+                avb.setPlans(mergedPlans);
+                tryAction(() -> storage.merge(avb));
             }
         }
         if (AuditUtils.valueChanged(avb.getGateways(), update.getGateways())) {
@@ -714,9 +730,9 @@ public class ApiService implements DataAccessUtilMixin {
             data.addChange("extendedDescription", String.valueOf(avb.getExtendedDescription()), String.valueOf(update.getExtendedDescription())); //$NON-NLS-1$
             avb.setExtendedDescription(update.getExtendedDescription());
         }
-        if (AuditUtils.valueChanged(avb.isExposeInPortal(), update.isExposeInPortal())) {
-            data.addChange("exposeInPortal", String.valueOf(avb.isExposeInPortal()), String.valueOf(update.isExposeInPortal())); //$NON-NLS-1$
-            avb.setExposeInPortal(update.isExposeInPortal());
+        if (AuditUtils.valueChanged(avb.getDiscoverability(), update.getPublicDiscoverability())) {
+            data.addChange("discoverability", String.valueOf(avb.getDiscoverability()), String.valueOf(update.getPublicDiscoverability())); //$NON-NLS-1$
+            avb.setDiscoverability(update.getPublicDiscoverability());
         }
 
         return tryAction(() -> {
@@ -758,6 +774,8 @@ public class ApiService implements DataAccessUtilMixin {
                     }
                 }
             }
+
+            System.err.println("got here");
 
             storage.updateApiVersion(avb);
             storage.createAuditEntry(AuditUtils.apiVersionUpdated(avb, data, securityContext));
@@ -820,7 +838,7 @@ public class ApiService implements DataAccessUtilMixin {
         NewPolicyBean bean) throws OrganizationNotFoundException, ApiVersionNotFoundException,
         NotAuthorizedException {
         // Make sure the API exists
-        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+        ApiVersionBean avb = getApiVersionFromStorage(organizationId, apiId, version);
 
         if (avb.isPublicAPI()) {
             if (avb.getStatus() == ApiStatus.Retired) {
@@ -858,7 +876,7 @@ public class ApiService implements DataAccessUtilMixin {
         ApiVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
 
         // Make sure the API exists
-        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+        ApiVersionBean avb = getApiVersionFromStorage(organizationId, apiId, version);
 
         tryAction(() -> {
             PolicyBean policy = storage.getPolicy(PolicyType.Api, organizationId, apiId, version, policyId);
@@ -887,7 +905,7 @@ public class ApiService implements DataAccessUtilMixin {
         PolicyNotFoundException, NotAuthorizedException {
 
         // Make sure the API exists and is in the right status.
-        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+        ApiVersionBean avb = getApiVersionFromStorage(organizationId, apiId, version);
 
         if (avb.isPublicAPI()) {
             if (avb.getStatus() == ApiStatus.Retired) {
@@ -945,7 +963,7 @@ public class ApiService implements DataAccessUtilMixin {
         ApiVersionNotFoundException, NotAuthorizedException {
 
         // Make sure the API exists
-        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+        ApiVersionBean avb = getApiVersionFromStorage(organizationId, apiId, version);
 
         tryAction(() -> {
             List<Long> newOrder = new ArrayList<>(policyChain.getPolicies().size());
@@ -965,7 +983,7 @@ public class ApiService implements DataAccessUtilMixin {
         String planId) throws ApiVersionNotFoundException, PlanNotFoundException {
 
         // Try to get the API first - will throw an exception if not found.
-        ApiVersionBean avb = getApiVersion(organizationId, apiId, version);
+        ApiVersionBean avb = getApiVersionFromStorage(organizationId, apiId, version);
 
         return tryAction(() -> {
             String planVersion = null;
@@ -1112,6 +1130,62 @@ public class ApiService implements DataAccessUtilMixin {
         tryAction(() -> storage.updateApi(api));
     }
 
+    // /**
+    //  * Set discoverability for a <strong>public</strong> API Version.
+    //  */
+    // private DiscoverabilityEntity setApiVersionDiscoverability(ApiVersionBean avb, UpdateApiVersionBean uab) {
+    //     String orgId = avb.getApi().getOrganization().getId();
+    //     String apiId = avb.getApi().getId();
+    //     String apiVer = avb.getVersion();
+    //
+    //     if (uab.getPublicDiscoverability() == null) {
+    //         return storage.getDiscoverability(orgId, apiId, apiVer);
+    //     }
+    //
+    //     String key = String.join(":", orgId, apiId, apiVer);
+    //
+    //     DiscoverabilityEntity de = new DiscoverabilityEntity()
+    //             .setId(key)
+    //             .setOrgId(orgId)
+    //             .setApiId(apiId)
+    //             .setApiVersion(apiVer)
+    //             .setApiVersionId(avb.getId())
+    //             .setDiscoverability(uab.getPublicDiscoverability());
+    //
+    //      tryAction(() -> storage.merge(de));
+    //      return de;
+    // }
+    //
+    // private DiscoverabilityEntity setApiPlanDiscoverability(ApiPlanBean apb, @Nullable DiscoverabilityLevel level) {
+    //     String orgId = apb.getApiVersion().getApi().getOrganization().getId();
+    //     String apiId = apb.getApiVersion().getApi().getId();
+    //     String apiVer = apb.getApiVersion().getVersion();
+    //     Long apiVerId = apb.getApiVersion().getId();
+    //     String planId = apb.getPlanId();
+    //     String planVer = apb.getVersion();
+    //
+    //     if (level == null) {
+    //         return storage.getDiscoverability(orgId, apiId, apiVer, planId, planVer);
+    //     }
+    //
+    //     String pdeKey = String.join(":", orgId, apiId, apiVer, planId, planVer);
+    //
+    //     DiscoverabilityEntity pde = new DiscoverabilityEntity()
+    //             .setId(pdeKey)
+    //             .setOrgId(orgId)
+    //             .setApiId(apiId)
+    //             .setApiVersion(apiVer)
+    //             .setApiVersionId(apiVerId)
+    //             .setPlanId(planId)
+    //             .setPlanVersion(planVer)
+    //             .setDiscoverability(level);
+    //
+    //     apb.setDiscoverability(pde);
+    //
+    //     storage.merge(pde);
+    //     return pde;
+    // }
+
     // TODO(msavy): put with rest of DTOs when get to that phase
     public static final class ApiDefinitionStream {
         private final ApiDefinitionType definitionType;
@@ -1140,7 +1214,7 @@ public class ApiService implements DataAccessUtilMixin {
             this.version = pvb.getVersion();
         }
 
-        public PlanIdVersion(ApiPlanBeanDto pvb) {
+        public PlanIdVersion(UpdateApiPlanDto pvb) {
             this.id = pvb.getPlanId();
             this.version = pvb.getVersion();
         }

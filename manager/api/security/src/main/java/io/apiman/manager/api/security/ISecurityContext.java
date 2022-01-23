@@ -17,6 +17,7 @@ package io.apiman.manager.api.security;
 
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 
 import java.util.List;
@@ -62,6 +63,10 @@ public interface ISecurityContext {
      */
     boolean hasPermission(PermissionType permission, String organizationId);
 
+    boolean hasAllPermissions(Set<PermissionType> permissions, String organizationId);
+
+    boolean hasAnyPermission(Set<PermissionType> permissions, String organizationId);
+
     /**
      * @param organizationId the org ID
      */
@@ -74,6 +79,8 @@ public interface ISecurityContext {
      * @return set of permitted organizations
      */
     Set<String> getPermittedOrganizations(PermissionType permission);
+
+    Set<DiscoverabilityLevel> getPermittedDiscoverabilities();
 
     /**
      * Gets a request header from the current in-scope request.
@@ -91,12 +98,34 @@ public interface ISecurityContext {
      */
     void checkPermissions(PermissionType permission, String organizationId) throws NotAuthorizedException;
 
+    void checkAllPermissions(Set<PermissionType> permissions, String organizationId) throws NotAuthorizedException;
+
+    void checkAnyPermission(Set<PermissionType> permissions, String organizationId) throws NotAuthorizedException;
+
     /**
      * Throws an exception if the user has no admin permissions
      * @throws NotAuthorizedException if the user is not authorized
      */
     void checkAdminPermissions() throws NotAuthorizedException;
 
+    enum EntityType {
+        API, PLAN
+    }
+
+    boolean isDiscoverable(EntityType entityType, String organizationId, String entityId);
+
+    boolean isDiscoverable(EntityType entityType, String organizationId, String entityId, String entityVersion);
+
+    void checkPermissionsOrDiscoverability(EntityType entityType,
+                                           String orgId,
+                                           String entityId,
+                                           Set<PermissionType> permissionType) throws NotAuthorizedException;
+
+    void checkPermissionsOrDiscoverability(EntityType entityType,
+                                           String orgId,
+                                           String entityId,
+                                           String entityVersion,
+                                           Set<PermissionType> permissionType) throws NotAuthorizedException;
     /**
      * Throws an exception if the user has no admin permissions
      * or the user called not is own user resource

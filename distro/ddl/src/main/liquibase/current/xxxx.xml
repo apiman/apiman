@@ -1,0 +1,64 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet id="drop-constraints-on-old-expose-in-portal" author="msavy">
+        <dropIndex tableName="api_plans" indexName="IX_null"/>
+    </changeSet>
+
+    <changeSet author="msavy (generated)" id="1647015740776-8">
+        <dropColumn columnName="expose_in_portal" tableName="api_plans"/>
+        <dropColumn columnName="expose_in_portal" tableName="api_versions"/>
+        <addColumn tableName="api_plans">
+            <column name="discoverability" type="VARCHAR(255)" defaultValue="ORG_MEMBERS"/>
+        </addColumn>
+        <addColumn tableName="api_versions">
+            <column name="discoverability" type="VARCHAR(255)" defaultValue="ORG_MEMBERS"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="msavy (generated)" id="1646489262610-4">
+        <createTable tableName="discoverability">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="discoverabilityPK"/>
+            </column>
+            <column name="org_id" type="VARCHAR(255)"/>
+            <column name="api_id" type="VARCHAR(255)"/>
+            <column name="api_version" type="VARCHAR(255)"/>
+            <column name="plan_id" type="VARCHAR(255)"/>
+            <column name="plan_version" type="VARCHAR(255)"/>
+            <column name="discoverability" type="VARCHAR(255)"/>
+        </createTable>
+        <createIndex tableName="discoverability" indexName="api_plan_discoverability_index">
+            <column name="org_id"/>
+            <column name="api_id"/>
+            <column name="api_version"/>
+            <column name="plan_id"/>
+            <column name="plan_version"/>
+        </createIndex>
+        <createIndex tableName="discoverability" indexName="api_version_discoverability_index">
+            <column name="org_id"/>
+            <column name="api_id"/>
+            <column name="api_version"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="discoverability-view-trigger" author="msavy">
+        <comment>
+            A hand-rolled materialized view that synchronises changes to 'discoverability' on `api_plans` and `api_versions` to `discoverability`
+            This enables very efficient search without performing multiple joins, plus avoids significantly complicating queries by having to
+            reference all different locations that `discoverability` can be set.
+
+            Plausibly we may need to add additional location(s) in future such as `organization`, which should be mostly copy-and-paste.
+
+            A nice alternative to this would be CDC with something like Debezium, but that requires the DB to have been set up properly (sometimes
+            including special plugins), which makes the deployment more complicated and difficult.
+
+            Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
+            materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
+        </comment>
+        <!-- Generic discoverability procedures, except H2 which does its own thing in Java. -->
+        <sqlFile dbms="h2" path="liquibase/current/xxxx/triggers.h2.sql"/>
+        <sqlFile dbms="postgresql,oracle" path="liquibase/current/xxxx/discoverability-procedures.sql"/>
+        <sqlFile dbms="postgresql" path="liquibase/current/xxxx/triggers.postgres.sql"/>
+        <sqlFile dbms="mariadb,mysql" path="liquibase/current/xxxx/triggers.mysql.sql"/>
+    </changeSet>
+</databaseChangeLog>

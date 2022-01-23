@@ -3,9 +3,11 @@ package io.apiman.manager.api.jpa;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
+import io.apiman.manager.api.beans.notifications.NotificationEntity_;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 import io.apiman.manager.api.beans.notifications.NotificationType;
+import io.apiman.manager.api.beans.search.OrderByBean;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
@@ -20,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +56,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
 
         searchCriteria.getFilters().add(recipientFilter);
 
-        return super.find(searchCriteria, NotificationEntity.class);
+        return super.find(searchCriteria, List.of(new OrderByBean(true, NotificationEntity_.ID)), NotificationEntity.class);
     }
 
     @Override
@@ -70,7 +72,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
              .setPaging(paging)
              .setOrder("id", false);
 
-        return super.find(searchCriteria, NotificationEntity.class);
+        return super.find(searchCriteria, List.of(new OrderByBean(true, NotificationEntity_.ID)), NotificationEntity.class);
     }
 
     @Override
@@ -162,20 +164,21 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
 
     @Override
     public Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserId(String userId) {
-        Query query = getActiveEntityManager()
-                .createQuery("SELECT pref FROM NotificationPreferenceEntity pref WHERE pref.user.username = :userId")
+        TypedQuery<NotificationPreferenceEntity> query = getActiveEntityManager()
+                .createQuery("SELECT pref FROM NotificationPreferenceEntity pref WHERE pref.user.username = :userId", NotificationPreferenceEntity.class)
                 .setParameter("userId", userId);
         return super.getOne(query);
     }
 
     @Override
     public Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(String userId, NotificationType notificationType) {
-        Query query = getActiveEntityManager()
+        TypedQuery<NotificationPreferenceEntity> query = getActiveEntityManager()
              .createQuery(
                   "SELECT pref "
                        + "FROM NotificationPreferenceEntity pref "
                        + "WHERE pref.user.username = :userId "
-                       + "AND pref.type = :notificationType"
+                       + "AND pref.type = :notificationType",
+                     NotificationPreferenceEntity.class
              )
              .setParameter("userId", userId)
              .setParameter("notificationType", notificationType);

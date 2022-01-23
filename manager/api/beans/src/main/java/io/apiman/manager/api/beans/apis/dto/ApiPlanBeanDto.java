@@ -1,7 +1,11 @@
 package io.apiman.manager.api.beans.apis.dto;
 
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
+
 import java.util.Objects;
 import java.util.StringJoiner;
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotBlank;
 
 /**
  *
@@ -9,10 +13,12 @@ import java.util.StringJoiner;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class ApiPlanBeanDto {
+    @NotBlank
     private String planId;
+    @NotBlank
     private String version;
-    private Boolean exposeInPortal;
     private Boolean requiresApproval;
+    private DiscoverabilityLevel discoverability;
 
     public ApiPlanBeanDto() {
     }
@@ -35,12 +41,13 @@ public class ApiPlanBeanDto {
         return this;
     }
 
-    public Boolean getExposeInPortal() {
-        return exposeInPortal;
+    @Nullable
+    public DiscoverabilityLevel getDiscoverability() {
+        return discoverability;
     }
 
-    public ApiPlanBeanDto setExposeInPortal(Boolean exposeInPortal) {
-        this.exposeInPortal = exposeInPortal;
+    public ApiPlanBeanDto setDiscoverability(@Nullable DiscoverabilityLevel discoverability) {
+        this.discoverability = discoverability;
         return this;
     }
 
@@ -75,8 +82,8 @@ public class ApiPlanBeanDto {
         return new StringJoiner(", ", ApiPlanBeanDto.class.getSimpleName() + "[", "]")
                 .add("planId='" + planId + "'")
                 .add("version='" + version + "'")
-                .add("exposeInPortal=" + exposeInPortal)
                 .add("requiresApproval=" + requiresApproval)
+                .add("discoverability=" + discoverability)
                 .toString();
     }
 }

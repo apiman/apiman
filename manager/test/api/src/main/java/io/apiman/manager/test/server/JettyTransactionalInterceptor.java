@@ -22,24 +22,12 @@ import javax.transaction.Transactional;
 @Transactional
 public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
 
-    // @PersistenceContext(unitName = "apiman-manager-api-jpa")
     @Inject
     EntityManagerFactoryAccessor emf;
     private EntityManager em;
-    //static ThreadLocal<AtomicInteger> test = ThreadLocal.withInitial(() -> new AtomicInteger(0));
-
-    //@Inject
-    //private TransactionManager tm;
-    //@Inject
-    // private J2eeTransactionManager tm = new J2eeTransactionManager();
 
     public JettyTransactionalInterceptor() {
     }
-
-    // @PostConstruct
-    // public void after() {
-    //     em.setFlushMode(FlushModeType.AUTO);
-    // }
 
     @AroundInvoke
     public Object intercept(InvocationContext ic) throws Exception {
@@ -56,14 +44,10 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
     }
 
     private Object invokeInOurTx(InvocationContext ic) throws Exception {
-        //tm.begin();
-        //em.joinTransaction();
         System.out.println("Beginning transaction");
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
-        //int depth = test.get().incrementAndGet();
-        //System.out.println(depth);
         try {
             return ic.proceed();
         } catch (Exception e) {
@@ -72,32 +56,9 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
             endTransaction(tx);
         }
         throw new RuntimeException("UNREACHABLE");
-
-        // if (!tx.get()) {
-        //     System.out.println("Beginning TX");
-        //     em.getTransaction().begin();
-        // }
-        // Object result = null;
-        // try {
-        //     result = ctx.proceed();
-        // } catch (Exception e) {
-        //     tx.rollback();
-        //     System.out.println("Rolled back TX");
-        //     throw e;
-        // } finally {
-        //     if (tx.getStatus() == Status.STATUS_MARKED_ROLLBACK) {
-        //         tm.rollback();
-        //     } else {
-        //         tm.commit();
-        //     }
-        // }
-        // return result;
     }
 
     private void endTransaction(EntityTransaction tx) throws Exception {
-        // if (tx != tm.getTransaction()) {
-        //     throw new RuntimeException("tx on wrong thread");
-        // }
         try {
             if (!tx.getRollbackOnly()) {
                 // em.flush();
@@ -110,23 +71,10 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
             handleException(e, tx);
         } finally {
             em.close();
-            // test.get().decrementAndGet();
         }
-
-        // if (tx.isActive() == Status.STATUS_MARKED_ROLLBACK) {
-        //     System.out.println("Rolling back");
-        //     tm.rollback();
-        // } else {
-        //     System.out.println("Committing transaction");
-        //     System.out.println("tx active? " + em.getTransaction().isActive());
-        //     em.flush();
-        //     tm.commit();
-        //     System.out.println("tx active? " + em.getTransaction().isActive());
-        // }
     }
 
     private void handleException(Exception e, EntityTransaction tx) throws Exception {
-        //e.printStackTrace();
         if (e instanceof RuntimeException || e instanceof StorageException) {
             System.out.println("Rollback only set");
             tx.setRollbackOnly();

@@ -28,6 +28,7 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ApiKeyBean;
@@ -114,6 +115,7 @@ import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.security.ISecurityContext.EntityType;
 import io.apiman.manager.api.service.ApiService;
 import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
 import io.apiman.manager.api.service.ClientAppService;
@@ -126,10 +128,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -137,12 +142,15 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
+import static io.apiman.manager.api.security.ISecurityContext.EntityType.API;
+
 /**
  * REST layer for Organization
  *
  * TODO(msavy): split this into multiple interfaces & impls (ApiResource, ClientAppResource, etc).
  *
  * @author eric.wittmann@redhat.com
+ * @author marc@blackparrotlabs.io
  */
 @RequestScoped
 @Transactional
@@ -255,25 +263,6 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         return clientService.createClient(organizationId, bean);
     }
 
-    // @Override
-    // public ClientBean createClient(String organizationId, MultipartFormDataInput multipartInput)
-    //      throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
-    //     securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
-    //
-    //     Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'client' and 'image'");
-    //
-    //     // Try to do image first as it is probably more likely to fail.
-    //     MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
-    //     BlobRef blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
-    //
-    //     // Simply convert to NewApiBean and store reference.
-    //     InputPart clientPart = MultipartHelper.getRequiredPart(multipartInput, "client", MediaType.APPLICATION_JSON_TYPE);
-    //     // TODO(msavy): probably better to have a separate DTO than for imageref @JsonIgnore?
-    //     NewClientBean clientBean = clientPart.getBody(NewClientBean.class, null);
-    //     clientBean.setImage(blobRef.getId());
-    //     return clientService.createClient(organizationId, clientBean);
-    // }
-
     @Override
     public ClientBean getClient(String organizationId, String clientId)
         throws ClientNotFoundException, NotAuthorizedException {
@@ -283,30 +272,11 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
-    public void updateClient(String organizationId, String clientId,
-        UpdateClientBean bean) throws ClientNotFoundException, NotAuthorizedException {
+    public void updateClient(String organizationId, String clientId, UpdateClientBean bean) throws ClientNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
         LOGGER.debug("Attempting to update client {0} in org {1} with {2}", clientId, organizationId, bean);
         clientService.updateClient(organizationId, clientId, bean);
     }
-
-    // @Override
-    // public void updateClient(String organizationId, String clientId, MultipartFormDataInput multipartInput)
-    //      throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException, IOException {
-    //     securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
-    //
-    //     Preconditions.checkArgument(multipartInput.getParts().size() != 2, "Expected 'client' and 'image'");
-    //     // Try to do image first as it is probably more likely to fail.
-    //     MultipartUploadHolder image = MultipartHelper.getRequiredImage(multipartInput, "image");
-    //     BlobRef blobRef = blobStore.storeBlob(image.getFilename(), image.getMediaType().toString(), image.getFileBackedOutputStream());
-    //
-    //     InputPart clientPart = MultipartHelper.getRequiredPart(multipartInput, "client", MediaType.APPLICATION_JSON_TYPE);
-    //     UpdateClientBean bean = clientPart.getBody(UpdateClientBean.class, null);
-    //     bean.setImage(blobRef.getId());
-    //
-    //     LOGGER.debug("Attempting to update client {0} in org {1} with {2}", clientId, organizationId, bean);
-    //     clientService.updateClient(organizationId, clientId, bean);
-    // }
 
     @Override
     public void deleteClient(String organizationId, String clientId)
@@ -326,7 +296,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
 
     @Override
     public List<ClientSummaryBean> listClients(String organizationId) throws OrganizationNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.orgView, organizationId);
+        securityContext.checkAllPermissions(Set.of(PermissionType.orgView, PermissionType.clientView), organizationId);
         LOGGER.debug("Attempting to list all clients in org {1}", organizationId);
         return clientService.listClients(organizationId);
     }
@@ -341,7 +311,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
 
     @Override
     public List<ClientVersionSummaryBean> listClientVersions(String organizationId, String clientId) throws ClientNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.clientView, organizationId);
+        securityContext.checkAllPermissions(Set.of(PermissionType.orgView, PermissionType.clientView), organizationId);
         LOGGER.debug("Attempting to list all clientVersions in client {0} in org {1}", clientId, organizationId);
         return clientService.listClientVersions(organizationId, clientId);
     }
@@ -371,8 +341,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
-    public SearchResultsBean<AuditEntryBean> getClientVersionActivity(String organizationId,
-        String clientId, String version, int page, int pageSize)
+    public SearchResultsBean<AuditEntryBean> getClientVersionActivity(String organizationId, String clientId, String version, int page, int pageSize)
         throws ClientVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
         return clientService.getClientVersionActivity(organizationId, clientId, version, page, pageSize);
@@ -394,8 +363,8 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
-    public ContractBean getContract(String organizationId, String clientId, String version,
-        Long contractId) throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
+    public ContractBean getContract(String organizationId, String clientId, String version, Long contractId)
+            throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
         return contractService.getContract(contractId);
     }
@@ -416,8 +385,8 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
-    public Response getApiRegistryJSON(String organizationId, String clientId,
-        String version, String download) throws ClientNotFoundException, NotAuthorizedException {
+    public Response getApiRegistryJSON(String organizationId, String clientId, String version, String download)
+            throws ClientNotFoundException, NotAuthorizedException {
         if (BooleanUtils.toBoolean(download)) { //$NON-NLS-1$
             String path = String.format("%s/%s/%s", organizationId, clientId, version); //$NON-NLS-1$
             DownloadBean dbean = tryAction(() ->  downloadManager.createDownload(DownloadType.apiRegistryJson, path));
@@ -440,7 +409,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         String download) throws ClientVersionNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.clientView, organizationId);
 
-        if ("true".equals(download)) { //$NON-NLS-1$
+        if (BooleanUtils.toBoolean(download)) { //$NON-NLS-1$
             return tryAction(() -> {
                 String path = String.format("%s/%s/%s", organizationId, clientId, version); //$NON-NLS-1$
                 DownloadBean dbean = downloadManager.createDownload(DownloadType.apiRegistryXml, path);
@@ -526,14 +495,27 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
 
     @Override
     public List<ApiSummaryBean> listApis(String organizationId) throws OrganizationNotFoundException {
-        // No permission check is needed, because this would break All Organizations UI
-        return apiService.listApis(organizationId);
+        if (securityContext.hasAllPermissions(Set.of(PermissionType.orgView, PermissionType.apiView), organizationId)) {
+            return apiService.listApis(organizationId);
+        } else {
+            return apiService.listApis(organizationId)
+                    .stream()
+                    .filter(api -> securityContext.isDiscoverable(API, organizationId, api.getId()))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
     public ApiBeanDto getApi(String organizationId, String apiId)
         throws ApiNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
+
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                Set.of(PermissionType.apiView)
+        );
+
         return apiService.getApi(organizationId, apiId);
     }
 
@@ -565,7 +547,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
-    public ApiVersionBean createApiVersion(String organizationId, String apiId, NewApiVersionBean bean)
+    public ApiVersionBeanDto createApiVersion(String organizationId, String apiId, NewApiVersionBean bean)
         throws ApiNotFoundException, NotAuthorizedException, InvalidVersionException, ApiVersionAlreadyExistsException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
         return apiService.createApiVersion(organizationId, apiId, bean);
@@ -573,37 +555,58 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
 
     @Override
     public List<ApiVersionSummaryBean> listApiVersions(String organizationId, String apiId)
-        throws ApiNotFoundException {
-        // No permission check is needed, because this would break All APIs UI
-        // Try to get the API first - will throw a ApiNotFoundException if not found.
-        return apiService.listApiVersions(organizationId, apiId);
+            throws ApiNotFoundException {
+        if (securityContext.hasPermission(PermissionType.apiView, organizationId)) {
+            return apiService.listApiVersions(organizationId, apiId);
+        } else {
+            return apiService.listApiVersions(organizationId, apiId).stream()
+                    .filter(avb -> securityContext.isDiscoverable(EntityType.API, organizationId, apiId, avb.getVersion()))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
-    public ApiVersionBean getApiVersion(String organizationId, String apiId, String version)
+    public ApiVersionBeanDto getApiVersion(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
-        // No permission check is needed, because this would break All APIs UI
-        ApiVersionBean apiVersion = apiService.getApiVersion(organizationId, apiId, version);
-        if (securityContext.hasPermission(PermissionType.apiView, organizationId)) {
-            apiService.decryptEndpointProperties(apiVersion);
-            return apiVersion;
-        } else {
-            return RestHelper.hideSensitiveDataFromApiVersionBean(apiVersion);
-        }
+
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                version,
+                Set.of(PermissionType.apiView)
+        );
+
+        return apiService.getApiVersion(organizationId, apiId, version);
     }
 
     @Override
     public ApiVersionStatusBean getApiVersionStatus(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
+
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                version,
+                Set.of(PermissionType.apiView)
+        );
+
         return apiService.getApiVersionStatus(organizationId, apiId, version);
     }
 
     @Override
     public Response getApiDefinition(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
-        // No permission check is needed, because this would break All APIs UI
-        // Allow the user to view a definition
+
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                version,
+                Set.of(PermissionType.apiView)
+        );
+
         ApiDefinitionStream apiDef = apiService.getApiDefinition(organizationId, apiId, version);
         return Response.ok()
             .entity(apiDef.getDefinition())
@@ -614,12 +617,20 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException, InvalidApiStatusException, GatewayNotFoundException {
-        // No permission check is needed, because this would break All APIs UI
+
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                version,
+                Set.of(PermissionType.apiView)
+        );
+
         return apiService.getApiVersionEndpointInfo(organizationId, apiId, version);
     }
 
     @Override
-    public ApiVersionBean updateApiVersion(String organizationId, String apiId, String version, UpdateApiVersionBean bean)
+    public ApiVersionBeanDto updateApiVersion(String organizationId, String apiId, String version, @Valid UpdateApiVersionBean bean)
         throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException {
         securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
         return apiService.updateApiVersion(organizationId, apiId, version, bean);
@@ -671,15 +682,26 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public SearchResultsBean<AuditEntryBean> getApiVersionActivity(String organizationId, String apiId,
         String version, int page, int pageSize) throws ApiVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                version,
+                Set.of(PermissionType.apiView)
+        );
         return apiService.getApiVersionActivity(organizationId, apiId, version, page, pageSize);
     }
 
     @Override
     public List<ApiPlanSummaryBean> getApiVersionPlans(String organizationId, String apiId, String version)
          throws ApiVersionNotFoundException {
-        // No permission check is needed, because this would break All APIs UI
-        // Ensure the version exists first.
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                version,
+                Set.of(PermissionType.apiView)
+        );
         return apiService.getApiVersionPlans(organizationId, apiId, version);
     }
 
@@ -693,7 +715,13 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public PolicyBean getApiPolicy(String organizationId, String apiId, String version, long policyId)
         throws OrganizationNotFoundException, ApiVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                version,
+                Set.of(PermissionType.apiView)
+        );
         return apiService.getApiPolicy(organizationId, apiId, version, policyId);
     }
 
@@ -722,7 +750,13 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public List<PolicySummaryBean> listApiPolicies(String organizationId, String apiId, String version)
         throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.apiView, organizationId);
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                version,
+                Set.of(PermissionType.apiView)
+        );
         return apiService.listApiPolicies(organizationId, apiId, version);
     }
 
@@ -736,19 +770,26 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public PolicyChainBean getApiPolicyChain(String organizationId, String apiId, String version,
         String planId) throws ApiVersionNotFoundException {
-        // No permission check is needed, because this would break All APIs UI
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                version,
+                Set.of(PermissionType.apiView)
+        );
         return apiService.getApiPolicyChain(organizationId, apiId, version, planId);
     }
-
-    // @Override
-    // public Response probeApiPolicy(String organizationId, String apiId, String version, String planId) throws ApiVersionNotFoundException {
-    //     securityContext.checkPermissions(PermissionType.apiView, organizationId);
-    //     return apiService.probeApi()
-    // }
 
     @Override
     public List<ContractSummaryBean> getApiVersionContracts(String organizationId, String apiId,
         String version, int page, int pageSize) throws ApiVersionNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissionsOrDiscoverability(
+                API,
+                organizationId,
+                apiId,
+                version,
+                Set.of(PermissionType.apiView)
+        );
         return apiService.getApiVersionContracts(organizationId, apiId, version, page, pageSize);
     }
 
@@ -762,22 +803,38 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public PlanBean getPlan(String organizationId, String planId)
         throws PlanNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.PLAN,
+                organizationId,
+                planId,
+                Set.of(PermissionType.planView)
+        );
         return planService.getPlan(organizationId, planId);
     }
 
     @Override
     public SearchResultsBean<AuditEntryBean> getPlanActivity(String organizationId, String planId, int page,
         int pageSize) throws PlanNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.PLAN,
+                organizationId,
+                planId,
+                Set.of(PermissionType.planView)
+        );
         return planService.getPlanActivity(organizationId, planId, page, pageSize);
     }
 
     @Override
     public List<PlanSummaryBean> listPlans(String organizationId)
         throws OrganizationNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.orgView, organizationId);
-        return planService.listPlans(organizationId);
+        if (securityContext.hasAllPermissions(Set.of(PermissionType.orgView, PermissionType.planView), organizationId)) {
+            return planService.listPlans(organizationId);
+        } else {
+            return planService.listPlans(organizationId)
+                    .stream()
+                    .filter(plan -> securityContext.isDiscoverable(EntityType.PLAN, organizationId, plan.getId()))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
@@ -797,14 +854,24 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public List<PlanVersionSummaryBean> listPlanVersions(String organizationId, String planId)
         throws PlanNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
-        return planService.listPlanVersions(organizationId, planId);
+        if (securityContext.hasPermission(PermissionType.planView, organizationId)) {
+            return planService.listPlanVersions(organizationId, planId);
+        } else {
+            return planService.listPlanVersions(organizationId, planId).stream()
+                    .filter(pvb -> securityContext.isDiscoverable(EntityType.PLAN, organizationId, planId, pvb.getVersion()))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
         throws PlanVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.PLAN,
+                organizationId,
+                planId,
+                Set.of(PermissionType.planView)
+        );
         return planService.getPlanVersion(organizationId, planId, version);
     }
 
@@ -812,7 +879,12 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     public SearchResultsBean<AuditEntryBean> getPlanVersionActivity(String organizationId,
         String planId, String version, int page, int pageSize)
         throws PlanVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.PLAN,
+                organizationId,
+                planId,
+                Set.of(PermissionType.planView)
+        );
         return planService.getPlanVersionActivity(organizationId, planId, version, page, pageSize);
     }
 
@@ -825,17 +897,26 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
-    public List<PolicySummaryBean> listPlanPolicies(String organizationId, String planId,
-        String version)
+    public List<PolicySummaryBean> listPlanPolicies(String organizationId, String planId, String version)
         throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.PLAN,
+                organizationId,
+                planId,
+                Set.of(PermissionType.planView)
+        );
         return planService.listPlanPolicies(organizationId, planId, version);
     }
 
     @Override
     public PolicyBean getPlanPolicy(String organizationId, String planId, String version, long policyId)
         throws OrganizationNotFoundException, PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        securityContext.checkPermissions(PermissionType.planView, organizationId);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.PLAN,
+                organizationId,
+                planId,
+                Set.of(PermissionType.planView)
+        );
         return planService.getPlanPolicy(organizationId, planId, version, policyId);
     }
 
@@ -900,16 +981,14 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
-    public UsageHistogramBean getUsage(String organizationId,
-        String apiId, String version, HistogramIntervalType interval,
-        String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
+    public UsageHistogramBean getUsage(String organizationId, String apiId, String version, HistogramIntervalType interval, String fromDate, String toDate)
+            throws NotAuthorizedException, InvalidMetricCriteriaException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
         return statsService.getUsage(organizationId, apiId, version, interval, fromDate, toDate);
     }
 
     @Override
-    public UsagePerClientBean getUsagePerClient(
-        String organizationId, String apiId, String version, String fromDate, String toDate)
+    public UsagePerClientBean getUsagePerClient(String organizationId, String apiId, String version, String fromDate, String toDate)
         throws NotAuthorizedException, InvalidMetricCriteriaException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);
         return statsService.getUsagePerClient(organizationId, apiId, version, fromDate, toDate);

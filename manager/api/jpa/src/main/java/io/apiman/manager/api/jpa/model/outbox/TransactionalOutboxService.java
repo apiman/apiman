@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -47,7 +48,7 @@ import org.apache.commons.lang3.StringUtils;
 @Transactional
 public class TransactionalOutboxService extends AbstractJpaStorage {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(TransactionalOutboxService.class);
-    private static final ObjectMapper OM = new ObjectMapper();
+    private static final ObjectMapper OM = new ObjectMapper().findAndRegisterModules().setDateFormat(new StdDateFormat());
     private boolean outboxActive = true;
 
     public TransactionalOutboxService() {}

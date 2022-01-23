@@ -6,8 +6,9 @@ import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import javax.persistence.Column;
+import java.util.StringJoiner;
 
 /**
  *
@@ -15,7 +16,6 @@ import javax.persistence.Column;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class ApiBeanDto {
-    private static final long serialVersionUID = 1526742536153467539L;
 
     private OrganizationBean organization;
     private String id;
@@ -25,7 +25,6 @@ public class ApiBeanDto {
     private String description;
     private Set<KeyValueTag> tags = new HashSet<>();
     private String createdBy;
-    @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
     private Integer numPublished;
 
@@ -111,5 +110,40 @@ public class ApiBeanDto {
     public ApiBeanDto setNumPublished(Integer numPublished) {
         this.numPublished = numPublished;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ApiBeanDto that = (ApiBeanDto) o;
+        return Objects.equals(organization, that.organization) && Objects.equals(id, that.id) && Objects.equals(name, that.name)
+                       && Objects.equals(image, that.image) && Objects.equals(description, that.description) && Objects.equals(tags, that.tags)
+                       && Objects.equals(createdBy, that.createdBy) && Objects.equals(createdOn, that.createdOn) && Objects.equals(numPublished,
+                that.numPublished);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(organization, id, name, image, description, tags, createdBy, createdOn, numPublished);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ApiBeanDto.class.getSimpleName() + "[", "]")
+                .add("organization=" + organization)
+                .add("id='" + id + "'")
+                .add("name='" + name + "'")
+                .add("image='" + image + "'")
+                .add("description='" + description + "'")
+                .add("tags=" + tags)
+                .add("createdBy='" + createdBy + "'")
+                .add("createdOn=" + createdOn)
+                .add("numPublished=" + numPublished)
+                .toString();
     }
 }

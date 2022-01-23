@@ -10,6 +10,7 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
+import io.apiman.manager.api.security.impl.IndexedPermissions;
 
 import java.util.List;
 import java.util.Set;

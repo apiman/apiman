@@ -1,7 +1,7 @@
 package io.apiman.manager.api.rest.impl.util;
 
-import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
@@ -102,8 +102,8 @@ public final class RestHelper {
      * @param apiVersionBean the apiVersionBean
      * @return the apiVersionBean without sensitive data
      */
-    public static ApiVersionBean hideSensitiveDataFromApiVersionBean(ApiVersionBean apiVersionBean) {
-        ApiBean api = new ApiBean();
+    public static ApiVersionBeanDto hideSensitiveDataFromApiVersionBean(ApiVersionBeanDto apiVersionBean) {
+        ApiBeanDto api = new ApiBeanDto();
         api.setId(apiVersionBean.getApi().getId());
         api.setName(apiVersionBean.getApi().getName());
         api.setDescription(apiVersionBean.getApi().getDescription());
@@ -116,7 +116,7 @@ public final class RestHelper {
 
         api.setOrganization(org);
 
-        ApiVersionBean apiVersion = new ApiVersionBean();
+        ApiVersionBeanDto apiVersion = new ApiVersionBeanDto();
         apiVersion.setApi(api);
         apiVersion.setStatus(apiVersionBean.getStatus());
         apiVersion.setEndpointType(apiVersionBean.getEndpointType());
@@ -126,7 +126,7 @@ public final class RestHelper {
         apiVersion.setPlans(apiVersionBean.getPlans());
         apiVersion.setVersion(apiVersionBean.getVersion());
         apiVersion.setDefinitionType(apiVersionBean.getDefinitionType());
-        apiVersion.setExposeInPortal(apiVersionBean.isExposeInPortal());
+        apiVersion.setPublicDiscoverability(apiVersionBean.getPublicDiscoverability());
         apiVersion.setExtendedDescription(apiVersionBean.getExtendedDescription());
         //dates
         apiVersion.setCreatedOn(apiVersionBean.getCreatedOn());

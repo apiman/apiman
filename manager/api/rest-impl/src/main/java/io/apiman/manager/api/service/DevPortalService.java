@@ -2,19 +2,22 @@ package io.apiman.manager.api.service;
 
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
+import io.apiman.manager.api.beans.idm.OrgsPermissionConstraint;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiPlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
-import io.apiman.manager.api.beans.summary.mappers.ApiMapper;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -29,7 +32,8 @@ import com.google.common.collect.Lists;
 @Transactional
 public class DevPortalService implements DataAccessUtilMixin {
 
-    private final ApiMapper apiMapper = ApiMapper.INSTANCE;
+    private final OrgsPermissionConstraint PORTAL_CONSTRAINTS = OrgsPermissionConstraint.constrained().setAllowedDiscoverabilities(Set.of(DiscoverabilityLevel.PORTAL));
+
     private IStorage storage;
     private IStorageQuery query;
 
@@ -45,14 +49,14 @@ public class DevPortalService implements DataAccessUtilMixin {
     public List<DeveloperApiPlanSummaryDto> getApiVersionPlans(String orgId, String apiId, String apiVersion) {
         List<ApiPlanSummaryBean> apiVersionPlans = tryAction(() -> query.getApiVersionPlans(orgId, apiId, apiVersion));
         return apiVersionPlans.stream()
-                .filter(ApiPlanSummaryBean::getExposeInPortal)
+                .filter(avp -> avp.getDiscoverability() == DiscoverabilityLevel.PORTAL)
                 .map(psb -> toDto(orgId, psb))
                 .collect(Collectors.toList());
     }
 
     public SearchResultsBean<ApiSummaryBean> findExposedApis(SearchCriteriaBean criteria) {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
-        return tryAction(() -> query.findExposedApis(criteria));
+        return tryAction(() -> query.findApis(criteria, PORTAL_CONSTRAINTS));
     }
 
     /**
@@ -60,10 +64,9 @@ public class DevPortalService implements DataAccessUtilMixin {
      * @return list of featured ApiSummaries
      */
     public List<ApiSummaryBean> getFeaturedApis() {
-        return query.getApisByTagName("featured").stream()
-                .filter(api -> query.isAnyApiVersionExposed(api.getId()))
-                .map(apiMapper::toSummary)
-                .collect(Collectors.toList());
+        SearchCriteriaBean searchCriteria = new SearchCriteriaBean()
+                .addFilter("tags.key", "featured", SearchCriteriaFilterOperator.eq);
+        return tryAction(() -> query.findApis(searchCriteria, PORTAL_CONSTRAINTS).getBeans());
     }
 
     public List<ApiVersionPolicySummaryDto> getApiVersionPolicies(String orgId, String apiId, String apiVersion) {
@@ -82,7 +85,8 @@ public class DevPortalService implements DataAccessUtilMixin {
                 .setPlanDescription(apiPsb.getPlanDescription())
                 .setVersion(apiPsb.getVersion())
                 .setRequiresApproval(apiPsb.getRequiresApproval())
-                .setPlanPolicies(planPolicies);
+                .setPlanPolicies(planPolicies)
+                .setDiscoverability(apiPsb.getDiscoverability());
     }
 
     // TODO use mapstruct

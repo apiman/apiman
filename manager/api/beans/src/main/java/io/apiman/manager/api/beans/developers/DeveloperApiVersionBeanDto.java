@@ -3,10 +3,11 @@ package io.apiman.manager.api.beans.developers;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiDefinitionType;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
-import io.apiman.manager.api.beans.apis.ApiPlanBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.EndpointContentType;
 import io.apiman.manager.api.beans.apis.EndpointType;
+import io.apiman.manager.api.beans.apis.dto.ApiPlanBeanDto;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -31,7 +32,8 @@ public class DeveloperApiVersionBeanDto {
         private Map<String, String> endpointProperties = new HashMap<>();
         private Set<ApiGatewayBean> gateways;
         private boolean publicAPI;
-        private Set<ApiPlanBean> plans;
+        private DiscoverabilityLevel publicDiscoverability;
+        private Set<ApiPlanBeanDto> plans;
         private String version;
         private String createdBy;
         private Date createdOn;
@@ -43,7 +45,6 @@ public class DeveloperApiVersionBeanDto {
         private boolean parsePayload;
         private boolean disableKeysStrip;
         private String definitionUrl;
-        private boolean exposeInPortal = false;
         private String extendedDescription;
 
     public DeveloperApiVersionBeanDto() {
@@ -121,11 +122,20 @@ public class DeveloperApiVersionBeanDto {
         this.publicAPI = publicAPI;
     }
 
-    public Set<ApiPlanBean> getPlans() {
+    public DiscoverabilityLevel getPublicDiscoverability() {
+        return publicDiscoverability;
+    }
+
+    public DeveloperApiVersionBeanDto setPublicDiscoverability(DiscoverabilityLevel publicDiscoverability) {
+        this.publicDiscoverability = publicDiscoverability;
+        return this;
+    }
+
+    public Set<ApiPlanBeanDto> getPlans() {
         return plans;
     }
 
-    public void setPlans(Set<ApiPlanBean> plans) {
+    public void setPlans(Set<ApiPlanBeanDto> plans) {
         this.plans = plans;
     }
 
@@ -217,13 +227,7 @@ public class DeveloperApiVersionBeanDto {
         this.definitionUrl = definitionUrl;
     }
 
-    public boolean isExposeInPortal() {
-        return exposeInPortal;
-    }
 
-    public void setExposeInPortal(boolean exposeInPortal) {
-        this.exposeInPortal = exposeInPortal;
-    }
 
     public String getExtendedDescription() {
         return extendedDescription;
@@ -262,6 +266,7 @@ public class DeveloperApiVersionBeanDto {
                 .add("endpointProperties=" + endpointProperties)
                 .add("gateways=" + gateways)
                 .add("publicAPI=" + publicAPI)
+                .add("publicDiscoverability=" + publicDiscoverability)
                 .add("plans=" + plans)
                 .add("version='" + version + "'")
                 .add("createdBy='" + createdBy + "'")
@@ -274,7 +279,6 @@ public class DeveloperApiVersionBeanDto {
                 .add("parsePayload=" + parsePayload)
                 .add("disableKeysStrip=" + disableKeysStrip)
                 .add("definitionUrl='" + definitionUrl + "'")
-                .add("exposeInPortal=" + exposeInPortal)
                 .add("extendedDescription='" + extendedDescription + "'")
                 .toString();
     }

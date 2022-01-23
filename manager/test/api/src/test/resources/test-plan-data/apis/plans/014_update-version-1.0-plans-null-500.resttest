@@ -1,0 +1,17 @@
+PUT /organizations/Organization1/apis/API1/versions/1.0 admin/admin
+Content-Type: application/json
+
+{
+  "endpoint" : "http://localhost:8080/ping",
+  "endpointType" : "rest",
+  "plans" : [
+    { "planId" : "Plan2", "version" : null }
+  ]
+}
+----
+422
+
+{
+	"type": "ConstraintViolationException",
+	"errorCode": 422
+}

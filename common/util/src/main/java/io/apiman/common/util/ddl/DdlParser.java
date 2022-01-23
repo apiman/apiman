@@ -72,10 +72,10 @@ public class DdlParser {
             if (line.trim().isEmpty()) {
                 continue;
             }
-            if (line.endsWith("'") || line.endsWith("(")) {
+            if (line.endsWith("'") || line.endsWith("(") || line.endsWith("$$")) {
                 isInMultiLineStatement = true;
             }
-            if (line.startsWith("'") || line.startsWith(")")) {
+            if (line.startsWith("'") || line.startsWith(")") || line.startsWith("$$")) {
                 isInMultiLineStatement = false;
             }
             builder.append(line);
