@@ -124,4 +124,11 @@ public abstract class AbstractEsComponent {
      * @return the list of valid Elasticsearch index definitions
      */
     public abstract Map<String, EsIndexProperties> getEsIndices();
+    
+    /**
+     * Gets the index name to use when reading/writing to ES. by shachindra singh
+     */
+     protected String getIndexPrefixOnly() {
+        return indexPrefix ;
+    }
 }
