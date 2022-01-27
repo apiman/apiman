@@ -135,7 +135,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
 
             BulkRequest request = new BulkRequest();
             for (RequestMetric metric : batch) {
-                IndexRequest index = new IndexRequest(getDefaultIndexPrefix());
+                IndexRequest index = new IndexRequest(getFullIndexName());
                 index.source(JSON_MAPPER.writeValueAsString(metric), XContentType.JSON);
                 request.add(index);
             }
@@ -200,5 +200,15 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
         Map<String, EsIndexProperties> indexMap = new HashMap<>();
         indexMap.put("", propertiesMap);
         return indexMap;
+    }
+    
+    
+     /**
+     * get index full name for metrics index
+     * @return full index name
+     * Bu shachindra Singh
+     */
+    private String getFullIndexName() {
+        return getIndexPrefixOnly();
     }
 }
