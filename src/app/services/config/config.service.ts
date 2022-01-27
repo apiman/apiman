@@ -25,6 +25,7 @@ import {
 } from '../../interfaces/IConfig';
 import { HttpClient } from '@angular/common/http';
 import * as JSON5 from 'json5';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -35,9 +36,10 @@ export class ConfigService {
   constructor(private http: HttpClient) {}
 
   async readAndEvaluateConfig(): Promise<IConfig> {
-    const configAsJson5String = await this.http
-      .get('assets/config.json5', { responseType: 'text' })
-      .toPromise();
+    const configAsJson5String = await firstValueFrom(
+      this.http.get('assets/config.json5', { responseType: 'text' })
+    );
+
     try {
       if (configAsJson5String != null) {
         this.config = JSON5.parse(configAsJson5String);

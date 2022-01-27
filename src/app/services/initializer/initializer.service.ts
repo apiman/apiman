@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '../config/config.service';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -39,12 +40,9 @@ export class InitializerService {
       : 'en';
 
     return new Promise((resolve) => {
-      void this.translator
-        .use(language)
-        .toPromise()
-        .then(() => {
-          resolve();
-        });
+      void firstValueFrom(this.translator.use(language)).then(() => {
+        resolve();
+      });
     });
   }
 }

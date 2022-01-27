@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -81,21 +81,21 @@ export class MarketplaceClientAppComponent implements OnInit {
       .createClient(orgId, this.clientName)
       .pipe(
         switchMap((client: IClient) => {
-          console.log(client.id + 'created');
+          console.log(`${client.id} created`);
           this.snackbar.showPrimarySnackBar(
             this.translator.instant('COMMON.SUCCESS') as string
           );
           return this.loadClients();
         })
       )
-      .subscribe(
-        (results: [IOrganizationSummary[], IClientSummary[]]) => {
+      .subscribe({
+        next: (results: [IOrganizationSummary[], IClientSummary[]]) => {
           this.createTableView(results);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.snackbar.showErrorSnackBar(error.message, error);
         }
-      );
+      });
   }
 
   public applyFilter(event: Event): void {
@@ -129,17 +129,17 @@ export class MarketplaceClientAppComponent implements OnInit {
           return this.loadClients();
         })
       )
-      .subscribe(
-        (results: [IOrganizationSummary[], IClientSummary[]]) => {
+      .subscribe({
+        next: (results: [IOrganizationSummary[], IClientSummary[]]) => {
           this.createTableView(results);
         },
-        (error) => {
+        error: (error) => {
           console.warn(error);
           this.snackbar.showErrorSnackBar(
             this.translator.instant('COMMON.ERROR') as string
           );
         }
-      );
+      });
   }
 
   private loadClients() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,8 +41,10 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./marketplace-signup-stepper.component.scss']
 })
 export class MarketplaceSignupStepperComponent implements OnInit {
-  selectedClients = new Set<IClientSummary>();
+  // stepper completed checks, must be true to go to next step
   agreedTermsAndPrivacy: boolean | undefined;
+
+  selectedClients = new Set<IClientSummary>();
   termsEnabled: boolean;
   newContractDetails: ISignUpInfo;
   contract: IContractExt;
@@ -101,8 +103,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       .value as IClientSummary;
     this.backend
       .getContracts(client.organizationId, client.id, '1.0')
-      .subscribe(
-        (contractSummaries: IContractSummary[]) => {
+      .subscribe({
+        next: (contractSummaries: IContractSummary[]) => {
           if (
             contractSummaries.some((summary: IContractSummary) => {
               return (
@@ -116,13 +118,14 @@ export class MarketplaceSignupStepperComponent implements OnInit {
           ) {
             this.printUserError('WIZARD.CONTRACT_EXISTS');
           } else {
-            stepper.next();
+            this.goToNextStep(stepper, 0);
           }
         },
-        (error: HttpErrorResponse) => {
+
+        error: (error: HttpErrorResponse) => {
           this.snackbar.showErrorSnackBar(error.message, error);
         }
-      );
+      });
   }
 
   nextAfterTermsAgreed(): void {
@@ -173,8 +176,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
             );
         })
       )
-      .subscribe(
-        (contract: IContractExt) => {
+      .subscribe({
+        next: (contract: IContractExt) => {
           this.snackbar.showPrimarySnackBar(
             this.translator.instant('WIZARD.SUCCESS') as string
           );
@@ -182,12 +185,13 @@ export class MarketplaceSignupStepperComponent implements OnInit {
           if ('AwaitingApproval' === this.contract.client.status) {
             void this.router.navigate(['approval']);
           } else {
-            stepper.next();
+            this.goToNextStep(stepper, 2);
+            this.disablePreviousSteps(stepper);
           }
         },
-        (error: HttpErrorResponse) =>
+        error: (error: HttpErrorResponse) =>
           this.snackbar.showErrorSnackBar(error.message, error)
-      );
+      });
   }
 
   finish(): void {
@@ -198,14 +202,11 @@ export class MarketplaceSignupStepperComponent implements OnInit {
         organizationId: this.contract.client.client.organization.id,
         entityId: this.contract.client.client.id
       })
-      .subscribe(
-        () => {
-          // void response
-        },
-        (error: HttpErrorResponse) => {
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
           this.snackbar.showErrorSnackBar(error.message, error);
         }
-      );
+      });
     void this.router.navigate(['applications'], {
       fragment: this.tocService.formatClientId(this.contract)
     });
@@ -213,5 +214,22 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   private printUserError(key: string): void {
     this.snackbar.showErrorSnackBar(this.translator.instant(key) as string);
+  }
+
+  private disablePreviousSteps(stepper: MatStepper) {
+    // disallow to go back to previous states after confirmation
+    for (let i = 0; i <= 2; i++) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      stepper.steps.get(i)!.editable = false;
+    }
+  }
+
+  private goToNextStep(stepper: MatStepper, currentStep: number) {
+    // Set completed step directly to allow going to the next step
+    // See: https://github.com/angular/components/pull/15403
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    stepper.steps.get(currentStep)!.completed = true;
+    stepper.next();
   }
 }

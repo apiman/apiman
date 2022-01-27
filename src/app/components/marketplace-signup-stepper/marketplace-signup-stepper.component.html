@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2022 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 
 <div id="center">
   <mat-stepper #stepper linear>
-    <mat-step label="{{ 'WIZARD.FIRST_STEP_LABEL' | translate }}">
+    <!-- disable default behaviour: [completed]=false-->
+    <!-- By default, the completed attribute of a step returns true if the step is valid (in case of linear stepper) and the user has interacted with the step. -->
+    <mat-step
+      label="{{ 'WIZARD.FIRST_STEP_LABEL' | translate }}"
+      [completed]="false">
       <mat-card>
         <mat-card-header>
           <mat-card-title>{{
@@ -68,7 +72,9 @@
         </mat-card-actions>
       </mat-card>
     </mat-step>
-    <mat-step label="{{ 'WIZARD.THIRD_STEP_LABEL' | translate }}">
+    <mat-step
+      label="{{ 'WIZARD.THIRD_STEP_LABEL' | translate }}"
+      [completed]="false">
       <mat-card>
         <mat-card-header>
           <mat-card-title>{{

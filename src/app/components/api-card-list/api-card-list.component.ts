@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -146,19 +146,19 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
           return this.checkApisDocsInApiVersions(apiSummaries);
         })
       )
-      .subscribe(
-        (apiList: IApiSummaryExt[]) => {
+      .subscribe({
+        next: (apiList: IApiSummaryExt[]) => {
           this.apis = apiList;
           this.loadingSpinnerService.stopWaiting();
           this.ready = true;
         },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-        (err: any) => {
+        error: (err: any) => {
           console.error(err);
           this.error = true;
           this.loadingSpinnerService.stopWaiting();
         }
-      );
+      });
   }
 
   private getFeaturedApiList() {
@@ -173,19 +173,19 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
           return this.checkApisDocsInApiVersions(apiSummaries);
         })
       )
-      .subscribe(
-        (apiList: IApiSummaryExt[]) => {
+      .subscribe({
+        next: (apiList: IApiSummaryExt[]) => {
           this.apis = apiList;
           this.loadingSpinnerService.stopWaiting();
           this.ready = true;
         },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-        (err: any) => {
+        error: (err: any) => {
           console.error(err);
           this.error = true;
           this.loadingSpinnerService.stopWaiting();
         }
-      );
+      });
   }
 
   private checkApisDocsInApiVersions(apiSummaries: IApiSummary[]) {
