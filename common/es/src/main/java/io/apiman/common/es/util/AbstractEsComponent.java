@@ -126,7 +126,7 @@ public abstract class AbstractEsComponent {
     public abstract Map<String, EsIndexProperties> getEsIndices();
     
     /**
-     * Gets the index name to use when reading/writing to ES. by shachindra singh
+     * Gets the index name to use when reading/writing to ES. by shachindra singh 
      */
      protected String getIndexPrefixOnly() {
         return indexPrefix ;
