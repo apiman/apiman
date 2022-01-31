@@ -12,6 +12,8 @@ import io.apiman.manager.api.providers.eager.EagerLoaded;
 
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 /**
@@ -31,8 +33,12 @@ public class ContractApprovalRequestEmailNotification implements INotificationHa
     public ContractApprovalRequestEmailNotification() {
     }
 
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
+        // no-op to force eager initialization
+    }
+
     @Override
-    public void handle(NotificationDto<? extends IVersionedApimanEvent> rawNotification) {
+    public void handle(@Observes NotificationDto<?> rawNotification) {
         @SuppressWarnings("unchecked")
         NotificationDto<ContractCreatedEvent> signupNotification = (NotificationDto<ContractCreatedEvent>) rawNotification;
         ContractCreatedEvent event = signupNotification.getPayload();

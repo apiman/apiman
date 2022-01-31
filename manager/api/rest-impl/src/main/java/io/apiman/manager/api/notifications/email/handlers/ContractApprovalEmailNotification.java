@@ -12,12 +12,14 @@ import io.apiman.manager.api.providers.eager.EagerLoaded;
 
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@EagerLoaded
+//@EagerLoaded
 @ApplicationScoped
 public class ContractApprovalEmailNotification implements INotificationHandler {
 
@@ -28,8 +30,12 @@ public class ContractApprovalEmailNotification implements INotificationHandler {
         this.mailNotificationService = mailNotificationService;
     }
 
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
+        // no-op to force eager initialization
+    }
+
     @Override
-    public void handle(NotificationDto<? extends IVersionedApimanEvent> notif) {
+    public void handle(@Observes NotificationDto<?> notif) {
         NotificationDto<ContractApprovalEvent> notification = (NotificationDto<ContractApprovalEvent>) notif;
         Map<String, Object> templateMap = buildTemplateMap(notification);
         UserDto recipient = notification.getRecipient();

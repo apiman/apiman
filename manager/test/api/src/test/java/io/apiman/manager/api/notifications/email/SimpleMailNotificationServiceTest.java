@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.tuple;
  */
 public class SimpleMailNotificationServiceTest {
     // Pull templates from resources
-    File file = new File(getClass().getClassLoader().getResource("apiman/config/email-notification-templates.json").getFile());
+    File file = new File(getClass().getClassLoader().getResource("apiman/config/email-notification-templates.json5").getFile());
 
     // Override default config with our test config
     ApiManagerConfig config = new WarApiManagerConfig() {
