@@ -14,6 +14,7 @@ import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -36,6 +37,10 @@ public class ContractApprovalRequestNotificationProducer implements INotificatio
     }
 
     public ContractApprovalRequestNotificationProducer() {}
+
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
+        // no-op to force eager initialization
+    }
 
     public void processEvent(@Observes ContractCreatedEvent signupEvent) {
         LOGGER.debug("Processing signup event {0}", signupEvent);

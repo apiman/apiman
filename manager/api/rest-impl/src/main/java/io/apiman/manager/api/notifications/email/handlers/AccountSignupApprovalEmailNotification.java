@@ -12,6 +12,7 @@ import io.apiman.manager.api.providers.eager.EagerLoaded;
 
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 /**

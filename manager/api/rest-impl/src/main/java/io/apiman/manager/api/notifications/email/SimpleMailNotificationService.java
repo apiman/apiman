@@ -16,16 +16,21 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Locale.LanguageRange;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.trie.PatriciaTrie;
+import org.apache.commons.lang3.ObjectUtils;
+import org.elasticsearch.common.util.LocaleUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -166,8 +171,21 @@ public class SimpleMailNotificationService {
         } else {
             LOGGER.debug("Found template for reason {0} as {1}, shorter matching reasons templates "
                               + "may also exist", selected.getKey(), reasonKey);
-            return Optional.ofNullable(selected.getValue())
-                    .map(localeMap -> localeMap.get(locale));
+
+            Map<Locale, EmailNotificationTemplate> localeMap = selected.getValue();
+            if (localeMap == null) {
+                return Optional.empty();
+            } else {
+                List<Locale> bestMatchingLocale = List.of(
+                        Locale.lookup(LanguageRange.parse(locale.toLanguageTag()), supportedLocales),
+                        Locale.getDefault(),
+                        new Locale("en") // TODO(msavy): config-based default language?
+                );
+                return bestMatchingLocale.stream()
+                        .map(localeMap::get)
+                        .filter(Objects::nonNull)
+                        .findFirst();
+            }
         }
     }
 
@@ -204,33 +222,8 @@ public class SimpleMailNotificationService {
         return results;
     }
 
-    // /**
-    //  * Get first template for a reason category (generally more coarse-grained).
-    //  *
-    //  * @param category the category to get a template for
-    //  * @return template, if a suitable one is found, otherwise empty
-    //  */
-    // public Optional<EmailNotificationTemplate> findTemplateFor(@NotNull NotificationCategory category, @NotNull Locale locale) {
-    //     if (categoryToTemplateMap.containsKey(category)) {
-    //         return Optional.ofNullable(categoryToTemplateMap.get(category))
-    //                 .map(list -> list.get(0))
-    //                 .map(localeMap -> localeMap.get(0));
-    //     }
-    //     return Optional.empty();
-    // }
-
-    // /**
-    //  * Get all templates for a reason category (generally more coarse-grained).
-    //  *
-    //  * @param category the category to get a template for
-    //  * @return template, if a suitable one is found, otherwise empty
-    //  */
-    // public List<Map<Locale, EmailNotificationTemplate>> findAllTemplatesFor(@NotNull NotificationCategory category) {
-    //     return categoryToTemplateMap.get(category);
-    // }
-
     private void readEmailNotificationTemplatesFromFile() {
-        Path file = config.getConfigDirectory().resolve("email-notification-templates.json");
+        Path file = config.getConfigDirectory().resolve("email-notification-templates.json5");
         if (Files.notExists(file)) {
             LOGGER.warn("No email notification templates found at {0}", file);
             return;

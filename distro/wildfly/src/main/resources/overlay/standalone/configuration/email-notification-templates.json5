@@ -1,0 +1,44 @@
+{
+  "en": {
+    "apiman.account.approval.request": {
+      subject: "Action required: New developer account signup {notification.payload.userId} needs activation",
+      htmlBody: "Hi {notification.recipient.fullName}, \
+       \
+       A user '{notification.recipient.fullName}' has signed up to Apiman and their account requires approval.",
+      plainBody: "Hi {notification.recipient.fullName}",
+      category: "USER_ADMINISTRATION"
+    },
+    "apiman.client.contract.approval.request": {
+      subject: "Action required: API signup approval request",
+      htmlBody: "Hi {notification.recipient.fullName}, \
+\
+A developer is requesting approval to sign up to an API, and you are able to approve this. \
+\
+Information: \
+\
+The API approval is requested for: {notification.payload.apiOrgId} / {notification.payload.apiId} / {notification.payload.apiVersion} with plan {notification.payload.planId} / {notification.payload.planVersion} \
+\
+The user who initiated initiated the approval request: {notification.payload.user.username} / {notification.payload.user.email} \
+\
+The client the approval request was issued from: {notification.payload.clientOrgId} / {notification.payload.clientId} / {notification.payload.clientVersion} \
+\
+Actions: \
+\
+If you wish to approve the sign up request you can visit: \
+<a href='apiman.approvalAdminUrl/orgs/{notification.payload.apiOrgId}/apis/{notification.payload.apiId}/{notification.payload.apiVersion}/contracts'>the Apiman approvals page</a> for this API.",
+      plainBody: "",
+      category: "API_ADMINISTRATION"
+    },
+    "apiman.client.contract.approval.granted": {
+      subject: "Information: Your API signup request for {notification.payload.clientId} {notifications.payload.clientVersion} has been approved.",
+      htmlBody: "Hi {notification.recipient.fullName}, \
+\
+Your API signup request for {notification.payload.clientId} {notifications.payload.clientVersion} has been approved! \
+\
+To view your API key and other technical information, please visit: apiman.approvedApiUrl \
+",
+      plainBody: "",
+      category: "API_ADMINISTRATION"
+    }
+  }
+}
