@@ -79,7 +79,7 @@
             </div>
             <div class="entity-info-with-icon">
               <span apiman-i18n-key="status-label">Status:</span>
-              <span apiman-entity-status />
+              <span apiman-entity-status></span>
               <span title="The API has been modified since it was last published!"
                     apiman-i18n-key="api-modified"
                     ng-show="version.status == 'Published' && isModified()"
