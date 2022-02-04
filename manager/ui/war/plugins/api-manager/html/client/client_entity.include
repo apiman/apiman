@@ -62,7 +62,7 @@
             </div>
             <div class="entity-info-with-icon">
               <span apiman-i18n-key="status-label">Status:</span>
-              <span apiman-entity-status />
+              <span apiman-entity-status></span>
               <span title="Client App has been modified since it was last registered!" apiman-i18n-key="client-modified" ng-show="version.status == 'Registered' && isModified()" class="apiman-label apiman-label-default">Modified</span>
             </div>
           </div>
