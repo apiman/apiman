@@ -34,8 +34,8 @@ import {
 } from '../../interfaces/ICommunication';
 import { IContractExt } from '../../interfaces/IContractExt';
 import { PolicyService } from '../../services/policy/policy.service';
-import { catchError, map, switchMap } from 'rxjs/operators';
-import { EMPTY, forkJoin, of } from 'rxjs';
+import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
+import { EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
 import { flatArray } from '../../shared/utility';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { ApiService } from '../../services/api/api.service';
@@ -56,7 +56,15 @@ import { PermissionsService } from '../../services/permissions/permissions.servi
 export class MyAppsComponent implements OnInit {
   contracts: IContractExt[] = [];
   clientContractsMap!: Map<string, IContractExt[]>;
+  filteredClientContractsMap: Map<string, IContractExt[]> = new Map<
+    string,
+    IContractExt[]
+  >();
+  clientContractsMap$!: Observable<Map<string, IContractExt[]>>;
   contractsLoaded = false;
+  contractsFiltered = false;
+  searchTerm = '';
+  searchTermNotifier = new Subject();
 
   tocLinks: ITocLink[] = [];
 
@@ -80,6 +88,7 @@ export class MyAppsComponent implements OnInit {
   ngOnInit(): void {
     this.setUpHero();
     this.fetchContracts();
+    this.initSearchDebounce();
   }
 
   // Detailed explanation of request chain: https://stackoverflow.com/questions/69421293/how-to-chain-requests-correctly-with-rxjs
@@ -101,7 +110,6 @@ export class MyAppsComponent implements OnInit {
           if (clientSummaries.length === 0) {
             this.stopMainRequest();
           }
-          console.log(clientSummaries);
           return forkJoin(
             clientSummaries.map((clientSummary) => {
               return this.backend.getClientVersions(
@@ -144,14 +152,8 @@ export class MyAppsComponent implements OnInit {
           );
         }),
         switchMap((contracts: IContract[]) => {
-          // Filter out contracts with apis which are not exposed in developer portal
-          const filteredContracts: IContract[] = contracts.filter(
-            (contract) => {
-              return contract.api.exposeInPortal;
-            }
-          );
           return forkJoin(
-            filteredContracts.map((contract) => {
+            contracts.map((contract) => {
               const orgId = contract.plan.plan.organization.id;
               return forkJoin([
                 this.policyService.getPlanPolicies(
@@ -196,7 +198,8 @@ export class MyAppsComponent implements OnInit {
         this.stopMainRequest();
         this.extractContracts(contracts);
         this.fetchPolicyProbes();
-        this.generateTocLinks();
+        this.generateTocLinks(this.clientContractsMap);
+        this.clientContractsMap$ = of(this.clientContractsMap);
       });
   }
 
@@ -284,6 +287,48 @@ export class MyAppsComponent implements OnInit {
     );
   }
 
+  filterContracts(searchTerm: string) {
+    this.searchTerm = searchTerm;
+    this.copyContracts();
+
+    this.contractsFiltered = true;
+    searchTerm = searchTerm.toLocaleLowerCase();
+    this.filteredClientContractsMap.forEach((contracts, key) => {
+      let removeClient = true;
+      contracts.forEach((contract) => {
+        if (
+          contract.client.client.name
+            .toLocaleLowerCase()
+            .includes(searchTerm) ||
+          contract.api.api.name.toLocaleLowerCase().includes(searchTerm)
+        ) {
+          removeClient = false;
+        }
+      });
+      if (removeClient) {
+        this.filteredClientContractsMap.delete(key);
+      }
+    });
+
+    this.clientContractsMap$ = of(this.filteredClientContractsMap);
+    this.generateTocLinks(this.filteredClientContractsMap);
+  }
+
+  private copyContracts() {
+    this.filteredClientContractsMap = new Map(
+      JSON.parse(
+        JSON.stringify(Array.from(this.clientContractsMap))
+      ) as Iterable<readonly [string, IContractExt[]]>
+    );
+  }
+
+  private initSearchDebounce() {
+    // https://m.clearbluedesign.com/how-to-simple-angular-debounce-using-rxjs-e7b86fde6167
+    this.searchTermNotifier.pipe(debounceTime(300)).subscribe(() => {
+      this.filterContracts(this.searchTerm);
+    });
+  }
+
   private setUpHero() {
     this.heroService.setUpHero({
       title: this.translator.instant('APPS.TITLE') as string,
@@ -313,10 +358,10 @@ export class MyAppsComponent implements OnInit {
     );
   }
 
-  private generateTocLinks() {
+  private generateTocLinks(clientContractsMap: Map<string, IContractExt[]>) {
     this.tocLinks = [];
 
-    this.clientContractsMap.forEach((value: IContractExt[], key: string) => {
+    clientContractsMap.forEach((value: IContractExt[], key: string) => {
       this.tocLinks.push({
         name: this.formatClientContractTitle(key),
         destination: this.tocService.formatClientId(value[0]),

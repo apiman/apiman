@@ -44,6 +44,7 @@
     "SUBTITLE": "Administrate User Settings"
   },
   "APPS": {
+    "SEARCH": "Apps and APIs",
     "TITLE": "My Applications",
     "SUBTITLE": "Groups of APIs",
     "SUMMARY": "Summary",

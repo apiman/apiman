@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2022 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -14,137 +14,167 @@
   ~  imitations under the License.
   -->
 
-<div *ngIf="contractsLoaded && contracts.length === 0" class="dp-center">
+<ng-container *ngIf="contractsLoaded && contracts.length > 0">
+  <div id="search-input">
+    <mat-form-field class="dp-center" id="search-form-field">
+      <mat-icon matPrefix color="primary">search</mat-icon>
+      <input
+        matInput
+        type="search"
+        [placeholder]="'APPS.SEARCH' | translate"
+        class="search-input"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="searchTermNotifier.next($event)" />
+      <button
+        *ngIf="searchTerm.length > 0"
+        mat-button
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        color="primary"
+        (click)="filterContracts('')">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <div class="wrapper">
+    <div id="contracts" class="first">
+      <mat-card
+        *ngFor="let cliCon of clientContractsMap$ | async | keyvalue"
+        class="mb-40 mat-elevation-z3 client-card"
+        [id]="tocService.formatClientId(cliCon.value[0])">
+        <!-- Client Header -->
+        <div class="app-header">
+          <div class="app-icon-wrapper">
+            <mat-icon class="client-icon" color="primary">devices</mat-icon>
+          </div>
+          <div class="content-text">
+            <h3 class="primary app-title">
+              {{ formatClientContractTitle(cliCon.key) }}
+            </h3>
+            {{ cliCon.value[0].client.client.description }}
+          </div>
+          <div class="app-client-header-label">
+            <button
+              *ngIf="cliCon.value[0].deletable"
+              (click)="unregister(cliCon.value[0], cliCon.key)"
+              mat-icon-button
+              color="primary"
+              matTooltip="{{ 'APPS.REMOVE_APPLICATION_TOOLTIP' | translate }}">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <span
+              matTooltip="Client Status"
+              [style]="
+                'background-color: ' +
+                getColorForLabel(cliCon.value[0].client.status)
+              "
+              >{{ cliCon.value[0].client.status }}
+            </span>
+          </div>
+        </div>
+        <div *ngFor="let contract of cliCon.value" class="app-api">
+          <!-- Menu for the API -->
+          <div class="app-api-menu">
+            <div>
+              <span
+                (click)="setSection(contract, 'summary')"
+                [ngClass]="{ primary: contract.section === 'summary' }">
+                {{ 'APPS.SUMMARY' | translate }}
+              </span>
+            </div>
+            <div *ngIf="contract!.api.status !== 'Retired'">
+              <div>
+                <span
+                  (click)="setSection(contract, 'use-api')"
+                  [ngClass]="{ primary: contract.section === 'use-api' }">
+                  {{ 'APPS.USE_API' | translate }}
+                </span>
+              </div>
+              <div *ngIf="contract.policies.length > 0">
+                <span
+                  (click)="setSection(contract, 'policies')"
+                  [ngClass]="{ primary: contract.section === 'policies' }">
+                  {{ 'APPS.POLICIES' | translate }}
+                </span>
+              </div>
+            </div>
+            <div>
+              <!--            TODO Add this later -->
+              <!--            <span-->
+              <!--              (click)="setSection(contract, 'manage-api')"-->
+              <!--              [ngClass]="{ primary: contract.section === 'manage-api' }">-->
+              <!--              {{ "APPS.MANAGE_API" | translate }}-->
+              <!--            </span>-->
+            </div>
+          </div>
+
+          <!-- Menu Section Content -->
+          <div class="app-api-content mat-elevation-z2">
+            <div class="app-api-header">
+              <app-img-or-icon-selector
+                [imgUrl]="contract.api.api.image"
+                [dimension]="'44'">
+              </app-img-or-icon-selector>
+              <div
+                class="app-api-header-title"
+                [id]="tocService.formatApiVersionPlanId(contract)">
+                <h3 class="primary">
+                  {{ formatApiVersionPlanTitle(contract) }}
+                </h3>
+              </div>
+              <div class="app-api-header-labels">
+                <span
+                  matTooltip="API Status"
+                  [style]="
+                    'background-color: ' + getColorForLabel(contract.api.status)
+                  ">
+                  {{ contract.api.status }}
+                </span>
+                <!--              THIS WILL BE ADDED LATER -->
+                <!--              <span-->
+                <!--                matTooltip="Client Status"-->
+                <!--                [style]="'background-color: ' + getColorForLabel(contract.client.status)">-->
+                <!--                {{ contract.client.status }}-->
+                <!--              </span>-->
+              </div>
+            </div>
+            <div class="api-section">
+              <app-my-apps-summary
+                *ngIf="contract.section === 'summary'"
+                [contract]="contract"
+                (sectionChangedEmitter)="
+                  onSetSection($event)
+                "></app-my-apps-summary>
+              <app-my-apps-use-api
+                *ngIf="contract.section === 'use-api'"
+                [contract]="contract"></app-my-apps-use-api>
+              <app-my-apps-policies
+                *ngIf="contract.section === 'policies'"
+                [contract]="contract"></app-my-apps-policies>
+              <app-my-apps-manage-api
+                *ngIf="contract.section === 'manage-api'"
+                [api]="contract"></app-my-apps-manage-api>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+    <div class="second">
+      <app-toc [links]="tocLinks"></app-toc>
+    </div>
+  </div>
+</ng-container>
+<div
+  *ngIf="
+    (contractsLoaded && contracts.length === 0) ||
+    (contractsFiltered && filteredClientContractsMap.size === 0)
+  "
+  class="dp-center">
   <app-no-data
     [text]="
       (error ? 'APPS.FAILED_WHILE_FETCHING_APPLICATIONS' : 'APPS.NO_APPS_FOUND')
         | translate
     "
     [textClass]="'text-big2'"></app-no-data>
-</div>
-
-<div *ngIf="contractsLoaded && contracts.length > 0" class="wrapper">
-  <div id="contracts" class="first">
-    <mat-card
-      *ngFor="let cliCon of clientContractsMap | keyvalue"
-      class="mb-40 mat-elevation-z3 client-card"
-      [id]="tocService.formatClientId(cliCon.value[0])">
-      <!-- Client Header -->
-      <div class="app-header">
-        <div class="app-icon-wrapper">
-          <mat-icon class="client-icon" color="primary">devices</mat-icon>
-        </div>
-        <div class="content-text">
-          <h3 class="primary app-title">
-            {{ formatClientContractTitle(cliCon.key) }}
-          </h3>
-          {{ cliCon.value[0].client.client.description }}
-        </div>
-        <div class="app-client-header-label">
-          <button
-            *ngIf="cliCon.value[0].deletable"
-            (click)="unregister(cliCon.value[0], cliCon.key)"
-            mat-icon-button
-            color="primary"
-            matTooltip="{{ 'APPS.REMOVE_APPLICATION_TOOLTIP' | translate }}">
-            <mat-icon>delete</mat-icon>
-          </button>
-          <span
-            matTooltip="Client Status"
-            [style]="
-              'background-color: ' +
-              getColorForLabel(cliCon.value[0].client.status)
-            "
-            >{{ cliCon.value[0].client.status }}
-          </span>
-        </div>
-      </div>
-      <div *ngFor="let contract of cliCon.value" class="app-api">
-        <!-- Menu for the API -->
-        <div class="app-api-menu">
-          <div>
-            <span
-              (click)="setSection(contract, 'summary')"
-              [ngClass]="{ primary: contract.section === 'summary' }">
-              {{ 'APPS.SUMMARY' | translate }}
-            </span>
-          </div>
-          <div *ngIf="contract!.api.status !== 'Retired'">
-            <div>
-              <span
-                (click)="setSection(contract, 'use-api')"
-                [ngClass]="{ primary: contract.section === 'use-api' }">
-                {{ 'APPS.USE_API' | translate }}
-              </span>
-            </div>
-            <div *ngIf="contract.policies.length > 0">
-              <span
-                (click)="setSection(contract, 'policies')"
-                [ngClass]="{ primary: contract.section === 'policies' }">
-                {{ 'APPS.POLICIES' | translate }}
-              </span>
-            </div>
-          </div>
-          <div>
-            <!--            TODO Add this later -->
-            <!--            <span-->
-            <!--              (click)="setSection(contract, 'manage-api')"-->
-            <!--              [ngClass]="{ primary: contract.section === 'manage-api' }">-->
-            <!--              {{ "APPS.MANAGE_API" | translate }}-->
-            <!--            </span>-->
-          </div>
-        </div>
-
-        <!-- Menu Section Content -->
-        <div class="app-api-content mat-elevation-z2">
-          <div class="app-api-header">
-            <app-img-or-icon-selector
-              [imgUrl]="contract.api.api.image"
-              [dimension]="'44'">
-            </app-img-or-icon-selector>
-            <div
-              class="app-api-header-title"
-              [id]="tocService.formatApiVersionPlanId(contract)">
-              <h3 class="primary">
-                {{ formatApiVersionPlanTitle(contract) }}
-              </h3>
-            </div>
-            <div class="app-api-header-labels">
-              <span
-                matTooltip="API Status"
-                [style]="
-                  'background-color: ' + getColorForLabel(contract.api.status)
-                ">
-                {{ contract.api.status }}
-              </span>
-              <!--              THIS WILL BE ADDED LATER -->
-              <!--              <span-->
-              <!--                matTooltip="Client Status"-->
-              <!--                [style]="'background-color: ' + getColorForLabel(contract.client.status)">-->
-              <!--                {{ contract.client.status }}-->
-              <!--              </span>-->
-            </div>
-          </div>
-          <div class="api-section">
-            <app-my-apps-summary
-              *ngIf="contract.section === 'summary'"
-              [contract]="contract"
-              (sectionChangedEmitter)="
-                onSetSection($event)
-              "></app-my-apps-summary>
-            <app-my-apps-use-api
-              *ngIf="contract.section === 'use-api'"
-              [contract]="contract"></app-my-apps-use-api>
-            <app-my-apps-policies
-              *ngIf="contract.section === 'policies'"
-              [contract]="contract"></app-my-apps-policies>
-            <app-my-apps-manage-api
-              *ngIf="contract.section === 'manage-api'"
-              [api]="contract"></app-my-apps-manage-api>
-          </div>
-        </div>
-      </div>
-    </mat-card>
-  </div>
-  <div class="second"><app-toc [links]="tocLinks"></app-toc></div>
 </div>

@@ -69,6 +69,7 @@
   border: 1px solid var(--primary);
 }
 
+/* set color of notification badge in hero*/
 #hero-notifications {
   color: var(--primary-warn-contrast);
 }
@@ -86,4 +87,11 @@
   color: var(--primary-warn-contrast);
 }
 
+/* Example to override scrollbar color*/
+/*.simplebar-scrollbar::before {
+  background: var(--primary) !important;
+}*/
+
 /* Place your custom styles below this comment */
+
+
