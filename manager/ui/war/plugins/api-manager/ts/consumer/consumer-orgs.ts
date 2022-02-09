@@ -29,7 +29,7 @@ _module.controller("Apiman.ConsumerOrgsController",
 
                         body.filters.push( {"name": "name", "value": "*" + params.q + "*", "operator": "like"});
                         var searchStr = angular.toJson(body);
-                        ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(result) { 
+                        ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(result) {
 
                             $scope.resultCount = result.totalSize;
                             $scope.currentPage = params.cp;
@@ -44,7 +44,8 @@ _module.controller("Apiman.ConsumerOrgsController",
             };
 
             function loadFirstPage() {
-                if ($scope.orgs.length == 0) {
+                // only load first page if there are no query params
+                if ($scope.orgs.length == 0 && !$location.search().q) {
                     $scope.searchOrg('*', 1, 12);
                 }
             }
