@@ -28,9 +28,9 @@ _module.controller("Apiman.ConsumerApisController",
 
                         body.filters.push( {"name": "name", "value": "*" + params.q + "*", "operator": "like"});
                         var searchStr = angular.toJson(body);
-                        
+
                         ApimanSvcs.save({ entityType: 'search', secondaryType: 'apis' }, searchStr, function(result) {
-                            
+
                             $scope.resultCount = result.totalSize;
                             $scope.currentPage = params.cp;
                             $scope.pageSize = params.ps;
@@ -43,8 +43,10 @@ _module.controller("Apiman.ConsumerApisController",
                 })
             };
 
+
             function loadFirstPage() {
-                if ($scope.apis.length == 0) {
+                // only load first page if there are no query params
+                if ($scope.apis.length == 0 && !$location.search().q) {
                     $scope.searchSvcs('*', 1, 12);
                 }
             }
