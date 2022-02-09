@@ -18,8 +18,8 @@ import { Component, EventEmitter } from '@angular/core';
 import { IContractExt } from '../../../interfaces/IContractExt';
 import { IAction } from '../../../interfaces/ICommunication';
 import { BackendService } from '../../../services/backend/backend.service';
-import { catchError, mergeMap } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
+import { EMPTY, iif, of } from 'rxjs';
 import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -55,12 +55,18 @@ export class UnregisterClientComponent {
         action.entityVersion
       )
       .pipe(
-        mergeMap(() => this.backend.sendAction(action)),
-        mergeMap(() =>
+        switchMap(() =>
+          iif(
+            () => this.contract.client.status === 'Registered',
+            this.backend.sendAction(action),
+            of(void 0)
+          )
+        ),
+        switchMap(() =>
           this.backend.deleteClient(action.organizationId, action.entityId)
         ),
-        catchError(() => {
-          console.warn('Deleting Client failed');
+        catchError((err) => {
+          console.error('Deleting client failed: ', err);
           this.snackbarService.showErrorSnackBar(
             this.translator.instant('APPS.REMOVE_APPLICATION_FAILED') as string
           );

@@ -412,7 +412,7 @@ export class MyAppsComponent implements OnInit {
         name: 'clientAdmin'
       } as IPermission);
     return (
-      contract.client.status === 'Registered' &&
+      contract.client.status !== 'Retired' &&
       clientAdminOrganizations.includes(contract.client.client.organization.id)
     );
   }
