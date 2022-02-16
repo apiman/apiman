@@ -9,7 +9,7 @@
     "NEXT": "Next",
     "FINISH": "Finish",
     "ORGANIZATION": "Organization",
-    "APPLICATION": "Application",
+    "CLIENT": "Client",
     "NO_DATA_FOUND": "No data found",
     "CONFIRM": "Confirm",
     "SIGNUP": "Signup",
@@ -28,7 +28,7 @@
   },
   "HOME": {
     "TITLE": "API Developer Portal",
-    "SUBTITLE": "Featured APIs",
+    "SUBTITLE": "",
     "SHOW_ALL": "Show all",
     "NO_APIS_FOUND": "No APIs were found"
   },
@@ -43,9 +43,9 @@
     "TITLE": "Account",
     "SUBTITLE": "Administrate User Settings"
   },
-  "APPS": {
+  "CLIENTS": {
     "SEARCH": "Apps and APIs",
-    "TITLE": "My Applications",
+    "TITLE": "My Clients",
     "SUBTITLE": "Groups of APIs",
     "SUMMARY": "Summary",
     "USE_API": "Use API",
@@ -59,32 +59,30 @@
     "UNSUB_FROM_API": "Unsubscribe from API",
     "UNSUB_FROM_THIS_API": "Unsubscribe from this API",
     "UNSUB": "Unsubscribe",
-    "APPLICATION_REMOVED": "The application and its related contracts have been removed",
-    "REMOVE_APPLICATION_TOOLTIP": "Remove application",
+    "CLIENT_REMOVED": "The client and its related contracts have been removed",
+    "REMOVE_CLIENT_TOOLTIP": "Remove client",
     "USED": "used",
     "RESETS_AT": "Resets at",
     "RESETS_EVERY_SECOND": "Resets every second",
     "NO_POLICIES_FOR_API": "No policies found for this API",
     "APPS_AND_APIS": "Apps and APIs",
-    "NO_APPS_FOUND": "No applications were found",
-    "FAILED_WHILE_FETCHING_APPLICATIONS": "Failed while fetching applications",
-    "REMOVE_APPLICATION_FAILED": "Failed while removing the application",
+    "NO_APPS_FOUND": "No clients were found",
+    "FAILED_WHILE_FETCHING_CLIENTS": "Failed while fetching clients",
+    "REMOVE_CLIENT_FAILED": "Failed while removing the client",
     "NO_PROBES": "Failed while fetching the current policy data",
-    "RETIRED_API": "This API is retired and can no longer be used."
-  },
-  "APPLICATION_CREATE": {
-    "SELECT": "Select from available Applications"
+    "RETIRED_API": "This API is retired and can no longer be used.",
+    "SELECT": "Select from available Clients"
   },
   "WIZARD": {
-    "FIRST_STEP_LABEL": "Select/create Application",
+    "FIRST_STEP_LABEL": "Select/create Client",
     "SECOND_STEP_LABEL": "Agreement",
     "THIRD_STEP_LABEL": "Summary",
     "FORTH_STEP_LABEL": "Confirmation",
-    "FIRST_STEP_TITLE": "Select or create an new application",
+    "FIRST_STEP_TITLE": "Select or create an new client",
     "SECOND_STEP_TITLE": "Terms and Conditions",
     "THIRD_STEP_TITLE": "Summary",
     "FORTH_STEP_TITLE": "Confirmation",
-    "APPLICATION_ERROR": "You have to select one application first",
+    "CLIENT_ERROR": "You have to select one client first",
     "TERMS_ERROR": "Please accept the service terms",
     "REDIRECT": "You will be redirected because of an invalid URL",
     "SUCCESS": "A contract has been successfully created",
@@ -92,7 +90,7 @@
     "API_ENDPOINT_PREVIEW": "You will be provided an endpoint after sign-up",
     "LICENSE_TYPE": "Licence Type",
     "POLICIES": "Policies",
-    "CONTRACT_EXISTS": "There is already an contract for this API with the selected application"
+    "CONTRACT_EXISTS": "There is already an contract for this API with the selected client"
   },
   "POLICIES": {
     "RateLimitingPolicy": {
@@ -125,7 +123,7 @@
   },
   "DESCRIPTIONS": {
     "TRY_IT_OUT": "Displays the Open API definition (Swagger) and allows for making test calls if the API is available.",
-    "API_KEY": "When an API contract is created, the system generates a unique API Key. <br>This API Key is unique per application and the same for all contracts of this application.<br> All requests made to the API must include this API Key.",
+    "API_KEY": "When an API contract is created, the system generates a unique API Key. <br>This API Key is unique per client and the same for all contracts of this client.<br> All requests made to the API must include this API Key.",
     "API_ENDPOINT": "One important aspect of all APIs that are managed by the API Gateway is the security that the API Gateway provides. <br>The API can be accessed with this URL."
   },
   "APPROVAL": {
@@ -133,7 +131,7 @@
       "HERO_TITLE": "Approval Required",
       "TITLE": "Thank you",
       "SUBTITLE": "Your subscription is awaiting approval",
-      "MORE_INFO": "You will receive an email notification when there is progress in your application"
+      "MORE_INFO": "You will receive an email notification when there is progress in your client"
     },
     "ACCOUNT": {
       "HERO_TITLE": "Approval Required",
@@ -143,8 +141,8 @@
     }
   },
   "DIALOGS": {
-    "REMOVE_TITLE": "Remove Application",
-    "REMOVE_SURE": "Are you sure you want to <span class='warn'>remove</span> the application <b>{{value}}</b> and all of its contracts?",
+    "REMOVE_TITLE": "Remove Client",
+    "REMOVE_SURE": "Are you sure you want to <span class='warn'>remove</span> the client <b>{{value}}</b> and all of its contracts?",
     "REMOVE_BTN": "Remove"
   },
   "API_DETAILS": {
@@ -174,11 +172,11 @@
     },
     "MESSAGE": {
       "API": {
-        "SIGN_UP_APPROVED": "Your API Sign-Up for {{ payload.apiId }} in your application {{ payload.clientId }} has been approved.",
-        "SIGN_UP_REJECTED": "Your API Sign-Up for {{ payload.apiId }} in your application {{ payload.clientId }} has been rejected."
+        "SIGN_UP_APPROVED": "Your API Sign-Up for {{ payload.apiId }} in your client {{ payload.clientId }} has been approved.",
+        "SIGN_UP_REJECTED": "Your API Sign-Up for {{ payload.apiId }} in your client {{ payload.clientId }} has been rejected."
       },
-      "APP": {
-        "REGISTERED": "Your Application {{payload.clientId}} has been registered."
+      "CLIENT": {
+        "REGISTERED": "Your Client {{payload.clientId}} has been registered."
       }
     },
     "STATUS": {

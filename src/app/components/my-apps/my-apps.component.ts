@@ -331,8 +331,8 @@ export class MyAppsComponent implements OnInit {
 
   private setUpHero() {
     this.heroService.setUpHero({
-      title: this.translator.instant('APPS.TITLE') as string,
-      subtitle: this.translator.instant('APPS.SUBTITLE') as string
+      title: this.translator.instant('CLIENTS.TITLE') as string,
+      subtitle: this.translator.instant('CLIENTS.SUBTITLE') as string
     });
   }
 
@@ -398,7 +398,7 @@ export class MyAppsComponent implements OnInit {
 
     dialogRef.componentInstance.unregisterEmitter.subscribe(() => {
       this.snackbarService.showPrimarySnackBar(
-        this.translator.instant('APPS.APPLICATION_REMOVED') as string
+        this.translator.instant('CLIENTS.CLIENT_REMOVED') as string
       );
       this.fetchContracts();
 

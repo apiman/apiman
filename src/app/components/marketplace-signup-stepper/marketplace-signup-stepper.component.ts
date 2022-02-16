@@ -92,7 +92,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   nextAfterClientSelect(stepper: MatStepper): void {
     if (this.selectedClients.size == 0) {
-      this.printUserError('WIZARD.APPLICATION_ERROR');
+      this.printUserError('WIZARD.CLIENT_ERROR');
     } else {
       this.checkIfContractAlreadyExists(stepper);
     }

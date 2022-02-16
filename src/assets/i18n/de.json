@@ -9,7 +9,7 @@
     "NEXT": "Weiter",
     "FINISH": "Fertig",
     "ORGANIZATION": "Organisation",
-    "APPLICATION": "Applikation",
+    "CLIENT": "Client",
     "NO_DATA_FOUND": "Keine Einträge gefunden",
     "CONFIRM": "Bestätigen",
     "SIGNUP": "Anmeldung",
@@ -28,7 +28,7 @@
   },
   "HOME": {
     "TITLE": "API Entwickler Portal",
-    "SUBTITLE": "Hervorgehobene APIs",
+    "SUBTITLE": "",
     "SHOW_ALL": "Alles zeigen",
     "NO_APIS_FOUND": "Es wurden keine APIs gefunden"
   },
@@ -43,7 +43,7 @@
     "TITLE": "Benutzerkonto",
     "SUBTITLE": "Verwalten Sie Ihre Einstellungen"
   },
-  "APPS": {
+  "CLIENTS": {
     "SEARCH": "Apps und APIs",
     "TITLE": "Meine Apps",
     "SUBTITLE": "API-Gruppen",
@@ -59,32 +59,30 @@
     "UNSUB_FROM_API": "Von der API abmelden",
     "UNSUB_FROM_THIS_API": "Von dieser API abmelden",
     "UNSUB": "Abmelden",
-    "APPLICATION_REMOVED": "Die Applikation und die zugehörigen Verträge wurden entfernt",
-    "REMOVE_APPLICATION_TOOLTIP": "Applikation entfernen",
+    "CLIENT_REMOVED": "Der Client und die zugehörigen Verträge wurden entfernt",
+    "REMOVE_CLIENT_TOOLTIP": "Client entfernen",
     "USED": "verbraucht",
     "RESETS_AT": "Wird zurückgesetzt am",
     "RESETS_EVERY_SECOND": "Wird jede Sekunde zurückgesetzt",
     "NO_POLICIES_FOR_API": "Für diese API wurden keine Policys gefunden",
     "APPS_AND_APIS": "Apps und APIs",
-    "NO_APPS_FOUND": "Es wurden keine Applikationen gefunden",
-    "FAILED_WHILE_FETCHING_APPLICATIONS": "Fehler beim Laden der Applikationen",
-    "REMOVE_APPLICATION_FAILED": "Fehler beim Löschen der Applikation",
+    "NO_APPS_FOUND": "Es wurden keine Clients gefunden",
+    "FAILED_WHILE_FETCHING_CLIENTS": "Fehler beim Laden der Clients",
+    "REMOVE_CLIENT_FAILED": "Fehler beim Löschen des Client",
     "NO_PROBES": "Fehler beim Anfragen der aktuellen Policy-Daten",
-    "RETIRED_API": "Diese API kann nicht mehr verwendet werden."
-  },
-  "APPLICATION_CREATE": {
-    "SELECT": "Aus vorhandenen Anwendugen auswählen"
+    "RETIRED_API": "Diese API kann nicht mehr verwendet werden.",
+    "SELECT": "Aus vorhandenen Anwendungen auswählen"
   },
   "WIZARD": {
-    "FIRST_STEP_LABEL": "Anwendung auswählen/erstellen",
+    "FIRST_STEP_LABEL": "Client auswählen/erstellen",
     "SECOND_STEP_LABEL": "Lizenz",
     "THIRD_STEP_LABEL": "Zusammenfassung",
     "FORTH_STEP_LABEL": "Bestätigung",
-    "FIRST_STEP_TITLE": "Anwendung auswählen oder neue erstellen",
+    "FIRST_STEP_TITLE": "Client auswählen oder neuen erstellen",
     "SECOND_STEP_TITLE": "Lizenzvereinbarung",
     "THIRD_STEP_TITLE": "Zusammenfassung",
     "FORTH_STEP_TITLE": "Bestätigung,",
-    "APPLICATION_ERROR": "Sie müssen zuerst eine Anwendung auswählen",
+    "CLIENT_ERROR": "Sie müssen zuerst einen Client auswählen",
     "TERMS_ERROR": "Sie müssen den Lizenzvereinbarungen zustimmen",
     "REDIRECT": "Sie werden wegen einer ungültigen URL umgeleitet",
     "SUCCESS": "Der Vertrag wurde erfolgreich erstellt",
@@ -92,13 +90,13 @@
     "API_ENDPOINT_PREVIEW": "Nach der Anmeldung wird Ihnen der Endpoint bereitgestellt",
     "LICENSE_TYPE": "Lizenztyp",
     "POLICIES": "Policys",
-    "CONTRACT_EXISTS": "Es besteht schon ein Vertrag für diese API mit der ausgewählten Applikation"
+    "CONTRACT_EXISTS": "Es besteht schon ein Vertrag für diese API mit dem ausgewählten Client"
   },
   "POLICIES": {
     "RateLimitingPolicy": {
       "TITLE": "Rate Limiting Policy",
       "DESCRIPTION": "Die Anfragefrequenz wird beschränkt auf <b>{{limit}}</b> Anfragen pro <b>{{timeUnit}}</b>",
-      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Breschränkung:",
+      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Beschränkung:",
       "LIMIT": "Beschränkung (pro Zeit)",
       "REMAINING": "Verbleibende Anzahl Anfragen",
       "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird",
@@ -125,26 +123,26 @@
   },
   "DESCRIPTIONS": {
     "TRY_IT_OUT": "Öffnet die Open API Defintion (Swagger). Hier können Sie Testaufrufe auf die API durchführen.",
-    "API_KEY": "Wenn ein API-Vertrag erstellt wird, erzeugt das System einen eindeutigen API-Key. <br>Dieser API-Key ist pro Anwendung eindeutig und für alle Verträge dieser Anwendung gleich.<br> Alle Aufrufe dieser API müssen diesen API-Key beinhalten.",
+    "API_KEY": "Wenn ein API-Vertrag erstellt wird, erzeugt das System einen eindeutigen API-Key. <br>Dieser API-Key ist pro Client eindeutig und für alle Verträge dieses Clients gleich.<br> Alle Aufrufe dieser API müssen diesen API-Key beinhalten.",
     "API_ENDPOINT": "Ein wichtiger Aspekt für alle vom API Gateway verwalteten APIs ist die Sicherheit des API Gateways. <br>Die API kann über diese URL aufgerufen werden"
   },
   "APPROVAL": {
     "API": {
       "HERO_TITLE": "Bestätigung erforderlich",
       "TITLE": "Vielen Dank",
-      "SUBTITLE": "Dein Auftrag muss noch bestätigt werden",
+      "SUBTITLE": "Ihr Auftrag muss noch bestätigt werden",
       "MORE_INFO": "Sie werden über den aktuellen Status per E-Mail benachrichtigt"
     },
     "ACCOUNT": {
       "HERO_TITLE": "Bestätigung erforderlich",
       "TITLE": "Vielen Dank",
-      "SUBTITLE": "Dein Account muss noch bestätigt werden",
+      "SUBTITLE": "Ihr Account muss noch bestätigt werden",
       "MORE_INFO": "Sie werden über den aktuellen Status per E-Mail benachrichtigt"
     }
   },
   "DIALOGS": {
-    "REMOVE_TITLE": "Applikation löschen",
-    "REMOVE_SURE": "Sind Sie sicher, dass Sie die Applikation <b>{{value}}</b> und all ihre Verträge <span class='warn'>löschen</span> möchten?",
+    "REMOVE_TITLE": "Client löschen",
+    "REMOVE_SURE": "Sind Sie sicher, dass Sie den Client <b>{{value}}</b> und all seine Verträge <span class='warn'>löschen</span> möchten?",
     "REMOVE_BTN": "Löschen"
   },
   "API_DETAILS": {
@@ -152,7 +150,7 @@
     "KEY_FEATURES": "Vorteile",
     "EXTENDED_DESCRIPTION": "Ausführliche Beschreibung",
     "NO_EXT_DESCRIPTION": "Für diese API wurde keine ausführliche Beschreibung hinterlegt",
-    "SIGN_UP": "Sign Up"
+    "SIGN_UP": "Registrieren"
   },
   "TERMS": {
     "PREFIX": "Ich stimme den ",
@@ -174,11 +172,11 @@
     },
     "MESSAGE": {
       "API": {
-        "SIGN_UP_APPROVED": "Ihr API-Sign Up für {{ payload.apiId }} in Ihrer Applikation {{ payload.clientId }} wurde genehmigt.",
-        "SIGN_UP_REJECTED": "Ihr API-Sign Up für {{ payload.apiId }} in Ihrer Applikation {{ payload.clientId }} wurde abgelehnt."
+        "SIGN_UP_APPROVED": "Ihre Registrierung für {{ payload.apiId }} in Ihrem Client {{ payload.clientId }} wurde genehmigt.",
+        "SIGN_UP_REJECTED": "Ihre Registrierung für {{ payload.apiId }} in Ihrem Client {{ payload.clientId }} wurde abgelehnt."
       },
-      "APP": {
-        "REGISTERED": "Ihre Applikation {{ payload.clientId }} wurde registriert."
+      "CLIENT": {
+        "REGISTERED": "Ihr Client {{ payload.clientId }} wurde registriert."
       }
     },
     "STATUS": {

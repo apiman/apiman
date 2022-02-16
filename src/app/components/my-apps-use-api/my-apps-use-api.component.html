@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2022 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@
 <!-- Key -->
 <div class="grid">
   <div>
-    <h4>{{ 'APPS.API_KEY' | translate }}</h4>
+    <h4>{{ 'CLIENTS.API_KEY' | translate }}</h4>
     <p [innerHTML]="'DESCRIPTIONS.API_KEY' | translate"></p>
   </div>
   <div>
@@ -64,7 +64,7 @@
 <!-- API Endpoint -->
 <div class="grid">
   <div>
-    <h4>{{ 'APPS.ENDPOINT' | translate }}</h4>
+    <h4>{{ 'CLIENTS.ENDPOINT' | translate }}</h4>
     <p [innerHTML]="'DESCRIPTIONS.API_ENDPOINT' | translate"></p>
   </div>
   <div>
@@ -89,7 +89,7 @@
 <!-- Authentication -->
 <div class="grid" *ngIf="hasOAuth">
   <div>
-    <h4>{{ 'APPS.AUTHENTICATION' | translate }}</h4>
+    <h4>{{ 'CLIENTS.AUTHENTICATION' | translate }}</h4>
     <p [innerHTML]="'DESCRIPTIONS.O_AUTH' | translate"></p>
   </div>
   <div>

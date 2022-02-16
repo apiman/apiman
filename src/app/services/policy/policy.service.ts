@@ -306,7 +306,9 @@ export class PolicyService {
       (currentVal * 100) /
       policy.probe.config.limit
     ).toFixed(2);
-    const translation: string = this.translator.instant('APPS.USED') as string;
+    const translation: string = this.translator.instant(
+      'CLIENTS.USED'
+    ) as string;
     return `${percentage} % ${translation}`;
   }
 
@@ -318,7 +320,9 @@ export class PolicyService {
       (currentValFormatted * 100) /
       limitFormatted
     ).toFixed(2);
-    const translation: string = this.translator.instant('APPS.USED') as string;
+    const translation: string = this.translator.instant(
+      'CLIENTS.USED'
+    ) as string;
     return `${percentage} % ${translation}`;
   }
 
@@ -348,7 +352,7 @@ export class PolicyService {
           suffix: 'ms',
           limit: 1000,
           bottomText: this.translator.instant(
-            'APPS.RESETS_EVERY_SECOND'
+            'CLIENTS.RESETS_EVERY_SECOND'
           ) as string
         };
       case 'Minute':
@@ -433,7 +437,9 @@ export class PolicyService {
       .slice(0, 19);
 
     return (
-      (this.translator.instant('APPS.RESETS_AT') as string) + ' ' + dateString
+      (this.translator.instant('CLIENTS.RESETS_AT') as string) +
+      ' ' +
+      dateString
     );
   }
 

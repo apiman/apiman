@@ -21,7 +21,7 @@
       <input
         matInput
         type="search"
-        [placeholder]="'APPS.SEARCH' | translate"
+        [placeholder]="'CLIENTS.SEARCH' | translate"
         class="search-input"
         [(ngModel)]="searchTerm"
         (ngModelChange)="searchTermNotifier.next($event)" />
@@ -60,7 +60,7 @@
               (click)="unregister(cliCon.value[0], cliCon.key)"
               mat-icon-button
               color="primary"
-              matTooltip="{{ 'APPS.REMOVE_APPLICATION_TOOLTIP' | translate }}">
+              matTooltip="{{ 'CLIENTS.REMOVE_CLIENT_TOOLTIP' | translate }}">
               <mat-icon>delete</mat-icon>
             </button>
             <span
@@ -80,7 +80,7 @@
               <span
                 (click)="setSection(contract, 'summary')"
                 [ngClass]="{ primary: contract.section === 'summary' }">
-                {{ 'APPS.SUMMARY' | translate }}
+                {{ 'CLIENTS.SUMMARY' | translate }}
               </span>
             </div>
             <div *ngIf="contract!.api.status !== 'Retired'">
@@ -88,14 +88,14 @@
                 <span
                   (click)="setSection(contract, 'use-api')"
                   [ngClass]="{ primary: contract.section === 'use-api' }">
-                  {{ 'APPS.USE_API' | translate }}
+                  {{ 'CLIENTS.USE_API' | translate }}
                 </span>
               </div>
               <div *ngIf="contract.policies.length > 0">
                 <span
                   (click)="setSection(contract, 'policies')"
                   [ngClass]="{ primary: contract.section === 'policies' }">
-                  {{ 'APPS.POLICIES' | translate }}
+                  {{ 'CLIENTS.POLICIES' | translate }}
                 </span>
               </div>
             </div>
@@ -104,7 +104,7 @@
               <!--            <span-->
               <!--              (click)="setSection(contract, 'manage-api')"-->
               <!--              [ngClass]="{ primary: contract.section === 'manage-api' }">-->
-              <!--              {{ "APPS.MANAGE_API" | translate }}-->
+              <!--              {{ "CLIENTS.MANAGE_API" | translate }}-->
               <!--            </span>-->
             </div>
           </div>
@@ -173,8 +173,10 @@
   class="dp-center">
   <app-no-data
     [text]="
-      (error ? 'APPS.FAILED_WHILE_FETCHING_APPLICATIONS' : 'APPS.NO_APPS_FOUND')
-        | translate
+      (error
+        ? 'CLIENTS.FAILED_WHILE_FETCHING_CLIENTS'
+        : 'CLIENTS.NO_CLIENTS_FOUND'
+      ) | translate
     "
     [textClass]="'text-big2'"></app-no-data>
 </div>

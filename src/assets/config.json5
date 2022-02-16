@@ -10,7 +10,7 @@
     "title": "HOME.TITLE",
     "subtitle": "HOME.SUBTITLE",
     // enforces a min height visible header image
-    "large": false,
+    "large": true,
   },
   // config options for navigation below header
   "navigation": {

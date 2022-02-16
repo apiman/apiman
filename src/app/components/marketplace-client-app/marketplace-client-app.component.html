@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2022 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@
   </button>
 </div>
 
-<p class="primary">{{ 'APPLICATION_CREATE.SELECT' | translate }}</p>
+<p class="primary">{{ 'CLIENTS.SELECT' | translate }}</p>
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z2 mt-20 mb-20">
   <!-- Org Name Column - only displayed if user has more than 1 -->
   <ng-container matColumnDef="org-name">
@@ -62,7 +62,7 @@
   <!-- Name Column -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
-      {{ 'COMMON.APPLICATION' | translate }}
+      {{ 'COMMON.CLIENT' | translate }}
     </th>
     <td mat-cell *matCellDef="let element">
       <span [class.primary]="clickedRows.has(element)">{{ element.name }}</span>
