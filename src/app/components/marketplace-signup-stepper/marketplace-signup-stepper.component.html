@@ -16,6 +16,7 @@
 
 <div id="center">
   <mat-stepper #stepper linear>
+    <!-- Step 1: Create client-->
     <!-- disable default behaviour: [completed]=false-->
     <!-- By default, the completed attribute of a step returns true if the step is valid (in case of linear stepper) and the user has interacted with the step. -->
     <mat-step
@@ -45,6 +46,7 @@
         </mat-card-actions>
       </mat-card>
     </mat-step>
+    <!-- Step 2: Terms & Condition-->
     <mat-step
       *ngIf="termsEnabled"
       label="{{ 'WIZARD.SECOND_STEP_LABEL' | translate }}"
@@ -63,6 +65,9 @@
         </mat-card-content>
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
+          <button mat-raised-button matStepperPrevious color="primary">
+            {{ 'COMMON.BACK' | translate }}
+          </button>
           <button
             id="next-step-btn"
             mat-raised-button
@@ -74,6 +79,7 @@
         </mat-card-actions>
       </mat-card>
     </mat-step>
+    <!-- Step 3: Summary-->
     <mat-step
       label="{{ 'WIZARD.THIRD_STEP_LABEL' | translate }}"
       [completed]="false">
@@ -97,6 +103,9 @@
         </mat-card-content>
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
+          <button mat-raised-button matStepperPrevious color="primary">
+            {{ 'COMMON.BACK' | translate }}
+          </button>
           <button
             id="confirm-btn"
             mat-raised-button
@@ -107,6 +116,7 @@
         </mat-card-actions>
       </mat-card>
     </mat-step>
+    <!-- Step 4: Finish & Confirmation-->
     <mat-step>
       <ng-template matStepLabel>{{
         'WIZARD.FORTH_STEP_LABEL' | translate
