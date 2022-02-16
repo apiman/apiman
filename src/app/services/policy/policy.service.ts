@@ -28,7 +28,6 @@ import { BackendService } from '../backend/backend.service';
 import { forkJoin, Observable, of } from 'rxjs';
 import { formatBytes, formatBytesAsObject } from '../../shared/utility';
 import { IContractExt } from '../../interfaces/IContractExt';
-import { constantCase } from 'constant-case';
 import { TranslateService } from '@ngx-translate/core';
 import { IGaugeChartData } from '../../interfaces/IGaugeChartData';
 
@@ -209,7 +208,7 @@ export class PolicyService {
 
   public getTranslationForPeriod(period: string): string {
     return this.translator.instant(
-      'POLICIES.PERIODS.' + constantCase(period)
+      'POLICIES.PERIODS.' + period.toUpperCase()
     ) as string;
   }
 
