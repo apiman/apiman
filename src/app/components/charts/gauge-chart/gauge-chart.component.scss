@@ -1,5 +1,5 @@
 /*!
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,9 +19,6 @@ h2, h3, h4 {
 }
 
 .chart{
-  display: flex;
-  flex-direction: column;
-  width: 308px;
   height: 320px;
 }
 
@@ -31,17 +28,15 @@ h2, h3, h4 {
 
 .infos {
   position: relative;
-  bottom: 147px;
-  display: flex;
-  flex-direction: column;
+  bottom: 150px;
   text-align: center;
 }
 
 .info-icon{
   text-align: center;
-  bottom: 176px;
+  bottom: 175px;
   position: relative;
-  font-size: 52px;
+  font-size: 50px;
 }
 
 .bottom-area{
@@ -50,18 +45,12 @@ h2, h3, h4 {
 }
 
 .chart-header{
-  margin: 8px auto;
-}
-
-.info-bottom{
-  display: flex;
-  flex-direction: column;
+  margin: 0px auto;
+  padding: 8px;
 }
 
 .ngx-wrapper{
- display: flex;
-}
-
-::ng-deep .ngx-charts{
-  margin-left: -38px !important;
+  max-height: 260px;
+  display: grid;
+  place-items: center;
 }

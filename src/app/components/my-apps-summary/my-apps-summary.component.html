@@ -101,7 +101,6 @@
         [downloadEnabled]="true"></app-api-documentation-buttons>
     </div>
   </div>
-  <div class="grid-divider"><div></div></div>
   <div *ngIf="contract!.policies.length > 0; else noPolicies" class="policies">
     <ng-container *ngFor="let policy of contract!.policies">
       <app-policy-card-light
@@ -114,7 +113,7 @@
   <!-- No policies found for this API -->
   <ng-template #noPolicies>
     <app-no-data
-      class="dp-center"
+      class="grid-center"
       [textClass]="'text-big2'"
       [text]="'CLIENTS.NO_POLICIES_FOR_API' | translate"></app-no-data>
   </ng-template>

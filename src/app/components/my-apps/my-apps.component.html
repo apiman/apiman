@@ -83,7 +83,7 @@
                 {{ 'CLIENTS.SUMMARY' | translate }}
               </span>
             </div>
-            <div *ngIf="contract!.api.status !== 'Retired'">
+            <ng-container *ngIf="contract!.api.status !== 'Retired'">
               <div>
                 <span
                   (click)="setSection(contract, 'use-api')"
@@ -98,7 +98,7 @@
                   {{ 'CLIENTS.POLICIES' | translate }}
                 </span>
               </div>
-            </div>
+            </ng-container>
             <div>
               <!--            TODO Add this later -->
               <!--            <span-->
@@ -113,6 +113,7 @@
           <div class="app-api-content mat-elevation-z2">
             <div class="app-api-header">
               <app-img-or-icon-selector
+                class="app-api-header-icon-wrapper"
                 [imgUrl]="contract.api.api.image"
                 [dimension]="'44'">
               </app-img-or-icon-selector>

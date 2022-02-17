@@ -18,7 +18,6 @@
   <div class="policies" *ngIf="policies">
     <app-policy-card [policy]="policy"></app-policy-card>
   </div>
-  <div class="grid-divider"><div></div></div>
   <div class="policy-charts-grid" *ngIf="policy.probe; else noProbe">
     <div>
       <app-gauge-chart

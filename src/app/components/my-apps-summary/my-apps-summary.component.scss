@@ -1,5 +1,5 @@
 /*!
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,27 +16,27 @@
 
 .summary{
   display: grid;
-  justify-content: center;
-  align-items: center;
-  grid-template-columns: 4.2fr auto 9fr;
+  grid-template-columns: 4fr 6fr;
+  grid-gap: 4rem;
   margin-bottom: 1rem;
 }
 
-.endpoints{
+.endpoints {
+  div.api-endpoint,.api-key,.auth-endpoint,.auth-key{
     display: grid;
     justify-content: space-around;
-    align-items: start;
-    grid-column-gap: 0px;
-    div.api-endpoint,.api-key,.auth-endpoint,.auth-key{
-      display: grid;
-      justify-content: space-around;
-      align-items: center;
-      grid-template-columns: 2fr 14fr;
-    }
+    align-items: center;
+    grid-template-columns: auto 1fr;
+
+  }
+  //https://stackoverflow.com/a/11149311
+  margin-right: -2rem;
+  padding-right: 2rem;
+  border-right: 2px solid var(--primary);
 }
 
 mat-form-field{
-  width: 340px;
+  width: 100%;
   margin-right: 1rem;
 }
 
@@ -47,8 +47,11 @@ mat-form-field{
 
 .policies{
   display: grid;
-  justify-content: space-evenly;
-  align-items: stretch;
-  grid-template-columns: 38% 38%;
-  grid-row-gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 2rem;
+}
+
+.grid-center {
+  display: grid;
+  place-items: center;
 }

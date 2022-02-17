@@ -1,5 +1,5 @@
 /*!
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,14 +16,13 @@
 
 .summary {
   display: grid;
-  justify-content: space-between;
   align-items: center;
-  grid-template-columns: 1.24fr auto 2.2fr;
+  grid-template-columns: 4fr 6fr;
+  grid-gap: 6rem;
 }
 
 .policies {
   display: grid;
-  justify-content: space-around;
   gap: 20px;
 }
 
@@ -31,12 +30,12 @@ h2, h3 {
   text-align: center;
 }
 
-.grid .divider-left {
-  margin-bottom: -4rem;
-}
-
-.policy-charts-grid{
-  display: flex;
-  justify-content: space-evenly;
+.policy-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   grid-column-gap: 4rem;
+  //https://stackoverflow.com/a/11149311
+  margin-left: -3rem;
+  padding-left: 3rem;
+  border-left: 2px solid var(--primary);
 }
