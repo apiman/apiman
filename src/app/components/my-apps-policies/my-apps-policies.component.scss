@@ -26,7 +26,8 @@
   gap: 20px;
 }
 
-h2, h3 {
+h2,
+h3 {
   text-align: center;
 }
 
@@ -34,7 +35,8 @@ h2, h3 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 4rem;
-  //https://stackoverflow.com/a/11149311
+
+  // https://stackoverflow.com/a/11149311
   margin-left: -3rem;
   padding-left: 3rem;
   border-left: 2px solid var(--primary);

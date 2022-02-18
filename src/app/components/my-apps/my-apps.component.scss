@@ -14,67 +14,85 @@
  *  imitations under the License.
  */
 
-.app-header{
+.app-header {
   display: grid;
   align-items: center;
   grid-template-columns: auto 1fr auto;
   grid-column-gap: 22px;
 }
 
-.app-icon-wrapper{
+.app-icon-wrapper {
   width: 65px;
   height: 65px;
 }
 
-.client-icon{
+.client-icon {
   font-size: 65px;
 }
 
-.app-title{
+.app-title {
   margin: 0;
 }
 
-.app-api{
+.app-api {
   margin-top: 2rem;
   display: grid;
   justify-content: space-between;
   align-items: start;
   grid-template-columns: auto 1fr;
-  grid-column-gap: 0;
-  grid-row-gap: 32px;
+  grid-gap: 32px 0;
 }
 
-.app-api-menu{
+.app-api-header-labels,
+.app-client-header-label {
+  white-space: nowrap;
+  text-align: right;
+
+  span {
+    margin-left: 8px;
+    padding: 4px 8px;
+    color: white;
+  }
+
+  span:last-child {
+    margin-right: 0;
+  }
+}
+
+/* stylelint-disable no-descending-specificity */
+.app-api-menu {
   margin-top: 1.6rem;
   margin-right: 1rem;
-  div{
+
+  div {
     padding: 8px;
     margin-bottom: 1.4rem;
-    span{
+
+    span {
       cursor: pointer;
     }
   }
 }
 
-.active{
+.active {
   cursor: default !important;
 }
 
-.app-api-content{
+.app-api-content {
   margin-right: 1rem;
-  padding-bottom: 1rem ;
+  padding-bottom: 1rem;
 }
 
-.app-api-header{
+.app-api-header {
   display: grid;
   justify-content: space-between;
   align-items: center;
   grid-template-columns: auto 1fr auto;
   grid-column-gap: 16px;
-  margin: 0.4rem 1rem 1rem 1rem;
+  margin: 0.4rem 1rem 1rem;
 }
 
-.app-api-header-icon-wrapper{
+.app-api-header-icon-wrapper {
   justify-content: center;
   margin-left: 1rem;
   max-width: 100%;
@@ -82,44 +100,33 @@
   width: 48px;
 }
 
-.app-api-header-labels, .app-client-header-label{
-  white-space: nowrap;
-  text-align: right;
-  span{
-    margin-left: 8px;
-    padding: 4px 8px;
-    color: white;
-  }
-  span:last-child{
-    margin-right: 0;
-  }
-}
-
-.api-section{
+.api-section {
   margin-left: 2rem;
   margin-right: 2rem;
 }
 
-.wrapper{
+.wrapper {
   display: flex;
   align-items: flex-start;
   column-gap: 1.4rem;
-  .first{
+
+  .first {
     flex: 7;
   }
-  .second{
+
+  .second {
     flex: 1;
     top: 0;
     position: sticky;
   }
 }
 
-.client-card{
+.client-card {
   padding-top: 6px;
   padding-bottom: 1.6rem;
 }
 
-#search-form-field{
+#search-form-field {
   width: 234px;
   margin: 0 45%;
 }

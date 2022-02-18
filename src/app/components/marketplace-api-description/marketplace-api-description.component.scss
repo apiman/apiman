@@ -1,5 +1,5 @@
 /*!
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *  imitations under the License.
  */
 
-.box{
+.box {
   max-height: 50vh;
   padding-left: 1%;
   padding-right: 1%;
@@ -23,6 +23,7 @@
 mat-panel-title {
   font-size: 1.3em;
   justify-content: space-between;
+
   #latest-tag {
     margin-left: 0.3rem;
   }
@@ -30,7 +31,7 @@ mat-panel-title {
 
 #content-header {
   display: grid;
-  margin: 1.0rem 0 1.4rem;
+  margin: 1rem 0 1.4rem;
   align-items: center;
   grid-template-columns: 44px 1fr;
   grid-column-gap: 16px;
@@ -41,16 +42,16 @@ mat-grid-list {
 }
 
 #long-description-tile {
-  border: 1px solid rgba(0,0,0,0.2);
-  background: rgba(0,0,0,0.02);
+  border: 1px solid rgb(0 0 0 / 20%);
+  background: rgb(0 0 0 / 2%);
 }
 
 #key-features {
   margin-left: 2em;
 }
 
-#docs-button{
-  border: 1px solid rgba(0,0,0,0.2);
+#docs-button {
+  border: 1px solid rgb(0 0 0 / 20%);
   float: right;
 }
 
@@ -58,24 +59,24 @@ mat-grid-list {
   margin: unset;
 }
 
+.mat-expansion-panel-header.mat-expanded {
+  background-color: rgb(0 0 0 / 4%) !important;
+}
+
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:hover,
 .mat-expansion-panel-header.mat-expanded:focus {
   border-bottom: 1px;
   border-bottom-style: solid;
-  border-bottom-color: rgba(0,0,0,0.12);
+  border-bottom-color: rgb(0 0 0 / 12%);
 }
 
-.mat-expansion-panel-header.mat-expanded{
-  background-color: rgba(0, 0, 0, 0.04) !important;
-}
-
-.md-and-features{
+.md-and-features {
   display: grid;
   grid-column-gap: 16px;
   grid-template-columns: 3.6fr 1fr;
 }
 
-.md-only{
+.md-only {
   width: unset;
 }

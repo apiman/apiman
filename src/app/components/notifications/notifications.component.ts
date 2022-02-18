@@ -44,7 +44,7 @@ export class NotificationsComponent implements OnInit {
   notifications: INotificationsDto[];
   searchCriteria: ISearchCriteria;
   dataSource: MatTableDataSource<INotificationsDto>;
-  displayedColumns: string[] = ['Category', 'Message', 'Date', 'Action'];
+  displayedColumns: string[] = ['category', 'message', 'date', 'action'];
   sections = notificationsSection;
   activeSection = this.sections.unread;
 
@@ -181,9 +181,9 @@ export class NotificationsComponent implements OnInit {
   public setActiveSection(section: notificationsSection): void {
     this.activeSection = section;
     if (section === notificationsSection.read) {
-      this.displayedColumns = ['Category', 'Message', 'Date'];
+      this.displayedColumns = ['category', 'message', 'date'];
     } else {
-      this.displayedColumns = ['Category', 'Message', 'Date', 'Action'];
+      this.displayedColumns = ['category', 'message', 'date', 'action'];
     }
     this.fetchNotifications(this.activeSection);
   }

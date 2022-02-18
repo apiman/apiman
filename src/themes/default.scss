@@ -1,5 +1,5 @@
 /*!
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,11 +14,9 @@
  *  imitations under the License.
  */
 
-@import 'node_modules/@angular/material/theming';
-@include mat-core();
+@use "@angular/material" as mat;
 
-$primary-palette: mat-palette($mat-indigo);
-$accent-palette: mat-palette($mat-pink);
-$warn-palette: mat-palette($mat-lime);
-
-$theme-default: mat-light-theme($primary-palette, $accent-palette, $warn-palette);
+$primary-palette: mat.define-palette(mat.$indigo-palette);
+$accent-palette: mat.define-palette(mat.$pink-palette);
+$warn-palette: mat.define-palette(mat.$lime-palette);
+$theme-default: mat.define-light-theme($primary-palette, $accent-palette, $warn-palette);

@@ -1,5 +1,5 @@
 /*!
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@
   display: grid;
   justify-content: center;
   grid-template-columns: repeat(auto-fit, 360px);
-  grid-column-gap: 32px;
-  grid-row-gap: 32px;
+  grid-gap: 32px;
 }
 
 @media screen and (max-width: 1745px) {
@@ -38,11 +37,11 @@ p {
   width: 100%;
 }
 
-.right{
+.right {
   float: right;
 }
 
-.plan-card{
+.plan-card {
   display: flex;
   flex-direction: column;
 }
@@ -52,16 +51,16 @@ p {
 }
 
 .card-header-title {
-  margin: 0.8rem 0 0.4rem 0;
+  margin: 0.8rem 0 0.4rem;
   font-weight: 500;
 }
 
-.plan-card-actions{
+.plan-card-actions {
   margin-top: auto;
   text-align: center;
 }
 
-.sign-up-button{
+.sign-up-button {
   margin-top: 0.6rem;
   margin-bottom: 0.6rem;
 }

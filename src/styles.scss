@@ -14,73 +14,76 @@
  *  imitations under the License.
  */
 
-@use '@angular/material' as mat;
-@import '@angular/material/theming';
-@import 'src/themes/default';
-@import 'src/themes/custom';
-@include mat-core();
+@use "@angular/material" as mat;
+@use "sass:map";
+@import "@angular/material/theming";
+@import "src/themes/default";
+@import "src/themes/custom";
+@include mat.core;
 
 /***** THEMING *****/
 @mixin app-color($config-or-theme) {
   // Extract the color configuration in case a theme has been passed.
   // This allows consumers to either pass a theme object or a color configuration.
-  $config: mat-get-color-config($config-or-theme);
-  // Extract the palettes you need from the theme definition.
-  $primary-palette: map-get($config, primary);
-  $accent-palette: map-get($config, accent);
-  $warn-palette: map-get($config, warn);
+  $config: mat.get-color-config($config-or-theme);
 
-  $primary: mat-color($primary-palette);
-  $accent: mat-color($accent-palette);
-  $warn: mat-color($warn-palette);
+  // Extract the palettes you need from the theme definition.
+  $primary-palette: map.get($config, primary);
+  $accent-palette: map.get($config, accent);
+  $warn-palette: map.get($config, warn);
+  $primary: mat.define-palette($primary-palette);
+  $accent: mat.define-palette($accent-palette);
+  $warn: mat.define-palette($warn-palette);
 
   // Main Colors: Use this classes in components
   // Color
-  .primary {color: $primary;}
-  .accent {color: $accent;}
-  .warn {color: $warn;}
+  .primary { color: mat.get-color-from-palette($primary); }
+  .accent { color: mat.get-color-from-palette($accent); }
+  .warn { color: mat.get-color-from-palette($warn); }
 
   // Background
-  .primary-bg{background-color: $primary !important;}
-  .warn-bg{background-color: $warn !important;}
-  .accent-bg{background-color: $accent !important;}
+  .primary-bg { background-color: mat.get-color-from-palette($primary) !important; }
+  .warn-bg { background-color: mat.get-color-from-palette($warn) !important; }
+  .accent-bg { background-color: mat.get-color-from-palette($accent) !important; }
 
   // Border
-  .primary-border-color{border-color: $primary !important}
-  .accent-border-color{border-color: $accent !important}
-  .warn-border-color{border-color: $warn !important}
+  .primary-border-color { border-color: mat.get-color-from-palette($primary) !important; }
+  .accent-border-color { border-color: mat.get-color-from-palette($accent) !important; }
+  .warn-border-color { border-color: mat.get-color-from-palette($warn) !important; }
 
-  .grid-divider{
+  .grid-divider {
     width: 4rem;
     height: 100%;
     display: flex;
     justify-content: center;
-    div{
+
+    div {
       height: 100%;
-      border-right: 2px solid $primary;
+      border-right: 2px solid mat.get-color-from-palette($primary);
     }
   }
 
-  .form-field-pre-icon{
+  .form-field-pre-icon {
     min-width: 40px;
   }
 
   $directions: top, right, bottom, left;
-  @each $dir in $directions{
-    .divider-#{$dir}{
-      border-#{$dir}: 2px solid $primary;
+
+  @each $dir in $directions {
+    .divider-#{$dir} {
+      border-#{$dir}: 2px solid mat.get-color-from-palette($primary);
     }
   }
 }
 
 @mixin app-theme($theme) {
   // Extracts the color and typography configurations from the theme.
-  $color: mat-get-color-config($theme);
-  $typography: mat-get-typography-config($theme);
+  $color: mat.get-color-config($theme);
+  $typography: mat.get-typography-config($theme);
 
   // Do not generate styles if configurations for individual theming
   // systems have been explicitly set to `null`.
-  @if $color != null {
+  @if $color {
     @include app-color($color);
   }
 
@@ -101,41 +104,43 @@
 }
 
 /***** DEFINITIONS *****/
+
 /** Font **/
-$default-font: 'Open Sans', sans-serif;
+$default-font: "Open Sans", sans-serif;
 
 // text-classes work the same as h tags do
-.text{
+.text {
   font-size: 1rem;
 }
 
-.text1{
+.text1 {
   font-size: 0.9rem;
 }
 
-.text2{
+.text2 {
   font-size: 0.8rem;
 }
 
-.text3{
+.text3 {
   font-size: 0.7rem;
 }
 
 // text-big-classes increase the sizes with an increasing index
-.text-big1{
+.text-big1 {
   font-size: 1.2rem;
 }
 
-.text-big2{
+.text-big2 {
   font-size: 1.4rem;
 }
 
-.text-big3{
+.text-big3 {
   font-size: 1.5rem;
 }
 
 /** Paddings and Margins **/
 $sizes: 5, 8, 10, 15, 20, 25, 30, 35, 40;
+
 @each $size in $sizes {
   // Margins
   .mt-#{$size} {
@@ -166,8 +171,9 @@ $sizes: 5, 8, 10, 15, 20, 25, 30, 35, 40;
   }
 }
 
-$remSizes: 1, 2, 3, 4;
-@each $size in $remSizes {
+$rem-sizes: 1, 2, 3, 4;
+
+@each $size in $rem-sizes {
   // Margins
   .mt-rem-#{$size} {
     margin-top: #{$size}rem;
@@ -198,11 +204,12 @@ $remSizes: 1, 2, 3, 4;
 }
 
 // Alignment
-.dp-center{
+.dp-center {
   text-align: center;
 }
 
 /***** DevPortal Default Styling *****/
+
 /** Main tags **/
 html {
   font-size: 100%;
@@ -228,34 +235,30 @@ h3 {
 }
 
 h4 {
-  font-size: 1.0rem;
+  font-size: 1rem;
 }
 
 /** a-tags **/
 a {
   color: black;
   text-decoration: none;
+
   &:visited {
     color: black;
   }
 }
 
-.pointer{
+.pointer {
   cursor: pointer;
 }
 
-.input-icon-btn{
+.input-icon-btn {
   font-size: 22px !important;
 }
 
 /***** Material Styling *****/
-/** Form Field Pre- and Suffix **/
-.mat-form-field-appearance-legacy {
-  .mat-form-field-prefix, .mat-form-field-suffix {
-    align-self: flex-end;
-  }
-}
 
+/** Form Field Pre- and Suffix **/
 .mat-form-field-prefix {
   margin-right: 10px;
 }
@@ -264,7 +267,14 @@ a {
   margin-left: 10px;
 }
 
-.mat-simple-snackbar{
+.mat-form-field-appearance-legacy {
+  .mat-form-field-prefix,
+  .mat-form-field-suffix {
+    align-self: flex-end;
+  }
+}
+
+.mat-simple-snackbar {
   color: white;
 }
 

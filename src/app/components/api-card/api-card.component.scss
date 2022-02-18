@@ -1,5 +1,5 @@
 /*!
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
   border-radius: 2px;
   min-width: 24%;
   height: 30%;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgb(0 0 0 / 10%);
 }
 
 .api-card-header {
@@ -42,7 +42,7 @@
 }
 
 .content-text {
-  display: -webkit-box;
+  display: box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -56,7 +56,8 @@
   text-align: center;
   margin-top: 1.6rem;
   margin-bottom: unset;
-  button{
+
+  button {
     width: fit-content;
   }
 }

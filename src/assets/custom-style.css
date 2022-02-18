@@ -16,60 +16,62 @@
 
 :root {
   /* Put the color values for you primary, accent and warning to define your color theme */
-  --primary: rgba(41, 150, 204, 1);
-  --primary-80: rgba(41, 150, 204, .8);
-  --primary-60: rgba(41, 150, 204, .6);
-  --primary-40: rgba(41, 150, 204, .4);
-  --primary-20: rgba(41, 150, 204, .2);
+  --primary: rgb(41 150 204 / 100%);
+  --primary-80: rgb(41 150 204 / 80%);
+  --primary-60: rgb(41 150 204 / 60%);
+  --primary-40: rgb(41 150 204 / 40%);
+  --primary-20: rgb(41 150 204 / 20%);
 
-  --accent: rgba(186, 182, 185, 1);
-  --accent-80: rgba(186, 182, 185, .8);
-  --accent-60: rgba(186, 182, 185, .6);
-  --accent-40: rgba(186, 182, 185, .4);
-  --accent-20: rgba(186, 182, 185, .2);
+  --accent: rgb(186 182 185 / 100%);
+  --accent-80: rgb(186 182 185 / 80%);
+  --accent-60: rgb(186 182 185 / 60%);
+  --accent-40: rgb(186 182 185 / 40%);
+  --accent-20: rgb(186 182 185 / 20%);
 
-  --warn: rgba(208, 50, 55, 1);
-  --warn-80: rgba(208, 50, 55, .8);
-  --warn-60: rgba(208, 50, 55, .6);
-  --warn-40: rgba(208, 50, 55, .4);
-  --warn-20: rgba(208, 50, 55, .2);
+  --warn: rgb(208 50 55 / 100%);
+  --warn-80: rgb(208 50 55 / 80%);
+  --warn-60: rgb(208 50 55 / 60%);
+  --warn-40: rgb(208 50 55 / 40%);
+  --warn-20: rgb(208 50 55 / 20%);
 
-  --primary-warn-contrast: rgba(255, 255, 255, 1);
+  --primary-warn-contrast: rgb(255 255 255 / 100%);
 
-  --dark-primary: rgba(5, 97, 141, 1);
-  --dark-primary-80: rgba(5, 97, 141, .8);
-  --dark-primary-60: rgba(5, 97, 141, .6);
-  --dark-primary-40: rgba(5, 97, 141, .4);
-  --dark-primary-20: rgba(5, 97, 141, .2);
+  --dark-primary: rgb(5 97 141 / 100%);
+  --dark-primary-80: rgb(5 97 141 / 80%);
+  --dark-primary-60: rgb(5 97 141 / 60%);
+  --dark-primary-40: rgb(5 97 141 / 40%);
+  --dark-primary-20: rgb(5 97 141 / 20%);
 
-  --dark-accent: rgba(106, 116, 127, 1);
-  --dark-accent-80: rgba(106, 116, 127, .8);
-  --dark-accent-60: rgba(106, 116, 127, .6);
-  --dark-accent-40: rgba(106, 116, 127, .4);
-  --dark-accent-20: rgba(106, 116, 127, .2);
+  --dark-accent: rgb(106 116 127 / 100%);
+  --dark-accent-80: rgb(106 116 127 / 80%);
+  --dark-accent-60: rgb(106 116 127 / 60%);
+  --dark-accent-40: rgb(106 116 127 / 40%);
+  --dark-accent-20: rgb(106 116 127 / 20%);
 
-  --acccent-contrast: rgba(0, 0, 0, 1);
-  --acccent-contrast-80: rgba(0, 0, 0, .8);
-  --acccent-contrast-60: rgba(0, 0, 0, .6);
-  --acccent-contrast-40: rgba(0, 0, 0, .4);
-  --acccent-contrast-20: rgba(0, 0, 0, .2);
+  --acccent-contrast: rgb(0 0 0 / 100%);
+  --acccent-contrast-80: rgb(0 0 0 / 80%);
+  --acccent-contrast-60: rgb(0 0 0 / 60%);
+  --acccent-contrast-40: rgb(0 0 0 / 40%);
+  --acccent-contrast-20: rgb(0 0 0 / 20%);
 
-  --dark-warn: rgba(172, 30, 28, 1);
-  --dark-warn-80: rgba(172, 30, 28, .8);
-  --dark-warn-60: rgba(172, 30, 28, .6);
-  --dark-warn-40: rgba(172, 30, 28, .4);
-  --dark-warn-20: rgba(172, 30, 28, .2);
+  --dark-warn: rgb(172 30 28 / 100%);
+  --dark-warn-80: rgb(172 30 28 / 80%);
+  --dark-warn-60: rgb(172 30 28 / 60%);
+  --dark-warn-40: rgb(172 30 28 / 40%);
+  --dark-warn-20: rgb(172 30 28 / 20%);
 }
 
 /* set color for login/logout button */
-#login-btn, #logout-btn {
+#login-btn,
+#logout-btn {
   color: var(--primary);
   background-color: var(--primary-warn-contrast);
+
   /* optional if a button border is needed */
   border: 1px solid var(--primary);
 }
 
-/* set color of notification badge in hero*/
+/* set color of notification badge in hero */
 #hero-notifications {
   color: var(--primary-warn-contrast);
 }
@@ -78,20 +80,22 @@
 #hero-image {
   background-image: url("img/header.jpeg");
 }
+
 /* set background color with transparency for your header title/subtitle */
 #hero-overlay-box {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgb(0 0 0 / 0%);
 }
+
 /* set the color for you header/subtitle */
-#hero-title, #hero-subtitle {
+#hero-title,
+#hero-subtitle {
   color: var(--primary-warn-contrast);
 }
 
-/* Example to override scrollbar color*/
-/*.simplebar-scrollbar::before {
+/* Example to override scrollbar color */
+
+/* .simplebar-scrollbar::before {
   background: var(--primary) !important;
-}*/
+} */
 
 /* Place your custom styles below this comment */
-
-

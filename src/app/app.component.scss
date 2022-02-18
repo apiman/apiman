@@ -1,5 +1,5 @@
 /*!
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *  imitations under the License.
  */
 
-.content-container{
+.content-container {
   padding: 20px 84px;
 }
 
@@ -29,11 +29,11 @@
 // Header: 19vh
 // Content Padding Top + Bottom: 40px
 // Footer Height: 40px
-.free-height{
+.free-height {
   min-height: calc(81vh - 40px - 40px);
 }
 
-#navigation{
+#navigation {
   text-align: center;
 }
 

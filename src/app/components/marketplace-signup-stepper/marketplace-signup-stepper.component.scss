@@ -1,5 +1,5 @@
 /*!
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -35,10 +35,9 @@ mat-stepper {
   justify-content: space-between;
   align-items: center;
   grid-template-columns: 1fr 1fr;
-  grid-column-gap: 32px;
-  grid-row-gap: 32px;
+  grid-gap: 32px;
 }
 
-.mat-card-content>:last-child:not(.mat-card-footer) {
+.mat-card-content > :last-child:not(.mat-card-footer) {
   margin-bottom: 2.2rem;
 }

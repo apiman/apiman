@@ -14,7 +14,7 @@
  *  imitations under the License.
  */
 
-.summary{
+.summary {
   display: grid;
   grid-template-columns: 4fr 6fr;
   grid-gap: 4rem;
@@ -22,30 +22,33 @@
 }
 
 .endpoints {
-  div.api-endpoint,.api-key,.auth-endpoint,.auth-key{
+  div.api-endpoint,
+  .api-key,
+  .auth-endpoint,
+  .auth-key {
     display: grid;
     justify-content: space-around;
     align-items: center;
     grid-template-columns: auto 1fr;
-
   }
-  //https://stackoverflow.com/a/11149311
+
+  // https://stackoverflow.com/a/11149311
   margin-right: -2rem;
   padding-right: 2rem;
   border-right: 2px solid var(--primary);
 }
 
-mat-form-field{
+mat-form-field {
   width: 100%;
   margin-right: 1rem;
 }
 
-.view-docs{
+.view-docs {
   margin-top: 1rem;
   text-align: center;
 }
 
-.policies{
+.policies {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 2rem;

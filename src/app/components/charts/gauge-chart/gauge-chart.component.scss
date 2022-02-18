@@ -14,15 +14,17 @@
  *  imitations under the License.
  */
 
-h2, h3, h4 {
+h2,
+h3,
+h4 {
   text-align: center;
 }
 
-.chart{
+.chart {
   height: 320px;
 }
 
-.mat-divider-horizontal{
+.mat-divider-horizontal {
   position: unset;
 }
 
@@ -32,24 +34,24 @@ h2, h3, h4 {
   text-align: center;
 }
 
-.info-icon{
+.info-icon {
   text-align: center;
   bottom: 175px;
   position: relative;
   font-size: 50px;
 }
 
-.bottom-area{
+.bottom-area {
   border-bottom-right-radius: 2px;
   border-bottom-left-radius: 2px;
 }
 
-.chart-header{
-  margin: 0px auto;
+.chart-header {
+  margin: 0 auto;
   padding: 8px;
 }
 
-.ngx-wrapper{
+.ngx-wrapper {
   max-height: 260px;
   display: grid;
   place-items: center;
