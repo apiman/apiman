@@ -1,7 +1,5 @@
 package io.apiman.manager.api.beans.notifications;
 
-import javax.persistence.Embeddable;
-
 /**
  * Coarse-grained notification category (useful for simple filtering and subscription management)
  *

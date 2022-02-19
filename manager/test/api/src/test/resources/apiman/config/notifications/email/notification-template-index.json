@@ -1,53 +1,61 @@
 {
+  "crs": {
+    "test.notification": {
+      "subject": "Victoria, Mahe",
+      "html": "tpl/sez.html",
+      "plain": "tpl/sez.txt",
+      "category": "OTHER"
+    }
+  },
   "en": {
     "apiman.account.signup.approval.request": {
       "subject": "Action required: New account signup {event.userId} needs activation",
-      "htmlBody": "Hi {notification.recipient.fullName}",
-      "plainBody": "Hi {notification.recipient.fullName}",
+      "html": "tpl/testbody.html",
+      "plain": "tpl/testbody.txt",
       "category": "USER_ADMINISTRATION"
     },
     "apiman.account.signup.notification": {
       "subject": "Info: A new account '{event.userId}' signed up to the developer portal",
-      "htmlBody": "Hi {notification.recipient.fullName}",
-      "plainBody": "Hi {notification.recipient.fullName}",
+      "html": "tpl/testbody.html",
+      "plain": "tpl/testbody.txt",
       "category": "USER_ADMINISTRATION"
     },
     "apiman.api.signup.approval.request": {
       "subject": "Action required: A user requires approval to sign up to API {event.apiName} v{event.apiVersion}",
-      "htmlBody": "Hi {notification.recipient.fullName}",
-      "plainBody": "Hi {notification.recipient.fullName}",
+      "html": "tpl/testbody.html",
+      "plain": "tpl/testbody.txt",
       "category": "API_ADMINISTRATION"
     },
     "apiman.api.signup.notification": {
       "subject": "Info: User {event.userId} signed up to {event.apiName} v{event.apiVersion}",
-      "htmlBody": "Hi {notification.recipient.fullName}",
-      "plainBody": "Hi {notification.recipient.fullName}",
+      "html": "tpl/testbody.html",
+      "plain": "tpl/testbody.txt",
       "category": "API_ADMINISTRATION"
     },
     "test.notification.reasob": {
       // Should not match
       "subject": "Pay attention!",
-      "htmlBody": "Salut {name}",
-      "plainBody": "¡Hola, {name}!",
+      "html": "tpl/salut.html",
+      "plain": "tpl/hola.txt",
       "category": "OTHER"
     },
     "test.notification.reasonn": {
       // Should not match
       "subject": "Pay attention!",
-      "htmlBody": "Salut {name}",
-      "plainBody": "¡Hola, {name}!",
+      "html": "tpl/salut.html",
+      "plain": "tpl/hola.txt",
       "category": "OTHER"
     },
     "test.notification.reason": {
       "subject": "Pay attention!",
-      "htmlBody": "Salut {name}",
-      "plainBody": "¡Hola, {name}!",
+      "html": "tpl/salut.html",
+      "plain": "tpl/hola.txt",
       "category": "OTHER"
     },
     "test.notification": {
       "subject": "Victoria, Mahe",
-      "htmlBody": "Hi html {name}",
-      "plainBody": "Hi plain {name}",
+      "html": "tpl/sez.html",
+      "plain": "tpl/sez.txt",
       "category": "OTHER"
     }
   }

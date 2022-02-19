@@ -1,14 +1,13 @@
 package io.apiman.manager.api.notifications.email.handlers;
 
-import io.apiman.manager.api.beans.events.ContractApprovalEvent;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
+import io.apiman.manager.api.beans.events.ContractApprovalEvent;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.notifications.EmailNotificationTemplate;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.notifications.email.SimpleEmail;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.notifications.producers.ContractApprovalNotificationProducer;
-import io.apiman.manager.api.providers.eager.EagerLoaded;
 
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
@@ -19,14 +18,13 @@ import javax.inject.Inject;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-//@EagerLoaded
 @ApplicationScoped
-public class ContractApprovalEmailNotification implements INotificationHandler {
+public class ContractApprovalResponseEmailNotification implements INotificationHandler<ContractApprovalEvent> {
 
     private final SimpleMailNotificationService mailNotificationService;
 
     @Inject
-    public ContractApprovalEmailNotification(SimpleMailNotificationService mailNotificationService) {
+    public ContractApprovalResponseEmailNotification(SimpleMailNotificationService mailNotificationService) {
         this.mailNotificationService = mailNotificationService;
     }
 
@@ -35,21 +33,25 @@ public class ContractApprovalEmailNotification implements INotificationHandler {
     }
 
     @Override
-    public void handle(@Observes NotificationDto<?> notif) {
-        NotificationDto<ContractApprovalEvent> notification = (NotificationDto<ContractApprovalEvent>) notif;
-        Map<String, Object> templateMap = buildTemplateMap(notification);
+    public void handle(NotificationDto<ContractApprovalEvent> notification, Map<String, Object> defaultTemplateMap) {
         UserDto recipient = notification.getRecipient();
 
-        EmailNotificationTemplate template = mailNotificationService
-             .findTemplateFor(notification.getReason(), recipient.getLocale())
-             .orElseThrow();
+        mailNotificationService
+                .findTemplateFor(notification.getReason(), recipient.getLocale())
+                .ifPresentOrElse(
+                        template -> send(recipient, template, defaultTemplateMap),
+                        () -> warnOnce(recipient, notification)
+                );
+    }
 
+    private void send(UserDto recipient, EmailNotificationTemplate template, Map<String, Object> defaultTemplateMap) {
         var mail = SimpleEmail
-             .builder()
-             .setRecipient(recipient)
-             .setTemplate(template)
-             .setTemplateVariables(templateMap)
-             .build();
+                .builder()
+                .setRecipient(recipient)
+                .setTemplate(template)
+                .setTemplateVariables(defaultTemplateMap)
+                .build();
+
         mailNotificationService.send(mail);
     }
 
@@ -57,13 +59,6 @@ public class ContractApprovalEmailNotification implements INotificationHandler {
     public boolean wants(NotificationDto<? extends IVersionedApimanEvent> notification) {
         String reason = notification.getReason();
         return reason.equals(ContractApprovalNotificationProducer.APIMAN_CONTRACT_APPROVED_REASON)
-                    || reason.equals(ContractApprovalNotificationProducer.APIMAN_CONTRACT_REJECTED_REASON);
-    }
-
-    public Map<String, Object> buildTemplateMap(NotificationDto<ContractApprovalEvent> notification) {
-        return Map.of(
-             "notification", notification,
-             "event", notification.getPayload()
-        );
+                       || reason.equals(ContractApprovalNotificationProducer.APIMAN_CONTRACT_REJECTED_REASON);
     }
 }

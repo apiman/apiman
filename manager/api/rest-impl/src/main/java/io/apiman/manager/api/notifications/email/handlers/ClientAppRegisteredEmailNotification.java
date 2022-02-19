@@ -9,45 +9,50 @@ import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.notifications.email.SimpleEmail;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.notifications.producers.ClientAppStatusNotificationProducer;
-import io.apiman.manager.api.providers.eager.EagerLoaded;
 
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@EagerLoaded
 @ApplicationScoped
-public class ClientAppRegisteredEmailNotification implements INotificationHandler {
+public class ClientAppRegisteredEmailNotification implements INotificationHandler<ClientVersionStatusEvent> {
 
-    private SimpleMailNotificationService mailNotificationService;
+    private final SimpleMailNotificationService mailNotificationService;
 
     @Inject
     public ClientAppRegisteredEmailNotification(SimpleMailNotificationService mailNotificationService) {
         this.mailNotificationService = mailNotificationService;
     }
 
-    public ClientAppRegisteredEmailNotification() {}
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
+        // no-op to force eager initialization
+    }
 
     @Override
-    public void handle(NotificationDto<? extends IVersionedApimanEvent> raw) {
-        NotificationDto<ClientVersionStatusEvent> notification = (NotificationDto<ClientVersionStatusEvent>) raw;
-
-        Map<String, Object> templateMap = buildTemplateMap(notification);
+    public void handle(NotificationDto<ClientVersionStatusEvent> notification, Map<String, Object> defaultTemplateMap) {
         UserDto recipient = notification.getRecipient();
 
-        EmailNotificationTemplate template = mailNotificationService
-             .findTemplateFor(notification.getReason(), recipient.getLocale())
-             .orElseThrow();
+        mailNotificationService
+                .findTemplateFor(notification.getReason(), recipient.getLocale())
+                .ifPresentOrElse(
+                        template -> send(recipient, template, defaultTemplateMap),
+                        () -> warnOnce(recipient, notification)
+                );
+    }
 
+    void send(UserDto recipient, EmailNotificationTemplate template, Map<String, Object> defaultTemplateMap) {
         var mail = SimpleEmail
-             .builder()
-             .setRecipient(recipient)
-             .setTemplate(template)
-             .setTemplateVariables(templateMap)
-             .build();
+                .builder()
+                .setRecipient(recipient)
+                .setTemplate(template)
+                .setTemplateVariables(defaultTemplateMap)
+                .build();
+
         mailNotificationService.send(mail);
     }
 
@@ -66,10 +71,4 @@ public class ClientAppRegisteredEmailNotification implements INotificationHandle
         return false;
     }
 
-    public Map<String, Object> buildTemplateMap(NotificationDto<ClientVersionStatusEvent> notification) {
-        return Map.of(
-             "notification", notification,
-             "event", notification.getPayload()
-        );
-    }
 }

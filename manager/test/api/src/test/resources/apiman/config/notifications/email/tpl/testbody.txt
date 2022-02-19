@@ -1,0 +1,1 @@
+Hi {notification.recipient.fullName}
