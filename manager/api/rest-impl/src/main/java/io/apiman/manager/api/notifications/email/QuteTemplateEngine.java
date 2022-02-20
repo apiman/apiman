@@ -44,28 +44,9 @@ public class QuteTemplateEngine {
                     String relativeToBaseDir = includesDir.relativize(f).toString();
                     Template parsedTpl = engine.parse(readTemplate(f));
                     // Name of template is path relative to includes dir.
-                    LOGGER.debug("Adding 'include' template: {0}", relativeToBaseDir);
-                    engine.putTemplate(
-                            relativeToBaseDir,
-                            parsedTpl
-                    );
+                    LOGGER.debug("Adding include template: {0}", relativeToBaseDir);
+                    engine.putTemplate(relativeToBaseDir, parsedTpl);
                 });
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    private boolean notHiddenFile(Path p) {
-        try {
-            return !Files.isHidden(p);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    private String readTemplate(Path p) {
-        try {
-            return Files.readString(p);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -90,5 +71,21 @@ public class QuteTemplateEngine {
         TemplateInstance tplInstance = parsedTpl.instance();
         values.forEach(tplInstance::data);
         return tplInstance.render();
+    }
+
+    private boolean notHiddenFile(Path p) {
+        try {
+            return !Files.isHidden(p);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private String readTemplate(Path p) {
+        try {
+            return Files.readString(p);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }
