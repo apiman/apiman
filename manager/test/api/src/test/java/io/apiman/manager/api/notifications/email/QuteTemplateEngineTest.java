@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public class QteTemplateEngineTest {
+public class QuteTemplateEngineTest {
     public static final class Foo extends NotificationDto<AccountSignupEvent> {
         public int blah = 231;
     }
@@ -25,14 +25,14 @@ public class QteTemplateEngineTest {
 
         @Override
         public Path getConfigDirectory() {
-            return Paths.get(QteTemplateEngineTest.class.getClassLoader().getResource("apiman/config").getPath());
+            return Paths.get(QuteTemplateEngineTest.class.getClassLoader().getResource("apiman/config").getPath());
         }
     };
 
 
     @Test
     public void render_nested_variables() {
-        QteTemplateEngine engine = new QteTemplateEngine(CONFIG);
+        QuteTemplateEngine engine = new QuteTemplateEngine(CONFIG);
 
         Foo test = new Foo();
 
@@ -46,7 +46,7 @@ public class QteTemplateEngineTest {
 
     @Test
     public void render_simple_variable() {
-        QteTemplateEngine engine = new QteTemplateEngine(CONFIG);
+        QuteTemplateEngine engine = new QuteTemplateEngine(CONFIG);
         String rendered = engine.applyTemplate(
              "Hello, {name}",
              Map.of("name", "Marc")
@@ -71,7 +71,7 @@ public class QteTemplateEngineTest {
              + "Regards,\n"
              + "Apiman";
 
-        QteTemplateEngine engine = new QteTemplateEngine(CONFIG);
+        QuteTemplateEngine engine = new QuteTemplateEngine(CONFIG);
         String rendered = engine.applyTemplate(
              rawTpl,
              Map.of(
@@ -102,7 +102,7 @@ public class QteTemplateEngineTest {
 
     @Test
     public void merge_files_from_includes_directory() {
-        QteTemplateEngine engine = new QteTemplateEngine(CONFIG);
+        QuteTemplateEngine engine = new QuteTemplateEngine(CONFIG);
         String rendered = engine.applyTemplate(
                 "<html>"
                         + "{#include header.include.html generator='Apiman Notifications' }"
@@ -129,5 +129,13 @@ public class QteTemplateEngineTest {
 
         assertThat(rendered)
                 .isEqualTo(expected);
+    }
+
+    @Test
+    public void supports_includes_in_subdirectories() {
+        QuteTemplateEngine engine = new QuteTemplateEngine(CONFIG);
+        String rendered = engine.applyTemplate("<dl><dt>{#include subfolder/deacon.include.html /}</dt><dd>Felis catus</dd></dl>", Map.of());
+        assertThat(rendered)
+                .isEqualTo("<dl><dt>Deacon</dt><dd>Felis catus</dd></dl>");
     }
 }

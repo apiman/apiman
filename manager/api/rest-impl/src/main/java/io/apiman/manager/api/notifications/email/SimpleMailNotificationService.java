@@ -53,7 +53,7 @@ public class SimpleMailNotificationService {
 
     private IEmailSender emailSender;
     private ApiManagerConfig config;
-    private QteTemplateEngine templateEngine;
+    private QuteTemplateEngine templateEngine;
     // String -> Map<Locale, EmailNotificationTemplate>
     private final Map<String, Map<Locale,EmailNotificationTemplate>> reasonMap = new HashMap<>();
     // NotificationCategory -> List<Map<Locale, EmailNotificationTemplate>>
@@ -62,7 +62,7 @@ public class SimpleMailNotificationService {
     private Set<Locale> supportedLocales;
 
     @Inject
-    public SimpleMailNotificationService(ApiManagerConfig config, QteTemplateEngine templateEngine) {
+    public SimpleMailNotificationService(ApiManagerConfig config, QuteTemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
         this.config = config;
         if (!config.getEmailNotificationProperties().isEmpty()) {

@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
@@ -25,12 +24,12 @@ import org.jetbrains.annotations.NotNull;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
-public class QteTemplateEngine {
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(QteTemplateEngine.class);
+public class QuteTemplateEngine {
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(QuteTemplateEngine.class);
     private final Engine engine;
 
     @Inject
-    public QteTemplateEngine(ApiManagerConfig apimanConfig) {
+    public QuteTemplateEngine(ApiManagerConfig apimanConfig) {
         engine = Engine.builder()
                 .addDefaults()
                 .addValueResolver(new ReflectionValueResolver()) // Doesn't allow reflection by default
