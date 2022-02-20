@@ -77,7 +77,7 @@ public class SimpleMailNotificationServiceTest {
 
         Map<String, Object> templateVars = Map.of("name", "Marc Savy");
 
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine(config));
         var mail = SimpleEmail
              .builder()
              .setToEmail("marc@blackparrotlabs.io")
@@ -144,7 +144,7 @@ public class SimpleMailNotificationServiceTest {
 
         Map<String, Object> templateVars = Map.of();
 
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine(config));
         var mail = SimpleEmail
              .builder()
              .setToEmail("marc@blackparrotlabs.io")
@@ -172,7 +172,7 @@ public class SimpleMailNotificationServiceTest {
 
     @Test
     public void Read_the_email_notification_templates_from_file() {
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine(config));
         Optional<EmailNotificationTemplate> tplOpt = service.findTemplateFor("test.notification.reason", Locale.ENGLISH);
 
         assertThat(tplOpt).isPresent();
@@ -180,7 +180,7 @@ public class SimpleMailNotificationServiceTest {
 
     @Test
     public void Template_is_looked_up_by_exact_reason() {
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine(config));
         EmailNotificationTemplate tpl = service.findTemplateFor("test.notification.reason", Locale.ENGLISH).orElseThrow();
 
         assertThat(tpl.getNotificationReason())
@@ -192,7 +192,7 @@ public class SimpleMailNotificationServiceTest {
 
     @Test
     public void Html_template_is_loaded_from_file() {
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine(config));
         EmailNotificationTemplate tpl = service.findTemplateFor("test.notification", Locale.forLanguageTag("crs")).orElseThrow();
 
         assertThat(tpl.getHtmlBody())
@@ -203,7 +203,7 @@ public class SimpleMailNotificationServiceTest {
 
     @Test
     public void Plain_template_is_loaded_from_file() {
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine(config));
         EmailNotificationTemplate tpl = service.findTemplateFor("test.notification", Locale.forLanguageTag("crs")).orElseThrow();
 
         assertThat(tpl.getPlainBody())

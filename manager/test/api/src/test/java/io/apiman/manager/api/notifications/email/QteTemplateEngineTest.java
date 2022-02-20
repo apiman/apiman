@@ -2,7 +2,10 @@ package io.apiman.manager.api.notifications.email;
 
 import io.apiman.manager.api.beans.events.AccountSignupEvent;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import org.junit.Test;
@@ -18,9 +21,18 @@ public class QteTemplateEngineTest {
         public int blah = 231;
     }
 
+    ApiManagerConfig CONFIG = new ApiManagerConfig() {
+
+        @Override
+        public Path getConfigDirectory() {
+            return Paths.get(QteTemplateEngineTest.class.getClassLoader().getResource("apiman/config").getPath());
+        }
+    };
+
+
     @Test
-    public void renderSomethingNested() {
-        QteTemplateEngine engine = new QteTemplateEngine();
+    public void render_nested_variables() {
+        QteTemplateEngine engine = new QteTemplateEngine(CONFIG);
 
         Foo test = new Foo();
 
@@ -33,8 +45,8 @@ public class QteTemplateEngineTest {
 
 
     @Test
-    public void renderSomethingCool() {
-        QteTemplateEngine engine = new QteTemplateEngine();
+    public void render_simple_variable() {
+        QteTemplateEngine engine = new QteTemplateEngine(CONFIG);
         String rendered = engine.applyTemplate(
              "Hello, {name}",
              Map.of("name", "Marc")
@@ -43,7 +55,7 @@ public class QteTemplateEngineTest {
     }
 
     @Test
-    public void renderLargeTemplate() {
+    public void render_large_template() {
         var rawTpl = "Dear {recipient},\n"
              + "\n"
              + "An account is awaiting your approval\n"
@@ -59,7 +71,7 @@ public class QteTemplateEngineTest {
              + "Regards,\n"
              + "Apiman";
 
-        QteTemplateEngine engine = new QteTemplateEngine();
+        QteTemplateEngine engine = new QteTemplateEngine(CONFIG);
         String rendered = engine.applyTemplate(
              rawTpl,
              Map.of(
@@ -86,5 +98,33 @@ public class QteTemplateEngineTest {
              + "Regards,\n"
              + "Apiman"
         );
+    }
+
+    @Test
+    public void include_files_from_includes_directory() {
+        QteTemplateEngine engine = new QteTemplateEngine(CONFIG);
+        String rendered = engine.applyTemplate(
+                "<html>"
+                        + "{#include header.include.html title='Marc' /}"
+                        + "<body>"
+                        + "<p>This should be in the middle</p>"
+                        + "</body>"
+                        + "{#include footer.include.html /}"
+                        + "</html>",
+                Map.of()
+        );
+
+        String expected = "<html><head>\n"
+                      + "  <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\" crossorigin=\"anonymous\"></script>\n"
+                      + "  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" crossorigin=\"anonymous\">\n"
+                      + "  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css\" crossorigin=\"anonymous\">\n"
+                      + "  <title>Apiman default title</title>\n"
+                      + "</head><body><p>This should be in the middle</p></body><footer>\n"
+                      + "  This notification was generated automatically by the <a href=\"https://www.apiman.io\" target=\"_blank\">Apiman</a> platform.\n"
+                      + "</footer>\n"
+                      + "</html>";
+
+        assertThat(rendered)
+                .isEqualTo(expected);
     }
 }

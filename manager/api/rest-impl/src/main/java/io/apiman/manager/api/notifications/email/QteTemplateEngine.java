@@ -2,8 +2,15 @@ package io.apiman.manager.api.notifications.email;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -23,11 +30,46 @@ public class QteTemplateEngine {
     private final Engine engine;
 
     @Inject
-    public QteTemplateEngine() {
+    public QteTemplateEngine(ApiManagerConfig apimanConfig) {
         engine = Engine.builder()
-                       .addDefaults()
-                       .addValueResolver(new ReflectionValueResolver()) // Doesn't allow reflection by default
-                       .build();
+                .addDefaults()
+                .addValueResolver(new ReflectionValueResolver()) // Doesn't allow reflection by default
+                .build();
+
+        Path includesDir = apimanConfig.getConfigDirectory().resolve("notifications/email/tpl/includes");
+        try (Stream<Path> files = Files.walk(includesDir, 10)) {
+            files
+                .filter(Files::isRegularFile)
+                .filter(this::notHiddenFile)
+                .forEach(f -> {
+                    String relativeToBaseDir = includesDir.relativize(f).toString();
+                    Template parsedTpl = engine.parse(readTemplate(f));
+                    // Name of template is path relative to includes dir.
+                    LOGGER.debug("Adding 'include' template: {0}", relativeToBaseDir);
+                    engine.putTemplate(
+                            relativeToBaseDir,
+                            parsedTpl
+                    );
+                });
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private boolean notHiddenFile(Path p) {
+        try {
+            return !Files.isHidden(p);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private String readTemplate(Path p) {
+        try {
+            return Files.readString(p);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public Engine getEngine() {
