@@ -101,11 +101,13 @@ public class QteTemplateEngineTest {
     }
 
     @Test
-    public void include_files_from_includes_directory() {
+    public void merge_files_from_includes_directory() {
         QteTemplateEngine engine = new QteTemplateEngine(CONFIG);
         String rendered = engine.applyTemplate(
                 "<html>"
-                        + "{#include header.include.html title='Marc' /}"
+                        + "{#include header.include.html generator='Apiman Notifications' }"
+                        + "{#title}Marc{/title}"
+                        + "{/include}"
                         + "<body>"
                         + "<p>This should be in the middle</p>"
                         + "</body>"
@@ -118,7 +120,8 @@ public class QteTemplateEngineTest {
                       + "  <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\" crossorigin=\"anonymous\"></script>\n"
                       + "  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" crossorigin=\"anonymous\">\n"
                       + "  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css\" crossorigin=\"anonymous\">\n"
-                      + "  <title>Apiman default title</title>\n"
+                      + "  <title>Marc</title>\n"
+                      + "  <meta name=\"generator\" content=\"Apiman Notifications\">\n"
                       + "</head><body><p>This should be in the middle</p></body><footer>\n"
                       + "  This notification was generated automatically by the <a href=\"https://www.apiman.io\" target=\"_blank\">Apiman</a> platform.\n"
                       + "</footer>\n"

@@ -80,13 +80,14 @@
     <dependency>
       <groupId>io.quarkus.qute</groupId>
       <artifactId>qute-core</artifactId>
-      <version>2.1.0.Final</version>
+      <version>2.7.0.Final</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus.qute</groupId>
       <artifactId>qute-generator</artifactId>
-      <version>2.1.0.Final</version>
-    </dependency><!-- The jenkins build fails without this...unknown why -->
+      <version>2.7.0.Final</version>
+    </dependency>
+    <!-- The jenkins build fails without this...unknown why -->
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>javax.transaction-api</artifactId>
