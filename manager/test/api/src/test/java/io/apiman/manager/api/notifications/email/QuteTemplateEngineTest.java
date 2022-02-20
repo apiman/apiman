@@ -134,7 +134,7 @@ public class QuteTemplateEngineTest {
     @Test
     public void supports_includes_in_subdirectories() {
         QuteTemplateEngine engine = new QuteTemplateEngine(CONFIG);
-        String rendered = engine.applyTemplate("<dl><dt>{#include subfolder/deacon.include.html /}</dt><dd>Felis catus {emoji}</dd></dl>",
+        String rendered = engine.applyTemplate("<dl><dt>{#include subdirectory/deacon.include.html /}</dt><dd>Felis catus {emoji}</dd></dl>",
                 Map.of("emoji", "🐈‍⬛"));
         assertThat(rendered)
                 .isEqualTo("<dl><dt>Deacon</dt><dd>Felis catus 🐈‍⬛</dd></dl>");
