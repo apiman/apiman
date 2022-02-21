@@ -3,6 +3,7 @@ version: 2
 updates:
 # Master
   - package-ecosystem: "maven"
+    open-pull-requests-limit: 2
     target-branch: "master"
     directory: "/"
     schedule:
@@ -11,8 +12,9 @@ updates:
       - "V: Apiman 2"
       - "dependency"
       - "java"
-      
+ 
   - package-ecosystem: "maven"
+    open-pull-requests-limit: 2
     target-branch: "master"
     directory: "/parent"
     schedule:
@@ -28,6 +30,7 @@ updates:
       
 # 3.x 
   - package-ecosystem: "maven"
+    open-pull-requests-limit: 2
     target-branch: "3.x"
     directory: "/"
     schedule:
@@ -38,6 +41,7 @@ updates:
       - "java"
   
   - package-ecosystem: "maven"
+    open-pull-requests-limit: 2
     target-branch: "3.x"
     directory: "/parent"
     schedule:
@@ -52,6 +56,7 @@ updates:
       - "java"
       
   - package-ecosystem: "npm"
+    open-pull-requests-limit: 2
     target-branch: "3.x"
     directory: "manager/ui/war"
     schedule:
