@@ -1,1 +1,17 @@
-Nothing yet html
+<!DOCTYPE html>
+<html lang="en">
+{#include header.include.html title='Apiman API signup approval granted' /}
+
+{#include standard-body.include.html notificationHeader='API signup approval granted!' name=notification.recipient.fullName}
+{#notificationBody}
+
+<p>Your request to sign up to blahblah has been granted.</p>
+
+<p>Visit the Apiman developer portal to get your API key</p>
+
+<div class="container mt-5">
+  {#include footer.include.html /}
+</div>
+{/notificationBody}
+{/include}
+</html>
