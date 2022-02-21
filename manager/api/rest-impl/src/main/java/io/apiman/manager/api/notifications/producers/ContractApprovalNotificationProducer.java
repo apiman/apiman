@@ -9,12 +9,10 @@ import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientType;
 import io.apiman.manager.api.notifications.INotificationProducer;
-import io.apiman.manager.api.providers.eager.EagerLoaded;
 import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 

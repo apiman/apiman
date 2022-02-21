@@ -40,7 +40,6 @@ import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
 import io.apiman.manager.api.es.EsMetricsAccessor;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.JpaStorageInitializer;
-import io.apiman.manager.api.providers.eager.EagerLoaded;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
@@ -57,7 +56,6 @@ import javax.inject.Named;
  *
  * @author eric.wittmann@redhat.com
  */
-@EagerLoaded
 @ApplicationScoped
 public class WarCdiFactory {
 
