@@ -317,7 +317,16 @@
         <artifactId>hibernate-entitymanager</artifactId>
         <version>${version.org.hibernate}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.hibernate.validator</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>6.0.22.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate.validator</groupId>
+        <artifactId>hibernate-validator-cdi</artifactId>
+        <version>6.0.22.Final</version>
+      </dependency>
       <!-- Third Party Libraries -->
       <dependency>
         <groupId>net.openhft</groupId>

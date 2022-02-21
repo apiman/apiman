@@ -7,6 +7,8 @@ import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.notifications.email.handlers.INotificationHandler;
 import io.apiman.manager.api.service.NotificationService;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,7 +63,7 @@ public class EmailNotificationListener {
              .forEach(handler -> handler.handle((NotificationDto) notification, defaultTemplateMap));
     }
 
-    private Map<String, Object> createDefaultTemplateMap(NotificationDto<?> notification) {
+    public static Map<String, Object> createDefaultTemplateMap(NotificationDto<?> notification) {
         return Map.of(
                 "notification", notification,
                 "event", notification.getPayload()

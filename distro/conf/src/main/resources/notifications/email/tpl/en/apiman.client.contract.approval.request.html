@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+{#include header.include.html title='Apiman API signup approval request' /}
+
+{#include standard-body.include.html notificationHeader='API signup approval request' name=notification.recipient.fullName}
+  {#notificationBody}
+    <p>A user is requesting approval to sign up to an API.
+    You are able to approve it, if you want.</p>
+
+    <h5>API Information</h5>
+    <p>The API that the user wants to subscribe to.</p>
+    <dl class="row">
+      <dt class="col-sm-3">Organization</dt>
+      <dd class="col-sm-9">
+        {event.apiOrgId}
+      </dd>
+      <dt class="col-sm-3">Name</dt>
+      <dd class="col-sm-9">
+        {event.apiId}
+      </dd>
+      <dt class="col-sm-3">Version</dt>
+      <dd class="col-sm-9">
+        {event.apiVersion}
+      </dd>
+      <dt class="col-sm-3">Plan</dt>
+      <dd class="col-sm-9">
+        {event.planId}
+      </dd>
+      <dt class="col-sm-3">Plan Version</dt>
+      <dd class="col-sm-9">
+        {event.planVersion}
+      </dd>
+    </dl>
+
+    <h5>Client App Information</h5>
+    <p>A user's subscription to an API is contained within a Client App; this has their API subscriptions and keys for a given project.
+      The client may be in a different organisation than the API they want to subscribe to.</p>
+    <dl class="row">
+      <dt class="col-sm-3">Organization</dt>
+      <dd class="col-sm-9">
+        {event.clientOrgId}
+      </dd>
+      <dt class="col-sm-3">Name</dt>
+      <dd class="col-sm-9">
+        {event.clientId}
+      </dd>
+      <dt class="col-sm-3">Version</dt>
+      <dd class="col-sm-9">
+        {event.clientVersion}
+      </dd>
+    </dl>
+
+    <h5>User Information</h5>
+    <p>
+      The user that triggered the signup request.
+      If approved, any members of the <code>{event.clientOrgId}</code> organisation with <code>clientView</code> permissions will have access to the API key.
+    </p>
+
+    <dl class="row">
+      <dt class="col-sm-3">User ID</dt>
+      <dd class="col-sm-9">
+        {event.user.id}
+      </dd>
+      <dt class="col-sm-3">Username</dt>
+      <dd class="col-sm-9">
+        {event.user.username}
+      </dd>
+      <dt class="col-sm-3">Name</dt>
+      <dd class="col-sm-9">
+        {event.user.fullName}
+      </dd>
+      <dt class="col-sm-3">Email</dt>
+      <dd class="col-sm-9">
+        {event.user.email}
+      </dd>
+      {#if event.user.locale}
+        <dt class="col-sm-3">Preferred locale</dt>
+        <dd class="col-sm-9">
+          {event.user.locale}
+        </dd>
+      {/if}
+    </dl>
+
+    <hr/>
+
+    <div class="container text-start">
+      <div class="card">
+        <h5 class="card-header"><em class="bi bi-check-circle-fill"></em> Approve API</h5>
+        <div class="card-body">
+          <p>Follow the link to manage signup approvals for this API.</p>
+          <p>Clicking does not automatically approve the request.</p>
+          <a href="#" class="btn btn-primary">Manage Approvals for <strong>{event.apiId}</strong> / <strong>{event.apiVersion}</strong></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-5 border-top">
+      {#include footer.include.html /}
+    </div>
+  {/notificationBody}
+  {/include}
+</html>

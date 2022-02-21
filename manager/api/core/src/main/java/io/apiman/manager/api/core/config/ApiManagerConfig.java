@@ -428,7 +428,7 @@ public abstract class ApiManagerConfig {
         // If that didn't work, try to locate a tomcat data directory
         dataDir = System.getProperty("catalina.home");
         if (dataDir != null) {
-            return Paths.get(dataDir, "conf");
+            return Paths.get(dataDir, "apiman");
         }
         throw new IllegalStateException("No data directory has been set. Please set apiman.data.dir=<data dir>");
     }
