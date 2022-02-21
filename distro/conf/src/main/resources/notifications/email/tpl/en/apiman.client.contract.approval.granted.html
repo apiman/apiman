@@ -5,9 +5,26 @@
 {#include standard-body.include.html notificationHeader='API signup approval granted!' name=notification.recipient.fullName}
 {#notificationBody}
 
-<p>Your request to sign up to blahblah has been granted.</p>
+<p>Your request to sign up to <code>{event.apiId}</code> version <code>{event.apiVersion}</code> from organisation <code>{event.apiOrgId}</code> has been <strong>granted</strong>.</p>
 
-<p>Visit the Apiman developer portal to get your API key</p>
+<p>You can visit the Apiman portal immediately to get your API key!</p>
+
+<h5>Client App Information</h5>
+<p>Here is some information about the Client App you used to sign up to {event.apiId} {event.apiVersion}.</p>
+<dl class="row">
+  <dt class="col-sm-3">Organization</dt>
+  <dd class="col-sm-9">
+    {event.clientOrgId}
+  </dd>
+  <dt class="col-sm-3">Name</dt>
+  <dd class="col-sm-9">
+    {event.clientId}
+  </dd>
+  <dt class="col-sm-3">Version</dt>
+  <dd class="col-sm-9">
+    {event.clientVersion}
+  </dd>
+</dl>
 
 <div class="container mt-5">
   {#include footer.include.html /}
