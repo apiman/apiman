@@ -1,1 +1,25 @@
-Nothing yet txt
+Hi {notification.recipient.fullName},
+
+Your request to sign up to `{event.apiId}` version `{event.apiVersion}` from organisation `{event.apiOrgId}` has been granted.
+
+You can visit the Apiman portal immediately to get your API key!
+
+## Client App Information
+
+Here is some information about the Client App you used to sign up to `{event.apiId}` `{event.apiVersion}`.
+
+Organization: {event.clientOrgId}
+Name: {event.clientId}
+Version: {event.clientVersion}
+
+## API Information
+
+The API and plan you signed up to.
+
+Organization: {event.apiOrgId}
+Name: {event.apiId}
+Version: {event.apiVersion}
+Plan: {event.planId}
+Plan Version: {event.planVersion}
+
+{#include footer.en.include.txt /}

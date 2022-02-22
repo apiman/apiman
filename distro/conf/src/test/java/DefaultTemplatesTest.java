@@ -37,7 +37,7 @@ public class DefaultTemplatesTest {
     };
 
     @Test
-    public void contract_approval_request() throws IOException {
+    public void contract_approval_request_html() throws IOException {
         var appDeveloper = new UserDto()
                 .setId("User1")
                 .setFullName("John Smith Appdev")
@@ -95,7 +95,7 @@ public class DefaultTemplatesTest {
     }
 
     @Test
-    public void contract_approval_response() throws IOException {
+    public void contract_approval_response_html() throws IOException {
         var appDeveloper = new UserDto()
                 .setId("User1")
                 .setFullName("John Smith Appdev")
@@ -148,6 +148,64 @@ public class DefaultTemplatesTest {
         QuteTemplateEngine engine = new QuteTemplateEngine(CONFIG);
         engine.applyTemplate(
                 Files.readString(CONFIG.getConfigDirectory().resolve("notifications/email/tpl/en/apiman.client.contract.approval.granted.html")),
+                EmailNotificationListener.createDefaultTemplateMap(notificationDto)
+        );
+    }
+
+    @Test
+    public void contract_approval_response_txt() throws IOException {
+        var appDeveloper = new UserDto()
+                .setId("User1")
+                .setFullName("John Smith Appdev")
+                .setUsername("JohnSmith123")
+                .setEmail("foo@apiman.io")
+                .setLocale(Locale.ENGLISH);
+
+        ContractApprovalEvent approvalEvent = ContractApprovalEvent
+                .builder()
+                .setHeaders(ApimanEventHeaders.builder()
+                        .setId("Event123")
+                        .setSource(URI.create("https://example.org"))
+                        .setSubject("Hello")
+                        .setEventVersion(1L)
+                        .setTime(OffsetDateTime.now())
+                        .setType("X")
+                        .build())
+                .setApiOrgId("ApiOrg")
+                .setApiId("CoolApi")
+                .setApiVersion("1.0")
+                .setClientOrgId("MobileKompany")
+                .setClientId("MobileApp")
+                .setClientVersion("2.0")
+                .setContractId("1234")
+                .setPlanId("Gold")
+                .setPlanVersion("1.3")
+                .setApprover(appDeveloper)
+                .setApproved(true)
+                .build();
+
+        UserDto recipient = new UserDto()
+                .setId("Approver1")
+                .setEmail("approver@apiman.io")
+                .setUsername("ApproverPerson")
+                .setFullName("David Approver")
+                .setLocale(Locale.ENGLISH);
+
+        NotificationDto<IVersionedApimanEvent> notificationDto = new NotificationDto<>()
+                .setId(123L)
+                .setCategory(NotificationCategory.API_ADMINISTRATION)
+                .setReason("whatever")
+                .setReasonMessage("hi")
+                .setStatus(NotificationStatus.OPEN)
+                .setCreatedOn(OffsetDateTime.now())
+                .setModifiedOn(OffsetDateTime.now())
+                .setRecipient(recipient)
+                .setSource("adsadsaad")
+                .setPayload(approvalEvent);
+
+        QuteTemplateEngine engine = new QuteTemplateEngine(CONFIG);
+        engine.applyTemplate(
+                Files.readString(CONFIG.getConfigDirectory().resolve("notifications/email/tpl/en/apiman.client.contract.approval.granted.txt")),
                 EmailNotificationListener.createDefaultTemplateMap(notificationDto)
         );
     }

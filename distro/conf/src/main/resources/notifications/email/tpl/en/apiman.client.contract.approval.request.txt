@@ -1,0 +1,43 @@
+Hi {notification.recipient.fullName},
+
+A user is requesting approval to sign up to an API. You are able to approve it, if you want.
+
+## API Information
+
+The API that the user wants to subscribe to.
+
+Organization: {event.apiOrgId}
+Name: {event.apiId}
+Version: {event.apiVersion}
+Plan: {event.planId}
+Plan Version: {event.planVersion}
+
+## Client App Information
+
+A user's subscription to an API is contained within a Client App; this has their API subscriptions and keys for a given project.
+
+The client may be in a different organisation than the API they want to subscribe to.
+
+Organization: {event.clientOrgId}
+Name: {event.clientId}
+Version: {event.clientVersion}
+
+## User Information
+
+The user that triggered the signup request.
+
+If approved, any members of the `{event.clientOrgId}` organisation with `clientView` permissions will have access to the API key.
+
+User ID: {event.user.id}
+Username: {event.user.username}
+Name: {event.user.fullName}
+Email: {event.user.email}
+{#if event.user.locale}
+Preferred locale: {event.user.locale}
+{/if}
+
+## Approve API Signup Request?
+
+Follow the link below to manage signup approvals for this API.
+
+{#include footer.en.include.txt /}
