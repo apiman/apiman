@@ -8,7 +8,7 @@
     You are able to approve it, if you want.</p>
 
     <h5>API Information</h5>
-    <p>The API that the user wants to subscribe to.</p>
+    <p>The API the user wants to subscribe to.</p>
     <dl class="row">
       <dt class="col-sm-3">Organization</dt>
       <dd class="col-sm-9">
@@ -89,7 +89,7 @@
         <div class="card-body">
           <p>Follow the link to manage signup approvals for this API.</p>
           <p>Clicking does not automatically approve the request.</p>
-          <a href="#" class="btn btn-primary">Manage Approvals for <strong>{event.apiId}</strong> / <strong>{event.apiVersion}</strong></a>
+          <a href="{apiman-manager-ui-endpoint}/orgs/{event.apiOrgId}/apis/{event.apiId}/{event.apiVersion}/contracts" class="btn btn-primary">Manage Approvals for <strong>{event.apiId}</strong> / <strong>{event.apiVersion}</strong></a>
         </div>
       </div>
     </div>

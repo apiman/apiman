@@ -16,15 +16,12 @@
 package io.apiman.manager.api.core.config;
 
 import io.apiman.common.config.ConfigFactory;
-import io.apiman.common.config.ConfigFileConfiguration;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -34,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Configuration object for the API Manager.
@@ -84,6 +82,11 @@ public abstract class ApiManagerConfig {
 
     public static final String APIMAN_PLUGIN_REPOSITORIES = "apiman.plugins.repositories"; //$NON-NLS-1$
     public static final String APIMAN_PLUGIN_REGISTRIES = "apiman-manager.plugins.registries"; //$NON-NLS-1$
+
+    /* -------------------------------------------------------
+     * Endpoint-related
+     * ------------------------------------------------------- */
+    public static final String APIMAN_MANAGER_UI_API_ENDPOINT = "apiman-manager-ui.api.endpoint";
 
     private final Configuration config;
 
@@ -333,6 +336,10 @@ public abstract class ApiManagerConfig {
 
     public Map<String, String> getEmailNotificationProperties() {
         return getPrefixedProperties("apiman-manager.notifications.email.");
+    }
+
+    public String getApimanManagerUiApiEndpoint() {
+        return StringUtils.removeEnd(config.getString(APIMAN_MANAGER_UI_API_ENDPOINT), "/");
     }
 
     /**

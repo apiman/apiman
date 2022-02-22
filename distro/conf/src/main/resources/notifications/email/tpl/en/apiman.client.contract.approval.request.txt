@@ -4,7 +4,7 @@ A user is requesting approval to sign up to an API. You are able to approve it, 
 
 ## API Information
 
-The API that the user wants to subscribe to.
+The API the user wants to subscribe to.
 
 Organization: {event.apiOrgId}
 Name: {event.apiId}
@@ -39,5 +39,7 @@ Preferred locale: {event.user.locale}
 ## Approve API Signup Request?
 
 Follow the link below to manage signup approvals for this API.
+
+{apiman-manager-ui-endpoint}/orgs/{event.apiOrgId}/apis/{event.apiId}/{event.apiVersion}/contracts
 
 {#include footer.en.include.txt /}

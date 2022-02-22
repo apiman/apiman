@@ -4,11 +4,10 @@ import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.notifications.email.handlers.INotificationHandler;
 import io.apiman.manager.api.service.NotificationService;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,16 +21,19 @@ import javax.inject.Inject;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
-public class EmailNotificationListener {
-    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(EmailNotificationListener.class);
+public class EmailNotificationDispatcher {
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(EmailNotificationDispatcher.class);
     private final List<INotificationHandler<?>> handlers;
     private final NotificationService notificationService;
+    private final ApiManagerConfig config;
 
     @Inject
-    public EmailNotificationListener(@Any Instance<INotificationHandler<?>> handlers,
-         NotificationService notificationService) {
+    public EmailNotificationDispatcher(@Any Instance<INotificationHandler<?>> handlers,
+                                       NotificationService notificationService,
+                                       ApiManagerConfig config) {
         this.handlers = handlers.stream().collect(Collectors.toList());
         this.notificationService = notificationService;
+        this.config = config;
     }
 
     /**
@@ -57,16 +59,17 @@ public class EmailNotificationListener {
         LOGGER.trace("User has an email notification preference: {0}", emailPrefs);
         LOGGER.trace("Notification is a candidate for processing: {0}", notification);
         // TODO can easily optimise this for prefix matching (regex or whatever).
-        Map<String, Object> defaultTemplateMap = createDefaultTemplateMap(notification);
+        Map<String, Object> defaultTemplateMap = createDefaultTemplateMap(notification, config);
         handlers.stream()
              .filter(handler -> handler.wants(notification))
              .forEach(handler -> handler.handle((NotificationDto) notification, defaultTemplateMap));
     }
 
-    public static Map<String, Object> createDefaultTemplateMap(NotificationDto<?> notification) {
+    public static Map<String, Object> createDefaultTemplateMap(NotificationDto<?> notification, ApiManagerConfig config) {
         return Map.of(
                 "notification", notification,
-                "event", notification.getPayload()
+                "event", notification.getPayload(),
+                "apiman-manager-ui-endpoint", config.getApimanManagerUiApiEndpoint()
         );
     }
 }
