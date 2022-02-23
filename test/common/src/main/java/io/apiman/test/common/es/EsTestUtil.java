@@ -29,8 +29,8 @@ public final class EsTestUtil {
     private EsTestUtil() {}
 
     /**
-     * Provide a testcontainer for elasticsearch based on a system property or environment variable.
-     * Use apiman.es.provider=opendistro or APIMAN_ES_PROVIDER=opendistro
+     * Provide a test container for elasticsearch based on a system property or environment variable.
+     * Use apiman.es.provider=opensearch or APIMAN_ES_PROVIDER=opensearch
      *
      * @return a testcontainer for elasticsearch tests
      */
@@ -39,11 +39,13 @@ public final class EsTestUtil {
         String esProvider = Optional.ofNullable(System.getenv("APIMAN_ES_PROVIDER"))
             .orElseGet(() -> System.getProperty("apiman.es.provider"));
 
-        if ("opendistro".equalsIgnoreCase(esProvider)) {
-            return new ElasticsearchContainer(DockerImageName.parse("amazon/opendistro-for-elasticsearch")
-                .withTag(EsConstants.getEsVersion().getProperty("apiman.opendistro-version"))
+        if ("opensearch".equalsIgnoreCase(esProvider)) {
+            return new ElasticsearchContainer(DockerImageName.parse("opensearchproject/opensearch")
+                .withTag(EsConstants.getEsVersion().getProperty("apiman.opensearch-version"))
                 .asCompatibleSubstituteFor(esImageType))
-                .withEnv("opendistro_security.disabled", "true");
+                .withEnv("discovery.type", "single-node")
+                .withEnv("DISABLE_INSTALL_DEMO_CONFIG", "true")
+                .withEnv("DISABLE_SECURITY_PLUGIN", "true");
         }
         return new ElasticsearchContainer(DockerImageName.parse(esImageType)
             .withTag(EsConstants.getEsVersion().getProperty("apiman.elasticsearch-version")))
