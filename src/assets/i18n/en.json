@@ -45,7 +45,7 @@
     "SUBTITLE": "Administrate User Settings"
   },
   "CLIENTS": {
-    "SEARCH": "Apps and APIs",
+    "SEARCH": "Clients and APIs",
     "TITLE": "My Clients",
     "SUBTITLE": "Groups of APIs",
     "SUMMARY": "Summary",
@@ -66,8 +66,8 @@
     "RESETS_AT": "Resets at",
     "RESETS_EVERY_SECOND": "Resets every second",
     "NO_POLICIES_FOR_API": "No policies found for this API",
-    "APPS_AND_APIS": "Apps and APIs",
-    "NO_APPS_FOUND": "No clients were found",
+    "CLIENTS_AND_APIS": "Clients and APIs",
+    "NO_CLIENTS_FOUND": "No clients were found",
     "FAILED_WHILE_FETCHING_CLIENTS": "Failed while fetching clients",
     "REMOVE_CLIENT_FAILED": "Failed while removing the client",
     "NO_PROBES": "Failed while fetching the current policy data",

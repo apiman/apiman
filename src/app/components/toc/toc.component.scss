@@ -38,6 +38,8 @@
   }
 }
 
+/*
+TO-DO: PAS-3291
 .toc::after {
   // https://stackoverflow.com/a/22666488
   content: "";
@@ -54,7 +56,7 @@
     );
   height: 2rem;
   width: 100%;
-}
+} */
 
 .content-wrapper {
   max-height: 60vh;

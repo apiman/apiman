@@ -45,8 +45,8 @@
     "SUBTITLE": "Verwalten Sie Ihre Einstellungen"
   },
   "CLIENTS": {
-    "SEARCH": "Apps und APIs",
-    "TITLE": "Meine Apps",
+    "SEARCH": "Clients und APIs",
+    "TITLE": "Meine Clients",
     "SUBTITLE": "API-Gruppen",
     "SUMMARY": "Überblick",
     "USE_API": "API verwenden",
@@ -66,8 +66,8 @@
     "RESETS_AT": "Wird zurückgesetzt am",
     "RESETS_EVERY_SECOND": "Wird jede Sekunde zurückgesetzt",
     "NO_POLICIES_FOR_API": "Für diese API wurden keine Policys gefunden",
-    "APPS_AND_APIS": "Apps und APIs",
-    "NO_APPS_FOUND": "Es wurden keine Clients gefunden",
+    "CLIENTS_AND_APIS": "Clients und APIs",
+    "NO_CLIENTS_FOUND": "Es wurden keine Clients gefunden",
     "FAILED_WHILE_FETCHING_CLIENTS": "Fehler beim Laden der Clients",
     "REMOVE_CLIENT_FAILED": "Fehler beim Löschen des Client",
     "NO_PROBES": "Fehler beim Anfragen der aktuellen Policy-Daten",
