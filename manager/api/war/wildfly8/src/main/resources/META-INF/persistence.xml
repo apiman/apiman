@@ -34,6 +34,7 @@
     <class>io.apiman.manager.api.beans.notifications.NotificationEntity</class>
     <class>io.apiman.manager.api.beans.apis.KeyValueTag</class>
     <class>io.apiman.manager.api.jpa.model.outbox.OutboxEventEntity</class>
+    <class>io.apiman.manager.api.beans.notifications.NotificationFilterEntity</class>
     <!--    <exclude-unlisted-classes>true</exclude-unlisted-classes>-->
     <properties>
       <property name="hibernate.show_sql" value="false" />

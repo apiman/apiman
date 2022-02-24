@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.INotificationRepository;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.config.ApiManagerConfig;
+import io.apiman.manager.api.notifications.NotificationRulesService;
 import io.apiman.manager.api.notifications.mappers.NotificationMapper;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -56,6 +57,7 @@ public class NotificationService implements DataAccessUtilMixin {
     private NotificationMapper notificationMapper;
     private ISecurityContext securityContext;
     private Event<NotificationDto<?>> notificationDispatcher;
+    private NotificationRulesService notificationRulesService;
 
     @Inject
     public NotificationService(
@@ -112,7 +114,7 @@ public class NotificationService implements DataAccessUtilMixin {
                                                .map(notificationMapper::entityToDto)
                                                .collect(Collectors.toList());
 
-        return new SearchResultsBean<NotificationDto<?>>(dtos, results.getTotalSize());
+        return new SearchResultsBean<>(dtos, results.getTotalSize());
     }
 
     /**
@@ -129,7 +131,7 @@ public class NotificationService implements DataAccessUtilMixin {
                                         .map(notificationMapper::entityToDto)
                                         .collect(Collectors.toList());
 
-        return new SearchResultsBean<NotificationDto<?>>(dtos, results.getTotalSize());
+        return new SearchResultsBean<>(dtos, results.getTotalSize());
     }
 
     /**

@@ -5,6 +5,7 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
+import io.apiman.manager.api.beans.notifications.NotificationType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
@@ -17,6 +18,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.Query;
 import javax.validation.constraints.NotEmpty;
@@ -30,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
+@ParametersAreNonnullByDefault
 public class NotificationRepositoryImpl extends AbstractJpaStorage implements INotificationRepository {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(NotificationRepositoryImpl.class);
 
@@ -38,12 +41,12 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public NotificationEntity getNotificationById(@NotNull Long notificationId) throws StorageException {
+    public NotificationEntity getNotificationById(Long notificationId) throws StorageException {
         return super.get(notificationId, NotificationEntity.class);
     }
 
     @Override
-    public SearchResultsBean<NotificationEntity> searchNotificationsByUser(@NotNull String recipientUserId,
+    public SearchResultsBean<NotificationEntity> searchNotificationsByUser(String recipientUserId,
          @Nullable SearchCriteriaBean searchCriteria)
          throws StorageException {
 
@@ -58,7 +61,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public SearchResultsBean<NotificationEntity> getLatestNotificationsByRecipientId(@NotNull String recipientUserId, @Nullable PagingBean paging)
+    public SearchResultsBean<NotificationEntity> getLatestNotificationsByRecipientId(String recipientUserId, @Nullable PagingBean paging)
          throws StorageException {
         var filter = new SearchCriteriaFilterBean()
              .setName("recipient")
@@ -74,22 +77,22 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public void create(@NotNull NotificationEntity bean) throws StorageException {
+    public void create(NotificationEntity bean) throws StorageException {
         super.create(bean);
     }
 
     @Override
-    public void update(@NotNull NotificationEntity bean) throws StorageException {
+    public void update(NotificationEntity bean) throws StorageException {
         super.update(bean);
     }
 
     @Override
-    public void delete(@NotNull NotificationEntity bean) throws StorageException {
+    public void delete(NotificationEntity bean) throws StorageException {
         super.delete(bean);
     }
 
     @Override
-    public void deleteById(@NotNull Long id) throws StorageException {
+    public void deleteById(Long id) throws StorageException {
         delete(super.get(id, NotificationEntity.class));
     }
 
@@ -100,7 +103,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public void deleteByUserId(@NotNull String recipientUserId) {
+    public void deleteByUserId(String recipientUserId) {
         int n = getActiveEntityManager()
              .createQuery("DELETE FROM NotificationEntity n WHERE n.recipient = :recipientId")
              .setParameter("recipientId", recipientUserId)
@@ -110,7 +113,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public int countNotificationsByUserId(@NotNull String recipientUserId, @NotNull List<NotificationStatus> notificationStatus) {
+    public int countNotificationsByUserId(String recipientUserId, List<NotificationStatus> notificationStatus) {
         List<String> statusNames = notificationStatus.stream().map(Enum::name).collect(Collectors.toList());
         return getJdbi().withHandle(jdbi ->
              jdbi.createQuery("SELECT COUNT(n.id) "
@@ -125,7 +128,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public void markNotificationsWithStatusById(@NotNull String recipientUserId, @NotNull List<Long> idList, @NotNull NotificationStatus status) throws StorageException {
+    public void markNotificationsWithStatusById(String recipientUserId, List<Long> idList, NotificationStatus status) throws StorageException {
         int n = getActiveEntityManager()
              .createQuery(
                   "UPDATE NotificationEntity n "
@@ -144,7 +147,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public void markAllNotificationsReadByUserId(@NotNull String recipientUserId, @NotNull NotificationStatus status) {
+    public void markAllNotificationsReadByUserId(String recipientUserId, NotificationStatus status) {
         int n = getActiveEntityManager()
              .createQuery(
                   "UPDATE NotificationEntity n "
@@ -161,13 +164,13 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(@NotNull String userId, @NotNull String notificationType) {
+    public Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(String userId, NotificationType notificationType) {
         Query query = getActiveEntityManager()
              .createQuery(
                   "SELECT pref "
                        + "FROM NotificationPreferenceEntity pref "
                        + "WHERE pref.userId = :userId "
-                       + "AND pref.notificationType = :notificationType"
+                       + "AND pref.type = :notificationType"
              )
              .setParameter("userId", userId)
              .setParameter("notificationType", notificationType);

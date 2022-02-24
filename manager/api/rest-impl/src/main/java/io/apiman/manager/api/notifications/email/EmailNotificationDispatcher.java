@@ -46,13 +46,16 @@ public class EmailNotificationDispatcher {
      * </ul>
      */
     public void processNotification(@Observes NotificationDto<?> notification) {
-        // 1. Check who the notification should be sent to and if they even want email notifications
-        notificationService.getNotificationPreference(notification.getRecipient().getId(), "email")
-                           .filter(pref -> pref.getNotificationCategories().contains(notification.getCategory()))
-                           .ifPresentOrElse(
-                                emailPrefs -> process(notification, emailPrefs),
-                                ()-> LOGGER.trace("Notification recipient did not want an email for {0}", notification)
-                            );
+        // // 1. Check who the notification should be sent to and if they even want email notifications
+        // notificationService.getNotificationPreference(notification.getRecipient().getId(), "email")
+        //                    .filter(pref -> pref.getNotificationCategories().contains(notification.getCategory()))
+        //                    .ifPresentOrElse(
+        //                         emailPrefs -> process(notification, emailPrefs),
+        //                         ()-> LOGGER.trace("Notification recipient did not want an email for {0}", notification)
+        //                     );
+
+
+
     }
 
     private void process(NotificationDto<?> notification, NotificationPreferenceEntity emailPrefs) {
