@@ -1,5 +1,8 @@
-# ignore the apply of eslint/prettier style on the project
-26056269403f237505a1b5783dbf3f333fbe50ca
+# chore: apply eslint/prettier style on the project
+654ed4b326cd467df041413f1a65b3a51224c0cb
 
-# ignore line separator change and copyright
-24e2ae2ea9229933e46fd7a28977929928554f04
+# add copyright notice to all src files and set line separator to LF
+0d21a022df3b7d8064a5fce3e4227991664667ab
+
+# chore: apply stylelint on the project
+25380de830d442e536470e0a22933260f15f11a6
