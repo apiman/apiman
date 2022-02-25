@@ -49,6 +49,7 @@
     "TITLE": "Meine Clients",
     "SUBTITLE": "API-Gruppen",
     "SUMMARY": "Überblick",
+    "DESCRIPTION": "Beschreibung",
     "USE_API": "API verwenden",
     "POLICIES": "Policys",
     "MANAGE_API": "API verwalten",

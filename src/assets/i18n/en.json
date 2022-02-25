@@ -49,6 +49,7 @@
     "TITLE": "My Clients",
     "SUBTITLE": "Groups of APIs",
     "SUMMARY": "Summary",
+    "DESCRIPTION": "Description",
     "USE_API": "Use API",
     "POLICIES": "Policies",
     "MANAGE_API": "Manage API",

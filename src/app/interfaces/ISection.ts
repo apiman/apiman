@@ -14,4 +14,9 @@
  *  imitations under the License.
  */
 
-export type ISection = 'summary' | 'use-api' | 'policies' | 'manage-api';
+export type ISection =
+  | 'summary'
+  | 'description'
+  | 'use-api'
+  | 'policies'
+  | 'manage-api';

@@ -47,9 +47,8 @@
 
   <!-- Template for MD-Reader -->
   <ng-template #mdTemplate>
-    <div class="box" id="long-description-tile" data-simplebar>
-      <markdown [data]="markDownText"></markdown>
-    </div>
+    <app-api-markdown-description
+      [markdownText]="api.extendedDescription"></app-api-markdown-description>
   </ng-template>
 
   <!-- Template for Key Features -->

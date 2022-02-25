@@ -83,6 +83,13 @@
                 {{ 'CLIENTS.SUMMARY' | translate }}
               </span>
             </div>
+            <div>
+              <span
+                (click)="setSection(contract, 'description')"
+                [ngClass]="{ primary: contract.section === 'description' }">
+                {{ 'CLIENTS.DESCRIPTION' | translate }}
+              </span>
+            </div>
             <ng-container *ngIf="contract!.api.status !== 'Retired'">
               <div>
                 <span
@@ -147,6 +154,11 @@
                 (sectionChangedEmitter)="
                   onSetSection($event)
                 "></app-my-apps-summary>
+              <app-api-markdown-description
+                *ngIf="contract.section === 'description'"
+                [markdownText]="
+                  contract.api.extendedDescription
+                "></app-api-markdown-description>
               <app-my-apps-use-api
                 *ngIf="contract.section === 'use-api'"
                 [contract]="contract"></app-my-apps-use-api>

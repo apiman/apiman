@@ -14,9 +14,8 @@
  *  imitations under the License.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IApiVersionExt } from '../../interfaces/IApiVersionExt';
-import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '../../services/config/config.service';
 
 @Component({
@@ -24,25 +23,14 @@ import { ConfigService } from '../../services/config/config.service';
   templateUrl: './marketplace-api-description.component.html',
   styleUrls: ['./marketplace-api-description.component.scss']
 })
-export class MarketplaceApiDescriptionComponent implements OnInit {
+export class MarketplaceApiDescriptionComponent {
   @Input() api!: IApiVersionExt;
   @Input() isLatest!: boolean;
 
   // TODO get features from backend as soon as the endpoint is created
   features = [];
-  public markDownText = this.translator.instant(
-    'API_DETAILS.NO_EXT_DESCRIPTION'
-  ) as string;
 
-  constructor(
-    private translator: TranslateService,
-    public configService: ConfigService
-  ) {}
-
-  ngOnInit(): void {
-    if (this.api.extendedDescription)
-      this.markDownText = this.api.extendedDescription;
-  }
+  constructor(public configService: ConfigService) {}
 
   hasFeatures(): boolean {
     return this.features.length > 0;

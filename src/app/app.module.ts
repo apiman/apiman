@@ -63,6 +63,7 @@ import { ApiDocumentationButtonsComponent } from './components/api-documentation
 import { RateQuotaPolicyShortLimitComponent } from './components/policies/rate-quota-policy-short-limit/rate-quota-policy-short-limit.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationsComponent } from './components/notifications/notifications.component';
+import { ApiMarkdownDescriptionComponent } from './components/api-markdown-description/api-markdown-description.component';
 
 export function initializeApp(
   configService: ConfigService,
@@ -125,7 +126,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     ImgOrIconSelectorComponent,
     ApiDocumentationButtonsComponent,
     RateQuotaPolicyShortLimitComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    ApiMarkdownDescriptionComponent
   ],
   imports: [
     KeycloakAngularModule,
