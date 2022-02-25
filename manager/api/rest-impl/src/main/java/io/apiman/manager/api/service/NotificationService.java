@@ -10,9 +10,12 @@ import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
+import io.apiman.manager.api.beans.notifications.NotificationFilterEntity;
+import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 import io.apiman.manager.api.beans.notifications.NotificationType;
 import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
+import io.apiman.manager.api.beans.notifications.dto.CreateNotificationFilterDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.search.PagingBean;
@@ -221,9 +224,21 @@ public class NotificationService implements DataAccessUtilMixin {
         return notificationRulesService.wantsNotification(userId, notificationType, notificationDto);
     }
 
-    // public Optional<NotificationPreferenceEntity> getNotificationPreference(String userId, NotificationType notificationType) {
-    //     return tryAction(() -> notificationRepository.getNotificationPreferenceByUserIdAndType(userId, notificationType));
-    // }
+    public void createFilter(String userId, CreateNotificationFilterDto createFilter) {
+        NotificationPreferenceEntity npe = notificationRepository.getNotificationPreferenceByUserIdAndType(userId, createFilter.getNotificationType())
+                .orElseGet(() -> {
+                    NotificationPreferenceEntity newNpe = new NotificationPreferenceEntity()
+                            .setType(createFilter.getNotificationType())
+                            .setUserId(userId);
+                    tryAction(() -> notificationRepository.create(newNpe));
+                    return newNpe;
+                });
+
+        NotificationFilterEntity nfe = notificationMapper.toEntity(createFilter);
+        npe.getRules().add(nfe);
+        tryAction(() -> notificationRepository.update(npe));
+        notificationRulesService.cache(npe);
+    }
 
     private List<UserDto> calculateRecipients(List<RecipientDto> recipientDto) {
         return recipientDto.stream()
@@ -266,6 +281,7 @@ public class NotificationService implements DataAccessUtilMixin {
              .setSource(newNotification.getSource())
              .setPayload(event);
     }
+
 
     private static final class NotificationServiceConfig extends GenericOptionsParser {
         static final boolean DEFAULT_NOTIFICATIONS_ENABLED = true;

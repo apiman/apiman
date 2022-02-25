@@ -9,6 +9,7 @@ import io.apiman.manager.api.notifications.rules.SimpleSpELRule;
 
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -28,6 +29,7 @@ public class NotificationRulesService {
 
     private final Cache<RuleKey, ActivationRuleGroup> notificationsRuleCache = Caffeine.newBuilder()
             .maximumSize(5_000)
+            .expireAfterWrite(10, TimeUnit.MINUTES) // TODO(msavy): distributed cache for multi-node setup.
             .build();
 
     @Inject

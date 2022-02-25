@@ -74,18 +74,18 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public void create(NotificationEntity bean) throws StorageException {
-        super.create(bean);
+    public void create(NotificationEntity entity) throws StorageException {
+        super.create(entity);
     }
 
     @Override
-    public void update(NotificationEntity bean) throws StorageException {
-        super.update(bean);
+    public void update(NotificationEntity entity) throws StorageException {
+        super.update(entity);
     }
 
     @Override
-    public void delete(NotificationEntity bean) throws StorageException {
-        super.delete(bean);
+    public void delete(NotificationEntity entity) throws StorageException {
+        super.delete(entity);
     }
 
     @Override
@@ -161,6 +161,14 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
+    public Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserId(String userId) {
+        Query query = getActiveEntityManager()
+                .createQuery("SELECT pref FROM NotificationPreferenceEntity pref WHERE pref.userId = :userId")
+                .setParameter("userId", userId);
+        return super.getOne(query);
+    }
+
+    @Override
     public Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(String userId, NotificationType notificationType) {
         Query query = getActiveEntityManager()
              .createQuery(
@@ -172,5 +180,20 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
              .setParameter("userId", userId)
              .setParameter("notificationType", notificationType);
         return super.getOne(query);
+    }
+
+    @Override
+    public void create(NotificationPreferenceEntity entity) throws StorageException {
+        super.create(entity);
+    }
+
+    @Override
+    public void update(NotificationPreferenceEntity entity) throws StorageException {
+        super.update(entity);
+    }
+
+    @Override
+    public void delete(NotificationPreferenceEntity entity) throws StorageException {
+        super.update(entity);
     }
 }

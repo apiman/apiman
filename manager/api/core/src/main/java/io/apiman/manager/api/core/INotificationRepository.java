@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.management.Notification;
+import javax.validation.constraints.Null;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -93,5 +95,26 @@ public interface INotificationRepository {
     /**
      * Get a user's notification preferences
      */
+    Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserId(String userId);
+
+    /**
+     * Get a user's notification preferences
+     */
     Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(String userId, NotificationType notificationType);
+
+    /**
+     * Create a new notification preference entity
+     */
+    void create(NotificationPreferenceEntity entity) throws StorageException;
+
+    /**
+     * Update a notification preference entity
+     */
+    void update(NotificationPreferenceEntity entity) throws StorageException;
+
+    /**
+     * Delete notification preference entity
+     */
+    void delete(NotificationPreferenceEntity entity) throws StorageException;
+
 }
