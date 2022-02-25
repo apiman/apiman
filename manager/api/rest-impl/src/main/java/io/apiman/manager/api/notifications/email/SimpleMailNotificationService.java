@@ -200,6 +200,7 @@ public class SimpleMailNotificationService {
                 EmailNotificationTemplate tpl = new EmailNotificationTemplate();
                 tpl.setNotificationReason(reason);
                 tpl.setLocale(localeTag);
+                tpl.setSubject(fileEntry.subject());
                 tpl.setHtmlBody(Files.readString(root.getParent().resolve(fileEntry.html())));
                 tpl.setPlainBody(Files.readString(root.getParent().resolve(fileEntry.plain())));
                 tpl.setCategory(fileEntry.category());

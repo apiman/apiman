@@ -1,19 +1,19 @@
 {
   "en": {
     "apiman.account.approval.request": {
-      "subject": "Action required: New developer account signup {notification.payload.userId} needs activation",
+      "subject": "Action required: New developer account needs activation",
       "html": "tpl/en/apiman.account.approval.request.html",
       "plain": "tpl/en/apiman.account.approval.request.txt",
       "category": "USER_ADMINISTRATION"
     },
     "apiman.client.contract.approval.request": {
-      "subject": "Action required: API signup approval request",
+      "subject": "Action required: API signup approval request {event.apiOrgId}/{event.apiId}/{event.apiVersion} with plan {event.planId}/{event.planVersion}",
       "html": "tpl/en/apiman.client.contract.approval.request.html",
       "plain": "tpl/en/apiman.client.contract.approval.request.txt",
       "category": "API_ADMINISTRATION"
     },
     "apiman.client.contract.approval.granted": {
-      "subject": "Your request to sign up to API {} has been approved!",
+      "subject": "Your request to sign up to API {event.apiId}/{event.apiVersion} has been approved!",
       "html": "tpl/en/apiman.client.contract.approval.granted.html",
       "plain": "tpl/en/apiman.client.contract.approval.granted.txt",
       "category": "API_ADMINISTRATION"
