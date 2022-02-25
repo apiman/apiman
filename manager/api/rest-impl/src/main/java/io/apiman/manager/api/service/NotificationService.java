@@ -171,7 +171,7 @@ public class NotificationService implements DataAccessUtilMixin {
 
                 // 2. Emit notification onto notification bus.
                 LOGGER.trace("Firing notification: {0}", dto);
-                notificationDispatcher.fire(dto);
+                notificationDispatcher.fireAsync(dto);
             });
         }
     }
