@@ -93,9 +93,8 @@ public class SimpleMailNotificationService {
         boolean plainBlank = html.isBlank();
 
         String subject = templateEngine.applyTemplate(template.getSubject(), email.getTemplateVariables());
-        boolean subjectBlank = subject.isBlank();
 
-        if (subjectBlank) {
+        if (subject.isBlank()) {
             throw new IllegalArgumentException("Non-blank subject is required for notification emails " + email);
         } else if (htmlBlank && plainBlank) {
             throw new IllegalArgumentException("Both HTML and plain templates are blank in notification mail " + email);

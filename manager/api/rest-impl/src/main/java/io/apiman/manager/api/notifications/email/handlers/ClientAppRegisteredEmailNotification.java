@@ -63,7 +63,7 @@ public class ClientAppRegisteredEmailNotification implements INotificationHandle
     public boolean wants(NotificationDto<? extends IVersionedApimanEvent> raw) {
         if (raw.getReason().equals(ClientAppStatusNotificationProducer.APIMAN_CLIENT_STATUS_CHANGE)) {
             // Get the event payload
-            NotificationDto<ClientVersionStatusEvent> notification = (NotificationDto<ClientVersionStatusEvent>) raw.getPayload();
+            NotificationDto<ClientVersionStatusEvent> notification = (NotificationDto<ClientVersionStatusEvent>) raw;
             ClientVersionStatusEvent event = notification.getPayload();
             // We only want to send a notification if the previous state was unregistered, and new state is registered (for now).
             return (event.getNewStatus() == ClientStatus.Registered && event.getPreviousStatus() == ClientStatus.AwaitingApproval);

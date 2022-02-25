@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Configuration object for the API Manager.
@@ -86,7 +85,7 @@ public abstract class ApiManagerConfig {
     /* -------------------------------------------------------
      * Endpoint-related
      * ------------------------------------------------------- */
-    public static final String APIMAN_MANAGER_UI_API_ENDPOINT = "apiman-manager-ui.api.endpoint";
+    public static final String APIMAN_MANAGER_UI_ENDPOINT = "apiman-manager-ui.api.endpoint";
 
     private final Configuration config;
 
@@ -338,8 +337,8 @@ public abstract class ApiManagerConfig {
         return getPrefixedProperties("apiman-manager.notifications.email.");
     }
 
-    public String getApimanManagerUiApiEndpoint() {
-        return StringUtils.removeEnd(config.getString(APIMAN_MANAGER_UI_API_ENDPOINT), "/");
+    public String getApimanManagerUiEndpoint() {
+        return config.getString(APIMAN_MANAGER_UI_ENDPOINT, "http://localhost:8080/apimanui/api-manager/");
     }
 
     /**

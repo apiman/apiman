@@ -37,7 +37,7 @@ public class DefaultTemplatesTest {
         }
 
         @Override
-        public String getApimanManagerUiApiEndpoint() {
+        public String getApimanManagerUiEndpoint() {
             return StringUtils.removeEnd("http://localhost:8080/apimanui/api-manager/", "/");
         }
     };

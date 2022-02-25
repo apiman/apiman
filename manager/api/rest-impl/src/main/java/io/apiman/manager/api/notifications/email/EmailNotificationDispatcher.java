@@ -17,6 +17,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
@@ -73,7 +75,7 @@ public class EmailNotificationDispatcher {
         return Map.of(
                 "notification", notification,
                 "event", notification.getPayload(),
-                "apiman-manager-ui-endpoint", config.getApimanManagerUiApiEndpoint()
+                "apiman-manager-ui-endpoint", StringUtils.removeEnd(config.getApimanManagerUiEndpoint(), "/")
         );
     }
 }
