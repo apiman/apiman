@@ -98,6 +98,7 @@
     <version.commons-configuration>1.10</version.commons-configuration>
     <version.commons-dbcp>1.4</version.commons-dbcp>
     <version.commons-dbutils>1.7</version.commons-dbutils>
+    <version.commons-email>1.5</version.commons-email>
     <version.commons-io>2.11.0</version.commons-io>
     <version.commons-logging>1.2</version.commons-logging>
     <version.commons-pool>1.6</version.commons-pool>
@@ -140,6 +141,7 @@
     <version.org.slf4j>1.7.32</version.org.slf4j>
     <version.org.testcontainers>1.16.0</version.org.testcontainers>
     <version.io.netty>4.1.65.Final</version.io.netty>
+    <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
     <version.io.swagger>1.6.2</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.8</version.io.vertx>
@@ -655,6 +657,11 @@
         <version>${version.org.apache.logging.log4j}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-email</artifactId>
+        <version>${version.commons-email}</version>
+      </dependency>
+      <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>${version.joda-time}</version>
@@ -668,6 +675,11 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-codec-http</artifactId>
         <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus.qute</groupId>
+        <artifactId>qute-core</artifactId>
+        <version>${version.io.quarkus.qute}</version>
       </dependency>
       <dependency>
         <groupId>com.hazelcast</groupId>
