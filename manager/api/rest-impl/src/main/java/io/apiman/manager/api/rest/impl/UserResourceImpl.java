@@ -101,9 +101,9 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
      * {@inheritDoc}
      */
     @Override
-    public UserDto get(String userId) throws UserNotFoundException {
+    public UserBean get(String userId) throws UserNotFoundException {
         securityContext.checkIfUserIsCurrentUser(userId);
-        return UserMapper.toDto(userService.getUserById(userId));
+        return userService.getUserById(userId);
     }
 
     // TODO(msavy): refactor and move to service
