@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -47,7 +48,7 @@ public class EmailNotificationDispatcher {
      *     <li>If so, process notification, else drop through silently</li>
      * </ul>
      */
-    public void processNotification(@Observes NotificationDto<?> notification) {
+    public void processNotification(@ObservesAsync NotificationDto<?> notification) {
         boolean wantsNotification = notificationService.userWantsNotification(
                 notification.getRecipient().getId(),
                 NotificationType.EMAIL,
