@@ -28,7 +28,6 @@ The user that triggered the signup request.
 
 If approved, any members of the `{event.clientOrgId}` organisation with `clientView` permissions will have access to the API key.
 
-User ID: {event.user.id}
 Username: {event.user.username}
 Name: {event.user.fullName}
 Email: {event.user.email}

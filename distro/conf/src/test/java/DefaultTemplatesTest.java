@@ -45,7 +45,6 @@ public class DefaultTemplatesTest {
     @Test
     public void contract_approval_request_html() throws IOException {
         var appDeveloper = new UserDto()
-                .setId("User1")
                 .setFullName("John Smith Appdev")
                 .setUsername("JohnSmith123")
                 .setEmail("foo@apiman.io")
@@ -75,7 +74,6 @@ public class DefaultTemplatesTest {
                 .build();
 
         UserDto recipient = new UserDto()
-                .setId("Approver1")
                 .setEmail("approver@apiman.io")
                 .setUsername("ApproverPerson")
                 .setFullName("David Approver")
@@ -103,7 +101,6 @@ public class DefaultTemplatesTest {
     @Test
     public void contract_approval_request_txt() throws IOException {
         var appDeveloper = new UserDto()
-                .setId("User1")
                 .setFullName("John Smith Appdev")
                 .setUsername("JohnSmith123")
                 .setEmail("foo@apiman.io")
@@ -133,7 +130,6 @@ public class DefaultTemplatesTest {
                 .build();
 
         UserDto recipient = new UserDto()
-                .setId("Approver1")
                 .setEmail("approver@apiman.io")
                 .setUsername("ApproverPerson")
                 .setFullName("David Approver")
@@ -161,7 +157,6 @@ public class DefaultTemplatesTest {
     @Test
     public void contract_approval_response_html() throws IOException {
         var appDeveloper = new UserDto()
-                .setId("User1")
                 .setFullName("John Smith Appdev")
                 .setUsername("JohnSmith123")
                 .setEmail("foo@apiman.io")
@@ -191,7 +186,6 @@ public class DefaultTemplatesTest {
                 .build();
 
         UserDto recipient = new UserDto()
-                .setId("Approver1")
                 .setEmail("approver@apiman.io")
                 .setUsername("ApproverPerson")
                 .setFullName("David Approver")
@@ -219,7 +213,6 @@ public class DefaultTemplatesTest {
     @Test
     public void contract_approval_response_txt() throws IOException {
         var appDeveloper = new UserDto()
-                .setId("User1")
                 .setFullName("John Smith Appdev")
                 .setUsername("JohnSmith123")
                 .setEmail("foo@apiman.io")
@@ -249,7 +242,6 @@ public class DefaultTemplatesTest {
                 .build();
 
         UserDto recipient = new UserDto()
-                .setId("Approver1")
                 .setEmail("approver@apiman.io")
                 .setUsername("ApproverPerson")
                 .setFullName("David Approver")

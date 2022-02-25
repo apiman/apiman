@@ -6,7 +6,6 @@ You are able to grant access via your IDM solution.
 
 ## User Information
 
-User ID: {event.userId}
 Username: {event.username}
 Name: {event.firstName} {event.surname}
 Email: {event.emailAddress}
