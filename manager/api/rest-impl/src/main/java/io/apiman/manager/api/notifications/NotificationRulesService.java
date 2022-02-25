@@ -61,6 +61,9 @@ public class NotificationRulesService {
         RuleKey key = RuleKey.of(userId, notificationType);
         ActivationRuleGroup ruleGroup = notificationsRuleCache.get(key,
                 k -> notificationRepository.getNotificationPreferenceByUserIdAndType(userId, notificationType).map(entity -> buildRuleGroup(entity, key)).orElse(null));
+        if (ruleGroup == null) {
+            return false;
+        }
         Facts facts = new Facts();
         facts.add(new Fact<>("notification", notification));
         return !ruleGroup.evaluate(facts);
