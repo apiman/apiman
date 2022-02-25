@@ -76,11 +76,8 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
     private String getStackTrace(AbstractRestException exception) {
         LOGGER.error(exception);
         if (isStackTraceEnabled()) {
-            StringBuilderWriter writer = new StringBuilderWriter();
-            try {
+            try (StringBuilderWriter writer = new StringBuilderWriter()) {
                 return writer.getBuilder().toString();
-            } finally {
-                writer.close();
             }
         } else {
             return null;
