@@ -49,7 +49,7 @@
               "node_modules/material-icons/iconfont/material-icons.css"
             ],
             "scripts": [
-              "node_modules/marked/lib/marked.js",
+              "node_modules/marked/marked.min.js",
               "node_modules/simplebar/dist/simplebar.min.js",
               "node_modules/prismjs/prism.js"
             ]
