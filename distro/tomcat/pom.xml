@@ -39,6 +39,10 @@
     </dependency>
     <dependency>
       <groupId>io.apiman</groupId>
+      <artifactId>apiman-distro-conf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-distro-tools</artifactId> <!-- Tools for migration, etc. -->
       <version>${project.version}</version>
       <type>zip</type>

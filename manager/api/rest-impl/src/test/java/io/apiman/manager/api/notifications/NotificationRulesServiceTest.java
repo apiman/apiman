@@ -7,6 +7,7 @@ import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
+import io.apiman.manager.api.notifications.rules.SimpleSpELRule;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -19,9 +20,8 @@ import org.jeasy.rules.api.Rules;
 import org.jeasy.rules.api.RulesEngine;
 import org.jeasy.rules.api.RulesEngineParameters;
 import org.jeasy.rules.core.DefaultRulesEngine;
-import io.apiman.manager.api.notifications.rules.SimpleSpELRule;
-
 import org.jeasy.rules.support.composite.ActivationRuleGroup;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -119,6 +119,6 @@ public class NotificationRulesServiceTest {
         RulesEngine rulesEngine = new DefaultRulesEngine(parameters);
         rulesEngine.fire(rules, facts);
 
-        System.out.println(ruleGroup.evaluate(facts));
+        Assert.assertTrue(ruleGroup.evaluate(facts));
     }
 }

@@ -2,7 +2,7 @@ package io.apiman.manager.api.notifications.email;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
+import io.apiman.manager.api.beans.notifications.NotificationType;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.notifications.email.handlers.INotificationHandler;
@@ -46,20 +46,21 @@ public class EmailNotificationDispatcher {
      * </ul>
      */
     public void processNotification(@Observes NotificationDto<?> notification) {
-        // // 1. Check who the notification should be sent to and if they even want email notifications
-        // notificationService.getNotificationPreference(notification.getRecipient().getId(), "email")
-        //                    .filter(pref -> pref.getNotificationCategories().contains(notification.getCategory()))
-        //                    .ifPresentOrElse(
-        //                         emailPrefs -> process(notification, emailPrefs),
-        //                         ()-> LOGGER.trace("Notification recipient did not want an email for {0}", notification)
-        //                     );
-
-
-
+        boolean wantsNotification = notificationService.userWantsNotification(
+                notification.getRecipient().getId(),
+                NotificationType.EMAIL,
+                notification
+        );
+        if (wantsNotification) {
+            dispatch(notification);
+        } else {
+            LOGGER.trace("Notification recipient did not want an email for {0}", notification);
+        }
     }
 
-    private void process(NotificationDto<?> notification, NotificationPreferenceEntity emailPrefs) {
-        LOGGER.trace("User has an email notification preference: {0}", emailPrefs);
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void dispatch(NotificationDto<?> notification) {
+        // LOGGER.trace("User has an email notification preference: {0}", emailPrefs);
         LOGGER.trace("Notification is a candidate for processing: {0}", notification);
         // TODO can easily optimise this for prefix matching (regex or whatever).
         Map<String, Object> defaultTemplateMap = createDefaultTemplateMap(notification, config);

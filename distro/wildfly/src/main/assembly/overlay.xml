@@ -83,6 +83,7 @@
         </excludes>
       </unpackOptions>
     </dependencySet>
+    <!-- Apiman Data -->
     <dependencySet>
       <outputDirectory>standalone/data</outputDirectory>
       <includes>
@@ -99,6 +100,25 @@
         <includes>
           <include>**/bootstrap/**</include>
         </includes>
+      </unpackOptions>
+    </dependencySet>
+    <!-- Apiman Conf (e.g. email template) -->
+    <dependencySet>
+      <outputDirectory>standalone/configuration</outputDirectory>
+      <includes>
+        <include>io.apiman:apiman-distro-conf:jar</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <exclude>/META-INF/**</exclude>
+        </excludes>
       </unpackOptions>
     </dependencySet>
   </dependencySets>

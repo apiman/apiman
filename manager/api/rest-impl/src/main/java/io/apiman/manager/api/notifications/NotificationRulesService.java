@@ -27,7 +27,7 @@ public class NotificationRulesService {
     private final INotificationRepository notificationRepository;
 
     private final Cache<RuleKey, ActivationRuleGroup> notificationsRuleCache = Caffeine.newBuilder()
-            .maximumSize(10_000)
+            .maximumSize(5_000)
             .build();
 
     @Inject
@@ -43,7 +43,7 @@ public class NotificationRulesService {
 
     public NotificationRulesService cache(String userId, NotificationType notificationType) {
         RuleKey key = RuleKey.of(userId, notificationType);
-        notificationRepository.getNotificationPreferenceByUserIdAndType(userId, notificationType).map(entity -> buildRuleGroup(entity, key));
+        notificationRepository.getNotificationPreferenceByUserIdAndType(key.userId, key.nType).map(entity -> buildRuleGroup(entity, key));
         return this;
     }
 
@@ -59,24 +59,11 @@ public class NotificationRulesService {
 
     public boolean wantsNotification(String userId, NotificationType notificationType, NotificationDto<?> notification) {
         RuleKey key = RuleKey.of(userId, notificationType);
-        // ActivationRuleGroup ruleGroup = getOrBuild(notificationRepository.getNotificationPreferenceByUserIdAndType(userId, notificationType), key);
         ActivationRuleGroup ruleGroup = notificationsRuleCache.get(key,
                 k -> notificationRepository.getNotificationPreferenceByUserIdAndType(userId, notificationType).map(entity -> buildRuleGroup(entity, key)).orElse(null));
         Facts facts = new Facts();
         facts.add(new Fact<>("notification", notification));
         return !ruleGroup.evaluate(facts);
-    }
-
-    // public boolean wantsNotification(NotificationPreferenceEntity npe, NotificationDto<?> notification) {
-    //     RuleKey key = RuleKey.of(npe.getUserId(), npe.getType());
-    //     ActivationRuleGroup ruleGroup = getOrBuild(npe, key);
-    //     Facts facts = new Facts();
-    //     facts.add(new Fact<>("notification", notification));
-    //     return !ruleGroup.evaluate(facts);
-    // }
-
-    private ActivationRuleGroup getOrBuild(NotificationPreferenceEntity npe, RuleKey key) {
-        return notificationsRuleCache.get(key, k -> buildRuleGroup(npe, k));
     }
 
     private ActivationRuleGroup buildRuleGroup(NotificationPreferenceEntity npe, RuleKey key) {
@@ -90,8 +77,8 @@ public class NotificationRulesService {
     }
 
     private static final class RuleKey {
-        private final String userId;
-        private final NotificationType nType;
+        final String userId;
+        final NotificationType nType;
 
         RuleKey(String userId, NotificationType nType) {
             this.userId = userId;
@@ -100,14 +87,6 @@ public class NotificationRulesService {
 
         public static RuleKey of(String userId, NotificationType nType) {
             return new RuleKey(userId, nType);
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public NotificationType getNotificationType() {
-            return nType;
         }
 
         @Override

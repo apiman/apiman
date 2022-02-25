@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.Query;
-import javax.validation.constraints.NotEmpty;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -46,9 +44,8 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     }
 
     @Override
-    public SearchResultsBean<NotificationEntity> searchNotificationsByUser(String recipientUserId,
-         @Nullable SearchCriteriaBean searchCriteria)
-         throws StorageException {
+    public SearchResultsBean<NotificationEntity> searchNotificationsByUser(String recipientUserId, SearchCriteriaBean searchCriteria)
+            throws StorageException {
 
         var recipientFilter = new SearchCriteriaFilterBean()
              .setName("recipient")

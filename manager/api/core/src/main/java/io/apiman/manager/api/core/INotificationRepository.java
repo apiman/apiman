@@ -31,8 +31,7 @@ public interface INotificationRepository {
     /**
      * Search for notifications by recipient using search criteria
      */
-    SearchResultsBean<NotificationEntity> searchNotificationsByUser(String recipientUserId,
-         @Nullable SearchCriteriaBean searchCriteria)
+    SearchResultsBean<NotificationEntity> searchNotificationsByUser(String recipientUserId, SearchCriteriaBean searchCriteria)
          throws StorageException;
 
     /**

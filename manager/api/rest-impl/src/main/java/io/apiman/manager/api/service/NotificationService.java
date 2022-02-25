@@ -10,8 +10,8 @@ import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
-import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
+import io.apiman.manager.api.beans.notifications.NotificationType;
 import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
@@ -66,13 +66,15 @@ public class NotificationService implements DataAccessUtilMixin {
             INotificationRepository notificationRepository,
             NotificationMapper notificationMapper,
             Event<NotificationDto<?>> notificationDispatcher,
-            ISecurityContext securityContext) {
+            ISecurityContext securityContext,
+            NotificationRulesService notificationRulesService) {
         this.storage = storage;
         this.notificationRepository = notificationRepository;
         this.notificationMapper = notificationMapper;
         this.notificationDispatcher = notificationDispatcher;
         this.securityContext = securityContext;
         this.config = new NotificationServiceConfig(config.getNotificationsConfig());
+        this.notificationRulesService = notificationRulesService;
     }
 
     public NotificationService() {
@@ -215,9 +217,13 @@ public class NotificationService implements DataAccessUtilMixin {
         tryAction(() -> notificationRepository.markAllNotificationsReadByUserId(recipientId, status));
     }
 
-    public Optional<NotificationPreferenceEntity> getNotificationPreference(String userId, String notificationType) {
-        return tryAction(() -> notificationRepository.getNotificationPreferenceByUserIdAndType(userId, notificationType));
+    public boolean userWantsNotification(String userId, NotificationType notificationType, NotificationDto<?> notificationDto) {
+        return notificationRulesService.wantsNotification(userId, notificationType, notificationDto);
     }
+
+    // public Optional<NotificationPreferenceEntity> getNotificationPreference(String userId, NotificationType notificationType) {
+    //     return tryAction(() -> notificationRepository.getNotificationPreferenceByUserIdAndType(userId, notificationType));
+    // }
 
     private List<UserDto> calculateRecipients(List<RecipientDto> recipientDto) {
         return recipientDto.stream()
