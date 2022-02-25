@@ -75,6 +75,7 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
     private ISecurityContext securityContext;
     private IStorageQuery query;
     private INewUserBootstrapper userBootstrapper;
+    private UserMapper userMapper = UserMapper.INSTANCE;
 
     /**
      * Constructor.
@@ -101,9 +102,9 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
      * {@inheritDoc}
      */
     @Override
-    public UserBean get(String userId) throws UserNotFoundException {
+    public UserDto get(String userId) throws UserNotFoundException {
         securityContext.checkIfUserIsCurrentUser(userId);
-        return userService.getUserById(userId);
+        return userMapper.toDto(userService.getUserById(userId));
     }
 
     // TODO(msavy): refactor and move to service

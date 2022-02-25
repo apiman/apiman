@@ -50,7 +50,7 @@ public class EmailNotificationDispatcher {
      */
     public void processNotification(@ObservesAsync NotificationDto<?> notification) {
         boolean wantsNotification = notificationService.userWantsNotification(
-                notification.getRecipient().getId(),
+                notification.getRecipient().getUsername(),
                 NotificationType.EMAIL,
                 notification
         );

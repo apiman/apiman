@@ -37,7 +37,6 @@ public class NotificationRulesServiceTest {
     @Before
     public void setup() {
         var appDeveloper = new UserDto()
-                .setId("User1")
                 .setFullName("John Smith Appdev")
                 .setUsername("JohnSmith123")
                 .setEmail("foo@apiman.io")
@@ -67,7 +66,6 @@ public class NotificationRulesServiceTest {
                 .build();
 
         UserDto recipient = new UserDto()
-                .setId("Approver1")
                 .setEmail("approver@apiman.io")
                 .setUsername("ApproverPerson")
                 .setFullName("David Approver")

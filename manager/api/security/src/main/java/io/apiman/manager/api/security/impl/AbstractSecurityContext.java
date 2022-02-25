@@ -18,6 +18,8 @@ package io.apiman.manager.api.security.impl;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -25,8 +27,6 @@ import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
-import io.apiman.manager.api.beans.idm.UserDto;
-import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.security.i18n.Messages;
 
 import java.util.HashSet;
@@ -47,6 +47,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     protected static final ThreadLocal<HttpServletRequest> servletRequest = new ThreadLocal<>();
     private static final ThreadLocal<IndexedPermissions> permissions = new ThreadLocal<>();
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(AbstractSecurityContext.class);
+    private static final UserMapper userMapper = UserMapper.INSTANCE;
     @Inject
     private IStorageQuery query;
     @Inject
@@ -215,7 +216,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
         try {
             return storage.getAllUsersWithPermission(permission, orgName)
                           .stream()
-                          .map(UserMapper::toDto)
+                          .map(userMapper::toDto)
                           .collect(Collectors.toList());
         } catch (StorageException e) {
             throw new RuntimeException(e);
@@ -232,7 +233,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
         try {
             return storage.getAllUsersWithRole(roleName, orgName)
                           .stream()
-                          .map(UserMapper::toDto)
+                          .map(userMapper::toDto)
                           .collect(Collectors.toList());
         } catch (StorageException e) {
             throw new SystemErrorException(e);

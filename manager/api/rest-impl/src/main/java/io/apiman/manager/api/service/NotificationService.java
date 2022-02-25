@@ -61,6 +61,7 @@ public class NotificationService implements DataAccessUtilMixin {
     private ISecurityContext securityContext;
     private Event<NotificationDto<?>> notificationDispatcher;
     private NotificationRulesService notificationRulesService;
+    private UserMapper userMapper = UserMapper.INSTANCE;
 
     @Inject
     public NotificationService(
@@ -251,7 +252,7 @@ public class NotificationService implements DataAccessUtilMixin {
             case INDIVIDUAL:
                 return Optional
                      .ofNullable(tryAction(() -> storage.getUser(recipient.getRecipient())))
-                     .map(user ->  List.of(UserMapper.toDto(user)))
+                     .map(user ->  List.of(userMapper.toDto(user)))
                      .orElse(Collections.emptyList());
             case ROLE:
                 if (recipient.getOrgId() != null) {

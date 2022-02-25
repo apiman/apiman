@@ -3,14 +3,13 @@ package io.apiman.manager.api.beans.idm;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.StringJoiner;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotBlank;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class UserDto {
-    @NotBlank
-    private String id;
     @NotBlank
     private String username;
     @NotBlank
@@ -19,17 +18,10 @@ public class UserDto {
     private String email;
     @NotBlank
     private Locale locale = Locale.getDefault();
+    @Nullable
+    private Boolean admin;
 
     public UserDto() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public UserDto setId(String id) {
-        this.id = id;
-        return this;
     }
 
     public String getUsername() {
@@ -68,6 +60,15 @@ public class UserDto {
         return this;
     }
 
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public UserDto setAdmin(boolean admin) {
+        this.admin = admin;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -77,22 +78,22 @@ public class UserDto {
             return false;
         }
         UserDto userDto = (UserDto) o;
-        return Objects.equals(id, userDto.id) && Objects.equals(username, userDto.username);
+        return Objects.equals(username, userDto.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username);
+        return Objects.hash(username);
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", UserDto.class.getSimpleName() + "[", "]")
-                .add("id='" + id + "'")
                 .add("username='" + username + "'")
                 .add("fullName='" + fullName + "'")
                 .add("email='" + email + "'")
                 .add("locale=" + locale)
+                .add("admin=" + admin)
                 .toString();
     }
 }

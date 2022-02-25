@@ -26,6 +26,7 @@ import org.mapstruct.ObjectFactory;
 public abstract class NotificationMapper implements DataAccessUtilMixin {
     @Inject EventFactory eventFactory;
     @Inject IStorage storage;
+    UserMapper userMapper = UserMapper.INSTANCE;
 
     @ObjectFactory
     public NotificationDto<?> createDto() {
@@ -42,7 +43,7 @@ public abstract class NotificationMapper implements DataAccessUtilMixin {
 
     public UserDto translateUsernameToUserDto(String username) {
         return Optional.ofNullable(tryAction(() -> storage.getUser(username)))
-                       .map(UserMapper::toDto)
-                       .orElse(new UserDto().setId("external-or-deleted-user"));
+                       .map(userMapper::toDto)
+                       .orElse(new UserDto().setUsername("external-or-deleted-user"));
     }
 }
