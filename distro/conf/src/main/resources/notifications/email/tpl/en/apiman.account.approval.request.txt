@@ -1,0 +1,13 @@
+Hi {notification.recipient.fullName},
+
+A user is requesting approval to gain access to the Apiman platform.
+
+You are able to grant access via your IDM solution.
+
+## User Information
+
+Username: {event.username}
+Name: {event.firstName} {event.surname}
+Email: {event.emailAddress}
+
+{#include footer.en.include.txt /}

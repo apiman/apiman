@@ -15,3 +15,4 @@ npm-debug.log
 .metadata/*
 *.log
 .factorypath
+.jpb

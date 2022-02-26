@@ -474,6 +474,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-conf</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-distro-data</artifactId>
         <version>${project.version}</version>
       </dependency>

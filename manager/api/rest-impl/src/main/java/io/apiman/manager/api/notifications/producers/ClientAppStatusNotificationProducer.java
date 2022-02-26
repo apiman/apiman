@@ -10,7 +10,6 @@ import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientType;
 import io.apiman.manager.api.notifications.INotificationProducer;
-import io.apiman.manager.api.providers.eager.EagerLoaded;
 import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;
@@ -23,20 +22,18 @@ import javax.inject.Inject;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@EagerLoaded
 @ApplicationScoped
 public class ClientAppStatusNotificationProducer implements INotificationProducer {
 
-    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalNotificationProducer.class);
     public static final String APIMAN_CLIENT_STATUS_CHANGE = "apiman.client.status_change";
-    private NotificationService notificationService;
+
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalNotificationProducer.class);
+    private final NotificationService notificationService;
 
     @Inject
     public ClientAppStatusNotificationProducer(NotificationService notificationService) {
         this.notificationService = notificationService;
     }
-
-    public ClientAppStatusNotificationProducer() {}
 
     public void processEvent(@Observes ClientVersionStatusEvent signupEvent) {
         // For now, we'll only send a message if there's a register?

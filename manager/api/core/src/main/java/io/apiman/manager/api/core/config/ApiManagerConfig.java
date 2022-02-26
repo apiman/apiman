@@ -16,15 +16,12 @@
 package io.apiman.manager.api.core.config;
 
 import io.apiman.common.config.ConfigFactory;
-import io.apiman.common.config.ConfigFileConfiguration;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -84,6 +81,11 @@ public abstract class ApiManagerConfig {
 
     public static final String APIMAN_PLUGIN_REPOSITORIES = "apiman.plugins.repositories"; //$NON-NLS-1$
     public static final String APIMAN_PLUGIN_REGISTRIES = "apiman-manager.plugins.registries"; //$NON-NLS-1$
+
+    /* -------------------------------------------------------
+     * Endpoint-related
+     * ------------------------------------------------------- */
+    public static final String APIMAN_MANAGER_UI_ENDPOINT = "apiman-manager-ui.api.endpoint";
 
     private final Configuration config;
 
@@ -335,6 +337,10 @@ public abstract class ApiManagerConfig {
         return getPrefixedProperties("apiman-manager.notifications.email.");
     }
 
+    public String getApimanManagerUiEndpoint() {
+        return config.getString(APIMAN_MANAGER_UI_ENDPOINT, "http://localhost:8080/apimanui/api-manager/");
+    }
+
     /**
      * Gets a map of properties prefixed by the given string.
      */
@@ -428,7 +434,7 @@ public abstract class ApiManagerConfig {
         // If that didn't work, try to locate a tomcat data directory
         dataDir = System.getProperty("catalina.home");
         if (dataDir != null) {
-            return Paths.get(dataDir, "conf");
+            return Paths.get(dataDir, "apiman");
         }
         throw new IllegalStateException("No data directory has been set. Please set apiman.data.dir=<data dir>");
     }

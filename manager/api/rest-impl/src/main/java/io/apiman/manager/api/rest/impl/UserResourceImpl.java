@@ -23,9 +23,12 @@ import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
 import io.apiman.manager.api.beans.notifications.NotificationCriteriaBean;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
+import io.apiman.manager.api.beans.notifications.dto.CreateNotificationFilterDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationActionDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.search.PagingBean;
@@ -72,6 +75,7 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
     private ISecurityContext securityContext;
     private IStorageQuery query;
     private INewUserBootstrapper userBootstrapper;
+    private UserMapper userMapper = UserMapper.INSTANCE;
 
     /**
      * Constructor.
@@ -98,11 +102,12 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
      * {@inheritDoc}
      */
     @Override
-    public UserBean get(String userId) throws UserNotFoundException {
+    public UserDto get(String userId) throws UserNotFoundException {
         securityContext.checkIfUserIsCurrentUser(userId);
-        return userService.getUserById(userId);
+        return userMapper.toDto(userService.getUserById(userId));
     }
 
+    // TODO(msavy): refactor and move to service
     /**
      * {@inheritDoc}
      */
@@ -270,6 +275,13 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
             notificationService.markNotificationsWithStatus(userId, notificationAction.getNotificationIds(), notificationAction.getStatus());
         }
         return Response.noContent().build();
+    }
+
+    @Override
+    public Response createNotificationFilter(String userId, CreateNotificationFilterDto createFilter) {
+        securityContext.checkIfUserIsCurrentUser(userId);
+        notificationService.createFilter(userId, createFilter);
+        return Response.accepted().build();
     }
 
     /**
