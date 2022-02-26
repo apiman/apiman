@@ -50,7 +50,6 @@ public class KeycloakAdminClient {
 
     private UserDto toUserBean(UserRepresentation userRepresentation) {
         return new UserDto()
-             .setId(userRepresentation.getId())
              .setUsername(userRepresentation.getUsername())
              .setEmail(userRepresentation.getEmail())
              .setFullName(userRepresentation.getFirstName() + " " + userRepresentation.getLastName());

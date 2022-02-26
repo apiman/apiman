@@ -9,12 +9,10 @@ import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientType;
 import io.apiman.manager.api.notifications.INotificationProducer;
-import io.apiman.manager.api.providers.eager.EagerLoaded;
 import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -23,30 +21,22 @@ import javax.inject.Inject;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@EagerLoaded
 @ApplicationScoped
 public class ContractApprovalNotificationProducer implements INotificationProducer {
 
-    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalNotificationProducer.class);
     public static final String APIMAN_CONTRACT_APPROVED_REASON = "apiman.client.contract.approval.granted";
     public static final String APIMAN_CONTRACT_REJECTED_REASON = "apiman.client.contract.approval.rejected";
 
-    private NotificationService notificationService;
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalNotificationProducer.class);
+    private final NotificationService notificationService;
 
     @Inject
     public ContractApprovalNotificationProducer(NotificationService notificationService) {
         this.notificationService = notificationService;
     }
 
-    public ContractApprovalNotificationProducer() {}
-
-    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
-        // no-op to force eager initialization
-    }
-
     public void processEvent(@Observes ContractApprovalEvent approvalEvent) {
         LOGGER.debug("Processing contract approval event: {0}", approvalEvent);
-        String orgId = approvalEvent.getApiOrgId();
 
         RecipientDto planAdmins = new RecipientDto()
              .setRecipient(PermissionType.clientAdmin.name())

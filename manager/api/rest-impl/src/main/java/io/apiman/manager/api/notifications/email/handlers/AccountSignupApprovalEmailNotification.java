@@ -8,50 +8,51 @@ import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.notifications.email.SimpleEmail;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.notifications.producers.NewAccountNotificationProducer;
-import io.apiman.manager.api.providers.eager.EagerLoaded;
 
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@EagerLoaded
 @ApplicationScoped
-public class AccountSignupApprovalEmailNotification implements INotificationHandler {
+public class AccountSignupApprovalEmailNotification implements INotificationHandler<AccountSignupEvent> {
 
-    private SimpleMailNotificationService mailNotificationService;
+    private final SimpleMailNotificationService mailNotificationService;
 
     @Inject
     public AccountSignupApprovalEmailNotification(SimpleMailNotificationService mailNotificationService) {
         this.mailNotificationService = mailNotificationService;
     }
 
-    public AccountSignupApprovalEmailNotification() {
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
+        // no-op to force eager initialization
     }
 
     @Override
-    public void handle(NotificationDto<? extends IVersionedApimanEvent> rawNotification) {
-        @SuppressWarnings("unchecked")
-        NotificationDto<AccountSignupEvent> signupNotification = (NotificationDto<AccountSignupEvent>) rawNotification;
-        Map<String, Object> templateMap = buildTemplateMap(signupNotification);
-
+    public void handle(NotificationDto<AccountSignupEvent> signupNotification, Map<String, Object> defaultTemplateMap) {
         // Beware, for this instance, the user might not actually exist in Apiman (yet or at all) as it could have come
         // from the underlying IDM -- be careful if calling for Apiman's members, etc.
-        UserDto recipient = rawNotification.getRecipient();
+        UserDto recipient = signupNotification.getRecipient();
 
-        EmailNotificationTemplate template = mailNotificationService
+        mailNotificationService
              .findTemplateFor(signupNotification.getReason(), recipient.getLocale())
-             .orElseThrow();
+             .ifPresentOrElse(
+                     template -> send(recipient, template, defaultTemplateMap),
+                     () -> warnOnce(recipient, signupNotification)
+             );
+    }
 
+    private void send(UserDto recipient, EmailNotificationTemplate template, Map<String, Object> defaultTemplateMap) {
         var mail = SimpleEmail
-             .builder()
-             .setRecipient(recipient)
-             .setTemplate(template)
-             .setTemplateVariables(templateMap)
-             .build();
+                .builder()
+                .setRecipient(recipient)
+                .setTemplate(template)
+                .setTemplateVariables(defaultTemplateMap)
+                .build();
 
         mailNotificationService.send(mail);
     }
@@ -59,12 +60,5 @@ public class AccountSignupApprovalEmailNotification implements INotificationHand
     @Override
     public boolean wants(NotificationDto<? extends IVersionedApimanEvent> notification) {
         return notification.getReason().equals(NewAccountNotificationProducer.APIMAN_ACCOUNT_APPROVAL_REQUEST);
-    }
-
-    public Map<String, Object> buildTemplateMap(NotificationDto<AccountSignupEvent> notification) {
-        return Map.of(
-             "notification", notification,
-             "event", notification.getPayload()
-        );
     }
 }

@@ -75,18 +75,12 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-email</artifactId>
-      <version>1.5</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus.qute</groupId>
       <artifactId>qute-core</artifactId>
-      <version>2.1.0.Final</version>
     </dependency>
-    <dependency>
-      <groupId>io.quarkus.qute</groupId>
-      <artifactId>qute-generator</artifactId>
-      <version>2.1.0.Final</version>
-    </dependency><!-- The jenkins build fails without this...unknown why -->
+    <!-- The jenkins build fails without this...unknown why -->
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>javax.transaction-api</artifactId>

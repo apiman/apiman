@@ -3,6 +3,7 @@ package io.apiman.manager.api.core;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
+import io.apiman.manager.api.beans.notifications.NotificationType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
@@ -11,51 +12,55 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import javax.management.Notification;
+import javax.validation.constraints.Null;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@ParametersAreNonnullByDefault
 public interface INotificationRepository {
 
     /**
      * Get notification by notification's unique ID
      */
-    NotificationEntity getNotificationById(@NotNull Long notificationId) throws StorageException;
+    NotificationEntity getNotificationById(Long notificationId) throws StorageException;
 
     /**
      * Search for notifications by recipient using search criteria
      */
-    SearchResultsBean<NotificationEntity> searchNotificationsByUser(@NotNull String recipientUserId,
-         @Nullable SearchCriteriaBean searchCriteria)
+    SearchResultsBean<NotificationEntity> searchNotificationsByUser(String recipientUserId, SearchCriteriaBean searchCriteria)
          throws StorageException;
 
     /**
      * Get latest notifications for a recipient
      */
-    SearchResultsBean<NotificationEntity> getLatestNotificationsByRecipientId(@NotNull String recipientUserId, @Nullable PagingBean pagingBean)
+    SearchResultsBean<NotificationEntity> getLatestNotificationsByRecipientId(String recipientUserId, @Nullable PagingBean pagingBean)
          throws StorageException;
 
     /**
      * Create a new notifications
      */
-    void create(@NotNull NotificationEntity bean) throws StorageException;
+    void create(NotificationEntity bean) throws StorageException;
 
     /**
      * Update a notifications
      */
-    void update(@NotNull NotificationEntity bean) throws StorageException;
+    void update(NotificationEntity bean) throws StorageException;
 
     /**
      * Delete a notification
      */
-    void delete(@NotNull NotificationEntity bean) throws StorageException;
+    void delete(NotificationEntity bean) throws StorageException;
 
     /**
      * Delete a notification by ID
      */
-    void deleteById(@NotNull Long id) throws StorageException;
+    void deleteById(Long id) throws StorageException;
 
     /**
      * Delete all notifications. Ensure you truly want to delete and not just mark as read!)
@@ -66,29 +71,50 @@ public interface INotificationRepository {
      * Delete all notifications by recipient ID. Ensure you truly want to delete and not just mark as read!)
      * @param recipientUserId the recipient
      */
-    void deleteByUserId(@NotNull String recipientUserId);
+    void deleteByUserId(String recipientUserId);
 
     /**
      * Count the number of notifications by user with the given status(es)
      */
-    int countNotificationsByUserId(@NotNull String recipientUserId, List<NotificationStatus> notificationStatus);
+    int countNotificationsByUserId(String recipientUserId, List<NotificationStatus> notificationStatus);
 
     /**
      * Mark the notifications with the given IDs with the provided status.
      *
      * If a notification ID does not belong to recipientUserId, it will be silently ignored.
      */
-    void markNotificationsWithStatusById(@NotNull String recipientUserId, @NotNull List<Long> idList, @NotNull NotificationStatus status) throws StorageException;
+    void markNotificationsWithStatusById(String recipientUserId, List<Long> idList, NotificationStatus status) throws StorageException;
 
     /**
      * Mark all OPEN notifications as read for the given recipient.
      *
      * If a notification ID does not belong to recipientUserId, it will be silently ignored.
      */
-    void markAllNotificationsReadByUserId(@NotNull String recipientUserId, @NotNull NotificationStatus status);
+    void markAllNotificationsReadByUserId(String recipientUserId, NotificationStatus status);
 
     /**
      * Get a user's notification preferences
      */
-    Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(@NotNull String userId, @NotNull String notificationType);
+    Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserId(String userId);
+
+    /**
+     * Get a user's notification preferences
+     */
+    Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserIdAndType(String userId, NotificationType notificationType);
+
+    /**
+     * Create a new notification preference entity
+     */
+    void create(NotificationPreferenceEntity entity) throws StorageException;
+
+    /**
+     * Update a notification preference entity
+     */
+    void update(NotificationPreferenceEntity entity) throws StorageException;
+
+    /**
+     * Delete notification preference entity
+     */
+    void delete(NotificationPreferenceEntity entity) throws StorageException;
+
 }

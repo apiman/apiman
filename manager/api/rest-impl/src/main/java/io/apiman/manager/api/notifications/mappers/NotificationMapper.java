@@ -5,6 +5,8 @@ import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
+import io.apiman.manager.api.beans.notifications.NotificationFilterEntity;
+import io.apiman.manager.api.beans.notifications.dto.CreateNotificationFilterDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.events.EventFactory;
@@ -24,6 +26,7 @@ import org.mapstruct.ObjectFactory;
 public abstract class NotificationMapper implements DataAccessUtilMixin {
     @Inject EventFactory eventFactory;
     @Inject IStorage storage;
+    UserMapper userMapper = UserMapper.INSTANCE;
 
     @ObjectFactory
     public NotificationDto<?> createDto() {
@@ -32,13 +35,15 @@ public abstract class NotificationMapper implements DataAccessUtilMixin {
 
     public abstract NotificationDto<?> entityToDto(NotificationEntity entity);
 
+    public abstract NotificationFilterEntity toEntity(CreateNotificationFilterDto dto);
+
     public <P extends IVersionedApimanEvent> P translatePayloadJsonToPojo(JsonNode event) {
         return eventFactory.toEventPojo(event);
     }
 
     public UserDto translateUsernameToUserDto(String username) {
         return Optional.ofNullable(tryAction(() -> storage.getUser(username)))
-                       .map(UserMapper::toDto)
-                       .orElse(new UserDto().setId("external-or-deleted-user"));
+                       .map(userMapper::toDto)
+                       .orElse(new UserDto().setUsername("external-or-deleted-user"));
     }
 }

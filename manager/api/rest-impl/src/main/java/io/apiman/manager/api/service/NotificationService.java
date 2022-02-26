@@ -10,9 +10,12 @@ import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
+import io.apiman.manager.api.beans.notifications.NotificationFilterEntity;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 import io.apiman.manager.api.beans.notifications.NotificationStatus;
+import io.apiman.manager.api.beans.notifications.NotificationType;
 import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
+import io.apiman.manager.api.beans.notifications.dto.CreateNotificationFilterDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.search.PagingBean;
@@ -21,6 +24,7 @@ import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.INotificationRepository;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.config.ApiManagerConfig;
+import io.apiman.manager.api.notifications.NotificationRulesService;
 import io.apiman.manager.api.notifications.mappers.NotificationMapper;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -56,6 +60,8 @@ public class NotificationService implements DataAccessUtilMixin {
     private NotificationMapper notificationMapper;
     private ISecurityContext securityContext;
     private Event<NotificationDto<?>> notificationDispatcher;
+    private NotificationRulesService notificationRulesService;
+    private UserMapper userMapper = UserMapper.INSTANCE;
 
     @Inject
     public NotificationService(
@@ -64,13 +70,15 @@ public class NotificationService implements DataAccessUtilMixin {
             INotificationRepository notificationRepository,
             NotificationMapper notificationMapper,
             Event<NotificationDto<?>> notificationDispatcher,
-            ISecurityContext securityContext) {
+            ISecurityContext securityContext,
+            NotificationRulesService notificationRulesService) {
         this.storage = storage;
         this.notificationRepository = notificationRepository;
         this.notificationMapper = notificationMapper;
         this.notificationDispatcher = notificationDispatcher;
         this.securityContext = securityContext;
         this.config = new NotificationServiceConfig(config.getNotificationsConfig());
+        this.notificationRulesService = notificationRulesService;
     }
 
     public NotificationService() {
@@ -112,7 +120,7 @@ public class NotificationService implements DataAccessUtilMixin {
                                                .map(notificationMapper::entityToDto)
                                                .collect(Collectors.toList());
 
-        return new SearchResultsBean<NotificationDto<?>>(dtos, results.getTotalSize());
+        return new SearchResultsBean<>(dtos, results.getTotalSize());
     }
 
     /**
@@ -129,7 +137,7 @@ public class NotificationService implements DataAccessUtilMixin {
                                         .map(notificationMapper::entityToDto)
                                         .collect(Collectors.toList());
 
-        return new SearchResultsBean<NotificationDto<?>>(dtos, results.getTotalSize());
+        return new SearchResultsBean<>(dtos, results.getTotalSize());
     }
 
     /**
@@ -167,7 +175,7 @@ public class NotificationService implements DataAccessUtilMixin {
 
                 // 2. Emit notification onto notification bus.
                 LOGGER.trace("Firing notification: {0}", dto);
-                notificationDispatcher.fire(dto);
+                notificationDispatcher.fireAsync(dto);
             });
         }
     }
@@ -213,8 +221,24 @@ public class NotificationService implements DataAccessUtilMixin {
         tryAction(() -> notificationRepository.markAllNotificationsReadByUserId(recipientId, status));
     }
 
-    public Optional<NotificationPreferenceEntity> getNotificationPreference(String userId, String notificationType) {
-        return tryAction(() -> notificationRepository.getNotificationPreferenceByUserIdAndType(userId, notificationType));
+    public boolean userWantsNotification(String userId, NotificationType notificationType, NotificationDto<?> notificationDto) {
+        return notificationRulesService.wantsNotification(userId, notificationType, notificationDto);
+    }
+
+    public void createFilter(String userId, CreateNotificationFilterDto createFilter) {
+        NotificationPreferenceEntity npe = notificationRepository.getNotificationPreferenceByUserIdAndType(userId, createFilter.getNotificationType())
+                .orElseGet(() -> {
+                    NotificationPreferenceEntity newNpe = new NotificationPreferenceEntity()
+                            .setType(createFilter.getNotificationType())
+                            .setUserId(userId);
+                    tryAction(() -> notificationRepository.create(newNpe));
+                    return newNpe;
+                });
+
+        NotificationFilterEntity nfe = notificationMapper.toEntity(createFilter);
+        npe.getRules().add(nfe);
+        tryAction(() -> notificationRepository.update(npe));
+        notificationRulesService.cache(npe);
     }
 
     private List<UserDto> calculateRecipients(List<RecipientDto> recipientDto) {
@@ -228,7 +252,7 @@ public class NotificationService implements DataAccessUtilMixin {
             case INDIVIDUAL:
                 return Optional
                      .ofNullable(tryAction(() -> storage.getUser(recipient.getRecipient())))
-                     .map(user ->  List.of(UserMapper.toDto(user)))
+                     .map(user ->  List.of(userMapper.toDto(user)))
                      .orElse(Collections.emptyList());
             case ROLE:
                 if (recipient.getOrgId() != null) {
@@ -258,6 +282,7 @@ public class NotificationService implements DataAccessUtilMixin {
              .setSource(newNotification.getSource())
              .setPayload(event);
     }
+
 
     private static final class NotificationServiceConfig extends GenericOptionsParser {
         static final boolean DEFAULT_NOTIFICATIONS_ENABLED = true;

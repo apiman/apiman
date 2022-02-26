@@ -1,7 +1,5 @@
 package io.apiman.manager.api.beans.notifications;
 
-import javax.persistence.Embeddable;
-
 /**
  * Coarse-grained notification category (useful for simple filtering and subscription management)
  *
@@ -22,9 +20,19 @@ public enum NotificationCategory {
     API_ADMINISTRATION,
 
     /**
-     * Something relating to the API lifecycle (register, etc).
+     * Something relating to the API lifecycle (publish, retire, etc).
      */
     API_LIFECYCLE,
+
+    /**
+     * Something relating to the Client App lifecycle (register, unregister, etc).
+     */
+    CLIENT_LIFECYCLE,
+
+    /**
+     * A system action (including certain technical events).
+     */
+    SYSTEM,
 
     /**
      * Some other category that isn't captured (yet).

@@ -8,7 +8,6 @@ import io.apiman.manager.api.war.WarApiManagerConfig;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,19 +26,18 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class SimpleMailNotificationServiceTest {
     // Pull templates from resources
-    File file = new File(getClass().getClassLoader().getResource("apiman/config/email-notification-templates.json5").getFile());
+    File file = new File(getClass().getClassLoader().getResource("apiman/config").getFile());
 
     // Override default config with our test config
     ApiManagerConfig config = new WarApiManagerConfig() {
         public Path getConfigDirectory() {
-            return file.getParentFile().toPath();
+            return file.toPath();
         }
 
         @Override
@@ -74,12 +72,12 @@ public class SimpleMailNotificationServiceTest {
              .setCategory(NotificationCategory.OTHER)
              .setNotificationReason("hello")
              .setHtmlBody("<marquee>Hello, {name}</marquee> Σ")
-             .setPlainBody(new String("Hello, {name} Σ")) // Add some non-ASCII characters
+             .setPlainBody("Hello, {name} Σ") // Add some non-ASCII characters
              .setSubject("Greetings, {name}");
 
         Map<String, Object> templateVars = Map.of("name", "Marc Savy");
 
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QuteTemplateEngine(config));
         var mail = SimpleEmail
              .builder()
              .setToEmail("marc@blackparrotlabs.io")
@@ -146,7 +144,7 @@ public class SimpleMailNotificationServiceTest {
 
         Map<String, Object> templateVars = Map.of();
 
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QuteTemplateEngine(config));
         var mail = SimpleEmail
              .builder()
              .setToEmail("marc@blackparrotlabs.io")
@@ -174,27 +172,15 @@ public class SimpleMailNotificationServiceTest {
 
     @Test
     public void Read_the_email_notification_templates_from_file() {
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QuteTemplateEngine(config));
         Optional<EmailNotificationTemplate> tplOpt = service.findTemplateFor("test.notification.reason", Locale.ENGLISH);
 
         assertThat(tplOpt).isPresent();
     }
 
     @Test
-    public void Template_is_looked_up_by_longest_reason_prefix() {
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
-        EmailNotificationTemplate tpl = service.findTemplateFor("test.notification.reason.blah", Locale.ENGLISH).orElseThrow();
-
-        assertThat(tpl.getNotificationReason())
-             .isEqualTo("test.notification.reason");
-
-        assertThat(tpl.getCategory())
-             .isEqualTo(NotificationCategory.OTHER);
-    }
-
-    @Test
     public void Template_is_looked_up_by_exact_reason() {
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QuteTemplateEngine(config));
         EmailNotificationTemplate tpl = service.findTemplateFor("test.notification.reason", Locale.ENGLISH).orElseThrow();
 
         assertThat(tpl.getNotificationReason())
@@ -205,38 +191,25 @@ public class SimpleMailNotificationServiceTest {
     }
 
     @Test
-    public void All_templates_matching_reason_prefix_are_returned_in_order() {
-        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QteTemplateEngine());
-        Map<Locale, List<EmailNotificationTemplate>> allTemplatesAndLocales = service.findAllTemplatesFor("test.notification.reason");
+    public void Html_template_is_loaded_from_file() {
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QuteTemplateEngine(config));
+        EmailNotificationTemplate tpl = service.findTemplateFor("test.notification", Locale.forLanguageTag("crs")).orElseThrow();
 
-        Collection<EmailNotificationTemplate> allTemplates = allTemplatesAndLocales.get(Locale.ENGLISH);
-
-        assertThat(allTemplates)
-             //.containsOnlyKeys("test.notification", "test.notification.reason")
-             .extracting(
-                  EmailNotificationTemplate::getNotificationReason,
-                  EmailNotificationTemplate::getSubject,
-                  EmailNotificationTemplate::getHtmlBody,
-                  EmailNotificationTemplate::getPlainBody,
-                  EmailNotificationTemplate::getCategory
-             )
-             .containsOnly(
-                  tuple(
-                       "test.notification",
-                       "Victoria, Mahe",
-                       "Hi html {name}",
-                       "Hi plain {name}",
-                       NotificationCategory.OTHER
-                  ),
-                  tuple(
-                       "test.notification.reason",
-                       "Pay attention!",
-                       "Salut {name}",
-                       "¡Hola, {name}!",
-                       NotificationCategory.OTHER
-                  )
-             );
+        assertThat(tpl.getHtmlBody())
+                .isEqualTo("<html lang=\"crs\">\n"
+                                   + "Koste Seselwa\n"
+                                   + "</html>");
     }
+
+    @Test
+    public void Plain_template_is_loaded_from_file() {
+        SimpleMailNotificationService service = new SimpleMailNotificationService(config, new QuteTemplateEngine(config));
+        EmailNotificationTemplate tpl = service.findTemplateFor("test.notification", Locale.forLanguageTag("crs")).orElseThrow();
+
+        assertThat(tpl.getPlainBody())
+                .isEqualTo("Bonswar");
+    }
+
 
     public static String bodyPartToString(Part msg) throws MessagingException, IOException {
         if (!(msg.getContent() instanceof String)) {

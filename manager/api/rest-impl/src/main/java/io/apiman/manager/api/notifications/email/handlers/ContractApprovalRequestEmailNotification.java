@@ -8,7 +8,6 @@ import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.notifications.email.SimpleEmail;
 import io.apiman.manager.api.notifications.email.SimpleMailNotificationService;
 import io.apiman.manager.api.notifications.producers.ContractApprovalRequestNotificationProducer;
-import io.apiman.manager.api.providers.eager.EagerLoaded;
 
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
@@ -19,18 +18,14 @@ import javax.inject.Inject;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@EagerLoaded
 @ApplicationScoped
-public class ContractApprovalRequestEmailNotification implements INotificationHandler {
+public class ContractApprovalRequestEmailNotification implements INotificationHandler<ContractCreatedEvent> {
 
-    private SimpleMailNotificationService mailNotificationService;
+    private final SimpleMailNotificationService mailNotificationService;
 
     @Inject
     public ContractApprovalRequestEmailNotification(SimpleMailNotificationService mailNotificationService) {
         this.mailNotificationService = mailNotificationService;
-    }
-
-    public ContractApprovalRequestEmailNotification() {
     }
 
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
@@ -38,28 +33,27 @@ public class ContractApprovalRequestEmailNotification implements INotificationHa
     }
 
     @Override
-    public void handle(@Observes NotificationDto<?> rawNotification) {
-        @SuppressWarnings("unchecked")
-        NotificationDto<ContractCreatedEvent> signupNotification = (NotificationDto<ContractCreatedEvent>) rawNotification;
-        ContractCreatedEvent event = signupNotification.getPayload();
+    public void handle(NotificationDto<ContractCreatedEvent> notification, Map<String, Object> defaultTemplateMap) {
+        ContractCreatedEvent event = notification.getPayload();
+
         if (event.isApprovalRequired()) {
-            approvalRequiredNotification(signupNotification);
+            UserDto recipient = notification.getRecipient();
+
+            mailNotificationService
+                    .findTemplateFor(notification.getReason(), recipient.getLocale())
+                    .ifPresentOrElse(
+                            template -> send(recipient, template, defaultTemplateMap),
+                            () -> warnOnce(recipient, notification)
+                    );
         }
     }
 
-    private void approvalRequiredNotification(NotificationDto<ContractCreatedEvent> signupNotification) {
-        UserDto recipient = signupNotification.getRecipient();
-        EmailNotificationTemplate template = mailNotificationService
-             .findTemplateFor(signupNotification.getReason(), recipient.getLocale())
-             .orElseThrow();
-
-        Map<String, Object> templateMap = buildTemplateMap(signupNotification);
-
+    private void send(UserDto recipient, EmailNotificationTemplate template, Map<String, Object> defaultTemplateMap) {
         var mail = SimpleEmail
              .builder()
-             .setRecipient(signupNotification.getRecipient()) // Or can set each field manually
+             .setRecipient(recipient)
              .setTemplate(template)
-             .setTemplateVariables(templateMap)
+             .setTemplateVariables(defaultTemplateMap)
              .build();
 
         mailNotificationService.send(mail);
@@ -68,12 +62,5 @@ public class ContractApprovalRequestEmailNotification implements INotificationHa
     @Override
     public boolean wants(NotificationDto<? extends IVersionedApimanEvent> notification) {
         return notification.getReason().equals(ContractApprovalRequestNotificationProducer.APIMAN_CLIENT_CONTRACT_REASON);
-    }
-
-    public Map<String, Object> buildTemplateMap(NotificationDto<ContractCreatedEvent> notification) {
-        return Map.of(
-             "notification", notification,
-             "event", notification.getPayload()
-        );
     }
 }

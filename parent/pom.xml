@@ -98,6 +98,7 @@
     <version.commons-configuration>1.10</version.commons-configuration>
     <version.commons-dbcp>1.4</version.commons-dbcp>
     <version.commons-dbutils>1.7</version.commons-dbutils>
+    <version.commons-email>1.5</version.commons-email>
     <version.commons-io>2.11.0</version.commons-io>
     <version.commons-logging>1.2</version.commons-logging>
     <version.commons-pool>1.6</version.commons-pool>
@@ -123,6 +124,8 @@
     <version.org.hamcrest>1.3</version.org.hamcrest>
     <version.org.hibernate>5.3.17.Final</version.org.hibernate> <!-- Pin to Wildfly version -->
     <version.org.infinispan>8.2.12.Final</version.org.infinispan>
+    <version.org.jeasy.easy-rules>4.1.0</version.org.jeasy.easy-rules>
+    <version.com.github.ben-manes.caffeine>3.0.5</version.com.github.ben-manes.caffeine>
     <version.org.jboss.jandex>2.3.0.Final</version.org.jboss.jandex>
     <version.org.jboss.logging.jboss-logging>3.4.2.Final</version.org.jboss.logging.jboss-logging>
     <version.org.jboss.resteasy>3.15.1.Final</version.org.jboss.resteasy>
@@ -138,6 +141,7 @@
     <version.org.slf4j>1.7.32</version.org.slf4j>
     <version.org.testcontainers>1.16.0</version.org.testcontainers>
     <version.io.netty>4.1.65.Final</version.io.netty>
+    <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
     <version.io.swagger>1.6.2</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.8</version.io.vertx>
@@ -317,7 +321,16 @@
         <artifactId>hibernate-entitymanager</artifactId>
         <version>${version.org.hibernate}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.hibernate.validator</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>6.0.22.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate.validator</groupId>
+        <artifactId>hibernate-validator-cdi</artifactId>
+        <version>6.0.22.Final</version>
+      </dependency>
       <!-- Third Party Libraries -->
       <dependency>
         <groupId>net.openhft</groupId>
@@ -534,6 +547,21 @@
         <version>${version.commons-collections}</version>
       </dependency>
       <dependency>
+        <groupId>org.jeasy</groupId>
+        <artifactId>easy-rules-core</artifactId>
+        <version>${version.org.jeasy.easy-rules}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jeasy</groupId>
+        <artifactId>easy-rules-spel</artifactId>
+        <version>${version.org.jeasy.easy-rules}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.ben-manes.caffeine</groupId>
+        <artifactId>caffeine</artifactId>
+        <version>${version.com.github.ben-manes.caffeine}</version>
+      </dependency>
+      <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jaxrs</artifactId>
         <version>${version.org.jboss.resteasy}</version>
@@ -629,6 +657,11 @@
         <version>${version.org.apache.logging.log4j}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-email</artifactId>
+        <version>${version.commons-email}</version>
+      </dependency>
+      <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>${version.joda-time}</version>
@@ -642,6 +675,11 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-codec-http</artifactId>
         <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus.qute</groupId>
+        <artifactId>qute-core</artifactId>
+        <version>${version.io.quarkus.qute}</version>
       </dependency>
       <dependency>
         <groupId>com.hazelcast</groupId>

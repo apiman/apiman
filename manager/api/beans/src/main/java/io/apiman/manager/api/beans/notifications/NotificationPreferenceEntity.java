@@ -1,7 +1,9 @@
 package io.apiman.manager.api.beans.notifications;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -11,11 +13,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.NaturalId;
 
 /**
@@ -46,25 +49,17 @@ public class NotificationPreferenceEntity {
     @Column(name = "user_id", nullable = false)
     @NotBlank
     @NaturalId
-    private String userId;
+    private String userId; // TODO(msavy): explicitly link to user object, so we can cascade delete?
 
     @Column(name = "type", nullable = false)
-    @NotBlank
+    @NotNull
     @NaturalId
-    private String notificationType;
-
-    @Column(name = "category")
-    @CollectionTable(name="notification_category_preferences")
-    @ElementCollection(fetch = FetchType.EAGER, targetClass = NotificationCategory.class)
     @Enumerated(EnumType.STRING)
-    private Set<NotificationCategory> notificationCategories = new HashSet<>();
+    private NotificationType type;
 
-    // TODO(msavy): allow enable/disable for specific notification reasons
-    // Allow prefixes for more fine-grained filtering
-    // Reason = account.approval.*
-    // @ElementCollection(fetch = FetchType.LAZY)
-    // @CollectionTable(name = "reason_notification_prefixes")
-    // private Set<String> enabledForReasonPrefixes = new HashSet<>();
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "notification_rules")
+    private Set<NotificationFilterEntity> rules = new LinkedHashSet<>();
 
     public NotificationPreferenceEntity() {}
 
@@ -86,22 +81,50 @@ public class NotificationPreferenceEntity {
         return this;
     }
 
-    public String getNotificationType() {
-        return notificationType;
+    public NotificationType getType() {
+        return type;
     }
 
-    public NotificationPreferenceEntity setNotificationType(String notificationType) {
-        this.notificationType = notificationType;
+    public NotificationPreferenceEntity setType(NotificationType type) {
+        this.type = type;
         return this;
     }
 
-    public Set<NotificationCategory> getNotificationCategories() {
-        return notificationCategories;
+    public Set<NotificationFilterEntity> getRules() {
+        return rules;
     }
 
-    public NotificationPreferenceEntity setNotificationCategories(
-         Set<NotificationCategory> notificationCategories) {
-        this.notificationCategories = notificationCategories;
+    public NotificationPreferenceEntity setRules(Set<NotificationFilterEntity> filters) {
+        this.rules = filters;
         return this;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        NotificationPreferenceEntity that = (NotificationPreferenceEntity) o;
+        return userId != null && Objects.equals(userId, that.userId)
+                       && type != null && Objects.equals(type, that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, type);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", NotificationPreferenceEntity.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("userId='" + userId + "'")
+                .add("type='" + type + "'")
+                .toString();
+    }
+
+
 }
