@@ -142,7 +142,7 @@
     <version.org.testcontainers>1.16.0</version.org.testcontainers>
     <version.io.netty>4.1.65.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
-    <version.io.swagger>1.6.4</version.io.swagger>
+    <version.io.swagger>1.6.5</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.8</version.io.vertx>
     <version.net.openhft>0.15</version.net.openhft>
