@@ -142,11 +142,11 @@
     <version.org.testcontainers>1.16.0</version.org.testcontainers>
     <version.io.netty>4.1.65.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
-    <version.io.swagger>1.6.2</version.io.swagger>
+    <version.io.swagger>1.6.4</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.8</version.io.vertx>
     <version.net.openhft>0.15</version.net.openhft>
-    <version.com.ibm.icu4j>69.1</version.com.ibm.icu4j>
+    <version.com.ibm.icu4j>70.1</version.com.ibm.icu4j>
     <version.com.hazelcast>4.2.1</version.com.hazelcast>
     <version.com.jcbai>1.17.6</version.com.jcbai>
     <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
