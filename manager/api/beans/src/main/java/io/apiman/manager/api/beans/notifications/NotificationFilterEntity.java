@@ -7,7 +7,14 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 
 /**
+ * <p>Filters for notifications, using a limited subset of SpEL to exclude a notification.
  *
+ * <ul>
+ *     <li>source - target notification type (expression can refer to arbitrary fields, so must be constrained appropriately)</li>
+ *     <li>expression - SpEL expression</li>
+ * </ul>
+ *
+ * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Embeddable
 public class NotificationFilterEntity {

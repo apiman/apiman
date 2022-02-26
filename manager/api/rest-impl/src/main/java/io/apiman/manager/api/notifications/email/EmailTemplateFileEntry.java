@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- *
+ * Email template entry in the format stored in the template file index (notification-template-index).
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */

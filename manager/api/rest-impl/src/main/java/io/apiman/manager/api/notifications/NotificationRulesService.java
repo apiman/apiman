@@ -20,6 +20,11 @@ import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.support.composite.ActivationRuleGroup;
 
 /**
+ * NotificationRulesService builds and caches {@link NotificationPreferenceEntity} simple rules on filtering notifications.
+ *
+ * <p>This enables notification dispatchers to determine whether a given user wants to ignore a particular type or medium of notification.
+ *
+ * <p>Rules are cached for a short period to avoid excessive database invocations and frequently rebuilding rulesets.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
