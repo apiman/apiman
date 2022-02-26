@@ -158,7 +158,7 @@
     <version.javax.json.javax.json-api>1.1.4</version.javax.json.javax.json-api>
     <version.javax.xml.bind>2.3.3</version.javax.xml.bind>
     <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
-    <version.info.picocli>4.6.1</version.info.picocli>
+    <version.info.picocli>4.6.3</version.info.picocli>
     <version.apache.maven.maven-artifact>3.8.1</version.apache.maven.maven-artifact>
     <version.javax.persistence-api>2.2</version.javax.persistence-api>
   </properties>
