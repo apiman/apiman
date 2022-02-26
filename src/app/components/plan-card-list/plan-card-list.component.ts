@@ -59,7 +59,7 @@ export class PlanCardListComponent implements OnInit {
       plan.planPolicies,
       this.apiVersion.docsAvailable
     );
-    void this.router.navigate(['/api-signup', this.orgId, this.apiId]);
+    void this.router.navigate(['/api-signup']);
   }
 
   private fetchPlansAndPolicies(): void {

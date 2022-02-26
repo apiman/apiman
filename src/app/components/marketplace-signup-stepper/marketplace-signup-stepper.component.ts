@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -52,7 +52,6 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   constructor(
     private heroService: HeroService,
-    private route: ActivatedRoute,
     private translator: TranslateService,
     private snackbar: SnackbarService,
     private configService: ConfigService,

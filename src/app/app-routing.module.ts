@@ -34,7 +34,7 @@ const routes: Routes = [
     component: MarketplaceApiDetailsComponent
   },
   {
-    path: 'api-signup/:orgId/:apiId',
+    path: 'api-signup',
     component: MarketplaceSignupStepperComponent,
     canActivate: [AuthGuard]
   },

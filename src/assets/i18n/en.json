@@ -86,7 +86,7 @@
     "FORTH_STEP_TITLE": "Confirmation",
     "CLIENT_ERROR": "You have to select one client first",
     "TERMS_ERROR": "Please accept the service terms",
-    "REDIRECT": "You will be redirected because of an invalid URL",
+    "REDIRECT": "You will be redirected because of missing data",
     "SUCCESS": "A contract has been successfully created",
     "API_KEY_PREVIEW": "You will be provided an API key after sign-up",
     "API_ENDPOINT_PREVIEW": "You will be provided an endpoint after sign-up",
