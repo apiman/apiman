@@ -19,9 +19,10 @@ package io.apiman.manager.api.rest;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
-import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
 import io.apiman.manager.api.beans.notifications.NotificationCriteriaBean;
+import io.apiman.manager.api.beans.notifications.dto.CreateNotificationFilterDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationActionDto;
 import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
@@ -68,7 +69,7 @@ public interface IUserResource {
     @GET
     @Path("{userId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public UserBean get(@PathParam("userId") String userId) throws UserNotFoundException;
+    public UserDto get(@PathParam("userId") String userId) throws UserNotFoundException;
 
     /**
      * Use this endpoint to get information about the currently authenticated user.
@@ -282,4 +283,12 @@ public interface IUserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response markNotifications(@PathParam("userId") String userId, @NotNull NotificationActionDto notificationAction)
          throws UserNotFoundException, NotAuthorizedException;
+
+
+    @POST
+    @Path("{userId}/notifications/filters")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createNotificationFilter(@PathParam("userId") String userId, CreateNotificationFilterDto createFilter);
+
 }

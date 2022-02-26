@@ -9,12 +9,10 @@ import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientType;
 import io.apiman.manager.api.notifications.INotificationProducer;
-import io.apiman.manager.api.providers.eager.EagerLoaded;
 import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -23,23 +21,17 @@ import javax.inject.Inject;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@EagerLoaded
 @ApplicationScoped
 public class ContractApprovalRequestNotificationProducer implements INotificationProducer {
 
-    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalRequestNotificationProducer.class);
     public static final String APIMAN_CLIENT_CONTRACT_REASON = "apiman.client.contract.approval.request";
-    private NotificationService notificationService;
+
+    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ContractApprovalRequestNotificationProducer.class);
+    private final NotificationService notificationService;
 
     @Inject
     public ContractApprovalRequestNotificationProducer(NotificationService notificationService) {
         this.notificationService = notificationService;
-    }
-
-    public ContractApprovalRequestNotificationProducer() {}
-
-    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
-        // no-op to force eager initialization
     }
 
     public void processEvent(@Observes ContractCreatedEvent signupEvent) {

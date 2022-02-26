@@ -7,9 +7,6 @@ import java.util.StringJoiner;
  *
  * By notification reason or category. Category might be more useful for more generic notifications.
  *
- * TODO: HTML + Plaintext
- * TODO: Language-specific templates (need per-user language preference)
- *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 // This will be an entity later...

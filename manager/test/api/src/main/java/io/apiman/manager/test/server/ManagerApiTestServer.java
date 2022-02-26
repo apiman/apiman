@@ -15,9 +15,6 @@
  */
 package io.apiman.manager.test.server;
 
-import io.apiman.common.es.util.AbstractClientFactory;
-import io.apiman.common.es.util.DefaultEsClientFactory;
-import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.servlet.ApimanCorsFilter;
 import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
@@ -29,14 +26,11 @@ import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 import io.apiman.test.common.util.TestUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.naming.InitialContext;
@@ -54,16 +48,12 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Credential;
-import org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest;
-import org.elasticsearch.action.admin.indices.flush.FlushRequest;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 import org.jdbi.v3.core.Jdbi;
-import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
 /**
  * This class starts up an embedded Jetty test server so that integration tests
@@ -85,13 +75,6 @@ public class ManagerApiTestServer {
      * DataSource created - only if using JPA
      */
     private BasicDataSource ds = null;
-
-    /*
-     * The elasticsearch node - only if using ES
-     */
-    private static ElasticsearchContainer node;
-    private static final int ES_CLIENT_TIMEOUT = -1;
-    private static final String ES_DEFAULT_INDEX = EsConstants.MANAGER_INDEX_NAME;
 
     /**
      * Constructor.
@@ -121,22 +104,11 @@ public class ManagerApiTestServer {
         System.out.println("******* Started in " + (endTime - startTime) + "ms");
     }
 
-    private void deleteAndFlush() throws Exception {
-        if (ES_CLIENT != null) {
-            System.out.println("FLUSH AND DELETE>>>>>>");
-            AbstractClientFactory.deleteIndices(ES_CLIENT);
-            DefaultEsClientFactory.clearClientCache();
-        }
-    }
-
     /**
      * Stop the server.
      * @throws Exception
      */
     public void stop() throws Exception {
-        if (node != null) {
-            deleteAndFlush();
-        }
         server.stop();
         if (ds != null) {
             ds.close();
@@ -158,10 +130,9 @@ public class ManagerApiTestServer {
      */
     protected void preStart() throws Exception {
         if (ManagerTestUtils.getTestType() == TestType.jpa) {
-            // TestUtil.setProperty("apiman.hibernate.show_sql", "true");
             TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
-            // TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/comp/env/jdbc/ApiManagerDS");
             TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");
+            TestUtil.setProperty("apiman-manager.config.features.rest-response-should-contain-stacktraces", "true");
 
             // Set data directory to be test data dir
             File apimanConfigDir = new File("src/test/resources/apiman/config");
@@ -199,33 +170,6 @@ public class ManagerApiTestServer {
                 nbe.printStackTrace();
             }
         }
-        // if (ManagerTestUtils.getTestType() == TestType.es) {
-        //     if (node == null) {
-        //         node = EsTestUtil.provideElasticsearchContainer();
-        //     }
-        //     if (!node.isRunning()) {
-        //         // We have to start the test container here manually but it is stopped automatically from the test container library
-        //         // For performance reasons we do not stop the elasticsearch container between test runs
-        //         node.start();
-        //     }
-        //     ES_CLIENT = createEsClient();
-        // }
-    }
-
-    private static RestHighLevelClient createEsClient() {
-        Map<String, String> config = getTestClientConfig();
-        return new DefaultEsClientFactory().createClient(config, Collections.emptyMap(), ES_DEFAULT_INDEX);
-    }
-
-    public static Map<String, String> getTestClientConfig() {
-        Map<String, String> config = new HashMap<>();
-        config.put("client.type", "es");
-        config.put("client.protocol", "http");
-        config.put("client.host", node.getContainerIpAddress());
-        config.put("client.port", node.getFirstMappedPort().toString());
-        config.put("client.timeout", String.valueOf(ES_CLIENT_TIMEOUT));
-        config.put("client.initialize", "true");
-        return config;
     }
 
     /**
@@ -360,27 +304,5 @@ public class ManagerApiTestServer {
     }
 
     public void flush() {
-        if (ES_CLIENT != null) {
-            System.out.println("FLUSH>>>>>>");
-            this.flushIndices();
-        }
-    }
-
-    /**
-     * Flush indices
-     * @throws IOException
-     */
-    private void flushIndices() {
-        String[] indices = new String[EsConstants.MANAGER_INDEX_POSTFIXES.length];
-        int i = 0;
-        for(String postfix: EsConstants.MANAGER_INDEX_POSTFIXES) {
-            indices[i++] = (ES_DEFAULT_INDEX + "_" + postfix).toLowerCase();
-        }
-        try {
-            ES_CLIENT.indices().flush(new FlushRequest(indices).force(true).waitIfOngoing(true), RequestOptions.DEFAULT);
-            ES_CLIENT.indices().clearCache(new ClearIndicesCacheRequest(indices), RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            System.err.println("Error flushing indices " + indices);
-        }
     }
 }

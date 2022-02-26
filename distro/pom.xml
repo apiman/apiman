@@ -28,6 +28,8 @@
         <module>wildfly</module>
         <module>vertx</module>
         <module>tomcat</module>
+        <module>data</module>
+        <module>conf</module>
       </modules>
     </profile>
     <!-- Don't generate DDL by default any more -->

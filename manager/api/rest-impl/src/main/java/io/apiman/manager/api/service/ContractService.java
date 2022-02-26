@@ -437,7 +437,7 @@ public class ContractService implements DataAccessUtilMixin {
 
     private void fireContractApprovalRequest(String requesterId, ContractBean contract) {
         LOGGER.debug("Firing contract approval request from requester {0} on contract {1}", requesterId, contract);
-        UserDto requester = UserMapper.toDto(tryAction(() -> storage.getUser(requesterId)));
+        UserDto requester = UserMapper.INSTANCE.toDto(tryAction(() -> storage.getUser(requesterId)));
 
         ApimanEventHeaders headers = ApimanEventHeaders
              .builder()

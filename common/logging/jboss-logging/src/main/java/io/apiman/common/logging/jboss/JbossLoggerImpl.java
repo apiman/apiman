@@ -80,7 +80,7 @@ public class JbossLoggerImpl implements IApimanLogger {
 
     @Override
     public void error(Throwable error) {
-        logger.error(error);
+        logger.error(error.getMessage(), error);
     }
 
     @Override

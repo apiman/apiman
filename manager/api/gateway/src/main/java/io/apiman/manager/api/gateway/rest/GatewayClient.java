@@ -71,7 +71,6 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
     private static final String CLIENTS = "/clients"; //$NON-NLS-1$
 
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(GatewayClient.class);
 
     private String endpoint;
     private CloseableHttpClient httpClient;

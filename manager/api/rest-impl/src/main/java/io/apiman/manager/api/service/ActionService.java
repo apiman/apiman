@@ -76,6 +76,7 @@ import com.google.common.collect.Streams;
 public class ActionService implements DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ActionService.class);
+    private final UserMapper userMapper = UserMapper.INSTANCE;
     private IStorage storage;
     private ISecurityContext securityContext;
     private ApiService apiService;
@@ -184,7 +185,7 @@ public class ActionService implements DataAccessUtilMixin {
 
         var event = ContractApprovalEvent
              .builder()
-             .setApprover(UserMapper.toDto(approver))
+             .setApprover(userMapper.toDto(approver))
              .setApproved(true)
              .setHeaders(headers)
              .setClientOrgId(orgC.getId())

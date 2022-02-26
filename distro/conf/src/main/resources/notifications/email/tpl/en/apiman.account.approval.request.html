@@ -1,0 +1,37 @@
+<!-- Account approvals within Apiman is not fully enabled yet. This is mostly a placeholder -->
+<!DOCTYPE html>
+<html lang="en">
+{#include header.include.html title='Apiman account approval request' /}
+
+{#include standard-body.include.html notificationHeader='Apiman account signup approval request' name=notification.recipient.fullName}
+{#notificationBody}
+<p>A user is requesting approval to gain access to the Apiman platform.</p>
+
+<p>You are able to grant access via your IDM solution.</p>
+
+<h5>User Information</h5>
+<p>
+  Some information about the user requesting approval.
+</p>
+
+<dl class="row">
+  <dt class="col-sm-3">Username</dt>
+  <dd class="col-sm-9">
+    {event.username}
+  </dd>
+  <dt class="col-sm-3">Name</dt>
+  <dd class="col-sm-9">
+    {event.firstName} {event.surname}
+  </dd>
+  <dt class="col-sm-3">Email</dt>
+  <dd class="col-sm-9">
+    {event.emailAddress}
+  </dd>
+</dl>
+
+<div class="container mt-5">
+  {#include footer.en.include.html /}
+</div>
+{/notificationBody}
+{/include}
+</html>

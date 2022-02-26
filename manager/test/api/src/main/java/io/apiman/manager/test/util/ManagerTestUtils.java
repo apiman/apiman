@@ -25,8 +25,8 @@ public class ManagerTestUtils {
     private ManagerTestUtils() {
     }
 
-    public static enum TestType {
-        jpa, es;
+    public enum TestType {
+        jpa, es
     }
 
     public static final String TEST_TYPE = "apiman-test.type"; //$NON-NLS-1$
@@ -34,14 +34,14 @@ public class ManagerTestUtils {
     /**
      * @param type the test type
      */
-    public static final void setTestType(TestType type) {
+    public static void setTestType(TestType type) {
         System.setProperty(TEST_TYPE, type.name());
     }
     
     /**
      * @return what 'type' of test to run
      */
-    public static final TestType getTestType() {
+    public static TestType getTestType() {
         return TestType.valueOf(System.getProperty(TEST_TYPE, TestType.jpa.name()));
     }
 }

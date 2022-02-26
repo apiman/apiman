@@ -1,14 +1,11 @@
 package io.apiman.manager.api.notifications.producers;
 
-import io.apiman.common.logging.ApimanLoggerFactory;
-import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.events.AccountSignupEvent;
 import io.apiman.manager.api.beans.notifications.NotificationCategory;
 import io.apiman.manager.api.beans.notifications.dto.CreateNotificationDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientDto;
 import io.apiman.manager.api.beans.notifications.dto.RecipientType;
 import io.apiman.manager.api.notifications.INotificationProducer;
-import io.apiman.manager.api.providers.eager.EagerLoaded;
 import io.apiman.manager.api.service.NotificationService;
 
 import java.util.List;
@@ -21,20 +18,16 @@ import javax.inject.Inject;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@EagerLoaded
 @ApplicationScoped
 public class NewAccountNotificationProducer implements INotificationProducer {
 
-    private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(NewAccountNotificationProducer.class);
     public static final String APIMAN_ACCOUNT_APPROVAL_REQUEST = "apiman.account.approval.request";
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
     @Inject
     public NewAccountNotificationProducer(NotificationService notificationService) {
         this.notificationService = notificationService;
     }
-
-    public NewAccountNotificationProducer() {}
 
     public void processEvent(@Observes AccountSignupEvent signupEvent) {
         if (signupEvent.isApprovalRequired()) {
