@@ -2,6 +2,7 @@ package io.apiman.manager.api.beans.notifications;
 
 import java.util.Objects;
 import java.util.StringJoiner;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
@@ -27,6 +28,13 @@ public class NotificationFilterEntity {
     @Column(name = "expression")
     private String expression;
 
+    @Column(name = "enabled")
+    private boolean enabled = true;
+
+    @Nullable
+    @Column(name = "message")
+    private String message;
+
     public NotificationFilterEntity() {
     }
 
@@ -48,6 +56,25 @@ public class NotificationFilterEntity {
         return this;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public NotificationFilterEntity setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        return this;
+    }
+
+    @Nullable
+    public String getMessage() {
+        return message;
+    }
+
+    public NotificationFilterEntity setMessage(@Nullable String message) {
+        this.message = message;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -57,11 +84,21 @@ public class NotificationFilterEntity {
             return false;
         }
         NotificationFilterEntity that = (NotificationFilterEntity) o;
-        return Objects.equals(source, that.source) && Objects.equals(expression, that.expression);
+        return Objects.equals(source, that.source);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(source, expression);
+        return Objects.hash(source);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", NotificationFilterEntity.class.getSimpleName() + "[", "]")
+                .add("source='" + source + "'")
+                .add("expression='" + expression + "'")
+                .add("enabled=" + enabled)
+                .add("message='" + message + "'")
+                .toString();
     }
 }
