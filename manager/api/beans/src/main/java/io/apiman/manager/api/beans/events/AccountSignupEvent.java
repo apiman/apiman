@@ -141,6 +141,11 @@ public class AccountSignupEvent implements IVersionedApimanEvent {
             return this;
         }
 
+        public Builder setApprovalRequired(boolean approvalRequired) {
+            this.approvalRequired = approvalRequired;
+            return this;
+        }
+
         public AccountSignupEvent build() {
             Objects.requireNonNull(headers, "headers must be set");
             Validate.notBlank(userId, "userId must be set");
@@ -149,13 +154,7 @@ public class AccountSignupEvent implements IVersionedApimanEvent {
             Validate.notBlank(firstName, "firstName must be set");
             Validate.notBlank(surname, "surname must be set");
 
-            return new AccountSignupEvent(headers, userId, username, emailAddress, firstName, surname, approvalRequired,
-                 attributes);
-        }
-
-        public Builder setApprovalRequired(boolean approvalRequired) {
-            this.approvalRequired = approvalRequired;
-            return this;
+            return new AccountSignupEvent(headers, userId, username, emailAddress, firstName, surname, approvalRequired, attributes);
         }
     }
 }
