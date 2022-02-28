@@ -48,7 +48,7 @@
     "angular-schema-form": "0.8.12",
     "angular-scrollable-table": "1.1.2",
     "angular-ui-bootstrap": "0.14.3",
-    "angular-xeditable-npm": "0.1.9",
+    "angular-xeditable-npm": "0.1.11",
     "cropperjs": "^1.5.12",
     "d3": "3.5.6",
     "jquery": "3.5.1",
