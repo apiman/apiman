@@ -16,12 +16,15 @@
 
 <div class="toc divider-left" (window:scroll)="onWindowScroll()">
   <ul>
-    <li>
+    <li id="toc-title">
       <span
         ><b>{{ 'CLIENTS.CLIENTS_AND_APIS' | translate }}</b></span
       >
     </li>
-    <div class="content-wrapper" data-simplebar>
+    <div
+      class="content-wrapper"
+      data-simplebar
+      data-simplebar-auto-hide="false">
       <li *ngFor="let link of links">
         <a (click)="scroll(link.destination)" class="pointer"
           ><span [class.primary]="link.active">{{ link.name }}</span></a
