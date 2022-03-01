@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -175,7 +176,13 @@ public class NotificationService implements DataAccessUtilMixin {
 
                 // 2. Emit notification onto notification bus.
                 LOGGER.trace("Firing notification: {0}", dto);
-                notificationDispatcher.fireAsync(dto);
+                notificationDispatcher.fireAsync(dto)
+                        .whenCompleteAsync((res, throwable) -> {
+                            if (throwable != null) {
+                                LOGGER.error(throwable, "An error occurred in the asynchronous part of the notification subsystem. "
+                                                                + "This error likely did not return directly to the requester: {0}", throwable.getMessage());
+                            }
+                        });
             });
         }
     }
