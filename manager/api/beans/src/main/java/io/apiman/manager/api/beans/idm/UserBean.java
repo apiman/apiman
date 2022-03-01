@@ -47,7 +47,7 @@ public class UserBean implements Serializable {
     @Column(name = "joined_on", updatable=false)
     private Date joinedOn;
     @Column(name = "locale") // TODO: maybe should be required and we can fix through import migration?
-    private String locale;
+    private String locale = Locale.getDefault().toLanguageTag();
 
     // Used only when returning information about the current user
     @Transient

@@ -12,6 +12,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +25,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.common.collect.Maps;
@@ -78,6 +81,10 @@ public class SimpleMailNotificationService {
     }
 
     public SimpleMailNotificationService() {}
+
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
+        // no-op to force eager initialization
+    }
 
     /**
      * Send an email
@@ -158,12 +165,13 @@ public class SimpleMailNotificationService {
             LOGGER.debug("No email template found for reason {0}, including shorter paths", reasonKey);
             return Optional.empty();
         } else {
-            List<Locale> bestMatchingLocale = List.of(
+            List<Locale> bestMatchingLocale = Arrays.asList(
                     Locale.lookup(LanguageRange.parse(locale.toLanguageTag()), supportedLocales),
                     Locale.getDefault(),
                     new Locale("en") // TODO(msavy): config-based default language?
             );
             return bestMatchingLocale.stream()
+                    .filter(Objects::nonNull)
                     .map(localeMap::get)
                     .filter(Objects::nonNull)
                     .findFirst();
@@ -179,7 +187,7 @@ public class SimpleMailNotificationService {
         try {
             // So pithy!
             Map<String, ReasonMap> localeTplMap = JsonUtil.toPojo(Files.readString(file), String.class, ReasonMap.class, HashMap.class);
-            LOGGER.debug("Email notification templates read from {1}", file.toAbsolutePath());
+            LOGGER.debug("Email notification templates read from {0}", file.toAbsolutePath());
 
             supportedLocales = localeTplMap.keySet().stream()
                     .map(Locale::forLanguageTag)
