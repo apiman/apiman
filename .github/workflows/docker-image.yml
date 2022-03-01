@@ -14,7 +14,7 @@ jobs:
     env:
       APIMAN_RELEASE_VERION: 2.1.2.Final
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build the Docker images
         run: |
           docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/cli:latest cli
@@ -34,7 +34,7 @@ jobs:
     env:
       APIMAN_RELEASE_VERION: 2.1.2.Final
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build the Docker images
         run: |
           # apiman/on-wildfly:latest is build and pushed via main pipeline
