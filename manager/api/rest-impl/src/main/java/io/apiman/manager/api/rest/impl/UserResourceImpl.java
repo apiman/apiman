@@ -16,6 +16,8 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.Preconditions;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.idm.CurrentUserBean;
@@ -53,6 +55,8 @@ import io.apiman.manager.api.service.UserService;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
@@ -69,6 +73,7 @@ import javax.ws.rs.core.Response;
 @Transactional
 public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
 
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(UserResourceImpl.class);
     private IStorage storage;
     private NotificationService notificationService;
     private UserService userService;
@@ -140,13 +145,36 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
 
                 currentUser.setPermissions(new HashSet<>());
             } else {
+                LOGGER.debug("Got existing user: {0}", user);
                 Set<PermissionBean> permissions = query.getPermissions(userId);
                 currentUser.setPermissions(permissions);
+                updateMutableFields(user);
             }
             currentUser.initFromUser(user);
             currentUser.setAdmin(securityContext.isAdmin());
             return currentUser;
         });
+    }
+
+    private void updateMutableFields(UserBean user) {
+        boolean anyChanged = false;
+        if (!(new Locale(user.getLocale()).equals(securityContext.getLocale()))) {
+            anyChanged = true;
+            user.setLocale(securityContext.getLocale().toLanguageTag());
+        }
+        if (!user.getEmail().equalsIgnoreCase(securityContext.getEmail())) {
+            anyChanged = true;
+            user.setEmail(securityContext.getEmail());
+        }
+        if (!user.getFullName().equalsIgnoreCase(securityContext.getFullName())) {
+            anyChanged = true;
+            user.setFullName(securityContext.getFullName());
+        }
+
+        if (anyChanged) {
+            LOGGER.debug("Updated user after detecting change(s) to mutable attributes: {0}", user);
+            tryAction(() -> storage.updateUser(user));
+        }
     }
 
     /**
