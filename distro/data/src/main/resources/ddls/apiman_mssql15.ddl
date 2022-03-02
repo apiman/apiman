@@ -2,28 +2,28 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 21/10/2021, 17:08
+-- Ran at: 02/03/2022, 10:34
 -- Against: apiman@offline:mssql?version=15&caseSensitive=true&catalog=apiman&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/mssql/databasechangelog.csv
--- Liquibase version: 4.4.3
+-- Liquibase version: 4.6.2
 -- *********************************************************************
 
 USE apiman;
 GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-1::apiman (generated)
-CREATE TABLE client_versions (id bigint NOT NULL, created_by varchar(255) NOT NULL, created_on datetime NOT NULL, modified_by varchar(255) NOT NULL, modified_on datetime NOT NULL, published_on datetime, retired_on datetime, status varchar(255) NOT NULL, version varchar(255) NOT NULL, client_id varchar(255), client_org_id varchar(255), apikey varchar(255) NOT NULL)
+CREATE TABLE client_versions (id bigint NOT NULL, created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, modified_by varchar(255) NOT NULL, modified_on datetime2 NOT NULL, published_on datetime2, retired_on datetime2, status varchar(255) NOT NULL, version varchar(255) NOT NULL, client_id varchar(255), client_org_id varchar(255), apikey varchar(255) NOT NULL)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-2::apiman (generated)
-CREATE TABLE clients (id varchar(255) NOT NULL, created_by varchar(255) NOT NULL, created_on datetime NOT NULL, description varchar(512), name varchar(255) NOT NULL, organization_id varchar(255) NOT NULL)
+CREATE TABLE clients (id varchar(255) NOT NULL, created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, description varchar(512), name varchar(255) NOT NULL, organization_id varchar(255) NOT NULL)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-3::apiman (generated)
-CREATE TABLE auditlog (id bigint NOT NULL, created_on datetime NOT NULL, data varchar(MAX), entity_id varchar(255), entity_type varchar(255) NOT NULL, entity_version varchar(255), organization_id varchar(255) NOT NULL, what varchar(255) NOT NULL, who varchar(255) NOT NULL)
+CREATE TABLE auditlog (id bigint NOT NULL, created_on datetime2 NOT NULL, data varchar(MAX), entity_id varchar(255), entity_type varchar(255) NOT NULL, entity_version varchar(255), organization_id varchar(255) NOT NULL, what varchar(255) NOT NULL, who varchar(255) NOT NULL)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-4::apiman (generated)
-CREATE TABLE contracts (id bigint NOT NULL, created_by varchar(255) NOT NULL, created_on datetime NOT NULL, clientv_id bigint, planv_id bigint, apiv_id bigint)
+CREATE TABLE contracts (id bigint NOT NULL, created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, clientv_id bigint, planv_id bigint, apiv_id bigint)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-5::apiman (generated)
@@ -31,15 +31,15 @@ CREATE TABLE endpoint_properties (api_version_id bigint NOT NULL, value varchar(
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-6::apiman (generated)
-CREATE TABLE gateways (id varchar(255) NOT NULL, configuration varchar(MAX) NOT NULL, created_by varchar(255) NOT NULL, created_on datetime NOT NULL, description varchar(512), modified_by varchar(255) NOT NULL, modified_on datetime NOT NULL, name varchar(255) NOT NULL, type varchar(255) NOT NULL)
+CREATE TABLE gateways (id varchar(255) NOT NULL, configuration varchar(MAX) NOT NULL, created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, description varchar(512), modified_by varchar(255) NOT NULL, modified_on datetime2 NOT NULL, name varchar(255) NOT NULL, type varchar(255) NOT NULL)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-7::apiman (generated)
-CREATE TABLE memberships (id bigint NOT NULL, created_on datetime, org_id varchar(255), role_id varchar(255), user_id varchar(255))
+CREATE TABLE memberships (id bigint NOT NULL, created_on datetime2, org_id varchar(255), role_id varchar(255), user_id varchar(255))
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-8::apiman (generated)
-CREATE TABLE organizations (id varchar(255) NOT NULL, created_by varchar(255) NOT NULL, created_on datetime NOT NULL, description varchar(512), modified_by varchar(255) NOT NULL, modified_on datetime NOT NULL, name varchar(255) NOT NULL)
+CREATE TABLE organizations (id varchar(255) NOT NULL, created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, description varchar(512), modified_by varchar(255) NOT NULL, modified_on datetime2 NOT NULL, name varchar(255) NOT NULL)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-9::apiman (generated)
@@ -51,19 +51,19 @@ CREATE TABLE permissions (role_id varchar(255) NOT NULL, permissions int)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-11::apiman (generated)
-CREATE TABLE plan_versions (id bigint NOT NULL, created_by varchar(255) NOT NULL, created_on datetime NOT NULL, locked_on datetime, modified_by varchar(255) NOT NULL, modified_on datetime NOT NULL, status varchar(255) NOT NULL, version varchar(255) NOT NULL, plan_id varchar(255), plan_org_id varchar(255))
+CREATE TABLE plan_versions (id bigint NOT NULL, created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, locked_on datetime2, modified_by varchar(255) NOT NULL, modified_on datetime2 NOT NULL, status varchar(255) NOT NULL, version varchar(255) NOT NULL, plan_id varchar(255), plan_org_id varchar(255))
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-12::apiman (generated)
-CREATE TABLE plans (id varchar(255) NOT NULL, created_by varchar(255) NOT NULL, created_on datetime NOT NULL, description varchar(512), name varchar(255) NOT NULL, organization_id varchar(255) NOT NULL)
+CREATE TABLE plans (id varchar(255) NOT NULL, created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, description varchar(512), name varchar(255) NOT NULL, organization_id varchar(255) NOT NULL)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-13::apiman (generated)
-CREATE TABLE plugins (id bigint NOT NULL, artifact_id varchar(255) NOT NULL, classifier varchar(255), created_by varchar(255) NOT NULL, created_on datetime NOT NULL, description varchar(512), group_id varchar(255) NOT NULL, name varchar(255) NOT NULL, type varchar(255), version varchar(255) NOT NULL, deleted bit)
+CREATE TABLE plugins (id bigint NOT NULL, artifact_id varchar(255) NOT NULL, classifier varchar(255), created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, description varchar(512), group_id varchar(255) NOT NULL, name varchar(255) NOT NULL, type varchar(255), version varchar(255) NOT NULL, deleted bit)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-14::apiman (generated)
-CREATE TABLE policies (id bigint NOT NULL, configuration varchar(MAX), created_by varchar(255) NOT NULL, created_on datetime NOT NULL, entity_id varchar(255) NOT NULL, entity_version varchar(255) NOT NULL, modified_by varchar(255) NOT NULL, modified_on datetime NOT NULL, name varchar(255) NOT NULL, order_index int NOT NULL, organization_id varchar(255) NOT NULL, type varchar(255) NOT NULL, definition_id varchar(255) NOT NULL)
+CREATE TABLE policies (id bigint NOT NULL, configuration varchar(MAX), created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, entity_id varchar(255) NOT NULL, entity_version varchar(255) NOT NULL, modified_by varchar(255) NOT NULL, modified_on datetime2 NOT NULL, name varchar(255) NOT NULL, order_index int NOT NULL, organization_id varchar(255) NOT NULL, type varchar(255) NOT NULL, definition_id varchar(255) NOT NULL)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-15::apiman (generated)
@@ -71,7 +71,7 @@ CREATE TABLE policydefs (id varchar(255) NOT NULL, description varchar(512) NOT 
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-16::apiman (generated)
-CREATE TABLE roles (id varchar(255) NOT NULL, auto_grant bit, created_by varchar(255) NOT NULL, created_on datetime NOT NULL, description varchar(512), name varchar(255))
+CREATE TABLE roles (id varchar(255) NOT NULL, auto_grant bit, created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, description varchar(512), name varchar(255))
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-17::apiman (generated)
@@ -79,11 +79,11 @@ CREATE TABLE api_defs (id bigint NOT NULL, data varbinary(MAX), api_version_id b
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-18::apiman (generated)
-CREATE TABLE api_versions (id bigint NOT NULL, created_by varchar(255) NOT NULL, created_on datetime NOT NULL, definition_type varchar(255), endpoint varchar(255), endpoint_type varchar(255), endpoint_ct varchar(255), modified_by varchar(255) NOT NULL, modified_on datetime NOT NULL, public_api bit NOT NULL, parse_payload bit, strip_keys bit, published_on datetime, retired_on datetime, status varchar(255) NOT NULL, version varchar(255), api_id varchar(255), api_org_id varchar(255), definition_url varchar(255))
+CREATE TABLE api_versions (id bigint NOT NULL, created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, definition_type varchar(255), endpoint varchar(255), endpoint_type varchar(255), endpoint_ct varchar(255), modified_by varchar(255) NOT NULL, modified_on datetime2 NOT NULL, public_api bit NOT NULL, parse_payload bit, strip_keys bit, published_on datetime2, retired_on datetime2, status varchar(255) NOT NULL, version varchar(255), api_id varchar(255), api_org_id varchar(255), definition_url varchar(255))
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-19::apiman (generated)
-CREATE TABLE apis (id varchar(255) NOT NULL, created_by varchar(255) NOT NULL, created_on datetime NOT NULL, description varchar(512), name varchar(255) NOT NULL, organization_id varchar(255) NOT NULL, num_published int)
+CREATE TABLE apis (id varchar(255) NOT NULL, created_by varchar(255) NOT NULL, created_on datetime2 NOT NULL, description varchar(512), name varchar(255) NOT NULL, organization_id varchar(255) NOT NULL, num_published int)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-20::apiman (generated)
@@ -95,15 +95,15 @@ CREATE TABLE api_plans (api_version_id bigint NOT NULL, plan_id varchar(255) NOT
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-22::apiman (generated)
-CREATE TABLE users (username varchar(255) NOT NULL, email varchar(255), full_name varchar(255), joined_on datetime)
+CREATE TABLE users (username varchar(255) NOT NULL, email varchar(255), full_name varchar(255), joined_on datetime2)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-23::apiman (generated)
-CREATE TABLE downloads (id varchar(255) NOT NULL, type varchar(255), path varchar(255), expires datetime)
+CREATE TABLE downloads (id varchar(255) NOT NULL, type varchar(255), path varchar(255), expires datetime2)
     GO
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-24::apiman (generated)
-CREATE TABLE metadata (id bigint NOT NULL, exported_on datetime, imported_on datetime, apiman_version varchar(255), apiman_version_at_import varchar(255), success bit)
+CREATE TABLE metadata (id bigint NOT NULL, exported_on datetime2, imported_on datetime2, apiman_version varchar(255), apiman_version_at_import varchar(255), success bit)
     GO
 
 -- Changeset src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-23::apiman (generated)
@@ -375,7 +375,7 @@ CREATE TABLE notification_types (type varchar(255) NOT NULL, description varchar
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-11::msavy marc@blackparrotlabs.io (generated)
-CREATE TABLE notifications (id bigint IDENTITY (1, 1) NOT NULL, category varchar(255) NOT NULL, created_on datetime, modified_on datetime, payload JSON NOT NULL, reason varchar(255) NOT NULL, reason_message varchar(255) NOT NULL, recipient varchar(255) NOT NULL, source varchar(255) NOT NULL, status varchar(255) NOT NULL, CONSTRAINT notificationsPK PRIMARY KEY (id))
+CREATE TABLE notifications (id bigint IDENTITY (1, 1) NOT NULL, category varchar(255) NOT NULL, created_on datetime2, modified_on datetime2, payload JSON NOT NULL, reason varchar(255) NOT NULL, reason_message varchar(255) NOT NULL, recipient varchar(255) NOT NULL, source varchar(255) NOT NULL, status varchar(255) NOT NULL, CONSTRAINT notificationsPK PRIMARY KEY (id))
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-12::msavy marc@blackparrotlabs.io (generated)
@@ -451,11 +451,11 @@ CREATE TABLE api_tag (api_id varchar(255) NOT NULL, org_id varchar(255) NOT NULL
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-6::msavy (generated)
-CREATE TABLE blob_store (id varchar(255) NOT NULL, mrblobby varbinary(MAX) NOT NULL, created_on datetime NOT NULL, hash bigint NOT NULL, mime_type varchar(255) NOT NULL, modified_on datetime NOT NULL, name varchar(255) NOT NULL, ref_count int NOT NULL, CONSTRAINT blob_storePK PRIMARY KEY (id))
+CREATE TABLE blob_store (id varchar(255) NOT NULL, mrblobby varbinary(MAX) NOT NULL, created_on datetime2 NOT NULL, hash bigint NOT NULL, mime_type varchar(255) NOT NULL, modified_on datetime2 NOT NULL, name varchar(255) NOT NULL, ref_count int NOT NULL, CONSTRAINT blob_storePK PRIMARY KEY (id))
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-7::msavy (generated)
-CREATE TABLE outbox (id bigint IDENTITY (1, 1) NOT NULL, event_version bigint NOT NULL, payload JSON NOT NULL, source varchar(255) NOT NULL, subject varchar(255) NOT NULL, time datetime NOT NULL, type varchar(255) NOT NULL, CONSTRAINT outboxPK PRIMARY KEY (id))
+CREATE TABLE outbox (id bigint IDENTITY (1, 1) NOT NULL, event_version bigint NOT NULL, payload JSON NOT NULL, source varchar(255) NOT NULL, subject varchar(255) NOT NULL, time datetime2 NOT NULL, type varchar(255) NOT NULL, CONSTRAINT outboxPK PRIMARY KEY (id))
     GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-8::msavy (generated)
@@ -477,3 +477,24 @@ ALTER TABLE api_tag ADD CONSTRAINT FKlpr8yu65omneju5297uqthb6k FOREIGN KEY (api_
 -- Changeset src/main/liquibase/current/20211206-add-locale-to-user-profile.xml::add-locale-to-use-profile::msavy marc@blackparrotlabs.io (manual changeset)
 ALTER TABLE users ADD locale varchar(255)
     GO
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-6::msavy (generated)
+CREATE TABLE notification_rules (NotificationPreferenceEntity_id bigint NOT NULL, enabled bit, expression varchar(255), message varchar(255), source varchar(255))
+    GO
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-7::msavy (generated)
+ALTER TABLE notification_rules ADD CONSTRAINT FKbxdud6qk8e28eq1mjihqauybo FOREIGN KEY (NotificationPreferenceEntity_id) REFERENCES notification_preferences (id)
+    GO
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-8::msavy (generated)
+ALTER TABLE notification_category_preferences DROP CONSTRAINT FKaq4x0n83d83xevui0ctqwdgbi
+    GO
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-10::msavy (generated)
+DROP TABLE notification_category_preferences
+    GO
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-11::msavy (generated)
+DROP TABLE notification_types
+    GO
+
