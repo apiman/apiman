@@ -85,7 +85,7 @@ public abstract class ApiManagerConfig {
     /* -------------------------------------------------------
      * Endpoint-related
      * ------------------------------------------------------- */
-    public static final String APIMAN_MANAGER_UI_ENDPOINT = "apiman-manager-ui.api.endpoint";
+    public static final String APIMAN_MANAGER_UI_ENDPOINT = "apiman-manager.ui.endpoint";
 
     private final Configuration config;
 
