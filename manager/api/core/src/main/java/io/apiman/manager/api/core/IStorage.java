@@ -217,4 +217,11 @@ public interface IStorage {
     List<UserBean> getAllUsersWithRole(String roleName, String orgName) throws StorageException;
 
     void flush();
+
+    /**
+     * Get an object reference by its key without speaking to the database (key-only skeleton).
+     *
+     * <p>This is particularly useful when you want to persist a related entity without first having to look it up in the database.
+     */
+    <T> T getEntityObjectReference(Class<T> klazz, Object primaryKey);
 }

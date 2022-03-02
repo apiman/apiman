@@ -163,7 +163,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
     @Override
     public Optional<NotificationPreferenceEntity> getNotificationPreferenceByUserId(String userId) {
         Query query = getActiveEntityManager()
-                .createQuery("SELECT pref FROM NotificationPreferenceEntity pref WHERE pref.userId = :userId")
+                .createQuery("SELECT pref FROM NotificationPreferenceEntity pref WHERE pref.user.username = :userId")
                 .setParameter("userId", userId);
         return super.getOne(query);
     }
@@ -174,7 +174,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
              .createQuery(
                   "SELECT pref "
                        + "FROM NotificationPreferenceEntity pref "
-                       + "WHERE pref.userId = :userId "
+                       + "WHERE pref.user.username = :userId "
                        + "AND pref.type = :notificationType"
              )
              .setParameter("userId", userId)

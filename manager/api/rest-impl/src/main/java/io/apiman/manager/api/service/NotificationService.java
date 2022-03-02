@@ -7,6 +7,7 @@ import io.apiman.common.util.JsonUtil;
 import io.apiman.common.util.Preconditions;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.idm.UserMapper;
 import io.apiman.manager.api.beans.notifications.NotificationEntity;
@@ -237,7 +238,7 @@ public class NotificationService implements DataAccessUtilMixin {
                 .orElseGet(() -> {
                     NotificationPreferenceEntity newNpe = new NotificationPreferenceEntity()
                             .setType(createFilter.getNotificationType())
-                            .setUserId(userId);
+                            .setUser(storage.getEntityObjectReference(UserBean.class, userId));
                     tryAction(() -> notificationRepository.create(newNpe));
                     return newNpe;
                 });
