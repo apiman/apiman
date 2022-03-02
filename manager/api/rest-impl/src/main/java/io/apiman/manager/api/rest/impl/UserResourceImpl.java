@@ -55,8 +55,6 @@ import io.apiman.manager.api.service.UserService;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
@@ -137,8 +135,8 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
                     user.setEmail(""); //$NON-NLS-1$
                 }
                 user.setJoinedOn(new Date());
-                if (securityContext.getLocale() != null && user.getLocale() == null) {
-                    user.setLocale(securityContext.getLocale().toLanguageTag());
+                if (securityContext.getLocale() != null) {
+                    user.setLocale(securityContext.getLocale());
                 }
                 storage.createUser(user);
                 userBootstrapper.bootstrapUser(user, storage);
@@ -158,15 +156,16 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
 
     private void updateMutableFields(UserBean user) {
         boolean anyChanged = false;
-        if (!(new Locale(user.getLocale()).equals(securityContext.getLocale()))) {
+
+        if (notNullOrNotEq(user.getLocale(), securityContext.getLocale())) {
             anyChanged = true;
-            user.setLocale(securityContext.getLocale().toLanguageTag());
+            user.setLocale(securityContext.getLocale());
         }
-        if (!user.getEmail().equalsIgnoreCase(securityContext.getEmail())) {
+        if (notNullOrNotEq(user.getEmail(), securityContext.getEmail())) {
             anyChanged = true;
             user.setEmail(securityContext.getEmail());
         }
-        if (!user.getFullName().equalsIgnoreCase(securityContext.getFullName())) {
+        if (notNullOrNotEq(user.getFullName(), securityContext.getFullName())) {
             anyChanged = true;
             user.setFullName(securityContext.getFullName());
         }
@@ -175,6 +174,10 @@ public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
             LOGGER.debug("Updated user after detecting change(s) to mutable attributes: {0}", user);
             tryAction(() -> storage.updateUser(user));
         }
+    }
+
+    private boolean notNullOrNotEq(Object existingValue, Object newValue) {
+        return newValue != null && !(existingValue.equals(newValue));
     }
 
     /**

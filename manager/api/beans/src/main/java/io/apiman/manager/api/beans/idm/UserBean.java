@@ -16,11 +16,14 @@
 
 package io.apiman.manager.api.beans.idm;
 
+import io.apiman.manager.api.beans.BeanUtils.LocaleConverter;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Locale;
 import java.util.StringJoiner;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -46,8 +49,9 @@ public class UserBean implements Serializable {
     private String email;
     @Column(name = "joined_on", updatable=false)
     private Date joinedOn;
-    @Column(name = "locale") // TODO: maybe should be required and we can fix through import migration?
-    private String locale = Locale.getDefault().toLanguageTag();
+    @Convert(converter = LocaleConverter.class)
+    @Column(name = "locale")
+    private Locale locale = Locale.getDefault();
 
     // Used only when returning information about the current user
     @Transient
@@ -166,7 +170,7 @@ public class UserBean implements Serializable {
      * @see Locale#toLanguageTag()
      * @return the locale
      */
-    public String getLocale() {
+    public Locale getLocale() {
         return locale;
     }
 
@@ -176,7 +180,7 @@ public class UserBean implements Serializable {
      * @param locale the locale language tag
      * @see Locale#toLanguageTag()
      */
-    public void setLocale(String locale) {
+    public void setLocale(Locale locale) {
         this.locale = locale;
     }
 
