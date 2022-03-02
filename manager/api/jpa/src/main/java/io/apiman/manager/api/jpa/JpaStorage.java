@@ -85,6 +85,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -104,6 +105,7 @@ import javax.persistence.criteria.SetJoin;
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
+import org.jdbi.v3.core.qualifier.QualifiedType;
 
 /**
  * A JPA implementation of the storage interface.
@@ -2399,6 +2401,10 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                      + "  AND m.ORG_ID = :orgName")
                .bind("permissionType", permission.ordinal())
                .bind("orgName", orgName)
+               .registerColumnMapper(
+                       QualifiedType.of(Locale.class),
+                       (resultSet, columnNumber, ctx) -> new Locale.Builder().setLanguageTag(resultSet.getString(columnNumber)).build()
+               )
                .mapToBean(UserBean.class)
                .list()
         );

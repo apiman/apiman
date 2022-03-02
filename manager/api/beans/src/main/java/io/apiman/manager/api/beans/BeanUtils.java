@@ -17,6 +17,7 @@ package io.apiman.manager.api.beans;
 
 import java.util.Locale;
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 import com.ibm.icu.text.Transliterator;
 import org.apache.commons.lang3.StringUtils;
@@ -60,6 +61,7 @@ public class BeanUtils {
         return removeNonWord(version).equals(version);
     }
 
+    @Converter
     public static final class LocaleConverter implements AttributeConverter<Locale, String> {
 
         /**
