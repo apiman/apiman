@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 02/03/2022, 10:34
+-- Ran at: 02/03/2022, 15:15
 -- Against: apiman@offline:oracle?version=19&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/oracle/databasechangelog.csv
 -- Liquibase version: 4.6.2
 -- *********************************************************************
@@ -372,4 +372,7 @@ DROP TABLE notification_category_preferences;
 
 -- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-11::msavy (generated)
 DROP TABLE notification_types;
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646232783603-7::msavy (generated)
+ALTER TABLE notification_preferences ADD CONSTRAINT FKt9qjvmcl36i14utm5uptyqg84 FOREIGN KEY (user_id) REFERENCES users (username);
 
