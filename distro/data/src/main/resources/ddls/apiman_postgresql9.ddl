@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 02/03/2022, 10:34
+-- Ran at: 02/03/2022, 12:24
 -- Against: apiman@offline:postgresql?version=9.6.23&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/postgresql/databasechangelog.csv
 -- Liquibase version: 4.6.2
 -- *********************************************************************
@@ -268,6 +268,46 @@ CREATE INDEX "IDX_FK_contracts_s" ON contracts(apiv_id);
 -- Changeset src/main/liquibase/current/200-apiman-manager-api.db.indexes.changelog.xml::createIndex-18::apiman
 CREATE INDEX "IDX_FK_contracts_a" ON contracts(clientv_id);
 
+-- Changeset src/main/liquibase/current/201-postgres-add-bool-function.xml::postgresql-boolean-function::msavy marc@blackparrotlabs.io
+-- Add boolean parsing function for Postgres (needed for older versions of Postgres to facilitate Hibernate integration)
+CREATE OR REPLACE FUNCTION inttobool(num int, val bool) RETURNS bool AS '
+      BEGIN
+          IF num=0 AND NOT val THEN
+              RETURN true;
+          ELSIF num<>0 AND val THEN
+              RETURN true;
+      ELSE
+              RETURN false;
+      END IF;
+      END;
+      ' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION inttobool(val bool, num int) RETURNS bool AS '
+          BEGIN
+          RETURN inttobool(num,val);
+          END;
+      ' LANGUAGE 'plpgsql';
+
+DROP OPERATOR IF EXISTS = (integer, boolean);
+
+CREATE OPERATOR = (
+           leftarg = integer,
+           rightarg = boolean,
+           procedure = inttobool,
+           commutator = =,
+           negator = !=
+      );
+
+DROP OPERATOR IF EXISTS = (boolean, integer);
+
+CREATE OPERATOR = (
+           leftarg = boolean,
+           rightarg = integer,
+           procedure = inttobool,
+           commutator = =,
+           negator = !=
+      );
+
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-6::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE developer_mappings (developer_id VARCHAR(255) NOT NULL, client_id VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL, CONSTRAINT developer_mappings_pkey PRIMARY KEY (developer_id, client_id, organization_id));
 
@@ -362,42 +402,6 @@ ALTER TABLE api_tag ADD CONSTRAINT "FKlpr8yu65omneju5297uqthb6k" FOREIGN KEY (ap
 ALTER TABLE users ADD locale VARCHAR(255);
 
 -- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-6::msavy (generated)
--- Manual bits
-CREATE OR REPLACE FUNCTION inttobool(num int, val bool) RETURNS bool AS '
-    BEGIN
-        IF num=0 AND NOT val THEN
-            RETURN true;
-        ELSIF num<>0 AND val THEN
-            RETURN true;
-        ELSE
-            RETURN false;
-        END IF;
-    END;
-' LANGUAGE 'plpgsql';
-
-CREATE OR REPLACE FUNCTION inttobool(val bool, num int) RETURNS bool AS '
-    BEGIN
-        RETURN inttobool(num,val);
-    END;
-' LANGUAGE 'plpgsql';
-
-
-DROP OPERATOR IF EXISTS = (integer, boolean);
-CREATE OPERATOR = (
-     leftarg = integer,
-     rightarg = boolean,
-     procedure = inttobool,
-     commutator = =,
-     negator = !=
-);
-DROP OPERATOR IF EXISTS = (boolean, integer);
-CREATE OPERATOR = (
-     leftarg = boolean,
-     rightarg = integer,
-     procedure = inttobool,
-     commutator = =,
-     negator = !=
-);-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-6::msavy (generated)
 CREATE TABLE notification_rules ("NotificationPreferenceEntity_id" BIGINT NOT NULL, enabled BOOLEAN, expression VARCHAR(255), message VARCHAR(255), source VARCHAR(255));
 
 -- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-7::msavy (generated)
