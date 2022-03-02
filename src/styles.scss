@@ -282,6 +282,12 @@ a {
   font-weight: bold;
 }
 
+.mat-tooltip.multiline-tooltip {
+  white-space: pre-line;
+  font-size: 0.9rem;
+  max-width: unset;
+}
+
 // disables header navigation
 .mat-horizontal-stepper-header {
   pointer-events: none;

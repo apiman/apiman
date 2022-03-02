@@ -34,7 +34,7 @@ import {
 } from '../../interfaces/ICommunication';
 import { IContractExt } from '../../interfaces/IContractExt';
 import { PolicyService } from '../../services/policy/policy.service';
-import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
 import { flatArray } from '../../shared/utility';
 import { SpinnerService } from '../../services/spinner/spinner.service';
@@ -54,6 +54,7 @@ import { PermissionsService } from '../../services/permissions/permissions.servi
   styleUrls: ['./my-apps.component.scss']
 })
 export class MyAppsComponent implements OnInit {
+  organizationCount = 0;
   contracts: IContractExt[] = [];
   clientContractsMap!: Map<string, IContractExt[]>;
   filteredClientContractsMap: Map<string, IContractExt[]> = new Map<
@@ -105,6 +106,11 @@ export class MyAppsComponent implements OnInit {
       .pipe(
         switchMap((clientSummaries: IClientSummary[][]) => {
           return of(MyAppsComponent.getUniqueClients(clientSummaries));
+        }),
+        tap((clientSummaries: IClientSummary[]) => {
+          this.organizationCount = new Set(
+            clientSummaries.map((clientSummary) => clientSummary.organizationId)
+          ).size;
         }),
         switchMap((clientSummaries: IClientSummary[]) => {
           if (clientSummaries.length === 0) {
@@ -329,6 +335,16 @@ export class MyAppsComponent implements OnInit {
     });
   }
 
+  public getClientTooltip(contract: IContractExt): string {
+    return this.translator.instant(
+      'CLIENTS.CLIENT_TOOLTIP',
+      contract
+    ) as string;
+  }
+
+  public getApiTooltip(contract: IContractExt): string {
+    return this.translator.instant('CLIENTS.API_TOOLTIP', contract) as string;
+  }
   private setUpHero() {
     this.heroService.setUpHero({
       title: this.translator.instant('CLIENTS.TITLE') as string,
