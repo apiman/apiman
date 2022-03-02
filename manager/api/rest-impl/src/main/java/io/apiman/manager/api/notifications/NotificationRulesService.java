@@ -43,7 +43,7 @@ public class NotificationRulesService {
     }
 
     public NotificationRulesService cache(NotificationPreferenceEntity npe) {
-        RuleKey key = RuleKey.of(npe.getUserId(), npe.getType());
+        RuleKey key = RuleKey.of(npe.getUser().getUsername(), npe.getType());
         notificationRepository.getNotificationPreferenceByUserIdAndType(key.userId, key.nType).map(entity -> buildRuleGroup(entity, key));
         return this;
     }

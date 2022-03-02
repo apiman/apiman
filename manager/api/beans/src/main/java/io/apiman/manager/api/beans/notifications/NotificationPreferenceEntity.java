@@ -1,9 +1,9 @@
 package io.apiman.manager.api.beans.notifications;
 
+import io.apiman.manager.api.beans.idm.UserBean;
+
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -13,12 +13,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.NaturalId;
 
 /**
@@ -46,10 +46,10 @@ public class NotificationPreferenceEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    @NotBlank
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     @NaturalId
-    private String userId; // TODO(msavy): explicitly link to user object, so we can cascade delete?
+    private UserBean user;
 
     @Column(name = "type", nullable = false)
     @NotNull
@@ -72,12 +72,12 @@ public class NotificationPreferenceEntity {
         return this;
     }
 
-    public String getUserId() {
-        return userId;
+    public UserBean getUser() {
+        return user;
     }
 
-    public NotificationPreferenceEntity setUserId(String userId) {
-        this.userId = userId;
+    public NotificationPreferenceEntity setUser(UserBean user) {
+        this.user = user;
         return this;
     }
 
@@ -98,33 +98,5 @@ public class NotificationPreferenceEntity {
         this.rules = filters;
         return this;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-            return false;
-        }
-        NotificationPreferenceEntity that = (NotificationPreferenceEntity) o;
-        return userId != null && Objects.equals(userId, that.userId)
-                       && type != null && Objects.equals(type, that.type);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId, type);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", NotificationPreferenceEntity.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("userId='" + userId + "'")
-                .add("type='" + type + "'")
-                .toString();
-    }
-
 
 }

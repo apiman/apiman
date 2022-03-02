@@ -2428,6 +2428,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         getActiveEntityManager().flush();
     }
 
+    @Override
+    public <T> T getEntityObjectReference(Class<T> klazz, Object primaryKey) {
+        return getActiveEntityManager().getReference(klazz, primaryKey);
+    }
+
     private void deleteAllPolicies(OrganizationBean organizationBean) throws StorageException {
         deleteAllPolicies(organizationBean, null);
     }
