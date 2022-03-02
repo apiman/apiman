@@ -2,9 +2,9 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 21/10/2021, 17:08
+-- Ran at: 02/03/2022, 10:34
 -- Against: apiman@offline:oracle?version=19&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/oracle/databasechangelog.csv
--- Liquibase version: 4.4.3
+-- Liquibase version: 4.6.2
 -- *********************************************************************
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-1::apiman (generated)
@@ -357,3 +357,19 @@ ALTER TABLE api_tag ADD CONSTRAINT FKlpr8yu65omneju5297uqthb6k FOREIGN KEY (api_
 
 -- Changeset src/main/liquibase/current/20211206-add-locale-to-user-profile.xml::add-locale-to-use-profile::msavy marc@blackparrotlabs.io (manual changeset)
 ALTER TABLE users ADD locale VARCHAR2(255);
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-6::msavy (generated)
+CREATE TABLE notification_rules (NotificationPreferenceEntity_id NUMBER(38, 0) NOT NULL, enabled NUMBER(1), expression VARCHAR2(255), message VARCHAR2(255), source VARCHAR2(255));
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-7::msavy (generated)
+ALTER TABLE notification_rules ADD CONSTRAINT FKbxdud6qk8e28eq1mjihqauybo FOREIGN KEY (NotificationPreferenceEntity_id) REFERENCES notification_preferences (id);
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-8::msavy (generated)
+ALTER TABLE notification_category_preferences DROP CONSTRAINT FKaq4x0n83d83xevui0ctqwdgbi;
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-10::msavy (generated)
+DROP TABLE notification_category_preferences;
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-11::msavy (generated)
+DROP TABLE notification_types;
+

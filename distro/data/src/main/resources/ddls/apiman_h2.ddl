@@ -2,9 +2,9 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 21/10/2021, 17:08
+-- Ran at: 02/03/2022, 10:34
 -- Against: sa@offline:h2?version=1.4.199&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/h2/databasechangelog.csv
--- Liquibase version: 4.4.3
+-- Liquibase version: 4.6.2
 -- *********************************************************************
 
 -- Changeset src/main/liquibase/current/000-apiman-manager-api.db.sequences.changelog.xml::1434723514712-2::apiman (generated)
@@ -278,14 +278,8 @@ CREATE TABLE developer_mappings (developer_id VARCHAR(255) NOT NULL, client_id V
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-7::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE developers (id VARCHAR(255) NOT NULL, CONSTRAINT developersPK PRIMARY KEY (id));
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-8::msavy marc@blackparrotlabs.io (generated)
-CREATE TABLE notification_category_preferences (NotificationPreferenceEntity_id BIGINT NOT NULL, category VARCHAR(255));
-
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-9::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE notification_preferences (id BIGINT AUTO_INCREMENT NOT NULL, type VARCHAR(255) NOT NULL, user_id VARCHAR(255) NOT NULL, CONSTRAINT notification_preferencesPK PRIMARY KEY (id));
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-10::msavy marc@blackparrotlabs.io (generated)
-CREATE TABLE notification_types (type VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, CONSTRAINT notification_typesPK PRIMARY KEY (type));
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-11::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE notifications (id BIGINT AUTO_INCREMENT NOT NULL, category VARCHAR(255) NOT NULL, created_on TIMESTAMP, modified_on TIMESTAMP, payload JSON NOT NULL, reason VARCHAR(255) NOT NULL, reason_message VARCHAR(255) NOT NULL, recipient VARCHAR(255) NOT NULL, source VARCHAR(255) NOT NULL, status VARCHAR(255) NOT NULL, CONSTRAINT notificationsPK PRIMARY KEY (id));
@@ -332,9 +326,6 @@ ALTER TABLE notification_preferences ADD CONSTRAINT UserAllowedOnlyOneOfEachNoti
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-25::msavy marc@blackparrotlabs.io (generated)
 CREATE UNIQUE INDEX IX_null ON api_plans(api_version_id, expose_in_portal, plan_id, requires_approval, version);
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-26::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE notification_category_preferences ADD CONSTRAINT FKaq4x0n83d83xevui0ctqwdgbi FOREIGN KEY (NotificationPreferenceEntity_id) REFERENCES notification_preferences (id);
-
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-27::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE developer_mappings ADD CONSTRAINT FKhl2dwc4m0kvisedxfb9crceqd FOREIGN KEY (developer_id) REFERENCES developers (id);
 
@@ -364,3 +355,11 @@ ALTER TABLE api_tag ADD CONSTRAINT FKlpr8yu65omneju5297uqthb6k FOREIGN KEY (api_
 
 -- Changeset src/main/liquibase/current/20211206-add-locale-to-user-profile.xml::add-locale-to-use-profile::msavy marc@blackparrotlabs.io (manual changeset)
 ALTER TABLE users ADD locale VARCHAR(255);
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-6::msavy (generated)
+CREATE TABLE notification_rules (NotificationPreferenceEntity_id BIGINT NOT NULL, enabled BOOLEAN, expression VARCHAR(255), message VARCHAR(255), source VARCHAR(255));
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-7::msavy (generated)
+ALTER TABLE notification_rules ADD CONSTRAINT FKbxdud6qk8e28eq1mjihqauybo FOREIGN KEY (NotificationPreferenceEntity_id) REFERENCES notification_preferences (id);
+
+
