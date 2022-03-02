@@ -2,9 +2,9 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 21/10/2021, 17:08
+-- Ran at: 02/03/2022, 10:34
 -- Against: apiman@offline:postgresql?version=9.6.23&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/postgresql/databasechangelog.csv
--- Liquibase version: 4.4.3
+-- Liquibase version: 4.6.2
 -- *********************************************************************
 
 -- Changeset src/main/liquibase/current/000-apiman-manager-api.db.sequences.changelog.xml::1434723514712-2::apiman (generated)
@@ -361,6 +361,7 @@ ALTER TABLE api_tag ADD CONSTRAINT "FKlpr8yu65omneju5297uqthb6k" FOREIGN KEY (ap
 -- Changeset src/main/liquibase/current/20211206-add-locale-to-user-profile.xml::add-locale-to-use-profile::msavy marc@blackparrotlabs.io (manual changeset)
 ALTER TABLE users ADD locale VARCHAR(255);
 
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-6::msavy (generated)
 -- Manual bits
 CREATE OR REPLACE FUNCTION inttobool(num int, val bool) RETURNS bool AS '
     BEGIN
@@ -396,4 +397,18 @@ CREATE OPERATOR = (
      procedure = inttobool,
      commutator = =,
      negator = !=
-);
+);-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-6::msavy (generated)
+CREATE TABLE notification_rules ("NotificationPreferenceEntity_id" BIGINT NOT NULL, enabled BOOLEAN, expression VARCHAR(255), message VARCHAR(255), source VARCHAR(255));
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-7::msavy (generated)
+ALTER TABLE notification_rules ADD CONSTRAINT "FKbxdud6qk8e28eq1mjihqauybo" FOREIGN KEY ("NotificationPreferenceEntity_id") REFERENCES notification_preferences (id);
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-8::msavy (generated)
+ALTER TABLE notification_category_preferences DROP CONSTRAINT "FKaq4x0n83d83xevui0ctqwdgbi";
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-10::msavy (generated)
+DROP TABLE notification_category_preferences;
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-11::msavy (generated)
+DROP TABLE notification_types;
+
