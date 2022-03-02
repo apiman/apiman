@@ -42,7 +42,8 @@
 }
 
 .content-text {
-  display: box;
+  /* stylelint-disable-next-line value-no-vendor-prefix */
+  display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
