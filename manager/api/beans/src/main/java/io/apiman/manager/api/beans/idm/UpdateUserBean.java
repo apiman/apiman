@@ -17,6 +17,7 @@
 package io.apiman.manager.api.beans.idm;
 
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -31,7 +32,7 @@ public class UpdateUserBean implements Serializable {
 
     private String fullName;
     private String email;
-    private String locale;
+    private Locale locale;
 
     /**
      * Constructor.
@@ -70,7 +71,7 @@ public class UpdateUserBean implements Serializable {
     /**
      * @return the preferred locale
      */
-    public String getLocale() {
+    public Locale getLocale() {
         return locale;
     }
 
@@ -81,7 +82,7 @@ public class UpdateUserBean implements Serializable {
      * @see <a href="https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry">IANA subtag registry</a>
      * @param locale the user's preferred locale
      */
-    public void setLocale(String locale) {
+    public void setLocale(Locale locale) {
         this.locale = locale;
     }
 

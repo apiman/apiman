@@ -43,6 +43,7 @@ public class UserService implements DataAccessUtilMixin {
         return tryAction(() -> storage.getUser(userId));
     }
 
+    // TODO(msavy): for IDM-driven solutions, we should lock this off.
     public void update(String userId, UpdateUserBean user) throws UserNotFoundException {
         UserBean updatedUser = tryAction(() -> storage.getUser(userId));
         if (updatedUser == null) {
