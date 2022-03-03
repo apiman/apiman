@@ -23,4 +23,7 @@
     <changeSet author="msavy (generated)" id="1646057700977-11">
         <dropTable tableName="notification_types"/>
     </changeSet>
+    <changeSet author="msavy (generated)" id="1646232783603-7">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="notification_preferences" constraintName="FKt9qjvmcl36i14utm5uptyqg84" deferrable="false" initiallyDeferred="false" referencedColumnNames="username" referencedTableName="users" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 02/03/2022, 10:34
+-- Ran at: 02/03/2022, 15:15
 -- Against: sa@offline:h2?version=1.4.199&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/h2/databasechangelog.csv
 -- Liquibase version: 4.6.2
 -- *********************************************************************
@@ -362,4 +362,7 @@ CREATE TABLE notification_rules (NotificationPreferenceEntity_id BIGINT NOT NULL
 -- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646057700977-7::msavy (generated)
 ALTER TABLE notification_rules ADD CONSTRAINT FKbxdud6qk8e28eq1mjihqauybo FOREIGN KEY (NotificationPreferenceEntity_id) REFERENCES notification_preferences (id);
 
+
+-- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646232783603-7::msavy (generated)
+ALTER TABLE notification_preferences ADD CONSTRAINT FKt9qjvmcl36i14utm5uptyqg84 FOREIGN KEY (user_id) REFERENCES users (username);
 
