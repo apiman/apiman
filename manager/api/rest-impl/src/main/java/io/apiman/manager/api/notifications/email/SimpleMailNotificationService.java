@@ -160,6 +160,8 @@ public class SimpleMailNotificationService {
      * @return template, if a suitable one is found, otherwise empty
      */
     public Optional<EmailNotificationTemplate> findTemplateFor(String reasonKey, Locale locale) {
+        Objects.requireNonNull(reasonKey, "Notification reason must not be null");
+        Objects.requireNonNull(locale, "Locale must not be null");
         Map<Locale, EmailNotificationTemplate> localeMap = reasonMap.get(reasonKey);
         if (localeMap == null || localeMap.isEmpty()) {
             LOGGER.debug("No email template found for reason {0}, including shorter paths", reasonKey);

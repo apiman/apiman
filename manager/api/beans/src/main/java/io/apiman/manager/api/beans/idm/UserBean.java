@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.beans.idm;
 
+import io.apiman.manager.api.beans.BeanUtils.LocaleConverter;
 import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
 
 import java.io.Serializable;
@@ -27,6 +28,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -55,8 +57,9 @@ public class UserBean implements Serializable {
     private String email;
     @Column(name = "joined_on", updatable=false)
     private Date joinedOn;
+    @Convert(converter = LocaleConverter.class)
     @Column(name = "locale")
-    private String locale = Locale.getDefault().toLanguageTag();
+    private Locale locale = Locale.getDefault();
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<NotificationPreferenceEntity> notificationPreferences = new HashSet<>();
 
@@ -155,7 +158,7 @@ public class UserBean implements Serializable {
      * @see Locale#toLanguageTag()
      * @return the locale
      */
-    public String getLocale() {
+    public Locale getLocale() {
         return locale;
     }
 
@@ -165,7 +168,7 @@ public class UserBean implements Serializable {
      * @param locale the locale language tag
      * @see Locale#toLanguageTag()
      */
-    public void setLocale(String locale) {
+    public void setLocale(Locale locale) {
         this.locale = locale;
     }
 

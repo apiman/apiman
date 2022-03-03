@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -19,7 +20,7 @@ public class UserDto {
     private String fullName;
     @NotBlank
     private String email;
-    @NotBlank
+    @NotNull
     private Locale locale = Locale.getDefault();
     @Nullable
     private Boolean admin;
