@@ -91,7 +91,7 @@
         </mat-card-header>
         <mat-card-content class="mat-card-header-text">
           <app-my-apps-use-api></app-my-apps-use-api>
-          <ng-container *ngIf="newContractDetails.policies">
+          <ng-container *ngIf="newContractDetails.policies.length > 0">
             <h4>{{ 'WIZARD.POLICIES' | translate }}</h4>
             <!--In this version we will not have more than 2 policies-->
             <div class="policies">
@@ -130,8 +130,8 @@
           </mat-card-header>
           <mat-card-content class="mat-card-header-text">
             <app-my-apps-use-api [contract]="contract"></app-my-apps-use-api>
-            <ng-container *ngIf="newContractDetails.policies">
-              <h4>Policies</h4>
+            <ng-container *ngIf="newContractDetails.policies.length > 0">
+              <h4>{{ 'WIZARD.POLICIES' | translate }}</h4>
               <!--In this version we will not have more than 2 policies-->
               <div class="policies">
                 <app-policy-card

@@ -117,7 +117,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
           ) {
             this.printUserError('WIZARD.CONTRACT_EXISTS');
           } else {
-            this.goToNextStep(stepper, 0);
+            this.goToNextStep(stepper);
           }
         },
 
@@ -184,8 +184,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
           if ('AwaitingApproval' === this.contract.client.status) {
             void this.router.navigate(['approval']);
           } else {
-            this.goToNextStep(stepper, 2);
-            this.disablePreviousSteps(stepper);
+            this.goToNextStep(stepper);
           }
         },
         error: (error: HttpErrorResponse) =>
@@ -215,20 +214,12 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     this.snackbar.showErrorSnackBar(this.translator.instant(key) as string);
   }
 
-  private disablePreviousSteps(stepper: MatStepper) {
-    // disallow to go back to previous states after confirmation
-    for (let i = 0; i <= 2; i++) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      stepper.steps.get(i)!.editable = false;
-    }
-  }
-
-  private goToNextStep(stepper: MatStepper, currentStep: number) {
+  private goToNextStep(stepper: MatStepper) {
     // Set completed step directly to allow going to the next step
     // See: https://github.com/angular/components/pull/15403
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    stepper.steps.get(currentStep)!.completed = true;
+    stepper.steps.get(stepper.selectedIndex)!.completed = true;
     stepper.next();
   }
 }

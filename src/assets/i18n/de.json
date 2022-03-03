@@ -83,7 +83,7 @@
     "FIRST_STEP_TITLE": "Client auswählen oder neuen erstellen",
     "SECOND_STEP_TITLE": "Lizenzvereinbarung",
     "THIRD_STEP_TITLE": "Zusammenfassung",
-    "FORTH_STEP_TITLE": "Bestätigung,",
+    "FORTH_STEP_TITLE": "Bestätigung",
     "CLIENT_ERROR": "Sie müssen zuerst einen Client auswählen",
     "TERMS_ERROR": "Sie müssen den Lizenzvereinbarungen zustimmen",
     "REDIRECT": "Sie werden wegen fehlenden Daten umgeleitet",

@@ -281,3 +281,8 @@ a {
 .bold {
   font-weight: bold;
 }
+
+// disables header navigation
+.mat-horizontal-stepper-header {
+  pointer-events: none;
+}
