@@ -139,7 +139,7 @@ public class URLRewritingPolicyTest extends ApimanPolicyTest {
         final String responseBody = response.body();
         Assert.assertNotNull(responseBody);
         final HashMap responseMap = new ObjectMapper().readValue(responseBody, HashMap.class);
-        Assertions.assertThat(responseMap.get("resource")).isNull();
+        Assertions.assertThat(responseMap.get("resource")).isEqualTo("/?foo=bar");
     }
 
     public static final class URLRewritingTestBackend implements IPolicyTestBackEndApi {
