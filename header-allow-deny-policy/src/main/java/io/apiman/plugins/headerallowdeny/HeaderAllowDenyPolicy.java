@@ -36,7 +36,7 @@ public class HeaderAllowDenyPolicy extends AbstractMappedPolicy<HeaderAllowDenyB
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<HeaderAllowDenyBean> getConfigurationClass() {
+    public Class<HeaderAllowDenyBean> getConfigurationClass() {
         return HeaderAllowDenyBean.class;
     }
 

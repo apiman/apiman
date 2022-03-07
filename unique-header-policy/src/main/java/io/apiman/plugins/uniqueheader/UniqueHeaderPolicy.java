@@ -29,7 +29,7 @@ public class UniqueHeaderPolicy extends AbstractMappedPolicy<UniqueHeaderBean> {
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<UniqueHeaderBean> getConfigurationClass() {
+    public Class<UniqueHeaderBean> getConfigurationClass() {
         return UniqueHeaderBean.class;
     }
 

@@ -55,7 +55,7 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
     private JwkProvider provider = null;
 
     @Override
-    protected Class<JWTPolicyBean> getConfigurationClass() {
+    public Class<JWTPolicyBean> getConfigurationClass() {
         return JWTPolicyBean.class;
     }
 

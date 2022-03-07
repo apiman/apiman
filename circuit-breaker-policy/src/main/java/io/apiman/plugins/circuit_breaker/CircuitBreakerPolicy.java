@@ -50,7 +50,7 @@ public class CircuitBreakerPolicy extends AbstractMappedPolicy<CircuitBreakerCon
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<CircuitBreakerConfigBean> getConfigurationClass() {
+    public Class<CircuitBreakerConfigBean> getConfigurationClass() {
         return CircuitBreakerConfigBean.class;
     }
     

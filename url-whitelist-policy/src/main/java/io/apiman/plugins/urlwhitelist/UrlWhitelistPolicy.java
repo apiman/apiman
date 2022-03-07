@@ -36,7 +36,7 @@ public class UrlWhitelistPolicy extends AbstractMappedPolicy<UrlWhitelistBean> {
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<UrlWhitelistBean> getConfigurationClass() {
+    public Class<UrlWhitelistBean> getConfigurationClass() {
         return UrlWhitelistBean.class;
     }
 

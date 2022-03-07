@@ -65,7 +65,7 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<KeycloakOauthConfigBean> getConfigurationClass() {
+    public Class<KeycloakOauthConfigBean> getConfigurationClass() {
         return KeycloakOauthConfigBean.class;
     }
 

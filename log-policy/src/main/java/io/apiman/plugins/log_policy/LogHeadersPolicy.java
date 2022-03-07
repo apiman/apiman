@@ -63,7 +63,7 @@ public class LogHeadersPolicy extends AbstractMappedPolicy<LogHeadersConfigBean>
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<LogHeadersConfigBean> getConfigurationClass() {
+    public Class<LogHeadersConfigBean> getConfigurationClass() {
         return LogHeadersConfigBean.class;
     }
 

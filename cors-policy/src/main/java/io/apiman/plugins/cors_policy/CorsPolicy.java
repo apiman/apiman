@@ -50,7 +50,7 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<CorsConfigBean> getConfigurationClass() {
+    public Class<CorsConfigBean> getConfigurationClass() {
         return CorsConfigBean.class;
     }
 

@@ -17,7 +17,7 @@ import io.apiman.plugins.timeoutpolicy.beans.TimeoutConfigBean;
 public class TimeoutPolicy extends AbstractMappedPolicy<TimeoutConfigBean> {
 
     @Override
-    protected Class<TimeoutConfigBean> getConfigurationClass() {
+    public Class<TimeoutConfigBean> getConfigurationClass() {
         return TimeoutConfigBean.class;
     }
 

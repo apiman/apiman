@@ -34,7 +34,7 @@ import io.apiman.plugins.httpsecuritypolicy.beans.HttpSecurityBean.XssProtection
 public class HttpSecurityPolicy extends AbstractMappedPolicy<HttpSecurityBean> {
 
     @Override
-    protected Class<HttpSecurityBean> getConfigurationClass() {
+    public Class<HttpSecurityBean> getConfigurationClass() {
         return HttpSecurityBean.class;
     }
 

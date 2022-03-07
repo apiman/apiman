@@ -35,7 +35,7 @@ import java.util.Map;
 public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyDefBean> {
 
     @Override
-    protected Class<SimpleHeaderPolicyDefBean> getConfigurationClass() {
+    public Class<SimpleHeaderPolicyDefBean> getConfigurationClass() {
         return SimpleHeaderPolicyDefBean.class;
     }
 

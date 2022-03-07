@@ -37,7 +37,7 @@ public class ApiKeyPolicy extends AbstractMappedPolicy<ApiKeyConfigBean> {
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<ApiKeyConfigBean> getConfigurationClass() {
+    public Class<ApiKeyConfigBean> getConfigurationClass() {
         return ApiKeyConfigBean.class;
     }
 

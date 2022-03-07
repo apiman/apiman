@@ -29,7 +29,7 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
     private static final String ACCEPT = "Accept"; //$NON-NLS-1$
 
     @Override
-    protected Class<TransformationConfigBean> getConfigurationClass() {
+    public Class<TransformationConfigBean> getConfigurationClass() {
         return TransformationConfigBean.class;
     }
 

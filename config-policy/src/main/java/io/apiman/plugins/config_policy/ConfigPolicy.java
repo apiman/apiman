@@ -38,7 +38,7 @@ public class ConfigPolicy extends AbstractMappedPolicy<ConfigBean> {
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<ConfigBean> getConfigurationClass() {
+    public Class<ConfigBean> getConfigurationClass() {
         return ConfigBean.class;
     }
 

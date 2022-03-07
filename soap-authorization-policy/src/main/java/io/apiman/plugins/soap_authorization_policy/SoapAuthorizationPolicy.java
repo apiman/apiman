@@ -62,7 +62,7 @@ public class SoapAuthorizationPolicy extends AbstractMappedPolicy<SoapAuthorizat
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<SoapAuthorizationConfig> getConfigurationClass() {
+    public Class<SoapAuthorizationConfig> getConfigurationClass() {
         return SoapAuthorizationConfig.class;
     }
 

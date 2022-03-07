@@ -32,7 +32,7 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
     private static final String APPLICATION_JAVASCRIPT = "application/javascript"; //$NON-NLS-1$
 
     @Override
-    protected Class<JsonpConfigBean> getConfigurationClass() {
+    public Class<JsonpConfigBean> getConfigurationClass() {
         return JsonpConfigBean.class;
     }
 
