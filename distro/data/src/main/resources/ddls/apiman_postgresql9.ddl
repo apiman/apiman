@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 02/03/2022, 15:15
+-- Ran at: 07/03/2022, 16:06
 -- Against: apiman@offline:postgresql?version=9.6.23&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/postgresql/databasechangelog.csv
 -- Liquibase version: 4.6.2
 -- *********************************************************************
@@ -271,42 +271,42 @@ CREATE INDEX "IDX_FK_contracts_a" ON contracts(clientv_id);
 -- Changeset src/main/liquibase/current/201-postgres-add-bool-function.xml::postgresql-boolean-function::msavy marc@blackparrotlabs.io
 -- Add boolean parsing function for Postgres (needed for older versions of Postgres to facilitate Hibernate integration)
 CREATE OR REPLACE FUNCTION inttobool(num int, val bool) RETURNS bool AS '
-      BEGIN
-          IF num=0 AND NOT val THEN
-              RETURN true;
-          ELSIF num<>0 AND val THEN
-              RETURN true;
-      ELSE
-              RETURN false;
-      END IF;
-      END;
-      ' LANGUAGE 'plpgsql';
+BEGIN
+    IF num=0 AND NOT val THEN
+        RETURN true;
+    ELSIF num<>0 AND val THEN
+        RETURN true;
+ELSE
+        RETURN false;
+END IF;
+END;
+' LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION inttobool(val bool, num int) RETURNS bool AS '
-          BEGIN
-          RETURN inttobool(num,val);
-          END;
-      ' LANGUAGE 'plpgsql';
+    BEGIN
+    RETURN inttobool(num,val);
+    END;
+' LANGUAGE 'plpgsql';
 
 DROP OPERATOR IF EXISTS = (integer, boolean);
 
 CREATE OPERATOR = (
-           leftarg = integer,
-           rightarg = boolean,
-           procedure = inttobool,
-           commutator = =,
-           negator = !=
-      );
+     leftarg = integer,
+     rightarg = boolean,
+     procedure = inttobool,
+     commutator = =,
+     negator = !=
+);
 
 DROP OPERATOR IF EXISTS = (boolean, integer);
 
 CREATE OPERATOR = (
-           leftarg = boolean,
-           rightarg = integer,
-           procedure = inttobool,
-           commutator = =,
-           negator = !=
-      );
+     leftarg = boolean,
+     rightarg = integer,
+     procedure = inttobool,
+     commutator = =,
+     negator = !=
+);
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-6::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE developer_mappings (developer_id VARCHAR(255) NOT NULL, client_id VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL, CONSTRAINT developer_mappings_pkey PRIMARY KEY (developer_id, client_id, organization_id));
