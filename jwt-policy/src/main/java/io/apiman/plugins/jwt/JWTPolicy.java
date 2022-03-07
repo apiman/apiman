@@ -51,7 +51,7 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
     private static final String BEARER = "bearer "; //$NON-NLS-1$
     private static final PolicyFailureFactory FAILURE_FACTORY = PolicyFailureFactory.getInstance();
     private static final String[] schemes = {"http","https"};
-    private static final UrlValidator urlValidator = new UrlValidator(schemes);
+    private static final UrlValidator urlValidator = new UrlValidator(schemes, UrlValidator.ALLOW_LOCAL_URLS);
     private JwkProvider provider = null;
 
     @Override

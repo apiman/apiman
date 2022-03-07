@@ -275,9 +275,9 @@ public class JWTPolicyBean {
     public void setSigningKeyString(String signingKeyString) throws Exception {
         if (signingKey == null) {
             String[] schemes = {"http","https"};
-            UrlValidator urlValidator = new UrlValidator(schemes);
+            UrlValidator urlValidator = new UrlValidator(schemes, UrlValidator.ALLOW_LOCAL_URLS);
             // If it is a jwk(s) url we don't set the signingKey
-            if (!urlValidator.isValid(signingKeyString)){
+            if (!urlValidator.isValid(signingKeyString)) {
                 signingKey = PemUtils.decodePublicKey(signingKeyString);
             }
         }
