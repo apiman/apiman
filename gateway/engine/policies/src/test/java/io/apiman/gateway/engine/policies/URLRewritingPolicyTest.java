@@ -20,8 +20,11 @@ import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.test.policies.*;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.error.AssertJMultipleFailuresError;
 import org.junit.Assert;
 import org.junit.Test;
+import org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -91,6 +94,52 @@ public class URLRewritingPolicyTest extends ApimanPolicyTest {
         final HashMap responseMap = new ObjectMapper().readValue(responseBody, HashMap.class);
         Assert.assertEquals("/api-path?foo=bar", responseMap.get("resource"));
         Assert.assertEquals("/another-path?foo=bar", ((Map) responseMap.get("headers")).get("X-Custom-Location"));
+    }
+
+    /**
+     * Handle null resource
+     */
+    @Test
+    @Configuration("{" +
+            "  \"fromRegex\" : \"(.*)\",\n" +
+            "  \"toReplacement\" : \"/$1?foo=bar\",\n" +
+            "  \"processResponseBody\" : false,\n" +
+            "  \"processResponseHeaders\" : false,\n" +
+            "  \"processRequestHeaders\" : true,\n" +
+            "  \"processRequestUrl\" : true\n" +
+            "}")
+    @BackEndApi(EchoBackEndApi.class)
+    public void must_handle_null_request_path() throws Throwable {
+        final PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, null);
+
+        final PolicyTestResponse response = send(request);
+        final String responseBody = response.body();
+        Assert.assertNotNull(responseBody);
+        final HashMap responseMap = new ObjectMapper().readValue(responseBody, HashMap.class);
+        Assertions.assertThat(responseMap.get("resource")).isNull();
+    }
+
+    /**
+     * Handle empty string resource
+     */
+    @Test
+    @Configuration("{" +
+            "  \"fromRegex\" : \"(.*)\",\n" +
+            "  \"toReplacement\" : \"/$1?foo=bar\",\n" +
+            "  \"processResponseBody\" : false,\n" +
+            "  \"processResponseHeaders\" : false,\n" +
+            "  \"processRequestHeaders\" : true,\n" +
+            "  \"processRequestUrl\" : true\n" +
+            "}")
+    @BackEndApi(EchoBackEndApi.class)
+    public void must_handle_empty_request_path() throws Throwable {
+        final PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "");
+
+        final PolicyTestResponse response = send(request);
+        final String responseBody = response.body();
+        Assert.assertNotNull(responseBody);
+        final HashMap responseMap = new ObjectMapper().readValue(responseBody, HashMap.class);
+        Assertions.assertThat(responseMap.get("resource")).isNull();
     }
 
     public static final class URLRewritingTestBackend implements IPolicyTestBackEndApi {
