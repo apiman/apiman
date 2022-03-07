@@ -20,6 +20,8 @@ import io.apiman.gateway.engine.beans.util.QueryMap;
 
 import java.io.Serializable;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * An inbound request for a managed API.
  *
@@ -116,6 +118,7 @@ public class ApiRequest implements IApiObject, Serializable {
     /**
      * @return the destination
      */
+    @Nullable
     public String getDestination() {
         return destination;
     }
