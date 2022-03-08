@@ -92,6 +92,7 @@
     <version.com.squareup.okhttp>2.7.5</version.com.squareup.okhttp>
     <version.com.squareup.okio>2.10.0</version.com.squareup.okio>
     <version.com.unboundid.unboundid-ldapsdk>6.0.3</version.com.unboundid.unboundid-ldapsdk>
+    <version.com.vladmihalcea.hibernate-types>2.14.0</version.com.vladmihalcea.hibernate-types>
     <version.commons-beanutils>1.9.4</version.commons-beanutils>
     <version.commons-codec>1.15</version.commons-codec>
     <version.commons-collections>4.4</version.commons-collections>
@@ -670,6 +671,11 @@
         <groupId>com.unboundid</groupId>
         <artifactId>unboundid-ldapsdk</artifactId>
         <version>${version.com.unboundid.unboundid-ldapsdk}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.vladmihalcea</groupId>
+        <artifactId>hibernate-types-52</artifactId>
+        <version>${version.com.vladmihalcea.hibernate-types}</version>
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
