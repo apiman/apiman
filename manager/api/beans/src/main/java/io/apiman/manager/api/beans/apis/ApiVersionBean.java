@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringJoiner;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -120,7 +119,7 @@ public class ApiVersionBean implements Serializable, Cloneable {
     @Column(name = "definition_url", updatable = true, nullable = true)
     private String definitionUrl;
     @Column(name = "expose_in_portal", updatable = true, nullable = false)
-    private boolean exposeInPortal = false;
+    private Boolean exposeInPortal = false;
     @Column(name = "extended_description", updatable = true, nullable = true)
     @Nationalized
     @Lob // <-- may not be necessary? // varchar -> nvarchar
@@ -430,11 +429,11 @@ public class ApiVersionBean implements Serializable, Cloneable {
         this.definitionUrl = definitionUrl;
     }
 
-    public boolean isExposeInPortal() {
+    public Boolean isExposeInPortal() {
         return exposeInPortal;
     }
 
-    public ApiVersionBean setExposeInPortal(boolean exposeInPortal) {
+    public ApiVersionBean setExposeInPortal(Boolean exposeInPortal) {
         this.exposeInPortal = exposeInPortal;
         return this;
     }
