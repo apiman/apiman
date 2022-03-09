@@ -15,7 +15,7 @@
   -->
 
 <div class="chart mat-elevation-z2" *ngIf="gaugeData">
-  <h3 class="chart-header primary">{{ gaugeData.name }}</h3>
+  <h3 id="chart-name" class="chart-header primary">{{ gaugeData.name }}</h3>
   <mat-divider></mat-divider>
   <div class="ngx-wrapper">
     <ngx-charts-gauge
@@ -29,6 +29,7 @@
 
     <div class="info-icon">
       <mat-icon
+        id="chart-icon"
         class="material-icons-outlined"
         [inline]="true"
         color="primary"
@@ -37,8 +38,8 @@
     </div>
 
     <div class="infos">
-      <div class="text2">{{ gaugeData.infoHeader }}</div>
-      <div class="text-big1">
+      <div id="chart-info-header" class="text2">{{ gaugeData.infoHeader }}</div>
+      <div id="chart-usage" class="text-big1">
         {{ gaugeData.currentVal }} {{ gaugeData.dividendSuffix }} /
         <span class="primary"
           >{{ gaugeData.limit }} {{ gaugeData.divisorSuffix }}</span
@@ -46,7 +47,7 @@
       </div>
       <div class="text1">
         <mat-divider></mat-divider>
-        <span>{{ gaugeData.bottomText }}</span>
+        <span id="chart-bottom-text">{{ gaugeData.bottomText }}</span>
       </div>
     </div>
   </div>

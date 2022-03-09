@@ -26,6 +26,7 @@
         [(ngModel)]="searchTerm"
         (ngModelChange)="searchTermNotifier.next($event)" />
       <button
+        id="search-input-clear-btn"
         *ngIf="searchTerm.length > 0"
         mat-button
         matSuffix
@@ -62,6 +63,7 @@
           </div>
           <div class="app-client-header-label">
             <button
+              id="client-delete-btn"
               *ngIf="cliCon.value[0].deletable"
               (click)="unregister(cliCon.value[0], cliCon.key)"
               mat-icon-button
@@ -70,6 +72,7 @@
               <mat-icon>delete</mat-icon>
             </button>
             <span
+              id="client-status-label"
               matTooltip="Client Status"
               [style]="
                 'background-color: ' +
@@ -79,33 +82,42 @@
             </span>
           </div>
         </div>
-        <div *ngFor="let contract of cliCon.value" class="app-api">
+        <div
+          *ngFor="let contract of cliCon.value"
+          id="{{ contract.api.api.id }}"
+          class="app-api">
           <!-- Menu for the API -->
           <div class="app-api-menu">
-            <div>
+            <div class="app-api-menu-entry">
               <span
+                id="api-menu-summary"
                 (click)="setSection(contract, 'summary')"
                 [ngClass]="{ primary: contract.section === 'summary' }">
                 {{ 'CLIENTS.SUMMARY' | translate }}
               </span>
             </div>
-            <div>
+            <div class="app-api-menu-entry">
               <span
+                id="api-menu-description"
                 (click)="setSection(contract, 'description')"
                 [ngClass]="{ primary: contract.section === 'description' }">
                 {{ 'CLIENTS.DESCRIPTION' | translate }}
               </span>
             </div>
             <ng-container *ngIf="contract!.api.status !== 'Retired'">
-              <div>
+              <div class="app-api-menu-entry">
                 <span
+                  id="api-menu-use-api"
                   (click)="setSection(contract, 'use-api')"
                   [ngClass]="{ primary: contract.section === 'use-api' }">
                   {{ 'CLIENTS.USE_API' | translate }}
                 </span>
               </div>
-              <div *ngIf="contract.policies.length > 0">
+              <div
+                class="app-api-menu-entry"
+                *ngIf="contract.policies.length > 0">
                 <span
+                  id="api-menu-policies"
                   (click)="setSection(contract, 'policies')"
                   [ngClass]="{ primary: contract.section === 'policies' }">
                   {{ 'CLIENTS.POLICIES' | translate }}

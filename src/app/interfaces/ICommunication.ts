@@ -1053,3 +1053,32 @@ export interface IUserDto {
   fullName?: string;
   email?: string;
 }
+
+export interface IMetaData {
+  apimanVersion: string;
+  exportedOn: string;
+  id: number;
+}
+
+export interface IBlob {
+  blob: string;
+  createdOn: string;
+  hash: number;
+  id: string;
+  mimeType: string;
+  modifiedOn: string;
+  name: string;
+  refCount: number;
+}
+
+export interface IApimanData {
+  Blobs: IBlob[];
+  Developers: IDeveloper[];
+  Gateways: IGateway[];
+  Metadata: IMetaData;
+  Orgs: IOrganization[];
+  Plugins: IPlugin[];
+  PolicyDefinitions: IPolicyDefinition[];
+  Roles: IRole[];
+  Users: IUser[];
+}

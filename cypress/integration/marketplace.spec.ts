@@ -1,8 +1,26 @@
 /// <reference types="cypress" />
 
+import { IApimanData } from '../../src/app/interfaces/ICommunication';
+
 describe('Testing the marketplace', () => {
+  before(() => {
+    cy.fixture('apiman_data.json').then((apimanData: IApimanData) => {
+      cy.initApimanData(apimanData);
+    });
+  });
+
+  after(() => {
+    cy.retireApi('CypressTestOrg', 'TestApi1', '1.0');
+    cy.deleteApi('CypressTestOrg', 'TestApi1');
+    cy.retireApi('CypressTestOrg', 'TestApi2', '1.0');
+    cy.deleteApi('CypressTestOrg', 'TestApi2');
+    cy.deleteOrg('CypressTestOrg');
+    cy.deleteOrg('cypress.user');
+    cy.deleteOrg('cypress.admin');
+  });
+
   it('Check Hero Image and Title home', () => {
-    cy.visit('http://localhost:4200/marketplace');
+    cy.visit('/marketplace');
     cy.get('#hero-title').should('include.text', 'Marketplace');
     cy.get('#hero-subtitle').should('include.text', 'Discover our APIs');
     cy.get('#login-btn').should('exist').and('be.visible');
@@ -10,7 +28,7 @@ describe('Testing the marketplace', () => {
   });
 
   it('Check API List', () => {
-    cy.visit('http://localhost:4200/marketplace');
+    cy.visit('/marketplace');
     cy.intercept('GET', '**/devportal/organizations/**').as('getRequests');
     cy.intercept('POST', '**/devportal/apis/**').as('postRequests');
 

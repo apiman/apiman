@@ -14,31 +14,38 @@
   ~  imitations under the License.
   -->
 
-<mat-card *ngIf="policy">
+<mat-card id="policy-card" *ngIf="policy">
   <mat-card-header>
-    <mat-icon mat-card-avatar color="primary">{{ policy.icon }}</mat-icon>
-    <mat-card-title>{{
+    <mat-icon id="policy-card-icon" mat-card-avatar color="primary">{{
+      policy.icon
+    }}</mat-icon>
+    <mat-card-title id="policy-card-title">{{
       'POLICIES.' + policy.definition.id + '.TITLE' | translate
     }}</mat-card-title>
   </mat-card-header>
   <mat-card-content *ngIf="policy.headers">
     <p
+      id="policy-description"
       [innerHTML]="
         'POLICIES.' + policy.definition.id + '.DESCRIPTION'
           | translate: policy.restrictions
       "></p>
-    <p>{{ 'POLICIES.' + policy.definition.id + '.MORE_INFO' | translate }}</p>
-    <ul>
-      <li>
-        <b>{{ policy.headers.headerLimit }}:</b>
+    <p id="policy-header-info">
+      {{ 'POLICIES.' + policy.definition.id + '.MORE_INFO' | translate }}
+    </p>
+    <ul id="policy-header-list">
+      <li id="policy-header-limit">
+        <b id="policy-header-limit-name">{{ policy.headers.headerLimit }}:</b>
         {{ 'POLICIES.' + policy.definition.id + '.LIMIT' | translate }}
       </li>
-      <li>
-        <b>{{ policy.headers.headerRemaining }}:</b>
+      <li id="policy-header-remaining">
+        <b id="policy-header-remaining-name"
+          >{{ policy.headers.headerRemaining }}:</b
+        >
         {{ 'POLICIES.' + policy.definition.id + '.REMAINING' | translate }}
       </li>
-      <li>
-        <b>{{ policy.headers.headerReset }}:</b>
+      <li id="policy-header-reset">
+        <b id="policy-header-reset-name">{{ policy.headers.headerReset }}:</b>
         {{ 'POLICIES.' + policy.definition.id + '.RESET' | translate }}
       </li>
     </ul>

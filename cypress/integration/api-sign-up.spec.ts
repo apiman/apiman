@@ -1,6 +1,24 @@
 /// <reference types="cypress" />
 
+import { IApimanData } from '../../src/app/interfaces/ICommunication';
+
 describe('Testing the api-signup', () => {
+  before(() => {
+    cy.fixture('apiman_data.json').then((apimanData: IApimanData) => {
+      cy.initApimanData(apimanData);
+    });
+  });
+
+  after(() => {
+    cy.retireApi('CypressTestOrg', 'TestApi1', '1.0');
+    cy.deleteApi('CypressTestOrg', 'TestApi1');
+    cy.retireApi('CypressTestOrg', 'TestApi2', '1.0');
+    cy.deleteApi('CypressTestOrg', 'TestApi2');
+    cy.deleteOrg('CypressTestOrg');
+    cy.deleteOrg('cypress.user');
+    cy.deleteOrg('cypress.admin');
+  });
+
   it('Check api sign-up process as admin', () => {
     cy.intercept('POST', '**/clients').as('postClients');
     cy.intercept('GET', '**/clientorgs').as('getClientOrgs');

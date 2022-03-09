@@ -14,18 +14,23 @@
   ~  imitations under the License.
   -->
 
-<div class="summary mb-40" *ngFor="let policy of policies">
+<div
+  id="policy-container-{{ policy.definition.id }}"
+  class="summary mb-40"
+  *ngFor="let policy of policies">
   <div class="policies" *ngIf="policies">
     <app-policy-card [policy]="policy"></app-policy-card>
   </div>
   <div class="policy-charts-grid" *ngIf="policy.probe; else noProbe">
     <div>
       <app-gauge-chart
+        id="policy-chart-usage"
         [gaugeData]="policy.mainGaugeData"
         [icon]="policy.icon"></app-gauge-chart>
     </div>
     <div>
       <app-gauge-chart
+        id="policy-chart-reset"
         [gaugeData]="policy.timeGaugeData"
         [icon]="'timer'"></app-gauge-chart>
     </div>

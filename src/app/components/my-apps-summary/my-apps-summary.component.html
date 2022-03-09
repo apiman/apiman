@@ -20,34 +20,56 @@
   <div class="endpoints">
     <div class="api-endpoint">
       <div>
-        <mat-icon class="form-field-pre-icon" color="primary">public</mat-icon>
+        <mat-icon
+          id="api-endpoint-icon"
+          class="form-field-pre-icon"
+          color="primary"
+          >public</mat-icon
+        >
       </div>
       <div>
         <mat-form-field>
-          <input matInput readonly value="{{ contract!.managedEndpoint }}" />
+          <input
+            id="api-endpoint-input"
+            matInput
+            readonly
+            value="{{ contract!.managedEndpoint }}" />
           <button
+            id="api-endpoint-copy-btn"
             [cdkCopyToClipboard]="contract!.managedEndpoint"
             mat-icon-button
             matSuffix
             class="input-icon-btn">
-            <mat-icon color="primary">content_copy</mat-icon>
+            <mat-icon id="api-endpoint-copy-btn-icon" color="primary"
+              >content_copy</mat-icon
+            >
           </button>
         </mat-form-field>
       </div>
     </div>
     <div class="api-key">
       <div>
-        <mat-icon class="form-field-pre-icon" color="primary">vpn_key</mat-icon>
+        <mat-icon id="api-key-icon" class="form-field-pre-icon" color="primary"
+          >vpn_key</mat-icon
+        >
       </div>
       <div>
         <mat-form-field>
-          <input matInput readonly value="{{ contract!.client.apikey }}" />
+          <input
+            id="api-key-input"
+            matInput
+            readonly
+            value="{{ contract!.client.apikey }}" />
           <button
+            id="api-key-copy-btn"
             [cdkCopyToClipboard]="contract!.client.apikey"
             mat-icon-button
             matSuffix
             class="input-icon-btn">
-            <mat-icon class="input-icon-btn" color="primary"
+            <mat-icon
+              id="api-key-copy-btn-icon"
+              class="input-icon-btn"
+              color="primary"
               >content_copy</mat-icon
             >
           </button>

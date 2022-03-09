@@ -45,17 +45,21 @@
   <div>
     <mat-form-field>
       <input
+        id="api-key-input"
         matInput
         readonly
         value="{{ apiKeyUi }}"
         [placeholder]="'COMMON.HTTP_HEADER' | translate" />
       <button
+        id="api-key-copy-btn"
         [disabled]="disableButtons"
         [cdkCopyToClipboard]="apiKeyUi"
         mat-icon-button
         matSuffix
         class="input-icon-btn">
-        <mat-icon class="input-icon-btn" color="primary">content_copy</mat-icon>
+        <mat-icon id="api-key-copy-icon" class="input-icon-btn" color="primary"
+          >content_copy</mat-icon
+        >
       </button>
     </mat-form-field>
   </div>
@@ -70,17 +74,21 @@
   <div>
     <mat-form-field>
       <input
+        id="api-endpoint-input"
         matInput
         readonly
         value="{{ endpoint }}"
         [placeholder]="'COMMON.QUERY_PARAMETER' | translate" />
       <button
+        id="api-endpoint-copy-btn"
         [disabled]="disableButtons"
         [cdkCopyToClipboard]="endpoint"
         mat-icon-button
         matSuffix
         class="input-icon-btn">
-        <mat-icon color="primary">content_copy</mat-icon>
+        <mat-icon id="api-endpoint-copy-icon" color="primary"
+          >content_copy</mat-icon
+        >
       </button>
     </mat-form-field>
   </div>

@@ -1,4 +1,9 @@
 {
   "experimentalStudio": true,
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "watchForFileChanges": false,
+  "baseUrl": "http://localhost:4200",
+  "env": {
+    "apiman_endpoint": ""
+  }
 }

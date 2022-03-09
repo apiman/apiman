@@ -15,6 +15,9 @@
 /// <reference types="cypress" />
 // Import commands.ts using ES2015 syntax:
 import './commands';
+import { IPolicyCard } from './interfaces/IPolicyCard';
+import { IGaugeChart } from './interfaces/IGaugeChart';
+import { IApimanData } from '../../src/app/interfaces/ICommunication';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -32,6 +35,19 @@ declare global {
       typeLogin(username: string, password: string): Chainable<Element>;
       typeSearch(searchTerm: string): Chainable<Element>;
       navigateToApiDetails(apiId: string): Chainable<Element>;
+      updateApimanMetadata(apimanData: IApimanData): Chainable<RequestBody>;
+      checkPolicyCard(policyContainderId: string, policyCardInfo: IPolicyCard);
+      checkGaugeChart(
+        policyContainerId: string,
+        gaugeChartId: string,
+        gaugeChartInfo: IGaugeChart
+      );
+      compareWithClipboard(value: string);
+      checkTocLength(clientCount: number);
+      initApimanData(apimanData: IApimanData);
+      retireApi(orgId: string, apiId: string, apiVersion: string);
+      deleteApi(orgId: string, apiId: string);
+      deleteOrg(orgId: string);
     }
   }
 }

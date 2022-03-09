@@ -22,7 +22,7 @@
     clientId: clientId
   }"
   target="{{ target }}">
-  <button mat-raised-button color="primary">
+  <button id="api-docs-btn" mat-raised-button color="primary">
     {{ 'COMMON.API_DOCS' | translate }}
   </button>
 </a>
@@ -30,7 +30,7 @@
   *ngIf="downloadEnabled"
   mat-raised-button
   color="primary"
-  id="download-btn"
+  id="api-docs-download-btn"
   (click)="download()">
-  <mat-icon>download</mat-icon>
+  <mat-icon id="api-docs-download-icon">download</mat-icon>
 </button>
