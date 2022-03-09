@@ -54,7 +54,7 @@ public class SimpleMailNotificationService {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SimpleMailNotificationService.class);
     private static final Map<String, String> DEFAULT_HEADERS = Map.of("X-Notification-Producer", "Apiman");
 
-    private IEmailSender emailSender;
+    private IEmailSender emailSender = new NullEmailSender();
     private ApiManagerConfig config;
     private QuteTemplateEngine templateEngine;
     // String -> Map<Locale, EmailNotificationTemplate>
@@ -68,14 +68,13 @@ public class SimpleMailNotificationService {
     public SimpleMailNotificationService(ApiManagerConfig config, QuteTemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
         this.config = config;
-        if (!config.getEmailNotificationProperties().isEmpty()) {
-            var smtpConfig = new SmtpEmailConfiguration(config.getEmailNotificationProperties());
-            this.emailSender = new EmailSender(smtpConfig);
+        var smtpConfig = new SmtpEmailConfiguration(config.getEmailNotificationProperties());
+        if (smtpConfig.isEnabled()) {
             if (smtpConfig.isMock()) {
                 emailSender = new MockEmailSender();
+            } else {
+                emailSender = new EmailSender(smtpConfig);
             }
-        } else {
-            emailSender = new MockEmailSender();
         }
         readEmailNotificationTemplatesFromFile();
     }
@@ -234,4 +233,17 @@ public class SimpleMailNotificationService {
      * Helpful for making Jackson deserialization a bit easier.
      */
     private static final class ReasonMap extends HashMap<String, EmailTemplateFileEntry> { }
+
+    private static final class NullEmailSender implements IEmailSender {
+
+        @Override
+        public void sendPlaintext(String toEmail, String toName, String subject, String body, Map<String, String> headers) throws EmailException {
+
+        }
+
+        @Override
+        public void sendHtml(String toEmail, String toName, String subject, String htmlBody, String plainBody, Map<String, String> headers) throws EmailException {
+
+        }
+    }
 }
