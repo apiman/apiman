@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiPlanBeanDto;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionMapper;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagMapper;
@@ -124,6 +125,7 @@ public class ApiService implements DataAccessUtilMixin {
     private IGatewayLinkFactory gatewayLinkFactory;
     private PolicyService policyService;
     private IBlobStore blobStore;
+    private final ApiVersionMapper apiVersionMapper = ApiVersionMapper.INSTANCE;
     private final ApiMapper apiMapper = ApiMapper.INSTANCE;
     private final KeyValueTagMapper tagMapper = KeyValueTagMapper.INSTANCE;
 
@@ -345,7 +347,8 @@ public class ApiService implements DataAccessUtilMixin {
                 updatedApi.setEndpointProperties(cloneSource.getEndpointProperties());
                 updatedApi.setGateways(cloneSource.getGateways());
                 if (bean.getPlans() == null) {
-                    updatedApi.setPlans(cloneSource.getPlans());
+                    Set<ApiPlanBeanDto> plans = ApiVersionMapper.INSTANCE.toDto(cloneSource.getPlans());
+                    updatedApi.setPlans(plans);
                 }
                 if (bean.getPublicAPI() == null) {
                     updatedApi.setPublicAPI(cloneSource.isPublicAPI());
@@ -633,74 +636,87 @@ public class ApiService implements DataAccessUtilMixin {
         }
     }
 
-    private ApiVersionBean updateApiVersionInternal(ApiVersionBean avb, UpdateApiVersionBean bean) throws ApiVersionNotFoundException {
+    private ApiVersionBean updateApiVersionInternal(ApiVersionBean avb, UpdateApiVersionBean update) throws ApiVersionNotFoundException {
         if (avb.getStatus() == ApiStatus.Retired) {
             throw ExceptionFactory.invalidApiStatusException();
         }
         avb.setModifiedBy(securityContext.getCurrentUser());
         avb.setModifiedOn(new Date());
+        Set<ApiPlanBean> updatedPlans = apiVersionMapper.fromDto(update.getPlans());
         EntityUpdatedData data = new EntityUpdatedData();
-        if (AuditUtils.valueChanged(avb.getPlans(), bean.getPlans())) {
-            data.addChange("plans", AuditUtils.asString_ApiPlanBeans(avb.getPlans()), AuditUtils.asString_ApiPlanBeans(bean.getPlans())); //$NON-NLS-1$
+        if (AuditUtils.valueChanged(avb.getPlans(), update.getPlans())) {
+            data.addChange("plans", AuditUtils.asString_ApiPlanBeans(avb.getPlans()), AuditUtils.asString_ApiPlanBeans(updatedPlans)); //$NON-NLS-1$
             if (avb.getPlans() == null) {
                 avb.setPlans(new HashSet<>());
             }
-            avb.getPlans().clear();
-            if (bean.getPlans() != null) {
-                avb.getPlans().addAll(bean.getPlans());
+
+            if (update.getPlans() != null) {
+                Set<ApiPlanBeanDto> merged = new HashSet<>();
+                Set<ApiPlanBeanDto> existingPlans = apiVersionMapper.toDto(avb.getPlans());
+                // existingPlans.retainAll(bean.getPlans());
+                for (ApiPlanBeanDto updatedPlan : update.getPlans()) {
+                    existingPlans.stream()
+                            .filter(ep -> ep.equals(updatedPlan))
+                            .findAny()
+                            .ifPresentOrElse(
+                                    ep -> merged.add(apiVersionMapper.merge(updatedPlan, ep)),
+                                    () -> merged.add(updatedPlan)
+                            );
+                }
+                avb.setPlans(apiVersionMapper.fromDto(merged));
             }
         }
-        if (AuditUtils.valueChanged(avb.getGateways(), bean.getGateways())) {
-            data.addChange("gateways", AuditUtils.asString_ApiGatewayBeans(avb.getGateways()), AuditUtils.asString_ApiGatewayBeans(bean.getGateways())); //$NON-NLS-1$
+        if (AuditUtils.valueChanged(avb.getGateways(), update.getGateways())) {
+            data.addChange("gateways", AuditUtils.asString_ApiGatewayBeans(avb.getGateways()), AuditUtils.asString_ApiGatewayBeans(update.getGateways())); //$NON-NLS-1$
             if (avb.getGateways() == null) {
                 avb.setGateways(new HashSet<>());
             }
             avb.getGateways().clear();
-            avb.getGateways().addAll(bean.getGateways());
+            avb.getGateways().addAll(update.getGateways());
         }
-        if (AuditUtils.valueChanged(avb.getEndpoint(), bean.getEndpoint())) {
+        if (AuditUtils.valueChanged(avb.getEndpoint(), update.getEndpoint())) {
             // validate the endpoint is a URL
-            validateEndpoint(bean.getEndpoint());
-            data.addChange("endpoint", avb.getEndpoint(), bean.getEndpoint()); //$NON-NLS-1$
-            avb.setEndpoint(bean.getEndpoint());
+            validateEndpoint(update.getEndpoint());
+            data.addChange("endpoint", avb.getEndpoint(), update.getEndpoint()); //$NON-NLS-1$
+            avb.setEndpoint(update.getEndpoint());
         }
-        if (AuditUtils.valueChanged(avb.getEndpointType(), bean.getEndpointType())) {
-            data.addChange("endpointType", avb.getEndpointType(), bean.getEndpointType()); //$NON-NLS-1$
-            avb.setEndpointType(bean.getEndpointType());
+        if (AuditUtils.valueChanged(avb.getEndpointType(), update.getEndpointType())) {
+            data.addChange("endpointType", avb.getEndpointType(), update.getEndpointType()); //$NON-NLS-1$
+            avb.setEndpointType(update.getEndpointType());
         }
-        if (AuditUtils.valueChanged(avb.getEndpointContentType(), bean.getEndpointContentType())) {
-            data.addChange("endpointContentType", avb.getEndpointContentType(), bean.getEndpointContentType()); //$NON-NLS-1$
-            avb.setEndpointContentType(bean.getEndpointContentType());
+        if (AuditUtils.valueChanged(avb.getEndpointContentType(), update.getEndpointContentType())) {
+            data.addChange("endpointContentType", avb.getEndpointContentType(), update.getEndpointContentType()); //$NON-NLS-1$
+            avb.setEndpointContentType(update.getEndpointContentType());
         }
-        if (AuditUtils.valueChanged(avb.getEndpointProperties(), bean.getEndpointProperties())) {
+        if (AuditUtils.valueChanged(avb.getEndpointProperties(), update.getEndpointProperties())) {
             if (avb.getEndpointProperties() == null) {
                 avb.setEndpointProperties(new HashMap<>());
             } else {
                 avb.getEndpointProperties().clear();
             }
-            if (bean.getEndpointProperties() != null) {
-                avb.getEndpointProperties().putAll(bean.getEndpointProperties());
+            if (update.getEndpointProperties() != null) {
+                avb.getEndpointProperties().putAll(update.getEndpointProperties());
             }
         }
-        if (AuditUtils.valueChanged(avb.isPublicAPI(), bean.getPublicAPI())) {
-            data.addChange("publicAPI", String.valueOf(avb.isPublicAPI()), String.valueOf(bean.getPublicAPI())); //$NON-NLS-1$
-            avb.setPublicAPI(bean.getPublicAPI());
+        if (AuditUtils.valueChanged(avb.isPublicAPI(), update.getPublicAPI())) {
+            data.addChange("publicAPI", String.valueOf(avb.isPublicAPI()), String.valueOf(update.getPublicAPI())); //$NON-NLS-1$
+            avb.setPublicAPI(update.getPublicAPI());
         }
-        if (AuditUtils.valueChanged(avb.isParsePayload(), bean.getParsePayload())) {
-            data.addChange("parsePayload", String.valueOf(avb.isParsePayload()), String.valueOf(bean.getParsePayload())); //$NON-NLS-1$
-            avb.setParsePayload(bean.getParsePayload());
+        if (AuditUtils.valueChanged(avb.isParsePayload(), update.getParsePayload())) {
+            data.addChange("parsePayload", String.valueOf(avb.isParsePayload()), String.valueOf(update.getParsePayload())); //$NON-NLS-1$
+            avb.setParsePayload(update.getParsePayload());
         }
-        if (AuditUtils.valueChanged(avb.getDisableKeysStrip(), bean.getDisableKeysStrip())) {
-            data.addChange("disableKeysStrip", String.valueOf(avb.getDisableKeysStrip()), String.valueOf(bean.getDisableKeysStrip())); //$NON-NLS-1$
-            avb.setDisableKeysStrip(bean.getDisableKeysStrip());
+        if (AuditUtils.valueChanged(avb.getDisableKeysStrip(), update.getDisableKeysStrip())) {
+            data.addChange("disableKeysStrip", String.valueOf(avb.getDisableKeysStrip()), String.valueOf(update.getDisableKeysStrip())); //$NON-NLS-1$
+            avb.setDisableKeysStrip(update.getDisableKeysStrip());
         }
-        if (AuditUtils.valueChanged(avb.getExtendedDescription(), bean.getExtendedDescription())) {
-            data.addChange("extendedDescription", String.valueOf(avb.getExtendedDescription()), String.valueOf(bean.getExtendedDescription())); //$NON-NLS-1$
-            avb.setExtendedDescription(bean.getExtendedDescription());
+        if (AuditUtils.valueChanged(avb.getExtendedDescription(), update.getExtendedDescription())) {
+            data.addChange("extendedDescription", String.valueOf(avb.getExtendedDescription()), String.valueOf(update.getExtendedDescription())); //$NON-NLS-1$
+            avb.setExtendedDescription(update.getExtendedDescription());
         }
-        if (AuditUtils.valueChanged(avb.isExposeInPortal(), bean.isExposeInPortal())) {
-            data.addChange("exposeInPortal", String.valueOf(avb.isExposeInPortal()), String.valueOf(bean.isExposeInPortal())); //$NON-NLS-1$
-            avb.setExposeInPortal(bean.isExposeInPortal());
+        if (AuditUtils.valueChanged(avb.isExposeInPortal(), update.isExposeInPortal())) {
+            data.addChange("exposeInPortal", String.valueOf(avb.isExposeInPortal()), String.valueOf(update.isExposeInPortal())); //$NON-NLS-1$
+            avb.setExposeInPortal(update.isExposeInPortal());
         }
 
         return tryAction(() -> {
@@ -1120,6 +1136,11 @@ public class ApiService implements DataAccessUtilMixin {
         public final String version;
 
         public PlanIdVersion(ApiPlanBean pvb) {
+            this.id = pvb.getPlanId();
+            this.version = pvb.getVersion();
+        }
+
+        public PlanIdVersion(ApiPlanBeanDto pvb) {
             this.id = pvb.getPlanId();
             this.version = pvb.getVersion();
         }

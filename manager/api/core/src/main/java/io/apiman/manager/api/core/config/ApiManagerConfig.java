@@ -49,7 +49,7 @@ public abstract class ApiManagerConfig {
 
     public static final String APIMAN_MANAGER_FEATURES_ORG_CREATE_ADMIN_ONLY = "apiman-manager.config.features.org-create-admin-only"; //$NON-NLS-1$
 
-    public static final String APIMAN_MANAGER_CONFIG_NOTIFICATIONS = "apiman-manager.config.notifications";
+    public static final String APIMAN_MANAGER_CONFIG_NOTIFICATIONS = "apiman-manager.notifications";
 
     /*
      * Database/hibernate properties

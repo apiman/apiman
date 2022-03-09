@@ -6,6 +6,7 @@ import io.apiman.common.config.options.Predicates;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 import static io.apiman.common.config.options.Predicates.anyOk;
@@ -17,6 +18,7 @@ import static io.apiman.common.config.options.Predicates.greaterThanZeroMsg;
  */
 public class SmtpEmailConfiguration extends GenericOptionsParser {
     public static final String PREFIX = "smtp.";
+    private boolean enabled;
     private boolean mock;
     private boolean ssl;
     private StartTLSEnum startTLSMode = StartTLSEnum.OPTIONAL;
@@ -36,15 +38,27 @@ public class SmtpEmailConfiguration extends GenericOptionsParser {
     @Override
     protected void parse(Map<String, String> options) {
         super.parse(options);
-        this.mock = getBool(keys(PREFIX + "mock"), false);
-        this.ssl = getBool(keys(PREFIX + "ssl"), true);
-        this.startTLSMode = getEnum(keys(PREFIX + "startTLSMode"), StartTLSEnum.OPTIONAL, StartTLSEnum::toValue);
-        this.fromName = getRequiredString(keys(PREFIX + "fromName"), anyOk(), "");
-        this.fromEmail = getRequiredString(keys(PREFIX + "fromEmail"), anyOk(), "");
-        this.host = getRequiredString(keys(PREFIX + "host"), anyOk(), "");
-        this.port = getInt(keys(PREFIX + "port"), 587, greaterThanZeroInt(), greaterThanZeroMsg());
-        this.username = getString(keys(PREFIX + "username"), null, Predicates.anyOk(), "");
-        this.password = getString(keys(PREFIX + "password"), null, Predicates.anyOk(), "");
+        this.enabled = getBool(keys("enable"), false);
+        if (enabled) {
+            this.mock = getBool(keys(PREFIX + "mock"), false);
+            this.ssl = getBool(keys(PREFIX + "ssl"), true);
+            this.startTLSMode = getEnum(keys(PREFIX + "startTLSMode"), StartTLSEnum.OPTIONAL, StartTLSEnum::toValue);
+            this.fromName = getRequiredString(keys(PREFIX + "fromName"), anyOk(), "");
+            this.fromEmail = getRequiredString(keys(PREFIX + "fromEmail"), anyOk(), "");
+            this.host = getRequiredString(keys(PREFIX + "host"), anyOk(), "");
+            this.port = getInt(keys(PREFIX + "port"), 587, greaterThanZeroInt(), greaterThanZeroMsg());
+            this.username = getString(keys(PREFIX + "username"), null, Predicates.anyOk(), "");
+            this.password = getString(keys(PREFIX + "password"), null, Predicates.anyOk(), "");
+        }
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public SmtpEmailConfiguration setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        return this;
     }
 
     public boolean isMock() {
@@ -104,16 +118,38 @@ public class SmtpEmailConfiguration extends GenericOptionsParser {
     @Override
     public String toString() {
         return new StringJoiner(", ", SmtpEmailConfiguration.class.getSimpleName() + "[", "]")
-             .add("mock=" + mock)
-             .add("ssl=" + ssl)
-             .add("startTLSMode=" + startTLSMode)
-             .add("fromName='" + fromName + "'")
-             .add("fromEmail='" + fromEmail + "'")
-             .add("host='" + host + "'")
-             .add("port=" + port)
-             .add("authMethods=" + Arrays.toString(authMethods))
-             .add("username='" + username + "'")
-             .add("password='***'")
-             .toString();
+                .add("enabled=" + enabled)
+                .add("mock=" + mock)
+                .add("ssl=" + ssl)
+                .add("startTLSMode=" + startTLSMode)
+                .add("fromName='" + fromName + "'")
+                .add("fromEmail='" + fromEmail + "'")
+                .add("host='" + host + "'")
+                .add("port=" + port)
+                .add("authMethods=" + Arrays.toString(authMethods))
+                .add("username='xxxx'")
+                .add("password='xxxx'")
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SmtpEmailConfiguration that = (SmtpEmailConfiguration) o;
+        return enabled == that.enabled && mock == that.mock && ssl == that.ssl && port == that.port && startTLSMode == that.startTLSMode && Objects.equals(fromName,
+                that.fromName) && Objects.equals(fromEmail, that.fromEmail) && Objects.equals(host, that.host) && Arrays.equals(authMethods,
+                that.authMethods) && Objects.equals(username, that.username) && Objects.equals(password, that.password);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(enabled, mock, ssl, startTLSMode, fromName, fromEmail, host, port, username, password);
+        result = 31 * result + Arrays.hashCode(authMethods);
+        return result;
     }
 }
