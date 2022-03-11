@@ -14,6 +14,10 @@
  *  imitations under the License.
  */
 
+mat-card {
+  padding-top: 8px;
+}
+
 .api-card {
   border-radius: 2px;
   min-width: 24%;
@@ -23,9 +27,10 @@
 
 .api-card-header {
   display: grid;
-  grid-template-columns: 32px 1fr;
+  grid-template-columns: 1fr auto;
   grid-column-gap: 0.8rem;
   height: 32px;
+  align-items: center;
 }
 
 .api-card-title {
@@ -34,6 +39,12 @@
   overflow: hidden;
   white-space: nowrap;
   font-weight: 500;
+}
+
+.api-card-header-title {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 0.8rem;
 }
 
 .api-card-content {

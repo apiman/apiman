@@ -64,6 +64,7 @@ import { RateQuotaPolicyShortLimitComponent } from './components/policies/rate-q
 import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { ApiMarkdownDescriptionComponent } from './components/api-markdown-description/api-markdown-description.component';
+import { ApiStatusTagComponent } from './components/api-status-tag/api-status-tag.component';
 
 export function initializeApp(
   configService: ConfigService,
@@ -127,7 +128,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     ApiDocumentationButtonsComponent,
     RateQuotaPolicyShortLimitComponent,
     NotificationsComponent,
-    ApiMarkdownDescriptionComponent
+    ApiMarkdownDescriptionComponent,
+    ApiStatusTagComponent
   ],
   imports: [
     KeycloakAngularModule,

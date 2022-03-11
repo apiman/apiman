@@ -16,8 +16,17 @@
 
 <mat-expansion-panel [expanded]="isLatest" xmlns="http://www.w3.org/1999/html">
   <mat-expansion-panel-header>
-    <mat-panel-title>
-      <div id="version-info">
+    <mat-panel-title
+      style="
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+      ">
+      <app-api-status-tag
+        style="padding-top: 0.4rem"
+        [apiStatus]="api.status"
+        [primary]="true"></app-api-status-tag>
+      <div id="version-info" style="margin-left: 0.5rem">
         {{ 'COMMON.VERSION' | translate }} {{ api.version }}
         {{ 'COMMON.OF' | translate }} {{ api.api.name }}
         <span *ngIf="isLatest" id="latest-tag" class="primary">[latest]</span>

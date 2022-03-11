@@ -16,10 +16,17 @@
 
 <mat-card id="api-card_{{ api.id }}" class="api-card">
   <div class="api-card-header">
-    <app-img-or-icon-selector
-      [imgUrl]="api.image"
-      [dimension]="'32'"></app-img-or-icon-selector>
-    <div class="api-card-title primary">{{ api.name }}</div>
+    <div class="api-card-header-title">
+      <app-img-or-icon-selector
+        [imgUrl]="api.image"
+        [dimension]="'32'"></app-img-or-icon-selector>
+      <div class="api-card-title primary">{{ api.name }}</div>
+    </div>
+    <div class="api-card-header-status">
+      <app-api-status-tag
+        [apiStatus]="api.latestApiVersion.status"
+        [primary]="false"></app-api-status-tag>
+    </div>
   </div>
   <mat-card-content class="api-card-content">
     <p *ngIf="api.description; else noDescription" class="content-text">
