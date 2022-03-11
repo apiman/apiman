@@ -77,7 +77,7 @@
       <td>{{ item.httpMethod }}</td>
       <td>{{ item.statusCode}}</td>
       <td>
-        <button ng-click="remove(item)" class="btn btn-default" ng-disabled="isEntityDisabled()"><i class="fa fa-times fa-fw"></i></button>
+        <button ng-click="remove($index)" class="btn btn-default" ng-disabled="isEntityDisabled()"><i class="fa fa-times fa-fw"></i></button>
       </td>
     </tr>
     <tr>

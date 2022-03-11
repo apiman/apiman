@@ -725,8 +725,8 @@ _module.controller('Apiman.CachingResourcesFormController',
                 $scope.statusCodeCaching = undefined;
             };
 
-            $scope.remove = function (cachingResourceSetting) {
-                $scope.config.cachingResourcesSettingsEntries.remove(cachingResourceSetting);
+            $scope.remove = function (idx: number) {
+                $scope.config.cachingResourcesSettingsEntries.splice(idx, 1);
             };
 
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
