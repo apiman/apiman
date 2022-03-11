@@ -15,7 +15,11 @@
   -->
 
 <p
+  *ngIf="policy; else unlimitedLabel"
   [innerHTML]="
     'POLICIES.' + policy.definition.id + '.CONDITION_LIGHT'
       | translate: policy.restrictions
   "></p>
+<ng-template #unlimitedLabel>
+  <p [innerHTML]="'POLICIES.UNLIMITED' | translate"></p>
+</ng-template>

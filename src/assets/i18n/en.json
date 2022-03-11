@@ -123,7 +123,8 @@
       "MONTH": "Month",
       "YEAR": "Year"
     },
-    "USAGE": "Usage"
+    "USAGE": "Usage",
+    "UNLIMITED": "Unlimited"
   },
   "DESCRIPTIONS": {
     "TRY_IT_OUT": "Displays the Open API definition (Swagger) and allows for making test calls if the API is available.",

@@ -123,7 +123,8 @@
       "MONTH": "Monat",
       "YEAR": "Jahr"
     },
-    "USAGE": "Verbrauch"
+    "USAGE": "Verbrauch",
+    "UNLIMITED": "Unbegrenzt"
   },
   "DESCRIPTIONS": {
     "TRY_IT_OUT": "Öffnet die Open API Defintion (Swagger). Hier können Sie Testaufrufe auf die API durchführen.",

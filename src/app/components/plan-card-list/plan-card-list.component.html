@@ -28,14 +28,24 @@
       </div>
       <div class="card-content" [ngSwitch]="plan.planId + ':' + plan.version">
         <mat-list>
-          <mat-list-item *ngFor="let policy of plan.planPolicies">
-            <p>
-              {{ policy.shortName }}
-            </p>
-            <app-rate-quota-policy-short-limit
-              [policy]="policy"
-              [bold]="false"></app-rate-quota-policy-short-limit>
-          </mat-list-item>
+          <ng-container
+            *ngIf="plan.planPolicies.length > 0; else unlimitedPolicies">
+            <mat-list-item *ngFor="let policy of plan.planPolicies">
+              <p>
+                {{ policy.shortName }}
+              </p>
+              <app-rate-quota-policy-short-limit
+                [policy]="policy"
+                [bold]="false"></app-rate-quota-policy-short-limit>
+            </mat-list-item>
+          </ng-container>
+          <ng-template #unlimitedPolicies>
+            <mat-list-item *ngFor="let defaultPolicy of defaultPolicies">
+              <p>{{ defaultPolicy }}</p>
+              <app-rate-quota-policy-short-limit
+                [bold]="false"></app-rate-quota-policy-short-limit>
+            </mat-list-item>
+          </ng-template>
         </mat-list>
       </div>
       <div class="plan-card-actions">

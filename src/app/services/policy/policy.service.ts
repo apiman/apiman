@@ -166,12 +166,14 @@ export class PolicyService {
   }
 
   public filterPolicies(extendedPolicies: IPolicyExt[]): IPolicyExt[] {
-    return extendedPolicies.filter((extendedPolicy: IPolicyExt) => {
-      return [
-        this.policyIds.RATE_LIMIT,
-        this.policyIds.TRANSFER_QUOTA
-      ].includes(extendedPolicy.definition.id);
-    });
+    return extendedPolicies
+      .filter((extendedPolicy: IPolicyExt) => {
+        return [
+          this.policyIds.RATE_LIMIT,
+          this.policyIds.TRANSFER_QUOTA
+        ].includes(extendedPolicy.definition.id);
+      })
+      .sort((a, b) => (a.definition.id > b.definition.id ? 1 : -1));
   }
 
   private getPolicyConfiguration(policy: IPolicyExt): IPolicyConfiguration {

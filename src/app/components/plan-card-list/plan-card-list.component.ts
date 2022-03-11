@@ -32,6 +32,7 @@ import { map } from 'rxjs/operators';
 export class PlanCardListComponent implements OnInit {
   @Input() apiVersion!: IApiVersionExt;
   plans: IApiPlanSummary[] = [];
+  readonly defaultPolicies: string[] = ['Rate Limit', 'Transfer Quota'];
 
   constructor(
     private route: ActivatedRoute,
