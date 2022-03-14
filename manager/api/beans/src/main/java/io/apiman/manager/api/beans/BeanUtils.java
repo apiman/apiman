@@ -57,7 +57,7 @@ public class BeanUtils {
      * @param version the version
      * @return true if valid, else false
      */
-    public static final boolean isValidVersion(String version) {
+    public static boolean isValidVersion(String version) {
         return removeNonWord(version).equals(version);
     }
 
@@ -70,7 +70,7 @@ public class BeanUtils {
         @Override
         public String convertToDatabaseColumn(Locale locale) {
             if (locale == null) {
-                return null;
+                return Locale.getDefault().toLanguageTag();
             }
             return locale.toLanguageTag();
         }
@@ -81,7 +81,7 @@ public class BeanUtils {
         @Override
         public Locale convertToEntityAttribute(String localeLanguageTag) {
             if (localeLanguageTag == null || StringUtils.isBlank(localeLanguageTag)) {
-                return null;
+                return Locale.getDefault();
             }
             return new Locale.Builder().setLanguageTag(localeLanguageTag).build();
         }
