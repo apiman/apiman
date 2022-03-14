@@ -22,6 +22,7 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.exceptions.ErrorBean;
 import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 
+import java.io.PrintWriter;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -77,6 +78,7 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
         LOGGER.error(exception);
         if (isStackTraceEnabled()) {
             try (StringBuilderWriter writer = new StringBuilderWriter()) {
+                exception.printStackTrace(new PrintWriter(writer));
                 return writer.getBuilder().toString();
             }
         } else {
