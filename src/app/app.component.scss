@@ -19,18 +19,18 @@
 }
 
 // Header: 32vh
-// Content Padding Top + Bottom: 40px
+// Content Padding Top + Bottom: 4vh
 // Footer Height: 40px
 .fixed-height {
-  min-height: calc(68vh - 40px - 40px);
+  min-height: calc(68vh - 4vh - 40px);
   height: 100%;
 }
 
 // Header: 19vh
-// Content Padding Top + Bottom: 40px
+// Content Padding Top + Bottom: 4vh
 // Footer Height: 40px
 .free-height {
-  min-height: calc(81vh - 40px - 40px);
+  min-height: calc(81vh - 4vh - 40px);
 }
 
 #navigation {
