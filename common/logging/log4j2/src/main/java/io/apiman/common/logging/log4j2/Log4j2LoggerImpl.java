@@ -75,7 +75,7 @@ public class Log4j2LoggerImpl implements IApimanLogger {
 
     @Override
     public void error(Throwable error) {
-        logger.error(error);
+        logger.error(error.getMessage(), error);
     }
 
     @Override
