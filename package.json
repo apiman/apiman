@@ -1,6 +1,6 @@
 {
-  "name": "devportal",
-  "version": "1.2.1",
+  "name": "apiman-developer-portal",
+  "version": "3.0.0-SNAPSHOT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

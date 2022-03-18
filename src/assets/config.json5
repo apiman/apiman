@@ -15,13 +15,7 @@
   // config options for navigation below header
   "navigation": {
     "showHomeLink": true,
-    "links": [
-      {
-        "name": "Support",
-        "link": "https://support.scheer-pas.com/portal",
-        "openInNewTab": true
-      }
-    ],
+    "links": [],
     "separator": ""
   },
   // config options for footer
@@ -31,11 +25,6 @@
       {
         "name": "Apiman",
         "link": "https://www.apiman.io/",
-        "openInNewTab": true
-      },
-      {
-        "name": "Scheer PAS",
-        "link": "https://www.scheer-pas.com/",
         "openInNewTab": true
       }
     ],
@@ -49,7 +38,7 @@
   // set authentication details when pressing "login" telling where to redirect for SSO login with keycloak
   "auth": {
     "url": "${AUTH_URL}",
-    "realm": "PAS",
+    "realm": "apiman",
     "clientId": "devportal"
   },
   // set your desired terms and conditions for API subscriptions here. Could be disabled so no such infos will be shown.
