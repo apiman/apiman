@@ -1,0 +1,61 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Verify Build Workflow
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  Build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '16'
+          check-latest: true
+      - name: Install node modules
+        run: npm ci
+      - name: Do local build
+        run: npm run-script build
+      - name: Do production build
+        run: npm run-script build-production
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '16'
+          check-latest: true
+      - name: Install node modules
+        run: npm ci
+      - name: Install node modules
+        run: npm run-script lint
+
+#  Publish:
+#    needs: [Build, Lint]
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/main' && github.repository_owner == 'Apiman'
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Building Docker Images
+#        run: docker build -t="apiman/developer-portal:latest" -t="ghcr.io/apiman/developer-portal:latest" .
+#      - name: Push The Tagged Docker Images
+#        run: |
+#          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+#          docker push apiman/developer-portal:latest
+#
+#          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+#          docker push ghcr.io/apiman/developer-portal:latest
