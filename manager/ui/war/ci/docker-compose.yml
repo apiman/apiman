@@ -12,7 +12,7 @@ services:
     keycloak:
         container_name: keycloak
         image:
-            quay.io/keycloak/keycloak:15.0.2
+            quay.io/keycloak/keycloak:17.0.0
         environment:
             KEYCLOAK_USER: admin
             KEYCLOAK_PASSWORD: admin123!
