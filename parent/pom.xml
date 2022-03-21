@@ -90,7 +90,7 @@
     <version.com.lmax>3.4.4</version.com.lmax>
     <version.com.github.seancfoley.ipaddress>5.3.3</version.com.github.seancfoley.ipaddress>
     <version.com.squareup.okhttp>2.7.5</version.com.squareup.okhttp>
-    <version.com.squareup.okio>2.10.0</version.com.squareup.okio>
+    <version.com.squareup.okio>3.0.0</version.com.squareup.okio>
     <version.com.unboundid.unboundid-ldapsdk>6.0.2</version.com.unboundid.unboundid-ldapsdk>
     <version.commons-beanutils>1.9.4</version.commons-beanutils>
     <version.commons-codec>1.15</version.commons-codec>
