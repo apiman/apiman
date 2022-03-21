@@ -1,3 +1,5 @@
+[![Verify Build Workflow](https://github.com/apiman/apiman-developer-portal/actions/workflows/verify.yml/badge.svg)](https://github.com/apiman/apiman-developer-portal/actions/workflows/verify.yml)
+
 # Apiman Developer Portal
 
  > A developer portal for Apiman! Allow developers to access your APIs. Developers can view and test your APIs to develop their own apps.
