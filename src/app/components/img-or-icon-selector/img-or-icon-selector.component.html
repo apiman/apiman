@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2022 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -16,17 +16,14 @@
 
 <!-- Show img source if available -->
 <img
-  *ngIf="imgUrl; else withIcon"
+  *ngIf="isImage; else icon"
   id="img"
   class="api-img"
   alt="api logo"
-  [src]="this.configService.getEndpoint() + '/' + imgUrl" />
+  [src]="this.configService.getEndpoint() + '/' + imgUrl"
+  (error)="showFallbackIcon()" />
 
 <!-- OR show icon if img not available -->
-<ng-template #withIcon>
-  <div class="icon-wrapper">
-    <mat-icon color="primary" id="icon" class="api-icon"
-      >developer_board</mat-icon
-    >
-  </div>
+<ng-template #icon>
+  <mat-icon color="primary" class="api-icon">developer_board</mat-icon>
 </ng-template>

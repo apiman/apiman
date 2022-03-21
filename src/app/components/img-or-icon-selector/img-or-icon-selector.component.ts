@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import { ConfigService } from '../../services/config/config.service';
 export class ImgOrIconSelectorComponent implements AfterViewInit, OnChanges {
   @Input() imgUrl: string | undefined = '';
   @Input() dimension = '';
+  isImage = false;
 
   constructor(
     public configService: ConfigService,
@@ -40,6 +41,7 @@ export class ImgOrIconSelectorComponent implements AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.imgUrl = changes.imgUrl ? (changes.imgUrl.currentValue as string) : '';
+    this.isImage = this.imgUrl !== undefined || this.imgUrl !== '';
     this.cdr.detectChanges();
     this.resize();
   }
@@ -72,5 +74,9 @@ export class ImgOrIconSelectorComponent implements AfterViewInit, OnChanges {
         icon.style.height = this.dimension + 'px';
       });
     }
+  }
+
+  showFallbackIcon() {
+    this.isImage = false;
   }
 }
