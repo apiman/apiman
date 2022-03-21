@@ -13,7 +13,7 @@ COPY . .
 RUN npm run build-production
 
 # Stage 2
-FROM nginx:1.21.4-alpine
+FROM nginx:1.21.6-alpine
 MAINTAINER florian.volk@scheer-group.com
 EXPOSE 80 443
 
