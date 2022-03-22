@@ -32,7 +32,6 @@ import { ConfigService } from '../../services/config/config.service';
 export class ImgOrIconSelectorComponent implements AfterViewInit, OnChanges {
   @Input() imgUrl: string | undefined = '';
   @Input() dimension = '';
-  isImage = false;
 
   constructor(
     public configService: ConfigService,
@@ -43,7 +42,6 @@ export class ImgOrIconSelectorComponent implements AfterViewInit, OnChanges {
     this.imgUrl = changes.imgUrl.currentValue
       ? (changes.imgUrl.currentValue as string)
       : '';
-    this.isImage = this.imgUrl !== undefined || this.imgUrl !== '';
     this.cdr.detectChanges();
     this.resize();
   }
@@ -79,6 +77,6 @@ export class ImgOrIconSelectorComponent implements AfterViewInit, OnChanges {
   }
 
   showFallbackIcon() {
-    this.isImage = false;
+    this.imgUrl = '';
   }
 }
