@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan name="delete and recreate" xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <!-- Create Organizations -->
+  <testGroup name="Import Apiman Data">
+    <test name="Import Apiman Data">test-plan-data/delete/import/000_import-data.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test API Deletion">
+    <test name="Delete API">test-plan-data/delete/api/001_delete-api.resttest</test>
+    <test name="Recreate API">test-plan-data/delete/api/002_recreate-api.resttest</test>
+    <test name="Check API activity">test-plan-data/delete/api/003_activity.resttest</test>
+    <test name="Get missing API version">test-plan-data/delete/api/004_get-missing-version.resttest</test>
+    <test name="Create API version 1.0">test-plan-data/delete/api/005_create-version-1.0.resttest</test>
+    <test name="Check API version activity">test-plan-data/delete/api/006_version-activity.resttest</test>
+    <test name="List API policies">test-plan-data/delete/api/007_list-api-policies.resttest</test>
+    <test name="Check delete do not affect client policies">test-plan-data/delete/api/008_list-client-policies.resttest</test>
+    <test name="Check delete do not affect plan policies">test-plan-data/delete/api/009_list-plan-policies.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test Client Deletion">
+    <test name="Delete client">test-plan-data/delete/client/001_delete-client.resttest</test>
+    <test name="Recreate client">test-plan-data/delete/client/002_recreate-client.resttest</test>
+    <test name="Check client activity">test-plan-data/delete/client/003_activity.resttest</test>
+    <test name="Get missing client version">test-plan-data/delete/client/004_get-missing-version.resttest</test>
+    <test name="Create client version 1.0">test-plan-data/delete/client/005_create-version-1.0.resttest</test>
+    <test name="Check client version activity">test-plan-data/delete/client/006_version-activity.resttest</test>
+    <test name="List client policies">test-plan-data/delete/client/007_list-client-policies.resttest</test>
+    <test name="Check delete do not affect plan policies">test-plan-data/delete/client/008_list-plan-policies.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test Plan Deletion">
+    <test name="Delete plan">test-plan-data/delete/plan/001_delete-plan.resttest</test>
+    <test name="Recreate plan">test-plan-data/delete/plan/002_recreate-plan.resttest</test>
+    <test name="Check plan activity">test-plan-data/delete/plan/003_activity.resttest</test>
+    <test name="Get missing plan version">test-plan-data/delete/plan/004_get-missing-version.resttest</test>
+    <test name="Create plan version 1.0">test-plan-data/delete/plan/005_create-version-1.0.resttest</test>
+    <test name="Check plan version activity">test-plan-data/delete/plan/006_version-activity.resttest</test>
+    <test name="List plan policies">test-plan-data/delete/plan/007_list-plan-policies.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test Organization Deletion">
+    <test name="Delete org">test-plan-data/delete/org/001_delete-org.resttest</test>
+    <test name="Recreate org">test-plan-data/delete/org/002_recreate-org.resttest</test>
+    <test name="Check org activity">test-plan-data/delete/org/003_activity.resttest</test>
+    <test name="Get org members">test-plan-data/delete/org/004_get-members.resttest</test>
+    <test name="Get missing API">test-plan-data/delete/org/005_get-missing-api.resttest</test>
+    <test name="Get missing client">test-plan-data/delete/org/006_get-missing-client.resttest</test>
+    <test name="Get missing plan">test-plan-data/delete/org/007_get-missing-plan.resttest</test>
+  </testGroup>
+</testPlan>
