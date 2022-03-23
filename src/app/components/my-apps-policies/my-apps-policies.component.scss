@@ -41,3 +41,22 @@ h3 {
   padding-left: 3rem;
   border-left: 2px solid var(--primary);
 }
+
+// everything smaller than full hd (1920px x 1080px)
+@media only screen and (max-width: 1919px) {
+  .summary {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(1, auto);
+    grid-gap: 1rem;
+  }
+
+  .summary:first-child {
+    padding-bottom: 3rem;
+    border-bottom: 2px solid var(--primary);
+  }
+
+  .policy-charts-grid {
+    border-left: 0;
+  }
+}
