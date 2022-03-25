@@ -1,0 +1,6 @@
+DELETE /organizations/Organization1/apis/API1/image admin/admin
+Content-Type: application/json
+
+----
+204
+

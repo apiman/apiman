@@ -90,6 +90,12 @@ _module.factory('DevPortalService', ['$http', 'Configuration', '$q',
                     data: bean
                 });
             },
+            deleteApiImage: (orgId: string, apiId: string): Promise<void> => {
+                return $http({
+                    method: 'DELETE',
+                    url: `${Configuration.api.endpoint}/organizations/${orgId}/apis/${apiId}/image`
+                });
+            },
             tagApi: (orgId: string, apiId: string, bean: KeyValueTagDto): Promise<any> => {
                 return $http({
                     method: 'PUT',

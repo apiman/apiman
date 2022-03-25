@@ -948,6 +948,22 @@ public class ApiService implements DataAccessUtilMixin {
         });
     }
 
+    public void deleteApiImage(String organizationId, String apiId)
+            throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
+
+        tryAction(() -> {
+            ApiBean apiForUpdate = getApiFromStorage(organizationId, apiId);
+            EntityUpdatedData auditData = new EntityUpdatedData();
+            if (apiForUpdate.getImage() != null){
+                blobStore.remove(apiForUpdate.getImage());
+                apiForUpdate.setImage(null);
+                auditData.addChange("image", apiForUpdate.getImage(), null);
+            }
+            storage.updateApi(apiForUpdate);
+            storage.createAuditEntry(AuditUtils.apiUpdated(apiForUpdate, auditData, securityContext));
+        });
+    }
+
     public List<PolicySummaryBean> listApiPolicies(String organizationId, String apiId, String version)
         throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
 

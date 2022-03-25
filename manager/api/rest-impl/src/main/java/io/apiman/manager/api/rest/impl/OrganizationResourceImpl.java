@@ -553,6 +553,12 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     }
 
     @Override
+    public void deleteApiImage(String organizationId, String apiId) throws ApiNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+        apiService.deleteApiImage(organizationId, apiId);
+    }
+
+    @Override
     public SearchResultsBean<AuditEntryBean> getApiActivity(String organizationId, String apiId, int page, int pageSize)
         throws ApiNotFoundException, NotAuthorizedException {
         securityContext.checkPermissions(PermissionType.apiView, organizationId);

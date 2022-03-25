@@ -115,6 +115,14 @@
                     <button class="btn btn-primary" ng-click="openImageCropper()" type="button" data-field="uploadButton">
                       <span class="fa fa-upload"></span> Upload image
                     </button>
+                    <button
+                      class="btn btn-primary"
+                      ng-click="deleteImage()"
+                      type="button"
+                      ng-show="data.latestImage"
+                    >
+                    <span class="fa fa-trash"></span> Delete image
+                    </button>
                   </div>
                 </div>
               </div>

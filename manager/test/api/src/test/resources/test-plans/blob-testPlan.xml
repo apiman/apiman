@@ -19,4 +19,9 @@
   <testGroup name="Blob export/import subsystem">
     <test name="Full export">test-plan-data/blob/export/000_export.resttest</test>
   </testGroup>
+
+  <testGroup name="Delete Blob Reference on API">
+    <test name="Delete blob from API">test-plan-data/blob/delete-reference/001_delete-api-image.resttest</test>
+    <test name="Verify blob reference is deleted">test-plan-data/blob/delete-reference/002_get-api-assert-image-deleted.resttest</test>
+  </testGroup>
 </testPlan>
