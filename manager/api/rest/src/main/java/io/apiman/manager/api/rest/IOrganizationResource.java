@@ -945,6 +945,24 @@ public interface IOrganizationResource {
             @PathParam("apiId") String apiId, UpdateApiBean bean)
             throws ApiNotFoundException, NotAuthorizedException;
 
+    /**
+     * Use this endpoint to delete an API Image
+     * @summary Delete API Image
+     * @param organizationId The Organization ID.
+     * @param apiId The API ID.
+     * @statuscode 204 If the API is updated successfully.
+     * @statuscode 404 If the API does not exist.
+     * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @RolesAllowed("apiuser")
+    @DELETE
+    @Path("{organizationId}/apis/{apiId}/image")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void deleteApiImage(@PathParam("organizationId") String organizationId,
+                          @PathParam("apiId") String apiId)
+            throws ApiNotFoundException, NotAuthorizedException;
+
     @RolesAllowed("apiuser")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)

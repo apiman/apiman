@@ -173,6 +173,7 @@ function devPortalBusinessLogic(
   $scope.updateFeaturedApi = invertFeaturedApi;
   $scope.openImageCropper = openImageCropperModal;
   $scope.getImageEndpoint = getImageEndpoint;
+  $scope.deleteImage = deleteApiImage;
   $scope.onDiscoverabilityChange = onDiscoverabilityChange;
   $scope.getDiscoverabilityDescription = getDiscoverabilityDescription;
 
@@ -396,6 +397,16 @@ function devPortalBusinessLogic(
     // We may get a null when a plan hasn't yet been attached, so show the default.
     return descriptions[discoverability|| 'ORG_MEMBERS'];
   }
+
+  function deleteApiImage(): void {
+    const api: ApiBean = $scope.data.apiVersion.api;
+    DevPortalService.deleteApiImage(api.organization.id, api.id).then(() => {
+      Logger.info('Deleted Blob reference: {0}', api.image);
+      $scope.data.latestImage = null;
+      $scope.data.apiVersion.api.image = null;
+      $scope.doSave();
+    });
+  }  
 }
 
 _module.controller("Apiman.DevPortalImageCropper",
