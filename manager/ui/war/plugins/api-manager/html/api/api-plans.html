@@ -32,7 +32,7 @@
             <div class="title"
                  apiman-i18n-key="public-api">Public API</div>
             <div>
-              <span apiman-i18n-key="public-api-help">Select this option if this API should be accessible directly, without an API contract. Typically this option is used instead of selecting plan(s).</span>
+              <span apiman-i18n-key="public-api-help">Select this option if this API should be accessible directly, without an API contract. Typically, this option is used instead of selecting plan(s).</span>
             </div>
             <div style="padding: 8px; margin-bottom: 10px">
               <input ng-model="updatedApi.publicAPI"
@@ -46,7 +46,14 @@
             <div class="title"
                  apiman-i18n-key="available-plans">Available Plans</div>
             <div>
-              <span apiman-i18n-key="available-plans-help">Choose which plans should be presented when client apps create a contract to this API. Only plans in a <strong>locked</strong> state show up in this list..</span>
+              <p apiman-i18n-key="available-plans-help">
+                Choose which plans should be presented when client apps create a contract to this API.
+                Only plans in a <strong>locked</strong> state appear in this list.
+              </p>
+              <p apiman-i18n-key="available-plans-help">
+                By default, APIs and plans you publish are only visible to users who are members of this organisation and have view permissions.
+                Changing the <strong>discoverability</strong> allows non-members to find and subscribe to an API without needing to be part of your organisation.
+              </p>
             </div>
             <div class="apiman-divider-40"
                  ng-show="plans.length == 0">
@@ -60,7 +67,7 @@
               <div class="container-fluid apiman-summaryrow"
                    ng-repeat="plan in plans">
                 <div class="row">
-                  <div class="col-sm-6"
+                  <div class="col-sm-4"
                        style="padding: 4px 0;">
                     <!-- Inclusion checkbox -->
                     <input ng-model="plan.checked"
@@ -71,16 +78,14 @@
                     <a href="{{ pluginName }}/orgs/{{ plan.organizationId }}/plans/{{ plan.id }}" data-field="name" title="{{ plan.description }}">{{ plan.name }}</a>
                   </span>
                   </div>
-                  <div class="col-sm-6" style="padding-right: 0;">
+                  <div class="col-sm-8" style="padding-right: 0;">
                     <div class="pull-right">
                       <!-- Discoverability selector -->
-                      <button class="mx-2 btn btn-default dropdown-toggle" ng-click="setDiscoverability(plan)">
-                        <!-- Eye -->
-                        <span class="fa fa-fw fa-eye icon" style="font-size: large"></span>
-                        <!-- Text -->
-                        Discoverability: {{ getShortDescription(plan.discoverability) }}
-                        <span class="caret"></span>
-                      </button>
+                      <apiman-discoverability-select
+                          on-discoverability-change="setDiscoverability"
+                          initial-value="plan.discoverability"
+                          plan="plan">
+                      </apiman-discoverability-select>
                       <!-- Version selector -->
                       <ui-select ng-model="plan.selectedVersion"
                                  on-select="changedVersion($item)"

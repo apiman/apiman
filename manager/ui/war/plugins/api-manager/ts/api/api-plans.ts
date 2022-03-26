@@ -14,8 +14,7 @@ _module.controller('Apiman.ApiPlansController',
             $scope.updatedApi = new Object();
             $scope.showMetrics = Configuration.ui.metrics;
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
-            $scope.setDiscoverability = setDiscoverability;
-            $scope.getShortDescription = getShortDescription;
+            //$scope.setDiscoverability = setDiscoverability;
 
             let lockedPlans = [];
 
@@ -125,40 +124,11 @@ _module.controller('Apiman.ApiPlansController',
                 //console.log('changedVersion: ' + JSON.stringify(item));
             };
 
-            function setDiscoverability(selected: ApiPlanBean): void {
-                console.log("selected")
-                console.dir(selected);
-
-                const modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: "plugins/api-manager/html/modals/selectDiscoverabilityModal.html",
-                    controller: 'DiscoverabilityCtrl',
-                    size: "md",
-                    resolve: {
-                        options: function() {
-                            return {
-                                discoverability: selected.discoverability
-                            }
-                        }
-                    }
-                });
-
-                modalInstance.result.then(
-                    (newLevel: Discoverability) => {
-                        selected.discoverability = newLevel;
-                    },
-                    (dismissed) => {}
-                );
-            }
-
-            function getShortDescription(discoverability: Discoverability): string {
-                let shortNames: { [key: string]: string } = {
-                    [Discoverability.ORG_MEMBERS]: "Organization members only",
-                    [Discoverability.FULL_PLATFORM_MEMBERS]: "Full platform members",
-                    [Discoverability.ANONYMOUS]: "Anonymous API users",
-                    [Discoverability.PORTAL]: "Expose in portal",
-                };
-                return shortNames[discoverability];
+            $scope.setDiscoverability = function(change): void {
+                console.log("Hello");
+                console.dir(change);
+                change.plan.discoverability = change.level;
+                //$rootScope.isDirty = true;
             }
 
             $scope.reset = function() {
