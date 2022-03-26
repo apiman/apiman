@@ -23,7 +23,7 @@ export interface ApiPlanSummaryBean {
   planName: string;
   planDescription: string;
   version: string;
-  exposeInPortal: boolean;
+  discoverability: Discoverability;
   requiresApproval: boolean;
 }
 
@@ -34,8 +34,32 @@ export interface ApiGatewayBean {
 export interface ApiPlanBean {
   planId: string;
   version: string;
-  exposeInPortal: boolean;
+  discoverability: Discoverability;
   requiresApproval: boolean
+}
+
+export enum Discoverability {
+  /**
+   * Entity is exposed in the developer portal
+   */
+  PORTAL = "PORTAL",
+
+  /**
+   * Anonymous access is allowed
+   */
+  ANONYMOUS = "ANONYMOUS",
+
+  /**
+   * Only users registered & logged in with the IDM solution that are full members of the platform.
+   *
+   * The precise meaning of this is defined by the user's setup (e.g: IDM role mappings, visibility config, etc.)
+   */
+  FULL_PLATFORM_MEMBERS = "FULL_PLATFORM_MEMBERS",
+
+  /**
+   * Only users with explicit org view permissions.
+   */
+  ORG_MEMBERS = "ORG_MEMBERS"
 }
 
 export interface KeyValueTagDto {
@@ -54,7 +78,7 @@ export interface UpdateApiVersionBean {
   disableKeysStrip: boolean;
   plans: ApiPlanBean[];
   extendedDescription: string;
-  exposeInPortal: boolean
+  discoverability: Discoverability;
 }
 
 export interface ApiVersionBean {
@@ -80,6 +104,6 @@ export interface ApiVersionBean {
   parsePayload: boolean;
   disableKeysStrip: boolean;
   definitionUrl: string;
-  exposeInPortal: boolean;
+  discoverability: Discoverability;
   extendedDescription: string
 }

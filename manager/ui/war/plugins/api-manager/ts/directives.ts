@@ -633,3 +633,18 @@ _module.directive('httpMethodCachingSelect',
         };
     }]);
 
+_module.directive('discoverabilitySelect',
+    ['Logger', function(Logger) {
+        return {
+            templateUrl: 'plugins/api-manager/html/directives/discoverabilitySelect.html',
+            replace: true,
+            restrict: 'E',
+            link: function(scope, elem, attrs) {
+                // init model
+                scope.resetVerbsSelector = function(){
+                    scope.verb = '*';
+                }
+                scope.resetVerbsSelector();
+            }
+        };
+    }]);

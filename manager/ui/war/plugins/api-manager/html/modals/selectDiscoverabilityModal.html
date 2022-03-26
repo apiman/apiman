@@ -1,0 +1,50 @@
+<!-- Modal: Select discoverability level -->
+<div id="discoverability-modal-container">
+    <div class="modal-header">
+      <button class="close"
+              type="button"
+              ng-click="cancel()">
+        <span class="pficon pficon-close"></span>
+      </button>
+      <h3 class="modal-title">API Version discoverability level</h3>
+    </div>
+    <form ng-submit="ok()">
+      <div class="modal-body">
+        <p>By default, users who are not members of your organization can not find any of your APIs.</p>
+
+        <p>By changing the <strong>discoverability</strong> of this plan, you can selectively allow non-members to find and
+          subscribe to your plans.</p>
+
+
+          <div>
+            <label aria-label="Discoverability level">
+              <select class="form-control form-control-lg" id="level-select" ng-model="selectedDiscoverability">
+                <option value="ORG_MEMBERS">Organization members only (default)</option>
+                <option value="FULL_PLATFORM_MEMBERS">Full platform members</option>
+                <option value="PORTAL">Expose in the developer portal</option>
+              </select>
+            </label>
+          </div>
+
+
+          <h4>By applying this change, your API would be visible to:</h4>
+          <ul>
+            <li ng-show="isVisible('ORG_MEMBERS')">Members with explicit view permissions in this organization.</li>
+            <li ng-show="isVisible('FULL_PLATFORM_MEMBERS')">Any user with an active Apiman account, including users in other organizations.</li>
+            <li ng-show="isVisible('PORTAL')">Developer portal users, including those browsing anonymously.
+              <ul>
+                <li>Further configuration for the developer portal can be found in the <strong>Developer Portal</strong> tab.</li>
+              </ul>
+            </li>
+          </ul>
+          <div class="alert bg-warning my-3" ng-show="isVisibleInt() > 1">
+            <i class="fa fa-warning"></i> This API will be visible to users outside your organization.
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default"
+                ng-click="cancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Select</button>
+      </div>
+    </form>
+</div>

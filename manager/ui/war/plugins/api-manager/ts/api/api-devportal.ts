@@ -167,6 +167,7 @@ function devPortalBusinessLogic(
   $scope.updateFeaturedApi = invertFeaturedApi;
   $scope.openImageCropper = openImageCropperModal;
   $scope.getImageEndpoint = getImageEndpoint;
+  $scope.getOriginalDiscovValue = getOriginalDiscovValue;
 
   // TUI Markdown editor. Will initialise
   let markdownEditor: Editor = null;
@@ -277,7 +278,7 @@ function devPortalBusinessLogic(
     const markdown: string = markdownEditor.getMarkdown();
     const updateApiVersionBean = {
       extendedDescription: markdown,
-      exposeInPortal: $scope.data.apiVersion.exposeInPortal,
+      discoverability: $scope.data.apiVersion.discoverability,
       plans: $scope.data.apiVersion.plans,
     } as UpdateApiVersionBean;
 
@@ -379,6 +380,10 @@ function devPortalBusinessLogic(
     } else {
       return str;
     }
+  }
+
+  function getOriginalDiscovValue(idx: number) {
+    return dataClone.apiVersion.plans[idx].discoverability;
   }
 }
 

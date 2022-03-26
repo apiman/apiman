@@ -1,19 +1,23 @@
 import {_module} from "../apimanPlugin";
 import _ = require("lodash");
 import angular = require("angular");
+import {ApiPlanBean, ApiVersionBean, Discoverability} from "../model/api.model";
 
 _module.controller('Apiman.ApiPlansController',
-    ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Configuration',
-        function ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Configuration) {
+    ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Configuration', '$uibModal',
+        function ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Configuration, $uibModal) {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
             $scope.tab = 'plans';
-            $scope.version = params.version;
+            $scope.version = params.version as ApiVersionBean;
             $scope.updatedApi = new Object();
             $scope.showMetrics = Configuration.ui.metrics;
+            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
+            $scope.setDiscoverability = setDiscoverability;
+            $scope.getShortDescription = getShortDescription;
 
-            var lockedPlans = [];
+            let lockedPlans = [];
 
             var getSelectedPlans = function() {
                 var selectedPlans = [];
@@ -26,6 +30,7 @@ _module.controller('Apiman.ApiPlansController',
 
                         selectedPlan.planId = plan.id;
                         selectedPlan.version = plan.selectedVersion;
+                        selectedPlan.discoverability = plan.discoverability;
                         selectedPlans.push(selectedPlan);
                     }
                 }
@@ -33,9 +38,8 @@ _module.controller('Apiman.ApiPlansController',
                 return selectedPlans;
             };
 
-            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
-
-            var pageData = ApiEntityLoader.getCommonData($scope, $location);
+            // version = ApiVersion and versions = ApiSummaryBean?
+            let pageData = ApiEntityLoader.getCommonData($scope, $location);
 
             if (params.version != null) {
                 pageData = angular.extend(pageData, {
@@ -47,7 +51,7 @@ _module.controller('Apiman.ApiPlansController',
                             angular.forEach(plans, function(plan) {
                                 promises.push($q(function(resolve, reject) {
                                     OrgSvcs.query({ organizationId: params.org, entityType: 'plans', entityId: plan.id, versionsOrActivity: 'versions' }, function(planVersions) {
-                                        //for each plan find the versions that are locked
+                                        // For each plan find the versions that are locked, as these are the ones that are available for being attached to an ApiVersion
                                         var lockedVersions = [];
 
                                         for (var j = 0; j < planVersions.length; j++) {
@@ -104,7 +108,9 @@ _module.controller('Apiman.ApiPlansController',
                         var p1 = newValue.plans[i];
                         var p2 = $scope.version.plans[i];
 
-                        if (p1.planId != p2.planId || p1.version != p2.version) {
+                        if (p1.planId != p2.planId ||
+                            p1.version != p2.version ||
+                            p1.discoverability != p2.discoverability) {
                             $rootScope.isDirty = true;
                         }
                     }
@@ -119,6 +125,42 @@ _module.controller('Apiman.ApiPlansController',
                 //console.log('changedVersion: ' + JSON.stringify(item));
             };
 
+            function setDiscoverability(selected: ApiPlanBean): void {
+                console.log("selected")
+                console.dir(selected);
+
+                const modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: "plugins/api-manager/html/modals/selectDiscoverabilityModal.html",
+                    controller: 'DiscoverabilityCtrl',
+                    size: "md",
+                    resolve: {
+                        options: function() {
+                            return {
+                                discoverability: selected.discoverability
+                            }
+                        }
+                    }
+                });
+
+                modalInstance.result.then(
+                    (newLevel: Discoverability) => {
+                        selected.discoverability = newLevel;
+                    },
+                    (dismissed) => {}
+                );
+            }
+
+            function getShortDescription(discoverability: Discoverability): string {
+                let shortNames: { [key: string]: string } = {
+                    [Discoverability.ORG_MEMBERS]: "Organization members only",
+                    [Discoverability.FULL_PLATFORM_MEMBERS]: "Full platform members",
+                    [Discoverability.ANONYMOUS]: "Anonymous API users",
+                    [Discoverability.PORTAL]: "Expose in portal",
+                };
+                return shortNames[discoverability];
+            }
+
             $scope.reset = function() {
                 $scope.updatedApi.publicAPI = $scope.version.publicAPI;
 
@@ -129,6 +171,7 @@ _module.controller('Apiman.ApiPlansController',
                         if (lockedPlans[i].id == $scope.version.plans[j].planId) {
                             lockedPlans[i].checked = true;
                             lockedPlans[i].selectedVersion = $scope.version.plans[j].version;
+                            lockedPlans[i].discoverability = $scope.version.plans[j].discoverability;
                             break;
                         }
                     }
