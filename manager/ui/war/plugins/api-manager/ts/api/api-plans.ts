@@ -125,10 +125,7 @@ _module.controller('Apiman.ApiPlansController',
             };
 
             $scope.setDiscoverability = function(change): void {
-                console.log("Hello");
-                console.dir(change);
                 change.plan.discoverability = change.level;
-                //$rootScope.isDirty = true;
             }
 
             $scope.reset = function() {
