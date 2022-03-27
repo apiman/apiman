@@ -1,7 +1,7 @@
 import {_module} from "../apimanPlugin";
+import {ApiVersionBean} from "../model/api.model";
 import _ = require("lodash");
 import angular = require("angular");
-import {ApiPlanBean, ApiVersionBean, Discoverability} from "../model/api.model";
 
 _module.controller('Apiman.ApiPlansController',
     ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Configuration', '$uibModal',
@@ -14,7 +14,6 @@ _module.controller('Apiman.ApiPlansController',
             $scope.updatedApi = new Object();
             $scope.showMetrics = Configuration.ui.metrics;
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
-            //$scope.setDiscoverability = setDiscoverability;
 
             let lockedPlans = [];
 
@@ -30,6 +29,7 @@ _module.controller('Apiman.ApiPlansController',
                         selectedPlan.planId = plan.id;
                         selectedPlan.version = plan.selectedVersion;
                         selectedPlan.discoverability = plan.discoverability;
+                        selectedPlan.requiresApproval = plan.requiresApproval;
                         selectedPlans.push(selectedPlan);
                     }
                 }
@@ -109,7 +109,8 @@ _module.controller('Apiman.ApiPlansController',
 
                         if (p1.planId != p2.planId ||
                             p1.version != p2.version ||
-                            p1.discoverability != p2.discoverability) {
+                            p1.discoverability != p2.discoverability||
+                            p1.requiresApproval != p2.requiresApproval) {
                             $rootScope.isDirty = true;
                         }
                     }
@@ -139,6 +140,7 @@ _module.controller('Apiman.ApiPlansController',
                             lockedPlans[i].checked = true;
                             lockedPlans[i].selectedVersion = $scope.version.plans[j].version;
                             lockedPlans[i].discoverability = $scope.version.plans[j].discoverability;
+                            lockedPlans[i].requiresApproval = $scope.version.plans[j].requiresApproval;
                             break;
                         }
                     }
