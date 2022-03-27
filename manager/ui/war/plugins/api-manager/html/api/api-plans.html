@@ -79,6 +79,7 @@
                 <label>
                   <input ng-model="plan.checked"
                          data-field="checkbox"
+                         data-cy="apiman-plan-enabled-checkbox-{{ plan.id }}"
                          type="checkbox"
                          ng-disabled="isEntityDisabled()">
                 </label>
@@ -89,9 +90,9 @@
               <td>
                 <ui-select ng-model="plan.selectedVersion"
                            on-select="changedVersion($item)"
+                           data-cy="apiman-plan-version-selector-{{ plan.id }}"
                            ng-disabled="isEntityDisabled()"
-                           class="inline-block"
-                           style="">
+                           class="inline-block">
                   <ui-select-match>
                     Version: <span ng-bind="$select.selected"></span>
                   </ui-select-match>
@@ -102,7 +103,8 @@
               </td>
               <td>
                 <label>
-                  <input ng-model="plan.requiresApproval"
+                  <input data-cy="apiman-plan-requires-approval-checkbox-{{ plan.id }}"
+                         ng-model="plan.requiresApproval"
                          data-field="checkbox"
                          type="checkbox"
                          ng-disabled="isEntityDisabled()">
@@ -112,6 +114,7 @@
               </td>
               <td>
                 <apiman-discoverability-select
+                    data-cy="plan-discoverability-selector-{{ plan.id }}"
                     on-discoverability-change="setDiscoverability"
                     initial-value="plan.discoverability"
                     plan="plan">
@@ -129,6 +132,7 @@
                     ng-click="saveApi()"
                     class="btn btn-primary"
                     data-field="saveButton"
+                    data-cy="save"
                     apiman-i18n-key="save"
                     placeholder="Saving..."
                     data-icon="fa-cog">Save</button>
@@ -136,6 +140,7 @@
                     class="btn btn-default"
                     ng-click="reset()"
                     data-field="cancelButton"
+                    data-cy="cancel"
                     apiman-i18n-key="cancel">Cancel</button>
           </div>
 
