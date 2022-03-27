@@ -1974,7 +1974,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2021-10-20T15:22:27Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"second:1.0\",\"after\":\"second:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"second:1.0\",\"after\":\"second:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1085,
       "who" : "admin",
@@ -2112,7 +2112,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2021-10-20T15:24:25Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"minute:1.0\",\"after\":\"minute:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"minute:1.0\",\"after\":\"minute:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1100,
       "who" : "admin",
@@ -2250,7 +2250,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2021-10-20T15:57:30Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"hour:1.0\",\"after\":\"hour:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"hour:1.0\",\"after\":\"hour:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1115,
       "who" : "admin",
@@ -2388,7 +2388,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2021-10-20T16:03:03Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"day:1.0\",\"after\":\"day:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"day:1.0\",\"after\":\"day:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1130,
       "who" : "admin",
@@ -2526,7 +2526,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2021-10-20T16:07:59Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"month:1.0\",\"after\":\"month:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"month:1.0\",\"after\":\"month:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1145,
       "who" : "admin",
@@ -2664,7 +2664,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2021-10-21T07:31:47Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"year:1.0\",\"after\":\"year:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"year:1.0\",\"after\":\"year:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1160,
       "who" : "admin",
@@ -2802,7 +2802,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2021-10-21T08:25:53Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"kb:1.0\",\"after\":\"kb:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"kb:1.0\",\"after\":\"kb:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1175,
       "who" : "admin",
@@ -2940,7 +2940,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2021-10-21T08:41:54Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"mb:1.0\",\"after\":\"mb:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"mb:1.0\",\"after\":\"mb:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1190,
       "who" : "admin",
@@ -3078,7 +3078,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2021-10-25T08:27:26Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"#Heading\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"#Heading\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1216,
       "who" : "admin",
