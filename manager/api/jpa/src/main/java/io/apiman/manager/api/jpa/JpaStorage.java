@@ -810,12 +810,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                         .where("api.organization.id").in(permissionConstraint.getPermittedOrgs())
                         // Discoverability check (implicit permissions)
                         .whereSubquery()
-                            .from(DiscoverabilityEntity.class, "d")
-                            .select("innerApi")
-                            .leftJoinOn(ApiBean.class, "innerApi").onExpression("d.id LIKE CONCAT(innerApi.organization.id, ':', innerApi.id, ':', '%')").end()
-                            .where("d.discoverability").in(permissionConstraint.getAllowedDiscoverabilities())
-                            .setMaxResults(1)
-                        .end().eq("api")
+                            .from(ApiBean.class, "innerApi")
+                                .select("innerApi.id")
+                                .leftJoinOn(DiscoverabilityEntity.class, "d")
+                                    .onExpression("d.orgId = innerApi.organization.id")
+                                    .onExpression("d.apiId = innerApi.id")
+                                .end()
+                                .where("d.discoverability").in(permissionConstraint.getAllowedDiscoverabilities())
+                                .setMaxResults(1)
+                            .end()
+                        .eqExpression("api.id")
                     .endOr();
         }
 

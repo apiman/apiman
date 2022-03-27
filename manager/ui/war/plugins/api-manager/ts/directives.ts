@@ -687,7 +687,8 @@ _module.directive('apimanDiscoverabilitySelect',
                         [Discoverability.ANONYMOUS]: "Anonymous API users",
                         [Discoverability.PORTAL]: "Expose in portal",
                     };
-                    return shortNames[$scope.ctrl.currentValue || $scope.ctrl.initialValue];
+                    // We may get a null when a plan hasn't yet been attached, so show the default.
+                    return shortNames[$scope.ctrl.currentValue || $scope.ctrl.initialValue || 'ORG_MEMBERS'];
                 }
             }]
         };
