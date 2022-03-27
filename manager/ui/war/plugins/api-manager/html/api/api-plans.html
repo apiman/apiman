@@ -92,7 +92,7 @@
                                  class="inline-block"
                                  style="">
                         <ui-select-match>
-                          <span ng-bind="$select.selected"></span>
+                          Version: <span ng-bind="$select.selected"></span>
                         </ui-select-match>
                         <ui-select-choices repeat="version in (plan.lockedVersions | filter: $select.search)">
                           <span ng-bind="version"></span>

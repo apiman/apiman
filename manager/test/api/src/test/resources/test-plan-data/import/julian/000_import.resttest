@@ -846,7 +846,7 @@ Content-Type: application/json
           "plans" : [ {
             "planId" : "day",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability" : "PORTAL",
             "requiresApproval" : false
           } ],
           "version" : "1.0",
@@ -858,7 +858,7 @@ Content-Type: application/json
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : true,
+          "discoverability" : "PORTAL",
           "extendedDescription" : ""
         },
         "Policies" : [ ]
@@ -891,7 +891,7 @@ Content-Type: application/json
           "plans" : [ {
             "planId" : "endpoint",
             "version" : "1.0",
-            "exposeInPortal" : false,
+            "discoverability" : "ORG_MEMBERS",
             "requiresApproval" : false
           } ],
           "version" : "1.0",
@@ -903,7 +903,7 @@ Content-Type: application/json
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : true,
+          "discoverability" : "PORTAL",
           "extendedDescription" : "#Heading"
         },
         "Policies" : [ ]
@@ -935,7 +935,7 @@ Content-Type: application/json
           "plans" : [ {
             "planId" : "hour",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability" : "PORTAL",
             "requiresApproval" : false
           } ],
           "version" : "1.0",
@@ -947,7 +947,7 @@ Content-Type: application/json
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : true,
+          "discoverability" : "PORTAL",
           "extendedDescription" : ""
         },
         "Policies" : [ ]
@@ -979,7 +979,7 @@ Content-Type: application/json
           "plans" : [ {
             "planId" : "kb",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability" : "PORTAL",
             "requiresApproval" : false
           } ],
           "version" : "1.0",
@@ -991,7 +991,7 @@ Content-Type: application/json
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : true,
+          "discoverability" : "PORTAL",
           "extendedDescription" : ""
         },
         "Policies" : [ ]
@@ -1023,7 +1023,7 @@ Content-Type: application/json
           "plans" : [ {
             "planId" : "mb",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability" : "PORTAL",
             "requiresApproval" : false
           } ],
           "version" : "1.0",
@@ -1035,7 +1035,7 @@ Content-Type: application/json
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : true,
+          "discoverability" : "PORTAL",
           "extendedDescription" : ""
         },
         "Policies" : [ ]
@@ -1067,7 +1067,7 @@ Content-Type: application/json
           "plans" : [ {
             "planId" : "minute",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability" : "PORTAL",
             "requiresApproval" : false
           } ],
           "version" : "1.0",
@@ -1079,7 +1079,7 @@ Content-Type: application/json
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : true,
+          "discoverability" : "PORTAL",
           "extendedDescription" : ""
         },
         "Policies" : [ ]
@@ -1111,7 +1111,7 @@ Content-Type: application/json
           "plans" : [ {
             "planId" : "month",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability" : "PORTAL",
             "requiresApproval" : false
           } ],
           "version" : "1.0",
@@ -1123,7 +1123,7 @@ Content-Type: application/json
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : true,
+          "discoverability" : "PORTAL",
           "extendedDescription" : ""
         },
         "Policies" : [ ]
@@ -1152,7 +1152,7 @@ Content-Type: application/json
           "plans" : [ {
             "planId" : "second",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability" : "PORTAL",
             "requiresApproval" : false
           } ],
           "version" : "1.0",
@@ -1164,7 +1164,7 @@ Content-Type: application/json
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : true,
+          "discoverability" : "PORTAL",
           "extendedDescription" : ""
         },
         "Policies" : [ ]
@@ -1193,7 +1193,7 @@ Content-Type: application/json
           "plans" : [ {
             "planId" : "year",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability" : "PORTAL",
             "requiresApproval" : false
           } ],
           "version" : "1.0",
@@ -1205,7 +1205,7 @@ Content-Type: application/json
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : true,
+          "discoverability" : "PORTAL",
           "extendedDescription" : ""
         },
         "Policies" : [ ]
@@ -1246,7 +1246,7 @@ Content-Type: application/json
             "version" : "1.0",
             "parsePayload" : false,
             "disableKeysStrip" : false,
-            "exposeInPortal" : false
+            "discoverability" : "ORG_MEMBERS"
           },
           "plan" : {
             "plan" : {
@@ -1297,7 +1297,7 @@ Content-Type: application/json
             "version" : "1.0",
             "parsePayload" : false,
             "disableKeysStrip" : false,
-            "exposeInPortal" : false
+            "discoverability" : "ORG_MEMBERS"
           },
           "plan" : {
             "plan" : {
@@ -1348,7 +1348,7 @@ Content-Type: application/json
             "version" : "1.0",
             "parsePayload" : false,
             "disableKeysStrip" : false,
-            "exposeInPortal" : false
+            "discoverability" : "ORG_MEMBERS"
           },
           "plan" : {
             "plan" : {
@@ -1399,7 +1399,7 @@ Content-Type: application/json
             "version" : "1.0",
             "parsePayload" : false,
             "disableKeysStrip" : false,
-            "exposeInPortal" : false
+            "discoverability" : "ORG_MEMBERS"
           },
           "plan" : {
             "plan" : {
@@ -1450,7 +1450,7 @@ Content-Type: application/json
             "version" : "1.0",
             "parsePayload" : false,
             "disableKeysStrip" : false,
-            "exposeInPortal" : false
+            "discoverability" : "ORG_MEMBERS"
           },
           "plan" : {
             "plan" : {
@@ -1501,7 +1501,7 @@ Content-Type: application/json
             "version" : "1.0",
             "parsePayload" : false,
             "disableKeysStrip" : false,
-            "exposeInPortal" : false
+            "discoverability" : "ORG_MEMBERS"
           },
           "plan" : {
             "plan" : {
@@ -1552,7 +1552,7 @@ Content-Type: application/json
             "version" : "1.0",
             "parsePayload" : false,
             "disableKeysStrip" : false,
-            "exposeInPortal" : false
+            "discoverability" : "ORG_MEMBERS"
           },
           "plan" : {
             "plan" : {
@@ -1603,7 +1603,7 @@ Content-Type: application/json
             "version" : "1.0",
             "parsePayload" : false,
             "disableKeysStrip" : false,
-            "exposeInPortal" : false
+            "discoverability" : "ORG_MEMBERS"
           },
           "plan" : {
             "plan" : {
@@ -1654,7 +1654,7 @@ Content-Type: application/json
             "version" : "1.0",
             "parsePayload" : false,
             "disableKeysStrip" : false,
-            "exposeInPortal" : false
+            "discoverability" : "ORG_MEMBERS"
           },
           "plan" : {
             "plan" : {
