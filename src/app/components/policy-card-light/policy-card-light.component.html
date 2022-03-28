@@ -24,32 +24,39 @@
     }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <div class="limit-flex">
-      <ng-container *ngIf="!policy.probe; else probe">
-        <div id="spinner" style="display: flex; justify-content: center">
-          <mat-spinner strokeWidth="3" diameter="40"></mat-spinner>
+    <ng-container *ngIf="!policy.probeRequestFinished; else probe">
+      <div id="spinner">
+        <mat-spinner strokeWidth="3" diameter="40"></mat-spinner>
+      </div>
+    </ng-container>
+
+    <ng-template #probe>
+      <ng-container *ngIf="policy.probe; else probeError">
+        <div id="short-summary">
+          <div>
+            <app-rate-quota-policy-short-limit
+              [policy]="policy"></app-rate-quota-policy-short-limit>
+            <p id="probe">
+              <b>{{ policy.mainGaugeData?.currentVal }}</b> /
+              {{ policy.restrictions?.limit }}
+            </p>
+          </div>
+          <div id="info-button-box">
+            <button
+              (click)="setSectionToPolicies()"
+              mat-icon-button
+              color="primary"
+              class="mt-10">
+              <mat-icon>info</mat-icon>
+            </button>
+          </div>
         </div>
       </ng-container>
-
-      <ng-template #probe>
-        <div>
-          <app-rate-quota-policy-short-limit
-            [policy]="policy"></app-rate-quota-policy-short-limit>
-          <p id="probe">
-            <b>{{ policy.mainGaugeData?.currentVal }}</b> /
-            {{ policy.restrictions?.limit }}
-          </p>
-        </div>
-        <div class="second">
-          <button
-            (click)="setSectionToPolicies()"
-            mat-icon-button
-            color="primary"
-            class="mt-10">
-            <mat-icon>info</mat-icon>
-          </button>
-        </div>
+      <ng-template #probeError>
+        <app-no-data
+          [textClass]="'text-big1 dp-center'"
+          [text]="'CLIENTS.NO_PROBES' | translate"></app-no-data>
       </ng-template>
-    </div>
+    </ng-template>
   </mat-card-content>
 </mat-card>

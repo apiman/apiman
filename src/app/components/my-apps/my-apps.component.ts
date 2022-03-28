@@ -34,7 +34,14 @@ import {
 } from '../../interfaces/ICommunication';
 import { IContractExt } from '../../interfaces/IContractExt';
 import { PolicyService } from '../../services/policy/policy.service';
-import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  map,
+  retry,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
 import { flatArray } from '../../shared/utility';
 import { SpinnerService } from '../../services/spinner/spinner.service';
@@ -230,14 +237,20 @@ export class MyAppsComponent implements OnInit {
         this.policyService
           .getPolicyProbe(contract, policy)
           .pipe(
+            retry(2),
             catchError((err) => {
               console.warn(err);
               return EMPTY;
             })
           )
-          .subscribe((probes: IPolicyProbe[]) => {
-            policy.probe = probes[0];
-            this.policyService.setGaugeDataForPolicy(policy);
+          .subscribe({
+            next: (probes: IPolicyProbe[]) => {
+              policy.probe = probes[0];
+              this.policyService.setGaugeDataForPolicy(policy);
+            },
+            complete: () => {
+              policy.probeRequestFinished = true;
+            }
           });
       });
     });

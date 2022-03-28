@@ -14,15 +14,11 @@
  *  imitations under the License.
  */
 
-.limit-flex {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-
-  .second {
-    top: 12px;
-    position: relative;
-  }
+mat-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .mat-card-avatar {
@@ -30,7 +26,18 @@
   width: 28px;
 }
 
-mat-card {
+app-no-data,
+#spinner {
+  display: grid;
+  place-items: center;
   height: 100%;
-  box-sizing: border-box;
+}
+
+#short-summary {
+  display: grid;
+}
+
+#info-button-box {
+  display: grid;
+  justify-content: end;
 }

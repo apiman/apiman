@@ -31,6 +31,7 @@ export interface IPolicyExt extends IPolicy {
   mainGaugeData: IGaugeChartData;
   timeGaugeData: IGaugeChartData;
   probe: IPolicyProbe;
+  probeRequestFinished: boolean;
 }
 
 export interface IPolicyHeaders {
