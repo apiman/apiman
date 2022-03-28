@@ -39,7 +39,7 @@ import org.hibernate.annotations.Immutable;
  * Public Api Version level. This ensures that users can expose only the things they want, and with the narrowest possible scope.
  * Other entities in the organization which are attached to the exposed API Version inherit these permissions, such as any attached plans, plan versions, etc.
  * This ensures that the Apiman Manager API continues to function as before.</p>
-
+ *
  * <p>This entity represents a read-only materialized view of the various entities in Apiman which can have <code>discoverability</code> levels associated with them.
  * Triggers in the RDBMS synchronise the data into the <code>discoverability</code> table automatically.</p>
  *
@@ -48,16 +48,17 @@ import org.hibernate.annotations.Immutable;
  *
  * <p>For various local needs, this view can be downloaded and indexing to provide fast and convenient filtering.
  * See <code>IndexedDiscoverabilities</code> in <code>apiman-manager-api-security</code>.
- * GitHub's public repositories are a useful analogy for this approach; you can selectively make repos read-only visible within your organization public without needing
- * to add those users explicitly to your organization.
- * </p>
+ * GitHub's public repositories are a useful analogy for this approach; you can selectively make repos within your organization (read-only) public without needing
+ * to add users explicitly to your organization.</p>
  *
  * <p><strong>You should not write this entity to the database from the application; it is managed by the RDBMS by trigger functions
  * (or materialized view, as appropriate).</strong></p>
  *
- * <p>If <code>discoverability</code> is null, it is implicitly {@link DiscoverabilityLevel#ORG_MEMBERS}.</p>
+ * <p>If no <code>discoverability</code> entity for a particular entity exists, it is implicitly {@link DiscoverabilityLevel#ORG_MEMBERS}, which means it should
+ * use the explicit permissions subsystem only.</p>
  *
  * <h2>Key structure</h2>
+ *
  * <ul>
  *     <li>Api Plan (Api Version + Plan Version): orgId:apiId:apiVersion:planId:planVersion</li>
  *     <li>Public Api Version: orgId:apiId:apiVersion</li>
@@ -141,6 +142,18 @@ public class DiscoverabilityEntity implements Serializable {
     public DiscoverabilityEntity() {
     }
 
+    /**
+     * <h3>Key structure</h3>
+     *
+     * <ul>
+     *     <li>Api Plan (Api Version + Plan Version): orgId:apiId:apiVersion:planId:planVersion</li>
+     *     <li>Public Api Version: orgId:apiId:apiVersion</li>
+     * </ul>
+     *
+     * ID built from unique elements.
+     *
+     * @return get the ID
+     */
     public String getId() {
         return id;
     }
@@ -150,6 +163,9 @@ public class DiscoverabilityEntity implements Serializable {
         return this;
     }
 
+    /**
+     * @return API organization ID
+     */
     public String getOrgId() {
         return orgId;
     }
@@ -159,6 +175,9 @@ public class DiscoverabilityEntity implements Serializable {
         return this;
     }
 
+    /**
+     * @return API ID
+     */
     public String getApiId() {
         return apiId;
     }
@@ -168,6 +187,9 @@ public class DiscoverabilityEntity implements Serializable {
         return this;
     }
 
+    /**
+     * @return API Version
+     */
     public String getApiVersion() {
         return apiVersion;
     }
@@ -177,6 +199,9 @@ public class DiscoverabilityEntity implements Serializable {
         return this;
     }
 
+    /**
+     * @return the API Plan ID
+     */
     @Nullable
     public String getPlanId() {
         return planId;
@@ -187,6 +212,9 @@ public class DiscoverabilityEntity implements Serializable {
         return this;
     }
 
+    /**
+     * @return the API Plan Version
+     */
     @Nullable
     public String getPlanVersion() {
         return planVersion;
@@ -197,6 +225,11 @@ public class DiscoverabilityEntity implements Serializable {
         return this;
     }
 
+    /**
+     * Get the discoverability level. This is {@link DiscoverabilityLevel#ORG_MEMBERS} by default.
+     *
+     * @return the discoverability
+     */
     public DiscoverabilityLevel getDiscoverability() {
         return discoverability;
     }
