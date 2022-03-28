@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
+ * Combination of Organization plus API Plan metadata, useful for indexing purposes.
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class OrgApiPlanView {
