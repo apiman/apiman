@@ -66,7 +66,7 @@
     "USED": "used",
     "RESETS_AT": "Resets at",
     "RESETS_EVERY_SECOND": "Resets every second",
-    "NO_POLICIES_FOR_API": "No policies found for this API",
+    "NO_POLICIES_FOR_API": "No user relevant policies configured for this API",
     "CLIENTS_AND_APIS": "Clients and APIs",
     "NO_CLIENTS_FOUND": "No clients were found",
     "FAILED_WHILE_FETCHING_CLIENTS": "Failed while fetching clients",
