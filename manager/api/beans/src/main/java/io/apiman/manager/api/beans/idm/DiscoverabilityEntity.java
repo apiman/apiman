@@ -13,8 +13,50 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Immutable;
+
 /**
+ * <h1>Discoverability</h1>
  *
+ * <h2>Introduction &amp; Background</h2>
+ *
+ * <p><strong>Discoverability</strong> is an implicit permissions system that allows API Plans and public APIs to be selectively exposed outside an organization.</p>
+ *
+ * <p>By default, Apiman uses an explicit permissions system that is a combination of RBAC and ABAC to determine whether a given user can view an API.
+ * This requires a user to be added to an organization and granted <code>apiView</code> permissions</p>
+ *
+ * <p>However, there are a range of use-cases which are not adequately covered by explicit permissions that this implicit system attempts to address:</p>
+ *
+ * <ul>
+ *     <li>Multi-tenancy: many different organizations may cohabit on the same Apiman Manager instance, yet allow non-members to subscribe to a curated set of APIs</li>
+ *     <li>Developer portal: allow APIs to be exposed to dev portal users without exposing everything</li>
+ *     <li>Expose a subset of APIs in an organization to external consumers without needing to know them a-priori</li>
+ *     <li>Distinguish between different categories of Apiman user and offer different APIs</li>
+ * </ul>
+ *
+ * <p>With discoverability, view permissions can be granted <strong>implicitly</strong> to various categories of users, on an API Plan (Api Version + Plan Version) and/or
+ * Public Api Version level. This ensures that users can expose only the things they want, and with the narrowest possible scope.
+ * Other entities in the organization which are attached to the exposed API Version inherit these permissions, such as any attached plans, plan versions, etc.
+ * This ensures that the Apiman Manager API continues to function as before.</p>
+
+ * <p>This entity represents a read-only materialized view of the various entities in Apiman which can have <code>discoverability</code> levels associated with them.
+ * Triggers in the RDBMS synchronise the data into the <code>discoverability</code> table automatically.</p>
+ *
+ * <p>The primary purpose of this view is that it provides a centralised and performant way to integrate the discoverability system into searches and pagination without
+ * resorting to expensive joins and integrating significant amounts of noisy business logic into every query.</p>
+ *
+ * <p>For various local needs, this view can be downloaded and indexing to provide fast and convenient filtering.
+ * See <code>IndexedDiscoverabilities</code> in <code>apiman-manager-api-security</code>.
+ * </p>
+ *
+ * <p><strong>You should not write this entity to the database from the application; it is managed by the RDBMS by trigger functions
+ * (or materialized view, as appropriate)</strong></p>
+ *
+ * <h2>Key structure</h2>
+ * <ul>
+ *     <li>Api Plan (Api Version + Plan Version): orgId:apiId:apiVersion:planId:planVersion</li>
+ *     <li>Public Api Version: orgId:apiId:apiVersion</li>
+ * </ul>
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
@@ -25,6 +67,7 @@ import javax.validation.constraints.NotNull;
 //         })
 // })
 @Table(name = "discoverability")
+@Immutable
 public class DiscoverabilityEntity implements Serializable {
 
     @Id
