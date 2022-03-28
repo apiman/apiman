@@ -28,7 +28,8 @@ import org.hibernate.annotations.Immutable;
  * <p>However, there are a range of use-cases which are not adequately covered by explicit permissions that this implicit system attempts to address:</p>
  *
  * <ul>
- *     <li>Multi-tenancy: many different organizations may cohabit on the same Apiman Manager instance, yet allow non-members to subscribe to a curated set of APIs</li>
+ *     <li>Multi-tenancy: many different organizations may cohabit on the same Apiman Manager instance, yet want to allow non-members
+ *      to subscribe to a curated subset of APIs with an organization</li>
  *     <li>Developer portal: allow APIs to be exposed to dev portal users without exposing everything</li>
  *     <li>Expose a subset of APIs in an organization to external consumers without needing to know them a-priori</li>
  *     <li>Distinguish between different categories of Apiman user and offer different APIs</li>
@@ -47,16 +48,54 @@ import org.hibernate.annotations.Immutable;
  *
  * <p>For various local needs, this view can be downloaded and indexing to provide fast and convenient filtering.
  * See <code>IndexedDiscoverabilities</code> in <code>apiman-manager-api-security</code>.
+ * GitHub's public repositories are a useful analogy for this approach; you can selectively make repos read-only visible within your organization public without needing
+ * to add those users explicitly to your organization.
  * </p>
  *
  * <p><strong>You should not write this entity to the database from the application; it is managed by the RDBMS by trigger functions
- * (or materialized view, as appropriate)</strong></p>
+ * (or materialized view, as appropriate).</strong></p>
+ *
+ * <p>If <code>discoverability</code> is null, it is implicitly {@link DiscoverabilityLevel#ORG_MEMBERS}.</p>
  *
  * <h2>Key structure</h2>
  * <ul>
  *     <li>Api Plan (Api Version + Plan Version): orgId:apiId:apiVersion:planId:planVersion</li>
  *     <li>Public Api Version: orgId:apiId:apiVersion</li>
  * </ul>
+ *
+ * <h2>Example</h2>
+ *
+ * <table>
+ *     <thead>
+ *         <th>Key</th>
+ *         <th>Org ID</th>
+ *         <th>API ID</th>
+ *         <th>API Version</th>
+ *         <th>Plan ID</th>
+ *         <th>Plan Version</th>
+ *         <th>Discoverability</th>
+ *     </thead>
+ *     <tbody>
+ *     <tr>
+ *         <td>testOrg:fooApi:1.0</td>
+ *         <td>testOrg</td>
+ *         <td>fooApi</td>
+ *         <td>1.0</td>
+ *         <td>NULL</td>
+ *         <td>NULL</td>
+ *         <td>PORTAL</td>
+ *     </tr>
+ *     <tr>
+ *         <td>testOrg:fooApi:1.0:gold:1.0</td>
+ *         <td>testOrg</td>
+ *         <td>fooApi</td>
+ *         <td>1.0</td>
+ *         <td>gold</td>
+ *         <td>1.0</td>
+ *         <td>PORTAL</td>
+ *     </tr>
+ *     </tbody>
+ * </table>
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
