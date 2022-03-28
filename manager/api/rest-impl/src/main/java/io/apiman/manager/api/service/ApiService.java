@@ -775,8 +775,6 @@ public class ApiService implements DataAccessUtilMixin {
                 }
             }
 
-            System.err.println("got here");
-
             storage.updateApiVersion(avb);
             storage.createAuditEntry(AuditUtils.apiVersionUpdated(avb, data, securityContext));
             LOGGER.debug(String.format("Successfully updated API Version: %s", avb)); //$NON-NLS-1$
@@ -1050,7 +1048,6 @@ public class ApiService implements DataAccessUtilMixin {
         return apiVersion;
     }
 
-
     /**
      * Checks if the api version has an api definition
      *
@@ -1129,62 +1126,6 @@ public class ApiService implements DataAccessUtilMixin {
         api.removeTagByKey(key);
         tryAction(() -> storage.updateApi(api));
     }
-
-    // /**
-    //  * Set discoverability for a <strong>public</strong> API Version.
-    //  */
-    // private DiscoverabilityEntity setApiVersionDiscoverability(ApiVersionBean avb, UpdateApiVersionBean uab) {
-    //     String orgId = avb.getApi().getOrganization().getId();
-    //     String apiId = avb.getApi().getId();
-    //     String apiVer = avb.getVersion();
-    //
-    //     if (uab.getPublicDiscoverability() == null) {
-    //         return storage.getDiscoverability(orgId, apiId, apiVer);
-    //     }
-    //
-    //     String key = String.join(":", orgId, apiId, apiVer);
-    //
-    //     DiscoverabilityEntity de = new DiscoverabilityEntity()
-    //             .setId(key)
-    //             .setOrgId(orgId)
-    //             .setApiId(apiId)
-    //             .setApiVersion(apiVer)
-    //             .setApiVersionId(avb.getId())
-    //             .setDiscoverability(uab.getPublicDiscoverability());
-    //
-    //      tryAction(() -> storage.merge(de));
-    //      return de;
-    // }
-    //
-    // private DiscoverabilityEntity setApiPlanDiscoverability(ApiPlanBean apb, @Nullable DiscoverabilityLevel level) {
-    //     String orgId = apb.getApiVersion().getApi().getOrganization().getId();
-    //     String apiId = apb.getApiVersion().getApi().getId();
-    //     String apiVer = apb.getApiVersion().getVersion();
-    //     Long apiVerId = apb.getApiVersion().getId();
-    //     String planId = apb.getPlanId();
-    //     String planVer = apb.getVersion();
-    //
-    //     if (level == null) {
-    //         return storage.getDiscoverability(orgId, apiId, apiVer, planId, planVer);
-    //     }
-    //
-    //     String pdeKey = String.join(":", orgId, apiId, apiVer, planId, planVer);
-    //
-    //     DiscoverabilityEntity pde = new DiscoverabilityEntity()
-    //             .setId(pdeKey)
-    //             .setOrgId(orgId)
-    //             .setApiId(apiId)
-    //             .setApiVersion(apiVer)
-    //             .setApiVersionId(apiVerId)
-    //             .setPlanId(planId)
-    //             .setPlanVersion(planVer)
-    //             .setDiscoverability(level);
-    //
-    //     apb.setDiscoverability(pde);
-    //
-    //     storage.merge(pde);
-    //     return pde;
-    // }
 
     // TODO(msavy): put with rest of DTOs when get to that phase
     public static final class ApiDefinitionStream {

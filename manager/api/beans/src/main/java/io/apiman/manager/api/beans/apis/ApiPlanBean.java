@@ -51,9 +51,6 @@ public class ApiPlanBean implements Serializable {
 
     private static final long serialVersionUID = 7972763768594076697L;
 
-    // @GeneratedValue
-    // private Long id;
-
     @Id
     @ManyToOne
     @JoinColumn(name = "api_version_id", referencedColumnName = "id")
@@ -81,14 +78,6 @@ public class ApiPlanBean implements Serializable {
      */
     public ApiPlanBean() {
     }
-
-    // public Long getId() {
-    //     return id;
-    // }
-    //
-    // public void setId(Long id) {
-    //     this.id = id;
-    // }
 
     public DiscoverabilityLevel getDiscoverability() {
         return discoverability;

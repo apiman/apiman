@@ -75,6 +75,15 @@ public class DeveloperApiPlanSummaryDto {
         this.planPolicies = planPolicies;
         return this;
     }
+    
+    public DiscoverabilityLevel getDiscoverability() {
+        return discoverability;
+    }
+
+    public DeveloperApiPlanSummaryDto setDiscoverability(DiscoverabilityLevel discoverability) {
+        this.discoverability = discoverability;
+        return this;
+    }
 
     @Override
     public String toString() {
@@ -87,14 +96,5 @@ public class DeveloperApiPlanSummaryDto {
                 .add("discoverability=" + discoverability)
                 .add("planPolicies=" + planPolicies)
                 .toString();
-    }
-
-    public DiscoverabilityLevel getDiscoverability() {
-        return discoverability;
-    }
-
-    public DeveloperApiPlanSummaryDto setDiscoverability(DiscoverabilityLevel discoverability) {
-        this.discoverability = discoverability;
-        return this;
     }
 }

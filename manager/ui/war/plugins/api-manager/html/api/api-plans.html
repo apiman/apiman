@@ -91,7 +91,7 @@
                 <ui-select ng-model="plan.selectedVersion"
                            on-select="changedVersion($item)"
                            data-cy="apiman-plan-version-selector-{{ plan.id }}"
-                           ng-disabled="isEntityDisabled()"
+                           ng-disabled="isEntityDisabled() || !plan.checked"
                            class="inline-block">
                   <ui-select-match>
                     Version: <span ng-bind="$select.selected"></span>
@@ -107,13 +107,14 @@
                          ng-model="plan.requiresApproval"
                          data-field="checkbox"
                          type="checkbox"
-                         ng-disabled="isEntityDisabled()">
+                         ng-disabled="isEntityDisabled() || !plan.checked">
                   <span ng-if="plan.requiresApproval">Required</span>
                   <span ng-if="!plan.requiresApproval">Not required</span>
                 </label>
               </td>
               <td>
                 <apiman-discoverability-select
+                    ng-disabled="isEntityDisabled() || !plan.checked"
                     data-cy="plan-discoverability-selector-{{ plan.id }}"
                     on-discoverability-change="setDiscoverability"
                     initial-value="plan.discoverability"
