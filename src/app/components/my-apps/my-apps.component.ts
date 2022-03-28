@@ -272,11 +272,8 @@ export class MyAppsComponent implements OnInit {
     this.contracts = this.contracts.concat(contracts);
 
     this.contracts.forEach((contract: IContractExt) => {
-      const clientNameVersionMapped = (
-        contract.client.client.name +
-        ':' +
-        contract.client.version
-      ).toLowerCase();
+      const clientNameVersionMapped =
+        contract.client.client.name + ':' + contract.client.version;
       const foundContracts = this.clientContractsMap.get(
         clientNameVersionMapped
       );
