@@ -15,12 +15,12 @@ _module.controller("Apiman.ClientMetricsController",
             $scope.metricsType = 'usage';
 
             var usageByApiChart;
-            
+
             var renderApiUsageChart = function(data) {
                 var columns = [];
                 var x = ['x'];
                 var dataPoints = ['data'];
-                angular.forEach(data.data, function(numRequests, unused, apiName) {
+                angular.forEach(data.data, function(numRequests: string,  apiName: string) {
                     x.push(apiName);
                     dataPoints.push(numRequests);
                 });
@@ -61,14 +61,14 @@ _module.controller("Apiman.ClientMetricsController",
                 date.setHours(0);
                 return date;
             };
-            
+
             var truncateToHour = function(date) {
                 date.setMinutes(0);
                 date.setSeconds(0);
                 date.setMilliseconds(0);
                 return date;
             };
-            
+
             var getChartDateRange = function() {
                 var from = new Date();
                 var to = new Date();
@@ -92,13 +92,13 @@ _module.controller("Apiman.ClientMetricsController",
                     to: to
                 }
             };
-            
+
             // *******************************************************
             // Refresh the usage charts
             // *******************************************************
             var refreshUsageCharts = function() {
                 $scope.apiUsageChartLoading = true;
-                
+
                 var range = getChartDateRange();
                 var from = range.from;
                 var to = range.to;
@@ -109,7 +109,7 @@ _module.controller("Apiman.ClientMetricsController",
                 if ($scope.metricsRange == 'hour') {
                     interval = 'minute';
                 }
-                
+
                 // Refresh the usage chart
                 if (usageByApiChart) {
                     usageByApiChart.destroy();
@@ -131,7 +131,7 @@ _module.controller("Apiman.ClientMetricsController",
                 }
             };
             $scope.refreshCharts = refreshCharts;
-            
+
             $scope.$watch('metricsRange', function(newValue, oldValue) {
                 if (newValue && newValue != oldValue) {
                     refreshCharts();
@@ -142,7 +142,7 @@ _module.controller("Apiman.ClientMetricsController",
                     refreshCharts();
                 }
             });
-            
+
             var pageData = ClientEntityLoader.getCommonData($scope, $location);
             PageLifecycle.loadPage('ClientMetrics', 'clientView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('client-metrics', [ $scope.client.name ]);
