@@ -147,10 +147,13 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
                 request.add(index);
             }
 
-            ActionListener<BulkResponse> listener = new ActionListener<BulkResponse>() {
+            ActionListener<BulkResponse> listener = new ActionListener<>() {
                 @Override
                 public void onResponse(BulkResponse bulkItemResponses) {
-                    // Do nothing
+                    if (bulkItemResponses.hasFailures()) {
+                        LOGGER.warn("Errors were reported when submitting bulk metrics into Elasticsearch. "
+                                            + "This may have resulted in a loss of data: ", bulkItemResponses.buildFailureMessage());
+                    }
                 }
 
                 @Override
