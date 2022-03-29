@@ -225,9 +225,4 @@ public interface IStorage {
          * <p>This is particularly useful when you want to persist a related entity without first having to look it up in the database.
          */
     <T> T getEntityObjectReference(Class<T> klazz, Object primaryKey);
-
-    // void setDiscoverability(DiscoverabilityEntity de) throws StorageException;
-
-    // DiscoverabilityEntity getDiscoverability(String orgId, String apiId, String apiVersion, String planId, String planVersion);
-    // DiscoverabilityEntity getDiscoverability(String orgId, String apiId, String apiVersion);
 }
