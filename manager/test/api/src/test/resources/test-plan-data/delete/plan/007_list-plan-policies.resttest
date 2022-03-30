@@ -1,0 +1,6 @@
+GET /organizations/Organization1/plans/Test/versions/1.0/policies admin/admin
+----
+200
+Content-Type: application/json
+
+[]
