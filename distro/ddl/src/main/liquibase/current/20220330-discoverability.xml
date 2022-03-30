@@ -15,7 +15,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet author="msavy (generated)" id="1646489262610-4">
+    <changeSet author="msavy (generated)" id="1646489262610-4" dbms="!oracle"> <!-- For Oracle, we use a materialized view; see below -->
         <createTable tableName="discoverability">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="discoverabilityPK"/>
@@ -55,10 +55,9 @@
             Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
             materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
         </comment>
-        <!-- Generic discoverability procedures, except H2 which does its own thing in Java. -->
-        <sqlFile dbms="h2" path="liquibase/current/xxxx/triggers.h2.sql"/>
-        <sqlFile dbms="postgresql,oracle" path="liquibase/current/xxxx/discoverability-procedures.sql"/>
-        <sqlFile dbms="postgresql" path="liquibase/current/xxxx/triggers.postgres.sql"/>
-        <sqlFile dbms="mariadb,mysql" path="liquibase/current/xxxx/triggers.mysql.sql"/>
+        <!-- H2 uses Java triggers, ensure they are available on the classpath (you may need to battle with your module system) -->
+        <sqlFile dbms="h2" path="liquibase/current/discoverability-2022-03-30/triggers.h2.sql"/>
+        <sqlFile dbms="postgresql" path="liquibase/current/discoverability-2022-03-30/triggers.postgres.sql"/>
+        <sqlFile dbms="oracle" path="liquibase/current/discoverability-2022-03-30/triggers.oracle.sql"/>
     </changeSet>
 </databaseChangeLog>
