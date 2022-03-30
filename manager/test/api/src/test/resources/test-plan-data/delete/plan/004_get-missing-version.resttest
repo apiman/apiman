@@ -1,0 +1,6 @@
+GET /organizations/Organization1/plans/Test/versions/1.0 admin/admin
+----
+404
+Content-Type: application/json
+
+{"type":"PlanVersionNotFoundException","errorCode":6003,"message":"Plan Version does not exist: Test:1.0","moreInfoUrl":null}
