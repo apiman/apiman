@@ -39,17 +39,10 @@ import org.mapstruct.factory.Mappers;
         nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-public interface ApiVersionUpdateMapper {
-    ApiVersionUpdateMapper INSTANCE = Mappers.getMapper(ApiVersionUpdateMapper.class);
+public interface ApiPlanMapper {
+    ApiPlanMapper INSTANCE = Mappers.getMapper(ApiPlanMapper.class);
 
     Set<UpdateApiPlanDto> toDto(Set<ApiPlanBean> plans);
-
-    @Mappings({
-            @Mapping(source = "apb.version", target = "version"),
-            @Mapping(source = "avb", target = "apiVersion"),
-            @Mapping(source = "apb.discoverability", target = "discoverability"),
-    })
-    ApiPlanBean fromDto(ApiPlanBeanDto apb, ApiVersionBean avb);
 
     @Mappings({
             @Mapping(source = "apb.version", target = "version"),

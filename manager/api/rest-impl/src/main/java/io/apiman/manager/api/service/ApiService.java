@@ -21,9 +21,9 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiPlanMapper;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionMapper;
-import io.apiman.manager.api.beans.apis.dto.ApiVersionUpdateMapper;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagMapper;
 import io.apiman.manager.api.beans.apis.dto.UpdateApiPlanDto;
@@ -649,27 +649,27 @@ public class ApiService implements DataAccessUtilMixin {
         if (AuditUtils.valueChanged(avb.getPlans(), update.getPlans())) {
             Set<ApiPlanBean> updateEntities = update.getPlans()
                     .stream()
-                    .map(dto -> ApiVersionUpdateMapper.INSTANCE.fromDto(dto, avb))
+                    .map(dto -> ApiPlanMapper.INSTANCE.fromDto(dto, avb))
                     .collect(Collectors.toSet());
 
             data.addChange("plans", AuditUtils.asString_ApiPlanBeans(avb.getPlans()), AuditUtils.asString_ApiPlanBeans(updateEntities)); //$NON-NLS-1$
             if (update.getPlans() != null) {
                 // Work around: https://hibernate.atlassian.net/browse/HHH-3799
                 // Step 1: Set intersection
-                Set<UpdateApiPlanDto> existingAsDto = ApiVersionUpdateMapper.INSTANCE.toDto(avb.getPlans());
+                Set<UpdateApiPlanDto> existingAsDto = ApiPlanMapper.INSTANCE.toDto(avb.getPlans());
                 existingAsDto.retainAll(update.getPlans());
 
                 // Step 2: Upsert
                 Set<ApiPlanBean> mergedPlans = new HashSet<>();
                 for (ApiPlanBean updateApb : updateEntities) {
                     existingAsDto.stream()
-                            .map(e -> ApiVersionUpdateMapper.INSTANCE.fromDto(e, avb))
+                            .map(e -> ApiPlanMapper.INSTANCE.fromDto(e, avb))
                             .filter(e -> e.equals(updateApb))
                             .findAny()
                             .ifPresentOrElse(
                                     // Merge (existing element to be updated)
                                     ep -> {
-                                        ApiVersionUpdateMapper.INSTANCE.merge(updateApb, ep);
+                                        ApiPlanMapper.INSTANCE.merge(updateApb, ep);
                                         mergedPlans.add(ep);
                                     },
                                     // Insert (new element)

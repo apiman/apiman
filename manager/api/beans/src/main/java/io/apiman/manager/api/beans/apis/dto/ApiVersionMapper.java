@@ -64,21 +64,6 @@ public interface ApiVersionMapper {
     })
     ApiPlanBeanDto toDto(ApiPlanBean plan);
 
-    @Mappings({
-            @Mapping(source = "apb.version", target = "version"),
-            @Mapping(source = "avb", target = "apiVersion"),
-            @Mapping(source = "apb.discoverability", target = "discoverability")
-    })
-    ApiPlanBean fromDto(ApiPlanBeanDto apb, ApiVersionBean avb);
-
-    @Mappings({
-            @Mapping(source = "apb.version", target = "version"),
-            @Mapping(source = "avb", target = "apiVersion"),
-            @Mapping(source = "apb.discoverability", target = "discoverability", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-    })
-    ApiPlanBean fromDto(UpdateApiPlanDto apb, ApiVersionBean avb);
-
-
     void merge(ApiPlanBean source, @MappingTarget ApiPlanBean target);
 
     @Mapping(target = "publicDiscoverability", source = "discoverability")
