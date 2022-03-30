@@ -16,7 +16,6 @@
 
 package io.apiman.gateway.engine.es;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
@@ -26,6 +25,14 @@ import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.metrics.RequestMetric;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -33,13 +40,6 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
-
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.BOOL_PROP;
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.DATE_PROP;
@@ -102,9 +102,16 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
     @Override
     public void record(RequestMetric metric) {
         try {
-            queue.put(metric);
+            // Queue#offer returns false if queue is full and unable to accept new records.
+            if (!queue.offer(metric)) {
+                LOGGER.warn("A metrics entry was dropped because the metrics queue is full. You can try to alter `queue.size` and `batch.size`, but a full buffer "
+                                    + "is usually caused by Elasticsearch being slow or unavailable, network problems, or OS network stack configuration issues. "
+                                    + "Increasing buffer sizes often just delays the problem, but may be helpful in high traffic and bursting scenarios, or to survive "
+                                    + "short periods where the network or Elasticsearch are unavailable. Entry dropped: {0}", metric);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e, "A metrics entry was dropped due to error inserting new record into the metrics queue. "
+                                    + "Entry dropped: {0}. Error: {1} ", e.getMessage(), metric);
         }
     }
 
@@ -143,7 +150,10 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
             ActionListener<BulkResponse> listener = new ActionListener<BulkResponse>() {
                 @Override
                 public void onResponse(BulkResponse bulkItemResponses) {
-                    // Do nothing
+                    if (bulkItemResponses.hasFailures()) {
+                        LOGGER.warn("Errors were reported when submitting bulk metrics into Elasticsearch. "
+                                            + "This may have resulted in a loss of data: ", bulkItemResponses.buildFailureMessage());
+                    }
                 }
 
                 @Override
