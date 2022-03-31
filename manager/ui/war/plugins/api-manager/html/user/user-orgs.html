@@ -32,7 +32,7 @@
                                                            function="filterOrgs"
                                                            placeholder="Filter by organization name..."/>
                                     </div>
-                                    <a ng-hide="noCreateOrg || !isAdmin" id="new-org" data-field="toNewOrg"
+                                    <a ng-hide="noCreateOrg" id="new-org" data-field="toNewOrg"
                                        href="{{ pluginName }}/new-org" class="btn btn-primary pull-right"
                                        apiman-i18n-key="new-organization">New Organization</a>
                                 </div>
