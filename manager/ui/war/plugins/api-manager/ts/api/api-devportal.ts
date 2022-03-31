@@ -222,9 +222,7 @@ function devPortalBusinessLogic(
 
   // Dirty check the MD editor pane every 2 seconds (avoids excessive checking).
   const intervalPromise: Promise<any> = $interval(function () {
-    if ($scope.data.apiVersion.exposeInPortal) {
       editorDirtyCheck();
-    }
   }, 1000);
 
   const editorDirtyCheck = function (): void {
