@@ -18,7 +18,6 @@ package io.apiman.manager.api.core;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apis.view.OrgApiPlanView;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
@@ -27,6 +26,7 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.idm.DiscoverabilityEntity;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -170,7 +170,7 @@ public interface IStorage {
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException;
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException;
     public void deleteMemberships(String userId, String organizationId) throws StorageException;
-    List<OrgApiPlanView> getOrgApiPlansWithDiscoverability(String orgId, Set<DiscoverabilityLevel> visibilities);
+    List<DiscoverabilityEntity> getOrgApiPlansWithDiscoverability(String orgId, Set<DiscoverabilityLevel> visibilities);
 
     /*
      * Export related storage methods (get-all)

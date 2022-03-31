@@ -1,6 +1,6 @@
 package io.apiman.manager.api.security.impl;
 
-import io.apiman.manager.api.beans.apis.view.OrgApiPlanView;
+import io.apiman.manager.api.beans.idm.DiscoverabilityEntity;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 import io.apiman.manager.api.security.ISecurityContext.EntityType;
 import io.apiman.manager.api.security.impl.IndexedDiscoverabilities.DILookupResult;
@@ -68,15 +68,13 @@ public class IndexedDiscoverabilitiesApiTest {
     @Test
     public void REGISTERED_USERS_query_with_org_apiId_with_REGISTERED_USERS_discoverability_is_DISCOVERABLE() {
         index.index(List.of(
-            new OrgApiPlanView(
+            newDe(
                     "Org-Id-1",
-                    false,
                     "Plan-Id-1",
                     "Plan-Version-1",
                     "Api-Id-1",
                     "Api-Version-1",
-                    DiscoverabilityLevel.FULL_PLATFORM_MEMBERS,
-                    true
+                    DiscoverabilityLevel.FULL_PLATFORM_MEMBERS
             )
         ));
 
@@ -87,15 +85,13 @@ public class IndexedDiscoverabilitiesApiTest {
     @Test
     public void REGISTERED_USERS_query_with_org_apiId_with_ORG_MEMBERS_discoverability_is_NOT_DISCOVERABLE() {
         index.index(List.of(
-                new OrgApiPlanView(
+                newDe(
                         "Org-Id-1",
-                        false,
                         "Plan-Id-1",
                         "Plan-Version-1",
                         "Api-Id-1",
                         "Api-Version-1",
-                        ORG_MEMBERS,
-                        true
+                        ORG_MEMBERS
                 )
         ));
 
@@ -106,15 +102,13 @@ public class IndexedDiscoverabilitiesApiTest {
     @Test
     public void ORG_MEMBERS_query_with_org_apiId_apiVersion_with_ORG_MEMBERS_discoverability_is_DISCOVERABLE() {
         index.index(List.of(
-                new OrgApiPlanView(
+                newDe(
                         "Org-Id-1",
-                        false,
                         "Plan-Id-1",
                         "Plan-Version-1",
                         "Api-Id-1",
                         "Api-Version-1",
-                        ORG_MEMBERS,
-                        true
+                        ORG_MEMBERS
                 )
         ));
 
@@ -125,15 +119,13 @@ public class IndexedDiscoverabilitiesApiTest {
     @Test
     public void NON_MEMBERS_query_with_org_apiId_with_ORG_MEMBERS_discoverability_returns_NOT_DISCOVERABLE() {
         index.index(List.of(
-                new OrgApiPlanView(
+                newDe(
                         "Org-Id-1",
-                        false,
                         "Plan-Id-1",
                         "Plan-Version-1",
                         "Api-Id-1",
                         "Api-Version-1",
-                        ORG_MEMBERS,
-                        true
+                        ORG_MEMBERS
                 )
         ));
 
@@ -144,15 +136,13 @@ public class IndexedDiscoverabilitiesApiTest {
     @Test
     public void query_public_api_in_index() {
         index.index(List.of(
-                new OrgApiPlanView(
+                newDe(
                         "Org-Id-1",
-                        true, // <-- public API
                         null, // <-- no plan
                         null, // <-- no plan version
                         "Api-Id-1",
                         "Api-Version-1",
-                        ORG_MEMBERS,
-                        false
+                        ORG_MEMBERS
                 )
         ));
 
@@ -163,19 +153,27 @@ public class IndexedDiscoverabilitiesApiTest {
     @Test
     public void query_public_api_not_in_index() {
         index.index(List.of(
-                new OrgApiPlanView(
+                newDe(
                         "Org-Id-1",
-                        true, // <-- public API
                         null, // <-- no plan
                         null, // <-- no plan version
                         "xxxxxx",
                         "xxxxxx",
-                        ORG_MEMBERS,
-                        false
+                        ORG_MEMBERS
                 )
         ));
 
         DILookupResult result = index.isAnyDiscoverable(EntityType.API, "Org-Id-1", "Api-Id-1", Set.of(ORG_MEMBERS));
         assertThat(result).isEqualTo(DILookupResult.NOT_IN_INDEX);
+    }
+
+    private DiscoverabilityEntity newDe(String orgId, String planId, String planVersion, String apiId, String apiVersion, DiscoverabilityLevel discoverability) {
+        return new DiscoverabilityEntity()
+                .setOrgId(orgId)
+                .setPlanId(planId)
+                .setPlanVersion(planVersion)
+                .setApiId(apiId)
+                .setApiVersion(apiVersion)
+                .setDiscoverability(discoverability);
     }
 }

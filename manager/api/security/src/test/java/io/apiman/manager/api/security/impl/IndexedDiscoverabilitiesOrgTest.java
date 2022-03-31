@@ -1,6 +1,6 @@
 package io.apiman.manager.api.security.impl;
 
-import io.apiman.manager.api.beans.apis.view.OrgApiPlanView;
+import io.apiman.manager.api.beans.idm.DiscoverabilityEntity;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
 import java.util.List;
@@ -24,36 +24,30 @@ public class IndexedDiscoverabilitiesOrgTest {
 
     @Test
     public void get_all_org_discoverabilities() {
-        List<OrgApiPlanView> oap = List.of(
-                new OrgApiPlanView(
+        List<DiscoverabilityEntity> oap = List.of(
+                newDe(
                         "Org-Id-1",
-                        false,
                         "Plan-Id-1",
                         "Plan-Version-1",
                         "Api-Id-1",
                         "Api-Version-1",
-                        DiscoverabilityLevel.FULL_PLATFORM_MEMBERS,
-                        true
+                        DiscoverabilityLevel.FULL_PLATFORM_MEMBERS
                 ),
-                new OrgApiPlanView(
+                newDe(
                         "Org-Id-1",
-                        false,
                         "Plan-Id-2",
                         "Plan-Version-2",
                         "Api-Id-2",
                         "Api-Version-2",
-                        DiscoverabilityLevel.ANONYMOUS,
-                        true
+                        DiscoverabilityLevel.ANONYMOUS
                 ),
-                new OrgApiPlanView(
+                newDe(
                         "Org-Id-X",
-                        false,
                         "Plan-Id-2",
                         "Plan-Version-2",
                         "Api-Id-2",
                         "should not find this one because the org id does not match",
-                        DiscoverabilityLevel.ANONYMOUS,
-                        true
+                        DiscoverabilityLevel.ANONYMOUS
                 )
         );
         index.index(oap);
@@ -70,5 +64,15 @@ public class IndexedDiscoverabilitiesOrgTest {
                 entry("Org-Id-1.API.Api-Id-2.VERSION.Api-Version-2", DiscoverabilityLevel.ANONYMOUS),
                 entry("Org-Id-1.PLAN.Plan-Id-2.VERSION.Plan-Version-2", DiscoverabilityLevel.ANONYMOUS)
         );
+    }
+
+    private DiscoverabilityEntity newDe(String orgId, String planId, String planVersion, String apiId, String apiVersion, DiscoverabilityLevel discoverability) {
+        return new DiscoverabilityEntity()
+                       .setOrgId(orgId)
+                       .setPlanId(planId)
+                       .setPlanVersion(planVersion)
+                       .setApiId(apiId)
+                       .setApiVersion(apiVersion)
+                       .setDiscoverability(discoverability);
     }
 }

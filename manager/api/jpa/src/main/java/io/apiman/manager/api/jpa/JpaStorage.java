@@ -25,7 +25,6 @@ import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiPlanBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
-import io.apiman.manager.api.beans.apis.view.OrgApiPlanView;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean_;
@@ -2002,28 +2001,21 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     @Override
-    public List<OrgApiPlanView> getOrgApiPlansWithDiscoverability(String orgId, Set<DiscoverabilityLevel> discoverabilities) {
-        return getJdbi().withHandle(h -> h.createQuery(
-                        "SELECT av.api_org_id AS org_id, av.public_api, ap.* "
-                                + "FROM API_PLANS AS ap "
-                                + "LEFT JOIN API_VERSIONS AS av ON av.id = ap.api_version_id "
-                                + "WHERE (av.api_org_id = :org_id AND ap.discoverability IN (<discoverabilities>)) "
-                                + "OR av.public_api = true ")
-                .bind("org_id", orgId)
-                .bindList("discoverabilities", discoverabilities)
-                .mapToBean(OrgApiPlanView.class)
-                .list()
-        );
+    public List<DiscoverabilityEntity> getOrgApiPlansWithDiscoverability(String orgId, Set<DiscoverabilityLevel> discoverabilities) {
+        return getCriteriaBuilderFactory().create(getActiveEntityManager(), DiscoverabilityEntity.class, "discoverability")
+                .where("orgId").eqExpression(":apiOrgId")
+                .setParameter("apiOrgId", orgId)
+                .getResultList();
     }
 
-    public List<DiscoverabilityEntity> getDiscoverabilities(String apiOrgId, String apiId, Long apiVersionId) {
+    public List<DiscoverabilityEntity> getDiscoverabilities(String apiOrgId, String apiId, String apiVersion) {
         return getCriteriaBuilderFactory().create(getActiveEntityManager(), DiscoverabilityEntity.class, "discoverability")
-                .where("org_id").eqExpression(":apiOrgId")
-                .where("api_id").eqExpression(":apiId")
-                .where("api_version_id").eqExpression(":apiVersionId")
+                .where("orgId").eqExpression(":apiOrgId")
+                .where("apiId").eqExpression(":apiId")
+                .where("apiVersion").eqExpression(":apiVersion")
                 .setParameter("apiOrgId", apiOrgId)
                 .setParameter("apiId", apiId)
-                .setParameter("apiVersionId", apiVersionId)
+                .setParameter("apiVersion", apiVersion)
                 .getResultList();
     }
 

@@ -15,8 +15,10 @@
  */
 package io.apiman.manager.api.security.impl;
 
-import io.apiman.manager.api.beans.apis.view.OrgApiPlanView;
+import io.apiman.manager.api.beans.idm.DiscoverabilityDto;
+import io.apiman.manager.api.beans.idm.DiscoverabilityEntity;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
+import io.apiman.manager.api.beans.idm.DiscoverabilityMapper;
 import io.apiman.manager.api.security.ISecurityContext.EntityType;
 
 import java.util.Collection;
@@ -54,44 +56,45 @@ import static io.apiman.manager.api.security.ISecurityContext.EntityType.PLAN;
 @ParametersAreNonnullByDefault
 public class IndexedDiscoverabilities {
 
-    private final PatriciaTrie<OrgApiPlanView> discoverabilityIndex = new PatriciaTrie<>();
+    private final PatriciaTrie<DiscoverabilityDto> discoverabilityIndex = new PatriciaTrie<>();
+    private final DiscoverabilityMapper mapper = DiscoverabilityMapper.INSTANCE;
 
     public IndexedDiscoverabilities() {
     }
 
     /**
-     * Add some OrgApiPlanViews to the index
+     * Add some DiscoverabilityDtos to the index
      *
-     * @param orgApiPlanViews views to index
+     * @param discoverabilityEntities views to index
      */
-    public void index(Collection<OrgApiPlanView> orgApiPlanViews) {
-        for (OrgApiPlanView orgApiPlanView : orgApiPlanViews) {
-            discoverabilityIndex.put(createApiLookupKey(orgApiPlanView), orgApiPlanView);
+    public void index(Collection<DiscoverabilityEntity> discoverabilityEntities) {
+        for (DiscoverabilityDto DiscoverabilityDto : mapper.toDto(discoverabilityEntities)) {
+            discoverabilityIndex.put(createApiLookupKey(DiscoverabilityDto), DiscoverabilityDto);
             // If it's a public API, it could be that it has no attached plans.
-            if (orgApiPlanView.getPlanId() != null && orgApiPlanView.getPlanVersion() != null) {
-                discoverabilityIndex.put(createPlanLookupKey(orgApiPlanView), orgApiPlanView);
+            if (DiscoverabilityDto.getPlanId() != null && DiscoverabilityDto.getPlanVersion() != null) {
+                discoverabilityIndex.put(createPlanLookupKey(DiscoverabilityDto), DiscoverabilityDto);
             }
         }
     }
 
-    public @NotNull SortedMap<String, OrgApiPlanView> getAll(String orgId) {
+    public @NotNull SortedMap<String, DiscoverabilityDto> getAll(String orgId) {
         Validate.notBlank(orgId, "orgId must not be blank");
         return discoverabilityIndex.prefixMap(createLookupKey(orgId));
     }
 
-    public @NotNull SortedMap<String, OrgApiPlanView> getAll(EntityType entityType, String orgId) {
+    public @NotNull SortedMap<String, DiscoverabilityDto> getAll(EntityType entityType, String orgId) {
         Objects.requireNonNull(entityType, "entityType must not be null");
         Validate.notBlank(orgId, "orgId must not be blank");
         return discoverabilityIndex.prefixMap(createLookupKey(entityType, orgId));
     }
 
-    public @NotNull SortedMap<String, OrgApiPlanView> getAll(EntityType entityType, String orgId, String entityId) {
+    public @NotNull SortedMap<String, DiscoverabilityDto> getAll(EntityType entityType, String orgId, String entityId) {
         Objects.requireNonNull(entityType, "entityType must not be null");
         Validate.notBlank(orgId, "orgId must not be blank");
         return discoverabilityIndex.prefixMap(createLookupKey(entityType, orgId, entityId));
     }
 
-    public @Nullable OrgApiPlanView get(EntityType entityType, String orgId, String entityId, String entityVersion) {
+    public @Nullable DiscoverabilityDto get(EntityType entityType, String orgId, String entityId, String entityVersion) {
         Objects.requireNonNull(entityType, "entityType must not be null");
         Validate.notBlank(orgId, "orgId must not be blank");
         return discoverabilityIndex.get(createLookupKey(entityType, orgId, entityId, entityVersion));
@@ -104,7 +107,7 @@ public class IndexedDiscoverabilities {
         Validate.notBlank(entityVersion, "entityVersion must not be blank");
 
         String key = createLookupKey(entityType, orgId, entityId, entityVersion);
-        OrgApiPlanView result = discoverabilityIndex.get(key);
+        DiscoverabilityDto result = discoverabilityIndex.get(key);
         if (result == null) {
             return DILookupResult.NOT_IN_INDEX;
         } else {
@@ -126,7 +129,7 @@ public class IndexedDiscoverabilities {
         // TODO(msavy): can we do this check without creating a new map? Would be nice...
         List<DiscoverabilityLevel> prefixDiscoverabilities = discoverabilityIndex.prefixMap(key).values()
                 .stream()
-                .map(OrgApiPlanView::getDiscoverability)
+                .map(DiscoverabilityDto::getDiscoverability)
                 .collect(Collectors.toList());
 
         if (prefixDiscoverabilities.isEmpty()) {
@@ -159,15 +162,15 @@ public class IndexedDiscoverabilities {
     /**
      * OrgId.api.ApiId.version.ApiVersion. For example, FooOrg.api.CoolApi.version.1
      */
-    private String createApiLookupKey(OrgApiPlanView orgApiPlanView) {
-        return String.join(".", orgApiPlanView.getOrgId(), API.name(), orgApiPlanView.getApiId(), "VERSION", orgApiPlanView.getApiVersion());
+    private String createApiLookupKey(DiscoverabilityDto DiscoverabilityDto) {
+        return String.join(".", DiscoverabilityDto.getOrgId(), API.name(), DiscoverabilityDto.getApiId(), "VERSION", DiscoverabilityDto.getApiVersion());
     }
 
     /**
      * OrgId.plan.PlanId.version.PlanVersion. For example, FooOrg.plan.Plan123.version.1
      */
-    private String createPlanLookupKey(OrgApiPlanView orgApiPlanView) {
-        return  String.join(".", orgApiPlanView.getOrgId(), PLAN.name(), orgApiPlanView.getPlanId(), "VERSION", orgApiPlanView.getPlanVersion());
+    private String createPlanLookupKey(DiscoverabilityDto DiscoverabilityDto) {
+        return  String.join(".", DiscoverabilityDto.getOrgId(), PLAN.name(), DiscoverabilityDto.getPlanId(), "VERSION", DiscoverabilityDto.getPlanVersion());
     }
 
     /**
