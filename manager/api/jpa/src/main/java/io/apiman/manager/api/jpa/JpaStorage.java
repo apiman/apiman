@@ -1897,17 +1897,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException {
-        Set<RoleMembershipBean> memberships = new HashSet<>();
         try {
-            EntityManager entityManager = getActiveEntityManager();
-            javax.persistence.criteria.CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
-            Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
-            criteriaQuery.where(builder.equal(from.get("userId"), userId));
-            TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
-            List<RoleMembershipBean> resultList = typedQuery.getResultList();
-            memberships.addAll(resultList);
-            return memberships;
+        List<RoleMembershipBean> memberships = getCriteriaBuilderFactory().create(getActiveEntityManager(), RoleMembershipBean.class)
+                .where("userId").eq(userId)
+                .getResultList();
+            return Set.copyOf(memberships);
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -1919,19 +1913,12 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId) throws StorageException {
-        Set<RoleMembershipBean> memberships = new HashSet<>();
         try {
-            EntityManager entityManager = getActiveEntityManager();
-            javax.persistence.criteria.CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
-            Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
-            criteriaQuery.where(
-                    builder.equal(from.get("userId"), userId),
-                    builder.equal(from.get("organizationId"), organizationId) );
-            TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
-            List<RoleMembershipBean> resultList = typedQuery.getResultList();
-            memberships.addAll(resultList);
-            return memberships;
+            List<RoleMembershipBean> memberships = getCriteriaBuilderFactory().create(getActiveEntityManager(), RoleMembershipBean.class)
+                    .where("userId").eq(userId)
+                    .where("organizationId").eq(organizationId)
+                    .getResultList();
+            return Set.copyOf(memberships);
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -1943,17 +1930,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException {
-        Set<RoleMembershipBean> memberships = new HashSet<>();
         try {
-            EntityManager entityManager = getActiveEntityManager();
-            javax.persistence.criteria.CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
-            Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
-            criteriaQuery.where(builder.equal(from.get("organizationId"), organizationId));
-            TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
-            List<RoleMembershipBean> resultList = typedQuery.getResultList();
-            memberships.addAll(resultList);
-            return memberships;
+            List<RoleMembershipBean> memberships = getCriteriaBuilderFactory().create(getActiveEntityManager(), RoleMembershipBean.class)
+                   .where("organizationId").eq(organizationId)
+                   .getResultList();
+            return Set.copyOf(memberships);
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
