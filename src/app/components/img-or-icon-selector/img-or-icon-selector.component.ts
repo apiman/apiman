@@ -40,7 +40,9 @@ export class ImgOrIconSelectorComponent implements AfterViewInit, OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.imgUrl = changes.imgUrl ? (changes.imgUrl.currentValue as string) : '';
+    this.imgUrl = changes.imgUrl.currentValue
+      ? (changes.imgUrl.currentValue as string)
+      : '';
     this.isImage = this.imgUrl !== undefined || this.imgUrl !== '';
     this.cdr.detectChanges();
     this.resize();
