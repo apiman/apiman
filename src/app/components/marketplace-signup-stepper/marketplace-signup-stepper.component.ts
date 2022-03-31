@@ -20,6 +20,7 @@ import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
   IClientSummary,
+  IContract,
   IContractSummary,
   INewContract,
   IPolicy
@@ -31,9 +32,10 @@ import { ISignUpInfo } from '../../interfaces/ISignUpInfo';
 import { BackendService } from '../../services/backend/backend.service';
 import { MatStepper } from '@angular/material/stepper';
 import { IContractExt } from '../../interfaces/IContractExt';
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { TocService } from '../../services/toc/toc.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { EMPTY, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
@@ -144,7 +146,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     }
   }
 
-  createContract(stepper: MatStepper): void {
+  createContractAndRegisterClient(stepper: MatStepper): void {
     const client: IClientSummary = this.selectedClients.values().next()
       .value as IClientSummary;
 
@@ -159,52 +161,68 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       .createContract(client.organizationId, client.id, '1.0', contract)
       .pipe(
         switchMap((contract) => {
-          return this.backend
-            .getManagedApiEndpoint(
-              contract.api.api.organization.id,
-              contract.api.api.id,
-              contract.api.version
-            )
-            .pipe(
-              map((endpoint) => {
-                return {
-                  ...contract,
-                  managedEndpoint: endpoint.managedEndpoint
-                } as IContractExt;
-              })
-            );
-        })
-      )
-      .subscribe({
-        next: (contract: IContractExt) => {
           this.snackbar.showPrimarySnackBar(
             this.translator.instant('WIZARD.SUCCESS') as string
           );
+          return this.extendContract(contract);
+        }),
+        switchMap((contract: IContractExt) => {
           this.contract = contract;
+          return this.registerClient();
+        })
+      )
+      .subscribe({
+        error: (error: HttpErrorResponse) =>
+          this.snackbar.showErrorSnackBar(error.message, error),
+        complete: () => {
           if ('AwaitingApproval' === this.contract.client.status) {
             void this.router.navigate(['approval']);
           } else {
             this.goToNextStep(stepper);
           }
-        },
-        error: (error: HttpErrorResponse) =>
-          this.snackbar.showErrorSnackBar(error.message, error)
+        }
       });
   }
 
-  finish(): void {
-    this.backend
+  private extendContract(contract: IContract) {
+    return this.backend
+      .getManagedApiEndpoint(
+        contract.api.api.organization.id,
+        contract.api.api.id,
+        contract.api.version
+      )
+      .pipe(
+        map((endpoint) => {
+          return {
+            ...contract,
+            managedEndpoint: endpoint.managedEndpoint
+          } as IContractExt;
+        })
+      );
+  }
+
+  private registerClient() {
+    return this.backend
       .sendAction({
         type: 'registerClient',
         entityVersion: '1.0',
         organizationId: this.contract.client.client.organization.id,
         entityId: this.contract.client.client.id
       })
-      .subscribe({
-        error: (error: HttpErrorResponse) => {
-          this.snackbar.showErrorSnackBar(error.message, error);
-        }
-      });
+      .pipe(
+        catchError((err: HttpErrorResponse) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          if (err.error.type === 'InvalidContractStatusException') {
+            // Ignore this error because this is still valid
+            return EMPTY;
+          } else {
+            return throwError(() => err);
+          }
+        })
+      );
+  }
+
+  finish(): void {
     void this.router.navigate(['applications'], {
       fragment: this.tocService.formatClientId(this.contract)
     });
