@@ -520,7 +520,7 @@ Content-Type: application/json
       "entityVersion" : "1.0",
       "createdOn" : "2021-10-17T22:03:58Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"gold:1.0, silver:1.0\",\"after\":\"gold:1.0, silver:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"hello\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"gold:1.0, silver:1.0\",\"after\":\"gold:1.0, silver:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"hello\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1019,
       "who" : "admin",
@@ -567,7 +567,7 @@ Content-Type: application/json
       "entityVersion" : "3",
       "createdOn" : "2021-10-17T22:04:42Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"gold:1.0, silver:1.0\",\"after\":\"gold:1.0, silver:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"hello again\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"gold:1.0, silver:1.0\",\"after\":\"gold:1.0, silver:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"hello again\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1026,
       "who" : "admin",
