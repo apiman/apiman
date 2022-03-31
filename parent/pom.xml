@@ -85,10 +85,12 @@
     <version.shade.plugin>3.2.4</version.shade.plugin>
 
     <!-- Dependency Versions -->
+    <version.com.blazebit.blaze-persistence>1.6.6</version.com.blazebit.blaze-persistence>
     <version.com.fasterxml.jackson>2.12.4</version.com.fasterxml.jackson>
+    <version.com.github.ben-manes.caffeine>3.0.5</version.com.github.ben-manes.caffeine>
+    <version.com.github.seancfoley.ipaddress>5.3.3</version.com.github.seancfoley.ipaddress>
     <version.com.h2database>1.4.199</version.com.h2database> <!-- Unclear why, but 1.4.200 seems to cause some random issues, including inability for DB viewers to parse the data -->
     <version.com.lmax>3.4.4</version.com.lmax>
-    <version.com.github.seancfoley.ipaddress>5.3.3</version.com.github.seancfoley.ipaddress>
     <version.com.squareup.okhttp>2.7.5</version.com.squareup.okhttp>
     <version.com.squareup.okio>2.10.0</version.com.squareup.okio>
     <version.com.unboundid.unboundid-ldapsdk>6.0.3</version.com.unboundid.unboundid-ldapsdk>
@@ -126,7 +128,6 @@
     <version.org.hibernate>5.3.17.Final</version.org.hibernate> <!-- Pin to Wildfly version -->
     <version.org.infinispan>8.2.12.Final</version.org.infinispan>
     <version.org.jeasy.easy-rules>4.1.0</version.org.jeasy.easy-rules>
-    <version.com.github.ben-manes.caffeine>3.0.5</version.com.github.ben-manes.caffeine>
     <version.org.jboss.jandex>2.3.0.Final</version.org.jboss.jandex>
     <version.org.jboss.logging.jboss-logging>3.4.2.Final</version.org.jboss.logging.jboss-logging>
     <version.org.jboss.resteasy>3.15.1.Final</version.org.jboss.resteasy>
@@ -134,6 +135,7 @@
     <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>2.0.1.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>
     <version.org.jboss.weld.weld>3.1.8.Final</version.org.jboss.weld.weld>
     <version.org.keycloak>12.0.4</version.org.keycloak>
+    <version.org.lz4.lz4-java>1.8.0</version.org.lz4.lz4-java>
     <version.org.mockito>3.11.2</version.org.mockito>
     <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
     <version.org.mvel>2.4.12.Final</version.org.mvel>
@@ -437,6 +439,26 @@
         <groupId>org.jboss</groupId>
         <artifactId>jandex</artifactId>
         <version>${version.org.jboss.jandex}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.blazebit</groupId>
+        <artifactId>blaze-persistence-core-api</artifactId>
+        <version>${version.com.blazebit.blaze-persistence}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.blazebit</groupId>
+        <artifactId>blaze-persistence-core-impl</artifactId>
+        <version>${version.com.blazebit.blaze-persistence}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.blazebit</groupId>
+        <artifactId>blaze-persistence-integration-hibernate-5.3</artifactId>
+        <version>${version.com.blazebit.blaze-persistence}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.blazebit</groupId>
+        <artifactId>blaze-persistence-integration-querydsl-expressions</artifactId>
+        <version>${version.com.blazebit.blaze-persistence}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -801,6 +823,11 @@
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-services</artifactId>
         <version>${version.org.keycloak}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lz4</groupId>
+        <artifactId>lz4-java</artifactId>
+        <version>${version.org.lz4.lz4-java}</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
