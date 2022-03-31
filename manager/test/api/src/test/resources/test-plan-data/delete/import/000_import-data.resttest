@@ -270,7 +270,7 @@ Content-Type: application/json
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : false
+          "discoverability" : "ORG_MEMBERS"
         },
         "Policies" : [ {
           "id" : 1014,
