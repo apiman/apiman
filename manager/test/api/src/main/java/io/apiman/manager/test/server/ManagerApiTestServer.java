@@ -195,7 +195,9 @@ public class ManagerApiTestServer {
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
         ds.setPassword("");
-        ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1;TRACE_LEVEL_SYSTEM_OUT=3");
+        ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1");
+        // Use this for trace level JDBC logging
+        // ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1;TRACE_LEVEL_SYSTEM_OUT=3");
         Connection connection = ds.getConnection();
         connection.close();
         System.out.println("DataSource created and bound to JNDI.");
