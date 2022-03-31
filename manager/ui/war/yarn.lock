@@ -855,10 +855,10 @@ angular-scrollable-table@1.1.2:
   resolved "https://registry.yarnpkg.com/angular-scrollable-table/-/angular-scrollable-table-1.1.2.tgz#85c5cfbd1c2439b1a56a1609c243b763baa1c892"
   integrity sha1-hcXPvRwkObGlahYJwkO3Y7qhyJI=
 
-angular-ui-bootstrap@0.14.3:
-  version "0.14.3"
-  resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-0.14.3.tgz#d96ce604c84bbd706ba34aabca1d5a7376e18ba6"
-  integrity sha1-2WzmBMhLvXBro0qryh1ac3bhi6Y=
+angular-ui-bootstrap@2.5.6:
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-2.5.6.tgz#23937322ec641a6fbee16498cc32452aa199e7c5"
+  integrity sha512-yzcHpPMLQl0232nDzm5P4iAFTFQ9dMw0QgFLuKYbDj9M0xJ62z0oudYD/Lvh1pWfRsukiytP4Xj6BHOSrSXP8A==
 
 angular-xeditable-npm@0.1.9:
   version "0.1.9"
