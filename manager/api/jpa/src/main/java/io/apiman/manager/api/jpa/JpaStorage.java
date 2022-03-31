@@ -95,6 +95,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -106,8 +107,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import com.blazebit.persistence.CriteriaBuilder;
@@ -1946,20 +1945,18 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public Set<PermissionBean> getPermissions(String userId) throws StorageException {
-        Set<PermissionBean> permissions = new HashSet<>();
         try {
-            EntityManager entityManager = getActiveEntityManager();
-            javax.persistence.criteria.CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
-            Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
-            criteriaQuery.where(builder.equal(from.get("userId"), userId));
-            TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
-            typedQuery.setMaxResults(500);
-            List<RoleMembershipBean> resultList = typedQuery.getResultList();
+            List<RoleMembershipBean> resultList = getCriteriaBuilderFactory().create(getActiveEntityManager(), RoleMembershipBean.class)
+                    .where("userId").eq(userId)
+                    .setMaxResults(500) // I think this is set arbitrarily?
+                    .getResultList();
+
+            List<String> roleIds = resultList.stream().map(RoleMembershipBean::getRoleId).collect(Collectors.toList());
+            Map<String, RoleBean> roleMap = getRolesById(roleIds).stream().collect(Collectors.toMap(e -> e.getId(), e -> e));
+            Set<PermissionBean> permissions = new HashSet<>(resultList.size());
             for (RoleMembershipBean membership : resultList) {
-                RoleBean role = getRoleInternal(membership.getRoleId());
                 String qualifier = membership.getOrganizationId();
-                for (PermissionType permission : role.getPermissions()) {
+                for (PermissionType permission : roleMap.get(membership.getRoleId()).getPermissions()) {
                     PermissionBean p = new PermissionBean();
                     p.setName(permission);
                     p.setOrganizationId(qualifier);
@@ -1971,6 +1968,12 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
+    }
+
+    private List<RoleBean> getRolesById(List<String> roleIds) {
+        return getCriteriaBuilderFactory().create(getActiveEntityManager(), RoleBean.class)
+                       .where("id").in(roleIds)
+                       .getResultList();
     }
 
     /**
