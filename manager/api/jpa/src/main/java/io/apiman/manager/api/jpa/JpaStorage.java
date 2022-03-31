@@ -111,6 +111,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import com.blazebit.persistence.CriteriaBuilder;
+import com.blazebit.persistence.DeleteCriteriaBuilder;
 import org.apache.commons.io.IOUtils;
 import org.jdbi.v3.core.qualifier.QualifiedType;
 
@@ -2356,22 +2357,19 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
     @Override
     public Iterator<ClientVersionBean> getAllClientVersions(OrganizationBean organizationBean, ClientStatus status, int lim) throws StorageException {
-        String jpql = "SELECT v "
-                + " FROM ClientVersionBean v "
-                + " JOIN v.client c "
-                + " JOIN c.organization o "
-                + "WHERE o.id = :orgId ";
+        CriteriaBuilder<ClientVersionBean> builder = getCriteriaBuilderFactory()
+                .create(getActiveEntityManager(), ClientVersionBean.class, "v")
+                .innerJoin("v.client", "c")
+                .innerJoin("c.organization", "o")
+                .where("o.id").eq(organizationBean.getId());
 
         if (status != null) {
-            jpql += String.format(" AND v.status = '%s' ", status.name());
+            builder = builder.where("v.status").eq(status);
         }
-
-        Query query = getActiveEntityManager().createQuery(jpql);
-        query.setParameter("orgId", organizationBean.getId());
         if (lim > 0) {
-            query.setMaxResults(lim);
+            builder.setMaxResults(lim);
         }
-        return super.getAll(ClientVersionBean.class, query);
+        return super.getAll(ClientVersionBean.class, builder.getQuery());
     }
 
     @Override
@@ -2381,23 +2379,19 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
     @Override
     public Iterator<ApiVersionBean> getAllApiVersions(OrganizationBean organizationBean, ApiStatus status, int lim) throws StorageException {
-        String jpql = "SELECT v "
-                + "  FROM ApiVersionBean v "
-                + "  JOIN v.api a"
-                + "  JOIN a.organization o "
-                + " WHERE o.id = :orgId ";
+        CriteriaBuilder<ApiVersionBean> builder = getCriteriaBuilderFactory()
+                .create(getActiveEntityManager(), ApiVersionBean.class, "v")
+                .innerJoin("v.api", "a")
+                .innerJoin("a.organization", "o")
+                .where("o.id").eq(organizationBean.getId());
 
         if (status != null) {
-            jpql += String.format(" AND v.status = '%s' ", status.name());
+            builder = builder.where("v.status").eq(status);
         }
-
-        Query query = getActiveEntityManager().createQuery(jpql);
-        query.setParameter("orgId", organizationBean.getId());
-
         if (lim > 0) {
-            query.setMaxResults(lim);
+            builder.setMaxResults(lim);
         }
-        return super.getAll(ApiVersionBean.class, query);
+        return super.getAll(ApiVersionBean.class, builder.getQuery());
     }
 
     @Override
@@ -2407,22 +2401,19 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
     @Override
     public Iterator<PlanVersionBean> getAllPlanVersions(OrganizationBean organizationBean, PlanStatus status, int lim) throws StorageException {
-        String jpql = "SELECT v "
-                + "  FROM PlanVersionBean v "
-                + "  JOIN v.plan p "
-                + "  JOIN p.organization o "
-                + " WHERE o.id = :orgId ";
+        CriteriaBuilder<PlanVersionBean> builder = getCriteriaBuilderFactory()
+                .create(getActiveEntityManager(), PlanVersionBean.class, "v")
+                .innerJoin("v.plan", "p")
+                .innerJoin("p.organization", "o")
+                .where("o.id").eq(organizationBean.getId());
 
         if (status != null) {
-            jpql += String.format(" AND v.status = '%s' ", status.name());
+            builder = builder.where("v.status").eq(status);
         }
-
-        Query query = getActiveEntityManager().createQuery(jpql);
-        query.setParameter("orgId", organizationBean.getId());
         if (lim > 0) {
-            query.setMaxResults(lim);
+            builder.setMaxResults(lim);
         }
-        return super.getAll(PlanVersionBean.class, query);
+        return super.getAll(PlanVersionBean.class, builder.getQuery());
     }
 
     /**
@@ -2514,17 +2505,17 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     private void deleteAllPolicies(OrganizationBean organizationBean, String entityId, PolicyType type) throws StorageException {
-        String jpql =
-            "DELETE FROM PolicyBean b "
-          + "      WHERE b.organizationId = :orgId ";
+        DeleteCriteriaBuilder<PolicyBean> builder = getCriteriaBuilderFactory()
+                .delete(getActiveEntityManager(), PolicyBean.class, "b")
+                .where("b.organizationId").eq(organizationBean.getId());
 
-        if (entityId != null && type != null) {
-            jpql += String.format("AND b.entityId = '%s' AND b.type = '%s' ", entityId, type.name());
+        if (entityId != null) {
+            builder = builder.where("b.entityId").eq(entityId);
         }
-
-        Query query = getActiveEntityManager().createQuery(jpql);
-        query.setParameter("orgId", organizationBean.getId());
-        query.executeUpdate();
+        if (type != null) {
+            builder = builder.where("b.type").eq(type);
+        }
+        builder.executeUpdate();
     }
 
     private void deleteAllMemberships(OrganizationBean organizationBean) throws StorageException {
@@ -2553,17 +2544,17 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     private void deleteAllAuditEntries(OrganizationBean organizationBean, AuditEntityType entityType, String entityId) throws StorageException {
-        String jpql =
-            "DELETE FROM AuditEntryBean b "
-          + "   WHERE b.organizationId = :orgId ";
+        DeleteCriteriaBuilder<AuditEntryBean> builder = getCriteriaBuilderFactory()
+                .delete(getActiveEntityManager(), AuditEntryBean.class, "b")
+                .where("b.organizationId").eq(organizationBean.getId());
 
-        if (entityId != null && entityType != null) {
-            jpql += String.format("AND b.entityId = '%s' AND b.entityType = '%s' ", entityId, entityType.name());
+        if (entityId != null) {
+            builder = builder.where("b.entityId").eq(entityId);
         }
-
-        Query query = getActiveEntityManager().createQuery(jpql);
-        query.setParameter("orgId", organizationBean.getId());
-        query.executeUpdate();
+        if (entityType != null) {
+            builder = builder.where("b.entityType").eq(entityType);
+        }
+        builder.executeUpdate();
     }
 
     private void deleteAllContracts(ApiBean apiBean) throws StorageException {
