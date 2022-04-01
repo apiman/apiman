@@ -1,17 +1,17 @@
 import {_module} from "../apimanPlugin";
-import {ApiVersionBean} from "../model/api.model";
+import {ApiVersionBean, UpdateApiVersionBean} from "../model/api.model";
 import _ = require("lodash");
 import angular = require("angular");
 
 _module.controller('Apiman.ApiPlansController',
-    ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Configuration', '$uibModal',
-        function ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Configuration, $uibModal) {
+    ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Configuration',
+        function ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Configuration) {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
             $scope.tab = 'plans';
             $scope.version = params.version as ApiVersionBean;
-            $scope.updatedApi = new Object();
+            $scope.updatedApi = {} as UpdateApiVersionBean;
             $scope.showMetrics = Configuration.ui.metrics;
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
 
@@ -93,7 +93,7 @@ _module.controller('Apiman.ApiPlansController',
             $scope.$watch('updatedApi', function(newValue) {
                 $rootScope.isDirty = false;
 
-                if (newValue.publicAPI != $scope.version.publicAPI) {
+                if (newValue.publicAPI != $scope.version.publicAPI || newValue.publicDiscoverability != $scope.version.publicDiscoverability) {
                     $rootScope.isDirty = true;
                 }
 
@@ -125,12 +125,17 @@ _module.controller('Apiman.ApiPlansController',
                 //console.log('changedVersion: ' + JSON.stringify(item));
             };
 
+            $scope.setPublicDiscoverability = function(change): void {
+                change.plan.publicDiscoverability = change.level;
+            }
+
             $scope.setDiscoverability = function(change): void {
                 change.plan.discoverability = change.level;
             }
 
             $scope.reset = function() {
                 $scope.updatedApi.publicAPI = $scope.version.publicAPI;
+                $scope.updatedApi.publicDiscoverability = $scope.version.publicDiscoverability;
 
                 for (var i = 0; i < lockedPlans.length; i++) {
                     lockedPlans[i].selectedVersion = lockedPlans[i].lockedVersions[0];

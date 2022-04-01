@@ -78,7 +78,7 @@ export interface UpdateApiVersionBean {
   disableKeysStrip: boolean;
   plans: ApiPlanBean[];
   extendedDescription: string;
-  discoverability: Discoverability;
+  publicDiscoverability: Discoverability;
 }
 
 export interface ApiVersionBean {
@@ -104,6 +104,6 @@ export interface ApiVersionBean {
   parsePayload: boolean;
   disableKeysStrip: boolean;
   definitionUrl: string;
-  discoverability: Discoverability;
+  publicDiscoverability: Discoverability;
   extendedDescription: string
 }

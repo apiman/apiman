@@ -261,7 +261,7 @@ function devPortalBusinessLogic(
     const markdown: string = markdownEditor.getMarkdown();
     const updateApiVersionBean = {
       extendedDescription: markdown,
-      discoverability: $scope.data.apiVersion.discoverability,
+      publicDiscoverability: $scope.data.apiVersion.discoverability,
       plans: $scope.data.apiVersion.plans,
     } as UpdateApiVersionBean;
 
