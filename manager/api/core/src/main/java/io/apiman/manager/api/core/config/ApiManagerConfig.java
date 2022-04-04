@@ -361,7 +361,7 @@ public abstract class ApiManagerConfig {
                 } else if (value.length == 1) {
                     rval.put(key, value[0]);
                 } else {
-                    rval.put(key, String.join("", value));
+                    rval.put(key, String.join(",", value));
                 }
             }
         }
