@@ -354,9 +354,15 @@ public abstract class ApiManagerConfig {
         while (keys.hasNext()) {
             String key = keys.next();
             if (key.startsWith(prefix)) {
-                String value = getConfig().getString(key);
+                String[] value = getConfig().getStringArray(key);
                 key = key.substring(prefix.length());
-                rval.put(key, value);
+                if (value.length == 0) {
+                    rval.put(key, null);
+                } else if (value.length == 1) {
+                    rval.put(key, value[0]);
+                } else {
+                    rval.put(key, String.join("", value));
+                }
             }
         }
         return rval;

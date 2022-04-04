@@ -81,7 +81,7 @@ public class DiscoverabilityOptionsParser extends GenericOptionsParser {
 
     private static final class DisConfigParser extends GenericOptionsParser {
         private RoleSourceDiscoverability roleSourceDiscoverability;
-        private String name;
+        private final String name;
 
         public DisConfigParser(String name, Map<String, String> opts) {
             super(opts);
