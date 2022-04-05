@@ -126,10 +126,11 @@ export class ApiService {
     organizationId: string,
     apiId: string,
     apiVersion: string,
-    definitionType: string
+    definitionType: string,
+    loggedIn: boolean
   ): void {
     this.backendService
-      .getApiDefinition(organizationId, apiId, apiVersion)
+      .getApiDefinition(organizationId, apiId, apiVersion, loggedIn)
       .subscribe((data) => {
         this.downloadFile(data, apiId, apiVersion, definitionType);
       });

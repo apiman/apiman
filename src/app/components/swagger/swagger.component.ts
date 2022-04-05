@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ export class SwaggerComponent implements OnInit {
   endpoint = '';
   isPublicApi = false;
   isTryEnabled = false;
+  isMyClients = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,10 +55,15 @@ export class SwaggerComponent implements OnInit {
       subtitle: `${apiId} - ${apiVersion}`
     });
 
+    let swaggerUrl = `${this.endpoint}/devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
+    if (this.isMyClients) {
+      swaggerUrl = `${this.endpoint}/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
+    }
+
     const swaggerOptions: SwaggerUI.SwaggerUIOptions = {
       dom_id: '#swagger-editor',
       layout: 'BaseLayout',
-      url: `${this.endpoint}/devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`,
+      url: swaggerUrl,
       docExpansion: 'list',
       operationsSorter: 'alpha',
       tryItOutEnabled: true,
@@ -124,6 +130,7 @@ export class SwaggerComponent implements OnInit {
       this.route.snapshot.queryParamMap.get('try') ?? 'false'
     ) as boolean;
 
+    this.isMyClients = !!clientId;
     return { organizationId, apiId, apiVersion, apiKey };
   }
 

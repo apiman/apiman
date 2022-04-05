@@ -297,9 +297,15 @@ export class BackendService {
   public getApiDefinition(
     organizationId: string,
     apiId: string,
-    apiVersion: string
+    apiVersion: string,
+    loggedIn: boolean
   ): Observable<Blob> {
-    const path = `devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
+    let path = `devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
+
+    if (loggedIn) {
+      path = `organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
+    }
+
     return this.http.get(this.generateUrl(path), {
       responseType: 'blob'
     });
