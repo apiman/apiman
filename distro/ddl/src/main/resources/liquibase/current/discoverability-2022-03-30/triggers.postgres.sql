@@ -105,7 +105,7 @@ CREATE PROCEDURE update_apiversion_into_discoverability(api_versions) AS $$
          $1.discoverability
     )
     WHERE id = CONCAT_WS(':', $1.api_org_id, $1.api_id, $1.version);
-$$ LANGUAGE SQL
+$$ LANGUAGE SQL;
 
 ---- Delete
 CREATE PROCEDURE delete_apiversion_from_discoverability(api_versions) AS $$

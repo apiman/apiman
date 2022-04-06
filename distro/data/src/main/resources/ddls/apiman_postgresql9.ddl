@@ -479,7 +479,7 @@ SELECT
     $1.version,
     $1.discoverability
 FROM Api_Version_CTE
-$$ LANGUAGE SQL
+$$ LANGUAGE SQL;
 
 ---- Update
 CREATE PROCEDURE update_apiplan_into_discoverability(api_plans) AS $$
@@ -507,7 +507,7 @@ UPDATE discoverability
         $1.plan_id,
         $1.version
     )
-$$ LANGUAGE SQL
+$$ LANGUAGE SQL;
 
 ---- Delete
 CREATE PROCEDURE delete_apiplan_from_discoverability(api_plans) AS $$
@@ -527,7 +527,7 @@ CREATE PROCEDURE delete_apiplan_from_discoverability(api_plans) AS $$
         $1.plan_id,
         $1.version
     );
-$$ LANGUAGE SQL
+$$ LANGUAGE SQL;
 
 -- ApiVersion
 ---- Insert
@@ -542,7 +542,7 @@ CREATE PROCEDURE insert_apiversion_into_discoverability(api_versions) AS $$
         NULL,
         $1.discoverability
     );
-$$ LANGUAGE SQL
+$$ LANGUAGE SQL;
 
 ---- Update
 CREATE PROCEDURE update_apiversion_into_discoverability(api_versions) AS $$
@@ -556,7 +556,7 @@ CREATE PROCEDURE update_apiversion_into_discoverability(api_versions) AS $$
          $1.discoverability
     )
     WHERE id = CONCAT_WS(':', $1.api_org_id, $1.api_id, $1.version);
-$$ LANGUAGE SQL
+$$ LANGUAGE SQL;
 
 ---- Delete
 CREATE PROCEDURE delete_apiversion_from_discoverability(api_versions) AS $$
