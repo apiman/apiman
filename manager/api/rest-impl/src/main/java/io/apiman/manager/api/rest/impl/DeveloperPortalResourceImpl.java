@@ -5,7 +5,6 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
-import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
@@ -22,7 +21,9 @@ import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
+import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.security.ISecurityContext.EntityType;
 import io.apiman.manager.api.service.ApiService;
 import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
 import io.apiman.manager.api.service.DevPortalService;
@@ -77,16 +78,15 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public List<ApiVersionSummaryBean> listApiVersions(String orgId, String apiId) {
         return apiService.listApiVersions(orgId, apiId).stream()
-                .filter(this::isDiscoverableInPortal)
+                .filter(av -> securityContext.isDiscoverable(EntityType.API, orgId, apiId))
                 .collect(Collectors.toList());
     }
 
     @Override
     public ApiVersionBeanDto getApiVersion(String orgId, String apiId, String apiVersion) {
-        ApiVersionBeanDto retrieved = apiVersionMustBeExposedInPortal(orgId, apiId, apiVersion);
-        // return RestHelper.hideSensitiveDataFromApiVersionBean(retrieved);
-        // TODO(msavy): make new projection for this --^.
-        return retrieved;
+        mustBeDiscoverable(EntityType.API, orgId, apiId, apiVersion);
+        // TODO(msavy): make new projection for this.
+        return RestHelper.hideSensitiveDataFromApiVersionBean(apiService.getApiVersion(orgId, apiId, apiVersion));
     }
 
     @Override
@@ -106,13 +106,12 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public List<ApiVersionPolicySummaryDto> listApiPolicies(String orgId, String apiId, String apiVersion)
             throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
-        apiVersionMustBeExposedInPortal(orgId, apiId, apiVersion);
         return portalService.getApiVersionPolicies(orgId, apiId, apiVersion);
     }
 
     @Override
     public Response getApiDefinition(String orgId, String apiId, String apiVersion) throws ApiVersionNotFoundException {
-        apiVersionMustBeExposedInPortal(orgId, apiId, apiVersion);
+        mustBeDiscoverable(EntityType.API, orgId, apiId, apiVersion);
         ApiDefinitionStream apiDef = apiService.getApiDefinition(orgId, apiId, apiVersion);
         return Response.ok()
                 .entity(apiDef.getDefinition())
@@ -132,22 +131,15 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
         return planService.getPlanPolicy(orgId, planId, version, policyId);
     }
 
-    private ApiVersionBeanDto apiVersionMustBeExposedInPortal(String orgId, String apiId, String apiVersion) {
-        ApiVersionBeanDto retrieved = apiService.getApiVersion(orgId, apiId, apiVersion);
-        DiscoverabilityLevel discoverability = retrieved.getPublicDiscoverability();
-        if (discoverability != DiscoverabilityLevel.PORTAL) {
+    private void mustBeDiscoverable(EntityType entityType, String orgId, String apiId, String apiVersion) {
+        if (!securityContext.isDiscoverable(entityType, orgId, apiId, apiVersion)) {
             throw ExceptionFactory.apiVersionNotFoundException(apiId, apiVersion);
         }
-        return retrieved;
     }
 
     private void mustBeLoggedIn() {
         if (securityContext.getCurrentUser() == null) {
             throw ExceptionFactory.notAuthorizedException();
         }
-    }
-
-    private boolean isDiscoverableInPortal(ApiVersionSummaryBean avsb) {
-        return avsb.getPublicDiscoverability() == DiscoverabilityLevel.PORTAL;
     }
 }
