@@ -65,6 +65,7 @@ public interface IDeveloperPortalResource {
 
     @GET
     @Path("organizations/{orgId}/apis/{apiId}/versions/")
+    @Produces(MediaType.APPLICATION_JSON)
     List<ApiVersionSummaryBean> listApiVersions(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId);
 
     @GET
@@ -94,14 +95,14 @@ public interface IDeveloperPortalResource {
     @GET
     @Path("organizations/{orgId}/plans/{planId}/versions/{version}/policies")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicySummaryBean> listPlanPolicies(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("version") String version)
+    List<PolicySummaryBean> listPlanPolicies(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("version") String version)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException;
 
     @GET
     @Path("organizations/{orgId}/plans/{planId}/versions/{version}/policies/{policyId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public PolicyBean getPlanPolicy(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("version") String version,
-                                    @PathParam("policyId") long policyId)
+    PolicyBean getPlanPolicy(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("version") String version,
+                             @PathParam("policyId") long policyId)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
 }

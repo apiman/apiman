@@ -5,6 +5,7 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
@@ -31,15 +32,18 @@ import io.apiman.manager.api.service.OrganizationService;
 import io.apiman.manager.api.service.PlanService;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
+@Transactional
 public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     private final IApimanLogger LOG = ApimanLoggerFactory.getLogger(DeveloperPortalResourceImpl.class);
@@ -78,7 +82,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public List<ApiVersionSummaryBean> listApiVersions(String orgId, String apiId) {
         return apiService.listApiVersions(orgId, apiId).stream()
-                .filter(av -> securityContext.isDiscoverable(EntityType.API, orgId, apiId))
+                .filter(av -> securityContext.isDiscoverable(EntityType.API, orgId, apiId, null, Set.of(DiscoverabilityLevel.PORTAL)))
                 .collect(Collectors.toList());
     }
 
@@ -91,6 +95,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     @Override
     public List<DeveloperApiPlanSummaryDto> getApiVersionPlans(String orgId, String apiId, String version) {
+        mustBeDiscoverable(EntityType.API, orgId, apiId, version);
         return portalService.getApiVersionPlans(orgId, apiId, version);
     }
 
@@ -106,6 +111,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public List<ApiVersionPolicySummaryDto> listApiPolicies(String orgId, String apiId, String apiVersion)
             throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
+        mustBeDiscoverable(EntityType.API, orgId, apiId, apiVersion);
         return portalService.getApiVersionPolicies(orgId, apiId, apiVersion);
     }
 
@@ -122,17 +128,19 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public List<PolicySummaryBean> listPlanPolicies(String orgId, String planId, String version)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
+        mustBeDiscoverable(EntityType.PLAN, orgId, planId, version);
         return planService.listPlanPolicies(orgId, planId, version);
     }
 
     @Override
     public PolicyBean getPlanPolicy(String orgId, String planId, String version, long policyId)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
+        mustBeDiscoverable(EntityType.PLAN, orgId, planId, version);
         return planService.getPlanPolicy(orgId, planId, version, policyId);
     }
 
     private void mustBeDiscoverable(EntityType entityType, String orgId, String apiId, String apiVersion) {
-        if (!securityContext.isDiscoverable(entityType, orgId, apiId, apiVersion)) {
+        if (!securityContext.isDiscoverable(entityType, orgId, apiId, apiVersion, Set.of(DiscoverabilityLevel.PORTAL))) {
             throw ExceptionFactory.apiVersionNotFoundException(apiId, apiVersion);
         }
     }

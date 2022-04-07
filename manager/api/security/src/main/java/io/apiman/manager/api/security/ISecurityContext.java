@@ -116,6 +116,8 @@ public interface ISecurityContext {
 
     boolean isDiscoverable(EntityType entityType, String organizationId, String entityId, String entityVersion);
 
+    boolean isDiscoverable(EntityType entityType, String orgId, String entityId, String entityVersion, Set<DiscoverabilityLevel> discoverabilityLevelSet);
+
     void checkPermissionsOrDiscoverability(EntityType entityType,
                                            String orgId,
                                            String entityId,
@@ -126,6 +128,8 @@ public interface ISecurityContext {
                                            String entityId,
                                            String entityVersion,
                                            Set<PermissionType> permissionType) throws NotAuthorizedException;
+
+
     /**
      * Throws an exception if the user has no admin permissions
      * or the user called not is own user resource

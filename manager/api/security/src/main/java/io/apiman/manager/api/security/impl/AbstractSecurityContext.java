@@ -254,7 +254,12 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
 
     @Override
     public boolean isDiscoverable(EntityType entityType, String orgId, String entityId, String entityVersion) {
-        DILookupResult indexedResult = isVis(entityType, orgId, entityId, entityVersion);
+        return isDiscoverable(entityType, orgId, entityId, entityVersion, getDiscoverabilities());
+    }
+
+    @Override
+    public boolean isDiscoverable(EntityType entityType, String orgId, String entityId, String entityVersion, Set<DiscoverabilityLevel> discoverabilityLevelSet) {
+        DILookupResult indexedResult = isVis(entityType, orgId, entityId, entityVersion, discoverabilityLevelSet);
         switch(indexedResult) {
             case DISCOVERABLE:
                 return true;
@@ -264,16 +269,15 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
                 // Handle cases where: (1) not in index, (2) bad information. Need to be careful not to get into cycle.
                 IndexedDiscoverabilities indexedDiscoverabilities = discoverabilities.get();
                 indexedDiscoverabilities.index(storage.getOrgApiPlansWithDiscoverability(orgId, Set.of(DiscoverabilityLevel.values())));
-                DILookupResult retry = isVis(entityType, orgId, entityId, entityVersion);
+                DILookupResult retry = isVis(entityType, orgId, entityId, entityVersion, discoverabilityLevelSet);
                 return retry == DILookupResult.DISCOVERABLE;
             default:
                 throw new IllegalArgumentException("Unhandled index state: " + indexedResult);
         }
     }
 
-    private DILookupResult isVis(EntityType entityType, String orgId, String entityId, String entityVersion) {
+    private DILookupResult isVis(EntityType entityType, String orgId, String entityId, String entityVersion, Set<DiscoverabilityLevel> discoverabilityLevelSet) {
         IndexedDiscoverabilities indexedDiscoverabilities = discoverabilities.get();
-        Set<DiscoverabilityLevel> discoverabilityLevelSet = getDiscoverabilities();
         if (entityVersion == null || entityVersion.isBlank()) {
             return indexedDiscoverabilities.isAnyDiscoverable(entityType, orgId, entityId, discoverabilityLevelSet);
         } else {
