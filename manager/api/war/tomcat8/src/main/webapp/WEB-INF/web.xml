@@ -158,6 +158,7 @@
 
     <auth-constraint>
       <role-name>apiuser</role-name>
+      <role-name>devportaluser</role-name>
     </auth-constraint>
   </security-constraint>
 
@@ -179,6 +180,7 @@
     </web-resource-collection>
 
     <auth-constraint>
+      <role-name>apiuser</role-name>
       <role-name>devportaluser</role-name>
     </auth-constraint>
   </security-constraint>
@@ -196,6 +198,7 @@
     </web-resource-collection>
     <auth-constraint>
       <role-name>apiuser</role-name>
+      <role-name>devportaluser</role-name>
     </auth-constraint>
   </security-constraint>
   <login-config>
