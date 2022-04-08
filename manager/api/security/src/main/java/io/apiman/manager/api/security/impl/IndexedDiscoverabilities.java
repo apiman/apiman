@@ -21,8 +21,10 @@ import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 import io.apiman.manager.api.beans.idm.DiscoverabilityMapper;
 import io.apiman.manager.api.security.ISecurityContext.EntityType;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -68,7 +70,11 @@ public class IndexedDiscoverabilities {
      * @param discoverabilityEntities views to index
      */
     public void index(Collection<DiscoverabilityEntity> discoverabilityEntities) {
-        for (DiscoverabilityDto DiscoverabilityDto : mapper.toDto(discoverabilityEntities)) {
+
+        List<DiscoverabilityDto> dtos = new ArrayList<>(mapper.toDto(discoverabilityEntities));
+        Collections.sort(dtos, Comparator.comparing(DiscoverabilityDto::getId));
+
+        for (DiscoverabilityDto DiscoverabilityDto : dtos) {
             discoverabilityIndex.put(createApiLookupKey(DiscoverabilityDto), DiscoverabilityDto);
             // If it's a public API, it could be that it has no attached plans.
             if (DiscoverabilityDto.getPlanId() != null && DiscoverabilityDto.getPlanVersion() != null) {

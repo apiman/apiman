@@ -1,5 +1,8 @@
 package io.apiman.manager.api.beans.idm;
 
+import java.util.Objects;
+import java.util.StringJoiner;
+
 /**
  *
  *
@@ -70,5 +73,37 @@ public final class DiscoverabilityDto {
 
     public void setDiscoverability(DiscoverabilityLevel discoverability) {
         this.discoverability = discoverability;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DiscoverabilityDto that = (DiscoverabilityDto) o;
+        return Objects.equals(id, that.id) && Objects.equals(orgId, that.orgId) && Objects.equals(apiId, that.apiId)
+                       && Objects.equals(apiVersion, that.apiVersion) && Objects.equals(planId, that.planId) && Objects.equals(planVersion,
+                that.planVersion) && discoverability == that.discoverability;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orgId, apiId, apiVersion, planId, planVersion, discoverability);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", DiscoverabilityDto.class.getSimpleName() + "[", "]")
+                .add("id='" + id + "'")
+                .add("orgId='" + orgId + "'")
+                .add("apiId='" + apiId + "'")
+                .add("apiVersion='" + apiVersion + "'")
+                .add("planId='" + planId + "'")
+                .add("planVersion='" + planVersion + "'")
+                .add("discoverability=" + discoverability)
+                .toString();
     }
 }
