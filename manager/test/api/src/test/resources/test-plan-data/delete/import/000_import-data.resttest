@@ -1,0 +1,479 @@
+POST /system/import admin/admin
+Content-Type: application/json
+
+{
+  "Metadata" : {
+    "id" : 1648206297334,
+    "exportedOn" : "2022-03-25T11:04:57Z",
+    "apimanVersion" : "3.0.0-SNAPSHOT"
+  },
+  "Users" : [ {
+    "username" : "admin",
+    "fullName" : "apiman admin",
+    "email" : "admin@example.org",
+    "joinedOn" : "2022-03-25T10:40:36Z",
+    "admin" : false
+  }, {
+    "username" : "user",
+    "fullName" : "apiman user",
+    "email" : "user@example.com",
+    "joinedOn" : "2022-03-25T11:04:30Z",
+    "admin" : false
+  } ],
+  "Gateways" : [ {
+    "id" : "TheGateway",
+    "name" : "The Gateway",
+    "description" : "This is the default gateway.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "modifiedBy" : "admin",
+    "modifiedOn" : "2018-05-09T12:00:00Z",
+    "type" : "REST",
+    "configuration" : "{\"endpoint\":\"${apiman.gateway-endpoint:https://localhost:8443/apiman-gateway-api}\",\"username\":\"${apiman.gateway-endpoint.username:apimanager}\",\"password\":\"${apiman.gateway-endpoint.password:apiman123!}\"}"
+  } ],
+  "Plugins" : [ ],
+  "Roles" : [ {
+    "id" : "APIDeveloper",
+    "name" : "API Developer",
+    "description" : "Users responsible for creating and managing APIs should be granted this role within an Organization.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-05-16T12:34:14Z",
+    "autoGrant" : false,
+    "permissions" : [ "apiEdit", "orgView", "apiView", "planAdmin", "planEdit", "planView", "apiAdmin" ]
+  }, {
+    "id" : "ClientAppDeveloper",
+    "name" : "Client App Developer",
+    "description" : "Users responsible for creating and managing client apps should be granted this role within an Organization.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-05-16T12:34:14Z",
+    "autoGrant" : false,
+    "permissions" : [ "orgView", "clientView", "clientAdmin", "clientEdit" ]
+  }, {
+    "id" : "OrganizationOwner",
+    "name" : "Organization Owner",
+    "description" : "Automatically granted to the user who creates an Organization.  Grants all privileges.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-05-16T12:34:14Z",
+    "autoGrant" : true,
+    "permissions" : [ "apiEdit", "orgView", "apiView", "orgAdmin", "orgEdit", "planAdmin", "planEdit", "clientView", "planView", "clientAdmin", "clientEdit", "apiAdmin" ]
+  } ],
+  "PolicyDefinitions" : [ {
+    "id" : "AuthorizationPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.AuthorizationPolicy",
+    "name" : "Authorization Policy",
+    "description" : "Enables fine grained authorization to API resources based on authenticated user roles.",
+    "icon" : "users",
+    "templates" : [ {
+      "template" : "Appropriate authorization roles are required.  There are ${rules.size()} authorization rules defined."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "BASICAuthenticationPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
+    "name" : "BASIC Authentication Policy",
+    "description" : "Enables HTTP BASIC Authentication on an API.  Some configuration required.",
+    "icon" : "lock",
+    "templates" : [ {
+      "template" : "Access to the API is protected by BASIC Authentication through the '${realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end API via the '${forwardIdentityHttpHeader}' custom HTTP header.@end{}"
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "CachingResourcesPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.CachingResourcesPolicy",
+    "name" : "Caching Resources Policy",
+    "description" : "Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.",
+    "icon" : "hdd-o",
+    "templates" : [ {
+      "template" : "API responses will be cached for @{ttl} seconds."
+    } ],
+    "deleted" : false
+  }, {
+    "id" : "IPBlacklistPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
+    "name" : "IP Blacklist Policy",
+    "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
+    "icon" : "thumbs-down",
+    "templates" : [ {
+      "template" : "Requests that originate from the set of ${ipList.size()} configured IP address(es) will be denied access to the managed API."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "IPWhitelistPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
+    "name" : "IP Whitelist Policy",
+    "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
+    "icon" : "filter",
+    "templates" : [ {
+      "template" : "Only requests that originate from the set of ${ipList.size()} configured IP address(es) will be allowed to invoke the managed API."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "IgnoredResourcesPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy",
+    "name" : "Ignored Resources Policy",
+    "description" : "Requests satisfying the provided regular expression will be ignored.",
+    "icon" : "eye-slash",
+    "templates" : [ {
+      "template" : "Requests matching any of the ${rules.size()} regular expressions provided will receive a 404 error code."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "QuotaPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.QuotaPolicy",
+    "name" : "Quota Policy",
+    "description" : "Provides a way to limit the total number of requests that can be sent to an API.",
+    "icon" : "exchange",
+    "templates" : [ {
+      "template" : "Consumers cannot exceed their quota of ${limit} requests per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "RateLimitingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
+    "name" : "Rate Limiting Policy",
+    "description" : "Enforces rate configurable request rate limits on an API.  This ensures that consumers can't overload an API with too many requests.",
+    "icon" : "sliders",
+    "templates" : [ {
+      "template" : "Consumers are limited to ${limit} requests per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "TimeRestrictedAccessPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy",
+    "name" : "Time Restricted Access Policy",
+    "description" : "Requests matching the specified regular expression and made within the specified time period will be ignored.",
+    "icon" : "clock-o",
+    "templates" : [ {
+      "template" : "Requests matching the regular expression and made outside the specified time period will receive a 423 error code."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "TransferQuotaPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.TransferQuotaPolicy",
+    "name" : "Transfer Quota Policy",
+    "description" : "Provides a way to limit the total number of bytes that can be transferred from (or to) an API.",
+    "icon" : "download",
+    "templates" : [ {
+      "template" : "Consumers are limited to transferring ${limit} bytes per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "URLRewritingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.URLRewritingPolicy",
+    "name" : "URL Rewriting Policy",
+    "description" : "Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway.",
+    "icon" : "pencil-square",
+    "templates" : [ {
+      "template" : "Requests and/or responses will be modified by finding all text matching regular expression '${fromRegex}' with '${toReplacement}'."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  } ],
+  "Developers" : [ ],
+  "Orgs" : [ {
+    "OrganizationBean" : {
+      "id" : "Organization1",
+      "name" : "Organization1",
+      "createdBy" : "admin",
+      "createdOn" : "2022-03-25T10:41:52Z",
+      "modifiedBy" : "admin",
+      "modifiedOn" : "2022-03-25T10:41:52Z"
+    },
+    "Memberships" : [ {
+      "id" : 1000,
+      "userId" : "admin",
+      "roleId" : "OrganizationOwner",
+      "organizationId" : "Organization1",
+      "createdOn" : "2022-03-25T10:41:52Z"
+    }, {
+      "id" : 1033,
+      "userId" : "user",
+      "roleId" : "APIDeveloper",
+      "organizationId" : "Organization1",
+      "createdOn" : "2022-03-25T11:04:51Z"
+    } ],
+    "Plans" : [ {
+      "PlanBean" : {
+        "id" : "Test",
+        "name" : "Test",
+        "createdBy" : "admin",
+        "createdOn" : "2022-03-25T10:42:50Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1002,
+          "status" : "Created",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2022-03-25T10:42:50Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2022-03-25T10:43:08Z"
+        },
+        "Policies" : [ {
+          "id" : 1004,
+          "type" : "Plan",
+          "organizationId" : "Organization1",
+          "entityId" : "Test",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":1,\"granularity\":\"Client\",\"period\":\"Second\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2022-03-25T10:43:08Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2022-03-25T10:43:08Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    } ],
+    "Apis" : [ {
+      "ApiBean" : {
+        "id" : "Test",
+        "name" : "Test",
+        "createdBy" : "admin",
+        "createdOn" : "2022-03-25T10:43:44Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1012,
+          "status" : "Created",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2022-03-25T10:43:44Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2022-03-25T10:43:58Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ {
+          "id" : 1014,
+          "type" : "Api",
+          "organizationId" : "Organization1",
+          "entityId" : "Test",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":1,\"granularity\":\"Client\",\"period\":\"Second\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2022-03-25T10:43:58Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2022-03-25T10:43:58Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    } ],
+    "Clients" : [ {
+      "ClientBean" : {
+        "id" : "Test",
+        "name" : "Test",
+        "createdBy" : "admin",
+        "createdOn" : "2022-03-25T10:43:21Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1007,
+          "status" : "Created",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2022-03-25T10:43:21Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2022-03-25T10:43:33Z",
+          "apikey" : "3a2636bc-2d9b-483f-8bb9-fcca183f0923"
+        },
+        "Policies" : [ {
+          "id" : 1009,
+          "type" : "Client",
+          "organizationId" : "Organization1",
+          "entityId" : "Test",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":1,\"granularity\":\"Client\",\"period\":\"Second\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2022-03-25T10:43:33Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2022-03-25T10:43:33Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ],
+        "Contracts" : [ ]
+      } ]
+    } ],
+    "Audits" : [ {
+      "id" : 999,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Organization",
+      "createdOn" : "2022-03-25T10:41:52Z",
+      "what" : "Create"
+    }, {
+      "id" : 1001,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Plan",
+      "entityId" : "Test",
+      "createdOn" : "2022-03-25T10:42:50Z",
+      "what" : "Create"
+    }, {
+      "id" : 1003,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Plan",
+      "entityId" : "Test",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-03-25T10:42:50Z",
+      "what" : "Create"
+    }, {
+      "id" : 1005,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Plan",
+      "entityId" : "Test",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-03-25T10:43:08Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1006,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Client",
+      "entityId" : "Test",
+      "createdOn" : "2022-03-25T10:43:21Z",
+      "what" : "Create"
+    }, {
+      "id" : 1008,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Client",
+      "entityId" : "Test",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-03-25T10:43:21Z",
+      "what" : "Create"
+    }, {
+      "id" : 1010,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Client",
+      "entityId" : "Test",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-03-25T10:43:33Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1011,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Api",
+      "entityId" : "Test",
+      "createdOn" : "2022-03-25T10:43:44Z",
+      "what" : "Create"
+    }, {
+      "id" : 1013,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Api",
+      "entityId" : "Test",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-03-25T10:43:44Z",
+      "what" : "Create"
+    }, {
+      "id" : 1015,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Api",
+      "entityId" : "Test",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-03-25T10:43:58Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1034,
+      "who" : "admin",
+      "organizationId" : "Organization1",
+      "entityType" : "Organization",
+      "createdOn" : "2022-03-25T11:04:51Z",
+      "what" : "Grant",
+      "data" : "{\"userId\":\"user\",\"roles\":[\"APIDeveloper\"]}"
+    } ]
+  } ]
+}
+----
+200
+Content-Type: text/plain;charset=utf-8
+X-RestTest-RegexMatching: true
+
+INFO: ----------------------------
+INFO: Starting apiman data import: .*apiman_import_migrated.*json
+INFO: Importing a user: admin
+INFO: Importing a user: user
+INFO: Importing a gateway: The Gateway
+INFO: Importing a role: API Developer
+INFO: Importing a role: Client App Developer
+INFO: Importing a role: Organization Owner
+INFO: Importing a policy definition: Authorization Policy
+INFO: Importing a policy definition: BASIC Authentication Policy
+INFO: Importing a policy definition: Caching Resources Policy
+INFO: Importing a policy definition: IP Blacklist Policy
+INFO: Importing a policy definition: IP Whitelist Policy
+INFO: Importing a policy definition: Ignored Resources Policy
+INFO: Importing a policy definition: Quota Policy
+INFO: Importing a policy definition: Rate Limiting Policy
+INFO: Importing a policy definition: Time Restricted Access Policy
+INFO: Importing a policy definition: Transfer Quota Policy
+INFO: Importing a policy definition: URL Rewriting Policy
+INFO: Importing an organization: Organization1
+INFO:   Importing a role membership: admin\+OrganizationOwner=>Organization1
+INFO:   Importing a role membership: user\+APIDeveloper=>Organization1
+INFO:   Importing a plan: Test
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:     Importing an API: Test
+INFO:     Importing an API version: 1.0
+INFO:       Importing an API policy: Rate Limiting Policy
+INFO:   Importing a client: Test
+INFO:     Importing a client version: 1.0
+INFO:       Importing a client policy: Rate Limiting Policy
+INFO:   Importing an audit entry: 999
+INFO:   Importing an audit entry: 1001
+INFO:   Importing an audit entry: 1003
+INFO:   Importing an audit entry: 1005
+INFO:   Importing an audit entry: 1006
+INFO:   Importing an audit entry: 1008
+INFO:   Importing an audit entry: 1010
+INFO:   Importing an audit entry: 1011
+INFO:   Importing an audit entry: 1013
+INFO:   Importing an audit entry: 1015
+INFO:   Importing an audit entry: 1034
+INFO: Publishing APIs to the gateway.
+INFO: Registering clients in the gateway.
+INFO: -----------------------------------
+INFO: Data import completed successfully!
+INFO: -----------------------------------

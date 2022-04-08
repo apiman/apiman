@@ -461,6 +461,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public void deletePlan(PlanBean plan) throws StorageException {
+        // Delete policies
+        deleteAllPolicies(plan);
         // Delete audit entries
         deleteAllAuditEntries(plan);
         // Delete entity
@@ -2427,32 +2429,43 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public Iterator<ApiVersionBean> getAllPublicApiVersions() throws StorageException {
-        // TODO: Implement
-        return null;
+        String jpql = "SELECT v "
+            + "  FROM ApiVersionBean v "
+            + "  WHERE v.publicAPI = true";
+        // TODO(msavy): consider adding pagination
+        Query query = getActiveEntityManager().createQuery(jpql);
+        getActiveEntityManager().createQuery(jpql);
+        return super.getAll(ApiVersionBean.class, query);
     }
 
     private void deleteAllPolicies(OrganizationBean organizationBean) throws StorageException {
-        deleteAllPolicies(organizationBean, null);
+        deleteAllPolicies(organizationBean, null, null);
+    }
+
+    private void deleteAllPolicies(PlanBean planBean) throws StorageException {
+        deleteAllPolicies(planBean.getOrganization(), planBean.getId(), PolicyType.Plan);
     }
 
     private void deleteAllPolicies(ApiBean apiBean) throws StorageException {
-        deleteAllPolicies(apiBean.getOrganization(), apiBean.getId());
+        deleteAllPolicies(apiBean.getOrganization(), apiBean.getId(), PolicyType.Api);
     }
 
     private void deleteAllPolicies(ClientBean clientBean) throws StorageException {
-        deleteAllPolicies(clientBean.getOrganization(), clientBean.getId());
+        deleteAllPolicies(clientBean.getOrganization(), clientBean.getId(), PolicyType.Client);
     }
 
-    private void deleteAllPolicies(OrganizationBean organizationBean, String entityId) throws StorageException {
-        String jpql = "DELETE PolicyBean b "
-                    + " WHERE b.organizationId = :orgId ";
+    private void deleteAllPolicies(OrganizationBean organizationBean, String entityId, PolicyType type) throws StorageException {
+        String jpql =
+            "DELETE FROM PolicyBean b "
+          + "      WHERE b.organizationId = :orgId ";
 
-        if (entityId != null) {
-            jpql += String.format("AND b.entityId = '%s'", entityId);
+        if (entityId != null && type != null) {
+            jpql += String.format("AND b.entityId = '%s' AND b.type = '%s' ", entityId, type.name());
         }
 
         Query query = getActiveEntityManager().createQuery(jpql);
         query.setParameter("orgId", organizationBean.getId());
+        query.executeUpdate();
     }
 
     private void deleteAllMemberships(OrganizationBean organizationBean) throws StorageException {

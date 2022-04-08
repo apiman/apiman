@@ -1,0 +1,19 @@
+GET /organizations/Organization1/plans/Test/activity admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "beans" : [
+    {
+      "who":"admin",
+      "organizationId":"Organization1",
+      "entityType":"Plan",
+      "entityId":"Test",
+      "entityVersion":null,
+      "what":"Create",
+      "data":null
+    }
+  ],
+  "totalSize":1
+}
