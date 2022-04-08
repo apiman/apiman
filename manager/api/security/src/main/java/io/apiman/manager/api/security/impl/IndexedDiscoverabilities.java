@@ -21,10 +21,8 @@ import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 import io.apiman.manager.api.beans.idm.DiscoverabilityMapper;
 import io.apiman.manager.api.security.ISecurityContext.EntityType;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -71,14 +69,28 @@ public class IndexedDiscoverabilities {
      */
     public void index(Collection<DiscoverabilityEntity> discoverabilityEntities) {
 
-        List<DiscoverabilityDto> dtos = new ArrayList<>(mapper.toDto(discoverabilityEntities));
-        Collections.sort(dtos, Comparator.comparing(DiscoverabilityDto::getId));
-
-        for (DiscoverabilityDto DiscoverabilityDto : dtos) {
-            discoverabilityIndex.put(createApiLookupKey(DiscoverabilityDto), DiscoverabilityDto);
+        /*
+         * We need to ensure that the highest discoverability level wins.
+         */
+        for (DiscoverabilityDto discoverabilityDto : mapper.toDto(discoverabilityEntities)) {
+            discoverabilityIndex.compute(
+                    createApiLookupKey(discoverabilityDto),
+                    (k, v) -> {
+                        if (v == null) {
+                            return discoverabilityDto;
+                        } else {
+                            int compare = v.getDiscoverability().compareTo(discoverabilityDto.getDiscoverability());
+                            if (compare > 0) {
+                                return discoverabilityDto;
+                            } else {
+                                return v;
+                            }
+                        }
+                    }
+            );
             // If it's a public API, it could be that it has no attached plans.
-            if (DiscoverabilityDto.getPlanId() != null && DiscoverabilityDto.getPlanVersion() != null) {
-                discoverabilityIndex.put(createPlanLookupKey(DiscoverabilityDto), DiscoverabilityDto);
+            if (discoverabilityDto.getPlanId() != null && discoverabilityDto.getPlanVersion() != null) {
+                discoverabilityIndex.put(createPlanLookupKey(discoverabilityDto), discoverabilityDto);
             }
         }
     }

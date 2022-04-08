@@ -21,7 +21,7 @@ public class IndexedDiscoverabilitiesOrderingTest {
     IndexedDiscoverabilities index = new IndexedDiscoverabilities();
 
     @Test
-    public void order1() {
+    public void is_order_insensitive_AB() {
         index.index(List.of(
                 newDe(
                         "Org-Id-1",
@@ -46,7 +46,7 @@ public class IndexedDiscoverabilitiesOrderingTest {
     }
 
     @Test
-    public void order2() {
+    public void is_order_insensitive_BA() {
         index.index(List.of(
                 newDe(
                         "Org-Id-1",
@@ -55,6 +55,56 @@ public class IndexedDiscoverabilitiesOrderingTest {
                         "Api-Id-1",
                         "Api-Version-1",
                         DiscoverabilityLevel.ORG_MEMBERS
+                ),
+                newDe(
+                        "Org-Id-1",
+                        "Plan-Id-1",
+                        "Plan-Version-1",
+                        "Api-Id-1",
+                        "Api-Version-1",
+                        DiscoverabilityLevel.PORTAL
+                )
+        ));
+
+        DILookupResult result = index.isDiscoverable(EntityType.API, "Org-Id-1", "Api-Id-1", "Api-Version-1", Set.of(DiscoverabilityLevel.PORTAL));
+        assertThat(result).isEqualTo(DILookupResult.DISCOVERABLE);
+    }
+
+    @Test
+    public void use_most_discoverable_level_for_parent() {
+        index.index(List.of(
+                newDe(
+                        "Org-Id-1",
+                        null,
+                        null,
+                        "Api-Id-1",
+                        "Api-Version-1",
+                        DiscoverabilityLevel.PORTAL
+                ),
+                newDe(
+                        "Org-Id-1",
+                        "Plan-Id-1",
+                        "Plan-Version-1",
+                        "Api-Id-1",
+                        "Api-Version-1",
+                        DiscoverabilityLevel.ORG_MEMBERS
+                )
+        ));
+
+        DILookupResult result = index.isDiscoverable(EntityType.API, "Org-Id-1", "Api-Id-1", "Api-Version-1", Set.of(DiscoverabilityLevel.PORTAL));
+        assertThat(result).isEqualTo(DILookupResult.DISCOVERABLE);
+    }
+
+    @Test
+    public void use_most_discoverable_level_for_parent_2() {
+        index.index(List.of(
+                newDe(
+                        "Org-Id-1",
+                        null,
+                        null,
+                        "Api-Id-1",
+                        "Api-Version-1",
+                        DiscoverabilityLevel.FULL_PLATFORM_MEMBERS
                 ),
                 newDe(
                         "Org-Id-1",

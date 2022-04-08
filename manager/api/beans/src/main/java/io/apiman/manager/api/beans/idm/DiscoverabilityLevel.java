@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.idm;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -52,5 +54,13 @@ public enum DiscoverabilityLevel {
 
     public static DiscoverabilityLevel toValue(String value) {
         return Enum.valueOf(DiscoverabilityLevel.class, value.toUpperCase());
+    }
+
+    private static final DiscoverabilityLevel[] PRECEDENCE = { PORTAL, ANONYMOUS, FULL_PLATFORM_MEMBERS, ORG_MEMBERS };
+
+    public static int compare(DiscoverabilityLevel a, DiscoverabilityLevel b) {
+        int posA = Arrays.binarySearch(PRECEDENCE, a); 
+        int posB = Arrays.binarySearch(PRECEDENCE, b);
+        return Integer.compare(posA, posB);
     }
 }
