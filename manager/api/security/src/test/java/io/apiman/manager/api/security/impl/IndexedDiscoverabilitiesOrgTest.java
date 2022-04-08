@@ -67,12 +67,19 @@ public class IndexedDiscoverabilitiesOrgTest {
     }
 
     private DiscoverabilityEntity newDe(String orgId, String planId, String planVersion, String apiId, String apiVersion, DiscoverabilityLevel discoverability) {
+        String id;
+        if (planId == null) {
+            id = String.join(":", orgId, apiId, apiVersion);
+        } else {
+            id = String.join(":", orgId, apiId, apiVersion, planId, planVersion);
+        }
         return new DiscoverabilityEntity()
-                       .setOrgId(orgId)
-                       .setPlanId(planId)
-                       .setPlanVersion(planVersion)
-                       .setApiId(apiId)
-                       .setApiVersion(apiVersion)
-                       .setDiscoverability(discoverability);
+                .setId(id)
+                .setOrgId(orgId)
+                .setPlanId(planId)
+                .setPlanVersion(planVersion)
+                .setApiId(apiId)
+                .setApiVersion(apiVersion)
+                .setDiscoverability(discoverability);
     }
 }

@@ -168,7 +168,14 @@ public class IndexedDiscoverabilitiesApiTest {
     }
 
     private DiscoverabilityEntity newDe(String orgId, String planId, String planVersion, String apiId, String apiVersion, DiscoverabilityLevel discoverability) {
+        String id;
+        if (planId == null) {
+            id = String.join(":", orgId, apiId, apiVersion);
+        } else {
+            id = String.join(":", orgId, apiId, apiVersion, planId, planVersion);
+        }
         return new DiscoverabilityEntity()
+                .setId(id)
                 .setOrgId(orgId)
                 .setPlanId(planId)
                 .setPlanVersion(planVersion)
