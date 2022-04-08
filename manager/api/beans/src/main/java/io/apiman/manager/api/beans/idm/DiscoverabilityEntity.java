@@ -125,6 +125,7 @@ import org.hibernate.annotations.Immutable;
 @Immutable
 public class DiscoverabilityEntity implements Serializable {
 
+    private static final long serialVersionUID = -8900252776517020346L;
     @Id
     @Column(name = "id")
     private String id;
