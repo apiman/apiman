@@ -143,7 +143,7 @@
                             </a>
                         </li>
                         <li class="list-group-item" id="apiman-sidebar-orgs-new" data-target="#apis-new_client-tertiary">
-                            <a href="{{ pluginName }}/new-org" ng-hide="noCreateOrg || !isAdmin">
+                            <a href="{{ pluginName }}/new-org" ng-hide="noCreateOrg">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.create-new-org">New Organization</span>
                             </a>
                         </li>
