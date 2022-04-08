@@ -3,4 +3,4 @@ GET /organizations/Organization1/plans/Test/versions/1.0/policies admin/admin
 200
 Content-Type: application/json
 
-[{"policyDefinitionId":"RateLimitingPolicy","id":4,"name":"Rate Limiting Policy","description":"Consumers are limited to  requests per  per .","icon":"sliders","createdBy":"admin","createdOn":"2022-03-25T10:43:08.000+00:00"}]
+[{"policyDefinitionId":"RateLimitingPolicy","id":4,"name":"Rate Limiting Policy","description":"Consumers are limited to  requests per  per .","icon":"sliders","createdBy":"admin"}]
