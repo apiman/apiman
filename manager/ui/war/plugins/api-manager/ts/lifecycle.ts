@@ -118,6 +118,11 @@ module ApimanPageLifecycle {
                 $rootScope.permissions = permissions;
                 $rootScope.memberships = memberships;
                 $rootScope.isAdmin = currentUser.admin;
+
+                // set global configuration for admin only org creation
+                $rootScope.noCreateOrg = Configuration.ui.platform == 'f8' || Configuration.ui.platform == 'ose' ||
+                    (Configuration.ui.adminOnlyOrgCreation == true && !$rootScope.isAdmin);
+                Logger.info('Creation of Organizations disabled {0}', $rootScope.noCreateOrg);
             };
             var handleError = function(error) {
                 $rootScope.pageState = 'error';
