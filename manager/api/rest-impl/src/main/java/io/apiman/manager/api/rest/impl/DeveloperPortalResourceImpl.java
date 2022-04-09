@@ -47,6 +47,7 @@ import javax.ws.rs.core.Response;
 public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     private final IApimanLogger LOG = ApimanLoggerFactory.getLogger(DeveloperPortalResourceImpl.class);
+    private static final Set<DiscoverabilityLevel> PORTAL_DISCOVERABILITY = Set.of(DiscoverabilityLevel.PORTAL);
     private ApiService apiService;
     private PlanService planService;
     private DevPortalService portalService;
@@ -82,7 +83,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public List<ApiVersionSummaryBean> listApiVersions(String orgId, String apiId) {
         return apiService.listApiVersions(orgId, apiId).stream()
-                .filter(av -> securityContext.isDiscoverable(EntityType.API, orgId, apiId, null, Set.of(DiscoverabilityLevel.PORTAL)))
+                .filter(av -> securityContext.isDiscoverable(EntityType.API, orgId, apiId, null, PORTAL_DISCOVERABILITY))
                 .collect(Collectors.toList());
     }
 
@@ -96,7 +97,10 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public List<DeveloperApiPlanSummaryDto> getApiVersionPlans(String orgId, String apiId, String version) {
         mustBeDiscoverable(EntityType.API, orgId, apiId, version);
-        return portalService.getApiVersionPlans(orgId, apiId, version);
+        return portalService.getApiVersionPlans(orgId, apiId, version)
+                       .stream()
+                       .filter(avp -> securityContext.isDiscoverable(EntityType.PLAN, orgId, avp.getPlanId(), avp.getVersion(), PORTAL_DISCOVERABILITY))
+                       .collect(Collectors.toList());
     }
 
     @Override
