@@ -10,7 +10,7 @@ import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.spi.CriteriaBuilderConfiguration;
 
 /**
- *
+ * Produce the BlazePersistence criteria builder, a superior alternative to JPA CriteriaBuilder.
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
