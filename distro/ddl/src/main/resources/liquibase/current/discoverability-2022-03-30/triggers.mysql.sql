@@ -77,7 +77,7 @@ CREATE TRIGGER insert_apiversion_into_discoverability AFTER INSERT ON api_versio
 FOR EACH ROW BEGIN
     INSERT INTO discoverability(id, org_id, api_id, api_version, plan_id, plan_version, discoverability)
     VALUES (
-        id = CONCAT_WS(':', NEW.api_org_id, NEW.api_id, NEW.version),
+        CONCAT_WS(':', NEW.api_org_id, NEW.api_id, NEW.version),
         NEW.api_org_id,
         NEW.api_id,
         NEW.version,
