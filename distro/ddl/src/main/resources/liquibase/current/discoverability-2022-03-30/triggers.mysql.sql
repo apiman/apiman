@@ -13,12 +13,12 @@ FOR EACH ROW BEGIN
     )
     SELECT
         CONCAT_WS(':',
-                  Api_Version_CTE.api_org_id,
-                  Api_Version_CTE.api_id,
-                  Api_Version_CTE.api_version,
-                  NEW.plan_id,
-                  NEW.version
-            ),
+            Api_Version_CTE.api_org_id,
+            Api_Version_CTE.api_id,
+            Api_Version_CTE.api_version,
+            NEW.plan_id,
+            NEW.version
+        ),
         Api_Version_CTE.api_org_id,
         Api_Version_CTE.api_id,
         Api_Version_CTE.api_version,
