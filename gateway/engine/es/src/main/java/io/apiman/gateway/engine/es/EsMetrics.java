@@ -142,7 +142,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
 
             BulkRequest request = new BulkRequest();
             for (RequestMetric metric : batch) {
-                IndexRequest index = new IndexRequest(getDefaultIndexPrefix());
+                IndexRequest index = new IndexRequest(getIndexPrefix());
                 index.source(JSON_MAPPER.writeValueAsString(metric), XContentType.JSON);
                 request.add(index);
             }
