@@ -852,6 +852,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                         // Discoverability check (implicit permissions)
                         .where("plan.id").in()
                             .from(DiscoverabilityEntity.class, "d")
+                            .select("d.planId")
                             .where("d.orgId").eq(organizationId)
                             .where("d.planId").isNotNull()
                             .where("d.discoverability").in(permissionConstraint.getAllowedDiscoverabilities())
