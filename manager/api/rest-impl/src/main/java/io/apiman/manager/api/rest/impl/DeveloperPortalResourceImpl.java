@@ -2,6 +2,7 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.beans.apis.dto.ApiPlanBeanDto;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
@@ -56,7 +57,8 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     @Inject
     public DeveloperPortalResourceImpl(ApiService apiService,
-                                       PlanService planService, DevPortalService portalService,
+                                       PlanService planService,
+                                       DevPortalService portalService,
                                        OrganizationService orgService,
                                        ISecurityContext securityContext) {
         this.apiService = apiService;
@@ -90,8 +92,18 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public ApiVersionBeanDto getApiVersion(String orgId, String apiId, String apiVersion) {
         mustBeDiscoverable(EntityType.API, orgId, apiId, apiVersion);
+
+        ApiVersionBeanDto v = apiService.getApiVersion(orgId, apiId, apiVersion);
+
+        // TODO(msavy): probably a nicer way of doing this.
+        Set<ApiPlanBeanDto> filteredPlans = v.getPlans().stream()
+                .filter(avp -> securityContext.isDiscoverable(EntityType.PLAN, orgId, avp.getPlanId(), avp.getVersion(), PORTAL_DISCOVERABILITY))
+                .collect(Collectors.toSet());
+
+        v.setPlans(filteredPlans);
+
         // TODO(msavy): make new projection for this.
-        return RestHelper.hideSensitiveDataFromApiVersionBean(apiService.getApiVersion(orgId, apiId, apiVersion));
+        return RestHelper.hideSensitiveDataFromApiVersionBean(v);
     }
 
     @Override
