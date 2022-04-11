@@ -71,10 +71,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@json-editor/json-editor@2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@json-editor/json-editor/-/json-editor-2.6.0.tgz#ee4d687c4ca4794f4ac9246f61fcc01cb3e48c38"
-  integrity sha512-6yWvdpBirBENLdRKSfoCbEzQycZrqegSiWYkRV2X7n9F4PwULmQB0GPuG/7A2FJzwKM8m/Vpz6ywOBNE8jY9dw==
+"@json-editor/json-editor@2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@json-editor/json-editor/-/json-editor-2.6.1.tgz#169e8b88305d71ccac391c3ae22d4145bc63c9f7"
+  integrity sha512-8jH0n+BLO/jqBCZ3XXaes3NYzvQ+6KfO1p79MsIsTClIi5AvSvEzg3EWk4lsMWrUAFRwcM/CaififsoYDXMdMw==
   dependencies:
     core-js "^3.12.1"
 
