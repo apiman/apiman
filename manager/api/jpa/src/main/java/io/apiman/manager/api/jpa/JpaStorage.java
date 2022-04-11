@@ -804,22 +804,19 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
         if (permissionConstraint.isConstrained()) {
             constraintFunc = builder -> builder
-                    .whereOr()
-                        // Permissions check (explicit permissions)
-                        .where("api.organization.id").in(permissionConstraint.getPermittedOrgs())
-                        // Discoverability check (implicit permissions)
-                        .whereSubquery()
-                            .from(ApiBean.class, "innerApi")
-                                .select("innerApi.id")
-                                .leftJoinOn(DiscoverabilityEntity.class, "d")
-                                    .onExpression("d.orgId = innerApi.organization.id")
-                                    .onExpression("d.apiId = innerApi.id")
-                                .end()
-                                .where("d.discoverability").in(permissionConstraint.getAllowedDiscoverabilities())
-                                .setMaxResults(1)
+                .whereOr()
+                    // Permissions check (explicit permissions)
+                    .where("api.organization.id").in(permissionConstraint.getPermittedOrgs())
+                    // Discoverability check (implicit permissions)
+                    .where("api.id").in()
+                        .from(ApiBean.class, "innerApi")
+                            .select("innerApi.id")
+                            .leftJoinOn(DiscoverabilityEntity.class, "d")
+                                .onExpression("d.orgId = innerApi.organization.id")
+                                .onExpression("d.apiId = innerApi.id")
                             .end()
-                        .eqExpression("api.id")
-                    .endOr();
+                        .end()
+                .endOr();
         }
 
         SearchResultsBean<ApiBean> result = find(
