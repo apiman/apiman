@@ -20,7 +20,6 @@ import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.manager.api.beans.apis.ApiDefinitionType;
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
 import io.apiman.manager.api.beans.apis.NewApiBean;
 import io.apiman.manager.api.beans.apis.NewApiDefinitionBean;
@@ -714,9 +713,13 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
                 version,
                 Set.of(PermissionType.apiView)
         );
-        return apiService.getApiVersionPlans(organizationId, apiId, version).stream()
-                .filter(p -> securityContext.isDiscoverable(PLAN, organizationId, p.getPlanId(), p.getVersion()))
-                .collect(Collectors.toList());
+        if (securityContext.hasPermission(PermissionType.apiView, organizationId)) {
+            return apiService.getApiVersionPlans(organizationId, apiId, version);
+        } else {
+            return apiService.getApiVersionPlans(organizationId, apiId, version).stream()
+                    .filter(p -> securityContext.isDiscoverable(PLAN, organizationId, p.getPlanId(), p.getVersion()))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
@@ -841,7 +844,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public List<PlanSummaryBean> listPlans(String organizationId)
         throws OrganizationNotFoundException, NotAuthorizedException {
-        if (securityContext.hasAllPermissions(Set.of(PermissionType.orgView, PermissionType.planView), organizationId)) {
+        if (securityContext.hasPermission(PermissionType.planView, organizationId)) {
             return planService.listPlans(organizationId);
         } else {
             return planService.listPlans(organizationId)
