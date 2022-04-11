@@ -111,7 +111,7 @@
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.javax.enterprise.cdi-api>2.0.SP1</version.javax.enterprise.cdi-api>
     <version.javax.validation-api>2.0.1.Final</version.javax.validation-api>
-    <version.joda-time>2.10.10</version.joda-time>
+    <version.joda-time>2.10.14</version.joda-time>
     <version.junit>4.13.2</version.junit>
     <version.org.assertj>3.19.0</version.org.assertj>
     <version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
@@ -164,7 +164,7 @@
     <version.javax.json.javax.json-api>1.1.4</version.javax.json.javax.json-api>
     <version.javax.xml.bind>2.3.3</version.javax.xml.bind>
     <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
-    <version.info.picocli>4.6.1</version.info.picocli>
+    <version.info.picocli>4.6.3</version.info.picocli>
     <version.apache.maven.maven-artifact>3.8.1</version.apache.maven.maven-artifact>
     <version.javax.persistence-api>2.2</version.javax.persistence-api>
   </properties>
