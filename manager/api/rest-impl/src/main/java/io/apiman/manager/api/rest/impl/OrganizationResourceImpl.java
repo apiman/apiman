@@ -28,6 +28,7 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiPlanBeanDto;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -143,6 +144,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 import static io.apiman.manager.api.security.ISecurityContext.EntityType.API;
+import static io.apiman.manager.api.security.ISecurityContext.EntityType.PLAN;
 
 /**
  * REST layer for Organization
@@ -577,7 +579,17 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
                 Set.of(PermissionType.apiView)
         );
 
-        return apiService.getApiVersion(organizationId, apiId, version);
+        if (securityContext.hasPermission(PermissionType.apiView, organizationId)) {
+            return apiService.getApiVersion(organizationId, apiId, version);
+        } else {
+            ApiVersionBeanDto av = apiService.getApiVersion(organizationId, apiId, version);
+            Set<ApiPlanBeanDto> filteredPlans = av.getPlans().stream()
+                    .filter(plan -> securityContext.isDiscoverable(PLAN, organizationId, plan.getPlanId(), plan.getVersion()))
+                    .collect(Collectors.toSet());
+            av.setPlans(filteredPlans);
+            return av;
+        }
+
     }
 
     @Override
@@ -702,7 +714,9 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
                 version,
                 Set.of(PermissionType.apiView)
         );
-        return apiService.getApiVersionPlans(organizationId, apiId, version);
+        return apiService.getApiVersionPlans(organizationId, apiId, version).stream()
+                .filter(p -> securityContext.isDiscoverable(PLAN, organizationId, p.getPlanId(), p.getVersion()))
+                .collect(Collectors.toList());
     }
 
     @Override
