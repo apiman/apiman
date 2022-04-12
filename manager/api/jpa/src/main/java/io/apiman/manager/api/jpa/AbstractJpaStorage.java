@@ -256,25 +256,35 @@ public abstract class AbstractJpaStorage {
             // Allow caller to modify the query, for example to add permissions constraints.
             builderCallback.accept(cb);
 
-            // TODO(msavy): migrate to keyset pagination.
-            PaginatedCriteriaBuilder<T> paginatedCb = cb.page(start, pageSize);
+            if (ApimanH2Dialect.class.getCanonicalName().equalsIgnoreCase(getDialect())) {
+                // Pagination sometimes generates #in SQL statements that H2 currently does not support due to composite key
+                //    (x,y) IN (select x,y ... subquery) which works in all DBs except H2
+                for (OrderByBean order : uniqueOrderIdentifiers) {
+                    cb = cb.orderBy(order.getName(), order.isAscending());
+                }
+                List<T> resultList = cb.getResultList();
+                return new SearchResultsBean<T>()
+                        .setTotalSize(Math.toIntExact(resultList.size()))
+                        .setBeans(resultList);
+            } else {
+                PaginatedCriteriaBuilder<T> paginatedCb = cb.page(start, pageSize);
+                /*
+                 * Add an orderBy of unique identifiers *last* in the query; this is required for pagination to work properly.
+                 *
+                 * The tuple formed by the fields in this orderBy clause MUST be unique, otherwise BlazePersistence will throw an exception.
+                 *
+                 * Without a unique tuple, the ordering may be unstable, which can cause pagination to behave unpredictably.
+                 */
+                for (OrderByBean order : uniqueOrderIdentifiers) {
+                    paginatedCb = paginatedCb.orderBy(order.getName(), order.isAscending());
+                }
 
-            /*
-             * Add an orderBy of unique identifiers *last* in the query; this is required for pagination to work properly.
-             *
-             * The tuple formed by the fields in this orderBy clause MUST be unique, otherwise BlazePersistence will throw an exception.
-             *
-             * Without a unique tuple, the ordering may be unstable, which can cause pagination to behave unpredictably.
-             */
-            for (OrderByBean order : uniqueOrderIdentifiers) {
-                paginatedCb = paginatedCb.orderBy(order.getName(), order.isAscending());
+                PagedList<T> resultList = paginatedCb.getResultList();
+
+                return new SearchResultsBean<T>()
+                        .setTotalSize(Math.toIntExact(resultList.getTotalSize()))
+                        .setBeans(resultList);
             }
-
-            PagedList<T> resultList = paginatedCb.getResultList();
-
-            return new SearchResultsBean<T>()
-                    .setTotalSize(Math.toIntExact(resultList.getTotalSize()))
-                    .setBeans(resultList);
         } catch (Throwable t) {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -410,5 +420,9 @@ public abstract class AbstractJpaStorage {
         public void remove() {
             throw new UnsupportedOperationException();
         }
+    }
+
+    public String getDialect() {
+        return (String) getActiveEntityManager().getEntityManagerFactory().getProperties().get("hibernate.dialect"); //$NON-NLS-1$
     }
 }
