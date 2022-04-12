@@ -738,7 +738,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 List.of(new OrderByBean(true, OrganizationBean_.ID)),
                 constraintFunc,
                 OrganizationBean.class,
-                "org"
+                "org",
+                true
         );
 
         SearchResultsBean<OrganizationSummaryBean> rval = new SearchResultsBean<>();
@@ -770,7 +771,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 List.of(new OrderByBean(true, ClientBean_.ID), new OrderByBean(true, "organization.id")),
                 constraintFunc,
                 ClientBean.class,
-                "client"
+                "client",
+                true
         );
 
         SearchResultsBean<ClientSummaryBean> rval = new SearchResultsBean<>();
@@ -797,7 +799,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * {@inheritDoc}
      */
     @Override
-    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint)
+    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint, boolean paginate)
             throws StorageException {
 
         Consumer<CriteriaBuilder<ApiBean>> constraintFunc = builder -> {};
@@ -822,7 +824,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 List.of(new OrderByBean(true, "api.id"), new OrderByBean(true, "api.organization.id")),
                 constraintFunc,
                 ApiBean.class,
-                "api"
+                "api",
+                paginate
         );
 
         List<ApiSummaryBean> beans = result.getBeans()
@@ -864,7 +867,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 List.of(new OrderByBean(true, PlanBean_.ID), new OrderByBean(true, "organization.id")),
                 constraintFunc,
                 PlanBean.class,
-                "plan"
+                "plan",
+                true
         );
 
         // TODO(msavy): replace with projection or mapping
@@ -932,7 +936,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
         }
 
-        return find(criteria, List.of(new OrderByBean(true, AuditEntryBean_.ID)), AuditEntryBean.class);
+        return find(criteria, List.of(new OrderByBean(true, AuditEntryBean_.ID)), AuditEntryBean.class, true);
     }
 
     /**
@@ -953,7 +957,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             criteria.addFilter("who", userId, SearchCriteriaFilterOperator.eq);
         }
 
-        return find(criteria, List.of(new OrderByBean(true, AuditEntryBean_.ID)), AuditEntryBean.class);
+        return find(criteria, List.of(new OrderByBean(true, AuditEntryBean_.ID)), AuditEntryBean.class, true);
     }
 
     /**
@@ -1699,7 +1703,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         criteria.setOrder("orderIndex", false);
         criteria.setPage(1);
         criteria.setPageSize(1);
-        SearchResultsBean<PolicyBean> resultsBean = find(criteria, List.of(new OrderByBean(true, PolicyBean_.ID)), PolicyBean.class);
+        SearchResultsBean<PolicyBean> resultsBean = find(criteria, List.of(new OrderByBean(true, PolicyBean_.ID)), PolicyBean.class, true);
         if (resultsBean.getBeans() == null || resultsBean.getBeans().isEmpty()) {
             return 0;
         } else {
@@ -1760,7 +1764,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public SearchResultsBean<UserBean> findUsers(SearchCriteriaBean criteria) throws StorageException {
-        return super.find(criteria, List.of(new OrderByBean(true, UserBean_.USERNAME)), UserBean.class);
+        return super.find(criteria, List.of(new OrderByBean(true, UserBean_.USERNAME)), UserBean.class, true);
     }
 
     /**
@@ -1815,7 +1819,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public SearchResultsBean<RoleBean> findRoles(SearchCriteriaBean criteria) throws StorageException {
-        return super.find(criteria, List.of(new OrderByBean(true, RoleBean_.ID)), RoleBean.class);
+        return super.find(criteria, List.of(new OrderByBean(true, RoleBean_.ID)), RoleBean.class, true);
     }
 
     /**

@@ -50,7 +50,7 @@ public class SearchService implements DataAccessUtilMixin {
 
     public SearchResultsBean<ApiSummaryBean> findApis(@NotNull SearchCriteriaBean criteria, OrgsPermissionConstraint constraints) {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
-        return tryAction(() -> query.findApis(criteria, constraints));
+        return tryAction(() -> query.findApis(criteria, constraints, true));
     }
 
     public SearchResultsBean<UserBean> findUsers(@NotNull SearchCriteriaBean criteria) {

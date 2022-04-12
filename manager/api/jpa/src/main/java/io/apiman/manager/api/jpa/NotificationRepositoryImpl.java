@@ -56,7 +56,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
 
         searchCriteria.getFilters().add(recipientFilter);
 
-        return super.find(searchCriteria, List.of(new OrderByBean(true, NotificationEntity_.ID)), NotificationEntity.class);
+        return super.find(searchCriteria, List.of(new OrderByBean(true, NotificationEntity_.ID)), NotificationEntity.class, true);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
              .setPaging(paging)
              .setOrder("id", false);
 
-        return super.find(searchCriteria, List.of(new OrderByBean(true, NotificationEntity_.ID)), NotificationEntity.class);
+        return super.find(searchCriteria, List.of(new OrderByBean(true, NotificationEntity_.ID)), NotificationEntity.class, true);
     }
 
     @Override

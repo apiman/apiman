@@ -56,7 +56,7 @@ public class DevPortalService implements DataAccessUtilMixin {
 
     public SearchResultsBean<ApiSummaryBean> findExposedApis(SearchCriteriaBean criteria) {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
-        return tryAction(() -> query.findApis(criteria, PORTAL_CONSTRAINTS));
+        return tryAction(() -> query.findApis(criteria, PORTAL_CONSTRAINTS, true));
     }
 
     /**
@@ -66,7 +66,7 @@ public class DevPortalService implements DataAccessUtilMixin {
     public List<ApiSummaryBean> getFeaturedApis() {
         SearchCriteriaBean searchCriteria = new SearchCriteriaBean()
                 .addFilter("tags.key", "featured", SearchCriteriaFilterOperator.eq);
-        return tryAction(() -> query.findApis(searchCriteria, PORTAL_CONSTRAINTS).getBeans());
+        return tryAction(() -> query.findApis(searchCriteria, PORTAL_CONSTRAINTS, false).getBeans());
     }
 
     public List<ApiVersionPolicySummaryDto> getApiVersionPolicies(String orgId, String apiId, String apiVersion) {

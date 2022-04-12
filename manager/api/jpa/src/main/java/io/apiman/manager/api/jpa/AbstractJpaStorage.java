@@ -221,8 +221,8 @@ public abstract class AbstractJpaStorage {
         }
     }
 
-    protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, List<OrderByBean> uniqueOrderIdentifiers, Class<T> type) throws StorageException {
-        return find(criteria, uniqueOrderIdentifiers, (criteriaBuilder) -> {}, type, type.getSimpleName());
+    protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, List<OrderByBean> uniqueOrderIdentifiers, Class<T> type, boolean paginate) throws StorageException {
+        return find(criteria, uniqueOrderIdentifiers, (criteriaBuilder) -> {}, type, type.getSimpleName(), paginate);
     }
 
     /**
@@ -235,7 +235,8 @@ public abstract class AbstractJpaStorage {
                                             List<OrderByBean> uniqueOrderIdentifiers,
                                             Consumer<CriteriaBuilder<T>> builderCallback,
                                             Class<T> type,
-                                            String typeAlias) throws StorageException {
+                                            String typeAlias,
+                                            boolean paginate) throws StorageException {
         try {
             // Set some default in the case that paging information was not included in the request.
             PagingBean paging = criteria.getPaging();
@@ -256,17 +257,7 @@ public abstract class AbstractJpaStorage {
             // Allow caller to modify the query, for example to add permissions constraints.
             builderCallback.accept(cb);
 
-            if (ApimanH2Dialect.class.getCanonicalName().equalsIgnoreCase(getDialect())) {
-                // Pagination sometimes generates #in SQL statements that H2 currently does not support due to composite key
-                //    (x,y) IN (select x,y ... subquery) which works in all DBs except H2
-                for (OrderByBean order : uniqueOrderIdentifiers) {
-                    cb = cb.orderBy(order.getName(), order.isAscending());
-                }
-                List<T> resultList = cb.getResultList();
-                return new SearchResultsBean<T>()
-                        .setTotalSize(Math.toIntExact(resultList.size()))
-                        .setBeans(resultList);
-            } else {
+            if (paginate) {
                 PaginatedCriteriaBuilder<T> paginatedCb = cb.page(start, pageSize);
                 /*
                  * Add an orderBy of unique identifiers *last* in the query; this is required for pagination to work properly.
@@ -283,6 +274,16 @@ public abstract class AbstractJpaStorage {
 
                 return new SearchResultsBean<T>()
                         .setTotalSize(Math.toIntExact(resultList.getTotalSize()))
+                        .setBeans(resultList);
+            } else {
+                // Pagination sometimes generates #in SQL statements that H2 currently does not support due to composite key
+                //    (x,y) IN (select x,y ... subquery) which works in all DBs except H2. Beware...
+                for (OrderByBean order : uniqueOrderIdentifiers) {
+                    cb = cb.orderBy(order.getName(), order.isAscending());
+                }
+                List<T> resultList = cb.getResultList();
+                return new SearchResultsBean<T>()
+                        .setTotalSize(Math.toIntExact(resultList.size()))
                         .setBeans(resultList);
             }
         } catch (Throwable t) {

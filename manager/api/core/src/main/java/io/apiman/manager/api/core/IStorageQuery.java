@@ -89,7 +89,7 @@ public interface IStorageQuery {
      * @return found APIs
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint) throws StorageException;
+    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint, boolean paginate) throws StorageException;
 
     /**
      * Finds plans (within an organization) with the given criteria.
