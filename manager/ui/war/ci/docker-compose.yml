@@ -2,7 +2,7 @@ version: "3.9"
 services:
     keycloak:
         image:
-            quay.io/keycloak/keycloak:13.0.0
+            quay.io/keycloak/keycloak:16.1.0
         ports: 
             - "8081:8080"
             - "8444:8443"

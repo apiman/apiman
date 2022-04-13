@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-tools</artifactId>
-    <version>2.1.6-SNAPSHOT</version>
+    <version>2.2.1-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-tools-server-all</artifactId>
   <packaging>pom</packaging>
@@ -79,7 +79,7 @@
                     <antversion property="antversion" />
                     <echo>Ant Version: ${antversion}</echo>
 
-                    <property name="wildfly.version" value="20.0.1.Final"/>
+                    <property name="wildfly.version" value="23.0.2.Final"/>
 
                     <property name="appserver.id" value="wildfly" />
                     <property name="apiman.wildfly.download.url" value="https://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip" />

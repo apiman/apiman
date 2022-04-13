@@ -3,6 +3,33 @@
 Notes for upgrading to newer versions of Apiman. 
 Unless stated otherwise, the instructions assume that you are upgrading sequentially version to version.
 
+== Migrating to 2.2.0.Final
+
+=== WildFly & Keycloak
+
+We have bumped WildFly to 23.0.2.Final and Keycloak to 15.1.1.Final for security reasons.
+
+If you are using the Apiman WildFly distribution and customised `apiman-standalone.xml` you _may_ need to update your configuration file.
+This is because of changes in the WildFly platform rather than Apiman itself.
+
+Presently, we bundle Keycloak in some of our Apiman quickstart distributions. 
+This is now Keycloak version 15.1.1.Final.
+
+https://github.com/apiman/apiman/commit/e645b9990ae26f5de15fdaabb1e55b1cbb2b05f3#diff-01645d81b443f3ac51ce6ad78abc3b73f51852ecb9f229a6a968699fcac4c7b2[See the diff of the `standalone-apiman.xml` to understand what has changed]. 
+This mostly relates to changes in the way SSL/TLS is configured in the underlying WildFly platform.
+
+[NOTE]
+====
+Most production deployments should unbundle Keycloak and Apiman. 
+
+In a release in the near future, we will stop bundling Keycloak and Apiman in the quickstarts, and instead we will provide a Docker Compose file that is much more representative of a real-world deployment.
+
+This will also mean Apiman is not forced to stay in sync with Keycloak Server releases. 
+We hope this will be more convenient for Apiman users and the Apiman team.
+====
+
+Please visit our https://github.com/apiman/apiman/discussions[GitHub Discussions forum] if you have issues.
+
 == Migrating to 2.1.5.Final
 
 No special action should be required, although backing up is always recommended.
@@ -63,6 +90,8 @@ Once the operation is completed, you can import the file into Apiman 2.1.0.Final
 
 === Elasticsearch
 
+IMPORTANT: Apiman 2.1.0.Final requires now Elasticsearch 7.x
+
 If you are using Elasticsearch for the Apiman Manager API backend and/or metrics, the following sections are important to pay close attention to.
 
 Over time, it has become increasingly more difficult to maintain backwards compatibility between different versions of Elasticsearch due to frequent changes to all aspects of the database in the upstream (schemas, types, etc).
@@ -71,7 +100,7 @@ Please pay close attention to the instructions, as Elasticsearch can be very sel
 
 TIP: Consider backing up your data before taking any action.
 
-==== Discarding Metrics (5.X to 7.X)
+==== Option 1: Discarding Metrics (5.X to 7.X)
 
 WARNING: This will result in data loss, please ensure this data is not important before dropping any indices.
 
@@ -83,7 +112,7 @@ If the existing metrics are not important for you:
 .. `apiman_gateway`
 . Use the latest 7.X version of Elasticsearch for a fresh start
 
-==== Keeping Metrics (5.X to 7.X)
+==== Option 2: Keeping Metrics (5.X to 7.X)
 
 NOTE: Enabling the Elasticsearch `xpack` features may change the license that you are running Elasticsearch under. Users should perform appropriate due diligence.
 

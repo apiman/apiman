@@ -58,7 +58,9 @@ public class URLRewritingPolicy extends AbstractMappedDataPolicy<URLRewritingCon
     protected void doApply(ApiRequest request, IPolicyContext context, URLRewritingConfig config,
             IPolicyChain<ApiRequest> chain) {
         if (config.isProcessRequestUrl()) {
-            request.setDestination(request.getDestination().replaceAll(config.getFromRegex(), config.getToReplacement()));
+            if (request.getDestination() != null) {
+                request.setDestination(request.getDestination().replaceAll(config.getFromRegex(), config.getToReplacement()));
+            }
         }
         if (config.isProcessRequestHeaders()) {
             replaceHeaders(config, request.getHeaders());
