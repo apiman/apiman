@@ -38,7 +38,7 @@ jobs:
       - name: Check Setup
         run: |
           pwd
-          mvn -version
+          mvn -ntp -version
       - name: Set up settings.xml
         run: |
           mkdir -p /home/runner/.m2
@@ -104,15 +104,15 @@ jobs:
       - name: Update Apiman *Parent* Release Version ${{ github.event.inputs.release-version }} in pom.xml
         run: | 
           cd apiman/parent
-          mvn clean install
-          mvn versions:set -DnewVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
-          mvn clean install
+          mvn -ntp clean install
+          mvn -ntp versions:set -DnewVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvn -ntp clean install
       - name: Update Apiman Release Version ${{ github.event.inputs.release-version }} in pom.xml
         run: |
           cd apiman
-          mvn -N versions:update-parent -DparentVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false
-          mvn versions:set -DnewVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
-          mvn clean install
+          mvn -ntp -N versions:update-parent -DparentVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false
+          mvn -ntp versions:set -DnewVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvn -ntp clean install
       - name: Update Apiman Version in Plugins Project
         run: |
           cd plugins
@@ -120,9 +120,9 @@ jobs:
       - name: Update Apiman Plugins Release Version ${{ github.event.inputs.release-version }} in pom.xml
         run: |
           cd plugins
-          mvn -N versions:update-parent -DparentVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false
-          mvn versions:set -DnewVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
-          mvn clean install
+          mvn -ntp -N versions:update-parent -DparentVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false
+          mvn -ntp versions:set -DnewVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvn -ntp clean install
           
       # Commit changes back to GitHub
       - name: Commit Changes for Apiman Release Version ${{ github.event.inputs.release-version }}
@@ -222,9 +222,9 @@ jobs:
       - name: Deploy Apiman to Maven Central
         run: |
           cd apiman
-          mvn deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
+          mvn -ntp deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
           cd parent
-          mvn deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
+          mvn -ntp deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
       # Tag and release Apiman Plugins
       - name: Tag and Release Apiman Plugins
         run: |
@@ -235,7 +235,7 @@ jobs:
       - name: Deploy Apiman Plugins to Maven Central
         run: |
           cd plugins
-          mvn deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
+          mvn -ntp deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
 
       # Build and push new Docker images
       - name: Login to DockerHub Registry
@@ -266,17 +266,17 @@ jobs:
       - name: Update Apiman Parent Next Snapshot Version ${{ github.event.inputs.snapshot-version }} in pom.xml
         run: | 
           cd apiman/parent
-          mvn versions:set -DnewVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvn -ntp versions:set -DnewVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
       - name: Update Apiman Next Snapshot Version ${{ github.event.inputs.snapshot-version }} in pom.xml
         run: |
           cd apiman
-          mvn versions:set -DnewVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
-          mvn versions:update-parent -DparentVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DallowSnapshots=true
+          mvn -ntp versions:set -DnewVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvn -ntp versions:update-parent -DparentVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DallowSnapshots=true
       - name: Update Apiman Plugins Next Snapshot Version ${{ github.event.inputs.snapshot-version }} in pom.xml
         run: |
           cd plugins
-          mvn versions:set -DnewVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
-          mvn versions:update-parent -DparentVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DallowSnapshots=true
+          mvn -ntp versions:set -DnewVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvn -ntp versions:update-parent -DparentVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DallowSnapshots=true
       - name: Commit Changes for Apiman Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
         run: |
           cd apiman
