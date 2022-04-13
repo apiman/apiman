@@ -45,7 +45,7 @@ import io.swagger.annotations.Api;
 @Beta
 public interface IDeveloperPortalResource {
     @POST
-    @Path("apis/search")
+    @Path("search/apis")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     SearchResultsBean<ApiSummaryBean> searchExposedApis(SearchCriteriaBean criteria)

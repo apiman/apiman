@@ -1,4 +1,4 @@
-POST /devportal/apis/search
+POST /devportal/search/apis
 Content-Type: application/json
 
 {
