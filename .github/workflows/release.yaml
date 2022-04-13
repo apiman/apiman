@@ -120,9 +120,9 @@ jobs:
       - name: Update Apiman Plugins Release Version ${{ github.event.inputs.release-version }} in pom.xml
         run: |
           cd plugins
-          mvn -ntp -N versions:update-parent -DparentVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false
-          mvn -ntp versions:set -DnewVersion="${{ github.event.inputs.release-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
-          mvn -ntp clean install
+          ./mvnw -ntp -N versions:update-parent -DparentVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false
+          ./mvnw -ntp versions:set -DnewVersion="${{ github.event.inputs.release-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
+          ./mvnw -ntp clean install
           
       # Commit changes back to GitHub
       - name: Commit Changes for Apiman Release Version ${{ github.event.inputs.release-version }}
