@@ -48,6 +48,10 @@ p {
 
 .card-header {
   text-align: center;
+
+  span {
+    cursor: help;
+  }
 }
 
 .card-header-title {

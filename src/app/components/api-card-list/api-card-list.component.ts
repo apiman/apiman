@@ -20,7 +20,11 @@ import { PageEvent } from '@angular/material/paginator';
 import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import { IApiSummary, ISearchCriteria } from '../../interfaces/ICommunication';
+import {
+  IApiSummary,
+  ISearchCriteria,
+  ISearchResultsApiSummary
+} from '../../interfaces/ICommunication';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IApiSummaryExt } from '../../interfaces/IApiSummaryExt';
 
@@ -169,8 +173,8 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
     this.apiService
       .getFeaturedApis()
       .pipe(
-        switchMap((apiSummaries: IApiSummary[]) => {
-          return this.checkApisDocsInApiVersions(apiSummaries);
+        switchMap((apiSummaries: ISearchResultsApiSummary) => {
+          return this.checkApisDocsInApiVersions(apiSummaries.beans);
         })
       )
       .subscribe({

@@ -16,7 +16,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { EMPTY, Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import {
   IAction,
@@ -45,7 +45,9 @@ import {
 import { IPolicySummaryExt } from '../../interfaces/IPolicySummaryExt';
 import { KeycloakHelperService } from '../keycloak-helper/keycloak-helper.service';
 import { IPolicyProbe } from '../../interfaces/IPolicy';
-import { catchError } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
+import { KeycloakService } from 'keycloak-angular';
+import { IUrlPath } from '../../interfaces/IUrlPath';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +58,8 @@ export class BackendService {
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
-    private keycloakHelper: KeycloakHelperService
+    private keycloakHelper: KeycloakHelperService,
+    private keycloakService: KeycloakService
   ) {
     this.endpoint = configService.getEndpoint();
   }
@@ -73,29 +76,46 @@ export class BackendService {
   public searchApis(
     searchCriteria: ISearchCriteria
   ): Observable<ISearchResultsApiSummary> {
-    const path = 'devportal/apis/search';
-    return this.http.post(
-      this.generateUrl(path),
-      searchCriteria,
-      this.httpOptions
-    ) as Observable<ISearchResultsApiSummary>;
+    const path: IUrlPath = {
+      urlPath: 'devportal/search/apis',
+      loggedInUrlPath: 'devportal/protected/search/apis'
+    };
+
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.post(
+          url,
+          searchCriteria,
+          this.httpOptions
+        ) as Observable<ISearchResultsApiSummary>;
+      })
+    );
   }
 
-  public getFeaturedApis(): Observable<IApiSummary[]> {
-    const path = 'devportal/apis/featured';
-    return this.http.get(
-      this.generateUrl(path),
-      this.httpOptions
-    ) as Observable<IApiSummary[]>;
+  public getFeaturedApis(): Observable<ISearchResultsApiSummary> {
+    const path: IUrlPath = {
+      urlPath: 'devportal/apis/featured',
+      loggedInUrlPath: 'devportal/protected/apis/featured'
+    };
+
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.get(
+          url,
+          this.httpOptions
+        ) as Observable<ISearchResultsApiSummary>;
+      })
+    );
   }
 
   /**
-   * Get Api
+   * Get Api TODO unused
    */
   public getApi(orgId: string, apiId: string): Observable<IApi> {
     const path = `organizations/${orgId}/apis/${apiId}`;
+
     return this.http.get(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       this.httpOptions
     ) as Observable<IApi>;
   }
@@ -107,10 +127,15 @@ export class BackendService {
     orgId: string,
     apiId: string
   ): Observable<IApiVersionSummary[]> {
-    const path = `devportal/organizations/${orgId}/apis/${apiId}/versions`;
-    return this.http.get<IApiVersionSummary[]>(
-      this.generateUrl(path),
-      this.httpOptions
+    const path: IUrlPath = {
+      urlPath: `devportal/organizations/${orgId}/apis/${apiId}/versions`,
+      loggedInUrlPath: `devportal/protected/organizations/${orgId}/apis/${apiId}/versions`
+    };
+
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.get<IApiVersionSummary[]>(url, this.httpOptions);
+      })
     );
   }
 
@@ -122,23 +147,33 @@ export class BackendService {
     apiId: string,
     version: string
   ): Observable<IApiVersion> {
-    const path = `devportal/organizations/${orgId}/apis/${apiId}/versions/${version}`;
-    return this.http.get<IApiVersion>(this.generateUrl(path), this.httpOptions);
+    const path: IUrlPath = {
+      urlPath: `devportal/organizations/${orgId}/apis/${apiId}/versions/${version}`,
+      loggedInUrlPath: `devportal/protected/organizations/${orgId}/apis/${apiId}/versions/${version}`
+    };
+
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.get<IApiVersion>(url, this.httpOptions);
+      })
+    );
   }
 
   public getClientOrgs(): Observable<Array<IOrganizationSummary>> {
     const username = this.keycloakHelper.getUsername();
     const path = `users/${username}/clientorgs`;
+
     return this.http.get(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       this.httpOptions
     ) as Observable<Array<IOrganizationSummary>>;
   }
 
   public createClient(orgId: string, clientName: string): Observable<IClient> {
     const path = `organizations/${orgId}/clients`;
+
     return this.http.post(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       {
         name: clientName,
         initialVersion: '1.0',
@@ -155,21 +190,23 @@ export class BackendService {
     contract: INewContract
   ): Observable<IContract> {
     const path = `organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts`;
+
     return this.http.post(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       contract,
       this.httpOptions
     ) as Observable<IContract>;
   }
 
-  public createOrganization(): Observable<IOrganization> {
+  public createOrganization(organizationId: string): Observable<IOrganization> {
     const org: INewOrganization = {
-      name: this.keycloakHelper.getUsername(),
+      name: organizationId,
       description: ''
     };
-    const path = 'devportal/organizations';
+    const path = 'devportal/protected/organizations';
+
     return this.http.post<IOrganization>(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       org,
       this.httpOptions
     );
@@ -178,8 +215,9 @@ export class BackendService {
   public getEditableClients(): Observable<IClientSummary[]> {
     const username = this.keycloakHelper.getUsername();
     const path = `users/${username}/editable-clients`;
+
     return this.http.get<IClientSummary[]>(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       this.httpOptions
     );
   }
@@ -187,8 +225,9 @@ export class BackendService {
   public getViewableClients(): Observable<IClientSummary[]> {
     const username = this.keycloakHelper.getUsername();
     const path = `users/${username}/viewable-clients`;
+
     return this.http.get<IClientSummary[]>(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       this.httpOptions
     );
   }
@@ -198,8 +237,9 @@ export class BackendService {
     clientId: string
   ): Observable<IClientVersionSummary[]> {
     const path = `organizations/${organizationId}/clients/${clientId}/versions`;
+
     return this.http.get<IClientVersionSummary[]>(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       this.httpOptions
     );
   }
@@ -210,8 +250,9 @@ export class BackendService {
     versionName: string
   ): Observable<IContractSummary[]> {
     const path = `organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts`;
+
     return this.http.get<IContractSummary[]>(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       this.httpOptions
     );
   }
@@ -223,7 +264,11 @@ export class BackendService {
     contractId: number
   ): Observable<IContract> {
     const path = `organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts/${contractId}`;
-    return this.http.get<IContract>(this.generateUrl(path), this.httpOptions);
+
+    return this.http.get<IContract>(
+      this.generateUrlFromPath(path),
+      this.httpOptions
+    );
   }
 
   public getManagedApiEndpoint(
@@ -231,10 +276,15 @@ export class BackendService {
     apiId: string,
     versionName: string
   ): Observable<IApiVersionEndpointSummary> {
-    const path = `organizations/${organizationId}/apis/${apiId}/versions/${versionName}/endpoint`;
-    return this.http.get<IApiVersionEndpointSummary>(
-      this.generateUrl(path),
-      this.httpOptions
+    const path: IUrlPath = {
+      urlPath: `devportal/organizations/${organizationId}/apis/${apiId}/versions/${versionName}/endpoint`,
+      loggedInUrlPath: `devportal/protected/organizations/${organizationId}/apis/${apiId}/versions/${versionName}/endpoint`
+    };
+
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.get<IApiVersionEndpointSummary>(url, this.httpOptions);
+      })
     );
   }
 
@@ -243,10 +293,15 @@ export class BackendService {
     apiId: string,
     apiVersion: string
   ): Observable<IApiPlanSummary[]> {
-    const path = `devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/plans`;
-    return this.http.get<IApiPlanSummary[]>(
-      this.generateUrl(path),
-      this.httpOptions
+    const path: IUrlPath = {
+      urlPath: `devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/plans`,
+      loggedInUrlPath: `devportal/protected/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/plans`
+    };
+
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.get<IApiPlanSummary[]>(url, this.httpOptions);
+      })
     );
   }
 
@@ -255,10 +310,15 @@ export class BackendService {
     planId: string,
     planVersion: string
   ): Observable<IPolicySummaryExt[]> {
-    const path = `devportal/organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies`;
-    return this.http.get<IPolicySummaryExt[]>(
-      this.generateUrl(path),
-      this.httpOptions
+    const path: IUrlPath = {
+      urlPath: `devportal/organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies`,
+      loggedInUrlPath: `devportal/protected/organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies`
+    };
+
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.get<IPolicySummaryExt[]>(url, this.httpOptions);
+      })
     );
   }
 
@@ -268,22 +328,33 @@ export class BackendService {
     planVersion: string,
     policyId: string
   ): Observable<IPolicy> {
-    const path = `devportal/organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies/${policyId}`;
-    return this.http.get<IPolicy>(this.generateUrl(path), this.httpOptions);
+    const path: IUrlPath = {
+      urlPath: `devportal/organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies/${policyId}`,
+      loggedInUrlPath: `devportal/protected/organizations/${organizationId}/plans/${planId}/versions/${planVersion}/policies/${policyId}`
+    };
+
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.get<IPolicy>(url, this.httpOptions);
+      })
+    );
   }
 
+  // TODO unused
   public getApiPolicySummaries(
     organizationId: string,
     apiId: string,
     apiVersion: string
   ): Observable<IPolicySummaryExt[]> {
     const path = `devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/policies`;
+
     return this.http.get<IPolicySummary[]>(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       this.httpOptions
     ) as Observable<IPolicySummaryExt[]>;
   }
 
+  // TODO unused
   public getApiPolicy(
     organizationId: string,
     apiId: string,
@@ -291,32 +362,37 @@ export class BackendService {
     policyId: string
   ): Observable<IPolicy> {
     const path = `organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/policies/${policyId}`;
-    return this.http.get<IPolicy>(this.generateUrl(path), this.httpOptions);
+
+    return this.http.get<IPolicy>(
+      this.generateUrlFromPath(path),
+      this.httpOptions
+    );
   }
 
   public getApiDefinition(
     organizationId: string,
     apiId: string,
-    apiVersion: string,
-    loggedIn: boolean
+    apiVersion: string
   ): Observable<Blob> {
-    let path = `devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
+    const path: IUrlPath = {
+      urlPath: `devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`,
+      loggedInUrlPath: `devportal/protected/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`
+    };
 
-    if (loggedIn) {
-      path = `organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
-    }
-
-    return this.http.get(this.generateUrl(path), {
-      responseType: 'blob'
-    });
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.get(url, {
+          responseType: 'blob'
+        });
+      })
+    );
   }
 
   public sendAction(action: IAction): Observable<void> {
-    console.log('sendAction');
-
     const path = `actions`;
+
     return this.http.post<void>(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       action,
       this.httpOptions
     );
@@ -331,7 +407,8 @@ export class BackendService {
       notificationIds: [notificationId],
       status: 'USER_DISMISSED'
     };
-    return this.http.put(this.generateUrl(path), body, {
+
+    return this.http.put(this.generateUrlFromPath(path), body, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       }),
@@ -344,8 +421,9 @@ export class BackendService {
     searchCriteria: ISearchCriteria
   ): Observable<ISearchResultsNotifications> {
     const path = `users/${userName}/notifications`;
+
     return this.http.post(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       searchCriteria,
       this.httpOptions
     ) as Observable<ISearchResultsNotifications>;
@@ -353,7 +431,8 @@ export class BackendService {
 
   public headNotifications(userName: string): Observable<HttpResponse<string>> {
     const path = `users/${userName}/notifications`;
-    return this.http.head(this.generateUrl(path), {
+
+    return this.http.head(this.generateUrlFromPath(path), {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       }),
@@ -367,7 +446,11 @@ export class BackendService {
     clientVersion: string
   ): Observable<void> {
     const path = `organizations/${organizationId}/clients/${clientId}/versions/${clientVersion}/contracts`;
-    return this.http.delete<void>(this.generateUrl(path), this.httpOptions);
+
+    return this.http.delete<void>(
+      this.generateUrlFromPath(path),
+      this.httpOptions
+    );
   }
 
   public deleteClient(
@@ -375,7 +458,11 @@ export class BackendService {
     clientId: string
   ): Observable<void> {
     const path = `organizations/${organizationId}/clients/${clientId}`;
-    return this.http.delete<void>(this.generateUrl(path), this.httpOptions);
+
+    return this.http.delete<void>(
+      this.generateUrlFromPath(path),
+      this.httpOptions
+    );
   }
 
   public getPolicyProbe(
@@ -383,8 +470,9 @@ export class BackendService {
     policy: IPolicy
   ): Observable<IPolicyProbe[]> {
     const path = `organizations/${contract.client.client.organization.id}/clients/${contract.client.id}/versions/${contract.client.version}/contracts/${contract.id}/policies/${policy.id}`;
+
     return this.http.post(
-      this.generateUrl(path),
+      this.generateUrlFromPath(path),
       { apiKey: contract.client.apikey },
       this.httpOptions
     ) as Observable<IPolicyProbe[]>;
@@ -392,18 +480,40 @@ export class BackendService {
 
   public getCurrentUser(): Observable<ICurrentUser> {
     const path = 'users/currentuser/info';
-    return this.http
-      .get<ICurrentUser>(this.generateUrl(path), this.httpOptions)
-      .pipe(
-        catchError((err) => {
-          console.error(err);
-          return EMPTY;
-        })
-      );
+
+    return this.http.get<ICurrentUser>(
+      this.generateUrlFromPath(path),
+      this.httpOptions
+    );
   }
 
   /********* Helper **********/
-  private generateUrl(path: string) {
-    return `${this.endpoint}/${path}`;
+
+  /**
+   * Generates a URL to the Apiman Manager REST API based on the login state of a user
+   * use this method if you want to use a different url for logged-in users.
+   *
+   * @param path - The path object for logged-in users and for anonymous users
+   * @returns Án observable with the correct backend url depending on the users login state
+   */
+  public generateUrlFromIUrlPath(path: IUrlPath): Observable<string> {
+    return from(this.keycloakService.isLoggedIn()).pipe(
+      switchMap((loggedIn: boolean) => {
+        if (loggedIn) {
+          return of(this.generateUrlFromPath(path.loggedInUrlPath));
+        }
+        return of(this.generateUrlFromPath(path.urlPath));
+      })
+    );
+  }
+
+  /**
+   * Generates a URL to the Apiman Manager REST API
+   *
+   * @param path - The path on the Apiman Mananger REST API
+   * @returns The full URL as string
+   */
+  public generateUrlFromPath(path: string): string {
+    return `${this.endpoint}/${path.trim()}`;
   }
 }

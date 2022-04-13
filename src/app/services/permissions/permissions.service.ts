@@ -17,28 +17,27 @@
 import { Injectable } from '@angular/core';
 import { ICurrentUser, IPermission } from '../../interfaces/ICommunication';
 import { BackendService } from '../backend/backend.service';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PermissionsService {
-  private permissions: IPermission[] = [];
+  private userPermissions: IPermission[] = [];
 
   constructor(private backend: BackendService) {}
 
-  public updateUserPermissions(): void {
-    this.backend.getCurrentUser().subscribe((user: ICurrentUser) => {
-      console.log('Logged in as user: ' + user.username, user);
-      this.setPermissions(user.permissions);
-    });
+  public async updateUserPermissions(): Promise<void> {
+    const user: ICurrentUser = await lastValueFrom(
+      this.backend.getCurrentUser()
+    );
+
+    console.log('Logged in as user: ' + user.username, user);
+    this.userPermissions = user.permissions;
   }
 
-  private setPermissions(permissions: IPermission[]): void {
-    this.permissions = permissions;
-  }
-
-  public getPermissions(): IPermission[] {
-    return this.permissions;
+  get permissions(): IPermission[] {
+    return this.userPermissions;
   }
 
   /**
@@ -47,7 +46,7 @@ export class PermissionsService {
    */
   public getAllowedOrganizations(requestedPermission: IPermission): string[] {
     const organizations: string[] = [];
-    this.permissions.forEach((permission: IPermission) => {
+    this.userPermissions.forEach((permission: IPermission) => {
       if (permission.name === requestedPermission.name) {
         organizations.push(permission.organizationId);
       }

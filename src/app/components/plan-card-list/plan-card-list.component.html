@@ -22,7 +22,12 @@
     <div id="plan-card-{{ plan.planName }}" class="plan-card mat-elevation-z2">
       <div class="card-header">
         <div class="card-header-title primary text-big1">
-          {{ plan.planName }}
+          <span
+            matTooltip="Discoverability: {{ plan.discoverability }}"
+            matTooltipPosition="above"
+            [matTooltipDisabled]="(loggedIn$ | async) === false"
+            >{{ plan.planName }}</span
+          >
         </div>
         <div class="card-header-content">{{ plan.planDescription }}</div>
       </div>

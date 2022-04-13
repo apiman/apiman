@@ -34,7 +34,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class ApiService {
   constructor(private backendService: BackendService) {}
 
-  getFeaturedApis(): Observable<IApiSummary[]> {
+  getFeaturedApis(): Observable<ISearchResultsApiSummary> {
     return this.backendService.getFeaturedApis();
   }
 
@@ -126,11 +126,10 @@ export class ApiService {
     organizationId: string,
     apiId: string,
     apiVersion: string,
-    definitionType: string,
-    loggedIn: boolean
+    definitionType: string
   ): void {
     this.backendService
-      .getApiDefinition(organizationId, apiId, apiVersion, loggedIn)
+      .getApiDefinition(organizationId, apiId, apiVersion)
       .subscribe((data) => {
         this.downloadFile(data, apiId, apiVersion, definitionType);
       });

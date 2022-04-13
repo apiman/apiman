@@ -24,10 +24,10 @@ import {
 } from '../../interfaces/ICommunication';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, switchMap } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { KeycloakHelperService } from '../../services/keycloak-helper/keycloak-helper.service';
+import { OrganizationService } from '../../services/org/organization.service';
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -39,7 +39,7 @@ export class MarketplaceClientAppComponent implements OnInit {
   dataSource = new MatTableDataSource<IClientSummary>([]);
   clickedRows = new Set<IClientSummary>();
   clientName = '';
-  organizationId = this.keycloakHelper.getUsername();
+  organizationId = '';
   organizations: IOrganizationSummary[] = [];
   clients: IClientSummary[] = [];
 
@@ -49,7 +49,7 @@ export class MarketplaceClientAppComponent implements OnInit {
     private backend: BackendService,
     private snackbar: SnackbarService,
     private translator: TranslateService,
-    private keycloakHelper: KeycloakHelperService
+    private orgService: OrganizationService
   ) {}
 
   ngOnInit(): void {
@@ -73,15 +73,12 @@ export class MarketplaceClientAppComponent implements OnInit {
    * Add a new client and refresh table after that
    */
   public addClient(): void {
-    const orgId: string =
-      this.organizations.length > 1
-        ? this.organizationId
-        : this.keycloakHelper.getUsername();
+    const orgId = this.getOrgIdForClient();
     this.backend
       .createClient(orgId, this.clientName)
       .pipe(
         switchMap((client: IClient) => {
-          console.log(`${client.id} created`);
+          console.log(`${client.organization.id}/${client.id} created`);
           this.snackbar.showPrimarySnackBar(
             this.translator.instant('COMMON.SUCCESS') as string
           );
@@ -116,15 +113,9 @@ export class MarketplaceClientAppComponent implements OnInit {
    * @private
    */
   private createOrgAndLoadClients() {
-    this.backend
-      .createOrganization()
+    this.orgService
+      .createHomeOrgIfNotExists()
       .pipe(
-        catchError((err: HttpErrorResponse) => {
-          if (err.status !== 409) {
-            console.error(err);
-          }
-          return of({});
-        }),
         switchMap(() => {
           return this.loadClients();
         })
@@ -163,14 +154,35 @@ export class MarketplaceClientAppComponent implements OnInit {
     }
   }
 
+  /**
+   * The create client button is disabled when...
+   * no name was chosen
+   * the client already exists
+   * there are multiple orgs and no org is selected
+   *
+   * @return true if the create client button should be disabled
+   */
   public isCreateButtonDisabled(): boolean {
     return (
       this.clientName.length === 0 ||
       this.clients.some(
         (clientSummary) =>
           clientSummary.name === this.clientName &&
-          clientSummary.organizationId === this.organizationId
-      )
+          clientSummary.organizationId === this.getOrgIdForClient()
+      ) ||
+      (this.organizations.length > 1 && !this.organizationId)
     );
+  }
+
+  /**
+   * If there are multiple orgs available use the one the user selected
+   * otherwise use the default home org of the user
+   *
+   * @returns the org id in which the client should be created
+   */
+  private getOrgIdForClient(): string {
+    return this.organizations.length === 1
+      ? this.organizations[0].id
+      : this.organizationId;
   }
 }

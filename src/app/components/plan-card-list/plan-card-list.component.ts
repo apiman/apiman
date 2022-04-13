@@ -23,6 +23,7 @@ import { IPolicyExt } from '../../interfaces/IPolicy';
 import { PolicyService } from '../../services/policy/policy.service';
 import { IApiVersionExt } from '../../interfaces/IApiVersionExt';
 import { map } from 'rxjs/operators';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-plan-card-list',
@@ -39,12 +40,13 @@ export class PlanCardListComponent implements OnInit {
     private planService: PlanService,
     private policyService: PolicyService,
     private signUpService: SignUpService,
-    private router: Router
+    private router: Router,
+    private keycloakService: KeycloakService
   ) {}
 
-  apiPolicies: IPolicyExt[] = [];
   orgId = '';
   apiId = '';
+  loggedIn$ = this.keycloakService.isLoggedIn();
 
   ngOnInit(): void {
     this.orgId = this.route.snapshot.paramMap.get('orgId') ?? '';

@@ -21,6 +21,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '../../services/config/config.service';
 import SwaggerUI from 'swagger-ui';
 import { KeycloakHelperService } from '../../services/keycloak-helper/keycloak-helper.service';
+import { KeycloakService } from 'keycloak-angular';
+import { IUrlPath } from '../../interfaces/IUrlPath';
 
 @Component({
   selector: 'app-swagger',
@@ -32,14 +34,14 @@ export class SwaggerComponent implements OnInit {
   endpoint = '';
   isPublicApi = false;
   isTryEnabled = false;
-  isMyClients = false;
 
   constructor(
     private route: ActivatedRoute,
     private heroService: HeroService,
     private translator: TranslateService,
     private config: ConfigService,
-    private keycloakHelperService: KeycloakHelperService
+    private keycloakHelperService: KeycloakHelperService,
+    private keycloakService: KeycloakService
   ) {
     this.endpoint = config.getEndpoint();
   }
@@ -47,23 +49,27 @@ export class SwaggerComponent implements OnInit {
   /**
    * Load the swagger definition and display it with the swagger ui bundle library on component initialization
    */
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const { organizationId, apiId, apiVersion, apiKey } = this.getRouteParams();
+    const urls: IUrlPath = {
+      urlPath: `${this.endpoint}/devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`,
+      loggedInUrlPath: `${this.endpoint}/devportal/protected/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`
+    };
 
     this.heroService.setUpHero({
       title: this.translator.instant('COMMON.API_DOCS') as string,
       subtitle: `${apiId} - ${apiVersion}`
     });
 
-    let swaggerUrl = `${this.endpoint}/devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
-    if (this.isMyClients) {
-      swaggerUrl = `${this.endpoint}/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`;
+    let definitionUrl = urls.urlPath;
+    if (await this.keycloakService.isLoggedIn()) {
+      definitionUrl = urls.loggedInUrlPath;
     }
 
     const swaggerOptions: SwaggerUI.SwaggerUIOptions = {
       dom_id: '#swagger-editor',
       layout: 'BaseLayout',
-      url: swaggerUrl,
+      url: definitionUrl,
       docExpansion: 'list',
       operationsSorter: 'alpha',
       tryItOutEnabled: true,
@@ -130,7 +136,6 @@ export class SwaggerComponent implements OnInit {
       this.route.snapshot.queryParamMap.get('try') ?? 'false'
     ) as boolean;
 
-    this.isMyClients = !!clientId;
     return { organizationId, apiId, apiVersion, apiKey };
   }
 

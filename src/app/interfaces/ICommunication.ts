@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -60,6 +60,7 @@ export interface IApiGateway {
 export interface IApiPlan {
   planId: string;
   version: string;
+  discoverability: Discoverability;
 }
 
 export interface IApiVersion {
@@ -101,9 +102,8 @@ export interface IApiVersion {
   disableKeysStrip: boolean;
   definitionUrl: string;
   extendedDescription: string;
-  exposeInPortal: boolean;
+  publicDiscoverability: Discoverability;
 }
-
 export interface IOrganization {
   id: string;
   name: string;
@@ -205,6 +205,8 @@ export interface IApiPlanSummary {
   planName: string;
   planDescription: string;
   version: string;
+  requiresApproval: boolean;
+  discoverability: Discoverability;
   planPolicies: IPolicyExt[];
 }
 
@@ -1081,4 +1083,11 @@ export interface IApimanData {
   PolicyDefinitions: IPolicyDefinition[];
   Roles: IRole[];
   Users: IUser[];
+}
+
+export enum Discoverability {
+  PORTAL = 'PORTAL',
+  ANONYMOUS = 'ANONYMOUS',
+  FULL_PLATFORM_MEMBERS = 'FULL_PLATFORM_MEMBERS',
+  ORG_MEMBERS = 'ORG_MEMBERS'
 }

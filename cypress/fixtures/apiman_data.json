@@ -623,17 +623,17 @@
           "plans" : [ {
             "planId" : "Unlimited",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability": "PORTAL",
             "requiresApproval" : true
           }, {
             "planId" : "Bronze",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability": "PORTAL",
             "requiresApproval" : true
           }, {
             "planId" : "Silver",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability": "PORTAL",
             "requiresApproval" : true
           } ],
           "version" : "1.0",
@@ -646,7 +646,7 @@
           "parsePayload" : false,
           "disableKeysStrip" : false,
           "definitionUrl" : "https://petstore.swagger.io/v2/swagger.json",
-          "exposeInPortal" : true,
+          "discoverability": "PORTAL",
           "extendedDescription" : ""
         },
         "Policies" : [ ],
@@ -666,17 +666,17 @@
           "plans" : [ {
             "planId" : "Unlimited",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability": "PORTAL",
             "requiresApproval" : true
           }, {
             "planId" : "Bronze",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability": "PORTAL",
             "requiresApproval" : true
           }, {
             "planId" : "Silver",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability": "PORTAL",
             "requiresApproval" : true
           } ],
           "version" : "2.0",
@@ -688,7 +688,7 @@
           "parsePayload" : false,
           "disableKeysStrip" : false,
           "definitionUrl" : "https://petstore.swagger.io/v2/swagger.json",
-          "exposeInPortal" : true,
+          "discoverability": "PORTAL",
           "extendedDescription" : "Markdown Description of Version 2.0"
         },
         "Policies" : [ ],
@@ -722,17 +722,17 @@
           "plans" : [ {
             "planId" : "Unlimited",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability": "PORTAL",
             "requiresApproval" : true
           }, {
             "planId" : "Bronze",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability": "PORTAL",
             "requiresApproval" : true
           }, {
             "planId" : "Silver",
             "version" : "1.0",
-            "exposeInPortal" : true,
+            "discoverability": "PORTAL",
             "requiresApproval" : true
           } ],
           "version" : "1.0",
@@ -744,7 +744,7 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : false,
-          "exposeInPortal" : true,
+          "discoverability": "PORTAL",
           "extendedDescription" : ""
         },
         "Policies" : [ ]
@@ -949,7 +949,7 @@
       "entityVersion" : "1.0",
       "createdOn" : "2022-02-16T11:10:08Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\",\"after\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\",\"after\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1064,
       "who" : "platform.admin",
@@ -997,7 +997,7 @@
       "entityVersion" : "2.0",
       "createdOn" : "2022-02-16T11:11:32Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\",\"after\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"Markdown Description of Version 2.0\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\",\"after\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"Markdown Description of Version 2.0\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1069,
       "who" : "platform.admin",
@@ -1044,7 +1044,7 @@
       "entityVersion" : "1.0",
       "createdOn" : "2022-02-16T11:12:56Z",
       "what" : "Update",
-      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\",\"after\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"exposeInPortal\",\"before\":\"false\",\"after\":\"true\"}]}"
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\",\"after\":\"Bronze:1.0, Silver:1.0, Unlimited:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
     }, {
       "id" : 1075,
       "who" : "platform.admin",

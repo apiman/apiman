@@ -45,9 +45,7 @@ export class AuthGuard extends KeycloakAuthGuard {
       });
     }
 
-    // the user needs this roles so that backend calls will pass
-    const requiredRoles = this.config.getBackendRoles();
-    if (!requiredRoles.every((role: string) => this.roles.includes(role))) {
+    if (!this.hasRequiredRoles()) {
       // TODO: change to error page
       this.snackbar.showErrorSnackBar('Not enough permission');
       return this.router.createUrlTree(['/home']);
@@ -55,8 +53,23 @@ export class AuthGuard extends KeycloakAuthGuard {
 
     // we are logged in and can set the tokens and fetch permissions
     this.keycloakHelper.setAndUpdateTokens();
-    this.permissionsService.updateUserPermissions();
+    await this.permissionsService.updateUserPermissions();
 
     return this.authenticated;
+  }
+
+  /**
+   * Checks if the user has all required roles, Apiman users and admins with the default roles also pass
+   * @returns True if the user has one of the configured roles or if the user is a full Apiman user (based on IDM default roles)
+   */
+  private hasRequiredRoles() {
+    const apimanAdminFallback: string[] = ['apiuser', 'apiadmin'];
+    const requiredRoles = this.config.getBackendRoles();
+
+    return (
+      requiredRoles.every((role: string) => this.roles.includes(role)) ||
+      (this.roles.includes('view-profile') &&
+        apimanAdminFallback.some((role: string) => this.roles.includes(role)))
+    );
   }
 }

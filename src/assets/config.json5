@@ -34,7 +34,7 @@
   // specify the entrypoint to the API Management Manager: This is MANDATORY for communication with backend
   "endpoint": "${ENDPOINT}",
   // the SSO role that the manager endpoint requires
-  "backendRoles": ["view-profile", "apiuser"],
+  "backendRoles": ["view-profile", "devportaluser"],
   // set authentication details when pressing "login" telling where to redirect for SSO login with keycloak
   "auth": {
     "url": "${AUTH_URL}",
