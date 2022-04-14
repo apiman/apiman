@@ -4,9 +4,7 @@
     "analytics": false,
     "defaultCollection": "@angular-eslint/schematics",
     "cache": {
-      "enabled": true,
-      "path": ".cache",
-      "environment": "all"
+      "enabled": true
     }
   },
   "version": 1,
