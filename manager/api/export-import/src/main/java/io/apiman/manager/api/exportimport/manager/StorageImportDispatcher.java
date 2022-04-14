@@ -409,7 +409,10 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApiVersion") + apiVersion.getVersion()); //$NON-NLS-1$
             apiVersion.setApi(currentApi);
             apiVersion.setId(null);
+
             storage.createApiVersion(apiVersion);
+
+            apiVersion.getPlans().forEach(p -> p.setApiVersion(apiVersion));
 
             if (apiVersion.getStatus() == ApiStatus.Published) {
                 apisToPublish.add(new EntityInfo(

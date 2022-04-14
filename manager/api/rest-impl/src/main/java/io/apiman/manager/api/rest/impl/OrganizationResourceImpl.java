@@ -583,7 +583,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         } else {
             ApiVersionBeanDto av = apiService.getApiVersion(organizationId, apiId, version);
             Set<ApiPlanBeanDto> filteredPlans = av.getPlans().stream()
-                    .filter(plan -> securityContext.isDiscoverable(PLAN, organizationId, plan.getPlanId(), plan.getVersion()))
+                    .filter(avp -> securityContext.getPermittedDiscoverabilities().contains(avp.getDiscoverability()))
                     .collect(Collectors.toSet());
             av.setPlans(filteredPlans);
             return av;
@@ -717,8 +717,8 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
             return apiService.getApiVersionPlans(organizationId, apiId, version);
         } else {
             return apiService.getApiVersionPlans(organizationId, apiId, version).stream()
-                    .filter(p -> securityContext.isDiscoverable(PLAN, organizationId, p.getPlanId(), p.getVersion()))
-                    .collect(Collectors.toList());
+                           .filter(avp -> securityContext.getPermittedDiscoverabilities().contains(avp.getDiscoverability()))
+                           .collect(Collectors.toList());
         }
     }
 

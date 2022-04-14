@@ -97,7 +97,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
         // TODO(msavy): probably a nicer way of doing this.
         Set<ApiPlanBeanDto> filteredPlans = v.getPlans().stream()
-                .filter(avp -> securityContext.isDiscoverable(EntityType.PLAN, orgId, avp.getPlanId(), avp.getVersion(), PORTAL_DISCOVERABILITY))
+                .filter(avp -> avp.getDiscoverability() == DiscoverabilityLevel.PORTAL)
                 .collect(Collectors.toSet());
 
         v.setPlans(filteredPlans);
@@ -111,7 +111,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
         mustBeDiscoverable(EntityType.API, orgId, apiId, version);
         return portalService.getApiVersionPlans(orgId, apiId, version)
                        .stream()
-                       .filter(avp -> securityContext.isDiscoverable(EntityType.PLAN, orgId, avp.getPlanId(), avp.getVersion(), PORTAL_DISCOVERABILITY))
+                       .filter(avp -> avp.getDiscoverability() == DiscoverabilityLevel.PORTAL)
                        .collect(Collectors.toList());
     }
 
