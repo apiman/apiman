@@ -54,6 +54,7 @@ import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 import org.jdbi.v3.core.Jdbi;
+import org.testcontainers.shaded.org.bouncycastle.util.Arrays;
 
 /**
  * This class starts up an embedded Jetty test server so that integration tests
@@ -102,18 +103,6 @@ public class ManagerApiTestServer {
         server.start();
         long endTime = System.currentTimeMillis();
         System.out.println("******* Started in " + (endTime - startTime) + "ms");
-        postStart();
-    }
-
-    protected void postStart() throws SQLException {
-        // Jdbi.create(ds).useHandle(h -> {
-        //     h.getConnection().setAutoCommit(false);
-        //     // TODO(msavy): Add to liquibase
-        //     h.execute("CREATE TRIGGER api_plans_discoverability_trigger "
-        //                       + "AFTER INSERT ON api_plans FOR EACH ROW "
-        //                       + "CALL \"io.apiman.manager.api.jpa.h2.DiscoverabilityTrigger\" ");
-        //     h.commit();
-        // });
     }
 
     /**
@@ -302,9 +291,9 @@ public class ManagerApiTestServer {
         for (String [] userInfo : TestUsers.USERS) {
             String user = userInfo[0];
             String pwd = userInfo[1];
-            String[] roles = new String[] { "apiuser" };
+            String[] roles = userInfo[4].split(",");
             if (user.startsWith("admin")) {
-                roles = new String[] { "apiuser", "apiadmin"};
+                roles = Arrays.append(roles, "apiadmin");
             }
             userStore.addUser(user, Credential.getCredential(pwd), roles);
         }

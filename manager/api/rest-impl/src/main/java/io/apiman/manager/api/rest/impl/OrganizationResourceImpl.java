@@ -355,12 +355,24 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
         return statsService.getClientUsagePerApi(organizationId, clientId, version, fromDate, toDate);
     }
 
+    private boolean isDiscoverable(NewContractBean bean) {
+        return securityContext.isDiscoverable(API, bean.getApiOrgId(), bean.getApiId(), bean.getApiVersion())
+                       && securityContext.isDiscoverable(PLAN, bean.getApiOrgId(), bean.getPlanId());
+    }
+
     @Override
-    public ContractBean createContract(String organizationId,
-        String clientId, String version, NewContractBean bean)
+    public ContractBean createContract(String organizationId, String clientId, String version, NewContractBean bean)
         throws OrganizationNotFoundException, ClientNotFoundException, ApiNotFoundException, PlanNotFoundException, ContractAlreadyExistsException, NotAuthorizedException {
+        // We need to be careful to check both sides of the contract for permissions, as they may be from different organizations.
+        // 1. Does the user have the right to modify clients the client org
         securityContext.checkPermissions(PermissionType.clientEdit, organizationId);
-        return contractService.createContract(organizationId, clientId, version, bean);
+        boolean hasApiOrgPermissions = securityContext.hasAllPermissions(Set.of(PermissionType.apiView, PermissionType.planView), bean.getApiOrgId());
+        // 2. Does the user have the right to see the API Plan in the API org explicitly or implicitly.
+        if (hasApiOrgPermissions || isDiscoverable(bean)) {
+            return contractService.createContract(organizationId, clientId, version, bean);
+        } else {
+            throw ExceptionFactory.notAuthorizedException();
+        }
     }
 
     @Override
