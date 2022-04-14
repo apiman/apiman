@@ -11,7 +11,10 @@ import org.junit.runner.RunWith;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @RunWith(ManagerRestTester.class)
-@ManagerRestTestPlan("test-plans/discoverability-testPlan.xml")
 public class DiscoverabilityTest {
+    @ManagerRestTestPlan(value = "test-plans/discoverability-simple-testPlan.xml", order = 1)
+    public void simple() {}
 
+    @ManagerRestTestPlan(value = "test-plans/discoverability-complex-testPlan.xml", order = 2)
+    public void complex() {}
 }

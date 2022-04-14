@@ -1,0 +1,37 @@
+GET /devportal/organizations/apiman/apis/alpha/versions/1.0
+
+----
+200
+Content-Type: application/json
+
+{
+	"id": null,
+	"api": {
+		"organization": {
+			"id": "apiman",
+			"name": "apiman"
+		},
+		"id": "alpha",
+		"name": "alpha"
+	},
+	"version": "1.0",
+	"status": "Published",
+	"endpoint": null,
+	"endpointType": "rest",
+	"endpointContentType": "json",
+	"endpointProperties": null,
+	"gateways": [{
+		"gatewayId": "TheGateway"
+	}],
+	"publicAPI": false,
+	"publicDiscoverability": "ORG_MEMBERS",
+	"plans": [{
+		"planId": "red",
+		"version": "1.0",
+		"requiresApproval": false,
+		"discoverability": "PORTAL"
+	}],
+	"definitionType": "None",
+	"parsePayload": false,
+	"disableKeysStrip": false
+}

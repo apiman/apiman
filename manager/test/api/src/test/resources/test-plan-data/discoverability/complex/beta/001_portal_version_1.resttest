@@ -1,0 +1,33 @@
+GET /devportal/organizations/apiman/apis/beta/versions/1.0
+
+----
+200
+Content-Type: application/json
+
+{
+  "api": {
+    "organization": {
+      "id": "apiman",
+      "name": "apiman"
+    },
+    "id": "beta",
+    "name": "beta"
+  },
+  "version": "1.0",
+  "status": "Published",
+  "endpoint": null,
+  "endpointType": "rest",
+  "endpointContentType": "json",
+  "endpointProperties": null,
+  "gateways": [
+    {
+      "gatewayId": "TheGateway"
+    }
+  ],
+  "publicAPI": true,
+  "publicDiscoverability": "PORTAL",
+  "plans": [],
+  "definitionType": "None",
+  "parsePayload": false,
+  "disableKeysStrip": false
+}

@@ -1,0 +1,15 @@
+GET /devportal/organizations/apiman/apis/gamma/versions/1.0/plans
+
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "planId": "blue",
+    "planName": "blue",
+    "version": "1.0",
+    "requiresApproval": false,
+    "discoverability": "PORTAL"
+  }
+]
