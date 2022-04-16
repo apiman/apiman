@@ -31,6 +31,8 @@ import javax.ws.rs.core.Response;
 
 import com.google.common.annotations.Beta;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 
 /**
  * Developer portal resources.
@@ -41,7 +43,7 @@ import io.swagger.annotations.Api;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Path("devportal")
-@Api("Devportal")
+@Api(value = "Devportal", tags = { "Experimental" })
 @Beta
 public interface IDeveloperPortalResource {
     @POST
