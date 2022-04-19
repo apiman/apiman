@@ -7,15 +7,19 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
+import com.google.common.annotations.Beta;
 import io.swagger.annotations.Api;
 
 /**
  * An event receiving REST API.
  *
+ * <p>This is an experimental API and should not be relied upon.
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Path("events")
 @Api(tags = "Events")
+@Beta
 public interface IEventResource {
 
     /**

@@ -4,11 +4,11 @@ import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.events.dto.NewAccountCreatedDto;
 import io.apiman.manager.api.rest.IEventResource;
+import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.SsoEventService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 /**
  * Simple HTTP event ingestion. For example, this provides a way for SSO to push "New Account Creation"
@@ -20,10 +20,12 @@ import javax.ws.rs.core.Response;
 public class EventResourceImpl implements IEventResource {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(EventResourceImpl.class);
 
+    private ISecurityContext securityContext;
     private SsoEventService ssoEventService;
 
     @Inject
-    public EventResourceImpl(SsoEventService ssoEventService) {
+    public EventResourceImpl(ISecurityContext securityContext, SsoEventService ssoEventService) {
+        this.securityContext = securityContext;
         this.ssoEventService = ssoEventService;
     }
 
@@ -33,6 +35,7 @@ public class EventResourceImpl implements IEventResource {
     // TODO: permissions check?
     @Override
     public void newAccountCreated(NewAccountCreatedDto newAccountCreatedDto) {
+        securityContext.checkAdminPermissions();
         LOGGER.debug("Received new account event via HTTP");
         ssoEventService.newAccountCreated(newAccountCreatedDto);
     }
