@@ -67,6 +67,7 @@ public class ApiManagerApplication extends Application {
         beanConfig.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs.");
         beanConfig.setScan(true);
 
+        classes.add(ApiResourceImpl.class);
         classes.add(SystemResourceImpl.class);
         classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);
