@@ -10,7 +10,7 @@ services:
             - apiman_elastic
     apiman_elastic:
         container_name: apiman_elastic
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.2
         ports:
             - "9200:9200"
             - "9300:9300"
