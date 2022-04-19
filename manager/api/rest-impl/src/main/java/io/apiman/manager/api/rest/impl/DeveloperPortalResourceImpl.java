@@ -2,11 +2,13 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.apis.dto.ApiPlanBeanDto;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
@@ -19,6 +21,7 @@ import io.apiman.manager.api.rest.IDeveloperPortalResource;
 import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.OrganizationAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
@@ -34,6 +37,7 @@ import io.apiman.manager.api.service.PlanService;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -121,7 +125,32 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
         if (!newOrg.getName().equals(securityContext.getCurrentUser())) {
             throw new NotAuthorizedException("A developer's default org must be the same as their username. This restriction may be lifted later.");
         }
-        return orgService.createOrg(newOrg);
+
+        OrganizationBean existingOrg;
+        try {
+            existingOrg = orgService.getOrg(BeanUtils.idFromName(newOrg.getName()));
+        } catch (OrganizationNotFoundException onfe) {
+            existingOrg = null;
+        }
+
+        if (existingOrg == null) {
+            LOG.info("Created home org {0} for {1}", newOrg.getName(), securityContext.getCurrentUser());
+            return orgService.createOrg(newOrg);
+        } else {
+            // First check who owns the existing organization, otherwise we could get into trouble by letting people spam create orgs.
+            if (securityContext.hasPermission(PermissionType.clientEdit, existingOrg.getId())) {
+                OrganizationAlreadyExistsException ex = ExceptionFactory.organizationAlreadyExistsException(existingOrg.getName());
+                LOG.error(ex, "Tried to create a new home org for the developer, but one already exists where they have clientEdit permissions");
+                throw ex;
+            }
+            // Use a name with a randomised suffix in the case that someone already created an organization with a user's name (e.g. FooUser-70ac3d)
+            String newOrgId = newOrg.getName() + UUID.randomUUID().toString().substring(0, 6);
+            LOG.warn("We tried to create a home organization for the user {0}, but it already existed. "
+                             + "This is likely due to another user coincidentally creating an org with the same name "
+                             + "An organization with a random suffix will be created: {1}.", securityContext.getCurrentUser(), newOrgId);
+            newOrg.setName(newOrgId);
+            return orgService.createOrg(newOrg);
+        }
     }
 
     @Override
