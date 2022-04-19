@@ -88,7 +88,7 @@
     <servlet-name>Apiman RESTEasy</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
-  <!-- No create org for apidevportaluser, no create API -->
+
   <security-constraint>
     <display-name>Apiman Manager Main REST API: apiuser</display-name>
 
@@ -174,18 +174,6 @@
   <security-constraint>
     <display-name>Apiman Manager Main REST API: devportaluser</display-name>
 
-<!--    <web-resource-collection>-->
-<!--      <web-resource-name>apiman</web-resource-name>-->
-<!--      <url-pattern>/gateways/*</url-pattern>-->
-<!--      <http-method>GET</http-method>-->
-<!--    </web-resource-collection>-->
-
-<!--    &lt;!&ndash; TODO: Deprecated &ndash;&gt;-->
-<!--    <web-resource-collection>-->
-<!--      <web-resource-name>apiman</web-resource-name>-->
-<!--      <url-pattern>/developers/*</url-pattern>-->
-<!--    </web-resource-collection>-->
-
     <web-resource-collection>
       <web-resource-name>actions</web-resource-name>
       <url-pattern>/actions/*</url-pattern>
@@ -213,7 +201,7 @@
     </web-resource-collection>
 
     <web-resource-collection>
-      <web-resource-name>Org-level default (only get+modify, no create)</web-resource-name>
+      <web-resource-name>Org-level default (no create)</web-resource-name>
       <url-pattern>/organizations/*</url-pattern>
       <http-method>OPTIONS</http-method>
       <http-method>GET</http-method>
@@ -279,7 +267,7 @@
     </auth-constraint>
   </security-constraint>
 
-  <!-- `/devportal/` endpoit is deliberately not listed here, as it allows anonymous access. -->
+  <!-- `/devportal/` endpoint is deliberately not listed here, as it allows anonymous access. -->
 
   <login-config>
     <!-- The realm-name has nothing to do with the keycloak realm, it is the name of the realm if you are using tomcats/wildflys own auth -->
