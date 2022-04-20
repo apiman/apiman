@@ -2005,7 +2005,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     }
 
     private String getFullIndexName(String indexPostFix) {
-        return (getIndexPrefixWithJoiner() + "_" + indexPostFix).toLowerCase();
+        return (getIndexPrefixWithJoiner() + indexPostFix).toLowerCase();
     }
 
     /**
@@ -2753,13 +2753,6 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     @Override
     protected String getDefaultIndexPrefix() {
         return EsConstants.MANAGER_INDEX_NAME;
-    }
-
-    /**
-     * @return the indexName
-     */
-    public String getIndexPrefixWithJoiner() {
-        return indexPrefix;
     }
 
     @Override
