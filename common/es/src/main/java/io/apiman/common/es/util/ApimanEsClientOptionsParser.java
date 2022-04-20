@@ -74,8 +74,9 @@ public final class ApimanEsClientOptionsParser extends GenericOptionsParser {
             Predicates.noWhitespaceMsg()
         );
 
-        this.host = getRequiredString(
+        this.host = getString(
             keys("client.host"),
+            "localhost",
             Predicates.noWhitespace(),
             Predicates.noWhitespaceMsg()
         );
