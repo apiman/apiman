@@ -17,6 +17,7 @@
 package io.apiman.gateway.engine.es;
 
 import io.apiman.common.es.util.AbstractEsComponent;
+import io.apiman.common.es.util.ApimanEsClientOptionsParser;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.logging.ApimanLoggerFactory;

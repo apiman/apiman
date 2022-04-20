@@ -40,8 +40,6 @@ import static io.apiman.common.es.util.EsConstants.INDEX_MANAGER_POSTFIX_USER;
 
 import io.apiman.common.es.util.AbstractEsComponent;
 import io.apiman.common.es.util.EsConstants;
-import io.apiman.common.es.util.builder.index.AllowableIndexPropertyEntry;
-import io.apiman.common.es.util.builder.index.EsField;
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.util.crypt.DataEncryptionContext;
 import io.apiman.common.util.crypt.IDataEncrypter;
@@ -2007,7 +2005,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     }
 
     private String getFullIndexName(String indexPostFix) {
-        return (getIndexPrefix() + "_" + indexPostFix).toLowerCase();
+        return (getIndexPrefixWithJoiner() + "_" + indexPostFix).toLowerCase();
     }
 
     /**
@@ -2760,7 +2758,7 @@ public class EsStorage extends AbstractEsComponent implements IStorage, IStorage
     /**
      * @return the indexName
      */
-    public String getIndexPrefix() {
+    public String getIndexPrefixWithJoiner() {
         return indexPrefix;
     }
 

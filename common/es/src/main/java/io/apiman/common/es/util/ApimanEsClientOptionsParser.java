@@ -34,7 +34,7 @@ import java.util.function.Predicate;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-final class ApimanEsClientOptionsParser extends GenericOptionsParser {
+public final class ApimanEsClientOptionsParser extends GenericOptionsParser {
 
     static final int DEFAULT_PORT = 9200;
     static final String DEFAULT_PROTOCOL = "http";
@@ -68,7 +68,7 @@ final class ApimanEsClientOptionsParser extends GenericOptionsParser {
 
     private void parseOptions() {
         this.indexNamePrefix = getString(
-            keys("client.indexPrefix"),
+            keys("client.indexPrefix", "client.index"),
             defaultIndexPrefix,
             Predicates.noWhitespace(),
             Predicates.noWhitespaceMsg()
