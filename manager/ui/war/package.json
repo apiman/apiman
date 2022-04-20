@@ -86,7 +86,7 @@
     "which": "1.0.8"
   },
   "devDependencies": {
-    "cypress": "^7.3.0",
+    "cypress": "9.5.4",
     "cypress-sql-server": "^1.0.0",
     "http-proxy": "1.18.1",
     "http-proxy-middleware": "^2.0.0",

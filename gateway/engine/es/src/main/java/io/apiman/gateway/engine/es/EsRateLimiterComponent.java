@@ -166,7 +166,7 @@ public class EsRateLimiterComponent extends AbstractEsComponent implements IRate
      * @return full index name
      */
     private String getFullIndexName() {
-        return getIndexPrefix() + EsConstants.INDEX_RATE_BUCKET;
+        return getIndexPrefixWithJoiner() + EsConstants.INDEX_RATE_BUCKET;
     }
 
 }

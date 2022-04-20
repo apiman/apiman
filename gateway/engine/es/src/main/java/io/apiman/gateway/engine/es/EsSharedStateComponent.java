@@ -191,7 +191,7 @@ public class EsSharedStateComponent extends AbstractEsComponent implements IShar
      * @return full index name
      */
     private String getFullIndexName() {
-        return (getIndexPrefix() + EsConstants.INDEX_SHARED_STATE_PROPERTY).toLowerCase();
+        return (getIndexPrefixWithJoiner() + EsConstants.INDEX_SHARED_STATE_PROPERTY).toLowerCase();
     }
 
 }

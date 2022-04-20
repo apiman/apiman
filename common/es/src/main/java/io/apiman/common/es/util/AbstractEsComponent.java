@@ -16,10 +16,11 @@
 package io.apiman.common.es.util;
 
 import io.apiman.common.es.util.builder.index.EsIndexProperties;
-import org.elasticsearch.client.RestHighLevelClient;
 
 import java.io.IOException;
 import java.util.Map;
+
+import org.elasticsearch.client.RestHighLevelClient;
 
 /**
  * Base class for the elasticsearch component impls.
@@ -38,7 +39,8 @@ public abstract class AbstractEsComponent {
      */
     public AbstractEsComponent(Map<String, String> config) {
         this.config = config;
-        this.indexPrefix = config.getOrDefault("client.indexPrefix", getDefaultIndexPrefix());
+        ApimanEsClientOptionsParser opts = new ApimanEsClientOptionsParser(config, getDefaultIndexPrefix());
+        this.indexPrefix = opts.getIndexNamePrefix();
     }
 
     /**
@@ -110,10 +112,18 @@ public abstract class AbstractEsComponent {
     protected abstract String getDefaultIndexPrefix();
 
     /**
-     * Gets the index name to use when reading/writing to ES.
+     * Gets the index prefix name with a joiner character <code>'_'</code> (e.g. <code>foo_</code>)
+     * Used when reading/writing to ES.
+     */
+    protected String getIndexPrefixWithJoiner() {
+        return getIndexPrefix() + "_";
+    }
+
+    /**
+     * Get the plain index prefix name <strong>without</strong> any joiner character.
      */
     protected String getIndexPrefix() {
-        return indexPrefix + "_";
+        return indexPrefix;
     }
 
     /**

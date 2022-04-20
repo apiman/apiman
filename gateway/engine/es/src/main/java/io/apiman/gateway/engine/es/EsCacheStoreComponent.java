@@ -259,7 +259,7 @@ public class EsCacheStoreComponent extends AbstractEsComponent implements ICache
      * @return full index name
      */
     private String getFullIndexName() {
-        return (getIndexPrefix() + EsConstants.INDEX_CACHE_CACHE_ENTRY).toLowerCase();
+        return (getIndexPrefixWithJoiner() + EsConstants.INDEX_CACHE_CACHE_ENTRY).toLowerCase();
     }
 
 }

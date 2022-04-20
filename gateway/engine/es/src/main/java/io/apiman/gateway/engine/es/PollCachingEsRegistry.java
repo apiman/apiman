@@ -167,7 +167,7 @@ public class PollCachingEsRegistry extends CachingEsRegistry {
             }
         };
 
-        IndexRequest request = new IndexRequest(getIndexPrefix() + EsConstants.INDEX_DATA_VERSION);
+        IndexRequest request = new IndexRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_DATA_VERSION);
         request.id("instance"); //$NON-NLS-1$
         request.source("updatedOn", System.currentTimeMillis()); //$NON-NLS-1$
         getClient().indexAsync(request, RequestOptions.DEFAULT, listener);
@@ -213,7 +213,7 @@ public class PollCachingEsRegistry extends CachingEsRegistry {
     protected void checkCacheVersion() throws IOException {
         // Be very aggressive in invalidating the cache.
         boolean invalidate = true;
-        GetResponse result = getClient().get(new GetRequest(getIndexPrefix() + EsConstants.INDEX_DATA_VERSION, "instance"), RequestOptions.DEFAULT);
+        GetResponse result = getClient().get(new GetRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_DATA_VERSION, "instance"), RequestOptions.DEFAULT);
         if (result.isExists()) {
             String latestDV = Long.toString(result.getVersion()) ; //$NON-NLS-1$
             if (latestDV != null && dataVersion != null && latestDV.equals(dataVersion)) {

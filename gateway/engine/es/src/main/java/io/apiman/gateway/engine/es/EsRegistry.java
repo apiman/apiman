@@ -92,7 +92,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
     public void publishApi(final Api api, final IAsyncResultHandler<Void> handler) {
         try {
             String id = getApiId(api);
-            IndexRequest indexRequest = new IndexRequest(getIndexPrefix() + EsConstants.INDEX_APIS)
+            IndexRequest indexRequest = new IndexRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_APIS)
                     .id(id)
                     .source(JSON_MAPPER.writeValueAsBytes(api), XContentType.JSON)
                     .setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
@@ -119,7 +119,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
         final String id = getApiId(api);
 
         try {
-            DeleteRequest deleteRequest = new DeleteRequest(getIndexPrefix() + EsConstants.INDEX_APIS)
+            DeleteRequest deleteRequest = new DeleteRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_APIS)
                     .id(id)
                     .setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
 
@@ -145,7 +145,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             validateClient(client);
 
             String id = getClientId(client);
-            IndexRequest indexRequest = new IndexRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS)
+            IndexRequest indexRequest = new IndexRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_CLIENTS)
                     .source(JSON_MAPPER.writeValueAsBytes(client), XContentType.JSON)
                     .id(id)
                     .setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
@@ -190,7 +190,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
         final String id = getApiId(contract);
 
         try {
-            GetRequest getRequest = new GetRequest(getIndexPrefix() + EsConstants.INDEX_APIS).id(id);
+            GetRequest getRequest = new GetRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_APIS).id(id);
             GetResponse response = getClient().get(getRequest, RequestOptions.DEFAULT);
 
             if (!response.isExists()) {
@@ -212,7 +212,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             final Client lclient = lookupClient(client.getOrganizationId(), client.getClientId(), client.getVersion());
             final String id = getClientId(lclient);
 
-            DeleteRequest deleteRequest = new DeleteRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS)
+            DeleteRequest deleteRequest = new DeleteRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_CLIENTS)
                     .id(id)
                     .setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
 
@@ -261,7 +261,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
                 "}";
 
         SearchTemplateRequest searchTemplateRequest = new SearchTemplateRequest();
-        searchTemplateRequest.setRequest(new SearchRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS));
+        searchTemplateRequest.setRequest(new SearchRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_CLIENTS));
         searchTemplateRequest.setScriptType(ScriptType.INLINE);
         searchTemplateRequest.setScript(query);
 
@@ -323,7 +323,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
      * @throws IOException
      */
     protected Api getApi(String id) throws IOException {
-        GetRequest getRequest = new GetRequest(getIndexPrefix() + EsConstants.INDEX_APIS, id);
+        GetRequest getRequest = new GetRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_APIS, id);
         GetResponse result = getClient().get(getRequest, RequestOptions.DEFAULT);
         if (result.isExists()) {
             Api api = JSON_MAPPER.readValue(result.getSourceAsString(), Api.class);
@@ -353,7 +353,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
      * @throws IOException
      */
     protected Client getClient(String id) throws IOException {
-        GetRequest getRequest = new GetRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS, id);
+        GetRequest getRequest = new GetRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_CLIENTS, id);
         GetResponse result = getClient().get(getRequest, RequestOptions.DEFAULT);
 
         if (result.isExists()) {
@@ -421,7 +421,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             TermsAggregationBuilder aggregation = AggregationBuilders.terms("clients").field("clientId");
 
             // keep searching in specific api mgmt indices to avoid search in foreign indices beside specific api-mgmt ones
-            SearchResponse searchResponse = getClient().search(new SearchRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS)
+            SearchResponse searchResponse = getClient().search(new SearchRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_CLIENTS)
                     .source(searchSourceBuilder.query(query).aggregation(aggregation)), RequestOptions.DEFAULT);
 
             List terms = ((ParsedTerms) searchResponse.getAggregations().asMap().get("clients")).getBuckets();
@@ -448,7 +448,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             TermsAggregationBuilder aggregation = AggregationBuilders.terms("apis").field("apiId");
 
             // keep searching in specific api mgmt indices to avoid search in foreign indices beside specific api-mgmt ones
-            SearchRequest searchRequest = new SearchRequest(getIndexPrefix() + EsConstants.INDEX_APIS)
+            SearchRequest searchRequest = new SearchRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_APIS)
                     .source(searchSourceBuilder.query(query).aggregation(aggregation));
             SearchResponse searchResponse = getClient().search(searchRequest, RequestOptions.DEFAULT);
 
@@ -474,7 +474,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             TermsAggregationBuilder aggregation = AggregationBuilders.terms("all_orgs").field("organizationId");
 
             // keep searching in specific api mgmt indices to avoid search in foreign indices beside specific api-mgmt ones
-            String[] indices = {getIndexPrefix() + EsConstants.INDEX_APIS, getIndexPrefix() + EsConstants.INDEX_CLIENTS};
+            String[] indices = { getIndexPrefixWithJoiner() + EsConstants.INDEX_APIS, getIndexPrefixWithJoiner() + EsConstants.INDEX_CLIENTS};
             SearchRequest searchRequest = new SearchRequest(indices)
                     .source(searchSourceBuilder.aggregation(aggregation));
             SearchResponse searchResponse = getClient().search(searchRequest, RequestOptions.DEFAULT);
@@ -522,7 +522,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
                 "}";
 
         SearchTemplateRequest searchTemplateRequest = new SearchTemplateRequest();
-        searchTemplateRequest.setRequest(new SearchRequest(getIndexPrefix() + EsConstants.INDEX_CLIENTS));
+        searchTemplateRequest.setRequest(new SearchRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_CLIENTS));
         searchTemplateRequest.setScriptType(ScriptType.INLINE);
         searchTemplateRequest.setScript(query);
 
@@ -579,7 +579,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
         "}";
 
         SearchTemplateRequest searchTemplateRequest = new SearchTemplateRequest();
-        searchTemplateRequest.setRequest(new SearchRequest(getIndexPrefix() + EsConstants.INDEX_APIS));
+        searchTemplateRequest.setRequest(new SearchRequest(getIndexPrefixWithJoiner() + EsConstants.INDEX_APIS));
         searchTemplateRequest.setScriptType(ScriptType.INLINE);
         searchTemplateRequest.setScript(query);
 
