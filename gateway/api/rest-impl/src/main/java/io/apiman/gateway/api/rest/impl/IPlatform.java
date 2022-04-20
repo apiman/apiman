@@ -43,6 +43,7 @@ public interface IPlatform {
      * Gets the gateway endpoint.
      * @return the gateway endpoint
      */
+    @Deprecated(since = "1.3.0.Final", forRemoval = true)
     public GatewayEndpoint getEndpoint();
 
 }
