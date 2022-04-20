@@ -13,7 +13,7 @@ on:
         required: true
         default: 'master'
 
-jobs:
+jobs:@
   release:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'Apiman'
@@ -26,6 +26,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 1.8
+          distribution: 'temurin'
       - name: Set up Gren
         run: npm install github-release-notes -g
       - name: Set up NPM CLI Login
