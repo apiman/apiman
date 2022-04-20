@@ -100,7 +100,7 @@
 
     <web-resource-collection>
       <web-resource-name>blobs</web-resource-name>
-      <url-pattern>/blobs</url-pattern>
+      <url-pattern>/blobs/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
       <http-method-omission>GET</http-method-omission>
     </web-resource-collection>
@@ -182,7 +182,7 @@
 
     <web-resource-collection>
       <web-resource-name>blobs</web-resource-name>
-      <url-pattern>/blobs</url-pattern>
+      <url-pattern>/blobs/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
       <http-method-omission>GET</http-method-omission>
     </web-resource-collection>
