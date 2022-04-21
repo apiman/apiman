@@ -4,13 +4,13 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-distro</artifactId>
-    <version>2.2.2-SNAPSHOT</version>
+    <version>2.2.2.Final</version>
   </parent>
   <artifactId>apiman-distro-ddl</artifactId>
   <name>apiman-distro-ddl</name>
 
   <properties>
-    <version.org.postgresql.jdbc.driver>9.4-1201-jdbc41</version.org.postgresql.jdbc.driver>
+    <version.org.postgresql.jdbc.driver>42.3.4</version.org.postgresql.jdbc.driver>
     <version.mysql.jdbc.driver>5.1.35</version.mysql.jdbc.driver>
     <version.com.oracle.driver>12.1.0.2</version.com.oracle.driver>
     <version.mssql.driver>4.2</version.mssql.driver>
