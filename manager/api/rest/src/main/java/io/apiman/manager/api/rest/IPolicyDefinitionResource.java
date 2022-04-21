@@ -22,10 +22,9 @@ import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.PolicyDefinitionAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
-import io.swagger.annotations.Api;
 
 import java.util.List;
-
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -36,6 +35,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import io.swagger.annotations.Api;
+
 /**
  * The Policy Definition API.
  * 
@@ -43,6 +44,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("policyDefs")
 @Api(tags = "Policy Definitions")
+@PermitAll
 public interface IPolicyDefinitionResource {
 
     /**

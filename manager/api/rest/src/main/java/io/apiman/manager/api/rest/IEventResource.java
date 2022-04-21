@@ -2,6 +2,8 @@ package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.events.dto.NewAccountCreatedDto;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,6 +22,7 @@ import io.swagger.annotations.Api;
 @Path("events")
 @Api(tags = "Events")
 @Beta
+@RolesAllowed("apiuser")
 public interface IEventResource {
 
     /**

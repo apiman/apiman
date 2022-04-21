@@ -29,6 +29,7 @@ import io.apiman.manager.api.rest.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -47,6 +48,7 @@ import io.swagger.annotations.Api;
 @Path("/developers")
 @Api(tags = "Developers")
 @Deprecated(forRemoval = true)
+@RolesAllowed("devportaluser")
 public interface IDeveloperResource {
 
     /**

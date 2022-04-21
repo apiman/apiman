@@ -27,6 +27,8 @@ import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 
 import java.util.List;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -46,6 +48,7 @@ import io.swagger.annotations.Api;
  */
 @Path("gateways")
 @Api(tags = "Gateways")
+@PermitAll // Nobody without Apiman admin permissions can do these actions anyway, so no need to guard with IDM roles.
 public interface IGatewayResource {
 
     /**

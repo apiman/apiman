@@ -57,6 +57,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.security.PermitAll;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -69,6 +70,7 @@ import javax.ws.rs.core.Response;
  */
 @ApplicationScoped
 @Transactional
+@PermitAll
 public class UserResourceImpl implements IUserResource, DataAccessUtilMixin {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(UserResourceImpl.class);

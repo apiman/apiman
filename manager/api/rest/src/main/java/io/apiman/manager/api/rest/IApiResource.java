@@ -3,6 +3,7 @@ package io.apiman.manager.api.rest;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -28,6 +29,7 @@ public interface IApiResource {
      * @return Array of featured APIs, else empty array if no featured APIs
      * @statuscode 200 If the action completes successfully.
      */
+    @PermitAll
     @GET
     @Path("featured")
     @Produces(MediaType.APPLICATION_JSON)
