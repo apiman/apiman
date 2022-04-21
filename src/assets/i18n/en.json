@@ -128,8 +128,8 @@
   },
   "DESCRIPTIONS": {
     "TRY_IT_OUT": "Displays the Open API definition (Swagger) and allows for making test calls if the API is available.",
-    "API_KEY": "When an API contract is created, the system generates a unique API Key. <br>This API Key is unique per client and the same for all contracts of this client.<br> All requests made to the API must include this API Key.",
-    "API_ENDPOINT": "One important aspect of all APIs that are managed by the API Gateway is the security that the API Gateway provides. <br>The API can be accessed with this URL."
+    "API_KEY": "When an API contract is created, the system generates a unique API Key. <br>This API Key is unique per client and the same for all contracts of this client.<br> All requests made to the API must include this API Key:",
+    "API_ENDPOINT": "Use this URL to access the API:"
   },
   "APPROVAL": {
     "API": {
@@ -155,7 +155,8 @@
     "KEY_FEATURES": "Key Features",
     "EXTENDED_DESCRIPTION": "Extended Description",
     "NO_EXT_DESCRIPTION": "No further description has been stored for this API",
-    "SIGN_UP": "Sign Up"
+    "SIGN_UP": "Sign Up",
+    "PUBLIC_ENDPOINT": "Public Endpoint"
   },
   "TERMS": {
     "PREFIX": "I accept the ",

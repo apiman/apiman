@@ -65,6 +65,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { ApiMarkdownDescriptionComponent } from './components/api-markdown-description/api-markdown-description.component';
 import { ApiStatusTagComponent } from './components/api-status-tag/api-status-tag.component';
+import { ApiPublicEndpointComponent } from './components/api-public-endpoint/api-public-endpoint.component';
 
 export function initializeApp(
   configService: ConfigService,
@@ -98,38 +99,39 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
 
 @NgModule({
   declarations: [
-    AppComponent,
-    HeaderComponent,
-    FooterComponent,
+    AccountComponent,
     ApiCardComponent,
+    ApiCardListComponent,
+    ApiDocumentationButtonsComponent,
+    ApiMarkdownDescriptionComponent,
+    ApiPublicEndpointComponent,
+    ApiStatusTagComponent,
+    AppComponent,
+    FooterComponent,
+    GaugeChartComponent,
+    HeaderComponent,
+    HomeComponent,
+    ImgOrIconSelectorComponent,
+    MarketplaceApiDescriptionComponent,
     MarketplaceApiDetailsComponent,
     MarketplaceApiTermsComponent,
-    MarketplaceSignupStepperComponent,
-    HomeComponent,
-    MarketplaceApiDescriptionComponent,
-    MarketplaceComponent,
-    NavigationComponent,
-    ApiCardListComponent,
-    PlanCardListComponent,
-    AccountComponent,
-    MyAppsComponent,
     MarketplaceClientAppComponent,
+    MarketplaceComponent,
+    MarketplaceSignupStepperComponent,
+    MyAppsComponent,
+    MyAppsManageApiComponent,
+    MyAppsPoliciesComponent,
     MyAppsSummaryComponent,
     MyAppsUseApiComponent,
-    MyAppsPoliciesComponent,
-    MyAppsManageApiComponent,
+    NavigationComponent,
+    NoDataComponent,
+    NotificationsComponent,
+    PlanCardListComponent,
     PolicyCardComponent,
     PolicyCardLightComponent,
-    GaugeChartComponent,
-    TocComponent,
-    NoDataComponent,
-    UnregisterClientComponent,
-    ImgOrIconSelectorComponent,
-    ApiDocumentationButtonsComponent,
     RateQuotaPolicyShortLimitComponent,
-    NotificationsComponent,
-    ApiMarkdownDescriptionComponent,
-    ApiStatusTagComponent
+    TocComponent,
+    UnregisterClientComponent
   ],
   imports: [
     KeycloakAngularModule,

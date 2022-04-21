@@ -128,8 +128,8 @@
   },
   "DESCRIPTIONS": {
     "TRY_IT_OUT": "Öffnet die Open API Defintion (Swagger). Hier können Sie Testaufrufe auf die API durchführen.",
-    "API_KEY": "Wenn ein API-Vertrag erstellt wird, erzeugt das System einen eindeutigen API-Key. <br>Dieser API-Key ist pro Client eindeutig und für alle Verträge dieses Clients gleich.<br> Alle Aufrufe dieser API müssen diesen API-Key beinhalten.",
-    "API_ENDPOINT": "Ein wichtiger Aspekt für alle vom API Gateway verwalteten APIs ist die Sicherheit des API Gateways. <br>Die API kann über diese URL aufgerufen werden"
+    "API_KEY": "Wenn ein API-Vertrag erstellt wird, erzeugt das System einen eindeutigen API-Key. <br>Dieser API-Key ist pro Client eindeutig und für alle Verträge dieses Clients gleich.<br> Alle Aufrufe dieser API müssen diesen API-Key beinhalten:",
+    "API_ENDPOINT": "Benutzen Sie diese URL, um die API aufzurufen:"
   },
   "APPROVAL": {
     "API": {
@@ -155,7 +155,8 @@
     "KEY_FEATURES": "Vorteile",
     "EXTENDED_DESCRIPTION": "Ausführliche Beschreibung",
     "NO_EXT_DESCRIPTION": "Für diese API wurde keine ausführliche Beschreibung hinterlegt",
-    "SIGN_UP": "Registrieren"
+    "SIGN_UP": "Registrieren",
+    "PUBLIC_ENDPOINT": "Öffentlicher Endpunkt"
   },
   "TERMS": {
     "PREFIX": "Ich stimme den ",

@@ -14,15 +14,12 @@
  *  imitations under the License.
  */
 
-.box {
-  max-height: 50vh;
-  padding-left: 1%;
-  padding-right: 1%;
-}
-
 mat-panel-title {
   font-size: 1.3em;
   justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
 
   #latest-tag {
     margin-left: 0.3rem;
@@ -37,26 +34,12 @@ mat-panel-title {
   grid-column-gap: 16px;
 }
 
-mat-grid-list {
-  margin-bottom: 2em;
-}
-
-#long-description-tile {
-  border: 1px solid rgb(0 0 0 / 20%);
-  background: rgb(0 0 0 / 2%);
-}
-
 #key-features {
   margin-left: 2em;
 }
 
-#docs-button {
-  border: 1px solid rgb(0 0 0 / 20%);
-  float: right;
-}
-
-#plans-header {
-  margin: unset;
+#version-info {
+  margin-left: 0.5rem;
 }
 
 .mat-expansion-panel-header.mat-expanded {
@@ -79,4 +62,8 @@ mat-grid-list {
 
 .md-only {
   width: unset;
+}
+
+app-api-status-tag {
+  padding-top: 0.4rem;
 }

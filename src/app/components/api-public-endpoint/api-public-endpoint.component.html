@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
+<!-- API Public Endpoint -->
+<div>
+  <div>
+    <h2 class="primary mt-rem-3">
+      {{ 'API_DETAILS.PUBLIC_ENDPOINT' | translate }}
+    </h2>
+    <p [innerHTML]="'DESCRIPTIONS.API_ENDPOINT' | translate"></p>
+  </div>
+  <div>
+    <mat-form-field
+      *ngIf="publicEndpoint$ | async as publicEndpoint"
+      id="public-endpoint">
+      <input
+        id="api-endpoint-input"
+        matInput
+        readonly
+        value="{{ publicEndpoint.managedEndpoint }}"
+        [placeholder]="'API_DETAILS.PUBLIC_ENDPOINT' | translate" />
+      <button
+        id="api-endpoint-copy-btn"
+        [disabled]="false"
+        [cdkCopyToClipboard]="publicEndpoint.managedEndpoint"
+        mat-icon-button
+        matSuffix
+        class="input-icon-btn">
+        <mat-icon id="api-endpoint-copy-icon" color="primary"
+          >content_copy</mat-icon
+        >
+      </button>
+    </mat-form-field>
+  </div>
+</div>

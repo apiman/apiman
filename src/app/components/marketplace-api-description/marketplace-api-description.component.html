@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2022 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -16,17 +16,11 @@
 
 <mat-expansion-panel [expanded]="isLatest" xmlns="http://www.w3.org/1999/html">
   <mat-expansion-panel-header>
-    <mat-panel-title
-      style="
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        align-items: center;
-      ">
+    <mat-panel-title>
       <app-api-status-tag
-        style="padding-top: 0.4rem"
         [apiStatus]="api.status"
         [primary]="true"></app-api-status-tag>
-      <div id="version-info" style="margin-left: 0.5rem">
+      <div id="version-info">
         {{ 'COMMON.VERSION' | translate }} {{ api.version }}
         {{ 'COMMON.OF' | translate }} {{ api.api.name }}
         <span *ngIf="isLatest" id="latest-tag" class="primary">[latest]</span>
@@ -90,4 +84,9 @@
 
   <!-- Plans -->
   <app-plan-card-list [apiVersion]="api"></app-plan-card-list>
+
+  <!-- Public Endpoint -->
+  <app-api-public-endpoint
+    *ngIf="api.publicAPI"
+    [publicApiVersion]="api"></app-api-public-endpoint>
 </mat-expansion-panel>
