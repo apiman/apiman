@@ -112,11 +112,15 @@
   </servlet-mapping>
 
   <!--
-    Let Resteasy deal with IDM roles. See annotations on JAX-RS interfaces.
+    Let Resteasy deal handle security constraints using IDM roles.
+    See annotations on JAX-RS interfaces for actual enforcement rules.
+
+    The default web.xml mechanism only supports simple servlet matching patterns, this precludes
+    patterns such as /organizations/*/clients/*, which we would need.
 
     Endpoints not listed here should be accessible anonymously (e.g. devportal endpoints).
 
-    Important: These are IDM roles, and this operates independently to Apiman's roles and permissions system.
+    Important: These are based on IDM roles, and operates as the layer before Apiman's roles and permissions system.
   -->
   <security-constraint>
     <display-name>Apiman Manager API. RESTEasy manages access constraints (see security annotations on JAX-RS interfaces)</display-name>
