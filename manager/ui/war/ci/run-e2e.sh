@@ -27,7 +27,7 @@ yarn run wait-on -v -d 15000 -t 300000 -c waitOnConfig.js "http://$HOSTNAME:8877
 # If CI env var set, use record mode and export to Cypress dashboard.
 if [[ -n $CI ]]
 then
-    yarn cy:run --record --config baseUrl="http://$HOSTNAME:8877/apimanui/,retries=3,defaultCommandTimeout=10000"
+    yarn cy:run --record --config baseUrl="http://$HOSTNAME:8877/,retries=3,defaultCommandTimeout=10000"
 else
-    yarn cy:run --config baseUrl="http://$HOSTNAME:8877/apimanui/,retries=3,defaultCommandTimeout=10000"
+    yarn cy:run --config baseUrl="http://$HOSTNAME:8877/,retries=3,defaultCommandTimeout=10000"
 fi
