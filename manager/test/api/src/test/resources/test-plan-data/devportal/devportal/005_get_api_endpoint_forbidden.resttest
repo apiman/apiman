@@ -1,0 +1,10 @@
+GET /devportal/organizations/test/apis/privateapi/versions/1.0/endpoint admin/admin
+----
+404
+Content-Type: application/json
+
+{
+    "type": "ApiVersionNotFoundException",
+    "errorCode": 5003,
+    "message" : "API Version does not exist: privateapi/1.0"
+}

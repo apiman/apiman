@@ -1,0 +1,8 @@
+GET /devportal/organizations/test/apis/Api1/versions/1.0/endpoint admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "managedEndpoint":"http://example.org/endpoint"
+}

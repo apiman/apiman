@@ -9,9 +9,12 @@ import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiVersionEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.exceptions.InvalidApiStatusException;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationAlreadyExistsException;
@@ -91,6 +94,14 @@ public interface IDeveloperPortalResource {
     @Produces({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
     Response getApiDefinition(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("apiVersion") String apiVersion)
             throws ApiVersionNotFoundException;
+
+    @GET
+    @Path("organizations/{organizationId}/apis/{apiId}/versions/{version}/endpoint")
+    @Produces(MediaType.APPLICATION_JSON)
+    ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(@PathParam("organizationId") String organizationId,
+                                                            @PathParam("apiId") String apiId,
+                                                            @PathParam("version") String version)
+            throws ApiVersionNotFoundException, InvalidApiStatusException, GatewayNotFoundException;
 
     @GET
     @Path("organizations/{orgId}/plans/{planId}/versions/{version}/policies")

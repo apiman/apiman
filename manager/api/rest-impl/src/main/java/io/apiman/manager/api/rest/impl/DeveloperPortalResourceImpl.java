@@ -15,10 +15,13 @@ import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiVersionEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.rest.IDeveloperPortalResource;
 import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.exceptions.InvalidApiStatusException;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationAlreadyExistsException;
@@ -204,6 +207,12 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
                 .entity(apiDef.getDefinition())
                 .type(apiDef.getDefinitionType().getMediaType())
                 .build();
+    }
+
+    @Override
+    public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(String organizationId, String apiId, String version) throws ApiVersionNotFoundException, InvalidApiStatusException, GatewayNotFoundException {
+        mustBeDiscoverable(EntityType.API, organizationId, apiId, version);
+        return apiService.getApiVersionEndpointInfo(organizationId, apiId, version);
     }
 
     @Override
