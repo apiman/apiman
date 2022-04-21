@@ -221,7 +221,7 @@ jobs:
           cd apiman
           ./mvnw deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
           cd parent
-          ./mvnw deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
+          ../mvnw deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
       # Tag and release Apiman Plugins
       - name: Tag and Release Apiman Plugins
         run: |
