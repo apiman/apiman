@@ -4,7 +4,6 @@ import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
-import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
@@ -51,7 +50,7 @@ public interface IDeveloperPortalResource {
     @Path("search/apis")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    SearchResultsBean<ApiSummaryBean> searchExposedApis(SearchCriteriaBean criteria)
+    SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
     @GET
@@ -63,7 +62,7 @@ public interface IDeveloperPortalResource {
     @Path("organizations")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    OrganizationBean createHomeOrgForDeveloper(NewOrganizationBean newOrg)
+    Response createHomeOrgForDeveloper(NewOrganizationBean newOrg)
             throws OrganizationAlreadyExistsException;
 
     @GET

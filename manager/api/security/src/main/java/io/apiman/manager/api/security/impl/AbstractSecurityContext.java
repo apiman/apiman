@@ -295,7 +295,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
         HttpServletRequest request = servletRequest.get();
 
         if (request.getRemoteUser() != null) {
-            Set<DiscoverabilityLevel> discoverabilities = new HashSet<>(3);
+            Set<DiscoverabilityLevel> discoverabilities = new HashSet<>(4);
             discoverabilityConfig.getSourceToDiscoverability().forEach((source, discoverabilityConfig) -> {
                 switch (source) {
                     case IDM_ROLE:
@@ -311,6 +311,11 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
                         throw new IllegalStateException("Unexpected value: " + source);
                 }
             });
+            // TODO(msavy): make default discoverability configurable, perhaps?
+            if (discoverabilities.isEmpty()) {
+                discoverabilities.add(DiscoverabilityLevel.PORTAL);
+                discoverabilities.add(DiscoverabilityLevel.ANONYMOUS);
+            }
             return discoverabilities;
         } else {
             return Set.of(DiscoverabilityLevel.PORTAL, DiscoverabilityLevel.ANONYMOUS);

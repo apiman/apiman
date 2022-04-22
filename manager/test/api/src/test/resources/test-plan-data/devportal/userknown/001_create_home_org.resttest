@@ -1,0 +1,15 @@
+POST /devportal/organizations fmercury/fmercury
+Content-Type: application/json
+
+{
+  "name": "fmercury"
+}
+----
+200
+Content-Type: application/json
+
+{
+	"id": "fmercury",
+	"name": "fmercury",
+	"createdBy": "fmercury"
+}

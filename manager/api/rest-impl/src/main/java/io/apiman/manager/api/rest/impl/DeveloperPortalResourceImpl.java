@@ -83,7 +83,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     }
 
     @Override
-    public SearchResultsBean<ApiSummaryBean> searchExposedApis(SearchCriteriaBean criteria) throws OrganizationNotFoundException, InvalidSearchCriteriaException {
+    public SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria) throws OrganizationNotFoundException, InvalidSearchCriteriaException {
         LOG.debug("Searching for APIs by criteria {0}", criteria);
         return searchService.findApis(criteria, PermissionsHelper.orgConstraints(securityContext, PermissionType.apiView));
     }
@@ -149,10 +149,10 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     }
 
     @Override
-    public OrganizationBean createHomeOrgForDeveloper(NewOrganizationBean newOrg) {
+    public Response createHomeOrgForDeveloper(NewOrganizationBean newOrg) {
         mustBeLoggedIn();
         if (!newOrg.getName().equals(securityContext.getCurrentUser())) {
-            throw new NotAuthorizedException("A developer's default org must be the same as their username. This restriction may be lifted later.");
+            return Response.status(422, "A developer's default org must be the same as their username. This restriction may be lifted later.").build();
         }
 
         OrganizationBean existingOrg;
@@ -177,7 +177,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
             newOrg.setName(newOrgId);
         }
         LOG.info("Created home org {0} for {1}", newOrg.getName(), securityContext.getCurrentUser());
-        return orgService.createOrg(newOrg);
+        return Response.ok(orgService.createOrg(newOrg)).build();
     }
 
     @Override

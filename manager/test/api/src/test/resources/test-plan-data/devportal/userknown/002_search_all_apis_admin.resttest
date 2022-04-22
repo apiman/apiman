@@ -1,0 +1,39 @@
+POST /devportal/search/apis admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [
+    {
+      "name" : "name",
+      "value" : "*",
+      "operator" : "like"
+    }
+  ],
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+	"beans": [{
+		"organizationId": "test",
+		"organizationName": "test",
+		"id": "Api1",
+		"name": "Api 1",
+		"tags": [{
+			"key": "featured",
+			"value": null
+		}]
+	}, {
+		"organizationId": "test",
+		"organizationName": "test",
+		"id": "privateapi",
+		"name": "privateapi",
+		"tags": []
+	}],
+	"totalSize": 2
+}
