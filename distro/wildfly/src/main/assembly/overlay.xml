@@ -131,13 +131,6 @@
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
-      <directory>target/keycloak/standalone</directory>
-      <outputDirectory>standalone</outputDirectory>
-      <filtered>false</filtered>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-    </fileSet>
-    <fileSet>
       <directory>target/keycloak/modules</directory>
       <outputDirectory>modules</outputDirectory>
       <filtered>false</filtered>
@@ -146,13 +139,6 @@
       <excludes>
         <exclude>**/aesh/**</exclude>
       </excludes>
-    </fileSet>
-    <fileSet>
-      <directory>target/keycloak/themes</directory>
-      <outputDirectory>themes</outputDirectory>
-      <filtered>false</filtered>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
       <directory>target/keycloak/bin</directory>

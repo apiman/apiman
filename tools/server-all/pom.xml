@@ -58,6 +58,28 @@
           <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-docker-compose</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/docker</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources/docker</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -79,7 +101,7 @@
                     <antversion property="antversion" />
                     <echo>Ant Version: ${antversion}</echo>
 
-                    <property name="wildfly.version" value="23.0.2.Final"/>
+                    <property name="wildfly.version" value="${version.org.wildfly.as}"/>
 
                     <property name="appserver.id" value="wildfly" />
                     <property name="apiman.wildfly.download.url" value="https://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip" />
@@ -95,7 +117,7 @@
 
                     <echo></echo>
                     <echo>********************************************************************</echo>
-                    <echo>APIMan Dist: ${apiman.apiman-distro-wildfly.zip}</echo>
+                    <echo>Apiman Dist: ${apiman.apiman-distro-wildfly.zip}</echo>
                     <echo>Dev Services: ${apiman.apiman-tools-services.war}</echo>
                     <echo>-------</echo>
                     <echo>WildFly Home: ${apiman.wildfly.home}</echo>
