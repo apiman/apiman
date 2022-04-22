@@ -26,6 +26,7 @@ import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
+import io.apiman.manager.api.rest.impl.util.PermissionsHelper;
 import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.ISecurityContext.EntityType;
@@ -34,6 +35,7 @@ import io.apiman.manager.api.service.ApiService.ApiDefinitionStream;
 import io.apiman.manager.api.service.DevPortalService;
 import io.apiman.manager.api.service.OrganizationService;
 import io.apiman.manager.api.service.PlanService;
+import io.apiman.manager.api.service.SearchService;
 
 import java.util.List;
 import java.util.Set;
@@ -52,11 +54,11 @@ import javax.ws.rs.core.Response;
 public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     private final IApimanLogger LOG = ApimanLoggerFactory.getLogger(DeveloperPortalResourceImpl.class);
-    private static final Set<DiscoverabilityLevel> PORTAL_DISCOVERABILITY = Set.of(DiscoverabilityLevel.PORTAL);
     private ApiService apiService;
     private PlanService planService;
     private DevPortalService portalService;
     private OrganizationService orgService;
+    private SearchService searchService;
     private ISecurityContext securityContext;
 
     @Inject
@@ -64,11 +66,13 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
                                        PlanService planService,
                                        DevPortalService portalService,
                                        OrganizationService orgService,
+                                       SearchService searchService,
                                        ISecurityContext securityContext) {
         this.apiService = apiService;
         this.planService = planService;
         this.portalService = portalService;
         this.orgService = orgService;
+        this.searchService = searchService;
         this.securityContext = securityContext;
     }
 
@@ -78,31 +82,47 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public SearchResultsBean<ApiSummaryBean> searchExposedApis(SearchCriteriaBean criteria) throws OrganizationNotFoundException, InvalidSearchCriteriaException {
         LOG.debug("Searching for APIs by criteria {0}", criteria);
-        return portalService.findExposedApis(criteria);
+        return searchService.findApis(criteria, PermissionsHelper.orgConstraints(securityContext, PermissionType.apiView));
     }
 
     @Override
-    public List<ApiSummaryBean> getFeaturedApis() {
-        return portalService.getFeaturedApis();
+    public SearchResultsBean<ApiSummaryBean> getFeaturedApis() {
+        LOG.debug("Getting all featured APIs");
+        return searchService.findAllFeaturedApis(PermissionsHelper.orgConstraints(securityContext, PermissionType.apiView));
     }
 
     @Override
     public List<ApiVersionSummaryBean> listApiVersions(String orgId, String apiId) {
+        LOG.debug("Listing all API versions");
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.API,
+                orgId,
+                apiId,
+                Set.of(PermissionType.apiView)
+        );
+
         return apiService.listApiVersions(orgId, apiId).stream()
-                .filter(av -> securityContext.isDiscoverable(EntityType.API, orgId, apiId, null, PORTAL_DISCOVERABILITY))
+                .filter(av -> securityContext.hasPermissionsOrDiscoverable(EntityType.API, orgId, apiId, av.getVersion(), Set.of(PermissionType.apiView)))
                 .collect(Collectors.toList());
     }
 
     @Override
     public ApiVersionBeanDto getApiVersion(String orgId, String apiId, String apiVersion) {
-        mustBeDiscoverable(EntityType.API, orgId, apiId, apiVersion);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.API,
+                orgId,
+                apiId,
+                apiVersion,
+                Set.of(PermissionType.apiView)
+        );
 
         ApiVersionBeanDto v = apiService.getApiVersion(orgId, apiId, apiVersion);
 
         // TODO(msavy): probably a nicer way of doing this.
-        Set<ApiPlanBeanDto> filteredPlans = v.getPlans().stream()
-                .filter(avp -> avp.getDiscoverability() == DiscoverabilityLevel.PORTAL)
-                .collect(Collectors.toSet());
+        Set<ApiPlanBeanDto> filteredPlans = v.getPlans()
+                       .stream()
+                       .filter(ap -> securityContext.hasPermission(PermissionType.planView, orgId) || permittedDiscoverability(ap.getDiscoverability()))
+                       .collect(Collectors.toSet());
 
         v.setPlans(filteredPlans);
 
@@ -111,11 +131,17 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     }
 
     @Override
-    public List<DeveloperApiPlanSummaryDto> getApiVersionPlans(String orgId, String apiId, String version) {
-        mustBeDiscoverable(EntityType.API, orgId, apiId, version);
-        return portalService.getApiVersionPlans(orgId, apiId, version)
+    public List<DeveloperApiPlanSummaryDto> getApiVersionPlans(String orgId, String apiId, String apiVersion) {
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.API,
+                orgId,
+                apiId,
+                apiVersion,
+                Set.of(PermissionType.apiView)
+        );
+        return portalService.getApiVersionPlans(orgId, apiId, apiVersion)
                        .stream()
-                       .filter(avp -> avp.getDiscoverability() == DiscoverabilityLevel.PORTAL)
+                       .filter(ap -> securityContext.hasPermission(PermissionType.planView, orgId) || permittedDiscoverability(ap.getDiscoverability()))
                        .collect(Collectors.toList());
     }
 
@@ -133,10 +159,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
             existingOrg = null;
         }
 
-        if (existingOrg == null) {
-            LOG.info("Created home org {0} for {1}", newOrg.getName(), securityContext.getCurrentUser());
-            return orgService.createOrg(newOrg);
-        } else {
+        if (existingOrg != null) {
             // First check who owns the existing organization, otherwise we could get into trouble by letting people spam create orgs.
             if (securityContext.hasPermission(PermissionType.clientEdit, existingOrg.getId())) {
                 OrganizationAlreadyExistsException ex = ExceptionFactory.organizationAlreadyExistsException(existingOrg.getName());
@@ -149,20 +172,33 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
                              + "This is likely due to another user coincidentally creating an org with the same name "
                              + "An organization with a random suffix will be created: {1}.", securityContext.getCurrentUser(), newOrgId);
             newOrg.setName(newOrgId);
-            return orgService.createOrg(newOrg);
         }
+        LOG.info("Created home org {0} for {1}", newOrg.getName(), securityContext.getCurrentUser());
+        return orgService.createOrg(newOrg);
     }
 
     @Override
     public List<ApiVersionPolicySummaryDto> listApiPolicies(String orgId, String apiId, String apiVersion)
             throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
-        mustBeDiscoverable(EntityType.API, orgId, apiId, apiVersion);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.API,
+                orgId,
+                apiId,
+                apiVersion,
+                Set.of(PermissionType.apiView)
+        );
         return portalService.getApiVersionPolicies(orgId, apiId, apiVersion);
     }
 
     @Override
     public Response getApiDefinition(String orgId, String apiId, String apiVersion) throws ApiVersionNotFoundException {
-        mustBeDiscoverable(EntityType.API, orgId, apiId, apiVersion);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.API,
+                orgId,
+                apiId,
+                apiVersion,
+                Set.of(PermissionType.apiView)
+        );
         ApiDefinitionStream apiDef = apiService.getApiDefinition(orgId, apiId, apiVersion);
         return Response.ok()
                 .entity(apiDef.getDefinition())
@@ -173,21 +209,27 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     @Override
     public List<PolicySummaryBean> listPlanPolicies(String orgId, String planId, String version)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
-        mustBeDiscoverable(EntityType.PLAN, orgId, planId, version);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.PLAN,
+                orgId,
+                planId,
+                version,
+                Set.of(PermissionType.planView)
+        );
         return planService.listPlanPolicies(orgId, planId, version);
     }
 
     @Override
     public PolicyBean getPlanPolicy(String orgId, String planId, String version, long policyId)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        mustBeDiscoverable(EntityType.PLAN, orgId, planId, version);
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.PLAN,
+                orgId,
+                planId,
+                version,
+                Set.of(PermissionType.planView)
+        );
         return planService.getPlanPolicy(orgId, planId, version, policyId);
-    }
-
-    private void mustBeDiscoverable(EntityType entityType, String orgId, String apiId, String apiVersion) {
-        if (!securityContext.isDiscoverable(entityType, orgId, apiId, apiVersion, Set.of(DiscoverabilityLevel.PORTAL))) {
-            throw ExceptionFactory.apiVersionNotFoundException(apiId, apiVersion);
-        }
     }
 
     private void mustBeLoggedIn() {
@@ -195,4 +237,9 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
             throw ExceptionFactory.notAuthorizedException();
         }
     }
+
+    boolean permittedDiscoverability(DiscoverabilityLevel dl) {
+        return securityContext.getPermittedDiscoverabilities().contains(dl);
+    }
+
 }

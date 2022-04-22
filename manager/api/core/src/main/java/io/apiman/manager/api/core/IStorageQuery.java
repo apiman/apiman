@@ -17,7 +17,7 @@ package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
-import io.apiman.manager.api.beans.idm.OrgsPermissionConstraint;
+import io.apiman.manager.api.beans.idm.PermissionConstraint;
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -73,7 +73,7 @@ public interface IStorageQuery {
      * @return found orgs
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint) throws StorageException;
+    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria, PermissionConstraint permissionConstraint) throws StorageException;
 
     /**
      * Finds clients by the provided criteria.
@@ -81,7 +81,7 @@ public interface IStorageQuery {
      * @return found clients
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint) throws StorageException;
+    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria, PermissionConstraint permissionConstraint) throws StorageException;
 
     /**
      * Finds APIs by the provided criteria.
@@ -89,7 +89,7 @@ public interface IStorageQuery {
      * @return found APIs
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint, boolean paginate) throws StorageException;
+    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, PermissionConstraint permissionConstraint, boolean paginate) throws StorageException;
 
     /**
      * Finds plans (within an organization) with the given criteria.
@@ -98,7 +98,7 @@ public interface IStorageQuery {
      * @return found plans
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria,  OrgsPermissionConstraint permissionConstraint) throws StorageException;
+    public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria,  PermissionConstraint permissionConstraint) throws StorageException;
 
     /**
      * Gets the audit log for an entity.

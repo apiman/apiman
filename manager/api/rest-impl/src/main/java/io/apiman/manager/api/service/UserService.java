@@ -10,8 +10,8 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
-import io.apiman.manager.api.security.impl.IndexedPermissions;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -63,6 +63,10 @@ public class UserService implements DataAccessUtilMixin {
     }
 
     public List<OrganizationSummaryBean> getPermittedOrgs(String userId) {
+        if (userId == null || userId.isBlank()) {
+            return Collections.emptyList();
+        }
+
         return tryAction(() -> {
             Set<String> permittedOrganizations = query.getUserMemberships(userId)
                  .stream()
@@ -73,6 +77,10 @@ public class UserService implements DataAccessUtilMixin {
     }
 
     public Set<PermissionBean> getPermissions(String userId) {
+        if (userId == null || userId.isBlank()) {
+            return Collections.emptySet();
+        }
+
         return tryAction(() -> query.getPermissions(userId));
     }
 

@@ -39,7 +39,7 @@ import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
 import io.apiman.manager.api.beans.idm.DiscoverabilityEntity;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
-import io.apiman.manager.api.beans.idm.OrgsPermissionConstraint;
+import io.apiman.manager.api.beans.idm.PermissionConstraint;
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -714,7 +714,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * {@inheritDoc}
      */
     @Override
-    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint)
+    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria, PermissionConstraint permissionConstraint)
             throws StorageException {
 
         Consumer<CriteriaBuilder<OrganizationBean>> constraintFunc = builder -> {};
@@ -759,7 +759,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * {@inheritDoc}
      */
     @Override
-    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint)
+    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria, PermissionConstraint permissionConstraint)
             throws StorageException {
 
         Consumer<CriteriaBuilder<ClientBean>> constraintFunc =  builder -> {}; // If unconstrained, do nothing.
@@ -799,7 +799,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * {@inheritDoc}
      */
     @Override
-    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint, boolean paginate)
+    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, PermissionConstraint permissionConstraint, boolean paginate)
             throws StorageException {
 
         Consumer<CriteriaBuilder<ApiBean>> constraintFunc = builder -> {};
@@ -842,7 +842,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * {@inheritDoc}
      */
     @Override
-    public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria, OrgsPermissionConstraint permissionConstraint)
+    public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria, PermissionConstraint permissionConstraint)
             throws StorageException {
 
         Consumer<CriteriaBuilder<PlanBean>> constraintFunc = builder -> {};

@@ -31,8 +31,6 @@ import javax.ws.rs.core.Response;
 
 import com.google.common.annotations.Beta;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
 
 /**
  * Developer portal resources.
@@ -56,7 +54,7 @@ public interface IDeveloperPortalResource {
     @GET
     @Path("apis/featured")
     @Produces(MediaType.APPLICATION_JSON)
-    List<ApiSummaryBean> getFeaturedApis();
+    SearchResultsBean<ApiSummaryBean> getFeaturedApis();
 
     @POST
     @Path("organizations")

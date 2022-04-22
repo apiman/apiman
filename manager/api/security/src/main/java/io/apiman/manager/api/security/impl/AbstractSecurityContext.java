@@ -32,6 +32,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.i18n.Messages;
 import io.apiman.manager.api.security.impl.IndexedDiscoverabilities.DILookupResult;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -169,6 +170,9 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
      */
     private IndexedPermissions loadPermissions() {
         String userId = getCurrentUser();
+        if (userId == null || userId.isBlank()) {
+            return new IndexedPermissions(Collections.emptySet());
+        }
         try {
             return new IndexedPermissions(query.getPermissions(userId));
         } catch (StorageException e) {
@@ -232,6 +236,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
         }
     }
 
+    @Override
     public boolean hasPermissionsOrDiscoverable(EntityType entityType,
                                                 String orgId,
                                                 String entityId,
@@ -239,6 +244,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
         return hasPermissionsOrDiscoverable(entityType, orgId, entityId, null, permissionType);
     }
 
+    @Override
     public boolean hasPermissionsOrDiscoverable(EntityType entityType,
                                                 String orgId,
                                                 String entityId,
@@ -286,24 +292,29 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
     }
 
     private Set<DiscoverabilityLevel> getDiscoverabilities() {
-        Set<DiscoverabilityLevel> discoverabilities = new HashSet<>(3);
         HttpServletRequest request = servletRequest.get();
-        discoverabilityConfig.getSourceToDiscoverability().forEach((source, discoverabilityConfig) -> {
-           switch(source) {
-               case IDM_ROLE:
-                   if (request.isUserInRole(discoverabilityConfig.getName())) {
-                        discoverabilities.addAll(discoverabilityConfig.getDiscoverabilities());
-                   }
-                   break;
-               case IDM_ATTRIBUTE:
-               case APIMAN_ROLE:
-               case APIMAN_PERMISSION:
-                    throw new UnsupportedOperationException("Support for " + source + " not available on this platform.");
-               default:
-                   throw new IllegalStateException("Unexpected value: " + source);
-           }
-        });
-        return discoverabilities;
+
+        if (request.getRemoteUser() != null) {
+            Set<DiscoverabilityLevel> discoverabilities = new HashSet<>(3);
+            discoverabilityConfig.getSourceToDiscoverability().forEach((source, discoverabilityConfig) -> {
+                switch (source) {
+                    case IDM_ROLE:
+                        if (request.isUserInRole(discoverabilityConfig.getName())) {
+                            discoverabilities.addAll(discoverabilityConfig.getDiscoverabilities());
+                        }
+                        break;
+                    case IDM_ATTRIBUTE:
+                    case APIMAN_ROLE:
+                    case APIMAN_PERMISSION:
+                        throw new UnsupportedOperationException("Support for " + source + " not available on this platform.");
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + source);
+                }
+            });
+            return discoverabilities;
+        } else {
+            return Set.of(DiscoverabilityLevel.PORTAL, DiscoverabilityLevel.ANONYMOUS);
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 package io.apiman.manager.api.service;
 
-import io.apiman.manager.api.beans.idm.OrgsPermissionConstraint;
+import io.apiman.manager.api.beans.idm.PermissionConstraint;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -39,22 +39,22 @@ public class SearchService implements DataAccessUtilMixin {
 
     public SearchService() {}
 
-    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria, OrgsPermissionConstraint constraints) {
+    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria, PermissionConstraint constraints) {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findOrganizations(criteria, constraints));
     }
 
-    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria, OrgsPermissionConstraint constraints) {
+    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria, PermissionConstraint constraints) {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findClients(criteria, constraints));
     }
 
-    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, OrgsPermissionConstraint constraints) {
+    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, PermissionConstraint constraints) {
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         return tryAction(() -> query.findApis(criteria, constraints, true));
     }
 
-    public SearchResultsBean<ApiSummaryBean> findAllFeaturedApis(OrgsPermissionConstraint constraints) {
+    public SearchResultsBean<ApiSummaryBean> findAllFeaturedApis(PermissionConstraint constraints) {
         SearchCriteriaBean criteria = new SearchCriteriaBean().addFilter("tags.key", "featured", SearchCriteriaFilterOperator.eq);
         return tryAction(() -> query.findApis(criteria, constraints, false)); // TODO(msavy): when we update/drop H2 change paginate to true -- was generating invalid SQL.
     }

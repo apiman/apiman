@@ -112,6 +112,17 @@ public interface ISecurityContext {
         API, PLAN
     }
 
+    boolean hasPermissionsOrDiscoverable(EntityType entityType,
+                                         String orgId,
+                                         String entityId,
+                                         Set<PermissionType> permissionType);
+
+    boolean hasPermissionsOrDiscoverable(EntityType entityType,
+                                         String orgId,
+                                         String entityId,
+                                         String entityVersion,
+                                         Set<PermissionType> permissionType);
+
     boolean isDiscoverable(EntityType entityType, String organizationId, String entityId);
 
     boolean isDiscoverable(EntityType entityType, String organizationId, String entityId, String entityVersion);

@@ -33,28 +33,28 @@ import org.jetbrains.annotations.Nullable;
  */
 // TODO(msavy): record candidate
 @ParametersAreNonnullByDefault
-public final class OrgsPermissionConstraint {
+public final class PermissionConstraint {
     private boolean constrained;
     private Set<String> permittedOrgs = Collections.emptySet();
     private PermissionType permissionType;
     private Set<DiscoverabilityLevel> allowedVisibilities = Collections.emptySet();
 
-    public OrgsPermissionConstraint() {
+    public PermissionConstraint() {
     }
 
     /**
-     * @return a constrained {@link OrgsPermissionConstraint}
+     * @return a constrained {@link PermissionConstraint}
      */
-    public static OrgsPermissionConstraint constrained() {
-        return new OrgsPermissionConstraint()
+    public static PermissionConstraint constrained() {
+        return new PermissionConstraint()
                 .setConstrained(true);
     }
 
     /**
      * @return no constraints (e.g. for admins).
      */
-    public static OrgsPermissionConstraint unconstrained() {
-        return new OrgsPermissionConstraint()
+    public static PermissionConstraint unconstrained() {
+        return new PermissionConstraint()
                 .setConstrained(false);
     }
 
@@ -68,7 +68,7 @@ public final class OrgsPermissionConstraint {
     /**
      * @param constrained true if permissions constrained
      */
-    public OrgsPermissionConstraint setConstrained(boolean constrained) {
+    public PermissionConstraint setConstrained(boolean constrained) {
         this.constrained = constrained;
         return this;
     }
@@ -84,7 +84,7 @@ public final class OrgsPermissionConstraint {
     /**
      * @param permittedOrgs the IDs of all organizations the user is allowed to access
      */
-    public OrgsPermissionConstraint setPermittedOrgs(Set<String> permittedOrgs) {
+    public PermissionConstraint setPermittedOrgs(Set<String> permittedOrgs) {
         this.permittedOrgs = permittedOrgs;
         return this;
     }
@@ -100,7 +100,7 @@ public final class OrgsPermissionConstraint {
     /**
      * @param permissionType the permission type this constraint pertains to
      */
-    public OrgsPermissionConstraint setPermissionType(PermissionType permissionType) {
+    public PermissionConstraint setPermissionType(PermissionType permissionType) {
         this.permissionType = permissionType;
         return this;
     }
@@ -115,7 +115,7 @@ public final class OrgsPermissionConstraint {
     /**
      * @param allowedVisibilities the set of discoverabilities allowed
      */
-    public OrgsPermissionConstraint setAllowedDiscoverabilities(Set<DiscoverabilityLevel> allowedVisibilities) {
+    public PermissionConstraint setAllowedDiscoverabilities(Set<DiscoverabilityLevel> allowedVisibilities) {
         this.allowedVisibilities = allowedVisibilities;
         return this;
     }
@@ -128,7 +128,7 @@ public final class OrgsPermissionConstraint {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrgsPermissionConstraint that = (OrgsPermissionConstraint) o;
+        PermissionConstraint that = (PermissionConstraint) o;
         return constrained == that.constrained && Objects.equals(permittedOrgs, that.permittedOrgs) && permissionType == that.permissionType
                        && Objects.equals(allowedVisibilities, that.allowedVisibilities);
     }
@@ -140,7 +140,7 @@ public final class OrgsPermissionConstraint {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", OrgsPermissionConstraint.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", PermissionConstraint.class.getSimpleName() + "[", "]")
                 .add("constrained=" + constrained)
                 .add("permittedOrgs=" + permittedOrgs)
                 .add("permissionType=" + permissionType)

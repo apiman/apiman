@@ -3,7 +3,7 @@ package io.apiman.manager.api.service;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
-import io.apiman.manager.api.beans.idm.OrgsPermissionConstraint;
+import io.apiman.manager.api.beans.idm.PermissionConstraint;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -32,7 +32,7 @@ import com.google.common.collect.Lists;
 @Transactional
 public class DevPortalService implements DataAccessUtilMixin {
 
-    private final OrgsPermissionConstraint PORTAL_CONSTRAINTS = OrgsPermissionConstraint.constrained().setAllowedDiscoverabilities(Set.of(DiscoverabilityLevel.PORTAL));
+    private final PermissionConstraint PORTAL_CONSTRAINTS = PermissionConstraint.constrained().setAllowedDiscoverabilities(Set.of(DiscoverabilityLevel.PORTAL));
 
     private IStorage storage;
     private IStorageQuery query;
