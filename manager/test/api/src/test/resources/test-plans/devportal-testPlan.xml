@@ -21,7 +21,7 @@
     <test name="Get all featured APIs">test-plan-data/devportal/devportal/001_get-featured-apis.resttest</test>
     <test name="Search for 'LIKE' APIs with non-matching filter">test-plan-data/devportal/devportal/002_search-like-apis-nomatch.resttest</test>
     <test name="Search for 'LIKE' APIs with match">test-plan-data/devportal/devportal/003_search-like-apis-match.resttest</test>
-    <test name="Get API Endpoint (exposed API)">test-plan-data/devportal/devportal/004_get_api_endpoint.resttest</test>
-    <test name="Get API Endpoint (not-exposed API)">test-plan-data/devportal/devportal/005_get_api_endpoint_forbidden.resttest</test>
+    <test name="Get API Endpoint (discoverable API)">test-plan-data/devportal/devportal/004_get_api_endpoint.resttest</test>
+    <test name="Get API Endpoint (non-discoverable API)">test-plan-data/devportal/devportal/005_get_api_endpoint_forbidden.resttest</test>
   </testGroup>
 </testPlan>
