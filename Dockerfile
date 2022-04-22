@@ -17,9 +17,6 @@ FROM nginx:1.21.6-alpine
 MAINTAINER florian.volk@scheer-group.com
 EXPOSE 80 443
 
-# one of pas-service|pas-app|database|xuml-service|python-service|other
-LABEL com.scheer-pas.container-type="pas-app"
-
 # copy files in the ngninx server folder
 COPY --from=base /usr/src/app/dist/devportal /usr/share/nginx/html
 # copy config to different folder to run envsubst before starting
