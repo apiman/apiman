@@ -96,23 +96,22 @@ public interface IDeveloperPortalResource {
             throws ApiVersionNotFoundException;
 
     @GET
-    @Path("organizations/{organizationId}/apis/{apiId}/versions/{version}/endpoint")
+    @Path("organizations/{orgId}/apis/{apiId}/versions/{apiVersion}/endpoint")
     @Produces(MediaType.APPLICATION_JSON)
-    ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(@PathParam("organizationId") String organizationId,
-                                                            @PathParam("apiId") String apiId,
-                                                            @PathParam("version") String version)
+    ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(@PathParam("orgId") String organizationId, @PathParam("apiId") String apiId,
+                                                            @PathParam("apiVersion") String apiVersion)
             throws ApiVersionNotFoundException, InvalidApiStatusException, GatewayNotFoundException;
 
     @GET
-    @Path("organizations/{orgId}/plans/{planId}/versions/{version}/policies")
+    @Path("organizations/{orgId}/plans/{planId}/versions/{apiVersion}/policies")
     @Produces(MediaType.APPLICATION_JSON)
-    List<PolicySummaryBean> listPlanPolicies(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("version") String version)
+    List<PolicySummaryBean> listPlanPolicies(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("apiVersion") String apiVersion)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException;
 
     @GET
-    @Path("organizations/{orgId}/plans/{planId}/versions/{version}/policies/{policyId}")
+    @Path("organizations/{orgId}/plans/{planId}/versions/{planVersion}/policies/{policyId}")
     @Produces(MediaType.APPLICATION_JSON)
-    PolicyBean getPlanPolicy(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("version") String version,
+    PolicyBean getPlanPolicy(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("planVersion") String planVersion,
                              @PathParam("policyId") long policyId)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 

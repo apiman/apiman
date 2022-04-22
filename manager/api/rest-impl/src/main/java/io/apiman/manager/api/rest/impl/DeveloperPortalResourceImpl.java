@@ -210,9 +210,15 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     }
 
     @Override
-    public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(String organizationId, String apiId, String version) throws ApiVersionNotFoundException, InvalidApiStatusException, GatewayNotFoundException {
-        mustBeDiscoverable(EntityType.API, organizationId, apiId, version);
-        return apiService.getApiVersionEndpointInfo(organizationId, apiId, version);
+    public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(String orgId, String apiId, String apiVersion) throws ApiVersionNotFoundException, InvalidApiStatusException, GatewayNotFoundException {
+        securityContext.checkPermissionsOrDiscoverability(
+                EntityType.API,
+                orgId,
+                apiId,
+                apiVersion,
+                Set.of(PermissionType.apiView)
+        );
+        return apiService.getApiVersionEndpointInfo(orgId, apiId, apiVersion);
     }
 
     @Override
