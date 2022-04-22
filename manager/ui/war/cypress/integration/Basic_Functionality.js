@@ -1,14 +1,15 @@
 describe('Apiman e2e UI smoke test', () => {
 
     before(() => {
+        cy.deleteOrg('TestOrganization');
         cy.clearCookies();
-        cy.visit('/');
+        cy.visit('/apimanui');
         cy.typeLogin('admin', 'admin123!')
     });
 
     beforeEach(() => {
         Cypress.Cookies.preserveOnce('JSESSIONID', 'OAuth_Token_Request_State');
-        cy.visit('/');
+        cy.visit('/apimanui');
     });
 
     it('Create the Organization via NavBar and edit the description', () => {

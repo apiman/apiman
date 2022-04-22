@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.beans.idm;
 
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -38,6 +39,8 @@ public class UserDto {
     private String fullName;
     @NotBlank
     private String email;
+    @NotBlank
+    private Date joinedOn;
     @NotNull
     private Locale locale = Locale.getDefault();
     @Nullable
@@ -91,6 +94,15 @@ public class UserDto {
         return this;
     }
 
+    public Date getJoinedOn() {
+        return joinedOn;
+    }
+
+    public UserDto setJoinedOn(Date joinedOn) {
+        this.joinedOn = joinedOn;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -114,6 +126,7 @@ public class UserDto {
                 .add("username='" + username + "'")
                 .add("fullName='" + fullName + "'")
                 .add("email='" + email + "'")
+                .add("joinedOn='" + joinedOn + "'")
                 .add("locale=" + locale)
                 .add("admin=" + admin)
                 .toString();
