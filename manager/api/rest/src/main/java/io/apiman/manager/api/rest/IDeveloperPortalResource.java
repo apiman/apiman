@@ -42,7 +42,7 @@ import io.swagger.annotations.Api;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@Path("devportal")
+// @Path("devportal")
 @Api(value = "Devportal", tags = { "Experimental" })
 @Beta
 public interface IDeveloperPortalResource {

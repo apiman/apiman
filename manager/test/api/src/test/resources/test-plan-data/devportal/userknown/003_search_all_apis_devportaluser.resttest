@@ -1,4 +1,4 @@
-POST /devportal/search/apis fmercury/fmercury
+POST /devportal/protected/search/apis fmercury/fmercury
 Content-Type: application/json
 
 {

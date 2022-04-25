@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 /**
@@ -54,6 +55,7 @@ import javax.ws.rs.core.Response;
  */
 @ApplicationScoped
 @Transactional
+@Path("devportal")
 public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
 
     private final IApimanLogger LOG = ApimanLoggerFactory.getLogger(DeveloperPortalResourceImpl.class);
@@ -152,7 +154,8 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
     public Response createHomeOrgForDeveloper(NewOrganizationBean newOrg) {
         mustBeLoggedIn();
         if (!newOrg.getName().equals(securityContext.getCurrentUser())) {
-            return Response.status(422, "A developer's default org must be the same as their username. This restriction may be lifted later.").build();
+            return Response.status(422, "A developer's default org name must be identical to their username (case sensitive). "
+                                                + "This restriction may be lifted later.").build();
         }
 
         OrganizationBean existingOrg;

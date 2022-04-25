@@ -172,6 +172,10 @@
       <web-resource-name>Users</web-resource-name>
       <url-pattern>/users/*</url-pattern>
     </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>Devportal Protected (work around Tomcat not allowing anon+logged in combined endpoints)</web-resource-name>
+      <url-pattern>/devportal/protected/*</url-pattern>
+    </web-resource-collection>
     <auth-constraint>
       <role-name>apiuser</role-name>
       <role-name>devportaluser</role-name>

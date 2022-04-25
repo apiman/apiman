@@ -1,4 +1,4 @@
-POST /devportal/organizations fmercury/fmercury
+POST /devportal/protected/organizations fmercury/fmercury
 Content-Type: application/json
 
 {
