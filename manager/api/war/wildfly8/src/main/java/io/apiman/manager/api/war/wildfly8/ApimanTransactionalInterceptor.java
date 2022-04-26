@@ -1,5 +1,7 @@
 package io.apiman.manager.api.war.wildfly8;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.EntityManagerFactoryAccessor;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
@@ -20,6 +22,7 @@ import javax.transaction.Transactional;
 @Interceptor
 @Transactional
 public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ApimanTransactionalInterceptor.class);
 
     @Inject
     EntityManagerFactoryAccessor emf;
@@ -73,6 +76,8 @@ public class ApimanTransactionalInterceptor implements DataAccessUtilMixin {
 
     private void handleException(Exception e, EntityTransaction tx) throws Exception {
         if (e instanceof RuntimeException || e instanceof StorageException) {
+            LOGGER.warn("Transaction has been set as rollback only because of {0}. "
+                                + "(This can occur accidentally if you are using exceptions for control-flow, which can caused the TX to be marked rollback only)", e);
             tx.setRollbackOnly();
             throw e;
         }

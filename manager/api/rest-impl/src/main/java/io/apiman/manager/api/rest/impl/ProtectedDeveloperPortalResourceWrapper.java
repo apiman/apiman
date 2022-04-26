@@ -33,7 +33,7 @@ import javax.ws.rs.core.Response;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @ApplicationScoped
-@Transactional
+// @Transactional
 @Path("devportal/protected")
 @PermitAll
 public class ProtectedDeveloperPortalResourceWrapper implements IDeveloperPortalResource {

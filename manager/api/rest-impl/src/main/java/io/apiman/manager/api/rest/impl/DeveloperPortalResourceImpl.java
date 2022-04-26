@@ -157,30 +157,7 @@ public class DeveloperPortalResourceImpl implements IDeveloperPortalResource {
             return Response.status(422, "A developer's default org name must be identical to their username (case sensitive). "
                                                 + "This restriction may be lifted later.").build();
         }
-
-        OrganizationBean existingOrg;
-        try {
-            existingOrg = orgService.getOrg(BeanUtils.idFromName(newOrg.getName()));
-        } catch (OrganizationNotFoundException onfe) {
-            existingOrg = null;
-        }
-
-        if (existingOrg != null) {
-            // First check who owns the existing organization, otherwise we could get into trouble by letting people spam create orgs.
-            if (securityContext.hasPermission(PermissionType.clientEdit, existingOrg.getId())) {
-                OrganizationAlreadyExistsException ex = ExceptionFactory.organizationAlreadyExistsException(existingOrg.getName());
-                LOG.error(ex, "Tried to create a new home org for the developer, but one already exists where they have clientEdit permissions");
-                throw ex;
-            }
-            // Use a name with a randomised suffix in the case that someone already created an organization with a user's name (e.g. FooUser-70ac3d)
-            String newOrgId = newOrg.getName() + UUID.randomUUID().toString().substring(0, 6);
-            LOG.warn("We tried to create a home organization for the user {0}, but it already existed. "
-                             + "This is likely due to another user coincidentally creating an org with the same name "
-                             + "An organization with a random suffix will be created: {1}.", securityContext.getCurrentUser(), newOrgId);
-            newOrg.setName(newOrgId);
-        }
-        LOG.info("Created home org {0} for {1}", newOrg.getName(), securityContext.getCurrentUser());
-        return Response.ok(orgService.createOrg(newOrg)).build();
+        return Response.ok(portalService.createHomeOrg(newOrg)).build();
     }
 
     @Override
