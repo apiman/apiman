@@ -23,6 +23,7 @@
     <test name="Search for 'LIKE' APIs with match">test-plan-data/devportal/devportal/003_search-like-apis-match.resttest</test>
     <test name="Get API Endpoint (discoverable API)">test-plan-data/devportal/devportal/004_get_api_endpoint.resttest</test>
     <test name="Get API Endpoint (non-discoverable API)">test-plan-data/devportal/devportal/005_get_api_endpoint_forbidden.resttest</test>
+    <test name="Get API Version Plans (only PORTAL)">test-plan-data/devportal/devportal/006_get_plans.resttest</test>
   </testGroup>
 
   <testGroup name="Logged in dev portal functionality">
@@ -30,5 +31,6 @@
     <test name="Create home organization">test-plan-data/devportal/userknown/001_create_home_org.resttest</test>
     <test name="Search all APIs (user with explicit permissions)">test-plan-data/devportal/userknown/002_search_all_apis_admin.resttest</test>
     <test name="Search all APIs (devportaluser with no explicit permissions)">test-plan-data/devportal/userknown/003_search_all_apis_devportaluser.resttest</test>
+    <test name="Get API Version Plans (PORTAL/ORG_MEMBERS)">test-plan-data/devportal/userknown/004_get_plans.resttest</test>
   </testGroup>
 </testPlan>

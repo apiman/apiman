@@ -1,0 +1,25 @@
+GET /devportal/protected/organizations/test/apis/Api1/versions/1.0/plans admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "planId": "gold",
+    "planName": "gold",
+    "planDescription": null,
+    "version": "1.0",
+    "requiresApproval": true,
+    "discoverability": "PORTAL",
+    "planPolicies": []
+  },
+  {
+    "planId": "silver",
+    "planName": "silver",
+    "planDescription": null,
+    "version": "1.0",
+    "requiresApproval": false,
+    "discoverability": "ORG_MEMBERS",
+    "planPolicies": []
+  }
+]

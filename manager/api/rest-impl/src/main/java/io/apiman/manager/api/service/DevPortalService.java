@@ -39,7 +39,6 @@ public class DevPortalService implements DataAccessUtilMixin {
     public List<DeveloperApiPlanSummaryDto> getApiVersionPlans(String orgId, String apiId, String apiVersion) {
         List<ApiPlanSummaryBean> apiVersionPlans = tryAction(() -> query.getApiVersionPlans(orgId, apiId, apiVersion));
         return apiVersionPlans.stream()
-                .filter(avp -> avp.getDiscoverability() == DiscoverabilityLevel.PORTAL)
                 .map(psb -> toDto(orgId, psb))
                 .collect(Collectors.toList());
     }
