@@ -18,18 +18,18 @@
         <div>
           <label aria-label="Discoverability level">
             <select class="form-control form-control-lg" id="level-select" ng-model="selectedDiscoverability">
-              <option value="ORG_MEMBERS">Organization members only (default)</option>
-              <option value="FULL_PLATFORM_MEMBERS">Full platform members</option>
-              <option value="PORTAL">Expose in the developer portal</option>
+              <option value="ORG_MEMBERS" apiman-i18n-key="Discoverability.OrgMembers.PickerLabel">Organization members only (default)</option>
+              <option value="FULL_PLATFORM_MEMBERS" apiman-i18n-key="Discoverability.FullPlatformMembers.PickerLabel">Full platform members</option>
+              <option value="PORTAL" apiman-i18n-key="Discoverability.Portal.PickerLabel">Expose in the developer portal</option>
             </select>
           </label>
         </div>
 
         <h4>By applying this change, your API would be visible to:</h4>
         <ul>
-          <li ng-show="isVisible('ORG_MEMBERS')">Members with explicit view permissions in this organization.</li>
-          <li ng-show="isVisible('FULL_PLATFORM_MEMBERS')">Any user with an active Apiman account, including users in other organizations.</li>
-          <li ng-show="isVisible('PORTAL')">Developer portal users, including those browsing anonymously.
+          <li ng-show="isVisible('ORG_MEMBERS')"><span apiman-i18n-key="Discoverability.OrgMembers.Description"></span></li>
+          <li ng-show="isVisible('FULL_PLATFORM_MEMBERS')"><span apiman-i18n-key="Discoverability.FullPlatformMembers.Description"></span></li>
+          <li ng-show="isVisible('PORTAL')"><span apiman-i18n-key="Discoverability.Portal.Description"></span>
             <ul>
               <li>Further configuration for the developer portal can be found in the <strong>Developer Portal</strong> tab.</li>
             </ul>

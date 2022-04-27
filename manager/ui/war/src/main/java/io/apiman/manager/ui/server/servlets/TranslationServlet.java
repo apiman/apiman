@@ -15,10 +15,25 @@
  */
 package io.apiman.manager.ui.server.servlets;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.util.AbstractMessages;
+import io.apiman.manager.ui.server.i18n.Messages;
+
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,8 +41,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-
-import io.apiman.manager.ui.server.i18n.Messages;
 
 /**
  * A servlet that returns a JSONP response containing all of the UI strings
@@ -38,11 +51,40 @@ import io.apiman.manager.ui.server.i18n.Messages;
 public class TranslationServlet extends AbstractUIServlet {
 
     private static final long serialVersionUID = -7209551552522960775L;
+    private static final IApimanLogger LOG = ApimanLoggerFactory.getLogger(TranslationServlet.class);
+    private static boolean EXT_MESSAGE_BUNDLES_LOADED = false;
 
     /**
      * Constructor.
      */
     public TranslationServlet() {
+        super();
+        if (!EXT_MESSAGE_BUNDLES_LOADED) {
+            loadExternalMessageBundles();
+            EXT_MESSAGE_BUNDLES_LOADED = true;
+        }
+    }
+
+    private void loadExternalMessageBundles() {
+        Path dir = super.getConfig().getExternalMessageBundlesDir();
+        try (DirectoryStream<Path> directory = Files.newDirectoryStream(dir, "*.properties")) {
+            for (Path propFilePath : directory) {
+                LOG.debug("Loading external i18n file: {0}...", propFilePath);
+                String fName = propFilePath.getFileName().toString();
+                String[] split = fName.substring(0, fName.length() - 11).split("_", 2);
+
+                PropertyResourceBundle bundle = new PropertyResourceBundle(new FileReader(propFilePath.toFile())) {
+                    @Override
+                    public Locale getLocale() {
+                        return Locale.forLanguageTag(split[1].replace("_", "-"));
+                    }
+                };
+
+                AbstractMessages.addResourceBundle("External", bundle);
+            }
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
+        }
     }
 
     /**
@@ -51,11 +93,14 @@ public class TranslationServlet extends AbstractUIServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
+        // TODO(msavy): look at user profile and/or token also. Might need to use ThreadLocal?
         Messages.setLocale(request.getLocale());
         try {
             Map<String, String> strings = Messages.i18n.all();
+            // Externally defined strings
+            strings.putAll(Messages.i18n.get("External"));
 
-            response.getOutputStream().write("window.APIMAN_TRANSLATION_DATA = ".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+            response.getOutputStream().write("window.APIMAN_TRANSLATION_DATA = ".getBytes(StandardCharsets.UTF_8)); //$NON-NLS-1$ //$NON-NLS-2$
             JsonFactory f = new JsonFactory();
             JsonGenerator g = f.createGenerator(response.getOutputStream(), JsonEncoding.UTF8);
             g.useDefaultPrettyPrinter();
@@ -68,7 +113,7 @@ public class TranslationServlet extends AbstractUIServlet {
             g.writeEndObject();
 
             g.flush();
-            response.getOutputStream().write(";".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+            response.getOutputStream().write(";".getBytes(StandardCharsets.UTF_8)); //$NON-NLS-1$ //$NON-NLS-2$
             g.close();
         } catch (Exception e) {
             throw new ServletException(e);

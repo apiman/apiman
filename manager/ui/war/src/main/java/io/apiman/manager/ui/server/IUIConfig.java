@@ -17,6 +17,10 @@ package io.apiman.manager.ui.server;
 
 import io.apiman.manager.ui.server.beans.ApiAuthType;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.MissingResourceException;
+
 /**
  * Interface providing UI configuration information.
  * 
@@ -82,5 +86,19 @@ public interface IUIConfig {
      * @return The current platform (e.g. f8 or community).
      */
     public String getPlatform();
+
+    /**
+     * Resolve the configuration directory, this varies depending on the platform.
+     * @return the public configuration directory
+     */
+    public Path getConfigDirectory();
+
+    default Path getExternalMessageBundlesDir() {
+        Path dir = getConfigDirectory().resolve("i18n");
+        if (Files.notExists(dir)) {
+            throw new MissingResourceException("External i18n resources missing", "i18n", dir.toString());
+        }
+        return dir;
+    }
 
 }

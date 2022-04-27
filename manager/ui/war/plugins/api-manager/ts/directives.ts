@@ -647,7 +647,7 @@ _module.directive('apimanDiscoverabilitySelect',
                 initialValue: '=',
                 plan: '='
             },
-            controller: ['$scope', "$uibModal", function($scope, $uibModal) {
+            controller: ['$scope', "$uibModal", "TranslationSvc", function($scope, $uibModal, TranslationSvc) {
                 $scope.getShortDescription = getShortDescription;
                 $scope.openModal = openModal;
                 $scope.currentValue = $scope.ctrl.initialValue;
@@ -682,10 +682,10 @@ _module.directive('apimanDiscoverabilitySelect',
 
                 function getShortDescription(): string {
                     let shortNames: { [key: string]: string } = {
-                        [Discoverability.ORG_MEMBERS]: "Organization members only",
-                        [Discoverability.FULL_PLATFORM_MEMBERS]: "Full platform members",
+                        [Discoverability.ORG_MEMBERS]: TranslationSvc.translate('Discoverability.OrgMembers.ShortName'),
+                        [Discoverability.FULL_PLATFORM_MEMBERS]: TranslationSvc.translate('Discoverability.FullPlatformMembers.ShortName'),
                         [Discoverability.ANONYMOUS]: "Anonymous API users",
-                        [Discoverability.PORTAL]: "Expose in portal",
+                        [Discoverability.PORTAL]: TranslationSvc.translate('Discoverability.Portal.ShortName'),
                     };
                     // We may get a null when a plan hasn't yet been attached, so show the default.
                     return shortNames[$scope.ctrl.currentValue || $scope.ctrl.initialValue || 'ORG_MEMBERS'];
