@@ -1,5 +1,5 @@
 import {_module} from "../apimanPlugin";
-import {ApiBean, ApiPlanSummaryBean, ApiVersionBean, KeyValueTagDto, UpdateApiBean, UpdateApiVersionBean,} from "../model/api.model";
+import {ApiBean, ApiPlanSummaryBean, ApiVersionBean, Discoverability, KeyValueTagDto, UpdateApiBean, UpdateApiVersionBean,} from "../model/api.model";
 
 // CSS
 import 'prismjs/themes/prism.css'
@@ -39,6 +39,7 @@ export const DevPortalController = _module.controller("Apiman.DevPortalControlle
   "EntityStatusSvc",
   "DevPortalService",
   "BlobService",
+  "TranslationSvc",
   "Logger",
   "$interval",
   "$uibModal",
@@ -56,6 +57,7 @@ export const DevPortalController = _module.controller("Apiman.DevPortalControlle
       EntityStatusSvc,
       DevPortalService,
       BlobService,
+      TranslationSvc,
       Logger,
       $interval,
       $uibModal
@@ -109,6 +111,7 @@ export const DevPortalController = _module.controller("Apiman.DevPortalControlle
                 EntityStatusSvc,
                 DevPortalService,
                 BlobService,
+                TranslationSvc,
                 Logger,
                 $interval,
                 $uibModal,
@@ -137,6 +140,7 @@ function devPortalBusinessLogic(
     EntityStatusSvc,
     DevPortalService,
     BlobService,
+    TranslationSvc,
     Logger,
     $interval,
     $uibModal,
@@ -161,6 +165,7 @@ function devPortalBusinessLogic(
   $scope.openImageCropper = openImageCropperModal;
   $scope.getImageEndpoint = getImageEndpoint;
   $scope.onDiscoverabilityChange = onDiscoverabilityChange;
+  $scope.getDiscoverabilityDescription = getDiscoverabilityDescription;
 
   // TUI Markdown editor. Will initialise
   let markdownEditor: Editor = initEditor();
@@ -366,6 +371,17 @@ function devPortalBusinessLogic(
 
   function onDiscoverabilityChange(change): void {
     change.plan.discoverability = change.level;
+  }
+
+  function getDiscoverabilityDescription(discoverability: Discoverability): string {
+    let descriptions: { [key: string]: string } = {
+      [Discoverability.ORG_MEMBERS]: TranslationSvc.translate('Discoverability.OrgMembers.Description'),
+      [Discoverability.FULL_PLATFORM_MEMBERS]: TranslationSvc.translate('Discoverability.FullPlatformMembers.Description'),
+      [Discoverability.ANONYMOUS]: "Anonymous API users", // Not currently used in UI
+      [Discoverability.PORTAL]: TranslationSvc.translate('Discoverability.Portal.Description'),
+    };
+    // We may get a null when a plan hasn't yet been attached, so show the default.
+    return descriptions[discoverability|| 'ORG_MEMBERS'];
   }
 }
 

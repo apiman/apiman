@@ -69,10 +69,10 @@
                     <p class="card-text">{{ data.planSummaries[$index].planDescription }}</p>
                     <div>
                       <ul class="list-group list-group-flush">
-                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.discoverability === 'PORTAL'">&#9702; Plan <strong>is available</strong> in the developer portal</li>
-                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.discoverability !== 'PORTAL'">&#9702; Plan is <strong>not available</strong> in the developer portal</li>
-                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.requiresApproval === true">&#9702; Developers <strong>require approval</strong> to complete sign up</li>
-                        <li style="max-width: max-content !important;" class="list-group-item"  ng-show="!plan.requiresApproval">&#9702; Developers <strong>do not require approval</strong> to complete sign up</li>
+                        <li style="max-width: max-content !important;" class="list-group-item">&#9702;  Plan <strong>is available</strong> to: {{ getDiscoverabilityDescription(plan.discoverability) }}</li>
+                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.discoverability !== 'PORTAL'">&#9702; Plan is <strong>not visible</strong> in the developer portal to anonymous users, but is visible to users who are logged-in with the correct permissions.</li>
+                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.requiresApproval === true">&#9702; Developers <strong>require approval</strong> to complete sign up.</li>
+                        <li style="max-width: max-content !important;" class="list-group-item"  ng-show="!plan.requiresApproval">&#9702; Developers <strong>do not require approval</strong> to complete sign up.</li>
                       </ul>
                       <!-- Checkbox -- requires approval -->
                       <div class="form-check px-4 pl-2">
