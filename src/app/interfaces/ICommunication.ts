@@ -965,7 +965,7 @@ export interface ICurrentUser {
   username: string;
   fullName: string;
   email: string;
-
+  locale: string;
   /** @format date-time */
   joinedOn: string;
   admin: boolean;
