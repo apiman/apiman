@@ -22,7 +22,6 @@ import {
   IAction,
   IApi,
   IApiPlanSummary,
-  IApiSummary,
   IApiVersion,
   IApiVersionEndpointSummary,
   IApiVersionSummary,

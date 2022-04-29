@@ -15,17 +15,45 @@
  */
 
 .is-selected {
-  background: whitesmoke;
   font-weight: bold;
+  color: var(--primary);
 }
 
-.container {
+#form-container {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 20px;
 }
 
+#container-grid {
+  display: grid;
+  justify-content: start;
+}
+
 table {
-  min-width: 30%;
+  width: 100%;
+}
+
+#table-container {
+  max-height: 35vh;
+  overflow: auto;
+}
+
+.mat-row .mat-cell {
+  cursor: pointer;
+}
+
+.mat-row:hover .mat-cell {
+  background: var(--dark-accent-20);
+}
+
+.mat-column-select {
+  overflow: initial;
+  width: 10%;
+  padding-right: 24px;
+}
+
+.mat-header-cell {
+  font-size: 16px;
 }

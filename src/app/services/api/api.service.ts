@@ -19,7 +19,6 @@ import { BackendService } from '../backend/backend.service';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, retry, switchMap } from 'rxjs/operators';
 import {
-  IApiSummary,
   IApiVersion,
   IApiVersionEndpointSummary,
   IApiVersionSummary,

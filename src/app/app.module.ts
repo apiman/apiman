@@ -66,6 +66,7 @@ import { NotificationsComponent } from './components/notifications/notifications
 import { ApiMarkdownDescriptionComponent } from './components/api-markdown-description/api-markdown-description.component';
 import { ApiStatusTagComponent } from './components/api-status-tag/api-status-tag.component';
 import { ApiPublicEndpointComponent } from './components/api-public-endpoint/api-public-endpoint.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 export function initializeApp(
   configService: ConfigService,
@@ -154,7 +155,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     }),
     ReactiveFormsModule,
     NgxChartsModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatRadioModule
   ],
   providers: [
     {

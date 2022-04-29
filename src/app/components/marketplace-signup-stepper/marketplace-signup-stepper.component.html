@@ -30,14 +30,13 @@
         </mat-card-header>
         <mat-card-content class="mat-card-header-text">
           <app-marketplace-client-app
-            (selectedClients)="
+            (selectedClient)="
               checkApplications($event)
             "></app-marketplace-client-app>
         </mat-card-content>
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
           <button
-            id="next-step-btn"
             mat-raised-button
             color="primary"
             (click)="nextAfterClientSelect(stepper)">
@@ -69,7 +68,6 @@
             {{ 'COMMON.BACK' | translate }}
           </button>
           <button
-            id="next-step-btn"
             mat-raised-button
             matStepperNext
             color="primary"

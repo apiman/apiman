@@ -14,14 +14,27 @@
  *  imitations under the License.
  */
 
+@media only screen and (max-width: 1279px) {
+  mat-stepper {
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 1280px) {
+  mat-stepper {
+    width: 80%;
+  }
+}
+
+@media only screen and (min-width: 1920px) {
+  mat-stepper {
+    width: 60%;
+  }
+}
+
 .right {
   display: flex;
   justify-content: flex-end;
-}
-
-mat-stepper {
-  // TODO: Media Query for small screens
-  width: 62vw;
 }
 
 #center {

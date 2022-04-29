@@ -46,7 +46,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   // stepper completed checks, must be true to go to next step
   agreedTermsAndPrivacy: boolean | undefined;
 
-  selectedClients = new Set<IClientSummary>();
+  selectedClient: IClientSummary | undefined;
   termsEnabled: boolean;
   newContractDetails: ISignUpInfo;
   contract: IContractExt;
@@ -83,8 +83,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     });
   }
 
-  checkApplications($event: Set<IClientSummary>): void {
-    this.selectedClients = $event;
+  checkApplications($event: IClientSummary): void {
+    this.selectedClient = $event;
   }
 
   checkTerms($event: boolean): void {
@@ -92,16 +92,19 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   }
 
   nextAfterClientSelect(stepper: MatStepper): void {
-    if (this.selectedClients.size == 0) {
+    if (!this.selectedClient) {
       this.printUserError('WIZARD.CLIENT_ERROR');
     } else {
-      this.checkIfContractAlreadyExists(stepper);
+      this.checkIfContractAlreadyExists(stepper, this.selectedClient);
     }
   }
 
-  private checkIfContractAlreadyExists(stepper: MatStepper) {
-    const client: IClientSummary = this.selectedClients.values().next()
-      .value as IClientSummary;
+  private checkIfContractAlreadyExists(
+    stepper: MatStepper,
+    client: IClientSummary
+  ) {
+    console.info(`Using client ${client.organizationId}/${client.name}`);
+
     this.backend
       .getContracts(client.organizationId, client.id, '1.0')
       .subscribe({
@@ -147,8 +150,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
   }
 
   createContractAndRegisterClient(stepper: MatStepper): void {
-    const client: IClientSummary = this.selectedClients.values().next()
-      .value as IClientSummary;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const client: IClientSummary = this.selectedClient!;
 
     const contract: INewContract = {
       apiOrgId: this.newContractDetails.apiVersion.api.organization.id,

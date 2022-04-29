@@ -28,6 +28,7 @@ import { switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { OrganizationService } from '../../services/org/organization.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-marketplace-client-app',
@@ -35,15 +36,15 @@ import { OrganizationService } from '../../services/org/organization.service';
   styleUrls: ['./marketplace-client-app.component.scss']
 })
 export class MarketplaceClientAppComponent implements OnInit {
-  displayedColumns: string[] = ['name'];
+  displayedColumns: string[] = ['select', 'name'];
   dataSource = new MatTableDataSource<IClientSummary>([]);
-  clickedRows = new Set<IClientSummary>();
+  selection = new SelectionModel<IClientSummary>(false);
   clientName = '';
   organizationId = '';
   organizations: IOrganizationSummary[] = [];
   clients: IClientSummary[] = [];
 
-  @Output() selectedClients = new EventEmitter<Set<IClientSummary>>();
+  @Output() selectedClient = new EventEmitter<IClientSummary>();
 
   constructor(
     private backend: BackendService,
@@ -56,17 +57,20 @@ export class MarketplaceClientAppComponent implements OnInit {
     this.createOrgAndLoadClients();
   }
 
-  public clickClient(client: IClientSummary): void {
-    this.clientName = client.name;
-    this.organizationId = client.organizationId;
-    this.selectClient(client);
-  }
-
-  private selectClient(client: IClientSummary): void {
-    // always clear, because at the moment we only allow one client to be selected
-    this.clickedRows.clear();
-    this.clickedRows.add(client);
-    this.selectedClients.emit(this.clickedRows);
+  /**
+   * This method toggles between a selected/unselected client and
+   * emits the value to the parent component.
+   * @param client - the client that should be selected
+   */
+  public selectClient(client: IClientSummary): void {
+    if (this.selection.isSelected(client)) {
+      this.clearSelection();
+    } else {
+      this.clientName = client.name;
+      this.organizationId = client.organizationId;
+      this.selection.select(client);
+      this.selectedClient.emit(client);
+    }
   }
 
   /**
@@ -96,15 +100,10 @@ export class MarketplaceClientAppComponent implements OnInit {
   }
 
   public applyFilter(event: Event): void {
-    this.clickedRows.clear();
+    this.clearSelection();
     // https://material.angular.io/components/table/examples
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    // if only one client is left we select it
-    if (this.dataSource.filteredData.length === 1) {
-      this.selectClient(this.dataSource.filteredData[0]);
-    }
   }
 
   /**
@@ -145,12 +144,12 @@ export class MarketplaceClientAppComponent implements OnInit {
     this.clients = results[1];
     this.organizations = results[0];
     if (this.organizations.length > 1) {
-      this.displayedColumns = ['org-name', 'name'];
+      this.displayedColumns = ['select', 'org-name', 'name'];
     }
     this.dataSource = new MatTableDataSource(results[1]);
     if (this.clients.length === 1) {
       // if we only have one client we can select it automatically
-      this.clickClient(this.clients[0]);
+      this.selectClient(this.clients[0]);
     }
   }
 
@@ -184,5 +183,14 @@ export class MarketplaceClientAppComponent implements OnInit {
     return this.organizations.length === 1
       ? this.organizations[0].id
       : this.organizationId;
+  }
+
+  /**
+   * Clears the selected client.
+   * This must be emitted to the parent component.
+   */
+  private clearSelection(): void {
+    this.selection.clear();
+    this.selectedClient.emit(undefined);
   }
 }
