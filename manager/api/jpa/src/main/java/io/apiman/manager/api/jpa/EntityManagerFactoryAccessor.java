@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
@@ -41,8 +40,8 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
 
     private EntityManagerFactory emf;
 
-    @PersistenceContext(unitName = "apiman-manager-api-jpa")
-    private EntityManager pcEm;
+    // @PersistenceContext(unitName = "apiman-manager-api-jpa")
+    // private EntityManager pcEm;
 
     private final ThreadLocal<EntityManager> threadLocal = new ThreadLocal<>();
 
@@ -80,9 +79,9 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         // try using hibernate directly in a couple ways (depends on hibernate version and
         // platform we're running on).
 
-        if (pcEm != null) {
-            return;
-        }
+        // if (pcEm != null) {
+        //     return;
+        // }
 
         try {
             emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties);
@@ -101,14 +100,14 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
     @Override
     @Produces
     public EntityManagerFactory getEntityManagerFactory() {
-        return emf;
+        return getEntityManager().getEntityManagerFactory();
     }
 
     @Produces
     public EntityManager getEntityManager() {
-        if (pcEm != null) {
-            return pcEm;
-        }
+        // if (pcEm != null) {
+        //     return pcEm;
+        // }
         EntityManager threadLocalEm = threadLocal.get();
         if (threadLocalEm != null && threadLocalEm.isOpen()) {
             return threadLocalEm;

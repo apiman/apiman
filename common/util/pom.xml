@@ -52,6 +52,10 @@
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <version>${version.com.fasterxml.jackson}</version>
     </dependency>
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+    </dependency>
 
     <!-- Tests -->
     <dependency>

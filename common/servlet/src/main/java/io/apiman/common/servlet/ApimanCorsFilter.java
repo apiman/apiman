@@ -46,15 +46,13 @@ public class ApimanCorsFilter implements Filter {
 
     public static final String MANAGER_UI_ALLOWED_CORS_ORIGINS = "apiman-manager-ui.allowed-cors-origins";
 
-    private HashSet<String> allowedCorsOrigins = new HashSet<>();
+    private HashSet<String> allowedCorsOrigins;
 
     /**
      * Constructor.
      */
     public ApimanCorsFilter() {
-        String corsOrigins = System.getProperty(MANAGER_UI_ALLOWED_CORS_ORIGINS,
-                                                config.getString(MANAGER_UI_ALLOWED_CORS_ORIGINS,
-                                                                "*"));
+        String corsOrigins = System.getProperty(MANAGER_UI_ALLOWED_CORS_ORIGINS, config.getString(MANAGER_UI_ALLOWED_CORS_ORIGINS, "*"));
         allowedCorsOrigins = new HashSet<>(Arrays.asList(corsOrigins.trim().split(",")));
     }
 
@@ -76,12 +74,12 @@ public class ApimanCorsFilter implements Filter {
 
         if (isPreflightRequest(httpReq) && originIsAllowed(httpReq)) {
             httpResp.setHeader("Access-Control-Allow-Origin", httpReq.getHeader("Origin")); 
-            if(!allowedCorsOrigins.contains("*")){
+            if(!allowedCorsOrigins.contains("*")) {
                 httpResp.setHeader("Vary", "Origin"); 
             }
             httpResp.setHeader("Access-Control-Allow-Credentials", "true"); 
             httpResp.setHeader("Access-Control-Max-Age", "1800"); 
-            httpResp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,HEAD,DELETE"); 
+            httpResp.setHeader("Access-Control-Allow-Methods", "DELETE,GET,HEAD,PATCH,POST,PUT");
             httpResp.setHeader("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Accept,Origin,Authorization"); 
             httpResp.setHeader("Access-Control-Expose-Headers", "X-Apiman-Error,Total-Count,X-Total-Count"); 
         } else {

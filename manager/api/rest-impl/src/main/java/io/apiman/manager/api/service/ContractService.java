@@ -113,16 +113,12 @@ public class ContractService implements DataAccessUtilMixin {
         ApiNotFoundException, PlanNotFoundException, ContractAlreadyExistsException,
         NotAuthorizedException {
 
-        try {
-            ContractBean contract = tryAction(() -> createContractInternal(organizationId, clientId, version, bean));
-            LOGGER.debug("Created new contract {0}: {1}", contract.getId(), contract); //$NON-NLS-1$
-            if (contract.getStatus() == ContractStatus.AwaitingApproval) {
-                fireContractApprovalRequest(securityContext.getCurrentUser(), contract);
-            }
-            return contract;
-        } catch (AbstractRestException e) {
-            throw e;
+        ContractBean contract = tryAction(() -> createContractInternal(organizationId, clientId, version, bean));
+        LOGGER.debug("Created new contract {0}: {1}", contract.getId(), contract); //$NON-NLS-1$
+        if (contract.getStatus() == ContractStatus.AwaitingApproval) {
+            fireContractApprovalRequest(securityContext.getCurrentUser(), contract);
         }
+        return contract;
     }
 
     /**

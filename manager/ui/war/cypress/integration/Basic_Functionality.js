@@ -151,8 +151,8 @@ describe('Apiman e2e UI smoke test', () => {
     it('Choose Plan and publish API', () => {
         cy.visitTestApi();
         cy.get('#tab-plans').click();
-        cy.get('[style="padding: 4px 0;"] > .ng-pristine').click();
-        cy.contains('Save').click();
+        cy.get('[data-cy=apiman-plan-enabled-checkbox-TestPlan]').click();
+        cy.get('[data-cy=save]').click();
         cy.contains('Publish').should('be.enabled');
         cy.contains('Publish').click();
     })

@@ -17,8 +17,8 @@
 package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.system.SystemStatusBean;
-import io.swagger.annotations.Api;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAuthorizedException;
@@ -29,6 +29,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Api;
+
 /**
  * A simple System API.
  * 
@@ -36,6 +38,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("system")
 @Api(tags = "System")
+@PermitAll
 public interface ISystemResource {
 
     /**

@@ -1,0 +1,21 @@
+GET /devportal/organizations/apiman/apis/alpha/versions/
+
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "organizationId": "apiman",
+    "organizationName": "apiman",
+    "id": "alpha",
+    "name": "alpha",
+    "description": null,
+    "extendedDescription": null,
+    "status": "Published",
+    "version": "1.0",
+    "publicAPI": false,
+    "publicDiscoverability": "ORG_MEMBERS",
+    "apiTags": []
+  }
+]

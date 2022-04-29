@@ -5,6 +5,7 @@
 
   <persistence-unit name="apiman-manager-api-jpa" transaction-type="RESOURCE_LOCAL">
     <non-jta-data-source>java:/apiman/datasources/apiman-manager</non-jta-data-source>
+    <class>io.apiman.manager.api.beans.idm.DiscoverabilityEntity</class>
     <class>io.apiman.manager.api.beans.idm.UserBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleMembershipBean</class>

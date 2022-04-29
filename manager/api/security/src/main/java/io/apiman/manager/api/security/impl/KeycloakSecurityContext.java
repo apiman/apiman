@@ -18,6 +18,9 @@ package io.apiman.manager.api.security.impl;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.IStorageQuery;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.LocaleUtils;
@@ -44,7 +48,9 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
     /**
      * Constructor.
      */
-    public KeycloakSecurityContext() {
+    @Inject
+    public KeycloakSecurityContext(IStorageQuery query, IStorage storage, ApiManagerConfig config) {
+        super(query, storage, config);
     }
 
     /**

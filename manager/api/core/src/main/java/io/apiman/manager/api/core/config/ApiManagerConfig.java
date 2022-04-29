@@ -341,6 +341,10 @@ public abstract class ApiManagerConfig {
         return config.getString(APIMAN_MANAGER_UI_ENDPOINT, "http://localhost:8080/apimanui/api-manager/");
     }
 
+    public Map<String, String> getIdmDiscoverabilityMappings() {
+        return getPrefixedProperties("apiman-manager.idm.discoverability.");
+    }
+
     /**
      * Gets a map of properties prefixed by the given string.
      */
@@ -350,9 +354,15 @@ public abstract class ApiManagerConfig {
         while (keys.hasNext()) {
             String key = keys.next();
             if (key.startsWith(prefix)) {
-                String value = getConfig().getString(key);
+                String[] value = getConfig().getStringArray(key);
                 key = key.substring(prefix.length());
-                rval.put(key, value);
+                if (value.length == 0) {
+                    rval.put(key, null);
+                } else if (value.length == 1) {
+                    rval.put(key, value[0]);
+                } else {
+                    rval.put(key, String.join(",", value));
+                }
             }
         }
         return rval;
@@ -377,6 +387,7 @@ public abstract class ApiManagerConfig {
         return config.getString(APIMAN_MANAGER_CONFIG_LOGGER);
     }
 
+    // TODO(msavy): deduplicate this block (perhaps extract into common interface?)
     /**
      * Return the standard Apiman config directory.
      *

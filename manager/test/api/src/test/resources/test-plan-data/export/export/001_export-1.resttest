@@ -17,6 +17,11 @@ X-RestTest-ArrayOrdering: any
         "email": "admin2@example.org",
         "admin": false
     }, {
+    		"username": "bmay",
+    		"fullName": "Brian",
+    		"email": "b@queen.com",
+    		"admin": false
+    }, {
         "username": "bwayne",
         "fullName": "Bruce Wayne",
         "email": "bwayne@wayne-enterprises.com",
@@ -30,6 +35,11 @@ X-RestTest-ArrayOrdering: any
         "username": "dprince",
         "fullName": "Diana Prince",
         "email": "dprince@themyscira.gov",
+        "admin": false
+    }, {
+        "username": "fmercury",
+        "fullName": "Freddie",
+        "email": "f@queen.com",
         "admin": false
     }, {
         "username": "user1",

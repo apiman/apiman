@@ -81,20 +81,6 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-12">
-        <addColumn tableName="api_plans">
-            <column name="expose_in_portal" type="boolean">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
-    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-13">
-        <addColumn tableName="api_versions">
-            <column name="expose_in_portal" type="boolean">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
     <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-14">
         <addColumn tableName="api_versions">
             <column name="extended_description" type="nclob"/>
@@ -141,15 +127,6 @@
     </changeSet>
     <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-24">
         <addUniqueConstraint columnNames="user_id, type" constraintName="UserAllowedOnlyOneOfEachNotificationType" tableName="notification_preferences"/>
-    </changeSet>
-    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-25">
-        <createIndex indexName="IX_null" tableName="api_plans" unique="true">
-            <column name="api_version_id"/>
-            <column name="expose_in_portal"/>
-            <column name="plan_id"/>
-            <column name="requires_approval"/>
-            <column name="version"/>
-        </createIndex>
     </changeSet>
     <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-26">
         <addForeignKeyConstraint baseColumnNames="NotificationPreferenceEntity_id" baseTableName="notification_category_preferences" constraintName="FKaq4x0n83d83xevui0ctqwdgbi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="notification_preferences" validate="true"/>

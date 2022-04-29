@@ -28,9 +28,6 @@ public class AccountSignupApprovalEmailNotification implements INotificationHand
         this.mailNotificationService = mailNotificationService;
     }
 
-    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
-        // no-op to force eager initialization
-    }
 
     @Override
     public void handle(NotificationDto<AccountSignupEvent> signupNotification, Map<String, Object> defaultTemplateMap) {

@@ -81,6 +81,10 @@
       <param-name>resteasy.servlet.mapping.prefix</param-name>
       <param-value>/</param-value>
     </init-param>
+    <init-param>
+      <param-name>resteasy.role.based.security</param-name>
+      <param-value>true</param-value>
+    </init-param>
     <load-on-startup>2</load-on-startup>
   </servlet>
 
@@ -89,95 +93,90 @@
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 
+  <!--
+    Let Resteasy deal handle security constraints using IDM roles.
+    See annotations on JAX-RS interfaces for actual enforcement rules.
 
+    The default web.xml mechanism only supports simple servlet matching patterns, this precludes
+    patterns such as /organizations/*/clients/*, which we would need.
+
+    Endpoints not listed here should be accessible anonymously (e.g. devportal endpoints).
+
+    Important: These are based on IDM roles, and operates as the layer before Apiman's roles and permissions system.
+  -->
   <security-constraint>
+    <display-name>Apiman Manager API. RESTEasy manages access constraints (see security annotations on JAX-RS interfaces)</display-name>
     <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
+      <web-resource-name>Actions</web-resource-name>
       <url-pattern>/actions/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
-
     <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
-      <url-pattern>/system/*</url-pattern>
+      <web-resource-name>APIs</web-resource-name>
+      <url-pattern>/apis/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
-
     <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
+      <web-resource-name>Developers (deprecated)</web-resource-name>
+      <url-pattern>/developers/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>Events (experimental)</web-resource-name>
+      <url-pattern>/events/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>Gateways</web-resource-name>
       <url-pattern>/gateways/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
-
     <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
+      <web-resource-name>Organizations</web-resource-name>
       <url-pattern>/organizations/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
-
     <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
+      <web-resource-name>Plugins</web-resource-name>
       <url-pattern>/plugins/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
-
     <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
-      <url-pattern>/policyDefs/*</url-pattern>
+      <web-resource-name>PolicyDefs</web-resource-name>
+      <url-pattern>/policydefs/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
-
     <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
+      <web-resource-name>Roles</web-resource-name>
       <url-pattern>/roles/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
-
     <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
+      <web-resource-name>Search</web-resource-name>
       <url-pattern>/search/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
-
     <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
+      <web-resource-name>System</web-resource-name>
+      <url-pattern>/system/*</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>Users</web-resource-name>
       <url-pattern>/users/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
-
     <web-resource-collection>
-      <web-resource-name>apiman-blobs</web-resource-name>
-      <url-pattern>/blobs</url-pattern>
+      <web-resource-name>Devportal Protected (work around Tomcat not allowing anon+logged in combined endpoints)</web-resource-name>
+      <url-pattern>/devportal/protected/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
-      <http-method-omission>GET</http-method-omission>
     </web-resource-collection>
-
     <auth-constraint>
       <role-name>apiuser</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
-      <url-pattern>/gateways/*</url-pattern>
-      <http-method>GET</http-method>
-    </web-resource-collection>
-
-    <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
-      <url-pattern>/developers/*</url-pattern>
-    </web-resource-collection>
-
-    <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
-      <url-pattern>/search/clients></url-pattern>
-    </web-resource-collection>
-
-    <auth-constraint>
       <role-name>devportaluser</role-name>
     </auth-constraint>
   </security-constraint>
+
   <login-config>
     <!-- The realm-name has nothing to do with the keycloak realm, it is the name of the realm if you are using tomcats/wildflys own auth -->
     <auth-method>BASIC</auth-method>
@@ -189,23 +188,6 @@
   <security-role>
     <role-name>devportaluser</role-name>
   </security-role>
-
-<!--  <context-param>-->
-<!--    <param-name>resteasy.scan.providers</param-name>-->
-<!--    <param-value>true</param-value>-->
-<!--  </context-param>-->
-<!--  <context-param>-->
-<!--    <param-name>resteasy.scan.resources</param-name>-->
-<!--    <param-value>true</param-value>-->
-<!--  </context-param>-->
-<!--  <context-param>-->
-<!--    <param-name>resteasy.scan</param-name>-->
-<!--    <param-value>true</param-value>-->
-<!--  </context-param>-->
-<!--  <context-param>-->
-<!--    <param-name>javax.ws.rs.core.Application</param-name>-->
-<!--    <param-value>io.apiman.manager.api.rest.impl.ApiManagerApplication</param-value>-->
-<!--  </context-param>-->
   <context-param>
     <param-name>org.jboss.weld.construction.relaxed</param-name>
     <param-value>true</param-value>

@@ -17,6 +17,8 @@ package io.apiman.manager.api.security.impl;
 
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.core.IStorageQuery;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,18 +36,12 @@ import javax.servlet.http.HttpServletRequest;
 @ApplicationScoped @Alternative
 public class DefaultSecurityContext extends AbstractSecurityContext {
 
-    private IStorage iStorage;
-    // private ApiManagerConfig config;
-
     /**
      * Constructor.
      */
     @Inject
-    public DefaultSecurityContext(IStorage iStorage) {
-        this.iStorage = iStorage;
-    }
-
-    public DefaultSecurityContext() {
+    public DefaultSecurityContext(IStorageQuery query, IStorage storage, ApiManagerConfig config) {
+        super(query, storage, config);
     }
 
     /**

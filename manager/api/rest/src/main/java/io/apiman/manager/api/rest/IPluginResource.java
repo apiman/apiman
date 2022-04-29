@@ -25,10 +25,9 @@ import io.apiman.manager.api.rest.exceptions.PluginAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.PluginNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PluginResourceNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
-import io.swagger.annotations.Api;
 
 import java.util.List;
-
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,6 +37,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import io.swagger.annotations.Api;
+
 /**
  * The Plugin API.
  * 
@@ -45,6 +46,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("plugins")
 @Api(tags = "Plugins")
+@PermitAll
 public interface IPluginResource {
 
     /**

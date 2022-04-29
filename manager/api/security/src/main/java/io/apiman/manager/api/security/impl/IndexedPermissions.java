@@ -73,7 +73,7 @@ public class IndexedPermissions implements Serializable {
     public Set<String> getOrgQualifiers(PermissionType permissionName) {
         Set<String> orgs = permissionToOrgsMap.get(permissionName);
         if (orgs == null)
-            orgs = Collections.EMPTY_SET;
+            orgs = Collections.emptySet();
         return Collections.unmodifiableSet(orgs);
     }
 

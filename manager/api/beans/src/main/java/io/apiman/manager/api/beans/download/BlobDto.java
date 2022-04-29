@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Scheer PAS Schweiz AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.apiman.manager.api.beans.download;
 
 import java.time.OffsetDateTime;
@@ -6,7 +21,10 @@ import java.util.StringJoiner;
 import com.google.common.io.FileBackedOutputStream;
 
 /**
- * Blob store representation.
+ * <p>Blob store representation.</p>
+ *
+ * <p>Uses {@link FileBackedOutputStream} (FBOS) to store binary blobs. This writes the contents to disk once the buffer size exceeds a size.
+ * Consumers of this class should take care to handle this properly</p>
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
@@ -88,13 +106,13 @@ public class BlobDto {
     @Override
     public String toString() {
         return new StringJoiner(", ", BlobDto.class.getSimpleName() + "[", "]")
-             .add("id='" + id + "'")
-             .add("name='" + name + "'")
-             .add("mimeType='" + mimeType + "'")
-             .add("createdOn=" + createdOn)
-             .add("modifiedOn=" + modifiedOn)
-             .add("blob=<binary>")
-             .add("hash=" + hash)
-             .toString();
+                .add("id='" + id + "'")
+                .add("name='" + name + "'")
+                .add("mimeType='" + mimeType + "'")
+                .add("createdOn=" + createdOn)
+                .add("modifiedOn=" + modifiedOn)
+                .add("blob=<binary>")
+                .add("hash=" + hash)
+                .toString();
     }
 }

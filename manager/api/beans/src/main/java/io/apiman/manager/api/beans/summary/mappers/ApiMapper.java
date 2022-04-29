@@ -3,6 +3,7 @@ package io.apiman.manager.api.beans.summary.mappers;
 import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.idm.DiscoverabilityEntity;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 
@@ -36,9 +37,10 @@ public interface ApiMapper {
             @Mapping(source = "api.id", target = "id"),
             @Mapping(source = "api.name", target = "name"),
             @Mapping(source = "api.description", target = "description"),
-            @Mapping(source = "api.tags", target = "apiTags")
+            @Mapping(source = "api.tags", target = "apiTags"),
+            @Mapping(source = "discoverability", target = "publicDiscoverability")
     })
-    ApiVersionSummaryBean toSummary(ApiVersionBean apiBean);
+    ApiVersionSummaryBean toSummary(ApiVersionBean av);
 
     ApiBeanDto toDto(ApiBean apiBean);
 }

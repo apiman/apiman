@@ -5,7 +5,7 @@ Content-Type: application/json
   "endpoint" : "http://localhost:8080/ping",
   "endpointType" : "rest",
   "plans" : [
-    { "planId" : "Plan1", "version" : "1.0", "requiresApproval": true, "exposeInPortal": true }
+    { "planId" : "Plan1", "version" : "1.0", "requiresApproval": true, "discoverability": "PORTAL" }
   ]
 }
 ----

@@ -16,7 +16,6 @@
 
 package io.apiman.manager.api.rest;
 
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
 import io.apiman.manager.api.beans.apis.NewApiBean;
 import io.apiman.manager.api.beans.apis.NewApiDefinitionBean;
@@ -24,6 +23,7 @@ import io.apiman.manager.api.beans.apis.NewApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ApiKeyBean;
@@ -98,11 +98,14 @@ import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 
 import java.util.List;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -133,6 +136,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidNameException when the user attempts to create an Organization with an invalid name
      */
+    @RolesAllowed("apiuser")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -149,25 +153,10 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws EntityStillActiveException when user attempts to delete an organization which still has active sub-elements
      */
+    @RolesAllowed("apiuser")
     @DELETE
     @Path("{organizationId}")
     public void deleteOrg(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException,
-            NotAuthorizedException, EntityStillActiveException;
-
-    /**
-     * Delete a ClientApp
-     * @summary Delete a client
-     * @param organizationId The Organization ID the client exists within
-     * @param clientId The ClientApp ID to delete
-     * @statuscode 204 If the Organization was successfully deleted
-     * @statuscode 409 If the delete preconditions have not been met (i.e. sub-elements are still active, such as still-registered ClientVersions).
-     * @throws OrganizationNotFoundException when the specified organization does not exist.
-     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @throws EntityStillActiveException when user attempts to delete a Client which still has active sub-elements
-     */
-    @DELETE
-    @Path("{organizationId}/clients/{clientId}")
-    public void deleteClient(@PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId) throws OrganizationNotFoundException,
             NotAuthorizedException, EntityStillActiveException;
 
     /**
@@ -180,6 +169,7 @@ public interface IOrganizationResource {
      * @return The Organization.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      */
+    @PermitAll
     @GET
     @Path("{organizationId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -195,6 +185,7 @@ public interface IOrganizationResource {
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @PUT
     @Path("{organizationId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -215,6 +206,7 @@ public interface IOrganizationResource {
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/activity")
     @Produces(MediaType.APPLICATION_JSON)
@@ -243,6 +235,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidNameException when the user attempts the create with an invalid name
      */
+    @PermitAll
     @POST
     @Path("{organizationId}/clients")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -250,6 +243,23 @@ public interface IOrganizationResource {
     public ClientBean createClient(@PathParam("organizationId") String organizationId,
             NewClientBean bean) throws OrganizationNotFoundException, ClientAlreadyExistsException,
             NotAuthorizedException, InvalidNameException;
+
+    /**
+     * Delete a ClientApp
+     * @summary Delete a client
+     * @param organizationId The Organization ID the client exists within
+     * @param clientId The ClientApp ID to delete
+     * @statuscode 204 If the Organization was successfully deleted
+     * @statuscode 409 If the delete preconditions have not been met (i.e. sub-elements are still active, such as still-registered ClientVersions).
+     * @throws OrganizationNotFoundException when the specified organization does not exist.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws EntityStillActiveException when user attempts to delete a Client which still has active sub-elements
+     */
+    @PermitAll
+    @DELETE
+    @Path("{organizationId}/clients/{clientId}")
+    public void deleteClient(@PathParam("organizationId") String organizationId, @PathParam("clientId") String clientId)
+            throws OrganizationNotFoundException, NotAuthorizedException, EntityStillActiveException;
 
     /**
      * Use this endpoint to retrieve information about a single Client by ID.  Note
@@ -265,6 +275,7 @@ public interface IOrganizationResource {
      * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist when trying to get, update, or delete a client that does not exist.
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -286,6 +297,7 @@ public interface IOrganizationResource {
      * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/activity")
     @Produces(MediaType.APPLICATION_JSON)
@@ -304,6 +316,7 @@ public interface IOrganizationResource {
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients")
     @Produces(MediaType.APPLICATION_JSON)
@@ -321,6 +334,7 @@ public interface IOrganizationResource {
      * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @PUT
     @Path("{organizationId}/clients/{clientId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -344,6 +358,7 @@ public interface IOrganizationResource {
      * @throws InvalidVersionException when the user attempts to use an invalid version value
      * @throws ClientVersionAlreadyExistsException when the client version for the given ID already exists
      */
+    @PermitAll
     @POST
     @Path("{organizationId}/clients/{clientId}/versions")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -363,6 +378,7 @@ public interface IOrganizationResource {
      * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions")
     @Produces(MediaType.APPLICATION_JSON)
@@ -390,6 +406,7 @@ public interface IOrganizationResource {
      * @throws InvalidVersionException when the user attempts to use an invalid version of the client
      * @throws InvalidClientStatusException when the client is not in the proper status
      */
+    @PermitAll
     @PUT
     @Path("{organizationId}/clients/{clientId}/versions/{version}/apikey")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -413,6 +430,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidVersionException when the user attempts to use an invalid version of the client
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/apikey")
     @Produces(MediaType.APPLICATION_JSON)
@@ -433,6 +451,7 @@ public interface IOrganizationResource {
      * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -455,6 +474,7 @@ public interface IOrganizationResource {
      * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/activity")
     @Produces(MediaType.APPLICATION_JSON)
@@ -479,6 +499,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/metrics/apiUsage")
     @Produces(MediaType.APPLICATION_JSON)
@@ -509,6 +530,7 @@ public interface IOrganizationResource {
      * @throws ContractAlreadyExistsException when trying to create an Contract that already exists
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @POST
     @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -535,6 +557,7 @@ public interface IOrganizationResource {
      * @throws ContractNotFoundException when trying to get, update, or delete a contract that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts/{contractId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -546,6 +569,7 @@ public interface IOrganizationResource {
     /**
      * Probe a specific contract's policy state
      */
+    @PermitAll
     @POST
     @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts/{contractId}/policies/{policyId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -568,6 +592,7 @@ public interface IOrganizationResource {
      * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts")
     @Produces(MediaType.APPLICATION_JSON)
@@ -600,6 +625,7 @@ public interface IOrganizationResource {
      * @throws ClientVersionNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/apiregistry/json")
     @Produces(MediaType.APPLICATION_JSON)
@@ -634,6 +660,7 @@ public interface IOrganizationResource {
      * @throws ClientVersionNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/apiregistry/xml")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -654,6 +681,7 @@ public interface IOrganizationResource {
      * @throws ClientNotFoundException when trying to get, update, or delete a client that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @DELETE
     @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts")
     public void deleteAllContracts(@PathParam("organizationId") String organizationId,
@@ -675,6 +703,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidClientStatusException when the client is not in the proper status
      */
+    @PermitAll
     @DELETE
     @Path("{organizationId}/clients/{clientId}/versions/{version}/contracts/{contractId}")
     public void deleteContract(@PathParam("organizationId") String organizationId,
@@ -696,6 +725,7 @@ public interface IOrganizationResource {
      * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @POST
     @Path("{organizationId}/clients/{clientId}/versions/{version}/policies")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -720,6 +750,7 @@ public interface IOrganizationResource {
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/policies/{policyId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -744,6 +775,7 @@ public interface IOrganizationResource {
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @PUT
     @Path("{organizationId}/clients/{clientId}/versions/{version}/policies/{policyId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -768,6 +800,7 @@ public interface IOrganizationResource {
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @DELETE
     @Path("{organizationId}/clients/{clientId}/versions/{version}/policies/{policyId}")
     public void deleteClientPolicy(@PathParam("organizationId") String organizationId,
@@ -788,6 +821,7 @@ public interface IOrganizationResource {
      * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/clients/{clientId}/versions/{version}/policies")
     @Produces(MediaType.APPLICATION_JSON)
@@ -815,6 +849,7 @@ public interface IOrganizationResource {
      * @throws ClientVersionNotFoundException when trying to get, update, or delete a client version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @POST
     @Path("{organizationId}/clients/{clientId}/versions/{version}/reorderPolicies")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -844,6 +879,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidNameException when the user attempts the create with an invalid name
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("{organizationId}/apis")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -860,6 +896,7 @@ public interface IOrganizationResource {
      * @return A list of APIs.
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis")
     @Produces(MediaType.APPLICATION_JSON)
@@ -880,6 +917,7 @@ public interface IOrganizationResource {
      * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -898,6 +936,7 @@ public interface IOrganizationResource {
      * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @PUT
     @Path("{organizationId}/apis/{apiId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -906,6 +945,7 @@ public interface IOrganizationResource {
             @PathParam("apiId") String apiId, UpdateApiBean bean)
             throws ApiNotFoundException, NotAuthorizedException;
 
+    @RolesAllowed("apiuser")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{organizationId}/apis/{apiId}/tags")
@@ -928,6 +968,7 @@ public interface IOrganizationResource {
      * @throws EntityStillActiveException when user attempts to delete an API which still has active sub-elements
      * @throws InvalidApiStatusException when the API's status is invalid for the current action
      */
+    @RolesAllowed("apiuser")
     @DELETE
     @Path("{organizationId}/apis/{apiId}")
     public void deleteApi(@PathParam("organizationId") String organizationId,
@@ -948,6 +989,7 @@ public interface IOrganizationResource {
      * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/activity")
     @Produces(MediaType.APPLICATION_JSON)
@@ -971,12 +1013,13 @@ public interface IOrganizationResource {
      * @throws InvalidVersionException when the user attempts to use an invalid version value
      * @throws ApiVersionAlreadyExistsException when the API version with the given ID already exists
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("{organizationId}/apis/{apiId}/versions")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiVersionBean createApiVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("apiId") String apiId, NewApiVersionBean bean)
+    public ApiVersionBeanDto createApiVersion(@PathParam("organizationId") String organizationId,
+                                              @PathParam("apiId") String apiId, NewApiVersionBean bean)
             throws ApiNotFoundException, NotAuthorizedException, InvalidVersionException,
             ApiVersionAlreadyExistsException;
 
@@ -991,6 +1034,7 @@ public interface IOrganizationResource {
      * @throws ApiNotFoundException when trying to get, update, or delete an API that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1009,10 +1053,11 @@ public interface IOrganizationResource {
      * @return A API version.
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiVersionBean getApiVersion(@PathParam("organizationId") String organizationId,
+    public ApiVersionBeanDto getApiVersion(@PathParam("organizationId") String organizationId,
             @PathParam("apiId") String apiId, @PathParam("version") String version)
             throws ApiVersionNotFoundException;
 
@@ -1031,6 +1076,7 @@ public interface IOrganizationResource {
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/status")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1053,6 +1099,7 @@ public interface IOrganizationResource {
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/definition")
     @Produces({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
@@ -1075,6 +1122,7 @@ public interface IOrganizationResource {
      * @throws InvalidApiStatusException when the API's status is invalid for the current action
      * @throws GatewayNotFoundException when trying to get, update, or delete a gateway that does not exist
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/endpoint")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1096,13 +1144,15 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidApiStatusException when the user attempts some action on the API when it is not in an appropriate state/status
      */
+    @RolesAllowed("apiuser")
     @PUT
     @Path("{organizationId}/apis/{apiId}/versions/{version}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiVersionBean updateApiVersion(@PathParam("organizationId") String organizationId,
+    public ApiVersionBeanDto updateApiVersion(@PathParam("organizationId") String organizationId,
             @PathParam("apiId") String apiId, @PathParam("version") String version,
-            UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException;
+            @Valid UpdateApiVersionBean bean) throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException;
+
     /**
      * Use this endpoint to update the API's definition document.  An API
      * definition will vary depending on the type of API, and the type of
@@ -1137,6 +1187,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidApiStatusException when the user attempts some action on the API when it is not in an appropriate state/status
      */
+    @RolesAllowed("apiuser")
     @PUT
     @Path("{organizationId}/apis/{apiId}/versions/{version}/definition")
     @Consumes({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
@@ -1166,6 +1217,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidApiStatusException when the user attempts some action on the API when it is not in an appropriate state/status
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("{organizationId}/apis/{apiId}/versions/{version}/definition")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1188,6 +1240,7 @@ public interface IOrganizationResource {
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/activity")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1208,6 +1261,7 @@ public interface IOrganizationResource {
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/plans")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1229,6 +1283,7 @@ public interface IOrganizationResource {
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("{organizationId}/apis/{apiId}/versions/{version}/policies")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1253,6 +1308,7 @@ public interface IOrganizationResource {
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/policies/{policyId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1277,6 +1333,7 @@ public interface IOrganizationResource {
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @PUT
     @Path("{organizationId}/apis/{apiId}/versions/{version}/policies/{policyId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1301,6 +1358,7 @@ public interface IOrganizationResource {
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @DELETE
     @Path("{organizationId}/apis/{apiId}/versions/{version}/policies/{policyId}")
     public void deleteApiPolicy(@PathParam("organizationId") String organizationId,
@@ -1321,6 +1379,7 @@ public interface IOrganizationResource {
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @DELETE
     @Path("{organizationId}/apis/{apiId}/versions/{version}/definition")
     public void deleteApiDefinition(@PathParam("organizationId") String organizationId,
@@ -1341,6 +1400,7 @@ public interface IOrganizationResource {
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/policies")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1368,6 +1428,7 @@ public interface IOrganizationResource {
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("{organizationId}/apis/{apiId}/versions/{version}/reorderPolicies")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1392,6 +1453,7 @@ public interface IOrganizationResource {
      * @return A Policy Chain.
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/plans/{planId}/policyChain")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1414,6 +1476,7 @@ public interface IOrganizationResource {
      * @throws ApiVersionNotFoundException when trying to get, update, or delete an API version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/contracts")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1443,6 +1506,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidNameException when the user attempts the create with an invalid name
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("{organizationId}/plans")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1466,6 +1530,7 @@ public interface IOrganizationResource {
      * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/plans/{planId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1488,6 +1553,7 @@ public interface IOrganizationResource {
      * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @GET
     @Path("{organizationId}/plans/{planId}/activity")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1505,6 +1571,7 @@ public interface IOrganizationResource {
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/plans")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1523,6 +1590,7 @@ public interface IOrganizationResource {
      * when trying to get, update, or delete an plan that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @PUT
     @Path("{organizationId}/plans/{planId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1547,6 +1615,7 @@ public interface IOrganizationResource {
      * @throws InvalidVersionException when the user attempts to use an invalid version value
      * @throws PlanVersionAlreadyExistsException when the plan version with the given ID already exists
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("{organizationId}/plans/{planId}/versions")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1566,6 +1635,7 @@ public interface IOrganizationResource {
      * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/plans/{planId}/versions")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1585,6 +1655,7 @@ public interface IOrganizationResource {
      * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/plans/{planId}/versions/{version}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1607,6 +1678,7 @@ public interface IOrganizationResource {
      * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @GET
     @Path("{organizationId}/plans/{planId}/versions/{version}/activity")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1629,6 +1701,7 @@ public interface IOrganizationResource {
      * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1651,6 +1724,7 @@ public interface IOrganizationResource {
      * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1674,6 +1748,7 @@ public interface IOrganizationResource {
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies/{policyId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1698,6 +1773,7 @@ public interface IOrganizationResource {
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @PUT
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies/{policyId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1722,6 +1798,7 @@ public interface IOrganizationResource {
      * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @DELETE
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies/{policyId}")
     public void deletePlanPolicy(@PathParam("organizationId") String organizationId,
@@ -1743,6 +1820,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidPlanStatusException when the user attempts some action on the Plan when it is not in an appropriate state/status
      */
+    @RolesAllowed("apiuser")
     @DELETE
     @Path("{organizationId}/plans/{planId}")
     public void deletePlan(@PathParam("organizationId") String organizationId,
@@ -1768,6 +1846,7 @@ public interface IOrganizationResource {
      * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("{organizationId}/plans/{planId}/versions/{version}/reorderPolicies")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1791,6 +1870,7 @@ public interface IOrganizationResource {
      * @throws UserNotFoundException when a request is sent for a user who does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("{organizationId}/roles")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1809,6 +1889,7 @@ public interface IOrganizationResource {
      * @throws UserNotFoundException when a request is sent for a user who does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @RolesAllowed("apiuser")
     @DELETE
     @Path("{organizationId}/roles/{roleId}/{userId}")
     public void revoke(@PathParam("organizationId") String organizationId,
@@ -1828,6 +1909,7 @@ public interface IOrganizationResource {
      * @throws UserNotFoundException when a request is sent for a user who does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @DELETE
     @Path("{organizationId}/members/{userId}")
     public void revokeAll(@PathParam("organizationId") String organizationId,
@@ -1843,6 +1925,7 @@ public interface IOrganizationResource {
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/members")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1871,6 +1954,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/usage")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1895,6 +1979,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/clientUsage")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1920,6 +2005,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/planUsage")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1949,6 +2035,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/responseStats")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1974,6 +2061,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/summaryResponseStats")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1997,6 +2085,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/clientResponseStats")
     @Produces(MediaType.APPLICATION_JSON)
@@ -2021,6 +2110,7 @@ public interface IOrganizationResource {
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @throws InvalidMetricCriteriaException when when the metric criteria is not valid.
      */
+    @PermitAll
     @GET
     @Path("{organizationId}/apis/{apiId}/versions/{version}/metrics/planResponseStats")
     @Produces(MediaType.APPLICATION_JSON)

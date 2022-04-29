@@ -15,8 +15,6 @@
  */
 package io.apiman.manager.api.war;
 
-import io.apiman.manager.api.jpa.AbstractJpaStorage;
-
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -25,7 +23,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * A servlet filter that ensures we don't have any transactions hanging around
@@ -33,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author eric.wittmann@redhat.com
  */
+@Deprecated(forRemoval = true)
 public class TransactionWatchdogFilter implements Filter {
 
     /**
@@ -55,15 +53,6 @@ public class TransactionWatchdogFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         chain.doFilter(request, response);
-        // try {
-        //     if (AbstractJpaStorage.isTxActive()) {
-        //         throw new Exception("Error: storage transaction is still open for request: " + ((HttpServletRequest) request).getPathInfo()); //$NON-NLS-1$
-        //     }
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        //     throw new ServletException(e);
-        // }
-
     }
 
     /**

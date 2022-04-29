@@ -15,13 +15,25 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.StringJoiner;
-
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.hibernate.annotations.ColumnDefault;
 
 /**
@@ -30,26 +42,59 @@ import org.hibernate.annotations.ColumnDefault;
  *
  * @author eric.wittmann@redhat.com
  */
-@Embeddable
+@Entity
+@Table(name = "api_plans",
+        uniqueConstraints = { @UniqueConstraint(columnNames = { "api_version_id", "plan_id", "version" }) }
+)
+@JsonInclude(Include.NON_NULL)
+@IdClass(ApiPlanBeanCompositeId.class)
 public class ApiPlanBean implements Serializable {
 
     private static final long serialVersionUID = 7972763768594076697L;
 
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "api_version_id", referencedColumnName = "id")
+    @JsonIgnore
+    private ApiVersionBean apiVersion;
+
+    @Id
     @Column(name = "plan_id", nullable = false)
     private String planId;
+
+    @Id
     @Column(name = "version", nullable = false)
     private String version;
-    @Column(name = "expose_in_portal", nullable = false)
-    @ColumnDefault("false")
-    private Boolean exposeInPortal = false;
+
     @Column(name = "requires_approval", nullable = false)
     @ColumnDefault("false")
     private Boolean requiresApproval = false;
+
+    @Column(name = "discoverability")
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'ORG_MEMBERS'")
+    private DiscoverabilityLevel discoverability = DiscoverabilityLevel.ORG_MEMBERS;
 
     /**
      * Constructor.
      */
     public ApiPlanBean() {
+    }
+
+    public DiscoverabilityLevel getDiscoverability() {
+        return discoverability;
+    }
+
+    public void setDiscoverability(DiscoverabilityLevel discoverability) {
+        this.discoverability = discoverability;
+    }
+
+    public ApiVersionBean getApiVersion() {
+        return apiVersion;
+    }
+
+    public void setApiVersion(ApiVersionBean apiVersion) {
+        this.apiVersion = apiVersion;
     }
 
     /**
@@ -80,13 +125,8 @@ public class ApiPlanBean implements Serializable {
         this.version = version;
     }
 
-
-    public Boolean isExposeInPortal() {
-        return exposeInPortal;
-    }
-
-    public ApiPlanBean setExposeInPortal(Boolean exposeInPortal) {
-        this.exposeInPortal = exposeInPortal;
+    public ApiPlanBean setRequiresApproval(Boolean requiresApproval) {
+        this.requiresApproval = requiresApproval;
         return this;
     }
 
@@ -94,19 +134,8 @@ public class ApiPlanBean implements Serializable {
         return requiresApproval;
     }
 
-    public ApiPlanBean setRequiresApproval(Boolean requiresApproval) {
-        this.requiresApproval = requiresApproval;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", ApiPlanBean.class.getSimpleName() + "[", "]")
-             .add("planId='" + planId + "'")
-             .add("version='" + version + "'")
-             .add("exposeInPortal=" + exposeInPortal)
-             .add("requiresApproval=" + requiresApproval)
-             .toString();
+    public Boolean getRequiresApproval() {
+        return requiresApproval;
     }
 
     @Override
@@ -118,11 +147,21 @@ public class ApiPlanBean implements Serializable {
             return false;
         }
         ApiPlanBean that = (ApiPlanBean) o;
-        return Objects.equals(planId, that.planId) && Objects.equals(version, that.version);
+        return Objects.equals(apiVersion, that.apiVersion) && Objects.equals(planId, that.planId) && Objects.equals(version, that.version);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(planId, version);
+        return Objects.hash(apiVersion, planId, version);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ApiPlanBean.class.getSimpleName() + "[", "]")
+                .add("planId='" + planId + "'")
+                .add("version='" + version + "'")
+                .add("requiresApproval=" + requiresApproval)
+                .add("discoverability=" + discoverability)
+                .toString();
     }
 }

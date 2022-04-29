@@ -10,75 +10,68 @@ X-RestTest-RegexMatching: true
     "exportedOn": "*",
     "apimanVersion": "*"
   },
-  "Users": [
-    {
-      "username": "admin",
-      "fullName": "Admin",
-      "email": "admin@example.org",
-      "joinedOn": "*",
-      "admin": false
-    },
-    {
-      "username": "admin2",
-      "fullName": "Admin 2",
-      "email": "admin2@example.org",
-      "joinedOn": "*",
-      "admin": false
-    },
-    {
-      "username": "bwayne",
-      "fullName": "Bruce Wayne",
-      "email": "bwayne@wayne-enterprises.com",
-      "admin": false
-    },
-    {
-      "username": "ckent",
-      "fullName": "Clark Kent",
-      "email": "ckent@dailyplanet.com",
-      "admin": false
-    },
-    {
-      "username": "dprince",
-      "fullName": "Diana Prince",
-      "email": "dprince@themyscira.gov",
-      "admin": false
-    },
-    {
-      "username": "user1",
-      "fullName": "User 1",
-      "email": "user1@example.org",
-      "joinedOn": "*",
-      "admin": false
-    },
-    {
-      "username": "user2",
-      "fullName": "User 2",
-      "email": "user2@example.org",
-      "joinedOn": "*",
-      "admin": false
-    },
-    {
-      "username": "user3",
-      "fullName": "User 3",
-      "email": "user3@example.org",
-      "joinedOn": "*",
-      "admin": false
-    },
-    {
-      "username": "user4",
-      "fullName": "User 4",
-      "email": "user4@example.org",
-      "joinedOn": "*",
-      "admin": false
-    },
-    {
-      "username": "user5",
-      "fullName": "User 5",
-      "email": "user5@example.org",
-      "joinedOn": "*",
-      "admin": false
+  "Users": [{
+        "username": "admin",
+        "fullName": "Admin",
+        "email": "admin@example.org",
+        "admin": false
+    }, {
+        "username": "admin2",
+        "fullName": "Admin 2",
+        "email": "admin2@example.org",
+        "admin": false
+    }, {
+    		"username": "bmay",
+    		"fullName": "Brian",
+    		"email": "b@queen.com",
+    		"admin": false
+    }, {
+        "username": "bwayne",
+        "fullName": "Bruce Wayne",
+        "email": "bwayne@wayne-enterprises.com",
+        "admin": false
+    }, {
+        "username": "ckent",
+        "fullName": "Clark Kent",
+        "email": "ckent@dailyplanet.com",
+        "admin": false
+    }, {
+        "username": "dprince",
+        "fullName": "Diana Prince",
+        "email": "dprince@themyscira.gov",
+        "admin": false
+    }, {
+        "username": "fmercury",
+        "fullName": "Freddie",
+        "email": "f@queen.com",
+        "admin": false
+    }, {
+        "username": "user1",
+        "fullName": "User 1",
+        "email": "user1@example.org",
+        "admin": false
+    }, {
+        "username": "user2",
+        "fullName": "User 2",
+        "email": "user2@example.org",
+        "admin": false
+    }, {
+        "username": "user3",
+        "fullName": "User 3",
+        "email": "user3@example.org",
+        "admin": false
+    }, {
+        "username": "user4",
+        "fullName": "User 4",
+        "email": "user4@example.org",
+        "admin": false
+    }, {
+        "username": "user5",
+        "fullName": "User 5",
+        "email": "user5@example.org",
+        "admin": false
     }
-  ],
+    ],
   "Gateways": [
     {
       "id": "TheGateway",

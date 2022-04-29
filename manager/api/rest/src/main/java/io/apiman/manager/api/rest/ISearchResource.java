@@ -20,15 +20,25 @@ import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.search.searchResults.UserSearchResult;
-import io.apiman.manager.api.beans.summary.*;
+import io.apiman.manager.api.beans.summary.ApiNamespaceBean;
+import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.AvailableApiBean;
+import io.apiman.manager.api.beans.summary.ClientSummaryBean;
+import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
-import io.swagger.annotations.Api;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
+import javax.annotation.security.PermitAll;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import io.swagger.annotations.Api;
 
 /**
  * The Search API.
@@ -37,6 +47,7 @@ import java.util.List;
  */
 @Path("search")
 @Api(tags = "Search")
+@PermitAll
 public interface ISearchResource {
 
     /**

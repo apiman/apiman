@@ -1,17 +1,19 @@
 package io.apiman.manager.api.rest;
 
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.ApiVersionPolicySummaryDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiPlanSummaryDto;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
-import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiVersionEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.ApiVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.exceptions.InvalidApiStatusException;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationAlreadyExistsException;
@@ -40,37 +42,38 @@ import io.swagger.annotations.Api;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@Path("devportal")
-@Api("Devportal")
+// @Path("devportal")
+@Api(value = "Devportal", tags = { "Experimental" })
 @Beta
 public interface IDeveloperPortalResource {
     @POST
-    @Path("apis/search")
+    @Path("search/apis")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    SearchResultsBean<ApiSummaryBean> searchExposedApis(SearchCriteriaBean criteria)
+    SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
     @GET
     @Path("apis/featured")
     @Produces(MediaType.APPLICATION_JSON)
-    List<ApiSummaryBean> getFeaturedApis();
+    SearchResultsBean<ApiSummaryBean> getFeaturedApis();
 
     @POST
     @Path("organizations")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    OrganizationBean createHomeOrgForDeveloper(NewOrganizationBean newOrg)
+    Response createHomeOrgForDeveloper(NewOrganizationBean newOrg)
             throws OrganizationAlreadyExistsException;
 
     @GET
     @Path("organizations/{orgId}/apis/{apiId}/versions/")
+    @Produces(MediaType.APPLICATION_JSON)
     List<ApiVersionSummaryBean> listApiVersions(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId);
 
     @GET
     @Path("organizations/{orgId}/apis/{apiId}/versions/{apiVersion}")
     @Produces(MediaType.APPLICATION_JSON)
-    ApiVersionBean getApiVersion(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("apiVersion") String apiVersion)
+    ApiVersionBeanDto getApiVersion(@PathParam("orgId") String orgId, @PathParam("apiId") String apiId, @PathParam("apiVersion") String apiVersion)
             throws ApiVersionNotFoundException;
 
     @GET
@@ -92,16 +95,23 @@ public interface IDeveloperPortalResource {
             throws ApiVersionNotFoundException;
 
     @GET
-    @Path("organizations/{orgId}/plans/{planId}/versions/{version}/policies")
+    @Path("organizations/{orgId}/apis/{apiId}/versions/{apiVersion}/endpoint")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicySummaryBean> listPlanPolicies(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("version") String version)
+    ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(@PathParam("orgId") String organizationId, @PathParam("apiId") String apiId,
+                                                            @PathParam("apiVersion") String apiVersion)
+            throws ApiVersionNotFoundException, InvalidApiStatusException, GatewayNotFoundException;
+
+    @GET
+    @Path("organizations/{orgId}/plans/{planId}/versions/{apiVersion}/policies")
+    @Produces(MediaType.APPLICATION_JSON)
+    List<PolicySummaryBean> listPlanPolicies(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("apiVersion") String apiVersion)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException;
 
     @GET
-    @Path("organizations/{orgId}/plans/{planId}/versions/{version}/policies/{policyId}")
+    @Path("organizations/{orgId}/plans/{planId}/versions/{planVersion}/policies/{policyId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public PolicyBean getPlanPolicy(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("version") String version,
-                                    @PathParam("policyId") long policyId)
+    PolicyBean getPlanPolicy(@PathParam("orgId") String organizationId, @PathParam("planId") String planId, @PathParam("planVersion") String planVersion,
+                             @PathParam("policyId") long policyId)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
 }

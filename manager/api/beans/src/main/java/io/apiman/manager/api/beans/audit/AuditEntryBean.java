@@ -69,7 +69,7 @@ public class AuditEntryBean implements Serializable {
     private AuditEntryType what;
     @Lob
     @Column(updatable=false, nullable=true)
-    @Type(type = "org.hibernate.type.TextType")
+    // @Type(type = "org.hibernate.type.TextType")
     private String data;
 
     /**

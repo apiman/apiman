@@ -25,10 +25,10 @@ import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.rest.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
-import io.swagger.annotations.Api;
 
 import java.util.List;
-
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -39,6 +39,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import io.swagger.annotations.Api;
+
 /**
  * The Gateway API.
  *
@@ -46,6 +48,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("gateways")
 @Api(tags = "Gateways")
+@PermitAll // Nobody without Apiman admin permissions can do these actions anyway, so no need to guard with IDM roles.
 public interface IGatewayResource {
 
     /**
@@ -140,6 +143,7 @@ public interface IGatewayResource {
 
     /**
      * This endpoint delivers the gateway endpoint for the corresponding gateway id
+     * @deprecated no longer needed since addition of new developer portal (can use existing endpoints).
      * @param gatewayId gateway id
      * @return The corresponding gateway endpoint
      * @throws GatewayNotFoundException when gateway is not found
@@ -147,5 +151,6 @@ public interface IGatewayResource {
     @GET
     @Path("{gatewayId}/endpoint")
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated(since = "1.3.0.Final", forRemoval = true)
     public GatewayEndpointSummaryBean getGatewayEndpoint(@PathParam("gatewayId") String gatewayId) throws GatewayNotFoundException;
 }

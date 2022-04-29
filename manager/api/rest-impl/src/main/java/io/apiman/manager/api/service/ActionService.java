@@ -209,9 +209,11 @@ public class ActionService implements DataAccessUtilMixin {
     public void publishApi(String orgId, String apiId, String apiVersion) throws ActionException, NotAuthorizedException {
         ApiVersionBean versionBean;
         try {
-            versionBean = apiService.getApiVersion(orgId, apiId, apiVersion);
+            versionBean = storage.getApiVersion(orgId, apiId, apiVersion);
         } catch (ApiVersionNotFoundException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ApiNotFound")); //$NON-NLS-1$
+        } catch (StorageException e) {
+            throw new RuntimeException(e);
         }
 
         // Validate that it's ok to perform this action - API must be Ready.
@@ -325,9 +327,11 @@ public class ActionService implements DataAccessUtilMixin {
     public void retireApi(String orgId, String apiId, String apiVersion) throws ActionException, NotAuthorizedException {
         ApiVersionBean versionBean;
         try {
-            versionBean = apiService.getApiVersion(orgId, apiId, apiVersion);
+            versionBean = storage.getApiVersion(orgId, apiId, apiVersion);
         } catch (ApiVersionNotFoundException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ApiNotFound")); //$NON-NLS-1$
+        } catch (StorageException e) {
+            throw new RuntimeException(e);
         }
 
         // Validate that it's ok to perform this action - API must be Published.

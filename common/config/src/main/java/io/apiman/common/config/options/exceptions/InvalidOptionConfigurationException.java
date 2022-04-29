@@ -19,7 +19,6 @@ package io.apiman.common.config.options.exceptions;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.StringJoiner;
 
 /**
  * Thrown to indicate that a provided configuration option is invalid in some way, for example because it
@@ -27,7 +26,7 @@ import java.util.StringJoiner;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}.
  */
-public class BadOptionConfigurationException extends IllegalArgumentException {
+public class InvalidOptionConfigurationException extends IllegalArgumentException {
 
     private String expectedType;
     private String optionName;
@@ -35,9 +34,9 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
     private String constraintFailureMessage;
 
     /**
-     * Constructs an {@link BadOptionConfigurationException}.
+     * Constructs an {@link InvalidOptionConfigurationException}.
      */
-    public BadOptionConfigurationException(String message, Throwable cause) {
+    public InvalidOptionConfigurationException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -49,12 +48,12 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
      * @param actualValue  the actual found.
      * @param cause        the cause of this issue, if it is an exception (e.g. NumberFormatException).
      */
-    public static BadOptionConfigurationException parseFailure(String optionName, String expectedType,
-        String actualValue, Throwable cause) {
+    public static InvalidOptionConfigurationException parseFailure(String optionName, String expectedType,
+                                                                   String actualValue, Throwable cause) {
 
         String msg = "Expected '" + optionName + "' to be of type " + expectedType + " but provided value '"
             + actualValue + "' could not be parsed";
-        return new BadOptionConfigurationException(msg, cause)
+        return new InvalidOptionConfigurationException(msg, cause)
             .setOptionName(optionName)
             .setExpectedType(expectedType)
             .setActualValue(actualValue);
@@ -67,11 +66,11 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
      * @param expectedType the anticipated type (e.g. boolean).
      * @param actualValue  the actual found.
      */
-    public static BadOptionConfigurationException parseFailure(String optionName, String expectedType,
-        String actualValue) {
+    public static InvalidOptionConfigurationException parseFailure(String optionName, String expectedType,
+                                                                   String actualValue) {
         String msg = "Expected '" + optionName + "' to be of type " + expectedType + " but provided value '"
             + actualValue + "' could not be parsed";
-        return new BadOptionConfigurationException(msg, null)
+        return new InvalidOptionConfigurationException(msg, null)
             .setOptionName(optionName)
             .setExpectedType(expectedType)
             .setActualValue(actualValue);
@@ -86,11 +85,11 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
      * @param constraintFailureMessage a human-readable message to display in the case of a constraint failure
      *                                 (e.g. port should be greater than 0).
      */
-    public static BadOptionConfigurationException constraintFailure(String optionName, String expectedType,
-        String actualValue, String constraintFailureMessage) {
+    public static InvalidOptionConfigurationException constraintFailure(String optionName, String expectedType,
+                                                                        String actualValue, String constraintFailureMessage) {
         String msg = "Option '" + optionName + "' of type " + expectedType + " failed a validation check: "
             + constraintFailureMessage;
-        return new BadOptionConfigurationException(msg, null)
+        return new InvalidOptionConfigurationException(msg, null)
             .setOptionName(optionName)
             .setExpectedType(expectedType)
             .setActualValue(actualValue)
@@ -103,12 +102,12 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
      * @param keyAliases   the key aliases. The first key will be used. List must not be empty.
      * @param expectedType the anticipated type (e.g. boolean).
      */
-    public static BadOptionConfigurationException requiredValue(List<String> keyAliases,
-        String expectedType) {
+    public static InvalidOptionConfigurationException requiredValue(List<String> keyAliases,
+                                                                    String expectedType) {
 
         String optionName = keyAliases.get(0);
         String msg = "A value of type " + expectedType + " must be provided for '" + optionName + "'";
-        return new BadOptionConfigurationException(msg, null)
+        return new InvalidOptionConfigurationException(msg, null)
             .setOptionName(optionName)
             .setExpectedType(expectedType);
     }
@@ -120,7 +119,7 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
         return Optional.of(expectedType);
     }
 
-    private BadOptionConfigurationException setExpectedType(String expectedType) {
+    private InvalidOptionConfigurationException setExpectedType(String expectedType) {
         this.expectedType = expectedType;
         return this;
     }
@@ -132,7 +131,7 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
         return Optional.ofNullable(optionName);
     }
 
-    private BadOptionConfigurationException setOptionName(String optionName) {
+    private InvalidOptionConfigurationException setOptionName(String optionName) {
         this.optionName = optionName;
         return this;
     }
@@ -144,7 +143,7 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
         return Optional.ofNullable(actualValue);
     }
 
-    private BadOptionConfigurationException setActualValue(String actualValue) {
+    private InvalidOptionConfigurationException setActualValue(String actualValue) {
         this.actualValue = actualValue;
         return this;
     }
@@ -156,7 +155,7 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
         return Optional.ofNullable(constraintFailureMessage);
     }
 
-    private BadOptionConfigurationException setConstraintFailureMessage(
+    private InvalidOptionConfigurationException setConstraintFailureMessage(
         String constraintFailureMessage) {
         this.constraintFailureMessage = constraintFailureMessage;
         return this;
@@ -175,7 +174,7 @@ public class BadOptionConfigurationException extends IllegalArgumentException {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        BadOptionConfigurationException that = (BadOptionConfigurationException) o;
+        InvalidOptionConfigurationException that = (InvalidOptionConfigurationException) o;
         return Objects.equals(expectedType, that.expectedType) && Objects
             .equals(optionName, that.optionName) && Objects.equals(actualValue, that.actualValue)
             && Objects.equals(constraintFailureMessage, that.constraintFailureMessage);

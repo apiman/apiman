@@ -24,6 +24,8 @@ import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.rest.exceptions.ActionException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -50,6 +52,7 @@ public interface IActionResource {
      * @statuscode 204 If the action completes successfully.
      * @throws ActionException action is performed but an error occurs during processing
      */
+    @PermitAll
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     void performAction(ActionBean action) throws ActionException, NotAuthorizedException;
@@ -66,6 +69,7 @@ public interface IActionResource {
      * @summary Approve a contract
      * @statuscode 204 If the action completes successfully.
      */
+    @RolesAllowed("apiuser")
     @POST
     @Path("contracts")
     @Consumes(MediaType.APPLICATION_JSON)

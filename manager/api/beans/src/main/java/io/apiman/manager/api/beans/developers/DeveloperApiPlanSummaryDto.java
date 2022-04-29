@@ -1,5 +1,6 @@
 package io.apiman.manager.api.beans.developers;
 
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class DeveloperApiPlanSummaryDto {
     private String planDescription;
     private String version;
     private Boolean requiresApproval;
+    private DiscoverabilityLevel discoverability;
     private List<PolicyBean> planPolicies;
 
     public DeveloperApiPlanSummaryDto() {
@@ -73,6 +75,15 @@ public class DeveloperApiPlanSummaryDto {
         this.planPolicies = planPolicies;
         return this;
     }
+    
+    public DiscoverabilityLevel getDiscoverability() {
+        return discoverability;
+    }
+
+    public DeveloperApiPlanSummaryDto setDiscoverability(DiscoverabilityLevel discoverability) {
+        this.discoverability = discoverability;
+        return this;
+    }
 
     @Override
     public String toString() {
@@ -82,6 +93,7 @@ public class DeveloperApiPlanSummaryDto {
                 .add("planDescription='" + planDescription + "'")
                 .add("version='" + version + "'")
                 .add("requiresApproval=" + requiresApproval)
+                .add("discoverability=" + discoverability)
                 .add("planPolicies=" + planPolicies)
                 .toString();
     }

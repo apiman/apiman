@@ -39,6 +39,7 @@ services:
             - keycloak
         environment:
             APIMAN_AUTH_URL: http://keycloak:8080/auth
+            JAVA_OPTS: "-Xmx1g"
         labels:
             - traefik.enable=true
             # Apiman UI

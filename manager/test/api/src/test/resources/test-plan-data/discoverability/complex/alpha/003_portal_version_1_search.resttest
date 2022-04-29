@@ -1,0 +1,30 @@
+POST /devportal/search/apis
+Content-Type: application/json
+
+{
+  "filters" : [{
+    "name": "name",
+    "operator": "like",
+    "value": "*alph*"
+  }],
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  }
+}
+
+----
+200
+Content-Type: application/json
+
+{
+  "beans": [
+    {
+      "organizationId": "apiman",
+      "organizationName": "apiman",
+      "id": "alpha",
+      "name": "alpha"
+    }
+  ],
+  "totalSize": 1
+}

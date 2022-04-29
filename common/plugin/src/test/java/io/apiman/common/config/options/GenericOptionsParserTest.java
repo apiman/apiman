@@ -16,7 +16,7 @@
 
 package io.apiman.common.config.options;
 
-import io.apiman.common.config.options.exceptions.BadOptionConfigurationException;
+import io.apiman.common.config.options.exceptions.InvalidOptionConfigurationException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -90,7 +90,7 @@ public class GenericOptionsParserTest {
         assertThat(opts.getBool(keys("coetivy", "willbeignored"), true)).isFalse();
     }
 
-    @Test(expected = BadOptionConfigurationException.class)
+    @Test(expected = InvalidOptionConfigurationException.class)
     public void Given_OptionWithInteger_When_ParsingAsBoolean_Then_ShouldThrowBadConfigurationException() {
         Map<String, String> map = new HashMap<String, String>() {{
             put("seychelles", "8080");
@@ -128,7 +128,7 @@ public class GenericOptionsParserTest {
         assertThat(actual).isEqualTo(8080);
     }
 
-    @Test(expected = BadOptionConfigurationException.class)
+    @Test(expected = InvalidOptionConfigurationException.class)
     public void Given_OptionMapWithMalformedInteger_When_ParsingAsInteger_Then_ShouldThrowBadConfigurationException() {
         Map<String, String> map = new HashMap<String, String>() {{
             put("seychelles", "definitely not an integer");
@@ -139,7 +139,7 @@ public class GenericOptionsParserTest {
             "This will never be reached");
     }
 
-    @Test(expected = BadOptionConfigurationException.class)
+    @Test(expected = InvalidOptionConfigurationException.class)
     public void Given_OptionMapWithInvalidInteger_When_ParsingAsInteger_Then_ShouldFailConstraintCheck() {
         Map<String, String> map = new HashMap<String, String>() {{
             put("seychelles", "-100");
@@ -183,7 +183,7 @@ public class GenericOptionsParserTest {
         assertThat(actual).isEqualTo(Long.MAX_VALUE);
     }
 
-    @Test(expected = BadOptionConfigurationException.class)
+    @Test(expected = InvalidOptionConfigurationException.class)
     public void Given_OptionMapWithMalformedLong_When_ParsingAsLong_Then_ShouldThrowBadConfigurationException() {
         Map<String, String> map = new HashMap<String, String>() {{
             put("seychelles", "definitely not an Long");
@@ -194,7 +194,7 @@ public class GenericOptionsParserTest {
             "This will never be reached");
     }
 
-    @Test(expected = BadOptionConfigurationException.class)
+    @Test(expected = InvalidOptionConfigurationException.class)
     public void Given_OptionMapWithInvalidLong_When_ParsingAsLong_Then_ShouldFailConstraintCheck() {
         Map<String, String> map = new HashMap<String, String>() {{
             put("seychelles", "-1");
@@ -212,7 +212,7 @@ public class GenericOptionsParserTest {
     
     // String
 
-    @Test(expected = BadOptionConfigurationException.class)
+    @Test(expected = InvalidOptionConfigurationException.class)
     public void Given_OptionMapWithInvalidString_When_ParsingAsString_Then_ShouldFailConstraintCheck() {
         Map<String, String> map = new HashMap<String, String>() {{
             put("seychelles", "this is too short");
@@ -270,7 +270,7 @@ public class GenericOptionsParserTest {
         assertThat(parsedPath).hasContent("some ole nonsense");
     }
 
-    @Test(expected = BadOptionConfigurationException.class)
+    @Test(expected = InvalidOptionConfigurationException.class)
     public void Given_OptionMapWithFileThatExistsButIsEmpty_When_ParsingPathWithGreaterThanZeroPredicate_Then_ShouldFailConstraintCheck()
         throws IOException {
         Path tempFile = Files.createTempFile("apiman-test", "bar");

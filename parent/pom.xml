@@ -85,10 +85,12 @@
     <version.shade.plugin>3.2.4</version.shade.plugin>
 
     <!-- Dependency Versions -->
+    <version.com.blazebit.blaze-persistence>1.6.6</version.com.blazebit.blaze-persistence>
     <version.com.fasterxml.jackson>2.12.4</version.com.fasterxml.jackson>
+    <version.com.github.ben-manes.caffeine>3.0.5</version.com.github.ben-manes.caffeine>
+    <version.com.github.seancfoley.ipaddress>5.3.3</version.com.github.seancfoley.ipaddress>
     <version.com.h2database>1.4.199</version.com.h2database> <!-- Unclear why, but 1.4.200 seems to cause some random issues, including inability for DB viewers to parse the data -->
     <version.com.lmax>3.4.4</version.com.lmax>
-    <version.com.github.seancfoley.ipaddress>5.3.3</version.com.github.seancfoley.ipaddress>
     <version.com.squareup.okhttp>2.7.5</version.com.squareup.okhttp>
     <version.com.squareup.okio>2.10.0</version.com.squareup.okio>
     <version.com.unboundid.unboundid-ldapsdk>6.0.3</version.com.unboundid.unboundid-ldapsdk>
@@ -108,6 +110,7 @@
     <version.com.google.guava>30.1.1-jre</version.com.google.guava>
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.javax.enterprise.cdi-api>2.0.SP1</version.javax.enterprise.cdi-api>
+    <version.javax.validation-api>2.0.1.Final</version.javax.validation-api>
     <version.joda-time>2.10.14</version.joda-time>
     <version.junit>4.13.2</version.junit>
     <version.org.assertj>3.19.0</version.org.assertj>
@@ -126,14 +129,15 @@
     <version.org.hibernate>5.3.17.Final</version.org.hibernate> <!-- Pin to Wildfly version -->
     <version.org.infinispan>8.2.12.Final</version.org.infinispan>
     <version.org.jeasy.easy-rules>4.1.0</version.org.jeasy.easy-rules>
-    <version.com.github.ben-manes.caffeine>3.0.5</version.com.github.ben-manes.caffeine>
     <version.org.jboss.jandex>2.3.0.Final</version.org.jboss.jandex>
     <version.org.jboss.logging.jboss-logging>3.4.2.Final</version.org.jboss.logging.jboss-logging>
     <version.org.jboss.resteasy>3.15.1.Final</version.org.jboss.resteasy>
     <version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>1.1.1.Final</version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>
     <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>2.0.1.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>
     <version.org.jboss.weld.weld>3.1.8.Final</version.org.jboss.weld.weld>
+    <version.org.jdbi>3.21.0</version.org.jdbi>
     <version.org.keycloak>12.0.4</version.org.keycloak>
+    <version.org.lz4.lz4-java>1.8.0</version.org.lz4.lz4-java>
     <version.org.mockito>3.11.2</version.org.mockito>
     <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
     <version.org.mvel>2.4.12.Final</version.org.mvel>
@@ -148,6 +152,7 @@
     <version.io.vertx>3.9.8</version.io.vertx>
     <version.net.openhft>0.15</version.net.openhft>
     <version.com.ibm.icu4j>70.1</version.com.ibm.icu4j>
+    <version.com.icegreen.greenmail>1.6.5</version.com.icegreen.greenmail>
     <version.com.hazelcast>4.2.1</version.com.hazelcast>
     <version.com.jcbai>1.17.6</version.com.jcbai>
     <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
@@ -439,6 +444,26 @@
         <version>${version.org.jboss.jandex}</version>
       </dependency>
       <dependency>
+        <groupId>com.blazebit</groupId>
+        <artifactId>blaze-persistence-core-api</artifactId>
+        <version>${version.com.blazebit.blaze-persistence}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.blazebit</groupId>
+        <artifactId>blaze-persistence-core-impl</artifactId>
+        <version>${version.com.blazebit.blaze-persistence}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.blazebit</groupId>
+        <artifactId>blaze-persistence-integration-hibernate-5.3</artifactId>
+        <version>${version.com.blazebit.blaze-persistence}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.blazebit</groupId>
+        <artifactId>blaze-persistence-integration-querydsl-expressions</artifactId>
+        <version>${version.com.blazebit.blaze-persistence}</version>
+      </dependency>
+      <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
@@ -598,6 +623,11 @@
         <version>${version.org.jboss.logging.jboss-logging}</version>
       </dependency>
       <dependency>
+        <groupId>org.jdbi</groupId>
+        <artifactId>jdbi3-core</artifactId>
+        <version>${version.org.jdbi}</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>${version.org.apache.httpcomponents.httpclient}</version>
@@ -734,6 +764,11 @@
         <version>${version.javax.enterprise.cdi-api}</version>
       </dependency>
       <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>${version.javax.validation-api}</version>
+      </dependency>
+      <dependency>
         <groupId>com.sun.xml.ws</groupId>
         <artifactId>jaxws-ri</artifactId>
         <type>pom</type>
@@ -801,6 +836,11 @@
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-services</artifactId>
         <version>${version.org.keycloak}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lz4</groupId>
+        <artifactId>lz4-java</artifactId>
+        <version>${version.org.lz4.lz4-java}</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -886,14 +926,16 @@
         <artifactId>swagger-jaxrs</artifactId>
         <version>${version.io.swagger}</version>
       </dependency>
-
-      <!-- Transliteration -->
       <dependency>
-        <groupId>com.ibm.icu</groupId>
+        <groupId>com.ibm.icu</groupId> <!-- Transliteration/utf8 character comparisons, etc -->
         <artifactId>icu4j</artifactId>
         <version>${version.com.ibm.icu4j}</version>
       </dependency>
-
+      <dependency>
+        <groupId>com.icegreen</groupId>
+        <artifactId>greenmail-junit4</artifactId>
+        <version>${version.com.icegreen.greenmail}</version>
+      </dependency>
       <!-- Test -->
       <dependency>
         <groupId>junit</groupId>
@@ -924,6 +966,11 @@
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-assertj</artifactId>
         <version>${version.net.javacrumbs.json-unit}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${version.org.junit.jupiter}</version>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
