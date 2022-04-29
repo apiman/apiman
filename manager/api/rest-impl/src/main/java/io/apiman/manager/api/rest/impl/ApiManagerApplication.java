@@ -21,7 +21,6 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
 import io.apiman.manager.api.providers.JacksonObjectMapperProvider;
-// import io.apiman.manager.api.providers.eager.EagerProvider;
 import io.apiman.manager.api.rest.exceptions.mappers.BeanValidationExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.IllegalArgumentExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
@@ -67,7 +66,6 @@ public class ApiManagerApplication extends Application {
         beanConfig.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs.");
         beanConfig.setScan(true);
 
-        classes.add(ApiResourceImpl.class);
         classes.add(SystemResourceImpl.class);
         classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);

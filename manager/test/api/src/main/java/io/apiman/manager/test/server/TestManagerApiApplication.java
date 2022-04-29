@@ -20,7 +20,6 @@ import io.apiman.manager.api.rest.exceptions.mappers.IllegalArgumentExceptionMap
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.rest.impl.ActionResourceImpl;
 import io.apiman.manager.api.rest.impl.ApiManagerApplication;
-import io.apiman.manager.api.rest.impl.ApiResourceImpl;
 import io.apiman.manager.api.rest.impl.BlobResourceImpl;
 import io.apiman.manager.api.rest.impl.DeveloperPortalResourceImpl;
 import io.apiman.manager.api.rest.impl.DeveloperResourceImpl;
@@ -54,7 +53,6 @@ public class TestManagerApiApplication extends ApiManagerApplication {
      * Constructor.
      */
     public TestManagerApiApplication() {
-        classes.add(ApiResourceImpl.class);
         classes.add(SystemResourceImpl.class);
         classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);
