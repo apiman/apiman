@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 25/03/2022, 11:58
+-- Ran at: 29/04/2022, 13:18
 -- Against: sa@offline:h2?version=1.4.199&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/h2/databasechangelog.csv
 -- Liquibase version: 4.6.2
 -- *********************************************************************
@@ -290,12 +290,6 @@ CREATE TABLE notification_types (type VARCHAR(255) NOT NULL, description VARCHAR
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-11::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE notifications (id BIGINT AUTO_INCREMENT NOT NULL, category VARCHAR(255) NOT NULL, created_on TIMESTAMP, modified_on TIMESTAMP, payload JSON NOT NULL, reason VARCHAR(255) NOT NULL, reason_message VARCHAR(255) NOT NULL, recipient VARCHAR(255) NOT NULL, source VARCHAR(255) NOT NULL, status VARCHAR(255) NOT NULL, CONSTRAINT notificationsPK PRIMARY KEY (id));
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-12::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_plans ADD expose_in_portal BOOLEAN NOT NULL;
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-13::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_versions ADD expose_in_portal BOOLEAN NOT NULL;
-
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-14::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE api_versions ADD extended_description CLOB;
 
@@ -328,9 +322,6 @@ ALTER TABLE plugins ADD CONSTRAINT UKofbok9ushig9vviq01dnu11x UNIQUE (group_id, 
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-24::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE notification_preferences ADD CONSTRAINT UserAllowedOnlyOneOfEachNotificationType UNIQUE (user_id, type);
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-25::msavy marc@blackparrotlabs.io (generated)
-CREATE UNIQUE INDEX IX_null ON api_plans(api_version_id, expose_in_portal, plan_id, requires_approval, version);
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-26::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE notification_category_preferences ADD CONSTRAINT FKaq4x0n83d83xevui0ctqwdgbi FOREIGN KEY (NotificationPreferenceEntity_id) REFERENCES notification_preferences (id);
@@ -383,35 +374,28 @@ DROP TABLE notification_types;
 -- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646232783603-7::msavy (generated)
 ALTER TABLE notification_preferences ADD CONSTRAINT FKt9qjvmcl36i14utm5uptyqg84 FOREIGN KEY (user_id) REFERENCES users (username);
 
--- Changeset src/main/liquibase/current/xxxx.xml::drop-constraints-on-old-expose-in-portal::msavy
-DROP INDEX IX_null;
-
--- Changeset src/main/liquibase/current/xxxx.xml::1647015740776-8::msavy (generated)
-ALTER TABLE api_plans DROP COLUMN expose_in_portal;
-
-ALTER TABLE api_versions DROP COLUMN expose_in_portal;
-
+-- Changeset src/main/liquibase/current/20220330-discoverability.xml::1647015740776-8::msavy (generated)
 ALTER TABLE api_plans ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS';
 
 ALTER TABLE api_versions ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS';
 
--- Changeset src/main/liquibase/current/xxxx.xml::1646489262610-4::msavy (generated)
+-- Changeset src/main/liquibase/current/20220330-discoverability.xml::1646489262610-4::msavy (generated)
 CREATE TABLE discoverability (id VARCHAR(255) NOT NULL, org_id VARCHAR(255), api_id VARCHAR(255), api_version VARCHAR(255), plan_id VARCHAR(255), plan_version VARCHAR(255), discoverability VARCHAR(255), CONSTRAINT discoverabilityPK PRIMARY KEY (id));
 
 CREATE INDEX api_plan_discoverability_index ON discoverability(org_id, api_id, api_version, plan_id, plan_version);
 
 CREATE INDEX api_version_discoverability_index ON discoverability(org_id, api_id, api_version);
 
--- Changeset src/main/liquibase/current/xxxx.xml::discoverability-view-trigger::msavy
+-- Changeset src/main/liquibase/current/20220330-discoverability.xml::discoverability-view-trigger::msavy
 -- A hand-rolled materialized view that synchronises changes to 'discoverability' on `api_plans` and `api_versions` to `discoverability`
 --             This enables very efficient search without performing multiple joins, plus avoids significantly complicating queries by having to
 --             reference all different locations that `discoverability` can be set.
---
+-- 
 --             Plausibly we may need to add additional location(s) in future such as `organization`, which should be mostly copy-and-paste.
---
+-- 
 --             A nice alternative to this would be CDC with something like Debezium, but that requires the DB to have been set up properly (sometimes
 --             including special plugins), which makes the deployment more complicated and difficult.
---
+-- 
 --             Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
 --             materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
 -- API Plans

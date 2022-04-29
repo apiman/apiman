@@ -54,5 +54,6 @@
         <sqlFile dbms="postgresql" path="liquibase/current/discoverability-2022-03-30/triggers.postgres.sql"/>
         <sqlFile dbms="oracle" path="liquibase/current/discoverability-2022-03-30/triggers.oracle.sql"/>
         <sqlFile dbms="mariadb,mysql" path="liquibase/current/discoverability-2022-03-30/triggers.mysql.sql"/>
+        <sqlFile dbms="mssql" path="liquibase/current/discoverability-2022-03-30/triggers.mssql.sql"/>
     </changeSet>
 </databaseChangeLog>

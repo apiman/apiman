@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 11/03/2022, 16:36
+-- Ran at: 29/04/2022, 13:23
 -- Against: apiman@offline:mssql?version=15&caseSensitive=true&catalog=apiman&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/mssql/databasechangelog.csv
 -- Liquibase version: 4.6.2
 -- *********************************************************************
@@ -378,14 +378,6 @@ GO
 CREATE TABLE notifications (id bigint IDENTITY (1, 1) NOT NULL, category varchar(255) NOT NULL, created_on datetime2, modified_on datetime2, payload JSON NOT NULL, reason varchar(255) NOT NULL, reason_message varchar(255) NOT NULL, recipient varchar(255) NOT NULL, source varchar(255) NOT NULL, status varchar(255) NOT NULL, CONSTRAINT notificationsPK PRIMARY KEY (id))
 GO
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-12::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_plans ADD expose_in_portal bit NOT NULL
-GO
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-13::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_versions ADD expose_in_portal bit NOT NULL
-GO
-
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-14::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE api_versions ADD extended_description nvarchar(MAX)
 GO
@@ -428,10 +420,6 @@ GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-24::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE notification_preferences ADD CONSTRAINT UserAllowedOnlyOneOfEachNotificationType UNIQUE (user_id, type)
-GO
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-25::msavy marc@blackparrotlabs.io (generated)
-CREATE UNIQUE NONCLUSTERED INDEX IX_null ON api_plans(api_version_id, expose_in_portal, plan_id, requires_approval, version)
 GO
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-26::msavy marc@blackparrotlabs.io (generated)
@@ -502,32 +490,168 @@ GO
 ALTER TABLE notification_preferences ADD CONSTRAINT FKt9qjvmcl36i14utm5uptyqg84 FOREIGN KEY (user_id) REFERENCES users (username)
 GO
 
--- Changeset src/main/liquibase/current/xxxx.xml::drop-constraints-on-old-expose-in-portal::msavy
-DROP INDEX IX_null ON api_plans
+-- Changeset src/main/liquibase/current/20220330-discoverability.xml::1647015740776-8::msavy (generated)
+ALTER TABLE api_plans ADD discoverability varchar(255) CONSTRAINT DF_api_plans_discoverability DEFAULT 'ORG_MEMBERS'
 GO
 
--- Changeset src/main/liquibase/current/xxxx.xml::1647015740776-8::msavy (generated)
-DECLARE @sql [nvarchar](MAX)
-SELECT @sql = N'ALTER TABLE api_plans DROP CONSTRAINT ' + QUOTENAME([df].[name]) FROM [sys].[columns] AS [c] INNER JOIN [sys].[default_constraints] AS [df] ON [df].[object_id] = [c].[default_object_id] WHERE [c].[object_id] = OBJECT_ID(N'api_plans') AND [c].[name] = N'expose_in_portal'
-EXEC sp_executesql @sql
+ALTER TABLE api_versions ADD discoverability varchar(255) CONSTRAINT DF_api_versions_discoverability DEFAULT 'ORG_MEMBERS'
 GO
 
-ALTER TABLE api_plans DROP COLUMN expose_in_portal
+-- Changeset src/main/liquibase/current/20220330-discoverability.xml::1646489262610-4::msavy (generated)
+CREATE TABLE discoverability (id varchar(255) NOT NULL, org_id varchar(255), api_id varchar(255), api_version varchar(255), plan_id varchar(255), plan_version varchar(255), discoverability varchar(255), CONSTRAINT discoverabilityPK PRIMARY KEY (id))
 GO
 
-DECLARE @sql [nvarchar](MAX)
-SELECT @sql = N'ALTER TABLE api_versions DROP CONSTRAINT ' + QUOTENAME([df].[name]) FROM [sys].[columns] AS [c] INNER JOIN [sys].[default_constraints] AS [df] ON [df].[object_id] = [c].[default_object_id] WHERE [c].[object_id] = OBJECT_ID(N'api_versions') AND [c].[name] = N'expose_in_portal'
-EXEC sp_executesql @sql
+CREATE NONCLUSTERED INDEX api_plan_discoverability_index ON discoverability(org_id, api_id, api_version, plan_id, plan_version)
 GO
 
-ALTER TABLE api_versions DROP COLUMN expose_in_portal
+CREATE NONCLUSTERED INDEX api_version_discoverability_index ON discoverability(org_id, api_id, api_version)
 GO
 
--- Changeset src/main/liquibase/current/xxxx.xml::1646489262610-4::msavy (generated)
-CREATE TABLE discoverability (id varchar(255) NOT NULL, api_id varchar(255), api_version_id bigint, discoverability varchar(255), org_id varchar(255), plan_id varchar(255), plan_version_id bigint, CONSTRAINT discoverabilityPK PRIMARY KEY (id))
+-- Changeset src/main/liquibase/current/20220330-discoverability.xml::discoverability-view-trigger::msavy
+-- A hand-rolled materialized view that synchronises changes to 'discoverability' on `api_plans` and `api_versions` to `discoverability`
+--             This enables very efficient search without performing multiple joins, plus avoids significantly complicating queries by having to
+--             reference all different locations that `discoverability` can be set.
+--
+--             Plausibly we may need to add additional location(s) in future such as `organization`, which should be mostly copy-and-paste.
+--
+--             A nice alternative to this would be CDC with something like Debezium, but that requires the DB to have been set up properly (sometimes
+--             including special plugins), which makes the deployment more complicated and difficult.
+--
+--             Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
+--             materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
+-- ApiPlan
+CREATE TRIGGER insert_apiplan_into_discoverability
+    ON api_plans AFTER INSERT
+    AS
+BEGIN
+    WITH Api_Version_CTE (api_org_id, api_id, api_version)
+    AS
+    (
+        SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+        FROM api_versions av, inserted
+        WHERE av.id = inserted.api_version_id
+    )
+    INSERT INTO discoverability(id, org_id, api_id, api_version, plan_id, plan_version, discoverability)
+    SELECT
+        CONCAT_WS(':',
+            Api_Version_CTE.api_org_id,
+            Api_Version_CTE.api_id,
+            Api_Version_CTE.api_version,
+            inserted.plan_id,
+            inserted.version
+        ),
+        Api_Version_CTE.api_org_id,
+        Api_Version_CTE.api_id,
+        Api_Version_CTE.api_version,
+        inserted.plan_id,
+        inserted.version,
+        inserted.discoverability
+    FROM Api_Version_CTE, inserted
 GO
 
--- Changeset src/main/liquibase/current/xxxx.xml::1646489262610-12::msavy (generated)
-ALTER TABLE api_plans ADD CONSTRAINT FK4l9jtg7k49arpmodilny0d87b FOREIGN KEY (api_version_id) REFERENCES discoverability (api_version_id)
+END
+GO
+
+CREATE TRIGGER update_apiplan_into_discoverability
+    ON api_plans AFTER UPDATE
+    AS
+BEGIN
+    WITH Api_Version_CTE (api_org_id, api_id, api_version)
+    AS (
+        SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+        FROM api_versions av, inserted
+        WHERE av.id = inserted.api_version_id
+    )
+    UPDATE discoverability
+    SET org_id = Api_Version_CTE.api_org_id,
+        api_id = Api_Version_CTE.api_id,
+        api_version = Api_Version_CTE.api_version,
+        plan_id = inserted.plan_id,
+        plan_version = inserted.version,
+        discoverability = inserted.discoverability
+    FROM Api_Version_CTE, discoverability, inserted
+    WHERE id = CONCAT_WS(':',
+        Api_Version_CTE.api_org_id,
+        Api_Version_CTE.api_id,
+        Api_Version_CTE.api_version,
+        inserted.plan_id,
+        inserted.version
+    )
+GO
+
+END
+GO
+
+CREATE TRIGGER api_plan_discoverability_trigger_delete
+    ON api_plans AFTER DELETE
+    AS
+BEGIN
+    WITH Api_Version_CTE (api_org_id, api_id, api_version)
+    AS
+    (
+        SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+        FROM api_versions av, deleted
+        WHERE av.id = deleted.api_version_id
+    )
+    DELETE d
+    FROM discoverability d, Api_Version_CTE, deleted
+    WHERE d.id = CONCAT_WS(':',
+        Api_Version_CTE.api_org_id,
+        Api_Version_CTE.api_id,
+        Api_Version_CTE.api_version,
+        deleted.plan_id,
+        deleted.version
+    )
+GO
+
+END
+GO
+
+-- ApiVersion
+CREATE TRIGGER insert_apiversion_into_discoverability
+    ON api_versions AFTER INSERT
+    AS
+BEGIN
+    INSERT INTO discoverability(id, org_id, api_id, api_version, plan_id, plan_version, discoverability)
+    SELECT
+        CONCAT_WS(':', inserted.api_org_id, inserted.api_id, inserted.version),
+        inserted.api_org_id,
+        inserted.api_id,
+        inserted.version,
+        NULL,
+        NULL,
+        inserted.discoverability
+    FROM inserted
+END
+GO
+
+CREATE TRIGGER update_apiversion_into_discoverability
+    ON api_versions AFTER INSERT
+    AS
+BEGIN
+    UPDATE discoverability
+    SET org_id = inserted.api_org_id,
+        api_id = inserted.api_id,
+        api_version = inserted.version,
+        plan_id = NULL,
+        plan_version = NULL,
+        discoverability = inserted.discoverability
+    FROM inserted
+    WHERE id = CONCAT_WS(':', inserted.api_org_id, inserted.api_id, inserted.version)
+GO
+
+END
+GO
+
+CREATE TRIGGER delete_apiversion_from_discoverability
+    ON api_versions AFTER DELETE
+    AS
+BEGIN
+    DELETE d
+    FROM discoverability d, deleted
+    WHERE d.id = CONCAT_WS(':', deleted.api_org_id, deleted.api_id, deleted.version)
+GO
+
+END
 GO
 

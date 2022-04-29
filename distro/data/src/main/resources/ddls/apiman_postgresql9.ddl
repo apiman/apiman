@@ -2,7 +2,7 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 25/03/2022, 11:58
+-- Ran at: 29/04/2022, 13:18
 -- Against: apiman@offline:postgresql?version=9.6.23&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/postgresql/databasechangelog.csv
 -- Liquibase version: 4.6.2
 -- *********************************************************************
@@ -326,12 +326,6 @@ CREATE TABLE notification_types (type VARCHAR(255) NOT NULL, description VARCHAR
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-11::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE notifications (id BIGSERIAL NOT NULL, category VARCHAR(255) NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE, modified_on TIMESTAMP WITHOUT TIME ZONE, payload JSON NOT NULL, reason VARCHAR(255) NOT NULL, reason_message VARCHAR(255) NOT NULL, recipient VARCHAR(255) NOT NULL, source VARCHAR(255) NOT NULL, status VARCHAR(255) NOT NULL, CONSTRAINT "notificationsPK" PRIMARY KEY (id));
 
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-12::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_plans ADD expose_in_portal BOOLEAN NOT NULL;
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-13::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_versions ADD expose_in_portal BOOLEAN NOT NULL;
-
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-14::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE api_versions ADD extended_description TEXT;
 
@@ -364,9 +358,6 @@ ALTER TABLE plugins ADD CONSTRAINT "UKofbok9ushig9vviq01dnu11x" UNIQUE (group_id
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-24::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE notification_preferences ADD CONSTRAINT "UserAllowedOnlyOneOfEachNotificationType" UNIQUE (user_id, type);
-
--- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-25::msavy marc@blackparrotlabs.io (generated)
-CREATE UNIQUE INDEX "IX_null" ON api_plans(api_version_id, expose_in_portal, plan_id, requires_approval, version);
 
 -- Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-26::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE notification_category_preferences ADD CONSTRAINT "FKaq4x0n83d83xevui0ctqwdgbi" FOREIGN KEY ("NotificationPreferenceEntity_id") REFERENCES notification_preferences (id);
@@ -419,39 +410,33 @@ DROP TABLE notification_types;
 -- Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646232783603-7::msavy (generated)
 ALTER TABLE notification_preferences ADD CONSTRAINT "FKt9qjvmcl36i14utm5uptyqg84" FOREIGN KEY (user_id) REFERENCES users (username);
 
--- Changeset src/main/liquibase/current/xxxx.xml::drop-constraints-on-old-expose-in-portal::msavy
-DROP INDEX "IX_null";
-
--- Changeset src/main/liquibase/current/xxxx.xml::1647015740776-8::msavy (generated)
-ALTER TABLE api_plans DROP COLUMN expose_in_portal;
-
-ALTER TABLE api_versions DROP COLUMN expose_in_portal;
-
+-- Changeset src/main/liquibase/current/20220330-discoverability.xml::1647015740776-8::msavy (generated)
 ALTER TABLE api_plans ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS';
 
 ALTER TABLE api_versions ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS';
 
--- Changeset src/main/liquibase/current/xxxx.xml::1646489262610-4::msavy (generated)
+-- Changeset src/main/liquibase/current/20220330-discoverability.xml::1646489262610-4::msavy (generated)
 CREATE TABLE discoverability (id VARCHAR(255) NOT NULL, org_id VARCHAR(255), api_id VARCHAR(255), api_version VARCHAR(255), plan_id VARCHAR(255), plan_version VARCHAR(255), discoverability VARCHAR(255), CONSTRAINT "discoverabilityPK" PRIMARY KEY (id));
 
 CREATE INDEX api_plan_discoverability_index ON discoverability(org_id, api_id, api_version, plan_id, plan_version);
 
 CREATE INDEX api_version_discoverability_index ON discoverability(org_id, api_id, api_version);
 
--- Changeset src/main/liquibase/current/xxxx.xml::discoverability-view-trigger::msavy
+-- Changeset src/main/liquibase/current/20220330-discoverability.xml::discoverability-view-trigger::msavy
 -- A hand-rolled materialized view that synchronises changes to 'discoverability' on `api_plans` and `api_versions` to `discoverability`
 --             This enables very efficient search without performing multiple joins, plus avoids significantly complicating queries by having to
 --             reference all different locations that `discoverability` can be set.
---
+-- 
 --             Plausibly we may need to add additional location(s) in future such as `organization`, which should be mostly copy-and-paste.
---
+-- 
 --             A nice alternative to this would be CDC with something like Debezium, but that requires the DB to have been set up properly (sometimes
 --             including special plugins), which makes the deployment more complicated and difficult.
---
+-- 
 --             Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
 --             materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
--- Generic procedures for auto-updating the Discoverability view (a manually orchestrated Materialized View).
--- Database-specific mechanisms are needed for the trigger itself, which calls down onto these as needed.
+-- Trigger functions
+-- Only a trigger function can be attached to a trigger, so we need this as an intermediary before we're allowed to call onto the the generic function we want
+-- Reminder: To work around DdlParser.java limitations, multiline functions should have $$ as last characters of FIRST line and first characters of LAST line.
 
 -- ApiPlan
 ---- Insert
@@ -464,21 +449,21 @@ CREATE PROCEDURE insert_apiplan_into_discoverability(api_plans) AS $$
         WHERE av.id = $1.api_version_id
     )
     INSERT INTO discoverability(id, org_id, api_id, api_version, plan_id, plan_version, discoverability)
-SELECT
-    CONCAT_WS(':',
-              Api_Version_CTE.api_org_id,
-              Api_Version_CTE.api_id,
-              Api_Version_CTE.api_version,
-              $1.plan_id,
-              $1.version
-        ),
-    Api_Version_CTE.api_org_id,
-    Api_Version_CTE.api_id,
-    Api_Version_CTE.api_version,
-    $1.plan_id,
-    $1.version,
-    $1.discoverability
-FROM Api_Version_CTE
+    SELECT
+        CONCAT_WS(':',
+                  Api_Version_CTE.api_org_id,
+                  Api_Version_CTE.api_id,
+                  Api_Version_CTE.api_version,
+                  $1.plan_id,
+                  $1.version
+            ),
+        Api_Version_CTE.api_org_id,
+        Api_Version_CTE.api_id,
+        Api_Version_CTE.api_version,
+        $1.plan_id,
+        $1.version,
+        $1.discoverability
+    FROM Api_Version_CTE
 $$ LANGUAGE SQL;
 
 ---- Update
@@ -490,7 +475,7 @@ CREATE PROCEDURE update_apiplan_into_discoverability(api_plans) AS $$
         FROM api_versions av
         WHERE av.id = $1.api_version_id
     )
-UPDATE discoverability
+    UPDATE discoverability
     SET (org_id, api_id, api_version, plan_id, plan_version, discoverability) = (
         Api_Version_CTE.api_org_id,
         Api_Version_CTE.api_id,
@@ -527,6 +512,7 @@ CREATE PROCEDURE delete_apiplan_from_discoverability(api_plans) AS $$
         $1.plan_id,
         $1.version
     );
+
 $$ LANGUAGE SQL;
 
 -- ApiVersion
@@ -542,6 +528,7 @@ CREATE PROCEDURE insert_apiversion_into_discoverability(api_versions) AS $$
         NULL,
         $1.discoverability
     );
+
 $$ LANGUAGE SQL;
 
 ---- Update
@@ -556,16 +543,14 @@ CREATE PROCEDURE update_apiversion_into_discoverability(api_versions) AS $$
          $1.discoverability
     )
     WHERE id = CONCAT_WS(':', $1.api_org_id, $1.api_id, $1.version);
+
 $$ LANGUAGE SQL;
 
 ---- Delete
 CREATE PROCEDURE delete_apiversion_from_discoverability(api_versions) AS $$
     DELETE FROM discoverability d WHERE d.id = CONCAT_WS(':', $1.api_org_id, $1.api_id, $1.version);
-$$ LANGUAGE SQL;
 
--- Trigger functions
--- Only a trigger function can be attached to a trigger, so we need this as an intermediary before we're allowed to call onto the the generic function we want
--- Reminder: To work around DdlParser.java limitations, multiline functions should have $$ as last characters of FIRST line and first characters of LAST line.
+$$ LANGUAGE SQL;
 
 -- API Plans
 CREATE OR REPLACE FUNCTION api_plan_discoverability_trigger_func() RETURNS TRIGGER LANGUAGE plpgsql AS $$
