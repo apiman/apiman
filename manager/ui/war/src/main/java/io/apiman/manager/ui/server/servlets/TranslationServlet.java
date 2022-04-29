@@ -81,6 +81,8 @@ public class TranslationServlet extends AbstractUIServlet {
                     // If no language tag, assume EN.
                     languageTag = "en";
                 }
+                // As we're not using any of the in-built methods to read the bundle from the classpath, the locale field will be null (resulting in 'und' Locale).
+                // Above, we parse the language tag from the filename ourselves; below, we override the #getLocale method to return a valid locale.
                 PropertyResourceBundle bundle = new PropertyResourceBundle(new FileReader(propFilePath.toFile())) {
                     @Override
                     public Locale getLocale() {
