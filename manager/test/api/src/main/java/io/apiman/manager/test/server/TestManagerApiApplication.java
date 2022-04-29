@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.test.server;
 
+import io.apiman.manager.api.rest.exceptions.mappers.BeanValidationExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.IllegalArgumentExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.rest.impl.ActionResourceImpl;
@@ -28,6 +29,7 @@ import io.apiman.manager.api.rest.impl.GatewayResourceImpl;
 import io.apiman.manager.api.rest.impl.OrganizationResourceImpl;
 import io.apiman.manager.api.rest.impl.PluginResourceImpl;
 import io.apiman.manager.api.rest.impl.PolicyDefinitionResourceImpl;
+import io.apiman.manager.api.rest.impl.ProtectedDeveloperPortalResourceWrapper;
 import io.apiman.manager.api.rest.impl.RoleResourceImpl;
 import io.apiman.manager.api.rest.impl.SearchResourceImpl;
 import io.apiman.manager.api.rest.impl.SystemResourceImpl;
@@ -65,10 +67,11 @@ public class TestManagerApiApplication extends ApiManagerApplication {
         classes.add(BlobResourceImpl.class);
         classes.add(EventResourceImpl.class);
         classes.add(DeveloperPortalResourceImpl.class);
+        classes.add(ProtectedDeveloperPortalResourceWrapper.class);
 
         classes.add(RestExceptionMapper.class);
         classes.add(IllegalArgumentExceptionMapper.class);
-
+        classes.add(BeanValidationExceptionMapper.class);
     }
 
     @Override

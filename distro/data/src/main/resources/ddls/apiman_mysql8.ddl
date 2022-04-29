@@ -2,7 +2,7 @@
 --  Update Database Script
 --  *********************************************************************
 --  Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
---  Ran at: 02/03/2022, 15:15
+--  Ran at: 29/04/2022, 13:18
 --  Against: apiman@offline:mysql?version=8&caseSensitive=true&catalog=apiman&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/mysql/databasechangelog.csv
 --  Liquibase version: 4.6.2
 --  *********************************************************************
@@ -288,12 +288,6 @@ CREATE TABLE notification_types (type VARCHAR(255) NOT NULL, `description` VARCH
 --  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-11::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE notifications (id BIGINT AUTO_INCREMENT NOT NULL, category VARCHAR(255) NOT NULL, created_on timestamp NULL, modified_on timestamp NULL, payload JSON NOT NULL, reason VARCHAR(255) NOT NULL, reason_message VARCHAR(255) NOT NULL, recipient VARCHAR(255) NOT NULL, source VARCHAR(255) NOT NULL, status VARCHAR(255) NOT NULL, CONSTRAINT notificationsPK PRIMARY KEY (id));
 
---  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-12::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_plans ADD expose_in_portal BIT(1) NOT NULL;
-
---  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-13::msavy marc@blackparrotlabs.io (generated)
-ALTER TABLE api_versions ADD expose_in_portal BIT(1) NOT NULL;
-
 --  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-14::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE api_versions ADD extended_description LONGTEXT CHARACTER SET utf8 NULL;
 
@@ -326,9 +320,6 @@ ALTER TABLE plugins ADD CONSTRAINT UKofbok9ushig9vviq01dnu11x UNIQUE (group_id, 
 
 --  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-24::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE notification_preferences ADD CONSTRAINT UserAllowedOnlyOneOfEachNotificationType UNIQUE (user_id, type);
-
---  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-25::msavy marc@blackparrotlabs.io (generated)
-CREATE UNIQUE INDEX IX_null ON api_plans(api_version_id, expose_in_portal, plan_id, requires_approval, version);
 
 --  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-26::msavy marc@blackparrotlabs.io (generated)
 ALTER TABLE notification_category_preferences ADD CONSTRAINT FKaq4x0n83d83xevui0ctqwdgbi FOREIGN KEY (NotificationPreferenceEntity_id) REFERENCES notification_preferences (id);
@@ -380,4 +371,138 @@ DROP TABLE notification_types;
 
 --  Changeset src/main/liquibase/current/20220228-rework-notification-filtering.xml::1646232783603-7::msavy (generated)
 ALTER TABLE notification_preferences ADD CONSTRAINT FKt9qjvmcl36i14utm5uptyqg84 FOREIGN KEY (user_id) REFERENCES users (username);
+
+--  Changeset src/main/liquibase/current/20220330-discoverability.xml::1647015740776-8::msavy (generated)
+ALTER TABLE api_plans ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS' NULL;
+
+ALTER TABLE api_versions ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS' NULL;
+
+--  Changeset src/main/liquibase/current/20220330-discoverability.xml::1646489262610-4::msavy (generated)
+CREATE TABLE discoverability (id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NULL, api_id VARCHAR(255) NULL, api_version VARCHAR(255) NULL, plan_id VARCHAR(255) NULL, plan_version VARCHAR(255) NULL, discoverability VARCHAR(255) NULL, CONSTRAINT discoverabilityPK PRIMARY KEY (id));
+
+CREATE INDEX api_plan_discoverability_index ON discoverability(org_id, api_id, api_version, plan_id, plan_version);
+
+CREATE INDEX api_version_discoverability_index ON discoverability(org_id, api_id, api_version);
+
+--  Changeset src/main/liquibase/current/20220330-discoverability.xml::discoverability-view-trigger::msavy
+--  A hand-rolled materialized view that synchronises changes to 'discoverability' on `api_plans` and `api_versions` to `discoverability`
+--              This enables very efficient search without performing multiple joins, plus avoids significantly complicating queries by having to
+--              reference all different locations that `discoverability` can be set.
+--  
+--              Plausibly we may need to add additional location(s) in future such as `organization`, which should be mostly copy-and-paste.
+--  
+--              A nice alternative to this would be CDC with something like Debezium, but that requires the DB to have been set up properly (sometimes
+--              including special plugins), which makes the deployment more complicated and difficult.
+--  
+--              Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
+--              materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
+-- API Plans
+CREATE TRIGGER insert_apiplan_into_discoverability AFTER INSERT ON api_plans
+FOR EACH ROW BEGIN
+    INSERT INTO discoverability(id, org_id, api_id, api_version, plan_id, plan_version, discoverability)
+    WITH Api_Version_CTE (api_org_id, api_id, api_version)
+    AS
+    (
+        SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+        FROM api_versions av
+        WHERE av.id = NEW.api_version_id
+    )
+    SELECT
+        CONCAT_WS(':',
+            Api_Version_CTE.api_org_id,
+            Api_Version_CTE.api_id,
+            Api_Version_CTE.api_version,
+            NEW.plan_id,
+            NEW.version
+        ),
+        Api_Version_CTE.api_org_id,
+        Api_Version_CTE.api_id,
+        Api_Version_CTE.api_version,
+        NEW.plan_id,
+        NEW.version,
+        NEW.discoverability
+    FROM Api_Version_CTE;
+
+END;
+
+CREATE TRIGGER update_apiplan_into_discoverability AFTER UPDATE ON api_plans
+FOR EACH ROW BEGIN
+    WITH Api_Version_CTE (api_org_id, api_id, api_version)
+    AS (
+         SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+         FROM api_versions av
+         WHERE av.id = NEW.api_version_id
+    )
+    UPDATE discoverability
+    SET org_id = Api_Version_CTE.api_org_id,
+        api_id = Api_Version_CTE.api_id,
+        api_version = Api_Version_CTE.api_version,
+        plan_id = NEW.plan_id,
+        plan_version = NEW.version,
+        discoverability = NEW.discoverability
+    WHERE id = CONCAT_WS(':',
+        Api_Version_CTE.api_org_id,
+        Api_Version_CTE.api_id,
+        Api_Version_CTE.api_version,
+        NEW.plan_id,
+        NEW.version
+    );
+
+END;
+
+CREATE TRIGGER api_plan_discoverability_trigger_delete AFTER DELETE ON api_plans
+FOR EACH ROW
+    WITH Api_Version_CTE (api_org_id, api_id, api_version)
+    AS
+    (
+        SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+        FROM api_versions av
+        WHERE av.id = OLD.api_version_id
+    )
+    DELETE FROM discoverability
+    USING Api_Version_CTE, discoverability
+    WHERE discoverability.id = CONCAT_WS(':',
+        Api_Version_CTE.api_org_id,
+        Api_Version_CTE.api_id,
+        Api_Version_CTE.api_version,
+        OLD.plan_id,
+        OLD.version
+    );
+
+END;
+
+-- API Versions
+CREATE TRIGGER insert_apiversion_into_discoverability AFTER INSERT ON api_versions
+FOR EACH ROW BEGIN
+    INSERT INTO discoverability(id, org_id, api_id, api_version, plan_id, plan_version, discoverability)
+    VALUES (
+        CONCAT_WS(':', NEW.api_org_id, NEW.api_id, NEW.version),
+        NEW.api_org_id,
+        NEW.api_id,
+        NEW.version,
+        NULL,
+        NULL,
+        NEW.discoverability
+    );
+
+END;
+
+CREATE TRIGGER update_apiversion_into_discoverability AFTER UPDATE ON api_versions
+FOR EACH ROW BEGIN
+    UPDATE discoverability
+    SET org_id = NEW.api_org_id,
+        api_id = NEW.api_id,
+        api_version = NEW.version,
+        plan_id = NULL,
+        plan_version = NULL,
+        discoverability = NEW.discoverability
+    WHERE id = CONCAT_WS(':', NEW.api_org_id, NEW.api_id, NEW.version);
+
+END;
+
+CREATE TRIGGER delete_apiversion_from_discoverability AFTER DELETE ON api_versions
+FOR EACH ROW BEGIN
+    DELETE FROM discoverability d WHERE d.id = CONCAT_WS(':', OLD.api_org_id, OLD.api_id, OLD.version);
+
+END;
 

@@ -15,8 +15,6 @@
  */
 package io.apiman.manager.api.jpa;
 
-import java.sql.Types;
-
 import org.hibernate.dialect.PostgreSQL95Dialect;
 
 /**

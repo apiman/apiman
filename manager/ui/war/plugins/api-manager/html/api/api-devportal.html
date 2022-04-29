@@ -24,26 +24,11 @@
     <!-- Content -->
     <div class="col-md-10 apiman-entity-content">
       <div class="col-md-10">
-        <!-- Expose in Portal -->
-        <div class="title" apiman-i18n-key="dev-portal">Developer Portal</div>
         <div>
-          <span apiman-i18n-key="dev-portal-help">Publish this API version via the developer portal?</span>
-        </div>
-        <div style="padding: 8px; margin-bottom: 10px">
-          <input ng-model="data.apiVersion.exposeInPortal"
-                 type="checkbox"
-                 id="expose-in-portal">
-          <label for="expose-in-portal"
-                 apiman-i18n-key="export-in-portal"
-                 style="padding-left: 3px">Expose this API version in the developer portal</label>
-        </div>
-        <!-- /Expose in Portal -->
-
-        <div ng-show="data.apiVersion.exposeInPortal">
           <!-- Feature in Portal -->
-          <div class="title" apiman-i18n-key="dev-portal">Feature In Portal</div>
+          <div class="title" apiman-i18n-key="dev-portal">Feature In Developer Portal</div>
           <div>
-          <span apiman-i18n-key="feature-api-in-portal-help">Feature this API version in the developer portal?
+          <span apiman-i18n-key="feature-api-in-portal-help">Do you want to feature this API version in the developer portal?
             If selected, the API will appear as a default entry on the developer portal landing page.</span>
           </div>
           <div style="padding: 8px; margin-bottom: 10px">
@@ -84,24 +69,27 @@
                     <p class="card-text">{{ data.planSummaries[$index].planDescription }}</p>
                     <div>
                       <ul class="list-group list-group-flush">
-                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.exposeInPortal === true">&#9702; Plan <strong>is available</strong> in the developer portal</li>
-                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="!plan.exposeInPortal">&#9702; Plan is <strong>not available</strong> in the developer portal</li>
-                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.requiresApproval === true">&#9702; Developers <strong>require approval</strong> to complete sign up</li>
-                        <li style="max-width: max-content !important;" class="list-group-item"  ng-show="!plan.requiresApproval">&#9702; Developers <strong>do not require approval</strong> to complete sign up</li>
+                        <li style="max-width: max-content !important;" class="list-group-item">&#9702;  Plan <strong>is available</strong> to: {{ getDiscoverabilityDescription(plan.discoverability) }}</li>
+                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.discoverability !== 'PORTAL'">&#9702; Plan is <strong>not visible</strong> in the developer portal to anonymous users, but is visible to users who are logged-in with the correct permissions.</li>
+                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.requiresApproval === true">&#9702; Developers <strong>require approval</strong> to complete sign up.</li>
+                        <li style="max-width: max-content !important;" class="list-group-item"  ng-show="!plan.requiresApproval">&#9702; Developers <strong>do not require approval</strong> to complete sign up.</li>
                       </ul>
-                      <!-- Checkbox -- expose in portal -->
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" ng-model="plan.exposeInPortal" value="{{ plan.exposeInPortal }}" id="exposeInPortal-{{$index}}">
-                        <label class="form-check-label" for="exposeInPortal-{{$index}}">
-                          Expose in developer portal
-                        </label>
-                      </div>
                       <!-- Checkbox -- requires approval -->
-                      <div class="form-check">
+                      <div class="form-check px-4 pl-2">
                         <input class="form-check-input" type="checkbox" ng-model="plan.requiresApproval" value="{{ plan.requiresApproval }}" id="requiresApproval-{{$index}}">
                         <label class="form-check-label" for="requiresApproval-{{$index}}">
                           Requires approval
                         </label>
+                      </div>
+                      <hr/>
+                      <!-- Checkbox -- expose in portal -->
+                      <div class="form-check py-1 px-2">
+                        <apiman-discoverability-select
+                            on-discoverability-change="onDiscoverabilityChange"
+                            plan="plan"
+                            initial-value="plan.discoverability"
+                            class="w-100">
+                        </apiman-discoverability-select>
                       </div>
                     </div>
                   </div>
@@ -131,20 +119,17 @@
                 </div>
               </div>
             </div>
-              <!-- /image cropper and/or image -->
-              <!-- API version description markdown row -->
-              <div class="title" apiman-i18n-key="extended-api-description">Extended API Description</div>
-              <div>
-            <span apiman-i18n-key="extended-api-description-help">
+            <hr />
+            <!-- /image cropper and/or image -->
+            <!-- API version description markdown row -->
+            <div class="title" apiman-i18n-key="extended-api-description">Extended API Description</div>
+            <p apiman-i18n-key="extended-api-description-help">
               Provide a Markdown description of your API to help developers understand how to use your API.
-            </span>
-              </div>
-              <div id="editor"></div>
-              <!-- /row -->
-            </div>
-
-
+            </p>
+            <div id="editor"></div>
+            <!-- /row -->
           </div>
+        </div>
 
         <!-- save -->
         <div class="row">
@@ -168,12 +153,10 @@
           </div>
           <!-- /save -->
         </div>
-
-        </div>
       </div>
     </div>
-    <!-- /Content -->
   </div>
-</div> <!-- /container-pf-nav-pf-vertical container-fluid -->
+  <!-- /Content -->
+</div>
 </body>
 </html>

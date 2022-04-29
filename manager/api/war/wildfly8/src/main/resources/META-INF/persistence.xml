@@ -3,11 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 
-  <persistence-unit name="apiman-manager-api-jpa" transaction-type="JTA">
-    <jta-data-source>java:/apiman/datasources/apiman-manager</jta-data-source>
+  <persistence-unit name="apiman-manager-api-jpa" transaction-type="RESOURCE_LOCAL">
+<!--    <jta-data-source>java:/apiman/datasources/apiman-manager</jta-data-source>-->
     <class>io.apiman.manager.api.beans.idm.UserBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleMembershipBean</class>
+    <class>io.apiman.manager.api.beans.idm.DiscoverabilityEntity</class>
     <class>io.apiman.manager.api.beans.orgs.OrganizationBean</class>
     <class>io.apiman.manager.api.beans.clients.ClientBean</class>
     <class>io.apiman.manager.api.beans.clients.ClientVersionBean</class>
@@ -39,9 +40,10 @@
       <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.id.new_generator_mappings" value="true" />
       <property name="hibernate.order_updates" value="true"/>
-      <!-- TODO(msavy): Can we safely add batch optimiations here too? -->
+      <!-- TODO(msavy): Can we safely add batch optimisations here too? -->
       <property name="hibernate.connection.autocommit" value="false"/>
 <!--      <property name="hibernate.format_sql" value="true"/>-->
+      <property name="jboss.as.jpa.managed" value="false"/>
     </properties>
   </persistence-unit>
 

@@ -18,8 +18,6 @@ package io.apiman.manager.api.beans.search;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.BeanParam;
-import javax.ws.rs.QueryParam;
 
 /**
  * Generic search criteria used when searching for beans.

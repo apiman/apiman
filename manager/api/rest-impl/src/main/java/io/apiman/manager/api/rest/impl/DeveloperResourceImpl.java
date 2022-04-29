@@ -19,6 +19,7 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.DeveloperApiVersionBeanDto;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.developers.DeveloperMapper;
@@ -174,10 +175,10 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
     public List<DeveloperApiVersionBeanDto> getAllApiVersions(String id) throws DeveloperNotFoundException, NotAuthorizedException {
         securityContext.checkIfUserIsCurrentUser(id);
 
-        List<ApiVersionBean> apiVersionBeans = new ArrayList<>();
+        List<ApiVersionBeanDto> apiVersionBeans = new ArrayList<>();
         List<ContractSummaryBean> contracts = getAllClientContracts(id);
         for (ContractSummaryBean contract : contracts) {
-            ApiVersionBean apiVersion = apiService.getApiVersion(contract.getApiOrganizationId(), contract.getApiId(), contract.getApiVersion());
+            ApiVersionBeanDto apiVersion = apiService.getApiVersion(contract.getApiOrganizationId(), contract.getApiId(), contract.getApiVersion());
             if (securityContext.isAdmin()) {
                 apiVersionBeans.add(apiVersion);
             } else {
@@ -191,7 +192,7 @@ public class DeveloperResourceImpl implements IDeveloperResource, DataAccessUtil
 
     @Override
     public Response getPublicApiDefinition(String organizationId, String apiId, String version) {
-        ApiVersionBean apiVersion = apiService.getApiVersion(organizationId, apiId, version);
+        ApiVersionBeanDto apiVersion = apiService.getApiVersion(organizationId, apiId, version);
         if (apiVersion.isPublicAPI()) {
             ApiDefinitionStream apiDef = apiService.getApiDefinition(organizationId, apiId, version);
             return Response.ok()

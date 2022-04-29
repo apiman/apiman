@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Scheer PAS Schweiz AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.apiman.manager.api.beans.apis.dto;
 
 import io.apiman.manager.api.beans.apis.KeyValueTag;
@@ -6,16 +21,16 @@ import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import javax.persistence.Column;
+import java.util.StringJoiner;
 
 /**
- *
+ * API Bean DTO
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class ApiBeanDto {
-    private static final long serialVersionUID = 1526742536153467539L;
 
     private OrganizationBean organization;
     private String id;
@@ -25,7 +40,6 @@ public class ApiBeanDto {
     private String description;
     private Set<KeyValueTag> tags = new HashSet<>();
     private String createdBy;
-    @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
     private Integer numPublished;
 
@@ -111,5 +125,40 @@ public class ApiBeanDto {
     public ApiBeanDto setNumPublished(Integer numPublished) {
         this.numPublished = numPublished;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ApiBeanDto that = (ApiBeanDto) o;
+        return Objects.equals(organization, that.organization) && Objects.equals(id, that.id) && Objects.equals(name, that.name)
+                       && Objects.equals(image, that.image) && Objects.equals(description, that.description) && Objects.equals(tags, that.tags)
+                       && Objects.equals(createdBy, that.createdBy) && Objects.equals(createdOn, that.createdOn) && Objects.equals(numPublished,
+                that.numPublished);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(organization, id, name, image, description, tags, createdBy, createdOn, numPublished);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ApiBeanDto.class.getSimpleName() + "[", "]")
+                .add("organization=" + organization)
+                .add("id='" + id + "'")
+                .add("name='" + name + "'")
+                .add("image='" + image + "'")
+                .add("description='" + description + "'")
+                .add("tags=" + tags)
+                .add("createdBy='" + createdBy + "'")
+                .add("createdOn=" + createdOn)
+                .add("numPublished=" + numPublished)
+                .toString();
     }
 }

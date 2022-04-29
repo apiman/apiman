@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.StringJoiner;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +37,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PostPersist;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -191,10 +194,21 @@ public class ApiBean implements Serializable, Cloneable {
         this.numPublished = numPublished;
     }
 
+    /**
+     * Get the image blob ref for this API.
+     *
+     * To dereference this manually refer to IBlobStore.
+     *
+     * @see BlobReference
+     * @return get the blob ref.
+     */
     public String getImage() {
         return image;
     }
 
+    /**
+     * @param imageFileRef image's blob ref
+     */
     public void setImage(String imageFileRef) {
         this.image = imageFileRef;
     }
@@ -216,17 +230,20 @@ public class ApiBean implements Serializable, Cloneable {
         this.tags.remove(new KeyValueTag().setKey(key));
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
-    @SuppressWarnings("nls")
     public String toString() {
-        return "APIBean [organization=" + organization + ", id=" + id + ", name=" + name
-                + ", description=" + description + ", createdBy=" + createdBy + ", createdOn=" + createdOn
-                + "]";
+        return new StringJoiner(", ", ApiBean.class.getSimpleName() + "[", "]")
+                .add("organization=" + organization)
+                .add("id='" + id + "'")
+                .add("name='" + name + "'")
+                .add("image='" + image + "'")
+                .add("description='" + description + "'")
+                .add("createdBy='" + createdBy + "'")
+                .add("createdOn=" + createdOn)
+                .add("numPublished=" + numPublished)
+                .toString();
     }
-    
+
     /**
      * @see java.lang.Object#clone()
      */

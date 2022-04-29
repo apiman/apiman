@@ -1,12 +1,5 @@
-import { _module } from "../apimanPlugin";
-import {
-  ApiBean,
-  ApiPlanSummaryBean,
-  ApiVersionBean,
-  KeyValueTagDto,
-  UpdateApiBean,
-  UpdateApiVersionBean,
-} from "../model/api.model";
+import {_module} from "../apimanPlugin";
+import {ApiBean, ApiPlanSummaryBean, ApiVersionBean, Discoverability, KeyValueTagDto, UpdateApiBean, UpdateApiVersionBean,} from "../model/api.model";
 
 // CSS
 import 'prismjs/themes/prism.css'
@@ -21,12 +14,12 @@ import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin
 import 'prismjs';
 
 import Prism from "prismjs";
-import { Editor, EditorOptions } from "@toast-ui/editor";
-import { BlobRef } from "../model/blob.model";
+import {Editor, EditorOptions} from "@toast-ui/editor";
+import {BlobRef} from "../model/blob.model";
 import Cropper from "cropperjs/dist/cropper.esm";
 import "cropperjs/dist/cropper.css";
+import {remove as _remove} from "lodash-es";
 import angular = require("angular");
-import { remove as _remove } from "lodash-es";
 // Use CommonJS syntax for tui stuff
 const toast = require("@toast-ui/editor");
 const codeSyntaxHighlight = require("@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all");
@@ -46,6 +39,7 @@ export const DevPortalController = _module.controller("Apiman.DevPortalControlle
   "EntityStatusSvc",
   "DevPortalService",
   "BlobService",
+  "TranslationSvc",
   "Logger",
   "$interval",
   "$uibModal",
@@ -63,6 +57,7 @@ export const DevPortalController = _module.controller("Apiman.DevPortalControlle
       EntityStatusSvc,
       DevPortalService,
       BlobService,
+      TranslationSvc,
       Logger,
       $interval,
       $uibModal
@@ -116,6 +111,7 @@ export const DevPortalController = _module.controller("Apiman.DevPortalControlle
                 EntityStatusSvc,
                 DevPortalService,
                 BlobService,
+                TranslationSvc,
                 Logger,
                 $interval,
                 $uibModal,
@@ -144,6 +140,7 @@ function devPortalBusinessLogic(
     EntityStatusSvc,
     DevPortalService,
     BlobService,
+    TranslationSvc,
     Logger,
     $interval,
     $uibModal,
@@ -167,9 +164,11 @@ function devPortalBusinessLogic(
   $scope.updateFeaturedApi = invertFeaturedApi;
   $scope.openImageCropper = openImageCropperModal;
   $scope.getImageEndpoint = getImageEndpoint;
+  $scope.onDiscoverabilityChange = onDiscoverabilityChange;
+  $scope.getDiscoverabilityDescription = getDiscoverabilityDescription;
 
   // TUI Markdown editor. Will initialise
-  let markdownEditor: Editor = null;
+  let markdownEditor: Editor = initEditor();
 
   /** Start biz logic **/
 
@@ -182,20 +181,13 @@ function devPortalBusinessLogic(
         if (!angular.equals(oldValue, newValue)) {
           Logger.info("Dirty set to true {0} vs {1}", oldValue, newValue);
           $rootScope.isDirty = true;
-
-          if (newValue.exposeInPortal) {
-            Logger.info("Sending init to editor");
-            if (markdownEditor == null) {
-              initEditor();
-            }
-          }
         }
       },
       true
   );
 
   /** Markdown Editor **/
-  function initEditor(): void {
+  function initEditor(): Editor {
     const options: EditorOptions = {
       el: document.querySelector("#editor"),
       height: "500px",
@@ -220,7 +212,7 @@ function devPortalBusinessLogic(
       initialValue: ""
     };
 
-    markdownEditor = new toast(options);
+    const markdownEditor: Editor = new toast(options);
 
     if ($scope.data.apiVersion.extendedDescription) {
       Logger.info(
@@ -229,19 +221,16 @@ function devPortalBusinessLogic(
       );
       markdownEditor.setMarkdown($scope.data.apiVersion.extendedDescription, false);
     }
+
+    return markdownEditor;
   }
 
   // Dirty check the MD editor pane every 2 seconds (avoids excessive checking).
   const intervalPromise: Promise<any> = $interval(function () {
-    if ($scope.data.apiVersion.exposeInPortal) {
       editorDirtyCheck();
-    }
   }, 1000);
 
   const editorDirtyCheck = function (): void {
-    if (!markdownEditor) {
-      initEditor();
-    }
     let latestDescription = markdownEditor.getMarkdown();
     // If original description != latestDescription, and latest poll != previous poll
     if (normaliseString(dataClone.apiVersion.extendedDescription) !== normaliseString(latestDescription) &&
@@ -277,7 +266,7 @@ function devPortalBusinessLogic(
     const markdown: string = markdownEditor.getMarkdown();
     const updateApiVersionBean = {
       extendedDescription: markdown,
-      exposeInPortal: $scope.data.apiVersion.exposeInPortal,
+      publicDiscoverability: $scope.data.apiVersion.discoverability,
       plans: $scope.data.apiVersion.plans,
     } as UpdateApiVersionBean;
 
@@ -370,8 +359,7 @@ function devPortalBusinessLogic(
 
   function isFeaturedApi(apiBean: ApiBean): boolean {
     const tagsArray: KeyValueTagDto[] = apiBean.tags;
-    const answer = tagsArray.findIndex((elem: KeyValueTagDto) => elem.key === "featured") !== -1;
-    return answer;
+    return tagsArray.findIndex((elem: KeyValueTagDto) => elem.key === "featured") !== -1;
   }
 
   function normaliseString(str: string): string {
@@ -380,6 +368,21 @@ function devPortalBusinessLogic(
     } else {
       return str;
     }
+  }
+
+  function onDiscoverabilityChange(change): void {
+    change.plan.discoverability = change.level;
+  }
+
+  function getDiscoverabilityDescription(discoverability: Discoverability): string {
+    let descriptions: { [key: string]: string } = {
+      [Discoverability.ORG_MEMBERS]: TranslationSvc.translate('Discoverability.OrgMembers.Description'),
+      [Discoverability.FULL_PLATFORM_MEMBERS]: TranslationSvc.translate('Discoverability.FullPlatformMembers.Description'),
+      [Discoverability.ANONYMOUS]: "Anonymous API users", // Not currently used in UI
+      [Discoverability.PORTAL]: TranslationSvc.translate('Discoverability.Portal.Description'),
+    };
+    // We may get a null when a plan hasn't yet been attached, so show the default.
+    return descriptions[discoverability|| 'ORG_MEMBERS'];
   }
 }
 

@@ -397,5 +397,4 @@ public class OrganizationService implements DataAccessUtilMixin {
         }
         return organizationBean;
     }
-
 }

@@ -1,6 +1,6 @@
 package io.apiman.manager.api.beans.developers;
 
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -15,5 +15,5 @@ public interface DeveloperMapper {
 
     DeveloperMapper INSTANCE = Mappers.getMapper(DeveloperMapper.class);
 
-    DeveloperApiVersionBeanDto toDto(ApiVersionBean apiVersion);
+    DeveloperApiVersionBeanDto toDto(ApiVersionBeanDto apiVersion);
 }

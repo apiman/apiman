@@ -54,6 +54,7 @@ import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 import org.jdbi.v3.core.Jdbi;
+import org.testcontainers.shaded.org.bouncycastle.util.Arrays;
 
 /**
  * This class starts up an embedded Jetty test server so that integration tests
@@ -130,6 +131,7 @@ public class ManagerApiTestServer {
      */
     protected void preStart() throws Exception {
         if (ManagerTestUtils.getTestType() == TestType.jpa) {
+            TestUtil.setProperty("hibernate.hbm2ddl.import_files", "import.sql");
             TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
             TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");
             TestUtil.setProperty("apiman-manager.config.features.rest-response-should-contain-stacktraces", "true");
@@ -182,7 +184,9 @@ public class ManagerApiTestServer {
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
         ds.setPassword("");
-        ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1;");
+        ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1");
+        // Use this for trace level JDBC logging
+        // ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1;TRACE_LEVEL_SYSTEM_OUT=3");
         Connection connection = ds.getConnection();
         connection.close();
         System.out.println("DataSource created and bound to JNDI.");
@@ -287,9 +291,9 @@ public class ManagerApiTestServer {
         for (String [] userInfo : TestUsers.USERS) {
             String user = userInfo[0];
             String pwd = userInfo[1];
-            String[] roles = new String[] { "apiuser" };
+            String[] roles = userInfo[4].split(",");
             if (user.startsWith("admin")) {
-                roles = new String[] { "apiuser", "apiadmin"};
+                roles = Arrays.append(roles, "apiadmin");
             }
             userStore.addUser(user, Credential.getCredential(pwd), roles);
         }

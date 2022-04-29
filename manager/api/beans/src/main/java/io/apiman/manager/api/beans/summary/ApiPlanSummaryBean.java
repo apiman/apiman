@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.summary;
 
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
+
 import java.io.Serializable;
 
 /**
@@ -31,7 +33,7 @@ public class ApiPlanSummaryBean implements Serializable {
     private String planName;
     private String planDescription;
     private String version;
-    private Boolean exposeInPortal;
+    private DiscoverabilityLevel discoverability = DiscoverabilityLevel.ORG_MEMBERS;
     private Boolean requiresApproval;
 
     /**
@@ -99,12 +101,12 @@ public class ApiPlanSummaryBean implements Serializable {
         return this;
     }
 
-    public Boolean getExposeInPortal() {
-        return exposeInPortal;
+    public DiscoverabilityLevel getDiscoverability() {
+        return discoverability;
     }
 
-    public ApiPlanSummaryBean setExposeInPortal(Boolean exposeInPortal) {
-        this.exposeInPortal = exposeInPortal;
+    public ApiPlanSummaryBean setDiscoverability(DiscoverabilityLevel discoverability) {
+        this.discoverability = discoverability;
         return this;
     }
 
@@ -113,8 +115,19 @@ public class ApiPlanSummaryBean implements Serializable {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * @return the planDescription
      */
+    public String getPlanDescription() {
+        return planDescription;
+    }
+
+    /**
+     * @param planDescription the planDescription to set
+     */
+    public void setPlanDescription(String planDescription) {
+        this.planDescription = planDescription;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -123,9 +136,6 @@ public class ApiPlanSummaryBean implements Serializable {
         return result;
     }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -143,26 +153,8 @@ public class ApiPlanSummaryBean implements Serializable {
         return true;
     }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         return getPlanName() + "(" + version + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
-
-    /**
-     * @return the planDescription
-     */
-    public String getPlanDescription() {
-        return planDescription;
-    }
-
-    /**
-     * @param planDescription the planDescription to set
-     */
-    public void setPlanDescription(String planDescription) {
-        this.planDescription = planDescription;
-    }
-
 }

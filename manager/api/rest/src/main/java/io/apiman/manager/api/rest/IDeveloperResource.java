@@ -29,6 +29,7 @@ import io.apiman.manager.api.rest.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -47,6 +48,7 @@ import io.swagger.annotations.Api;
 @Path("/developers")
 @Api(tags = "Developers")
 @Deprecated(forRemoval = true)
+@RolesAllowed("devportaluser")
 public interface IDeveloperResource {
 
     /**
@@ -60,6 +62,7 @@ public interface IDeveloperResource {
     @GET
     @Path("apis")
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated(forRemoval = true)
     List<ApiVersionBean> getAllPublicApiVersions() throws NotAuthorizedException;
 
     /**
@@ -72,6 +75,7 @@ public interface IDeveloperResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated(forRemoval = true)
     List<DeveloperBean> getDevelopers() throws NotAuthorizedException;
 
     /**
@@ -87,6 +91,7 @@ public interface IDeveloperResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated(forRemoval = true)
     DeveloperBean create(DeveloperBean bean) throws InvalidNameException, NotAuthorizedException, DeveloperAlreadyExistsException;
 
     /**
@@ -102,6 +107,7 @@ public interface IDeveloperResource {
     @PUT
     @Path("{developerId}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Deprecated(forRemoval = true)
     void update(@PathParam("developerId") String id, UpdateDeveloperBean bean) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -118,6 +124,7 @@ public interface IDeveloperResource {
     @GET
     @Path("{developerId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated(forRemoval = true)
     DeveloperBean get(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -132,6 +139,7 @@ public interface IDeveloperResource {
      */
     @DELETE
     @Path("{developerId}")
+    @Deprecated(forRemoval = true)
     void delete(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -149,6 +157,7 @@ public interface IDeveloperResource {
     @GET
     @Path("{developerId}/clients")
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated(forRemoval = true)
     List<ClientVersionSummaryBean> getAllClientVersions(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -166,6 +175,7 @@ public interface IDeveloperResource {
     @GET
     @Path("{developerId}/contracts")
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated(forRemoval = true)
     List<ContractSummaryBean> getAllClientContracts(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -183,6 +193,7 @@ public interface IDeveloperResource {
     @GET
     @Path("{developerId}/apis")
     @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated(forRemoval = true)
     List<DeveloperApiVersionBeanDto> getAllApiVersions(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -202,6 +213,7 @@ public interface IDeveloperResource {
     @GET
     @Path("{developerId}/organizations/{organizationId}/apis/{apiId}/versions/{version}/definition")
     @Produces({MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml"})
+    @Deprecated(forRemoval = true)
     Response getApiDefinition(@PathParam("developerId") String developerId,
                               @PathParam("organizationId") String organizationId,
                               @PathParam("apiId") String apiId,
@@ -223,6 +235,7 @@ public interface IDeveloperResource {
     @GET
     @Path("/organizations/{organizationId}/apis/{apiId}/versions/{version}/definition")
     @Produces({MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml"})
+    @Deprecated(forRemoval = true)
     Response getPublicApiDefinition(@PathParam("organizationId") String organizationId,
                                     @PathParam("apiId") String apiId,
                                     @PathParam("version") String version)

@@ -34,6 +34,7 @@ import io.apiman.manager.api.rest.ISearchResource;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
+import io.apiman.manager.api.rest.impl.util.PermissionsHelper;
 import io.apiman.manager.api.rest.impl.util.RestHelper;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.service.SearchService;
@@ -76,29 +77,20 @@ public class SearchResourceImpl implements ISearchResource {
     @Override
     public SearchResultsBean<OrganizationSummaryBean> searchOrgs(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException {
-        return searchService.findOrganizations(criteria);
+        return searchService.findOrganizations(criteria, PermissionsHelper.orgConstraints(securityContext, PermissionType.orgView)
+        );
     }
 
     @Override
     public SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException, NotAuthorizedException {
-        securityContext.checkAdminPermissions();
-        return searchService.findClients(criteria);
+        return searchService.findClients(criteria, PermissionsHelper.orgConstraints(securityContext, PermissionType.clientView));
     }
 
     @Override
     public SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException {
-        // Hide sensitive data and set only needed data for the UI
-        if (securityContext.isAdmin()){
-            return searchService.findApis(criteria);
-        } else {
-            // Redact data and return
-            List<ApiSummaryBean> apis = RestHelper.hideSensitiveDataFromApiSummaryBeanList(searchService.findApis(criteria).getBeans());
-            return new SearchResultsBean<ApiSummaryBean>()
-                    .setBeans(apis)
-                    .setTotalSize(apis.size());
-        }
+        return searchService.findApis(criteria, PermissionsHelper.orgConstraints(securityContext, PermissionType.apiView));
     }
 
     @Override
@@ -111,7 +103,7 @@ public class SearchResourceImpl implements ISearchResource {
         if (criteria.getFilters().isEmpty()) {
             return rval;
         }
-        
+
         // First criteria is the name search keyword
         SearchCriteriaFilterBean bean = criteria.getFilters().get(0);
         if (bean == null) {
@@ -121,7 +113,7 @@ public class SearchResourceImpl implements ISearchResource {
             return rval;
         }
         String keyword = bean.getValue();
-        
+
         // Second criteria is the namespace
         String namespace = null;
         if (criteria.getFilters().size() >= 2) {
@@ -186,6 +178,7 @@ public class SearchResourceImpl implements ISearchResource {
                 .setBeans(users);
     }
 
+    // TODO(msavy): dto for RoleBean
     @Override
     public SearchResultsBean<RoleBean> searchRoles(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException {

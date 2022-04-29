@@ -1,0 +1,16 @@
+POST /organizations/Organization1/clients/Client1/versions/1.0/contracts fmercury/fmercury
+Content-Type: application/json
+
+{
+  "apiOrgId" : "Organization1",
+  "apiId" : "API1",
+  "apiVersion" : "1.0",
+  "planId" : "Plan1"
+}
+----
+403
+Content-Type: application/json
+
+{
+  "type" : "NotAuthorizedException"
+}

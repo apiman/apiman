@@ -92,5 +92,4 @@
   <security-role>
     <role-name>apiuser</role-name>
   </security-role>
-
 </web-app>

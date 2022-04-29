@@ -16,12 +16,11 @@
 package io.apiman.manager.api.beans.apis;
 
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
-import io.apiman.manager.api.beans.download.BlobReference;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
 import java.io.Serializable;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -40,6 +39,7 @@ public class UpdateApiBean implements Serializable {
     // The image reference
     private String image;
     private Set<KeyValueTagDto> tags;
+    private DiscoverabilityLevel publicDiscoverability;
 
     /**
      * Constructor.
@@ -76,6 +76,15 @@ public class UpdateApiBean implements Serializable {
 
     public UpdateApiBean setTags(Set<KeyValueTagDto> tags) {
         this.tags = tags;
+        return this;
+    }
+
+    public DiscoverabilityLevel getPublicDiscoverability() {
+        return publicDiscoverability;
+    }
+
+    public UpdateApiBean setPublicDiscoverability(DiscoverabilityLevel publicDiscoverability) {
+        this.publicDiscoverability = publicDiscoverability;
         return this;
     }
 

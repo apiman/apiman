@@ -1,0 +1,219 @@
+POST /system/import admin/admin
+Content-Type: application/json
+
+{
+	"Metadata": {
+		"id": 1649760502250,
+		"exportedOn": "2022-04-12T10:48:22Z",
+		"apimanVersion": "3.0.0-SNAPSHOT"
+	},
+	"Users": [],
+	"Gateways": [
+    {
+      "id": "TheGateway",
+      "name": "The Gateway",
+      "description": "This is the gateway.",
+      "createdBy": "admin",
+      "createdOn": 1445973205874,
+      "modifiedBy": "admin",
+      "modifiedOn": 1445973205874,
+      "type": "REST",
+      "configuration": "{\"endpoint\":\"http://localhost:7070/mock-gateway\",\"username\":\"admin\",\"password\":\"$CRYPT::j8rdW76Z5gUI0I+9c8/GrA==\"}"
+    }
+  ],
+	"Plugins": [],
+	"Roles": [],
+	"PolicyDefinitions": [],
+	"Developers": [],
+	"Blobs": [],
+	"Orgs": [{
+		"OrganizationBean": {
+			"id": "apiman",
+			"name": "apiman",
+			"createdBy": "admin",
+			"createdOn": "2022-04-12T10:45:04Z",
+			"modifiedBy": "admin",
+			"modifiedOn": "2022-04-12T10:45:04Z"
+		},
+		"Memberships": [{
+			"id": 1039,
+			"userId": "admin",
+			"roleId": "OrganizationOwner",
+			"organizationId": "apiman",
+			"createdOn": "2022-04-12T10:45:04Z"
+		}],
+		"Plans": [{
+			"PlanBean": {
+				"id": "blue",
+				"name": "blue",
+				"createdBy": "admin",
+				"createdOn": "2022-04-12T10:45:18Z"
+			},
+			"Versions": [{
+				"PlanVersionBean": {
+					"id": 1045,
+					"status": "Locked",
+					"version": "1.0",
+					"createdBy": "admin",
+					"createdOn": "2022-04-12T10:45:18Z",
+					"modifiedBy": "admin",
+					"modifiedOn": "2022-04-12T10:45:18Z",
+					"lockedOn": "2022-04-12T10:45:19Z"
+				},
+				"Policies": []
+			}]
+		}, {
+			"PlanBean": {
+				"id": "red",
+				"name": "red",
+				"createdBy": "admin",
+				"createdOn": "2022-04-12T10:45:11Z"
+			},
+			"Versions": [{
+				"PlanVersionBean": {
+					"id": 1041,
+					"status": "Locked",
+					"version": "1.0",
+					"createdBy": "admin",
+					"createdOn": "2022-04-12T10:45:11Z",
+					"modifiedBy": "admin",
+					"modifiedOn": "2022-04-12T10:45:11Z",
+					"lockedOn": "2022-04-12T10:45:12Z"
+				},
+				"Policies": []
+			}]
+		}],
+		"Apis": [{
+			"ApiBean": {
+				"id": "alpha",
+				"name": "alpha",
+				"tags": [],
+				"createdBy": "admin",
+				"createdOn": "2022-04-12T10:45:29Z",
+				"numPublished": 1
+			},
+			"Versions": [{
+				"ApiVersionBean": {
+					"id": 1049,
+					"status": "Published",
+					"endpoint": "http://example.org",
+					"endpointType": "rest",
+					"endpointContentType": "json",
+					"endpointProperties": {},
+					"gateways": [{
+						"gatewayId": "TheGateway"
+					}],
+					"publicAPI": false,
+					"discoverability": "ORG_MEMBERS",
+					"plans": [{
+						"planId": "blue",
+						"version": "1.0",
+						"requiresApproval": false,
+						"discoverability": "ORG_MEMBERS"
+					}, {
+						"planId": "red",
+						"version": "1.0",
+						"requiresApproval": false,
+						"discoverability": "PORTAL"
+					}],
+					"version": "1.0",
+					"createdBy": "admin",
+					"createdOn": "2022-04-12T10:45:29Z",
+					"modifiedBy": "admin",
+					"modifiedOn": "2022-04-12T10:45:54Z",
+					"publishedOn": "2022-04-12T10:46:19Z",
+					"definitionType": "None",
+					"parsePayload": false,
+					"disableKeysStrip": false
+				},
+				"Policies": []
+			}]
+		}, {
+			"ApiBean": {
+				"id": "beta",
+				"name": "beta",
+				"tags": [],
+				"createdBy": "admin",
+				"createdOn": "2022-04-12T10:45:59Z",
+				"numPublished": 1
+			},
+			"Versions": [{
+				"ApiVersionBean": {
+					"id": 1054,
+					"status": "Published",
+					"endpoint": "http://example.org",
+					"endpointType": "rest",
+					"endpointContentType": "json",
+					"endpointProperties": {},
+					"gateways": [{
+						"gatewayId": "TheGateway"
+					}],
+					"publicAPI": true,
+					"discoverability": "PORTAL",
+					"plans": [],
+					"version": "1.0",
+					"createdBy": "admin",
+					"createdOn": "2022-04-12T10:45:59Z",
+					"modifiedBy": "admin",
+					"modifiedOn": "2022-04-12T10:46:12Z",
+					"publishedOn": "2022-04-12T10:46:16Z",
+					"definitionType": "None",
+					"parsePayload": false,
+					"disableKeysStrip": false
+				},
+				"Policies": []
+			}]
+		}, {
+			"ApiBean": {
+				"id": "gamma",
+				"name": "gamma",
+				"tags": [],
+				"createdBy": "admin",
+				"createdOn": "2022-04-12T10:46:27Z",
+				"numPublished": 1
+			},
+			"Versions": [{
+				"ApiVersionBean": {
+					"id": 1061,
+					"status": "Published",
+					"endpoint": "http://example.org",
+					"endpointType": "rest",
+					"endpointContentType": "json",
+					"endpointProperties": {},
+					"gateways": [{
+						"gatewayId": "TheGateway"
+					}],
+					"publicAPI": true,
+					"discoverability": "PORTAL",
+					"plans": [{
+						"planId": "red",
+						"version": "1.0",
+						"requiresApproval": false,
+						"discoverability": "ORG_MEMBERS"
+					}, {
+						"planId": "blue",
+						"version": "1.0",
+						"requiresApproval": false,
+						"discoverability": "PORTAL"
+					}],
+					"version": "1.0",
+					"createdBy": "admin",
+					"createdOn": "2022-04-12T10:46:27Z",
+					"modifiedBy": "admin",
+					"modifiedOn": "2022-04-12T10:48:11Z",
+					"publishedOn": "2022-04-12T10:48:13Z",
+					"definitionType": "None",
+					"parsePayload": false,
+					"disableKeysStrip": false
+				},
+				"Policies": []
+			}]
+		}],
+		"Clients": [],
+		"Audits": []
+	}]
+}
+
+----
+200
+Content-Type: text/plain;charset=utf-8

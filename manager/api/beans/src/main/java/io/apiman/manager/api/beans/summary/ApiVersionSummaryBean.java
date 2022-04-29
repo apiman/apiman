@@ -17,9 +17,12 @@ package io.apiman.manager.api.beans.summary;
 
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 
 /**
  * A summary of an individual API version.
@@ -28,7 +31,7 @@ import java.util.Set;
  */
 public class ApiVersionSummaryBean implements Serializable {
 
-    private static final long serialVersionUID = 2047101278864994250L;
+    private static final long serialVersionUID = -5287420561319780618L;
 
     private String organizationId;
     private String organizationName;
@@ -39,7 +42,7 @@ public class ApiVersionSummaryBean implements Serializable {
     private ApiStatus status;
     private String version;
     private boolean publicAPI;
-    private boolean exposeInPortal;
+    private DiscoverabilityLevel publicDiscoverability = DiscoverabilityLevel.ORG_MEMBERS;
     private Set<KeyValueTagDto> apiTags;
 
     /**
@@ -160,14 +163,6 @@ public class ApiVersionSummaryBean implements Serializable {
         this.publicAPI = publicAPI;
     }
 
-    public Boolean getExposeInPortal() {
-        return exposeInPortal;
-    }
-
-    public void setExposeInPortal(Boolean exposeInPortal) {
-        this.exposeInPortal = exposeInPortal;
-    }
-
     public String getExtendedDescription() {
         return extendedDescription;
     }
@@ -177,24 +172,13 @@ public class ApiVersionSummaryBean implements Serializable {
         return this;
     }
 
-    public boolean isExposeInPortal() {
-        return exposeInPortal;
+    public DiscoverabilityLevel getPublicDiscoverability() {
+        return publicDiscoverability;
     }
 
-    public ApiVersionSummaryBean setExposeInPortal(boolean exposeInPortal) {
-        this.exposeInPortal = exposeInPortal;
+    public ApiVersionSummaryBean setPublicDiscoverability(DiscoverabilityLevel publicDiscoverability) {
+        this.publicDiscoverability = publicDiscoverability;
         return this;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    @SuppressWarnings("nls")
-    public String toString() {
-        return "ApiVersionSummaryBean [organizationId=" + organizationId + ", organizationName="
-                + organizationName + ", id=" + id + ", name=" + name + ", description=" + description
-                + ", status=" + status + ", version=" + version + ", publicAPI=" + publicAPI + "]";
     }
 
     public Set<KeyValueTagDto> getApiTags() {
@@ -204,5 +188,39 @@ public class ApiVersionSummaryBean implements Serializable {
     public ApiVersionSummaryBean setApiTags(Set<KeyValueTagDto> apiTags) {
         this.apiTags = apiTags;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ApiVersionSummaryBean.class.getSimpleName() + "[", "]")
+                .add("organizationId='" + organizationId + "'")
+                .add("organizationName='" + organizationName + "'")
+                .add("id='" + id + "'")
+                .add("name='" + name + "'")
+                .add("description='" + description + "'")
+                .add("extendedDescription='" + extendedDescription + "'")
+                .add("status=" + status)
+                .add("version='" + version + "'")
+                .add("publicAPI=" + publicAPI)
+                .add("publicDiscoverability=" + publicDiscoverability)
+                .add("apiTags=" + apiTags)
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ApiVersionSummaryBean that = (ApiVersionSummaryBean) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

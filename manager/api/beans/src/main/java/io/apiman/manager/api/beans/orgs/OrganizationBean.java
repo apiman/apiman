@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -52,9 +53,9 @@ public class OrganizationBean implements Serializable {
     @Id
     @Column(nullable=false)
     private String id;
-    @Column(nullable=false)
+    @Column(name = "name", nullable=false)
     private String name;
-    @Column(updatable=true, nullable=true, length=512)
+    @Column(name = "description", updatable=true, nullable=true, length=512)
     private String description;
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
@@ -209,14 +210,16 @@ public class OrganizationBean implements Serializable {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
-    @SuppressWarnings("nls")
     public String toString() {
-        return "OrganizationBean [id=" + id + ", name=" + name + ", description=" + description
-                + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy
-                + ", modifiedOn=" + modifiedOn + "]";
+        return new StringJoiner(", ", OrganizationBean.class.getSimpleName() + "[", "]")
+                .add("id='" + id + "'")
+                .add("name='" + name + "'")
+                .add("description='" + description + "'")
+                .add("createdBy='" + createdBy + "'")
+                .add("createdOn=" + createdOn)
+                .add("modifiedBy='" + modifiedBy + "'")
+                .add("modifiedOn=" + modifiedOn)
+                .toString();
     }
 }

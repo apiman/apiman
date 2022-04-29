@@ -16,7 +16,10 @@
 package io.apiman.manager.api.beans.apis;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -31,6 +34,7 @@ public class NewApiVersionBean implements Serializable {
 
     private static final long serialVersionUID = 7207058698209555294L;
 
+    @NotBlank
     private String version;
     private boolean clone;
     private String cloneVersion;
@@ -45,7 +49,6 @@ public class NewApiVersionBean implements Serializable {
     private String definitionUrl;
     private ApiDefinitionType definitionType;
     private String extendedDescription;
-    private Boolean exposeInPortal;
 
     /**
      * Constructor.
@@ -226,12 +229,46 @@ public class NewApiVersionBean implements Serializable {
         return this;
     }
 
-    public Boolean getExposeInPortal() {
-        return exposeInPortal;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        NewApiVersionBean that = (NewApiVersionBean) o;
+        return clone == that.clone && Objects.equals(version, that.version) && Objects.equals(cloneVersion, that.cloneVersion)
+                       && Objects.equals(endpoint, that.endpoint) && endpointType == that.endpointType && endpointContentType == that.endpointContentType
+                       && Objects.equals(publicAPI, that.publicAPI) && Objects.equals(
+                parsePayload, that.parsePayload) && Objects.equals(disableKeysStrip, that.disableKeysStrip) && Objects.equals(plans, that.plans)
+                       && Objects.equals(definitionUrl, that.definitionUrl) && definitionType == that.definitionType && Objects.equals(
+                extendedDescription, that.extendedDescription);
     }
 
-    public NewApiVersionBean setExposeInPortal(Boolean exposeInPortal) {
-        this.exposeInPortal = exposeInPortal;
-        return this;
+    @Override
+    public int hashCode() {
+        return Objects.hash(version, clone, cloneVersion, endpoint, endpointType, endpointContentType, publicAPI, parsePayload,
+                disableKeysStrip,
+                plans, definitionUrl, definitionType, extendedDescription);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", NewApiVersionBean.class.getSimpleName() + "[", "]")
+                .add("version='" + version + "'")
+                .add("clone=" + clone)
+                .add("cloneVersion='" + cloneVersion + "'")
+                .add("endpoint='" + endpoint + "'")
+                .add("endpointType=" + endpointType)
+                .add("endpointContentType=" + endpointContentType)
+                .add("publicAPI=" + publicAPI)
+                .add("parsePayload=" + parsePayload)
+                .add("disableKeysStrip=" + disableKeysStrip)
+                .add("plans=" + plans)
+                .add("definitionUrl='" + definitionUrl + "'")
+                .add("definitionType=" + definitionType)
+                .add("extendedDescription='" + extendedDescription + "'")
+                .toString();
     }
 }

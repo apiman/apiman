@@ -1,0 +1,15 @@
+GET /devportal/organizations/apiman/apis/alpha/versions/1.0/plans
+
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "planId": "red",
+    "planName": "red",
+    "version": "1.0",
+    "requiresApproval": false,
+    "discoverability": "PORTAL"
+  }
+]

@@ -15,10 +15,19 @@
  */
 package io.apiman.manager.ui.server.servlets;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.ServiceRegistryUtil;
 import io.apiman.manager.ui.server.IUIConfig;
 import io.apiman.manager.ui.server.auth.ITokenGenerator;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.PropertyResourceBundle;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,9 +38,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author eric.wittmann@redhat.com
  */
 public abstract class AbstractUIServlet extends HttpServlet {
-
     private static final long serialVersionUID = -7455553362628233074L;
-
     private IUIConfig config;
     private transient ITokenGenerator tokenGenerator;
 
@@ -75,12 +82,9 @@ public abstract class AbstractUIServlet extends HttpServlet {
      * 
      * @param request
      */
+    @SuppressWarnings("nls")
     protected String getDefaultEndpoint(HttpServletRequest request) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(request.getScheme()).append("://") //$NON-NLS-1$
-                .append(request.getServerName()).append(":") //$NON-NLS-1$
-                .append(request.getServerPort()).append("/apiman"); //$NON-NLS-1$
-        return builder.toString();
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/apiman";
     }
 
 }
