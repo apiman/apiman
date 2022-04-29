@@ -23,8 +23,6 @@ import io.apiman.manager.ui.server.i18n.Messages;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -33,7 +31,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -69,17 +66,28 @@ public class TranslationServlet extends AbstractUIServlet {
         Path dir = super.getConfig().getExternalMessageBundlesDir();
         try (DirectoryStream<Path> directory = Files.newDirectoryStream(dir, "*.properties")) {
             for (Path propFilePath : directory) {
+                if (Files.isDirectory(propFilePath)) {
+                    continue;
+                }
                 LOG.debug("Loading external i18n file: {0}...", propFilePath);
                 String fName = propFilePath.getFileName().toString();
-                String[] split = fName.substring(0, fName.length() - 11).split("_", 2);
-
+                // Remove .properties extension and isolate filename language tag (limit at 2 to prevent overshooting with more complex tags).
+                String[] fNameSplit = fName.substring(0, fName.length() - 11).split("_", 2);
+                String languageTag;
+                if (fNameSplit.length >= 2) {
+                    // Replace _ with - in the filename language tag to allow parsing as language tag/Locale (e.g. en_GB => en-GB).
+                    languageTag = fNameSplit[1].replace("_", "-");
+                } else {
+                    // If no language tag, assume EN.
+                    languageTag = "en";
+                }
                 PropertyResourceBundle bundle = new PropertyResourceBundle(new FileReader(propFilePath.toFile())) {
                     @Override
                     public Locale getLocale() {
-                        return Locale.forLanguageTag(split[1].replace("_", "-"));
+                        return Locale.forLanguageTag(languageTag);
                     }
                 };
-
+                // Special "External" basename just to make this a bit clearer when debugging, etc; the basename will disappear by the time it's on the wire.
                 AbstractMessages.addResourceBundle("External", bundle);
             }
         } catch (IOException ioe) {
