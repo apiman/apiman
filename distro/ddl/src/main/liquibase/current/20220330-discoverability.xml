@@ -1,12 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
-    <changeSet id="drop-constraints-on-old-expose-in-portal" author="msavy">
-        <dropIndex tableName="api_plans" indexName="IX_null"/>
-    </changeSet>
-
     <changeSet author="msavy (generated)" id="1647015740776-8">
-        <dropColumn columnName="expose_in_portal" tableName="api_plans"/>
-        <dropColumn columnName="expose_in_portal" tableName="api_versions"/>
         <addColumn tableName="api_plans">
             <column name="discoverability" type="VARCHAR(255)" defaultValue="ORG_MEMBERS"/>
         </addColumn>
