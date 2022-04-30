@@ -76,10 +76,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@json-editor/json-editor@2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@json-editor/json-editor/-/json-editor-2.6.0.tgz#ee4d687c4ca4794f4ac9246f61fcc01cb3e48c38"
-  integrity sha512-6yWvdpBirBENLdRKSfoCbEzQycZrqegSiWYkRV2X7n9F4PwULmQB0GPuG/7A2FJzwKM8m/Vpz6ywOBNE8jY9dw==
+"@json-editor/json-editor@2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@json-editor/json-editor/-/json-editor-2.7.0.tgz#92f5c61a0f5b4427e6e5df7e12522ab1276804f0"
+  integrity sha512-wFizbCCiH02kDPfndcrD9xif8ymSiIelDw299Di2lAO6RJsobfF1NcnsWIbVYHT9npL/1KLH9x6NNrfnmRS63w==
   dependencies:
     core-js "^3.12.1"
 
@@ -845,10 +845,10 @@ angular-route@1.8.2:
   resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.8.2.tgz#d482bf05a8c9e448300acd8f9989c635d31b5077"
   integrity sha512-49LJYxuaQ/ZDiu9dD2xo1LkazqObkGjw0a7dUF7UKCT8EELgBsMd6QrI6aEVGtI62ppkiFkxqmiV8fcwYdXpug==
 
-angular-sanitize@1.8.2, "angular-sanitize@>= 1.2":
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.8.2.tgz#ae78040f00c5e2ce1c63780bcc47fa14a1698296"
-  integrity sha512-OB6Goa+QN3byf5asQ7XRl7DKZejm/F/ZOqa9z1skqYVOWA2hoBxoCmt9E7+i7T/TbxZP5zYzKxNZVVJNu860Hg==
+angular-sanitize@1.8.3, "angular-sanitize@>= 1.2":
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.8.3.tgz#51378e990e78c7ecc1fb31cd68655aff690a3bf1"
+  integrity sha512-2rxdqzlUVafUeWOwvY/FtyWk1pFTyCtzreeiTytG9m4smpuAEKaIJAjYeVwWsoV+nlTOcgpwV4W1OCmR+BQbUg==
 
 angular-schema-form@0.8.12:
   version "0.8.12"
@@ -3045,10 +3045,10 @@ jquery-match-height@^0.7.2:
   resolved "https://registry.yarnpkg.com/jquery-match-height/-/jquery-match-height-0.7.2.tgz#f8d9f3ba5314daab109cf07408674be204be5f0e"
   integrity sha1-+NnzulMU2qsQnPB0CGdL4gS+Xw4=
 
-jquery@3.5.1, jquery@>=1.7, jquery@>=1.7.0, "jquery@>=1.7.1 <4.0.0", jquery@>=1.8, jquery@^3.4.1, jquery@^3.5.1, jquery@~3.4.1:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.1.tgz#d7b4d08e1bfdb86ad2f1a3d039ea17304717abb5"
-  integrity sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg==
+jquery@3.6.0, jquery@>=1.7, jquery@>=1.7.0, "jquery@>=1.7.1 <4.0.0", jquery@>=1.8, jquery@^3.4.1, jquery@^3.5.1, jquery@~3.4.1:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.0.tgz#c72a09f15c1bdce142f49dbf1170bdf8adac2470"
+  integrity sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw==
 
 js-file-download@^0.4.12:
   version "0.4.12"
