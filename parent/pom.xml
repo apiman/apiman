@@ -145,11 +145,11 @@
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.32</version.org.slf4j>
     <version.org.testcontainers>1.16.3</version.org.testcontainers>
-    <version.io.netty>4.1.65.Final</version.io.netty>
+    <version.io.netty>4.1.74.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
     <version.io.swagger>1.6.4</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
-    <version.io.vertx>3.9.8</version.io.vertx>
+    <version.io.vertx>3.9.13</version.io.vertx>
     <version.net.openhft>0.15</version.net.openhft>
     <version.com.ibm.icu4j>70.1</version.com.ibm.icu4j>
     <version.com.icegreen.greenmail>1.6.5</version.com.icegreen.greenmail>
