@@ -198,15 +198,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.slf4j</groupId>-->
-<!--      <artifactId>slf4j-api</artifactId>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <artifactId>slf4j-log4j12</artifactId>-->
-<!--      <groupId>org.slf4j</groupId>-->
-<!--    </dependency>-->
-<!--    -->
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
