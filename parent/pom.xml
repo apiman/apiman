@@ -83,17 +83,18 @@
     <version.frontend-maven.plugin>1.6</version.frontend-maven.plugin>
     <version.git-commit-id.plugin>2.2.1</version.git-commit-id.plugin>
     <version.shade.plugin>3.2.4</version.shade.plugin>
+    <version.apache.maven.maven-artifact>3.8.1</version.apache.maven.maven-artifact>
 
     <!-- Dependency Versions -->
     <version.com.blazebit.blaze-persistence>1.6.6</version.com.blazebit.blaze-persistence>
-    <version.com.fasterxml.jackson>2.12.4</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.12.6</version.com.fasterxml.jackson>
     <version.com.github.ben-manes.caffeine>3.0.5</version.com.github.ben-manes.caffeine>
-    <version.com.github.seancfoley.ipaddress>5.3.3</version.com.github.seancfoley.ipaddress>
+    <version.com.github.seancfoley.ipaddress>5.3.4</version.com.github.seancfoley.ipaddress>
     <version.com.h2database>1.4.199</version.com.h2database> <!-- Unclear why, but 1.4.200 seems to cause some random issues, including inability for DB viewers to parse the data -->
     <version.com.lmax>3.4.4</version.com.lmax>
     <version.com.squareup.okhttp>2.7.5</version.com.squareup.okhttp>
     <version.com.squareup.okio>2.10.0</version.com.squareup.okio>
-    <version.com.unboundid.unboundid-ldapsdk>6.0.3</version.com.unboundid.unboundid-ldapsdk>
+    <version.com.unboundid.unboundid-ldapsdk>6.0.4</version.com.unboundid.unboundid-ldapsdk>
     <version.com.vladmihalcea.hibernate-types>2.14.0</version.com.vladmihalcea.hibernate-types>
     <version.commons-beanutils>1.9.4</version.commons-beanutils>
     <version.commons-codec>1.15</version.commons-codec>
@@ -107,7 +108,7 @@
     <version.commons-pool>1.6</version.commons-pool>
     <version.org.opensearch.opensearch>1.2.4</version.org.opensearch.opensearch>
     <version.com.zaxxer>2.7.9</version.com.zaxxer>
-    <version.com.google.guava>30.1.1-jre</version.com.google.guava>
+    <version.com.google.guava>31.1-jre</version.com.google.guava>
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.javax.enterprise.cdi-api>2.0.SP1</version.javax.enterprise.cdi-api>
     <version.javax.validation-api>2.0.1.Final</version.javax.validation-api>
@@ -121,7 +122,7 @@
     <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.4.14</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpasyncclient>4.1.4</version.org.apache.httpcomponents.httpasyncclient>
-    <version.org.apache.logging.log4j>2.14.1</version.org.apache.logging.log4j>
+    <version.org.apache.logging.log4j>2.17.2</version.org.apache.logging.log4j>
     <version.org.eclipse.jetty>9.4.41.v20210516</version.org.eclipse.jetty>
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
     <version.org.elasticsearch>7.13.4</version.org.elasticsearch>
@@ -135,7 +136,7 @@
     <version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>1.1.1.Final</version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>
     <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>2.0.1.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>
     <version.org.jboss.weld.weld>3.1.8.Final</version.org.jboss.weld.weld>
-    <version.org.jdbi>3.21.0</version.org.jdbi>
+    <version.org.jdbi>3.28.0</version.org.jdbi>
     <version.org.keycloak>12.0.4</version.org.keycloak>
     <version.org.lz4.lz4-java>1.8.0</version.org.lz4.lz4-java>
     <version.org.mockito>3.11.2</version.org.mockito>
@@ -143,29 +144,28 @@
     <version.org.mvel>2.4.12.Final</version.org.mvel>
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
     <version.org.reflections>0.9.11</version.org.reflections>
-    <version.org.slf4j>1.7.32</version.org.slf4j>
-    <version.org.testcontainers>1.16.3</version.org.testcontainers>
+    <version.org.slf4j>1.7.36</version.org.slf4j>
+    <version.org.testcontainers>1.17.1</version.org.testcontainers>
     <version.io.netty>4.1.74.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
-    <version.io.swagger>1.6.4</version.io.swagger>
+    <version.io.swagger>1.6.6</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.13</version.io.vertx>
     <version.net.openhft>0.15</version.net.openhft>
-    <version.com.ibm.icu4j>70.1</version.com.ibm.icu4j>
-    <version.com.icegreen.greenmail>1.6.5</version.com.icegreen.greenmail>
-    <version.com.hazelcast>4.2.1</version.com.hazelcast>
+    <version.com.ibm.icu4j>71.1</version.com.ibm.icu4j>
+    <version.com.icegreen.greenmail>1.6.8</version.com.icegreen.greenmail>
+    <version.com.hazelcast>4.2.5</version.com.hazelcast>
     <version.com.jcbai>1.17.6</version.com.jcbai>
     <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
-    <version.org.redisson>3.15.6</version.org.redisson>
+    <version.org.redisson>3.17.1</version.org.redisson>
     <version.net.javacrumbs.json-unit>2.32.0</version.net.javacrumbs.json-unit>
+    <version.info.picocli>4.6.3</version.info.picocli>
 
     <!-- Sun and javax dependencies to maintain compatibility with Java 9+ module changes -->
     <version.com.sun.xml.ws>2.3.4</version.com.sun.xml.ws>
     <version.javax.json.javax.json-api>1.1.4</version.javax.json.javax.json-api>
     <version.javax.xml.bind>2.3.3</version.javax.xml.bind>
     <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
-    <version.info.picocli>4.6.3</version.info.picocli>
-    <version.apache.maven.maven-artifact>3.8.1</version.apache.maven.maven-artifact>
     <version.javax.persistence-api>2.2</version.javax.persistence-api>
   </properties>
 
