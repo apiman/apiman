@@ -143,7 +143,7 @@
     <version.org.mvel>2.4.12.Final</version.org.mvel>
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
     <version.org.reflections>0.9.11</version.org.reflections>
-    <version.org.slf4j>1.7.32</version.org.slf4j>
+    <version.org.slf4j>1.7.36</version.org.slf4j>
     <version.org.testcontainers>1.16.3</version.org.testcontainers>
     <version.io.netty>4.1.74.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
