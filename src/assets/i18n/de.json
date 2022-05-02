@@ -103,16 +103,16 @@
       "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Beschränkung:",
       "LIMIT": "Beschränkung (pro Zeit)",
       "REMAINING": "Verbleibende Anzahl Anfragen",
-      "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird",
+      "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird (in Sekunden)",
       "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> Anfragen pro <span class='bold'>{{timeUnit}}</span>"
     },
     "TransferQuotaPolicy": {
       "TITLE": "Transfer Quota Policy",
       "DESCRIPTION": "Es können maximal <b>{{limit}}<b> Daten pro <b>{{timeUnit}}</b> konsumiert werden",
       "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Beschränkung:",
-      "LIMIT": "Maximale Datenmenge (pro Zeit)",
-      "REMAINING": "Verbleibende Datenmenge",
-      "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird",
+      "LIMIT": "Maximale Datenmenge (pro Zeiteinheit in Bytes)",
+      "REMAINING": "Verbleibende Datenmenge (in Bytes)",
+      "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird (in Sekunden)",
       "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> Daten pro <span class='bold'>{{timeUnit}}</span>"
     },
     "PERIODS": {

@@ -103,16 +103,16 @@
       "MORE_INFO": "The following headers in the response contain useful information relating to rate limit:",
       "LIMIT": "Rate limit allowance (per time period)",
       "REMAINING": "Rate limit allowance remaining",
-      "RESET": "The time the rate limit will be reset",
+      "RESET": "The time the rate limit will be reset (in seconds)",
       "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> requests per <span class='bold'>{{timeUnit}}</span>"
     },
     "TransferQuotaPolicy": {
       "TITLE": "Transfer Quota Policy",
       "DESCRIPTION": "You can transfer a maximum of <b>{{limit}}</b> of data per <b>{{timeUnit}}</b>",
       "MORE_INFO": "The following headers in the response contain useful information relating to quota limit:",
-      "LIMIT": "Quota limit allowance (per time period)",
-      "REMAINING": "Quota limit allowance remaining",
-      "RESET": "The time the quota limit will be reset",
+      "LIMIT": "Quota limit allowance (per time period in bytes)",
+      "REMAINING": "Quota limit allowance remaining (in bytes)",
+      "RESET": "The time the quota limit will be reset (in seconds)",
       "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> data per <span class='bold'>{{timeUnit}}</span>"
     },
     "PERIODS": {
