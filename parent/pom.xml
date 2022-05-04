@@ -87,7 +87,7 @@
 
     <!-- Dependency Versions -->
     <version.com.blazebit.blaze-persistence>1.6.6</version.com.blazebit.blaze-persistence>
-    <version.com.fasterxml.jackson>2.12.6</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.13.2</version.com.fasterxml.jackson>
     <version.com.github.ben-manes.caffeine>3.0.5</version.com.github.ben-manes.caffeine>
     <version.com.github.seancfoley.ipaddress>5.3.4</version.com.github.seancfoley.ipaddress>
     <version.com.h2database>1.4.199</version.com.h2database> <!-- Unclear why, but 1.4.200 seems to cause some random issues, including inability for DB viewers to parse the data -->
