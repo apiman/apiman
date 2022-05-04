@@ -15,15 +15,20 @@
  */
 package io.apiman.gateway.engine.policy;
 
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
+
+import org.apache.commons.lang.NotImplementedException;
 
 /**
  * All policy implementations must implement this interface.
  *
  * @author eric.wittmann@redhat.com
+ * @author marc@blackparrotlabs.io
  */
 public interface IPolicy {
 
@@ -31,6 +36,7 @@ public interface IPolicy {
      * Parses the JSON configuration into a policy specific configuration object type.  The
      * policy implementation can parse the config in any way it chooses, resulting in any
      * type of object it desires.
+     *
      * @param jsonConfiguration the json configuration
      * @return the parsed configuration
      * @throws ConfigurationParseException when unable to parse config
@@ -60,7 +66,6 @@ public interface IPolicy {
     public void apply(ApiResponse response, IPolicyContext context, Object config, IPolicyChain<ApiResponse> chain);
 
     /**
-     * <p>
      * Process any failure emitted by a subsequent policy in the chain.
      * <p>
      * For example, implementors may wish to add or remove certain headers, even in

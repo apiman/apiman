@@ -29,7 +29,6 @@ public class ShouldFilterBuilder extends AbstractQueryBuilder {
 
     /**
      * Constructor.
-     * @param operationType
      * @param filters
      */
     public ShouldFilterBuilder(QueryBuilder... filters) {

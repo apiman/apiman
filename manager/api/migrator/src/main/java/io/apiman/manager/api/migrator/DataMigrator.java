@@ -17,8 +17,8 @@
 package io.apiman.manager.api.migrator;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
-import io.apiman.common.logging.impl.DoubleLogger;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.impl.DoubleLogger;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.migrator.i18n.Messages;
 
@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -38,6 +39,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author eric.wittmann@gmail.com
  */
 @Dependent
+@Transactional
 public class DataMigrator implements IReaderHandler {
 
     private IApimanLogger logger = ApimanLoggerFactory.getLogger(DataMigrator.class);
@@ -232,6 +234,11 @@ public class DataMigrator implements IReaderHandler {
             chain.migrateDeveloper(node);
         }
         writer.writeDeveloper(node);
+    }
+
+    @Override
+    public void onBlob(ObjectNode node) throws IOException {
+        writer.writerBlob(node);
     }
 
     /**

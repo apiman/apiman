@@ -39,20 +39,12 @@ public class IgnoredResourcesPolicy extends AbstractMappedPolicy<IgnoredResource
      */
     public IgnoredResourcesPolicy() {
     }
-    
-    /**
-     * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
-     */
+
     @Override
-    protected Class<IgnoredResourcesConfig> getConfigurationClass() {
+    public Class<IgnoredResourcesConfig> getConfigurationClass() {
         return IgnoredResourcesConfig.class;
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest,
-     *      io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object,
-     *      io.apiman.gateway.engine.policy.IPolicyChain)
-     */
     @Override
     protected void doApply(ApiRequest request, IPolicyContext context, IgnoredResourcesConfig config,
             IPolicyChain<ApiRequest> chain) {

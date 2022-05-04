@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.summary;
 
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
+
 import java.io.Serializable;
 
 /**
@@ -31,6 +33,8 @@ public class ApiPlanSummaryBean implements Serializable {
     private String planName;
     private String planDescription;
     private String version;
+    private DiscoverabilityLevel discoverability = DiscoverabilityLevel.ORG_MEMBERS;
+    private Boolean requiresApproval;
 
     /**
      * Constructor.
@@ -81,8 +85,49 @@ public class ApiPlanSummaryBean implements Serializable {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * @return true if the API plan requires approval
      */
+    public Boolean isRequiresApproval() {
+        return requiresApproval;
+    }
+
+    /**
+     * Set whether the API Plan requires approval
+     *
+     * @param requiresApproval true if requires approval
+     */
+    public ApiPlanSummaryBean setRequiresApproval(Boolean requiresApproval) {
+        this.requiresApproval = requiresApproval;
+        return this;
+    }
+
+    public DiscoverabilityLevel getDiscoverability() {
+        return discoverability;
+    }
+
+    public ApiPlanSummaryBean setDiscoverability(DiscoverabilityLevel discoverability) {
+        this.discoverability = discoverability;
+        return this;
+    }
+
+    public Boolean getRequiresApproval() {
+        return requiresApproval;
+    }
+
+    /**
+     * @return the planDescription
+     */
+    public String getPlanDescription() {
+        return planDescription;
+    }
+
+    /**
+     * @param planDescription the planDescription to set
+     */
+    public void setPlanDescription(String planDescription) {
+        this.planDescription = planDescription;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -91,9 +136,6 @@ public class ApiPlanSummaryBean implements Serializable {
         return result;
     }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -111,26 +153,8 @@ public class ApiPlanSummaryBean implements Serializable {
         return true;
     }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         return getPlanName() + "(" + version + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
-
-    /**
-     * @return the planDescription
-     */
-    public String getPlanDescription() {
-        return planDescription;
-    }
-
-    /**
-     * @param planDescription the planDescription to set
-     */
-    public void setPlanDescription(String planDescription) {
-        this.planDescription = planDescription;
-    }
-
 }

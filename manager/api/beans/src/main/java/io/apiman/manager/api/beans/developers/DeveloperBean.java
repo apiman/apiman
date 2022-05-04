@@ -16,22 +16,40 @@
 
 package io.apiman.manager.api.beans.developers;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.io.Serializable;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * Models a developer
  * The Keycloak Username is used as ID
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Table(name = "developers")
+@Entity
+@Deprecated
 public class DeveloperBean implements Serializable {
 
     private static final long serialVersionUID = 7127400624541487145L;
 
+    @Id
     private String id;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "developer_mappings", joinColumns = @JoinColumn(name = "developer_id"))
     private Set<DeveloperMappingBean> clients = new LinkedHashSet<>();
 
     /**
@@ -82,5 +100,22 @@ public class DeveloperBean implements Serializable {
     @Override
     public String toString() {
         return "DeveloperBean [id=" + id + ",clients=" + clients + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DeveloperBean that = (DeveloperBean) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

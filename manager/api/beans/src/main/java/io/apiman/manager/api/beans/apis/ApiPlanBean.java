@@ -15,31 +15,86 @@
  */
 package io.apiman.manager.api.beans.apis;
 
-import java.io.Serializable;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.StringJoiner;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.hibernate.annotations.ColumnDefault;
 
 /**
  * Models a plan+version that is available for use with a particular API.  This
- * makes the Plan available when forming a Contract between an app and a API.
+ * makes the Plan available when forming a Contract between an app and an API.
  *
  * @author eric.wittmann@redhat.com
  */
-@Embeddable
+@Entity
+@Table(name = "api_plans",
+        uniqueConstraints = { @UniqueConstraint(columnNames = { "api_version_id", "plan_id", "version" }) }
+)
+@JsonInclude(Include.NON_NULL)
+@IdClass(ApiPlanBeanCompositeId.class)
 public class ApiPlanBean implements Serializable {
 
     private static final long serialVersionUID = 7972763768594076697L;
 
-    @Column(name = "plan_id", nullable=false)
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "api_version_id", referencedColumnName = "id")
+    @JsonIgnore
+    private ApiVersionBean apiVersion;
+
+    @Id
+    @Column(name = "plan_id", nullable = false)
     private String planId;
-    @Column(nullable=false)
+
+    @Id
+    @Column(name = "version", nullable = false)
     private String version;
+
+    @Column(name = "requires_approval", nullable = false)
+    @ColumnDefault("false")
+    private Boolean requiresApproval = false;
+
+    @Column(name = "discoverability")
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'ORG_MEMBERS'")
+    private DiscoverabilityLevel discoverability = DiscoverabilityLevel.ORG_MEMBERS;
 
     /**
      * Constructor.
      */
     public ApiPlanBean() {
+    }
+
+    public DiscoverabilityLevel getDiscoverability() {
+        return discoverability;
+    }
+
+    public void setDiscoverability(DiscoverabilityLevel discoverability) {
+        this.discoverability = discoverability;
+    }
+
+    public ApiVersionBean getApiVersion() {
+        return apiVersion;
+    }
+
+    public void setApiVersion(ApiVersionBean apiVersion) {
+        this.apiVersion = apiVersion;
     }
 
     /**
@@ -70,49 +125,43 @@ public class ApiPlanBean implements Serializable {
         this.version = version;
     }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return planId + "(" + version + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public ApiPlanBean setRequiresApproval(Boolean requiresApproval) {
+        this.requiresApproval = requiresApproval;
+        return this;
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
+    public Boolean isRequiresApproval() {
+        return requiresApproval;
+    }
+
+    public Boolean getRequiresApproval() {
+        return requiresApproval;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ApiPlanBean that = (ApiPlanBean) o;
+        return Objects.equals(apiVersion, that.apiVersion) && Objects.equals(planId, that.planId) && Objects.equals(version, that.version);
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((planId == null) ? 0 : planId.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
-        return result;
+        return Objects.hash(apiVersion, planId, version);
     }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ApiPlanBean other = (ApiPlanBean) obj;
-        if (planId == null) {
-            if (other.planId != null)
-                return false;
-        } else if (!planId.equals(other.planId))
-            return false;
-        if (version == null) {
-            if (other.version != null)
-                return false;
-        } else if (!version.equals(other.version))
-            return false;
-        return true;
+    public String toString() {
+        return new StringJoiner(", ", ApiPlanBean.class.getSimpleName() + "[", "]")
+                .add("planId='" + planId + "'")
+                .add("version='" + version + "'")
+                .add("requiresApproval=" + requiresApproval)
+                .add("discoverability=" + discoverability)
+                .toString();
     }
-
 }

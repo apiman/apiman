@@ -16,13 +16,13 @@
 package io.apiman.manager.api.exportimport.write;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -34,14 +34,16 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.system.MetadataBean;
+import io.apiman.manager.api.beans.blobs.BlobEntity;
 
+import java.io.Closeable;
 import java.io.InputStream;
 
 /**
  *
  * @author msavy
  */
-public interface IExportWriter {
+public interface IExportWriter extends AutoCloseable, Closeable {
     // Metadata
     IExportWriter writeMetadata(MetadataBean metadata);
 
@@ -74,6 +76,11 @@ public interface IExportWriter {
     IExportWriter startDevelopers();
     IExportWriter writeDeveloper(DeveloperBean bean);
     IExportWriter endDevelopers();
+
+    // Blobs
+    IExportWriter startBlobs();
+    IExportWriter writeBlob(ExportedBlobDto blob);
+    IExportWriter endBlobs();
 
     // -----------------------------------
     // Orgs, apps, plans, APIs, etc...

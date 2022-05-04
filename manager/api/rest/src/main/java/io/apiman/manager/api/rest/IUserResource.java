@@ -19,19 +19,35 @@ package io.apiman.manager.api.rest;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
-import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.UserDto;
 import io.apiman.manager.api.beans.idm.UserPermissionsBean;
+import io.apiman.manager.api.beans.notifications.NotificationCriteriaBean;
+import io.apiman.manager.api.beans.notifications.dto.CreateNotificationFilterDto;
+import io.apiman.manager.api.beans.notifications.dto.NotificationActionDto;
+import io.apiman.manager.api.beans.notifications.dto.NotificationDto;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
 import io.apiman.manager.api.beans.summary.ClientSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
-import io.swagger.annotations.Api;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import io.swagger.annotations.Api;
 
 /**
  * The User API.
@@ -53,7 +69,7 @@ public interface IUserResource {
     @GET
     @Path("{userId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public UserBean get(@PathParam("userId") String userId) throws UserNotFoundException;
+    public UserDto get(@PathParam("userId") String userId) throws UserNotFoundException;
 
     /**
      * Use this endpoint to get information about the currently authenticated user.
@@ -202,7 +218,7 @@ public interface IUserResource {
             @QueryParam("page") int page, @QueryParam("count") int pageSize) throws NotAuthorizedException;
 
     /**
-     * This endpoint returns all of the permissions assigned to a specific user.
+     * This endpoint returns all the permissions assigned to a specific user.
      * @summary Get User's Permissions
      * @servicetag admin
      * @param userId The user's ID.
@@ -216,5 +232,63 @@ public interface IUserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public UserPermissionsBean getPermissionsForUser(@PathParam("userId") String userId)
             throws UserNotFoundException, NotAuthorizedException;
+
+    /**
+     * Search and filter user notifications.
+     * <p>By default, this returns a paged list sorted in descending order (i.e. the latest notification first).
+     *
+     * @param userId The user ID.
+     * @param criteria The search & filter criteria.
+     * @return List of notifications.
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @POST
+    @Path("{userId}/notifications")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<NotificationDto<?>> getNotificationsForUser(@PathParam("userId") String userId, NotificationCriteriaBean criteria)
+         throws UserNotFoundException, NotAuthorizedException;
+
+    /**
+     * Get the number of notifications for a given user. Inspect the <sample>X-Total-Count</sample> header.
+     *
+     * <p>Users are only able to get information about their own notifications.
+     *
+     * @param userId the user ID.
+     * @param includeDismissed whether to only count unread notifications (default: true).
+     * @return X-Total-Count header with the number of unread notifications.
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @HEAD
+    @Path("{userId}/notifications")
+    public Response getNotificationCountForUser(@PathParam("userId") String userId, @DefaultValue("false") @QueryParam("includeDismissed") boolean includeDismissed)
+         throws UserNotFoundException, NotAuthorizedException;
+
+    /**
+     * Mark a user's notifications with a specific state by ID (or all, if desired).
+     *
+     * <p>Users are only able to operate on their own notifications. Any attempt to operate on unowned
+     * notifications will either be rejected or silently ignored.
+     *
+     * @param userId the user ID.
+     * @param notificationAction the action to take on the notifications.
+     * @return X-Total-Count header with the number of unread notifications.
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @PUT
+    @Path("{userId}/notifications")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response markNotifications(@PathParam("userId") String userId, @NotNull NotificationActionDto notificationAction)
+         throws UserNotFoundException, NotAuthorizedException;
+
+
+    @POST
+    @Path("{userId}/notifications/filters")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createNotificationFilter(@PathParam("userId") String userId, CreateNotificationFilterDto createFilter);
 
 }

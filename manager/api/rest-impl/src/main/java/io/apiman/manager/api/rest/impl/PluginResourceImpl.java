@@ -16,27 +16,6 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.apache.commons.io.IOUtils;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.plugin.Plugin;
@@ -69,29 +48,62 @@ import io.apiman.manager.api.rest.exceptions.i18n.Messages;
 import io.apiman.manager.api.rest.exceptions.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
+
 /**
  * Implementation of the Plugin API.
  *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class PluginResourceImpl implements IPluginResource {
 
-    private final IApimanLogger log = ApimanLoggerFactory.getLogger(PluginResourceImpl.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(PluginResourceImpl.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    @Inject IStorage storage;
-    @Inject IStorageQuery query;
-    @Inject ISecurityContext securityContext;
-    @Inject IPluginRegistry pluginRegistry;
-    @Inject ApiManagerConfig config;
+    private IStorage storage;
+    private IStorageQuery query;
+    private ISecurityContext securityContext;
+    private IPluginRegistry pluginRegistry;
+    private ApiManagerConfig config;
 
-    private Map<URI, PluginRegistryBean> registryCache = new HashMap<>();
-
+    private final Map<URI, PluginRegistryBean> registryCache = new HashMap<>();
 
     /**
      * Constructor.
      */
+    @Inject
+    public PluginResourceImpl(
+        IStorage storage,
+        IStorageQuery query,
+        ISecurityContext securityContext,
+        IPluginRegistry pluginRegistry,
+        ApiManagerConfig config
+    ) {
+        this.storage = storage;
+        this.query = query;
+        this.securityContext = securityContext;
+        this.pluginRegistry = pluginRegistry;
+        this.config = config;
+    }
+
     public PluginResourceImpl() {
     }
 
@@ -121,7 +133,7 @@ public class PluginResourceImpl implements IPluginResource {
 
         boolean isSnapshot = PluginUtils.isSnapshot(coordinates);
         if (isSnapshot) {
-            log.debug("Loading a snapshot version of plugin: " + coordinates); //$NON-NLS-1$
+            LOGGER.debug("Loading a snapshot version of plugin: " + coordinates); //$NON-NLS-1$
         }
         boolean isUpgrade = isSnapshot || bean.isUpgrade();
 
@@ -145,7 +157,6 @@ public class PluginResourceImpl implements IPluginResource {
         pluginBean.setCreatedBy(securityContext.getCurrentUser());
         pluginBean.setCreatedOn(new Date());
         try {
-            storage.beginTx();
             PluginBean existingPlugin = storage.getPlugin(bean.getGroupId(), bean.getArtifactId());
 
             boolean hasExistingPlugin = existingPlugin != null && !existingPlugin.isDeleted();
@@ -186,7 +197,7 @@ public class PluginResourceImpl implements IPluginResource {
             int createdPolicyDefCounter = 0;
             int updatedPolicyDefCounter = 0;
             for (URL url : policyDefs) {
-                PolicyDefinitionBean policyDef = (PolicyDefinitionBean) mapper.reader(PolicyDefinitionBean.class).readValue(url);
+                PolicyDefinitionBean policyDef = (PolicyDefinitionBean) MAPPER.reader(PolicyDefinitionBean.class).readValue(url);
                 if (policyDef.getId() == null || policyDef.getId().trim().isEmpty()) {
                     throw ExceptionFactory.policyDefInvalidException(Messages.i18n.format("PluginResourceImpl.MissingPolicyDefId", policyDef.getName())); //$NON-NLS-1$
                 }
@@ -220,18 +231,15 @@ public class PluginResourceImpl implements IPluginResource {
                 }
             }
 
-            storage.commitTx();
-            log.info(String.format("Created plugin mvn:%s:%s:%s", pluginBean.getGroupId(), pluginBean.getArtifactId(),  //$NON-NLS-1$
+            LOGGER.info(String.format("Created plugin mvn:%s:%s:%s", pluginBean.getGroupId(), pluginBean.getArtifactId(),  //$NON-NLS-1$
                     pluginBean.getVersion()));
-            log.info(String.format("\tCreated %s policy definitions from plugin.", String.valueOf(createdPolicyDefCounter))); //$NON-NLS-1$
+            LOGGER.info(String.format("\tCreated %s policy definitions from plugin.", String.valueOf(createdPolicyDefCounter))); //$NON-NLS-1$
             if (isUpdatePolicyDefs) {
-                log.info(String.format("\tUpdated %s policy definitions from plugin.", String.valueOf(updatedPolicyDefCounter))); //$NON-NLS-1$
+                LOGGER.info(String.format("\tUpdated %s policy definitions from plugin.", String.valueOf(updatedPolicyDefCounter))); //$NON-NLS-1$
             }
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
         return pluginBean;
@@ -245,18 +253,14 @@ public class PluginResourceImpl implements IPluginResource {
         securityContext.checkAdminPermissions();
 
         try {
-            storage.beginTx();
             PluginBean bean = storage.getPlugin(pluginId);
             if (bean == null) {
                 throw ExceptionFactory.pluginNotFoundException(pluginId);
             }
-            storage.commitTx();
             return bean;
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -272,7 +276,6 @@ public class PluginResourceImpl implements IPluginResource {
         try {
             List<PolicyDefinitionSummaryBean> policyDefs = query.listPluginPolicyDefs(pluginId);
 
-            storage.beginTx();
             PluginBean pbean = storage.getPlugin(pluginId);
             if (pbean == null) {
                 throw ExceptionFactory.pluginNotFoundException(pluginId);
@@ -289,14 +292,11 @@ public class PluginResourceImpl implements IPluginResource {
                 }
             }
 
-            storage.commitTx();
-            log.info(String.format("Deleted plugin mvn:%s:%s:%s", pbean.getGroupId(), pbean.getArtifactId(),  //$NON-NLS-1$
+            LOGGER.info(String.format("Deleted plugin mvn:%s:%s:%s", pbean.getGroupId(), pbean.getArtifactId(),  //$NON-NLS-1$
                     pbean.getVersion()));
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -327,18 +327,14 @@ public class PluginResourceImpl implements IPluginResource {
         PluginBean pbean;
         PolicyDefinitionBean pdBean;
         try {
-            storage.beginTx();
             pbean = storage.getPlugin(pluginId);
             if (pbean == null) {
                 throw ExceptionFactory.pluginNotFoundException(pluginId);
             }
             pdBean = storage.getPolicyDefinition(policyDefId);
-            storage.rollbackTx();
         } catch (AbstractRestException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
         PluginCoordinates coordinates = new PluginCoordinates(pbean.getGroupId(), pbean.getArtifactId(),
@@ -394,19 +390,14 @@ public class PluginResourceImpl implements IPluginResource {
         for (URI registryUrl : registries) {
             PluginRegistryBean registry = loadRegistry(registryUrl);
             if (registry == null) {
-                System.out.println("WARN: plugin registry failed to load - " + registryUrl); //$NON-NLS-1$
+                LOGGER.warn("Plugin registry failed to load: {0}", registryUrl); //$NON-NLS-1$
             } else {
                 rval.addAll(registry.getPlugins());
             }
         }
 
         // Sort before returning
-        Collections.sort(rval, new Comparator<PluginSummaryBean>() {
-            @Override
-            public int compare(PluginSummaryBean o1, PluginSummaryBean o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
+        rval.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
         return rval;
     }
 
@@ -422,7 +413,7 @@ public class PluginResourceImpl implements IPluginResource {
             return fromCache;
         }
         try {
-            PluginRegistryBean registry = mapper.reader(PluginRegistryBean.class).readValue(registryUrl.toURL());
+            PluginRegistryBean registry = MAPPER.reader(PluginRegistryBean.class).readValue(registryUrl.toURL());
             registryCache.put(registryUrl, registry);
             return registry;
         } catch (IOException e) {

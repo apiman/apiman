@@ -148,7 +148,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
                 request.add(index);
             }
 
-            ActionListener<BulkResponse> listener = new ActionListener<BulkResponse>() {
+            ActionListener<BulkResponse> listener = new ActionListener<>() {
                 @Override
                 public void onResponse(BulkResponse bulkItemResponses) {
                     if (bulkItemResponses.hasFailures()) {

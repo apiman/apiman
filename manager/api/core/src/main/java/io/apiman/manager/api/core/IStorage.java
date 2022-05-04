@@ -16,7 +16,6 @@
 package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiDefinitionBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -27,6 +26,9 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
 import io.apiman.manager.api.beans.download.DownloadBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.idm.DiscoverabilityEntity;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
@@ -44,6 +46,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the persistent storage interface for Apiman DT.
@@ -55,11 +58,11 @@ public interface IStorage {
     /*
      * Transaction related methods
      */
-
-    public void beginTx() throws StorageException;
-    public void commitTx() throws StorageException;
-    public void rollbackTx();
-    public void initialize();
+    //
+    // public void beginTx() throws StorageException;
+    // public void commitTx() throws StorageException;
+    // public void rollbackTx();
+    // public void initialize();
 
     /*
      * Various creation methods.  These are called by the REST layer to create stuff.
@@ -77,6 +80,7 @@ public interface IStorage {
     public void createGateway(GatewayBean gateway) throws StorageException;
     public void createPlugin(PluginBean plugin) throws StorageException;
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
+
     public void createAuditEntry(AuditEntryBean entry) throws StorageException;
     public void createDownload(DownloadBean download) throws StorageException;
     public void createDeveloper(DeveloperBean developerBean) throws StorageException;
@@ -88,6 +92,7 @@ public interface IStorage {
     public void updateOrganization(OrganizationBean organization) throws StorageException;
     public void updateClient(ClientBean client) throws StorageException;
     public void updateClientVersion(ClientVersionBean version) throws StorageException;
+    public void updateContract(ContractBean contract) throws StorageException;
     public void updateApi(ApiBean api) throws StorageException;
     public void updateApiVersion(ApiVersionBean version) throws StorageException;
     public void updateApiDefinition(ApiVersionBean version, InputStream definitionStream) throws StorageException;
@@ -134,6 +139,7 @@ public interface IStorage {
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException;
     public PolicyBean getPolicy(PolicyType type, String organizationId, String entityId, String version, Long id) throws StorageException;
     public GatewayBean getGateway(String id) throws StorageException;
+    public List<GatewayBean> getGateways(Set<String> id) throws StorageException;
     public PluginBean getPlugin(long id) throws StorageException;
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException;
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException;
@@ -164,6 +170,7 @@ public interface IStorage {
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException;
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException;
     public void deleteMemberships(String userId, String organizationId) throws StorageException;
+    List<DiscoverabilityEntity> getOrgApiPlansWithDiscoverability(String orgId, Set<DiscoverabilityLevel> visibilities);
 
     /*
      * Export related storage methods (get-all)
@@ -205,4 +212,17 @@ public interface IStorage {
      */
     public Iterator<ApiVersionBean> getAllPublicApiVersions() throws StorageException;
 
+    List<UserBean> getAllUsersWithPermission(PermissionType permission, String orgName) throws StorageException;
+    List<UserBean> getAllUsersWithRole(String roleName, String orgName) throws StorageException;
+
+    void flush();
+
+    <T> T merge(T o);
+
+        /**
+         * Get an object reference by its key without speaking to the database (key-only skeleton).
+         *
+         * <p>This is particularly useful when you want to persist a related entity without first having to look it up in the database.
+         */
+    <T> T getEntityObjectReference(Class<T> klazz, Object primaryKey);
 }

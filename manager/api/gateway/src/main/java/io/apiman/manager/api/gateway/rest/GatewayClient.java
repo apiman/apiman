@@ -15,17 +15,22 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.util.MediaType;
 import io.apiman.gateway.api.rest.IApiResource;
 import io.apiman.gateway.api.rest.IClientResource;
 import io.apiman.gateway.api.rest.ISystemResource;
 import io.apiman.gateway.api.rest.exceptions.GatewayApiErrorBean;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
-import io.apiman.gateway.engine.beans.GatewayEndpoint;
 import io.apiman.gateway.engine.beans.Client;
+import io.apiman.gateway.engine.beans.GatewayEndpoint;
+import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.apiman.gateway.engine.policies.probe.ProbeRegistry;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.i18n.Messages;
 
@@ -33,20 +38,24 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.core.UriBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A REST client for accessing the Gateway API.
@@ -77,6 +86,47 @@ public class GatewayClient /*implements ISystemResource, IApiResource, IClientRe
 
         if (this.endpoint.endsWith("/")) { //$NON-NLS-1$
             this.endpoint = this.endpoint.substring(0, this.endpoint.length() - 1);
+        }
+    }
+
+    public IPolicyProbeResponse probePolicy(String orgId, String apiId, String apiVersion, int idx) throws GatewayAuthenticationException {
+        return probePolicy(orgId, apiId, apiVersion, idx, "", "");
+    }
+
+    public IPolicyProbeResponse probePolicy(String orgId, String apiId, String apiVersion, int idx, String apiKey, String rawPayload) throws GatewayAuthenticationException {
+        InputStream probeResponseIs = null;
+        try {
+            UriBuilder probeUrl = UriBuilder.fromUri(endpoint)
+                    .path("organizations")
+                    .path(orgId)
+                    .path("apis")
+                    .path(apiId)
+                    .path("versions")
+                    .path(apiVersion)
+                    .path("policies")
+                    .path(String.valueOf(idx));
+            if (apiKey != null && !apiKey.isBlank()) {
+                probeUrl.queryParam("apiKey", apiKey);
+            }
+            HttpPost post = new HttpPost(probeUrl.build());
+            post.setHeader("Content-Type", MediaType.APPLICATION_JSON);
+            HttpEntity entity = new ByteArrayEntity(rawPayload.getBytes(StandardCharsets.UTF_8), ContentType.APPLICATION_JSON);
+            post.setEntity(entity);
+            HttpResponse response = httpClient.execute(post);
+            int actualStatusCode = response.getStatusLine().getStatusCode();
+            if (actualStatusCode == 401 || actualStatusCode == 403) {
+                throw new GatewayAuthenticationException();
+            } else if (!(actualStatusCode / 100 == 2)) {
+                throw new RuntimeException("System status check failed: " + actualStatusCode + ": " + response.getStatusLine()); //$NON-NLS-1$
+            }
+            probeResponseIs = response.getEntity().getContent();
+            return ProbeRegistry.deserialize(probeResponseIs);
+        } catch (GatewayAuthenticationException | RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(probeResponseIs);
         }
     }
 

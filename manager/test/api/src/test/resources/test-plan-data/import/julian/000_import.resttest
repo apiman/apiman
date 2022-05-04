@@ -1,0 +1,3449 @@
+POST /system/import admin/admin
+Content-Type: application/json
+
+{
+  "Metadata" : {
+    "id" : 1635172998268,
+    "exportedOn" : "2021-10-25T14:43:18Z",
+    "apimanVersion" : "2.1.1-SNAPSHOT"
+  },
+  "Users" : [ {
+    "username" : "admin",
+    "fullName" : "apiman admin",
+    "email" : "admin@example.org",
+    "joinedOn" : "2021-10-25T08:18:49Z",
+    "admin" : false
+  } ],
+  "Gateways" : [ {
+    "id" : "TheGateway",
+    "name" : "The Gateway",
+    "description" : "This is the default gateway.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "modifiedBy" : "admin",
+    "modifiedOn" : "2018-05-09T12:00:00Z",
+    "type" : "REST",
+      "configuration": "{\"endpoint\":\"http://localhost:7070/mock-gateway\",\"username\":\"admin\",\"password\":\"$CRYPT::j8rdW76Z5gUI0I+9c8/GrA==\"}"
+  } ],
+  "Plugins" : [ ],
+  "Roles" : [ {
+    "id" : "APIDeveloper",
+    "name" : "API Developer",
+    "description" : "Users responsible for creating and managing APIs should be granted this role within an Organization.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-05-16T12:34:14Z",
+    "autoGrant" : false,
+    "permissions" : [ "apiView", "apiAdmin", "orgView", "planEdit", "apiEdit", "planAdmin", "planView" ]
+  }, {
+    "id" : "ClientAppDeveloper",
+    "name" : "Client App Developer",
+    "description" : "Users responsible for creating and managing client apps should be granted this role within an Organization.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-05-16T12:34:14Z",
+    "autoGrant" : false,
+    "permissions" : [ "clientEdit", "clientAdmin", "clientView", "orgView" ]
+  }, {
+    "id" : "OrganizationOwner",
+    "name" : "Organization Owner",
+    "description" : "Automatically granted to the user who creates an Organization.  Grants all privileges.",
+    "createdBy" : "admin",
+    "createdOn" : "2016-05-16T12:34:14Z",
+    "autoGrant" : true,
+    "permissions" : [ "clientEdit", "orgAdmin", "apiView", "clientAdmin", "apiAdmin", "clientView", "orgView", "planEdit", "apiEdit", "planAdmin", "orgEdit", "planView" ]
+  } ],
+  "PolicyDefinitions" : [ {
+    "id" : "AuthorizationPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.AuthorizationPolicy",
+    "name" : "Authorization Policy",
+    "description" : "Enables fine grained authorization to API resources based on authenticated user roles.",
+    "icon" : "users",
+    "templates" : [ {
+      "template" : "Appropriate authorization roles are required.  There are ${rules.size()} authorization rules defined."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "BASICAuthenticationPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
+    "name" : "BASIC Authentication Policy",
+    "description" : "Enables HTTP BASIC Authentication on an API.  Some configuration required.",
+    "icon" : "lock",
+    "templates" : [ {
+      "template" : "Access to the API is protected by BASIC Authentication through the '${realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end API via the '${forwardIdentityHttpHeader}' custom HTTP header.@end{}"
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "CachingResourcesPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.CachingResourcesPolicy",
+    "name" : "Caching Resources Policy",
+    "description" : "Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.",
+    "icon" : "hdd-o",
+    "templates" : [ {
+      "template" : "API responses will be cached for @{ttl} seconds."
+    } ],
+    "deleted" : false
+  }, {
+    "id" : "IPBlacklistPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
+    "name" : "IP Blacklist Policy",
+    "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
+    "icon" : "thumbs-down",
+    "templates" : [ {
+      "template" : "Requests that originate from the set of ${ipList.size()} configured IP address(es) will be denied access to the managed API."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "IPWhitelistPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
+    "name" : "IP Whitelist Policy",
+    "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
+    "icon" : "filter",
+    "templates" : [ {
+      "template" : "Only requests that originate from the set of ${ipList.size()} configured IP address(es) will be allowed to invoke the managed API."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "IgnoredResourcesPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy",
+    "name" : "Ignored Resources Policy",
+    "description" : "Requests satisfying the provided regular expression will be ignored.",
+    "icon" : "eye-slash",
+    "templates" : [ {
+      "template" : "Requests matching any of the ${rules.size()} regular expressions provided will receive a 404 error code."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "QuotaPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.QuotaPolicy",
+    "name" : "Quota Policy",
+    "description" : "Provides a way to limit the total number of requests that can be sent to an API.",
+    "icon" : "exchange",
+    "templates" : [ {
+      "template" : "Consumers cannot exceed their quota of ${limit} requests per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "RateLimitingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
+    "name" : "Rate Limiting Policy",
+    "description" : "Enforces rate configurable request rate limits on an API.  This ensures that consumers can't overload an API with too many requests.",
+    "icon" : "sliders",
+    "templates" : [ {
+      "template" : "Consumers are limited to ${limit} requests per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "TimeRestrictedAccessPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy",
+    "name" : "Time Restricted Access Policy",
+    "description" : "Requests matching the specified regular expression and made within the specified time period will be ignored.",
+    "icon" : "clock-o",
+    "templates" : [ {
+      "template" : "Requests matching the regular expression and made outside the specified time period will receive a 423 error code."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "TransferQuotaPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.TransferQuotaPolicy",
+    "name" : "Transfer Quota Policy",
+    "description" : "Provides a way to limit the total number of bytes that can be transferred from (or to) an API.",
+    "icon" : "download",
+    "templates" : [ {
+      "template" : "Consumers are limited to transferring ${limit} bytes per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "URLRewritingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.URLRewritingPolicy",
+    "name" : "URL Rewriting Policy",
+    "description" : "Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway.",
+    "icon" : "pencil-square",
+    "templates" : [ {
+      "template" : "Requests and/or responses will be modified by finding all text matching regular expression '${fromRegex}' with '${toReplacement}'."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  } ],
+  "Developers" : [ ],
+  "Blobs" : [ {
+    "id" : "46d2-be8b-02a22dfe72ae/admin1635150441005_jpeg",
+    "name" : "admin1635150441005.jpeg",
+    "mimeType" : "image/jpeg",
+    "createdOn" : "2021-10-25T10:27:21.055209+02:00",
+    "modifiedOn" : "2021-10-25T10:27:21.055327+02:00",
+    "blob" : "/9j/4AAQSkZJRgABAQAAAQABAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAIQAABtbnRyUkdCIFhZWiAAAAAAAAAAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAAHRyWFlaAAABZAAAABRnWFlaAAABeAAAABRiWFlaAAABjAAAABRyVFJDAAABoAAAAChnVFJDAAABoAAAAChiVFJDAAABoAAAACh3dHB0AAAByAAAABRjcHJ0AAAB3AAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAFgAAAAcAHMAUgBHAEIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFhZWiAAAAAAAABvogAAOPUAAAOQWFlaIAAAAAAAAGKZAAC3hQAAGNpYWVogAAAAAAAAJKAAAA+EAAC2z3BhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABYWVogAAAAAAAA9tYAAQAAAADTLW1sdWMAAAAAAAAAAQAAAAxlblVTAAAAIAAAABwARwBvAG8AZwBsAGUAIABJAG4AYwAuACAAMgAwADEANv/bAEMAAwICAgICAwICAgMDAwMEBgQEBAQECAYGBQYJCAoKCQgJCQoMDwwKCw4LCQkNEQ0ODxAQERAKDBITEhATDxAQEP/bAEMBAwMDBAMECAQECBALCQsQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEP/AABEIAJYAlgMBIgACEQEDEQH/xAAdAAABBAMBAQAAAAAAAAAAAAAGBAUHCAADCQIB/8QARRAAAQMDAwEFBQQHBQYHAAAAAQIDBAAFEQYSITEHCBNBUSJhcYGRFDKhsQkVFiNSwfAzQoKi0RckJXLC4Sc0Q2JjkpP/xAAbAQACAwEBAQAAAAAAAAAAAAACAwEEBQYAB//EADMRAAICAQIDBQcDBAMAAAAAAAECAAMRBCEFEjEGIkFRsRNhcYGRocEUFdEWI3LwMuHx/9oADAMBAAIRAxEAPwC/9mvMlkNmJFWWzwriipq/yQ2CuMRQDZtWBgrCG0qGeU+Yp2d1eXW/ZaSCM8CrhGZUhai/tKPtJ2n0Ipa1MZfSRnBHv99BMO6tTzt9lJHNO0YPJOB14PTpUcoMjAMJTtUc+/BzXlbCccADP9fnTWZi2ACUkkEdfM/0aWRrg28gHdg++owR0gkYmORUnIG4eYH9eVJHo4WvBTkD+v5/hTiXQTzzx9K1uAEcDOfKhyZKxmciN4SFJBONpwOMYPl9a0fZmlnAbCcEE+fp/wBzn308KQdqkkY8hgcgnikzzGFA7iCrBH04z/XlUExgjDIgIUrlJVgYwkcHOep+n0pJJt7KiR4SUhfOPcOfrjOB15FErjaN7nJynACfTz6f10pK9FbQoIzu25AUTnHPPX5k16TBRdnY2qaS3tUTgFKfuqx0z7vz+lajamgppSUDfvJ4H3eCP50SrjNJbWtz93tGcJ+9xgFXxOMfEivK46C0pzcgJG4qUnBCR16+g5Hl5+pr20gwLdtm5YXt9lKiACMcjz564KfxBHlSN+1YaWpLICk+z05JwSPnjA+nuo3XBaeWpZyUbtxCeDjPIx5g4P41okxUoGcALWRhOOT7WM9eR0GfL6VO0jJEAl2lxOEqG3kJUrHHwHxyaSyLQpALnQpSCSeT06fEDy99HztpQkLWlZDSEKwE8ZA5zj4Dyryu0oWEuLRnkH2M4xj3dPP5mpAB6z2TI6XblJySwpYBCcYPB6/z/Oso9kWOMpJbfSoJC84ScEnHmcj38Vle5BJ5jKQ6Y78NtkamtcBdmUlqVJbirWleThagkEjHOM1bG6XlyMjxuE+Y8q426YmeBqe0yVKwGZ8dZPwcBrrl2qQMw7ept1SEvJUrIOATgY/OiY8oyIOO8Mx2tmvGlvhta0BQIOc4qTbLfhJbQsOJUCDgZyeKp5dJMqzqQ6kk/wAK+aW2XtR1JblD7PPO0f3D92kjUDODLHscjIMu0xJbfRha0kE8+6m64XM29W9tAwBge/3CoE0r3gFs7UXhg44BUDkUZL7TbVewgx30+0CfaPTNMDq24MUayOoh1F1xHDhQ8oJwR18+tEMS+xJzaVMupJPHCuhqFpEtp8FaFDrjI862WOTIZmJQl0hKiPM14sDPco8JOKnQ4nxEqylXJx69f9PpSOS4pLLpA3gJVkcYOBzj8PrSG1yZC4/Kyd6Qcnzz7vLjHFfbrJDdqmq3KBajOrBJ6naTj4cflihM9jaVP7yfeF192edldk1npTWKWpl0fU0GVw2XNoSOTkpz5+dVHX+ki7ysYlBvVmkp6Eu2tHn16EU3d4rXsTUGltLWuI/J/wB0iL8ZtZ/d7ySdyR7wRn4VV95wlZI9cUz2isdsYiaEJTmYy2jX6TXvHRwAlemnB6KthB+ocpya/SkdvwQlDti0e6TnIVAeGc49HqpkVknFfQVV4kCPCjpLqR/0pPbYCpMjSGklhatxLTDyDnnPVw+po50F+kP7T9X3Ji3StJWhlLignLSjxk9eU/zrnsg5UKmjsIaQ5qOGCcjxEj8a8h5jjECxcKcTrzpp/Xl7sEOe8iAFPNJc4OcgjjIwOaSay1TrvStnkXBqyQpRYQVgqcwAceY3DI56Zow0G2lvSdsbz0jNj/KKHO2daWNGzlZ6owKNVBbErnPLnMq/ce+7rqzSnI50DaHSlRTuStafr7RrKr7rF1tu5OKyPacNZRlQDiMQMRnMqswJCHA40k7kEKHuIrsV2kM3Kb2c6bugjrK3YzS1FIz95pJrl5ZNNsPoBcbAyAc12j0ZCh3jsr0iuSy2805Z4DmFDPWOilONsHxng3MQR4SmF5N3cgoTJiO7UZ9rB6UNNLKFZzj51fS59menJkRSFQWUI2kk44/rrVL9Su6K1HH/AGk7ObuxdLV9oXGW+whaUh0JSopwoA9FpPTzFU7KuXcGXKrc90xvgyFKA3EenFPsV5xspU2tQxzkGhmCtKV7D970oijEeGknnFIJlgYhPbdTXKKAkvqUPicUWWbWzIeaVK/dkKHteVR/HwUgYOaUJ9ggUQsYSCimWe0xqyI/HQ34qVZCUgemep+n5U8ammx/2Uu7qHEpDdtkEHPQhtRz+X9Cq+2yXJjJQpl1SeeoNFNw1FMGi76XHVFSLVMOc8f2SsZq4pDiVXXlnKHtZdQ3FsxblJd3xAojzRyRg/TNRM4rk4NF+s7oJ5ipBOGmEt8+6g1Z5+VCiBBgSeUIABPPXzNfc5OATivG4YORXpJyaORN6Dg5qReynU7divsWS6valDiSfrUb7gE4AB8q3RZLjLm5K8HyIo0yDmCdxidYdO97LTUV+3xxfEtxWmEIWE+10TSjts70vZ9cdEqjxLqFvyBwkDoPfXK5rU1wa5EhYx6Gk101LcpaQlyQtQHT2qYLFU5xFNUW2ztJl1h2jwZszfFkJV7RJ5rKgBc91R9onPvrKE2AmGFk/WK5NoSBgZxXV/sFuN8n93fSV0+1IedRbIyWyfJtCQhKT8ANvyrkHZdykpJViuofddnsTe7rpNpu7lp2Kw+w8jPkJLm0/IYprjYGVF6ye42rIbdmlS754cNphhbj7jqgEBCRlSiemMVzv7uJif7J51mWyqLKRKaubcd5YLrrLsdtAeAyTtUppQHw6DIzZ3vPx7jF7s+vFRbgF7baF+IFZ48VBUPLqMj4E1QbsyU/C7Q7HLavLbqZsB5laGkFAOxtxO0+0eP3aD6cCs/UWCuxV85eoqexCw8JPqo8ZUgKQUg5zTy03tQOlADOpIDN0ERya0Hc/cKwFfTrRcjU9kYVGiTblGaflHYw0txIU4rBOEjOTwDSiI8Zj9HJHPSlAKiU85564pGxNiL4DqeffSttxtR4WDQEQob21CTHQcDOMU8ahYDXZ/qRzZ9yzTVHn/4FnP4U12rmM3lQ4ommWs3bR19trbqQuZa5MdOTwCppaR+Jq3UJXsOJxevkxMl1BQ0EAJAwKYnOFkYqz3b33N9ddkUdu5yFNTYK0jY+0fvfLrVb51qlxXD4rK0465TRnrvCyCMiIBnIyOteihaTkpOK9Mja6MjpTkFJUkEox60QGRFmN2SE4AGfhXgKPwpzXHYUnI60lVETnKFECixtiRmaSsjjNeHFEitio6k85zWpxCscA5oCIUSrTzWV6IOeTWUOIJ90mmxjKEDdn310E7pIaT2RxZMp8oYbclNjCVH2w4VHgA/xVzgs10KABu9OtdBO7r2hQtBdin7NzVsv3GRJXKLSxtbaac6K8TBIP3cgDnd14q6VLDCyoCFPe2k3dp1thaz7IdT6UhXeIn9Z21xnC3drnr904I6eYqjI7DtUO6jjz9NahENthLmVrjh51IUkg5yRnOcfOrG6fl3XtSvD+k77d2IlrnNqaDlqUHVoWSCgrSTuUOMEDHWhvX/d11PoO4qjQNc2h87QtLbswwpCgemG3ME/WlvpUZh7TrH16lqgfZnY9ZX7Vvds1e+45cLY+1Mub5Tukup8IggYylKQcHAHOadOzruea+kakg3e2SRNuMRsvyA8rHhJCdpIcWoAfeHpVyu692f3C+2i7zdeNoloiONwoiUyVYyE5Wo7FAE8pGSM8GpI11Y7R2bWSRdrNCYS5cQLerxlhZQ2vKjtz7RPs4xu86U9FeeResd+46hkwcYEp05oLVlllOW6TOaU6ycK8KQHUD4LQSk/I0qVBvtsYEyddWGG0qxvedCQD8TQ12060GkER2dPWa3x35bfiqdLOFoKioeyOUnBSeTz049K23nX+o3HpE25ajlrW0oqbcdIIGR0BOAkckYA6cdKrvQqnlja7mZQ0tnbu8PZo0tNrj3Bq4LZxuU2FJR1xkEjn5cVMdv7Z9O27S90vplpdXboD8sMOHaXS22pW354xXLJnXLlvuapNuR9qfd9kJ5CdxI4AHJ5qw8S63W6aUuEFopE2db3WUNr9lHiLaIwr0GTzmlh2qPujORLR75KGvO9G93o9Pvad0zpmBa3LAwzKVKmvlA8knHtY4VjGetVq1vetY3NxbF4i2acvKm/FjMIWokccEe186bXdN9vtjhP2yy2p5UctYkR7TBakIcQMEqHghalAYyVLCcVGsd7U024/ZU3dTMlKtuFyfCwonG3HBznyxV1SMecqjIOxjetbgmKDzSUrQvBG3BBzTqhTbgwtCSKTz9O363vKdmx1ryrKnQrcD8xWpMksqCXQQaFSBtCYHrFzkOMtGUkpV5EGkTsFxHKHAr8K2JmoPQmvSpCCMBX4UeRAwYgdDqMhSSKTOL4/wC1ODjqTyDnPrSOYUeGSEjPupeB5yc5jetZUaytasA5NZUSJf2P2O9j8uMGI+mW2kqSACh9S1D57sn40RXPSNiasSYllvr8d9na2W3WPFQ4hOCkEbk4wUg5yenSiN2TY9AXU3bUbKGrawvKnEtb9iVqKEcDnqoZo8hQtAalY8RD1v8AGdG9CUPhtR/wnB/CvnY7WarSEMVJHnPqt/Zjh2oGCMfCVXuFw1paZLiV6WVLZQo7HY72FKHkcEHHwzXn/a/f4+2Pcv2khISMYeKnG0/JKj+Aqz1x7L7G814rUx1kIycgAio215YmNLBhxxBnNPvFkHG3BxkHCsg9DWpou2/6lgpXf4TJ1HYPT4LUuQIFaX7y+rtKo+y6a7Q3oLJc8XwHEgJUr1KVp56CjW4d8ftAvFrbtd+ftN9b3pcw3EKFpI4CsoKU8An/AENRVrG5dmECHElangrhNT1ONtOIj59pASTnZ/zCheFp3sPviRItuuYjS0rz4bkkR15/5V7Sa3U7QV2AO9ZHvxMS7shbWxRLVJ8icGNXeZ7cH9QXhiGxp2JGkfZmFpkl1Sy1tLoUlKeBhZWCcgkbE4PXNcZdznXB3dIkOvHPGTwPgPKrT3vu66T1GtNw/aGc8SkJQsSA6AnyAPPHNMEvuyRYIKoV0eWAkkFxCR08s8c8/hRnimmtPMrD6xA7O6+ocrIceY6SC9PplxpAfbUErI6jhQ+dSxZH9SRG0KYubwyAcFWePnRLZe79c0NomeKhxJ6JCMq+BAPFG8DsrfS1sdcSlxSAUpSnJ56DHXPupZuFu4Mspw9qBh13gRD1prGHgeM25j+Nvn8KUStUSr0r/jWlbfcSo+0p5oKJ+ozR3I7F9SQEh2RGX4Z5BKK3t6MkxYixHa2zAn2A6jKQfeOOKYpdT1xAs0lTDPLmC1l0ro7UKA0Oz6dGUBy5b5CkJA96SSj15IP04oX1L2QaVQqawm5XBlcUKLSHoSHFHjO3ehaQSfUjHFTPb9Q6y08hLNy0gzIaAwVxHNvHryMD4fjQpdr1Guk2SfsT0ZS8jwnm9qugzj18uRxWnSA4wWyf9+cwNSttJz7MqP8AflICa7MXp8kR9PXGNclrX4YaQrY5v/h2OBBJ8sJz7s0jvfZXrSwqKbpaJMVxOVFp9lbagnPX2hjHB86OpcV2PMWr7KRuWpQ3II/vZ6+uaeO0btJ7QNX6Usulo+oLpFj2yM40tTtzceU64p1StxJG5ICSlITuI9kHrTfYjGfGU/1Bz0kDSrXcYqtr0ZwcZyBkY9abJRUE4IPzqXWhqValG4/qq4hw5w6woLB9yxhQ+uKTz9P2mc2VTdPSY7ijhSmnEuoP/uyoBQ+H40ko3hHixfGQ2onOMVlSNJ0DalrJjvuJGepaUkn5Ddj61lCQR1ni4l9e2Gzpd0Hfm5MtDam2S97R6lC9+0e/2a2WbS7yZENQWlTK4pcTk8EHZwactesM3js+vkl0pWmXaXZCARkEqbKkkfUUhhXB1y02KUwcJcghKiOmcIP8q+R94V8i+Z9J9wRuZg3uEbbm7OhNym7bPlMORFOYDbik4JJV6+hFDmqbvebsgNXKa482wtLidyQSFnIGTjP40WIjtyxeXFK9twlRyPPwkCmSTbiUXnxVstiGwqSsvK2+y2cnb6n0Hn5Va0lfM4ULlvvCttWpS7HC+PlIL7xEMo0hpx1QAP2uXxjkDa3/AKVWy4pCQojzNWL7b7s5qPR9kbhR3XHkz3mkthB3qKkZHsnkdD1FQq72d66lAbdLXEIPOSwr88V1vCmxVh9tz6zie0Sl9QSgzsOnwl2u4d3S+yLtT7Hk9oOsV3Zd3lXKTER4VwcZZaS2Rjahspyo5ySonpxjmrFXruIaakrbf0r2j6jtqUJCfs/23xmuM84eS5zz7hxQv+j203Fgd3+1WzUqYEW6QtQzZMRmasJdQtSNoWgZBBKFLGfQmrJRtH3WPFMZxm72pUdiM00YdzMhpaGFqUlI35V7QO1ZKQpQ4zwDXQ+wotUFlB+IBnFjV6rTuQjsvwJH2lEe2mzNdjuolaMhT5NzuENtKpUiSlCUncnICdgGTggngY99QfcO88vRd4/VU2wSVoKUuF2PKwRyf7ihg9PM1N3ereZtevpk3VE0MLYt0IPLcVklwR0ZT6lWfIck1QzX12b1FqFy4RmVNtBCW0BR5IGeT6delY44dp7HLcuPgSPSdCvHdfVWq8/N/kAfUS3lv772nbky3GuF1faScAJn21J2/wCJnP1Jomj9q+ndUxjOt8y3Pp6lbTxSPdkHpXPrwVnjFW30poeDdND6ekuxG1ui1xlpcKRuT+6Scg9RT14bdZkVXMMeeG9d4P8AUFdRBv06nPllfQ/iSa1qRzwlna67uUdob2FKU88cnmg64TZDjyP13Y3ZhbJWlx6I2SDkEH2CcAHngZ591C1u06ubIlvWyZcIUmKsNOK37iTtB6nPr61GvaNrztD0DqVu1x9RuO/7uH/3iNycKJABC93TafPzpL6bidW4ZSPmJeTjHB7+69brn4EfiWVi6rsmpymNerBGfcc9guORS2pCv+dO1R9Rkn8xSPUHZ/o+UtCVyX4alj2ejgB/ykD5n6VWO2947VzKgm7Wy2zkp8whTS/qCR+FTg7qVJiRJM2K4TJQkpSh3dsykKxzj+IVP71q9FhdSnXyIPrgz1fZ7hvGSzaFsY65BBGenTIgXfoEjT/jPCDcHENLKQERlOFwZwCnZnr78UjRqUxIypb777DaWytSZDaknb5jaoc/CpCjS/t0dUiO9IbQFYIUEk5/GtL81p9lxlL8d4p4WnI4+I8qdV2koc4O3xErX9ib6/8Agc/T/qQPfe0K73GTnS8Qw2U/ecKAS4fXaeEg+n5dKyprEW1lI3WWI4r+ItJJP1FZR/uVbbhx9ZWHZ25O6UP0lpdJmLqzso0tGlyAyJ+lokd13G4pV9mCSojIzg+WRRBb+yxqDp23W606whTjBQkH7Qwpgrw2U5GCsDn1VUZxu2ta9A6d15rrRjLVuurbba5iEGKGQUkAhTSuEFScDcnPIPSiy09oFuVEalxpkiPDmDxGluxwtDoIGMOI2+WOiTXA67QarSsWRcgnODn/AM+87zR6qnUVqFfcAbgg5+XX7T3K7PdXwpM5bVsVLDycp+xrD+RtAJ2oJIHHmKBdTF5y1KfcQtt1cdK1JUkgjJBwQfjUguS5k9nw49yblNb0uYjSQT8drgSoEegoR1zqO7GwSbbNNyQh/aQmW2oeyMnqenIHQ/WkUXEsOZSD9pqcndPeBH0Mrh2+o8PQ0G7RgWnm7ohouI9k5LTpHI+FRTojWHavcJKoem794hj4OyUtJznOAFK5OcdM+mKlrtxKXey1xWQQi7R1j/8AN1P86grs5VFF3fbuDwZZcSMrVnCevOMHP0PWu14XWltGHUHfxnB9odRdptWDS5XI8DJ90X3iu3fRyxb3WLdKaQvcYrgCjuPUgLSvbx6AZqZrR35NVRYXg3qyPwSE4WqI+9Hznjjwljn4o4qqMJaXlobiXKS2VlW1OAUgAZJOSABjJ+XlSoru7W9Ue8pc8EqSsIO3b6BSVBOSTxnmtRaa8YXI+B/BmEeI6hj/AHeV/wDJR6jB+8mjtY1t2Z9u2qJGrL3NcanPJQjw3JpCGwlOMhOEpHxCeaAHuxHR8xe9oPlBG4LS6Snr+NCMqddmEgXO0RpSCkEqWxtPPluTjJ+GaRt3K2Jc8Vlifb1kn2osg4yOvHGfrVS3RMxyl5HxH8TQ03F9Oo5btGpHmp/Bz6yRld2zSryECDcVuOOHA4URnB4GD7qlK2bNLWSHYZEJxTcKI3D8VhYJASgJB2nocAeZqvkDVd8jub4WtHijI9ma1ke4FWDj5Gvl07ebzp2ULXIYizikBS1MOHanPIACtwzim0frdHl1IYe4g+snUPwXiIFbAofeCPuufST9CVZG3XExJTSVvkKWlxoNrWr1JwN3GBVYu8on/wARQ2E5229kc+XtLP8AOiu3d4XTEpaf1lbpERw4yfDCkD5pOf8ALXu6ai0Jql1L7NwhPvFG3D23OP8AEAaZdxZ2XltqIPnFV9nNO7c2n1AI8iRn8H7SvaWVHGE+dWsuqDHmNQV52RFJbAx6R2DQrG0VZbmhCGI0HxHVhICPToMZo41axuUiWkBAdDqwT54Xsz/lx8q53iupW568e/8AE7Psxw19ALeffPL9sxNZbnp9xty0T5khqW0ouDa3lGwhOOfXINKVw7clxSoF5jpcOOHcIKvQHPWga2LKL8+oqP8A5ZJyTnyBp5lOtyg4WiAUFCT8duf51jW0FbDyk7zoq7wy5YeJj1NjXaKUpVCaXnzQdv5VlDLjzqZKmErUPDaQo4UR94qH/TWVC1uB1H+/OF7QHf8Aj+JbjvO92jW1v0NYNEdnOj7zqGw2ucykhhbbj32VCDnOMYPJH3aEZY1LEh/qq2dhurdPuNlIYuC3AqRHSBhW3Kdpyng5SfI+QroDadTWSWwALm62s9Q+jYPljj8aXyGm5LXjhiPIbxw5uGD86uJr7KVxW2dyfHxnzy5RcwF67gYHh0nNKVI1ZbYabfaNFXpJRlS5c6QFvKJ5JUSn8q2WvtH19a1BmRZZjLQ9opS6Skn12KGCfnV8brp5uTLX9tsEZba/LYDx7j0NC9z0JpOUFJataGXR7JBHs/H+hWZbrfasSyAH5ia1DvSoVWJH1lONRap0Zq22qs2t+z+C4zKeS86sx1RFrcTnCi43gHr58UxM9jfd7n4VHtky3LX/AASlOJH+LofrVv7n2I2O5IwiG2tWMbm/L5UAap7AGIbBXbbap9as/wBmjapPv4plXE7q9lJHpDarT3n+6gJkFyO7n2d3Mj9n9SGE4GvDACynORg9TyTkg0Fai7s2t4dtcg2W+RpsMyEyi2pewrWkKCSSMA4yrAx5mpXuPZzdrepX2V2S2U5G1Q3DPx4IoeuFy1hpba1tfkoAJJaUQED5jJPzrV0/HrgcbNKl3A9FaNsrIRv2l+0iwyrjLl6ekoU6yGIpZJW1GAAT7IGOiQcdeTnrQozdzCaKpSZUaelCgFKR4RBJSOuNxykrzyPL4GzMLte27mrokJK+P37W0p/l+NJ7jdNEaiaC7lZ40tojDjrbSVEH4cfnWrXxyqzAtBWZlnZl171DBpWHUtwM62NRLPbYUdLJS4Sy2SpZwASpSiTjzx0B6VH18UP1i8d5JyByMf3RVxX+x/smvrbqoT/6ucVhSVBZSB8OcfWgXUvdPlOOG4aevrcoKO5PiEK3fMda0qdZXeMqwMx9TwnU6c4KGVqREkfe8FfPT2TX0xpaf/Qc/wDqamS+9mvaFZ5jj71ikOI3AJLCgtRGMdAR+VMy5z1uWqPerathzGSiTHKDj3fdP51dUI3jMp1tqOCIH6MfusXVNoRHkSY4enx217FFG4FxIwcdetWF1jcpNwj/AKtirS14SHEqWfvBJecWQPjmomdbcR2g6Ztptyoi/wBYRHVtqbWkkFxJzhYBxj5emake4qDk2S6pXJSMfEg1z/FwqXrjwB8POd52TD36S0OTgkdD5Rmtzy2brKCmy7sbQ3keXsCnhCo7XjPB3+0dBx6YbSPzpjgKdVdbgQBndtPHmBitynChG4r3kuKHp0OP5VjsnM30nT12co+Zjo1KQtx1YI3eyg/AAn/qrKZWHSHJCirAU7x8kpH8qyhNQzHJapG87Qt2yzy1lQh7dqsFPQE/Lyp1TcYERCIxhbUJTwGwMCsrKqgAGcXb39mPSb5bDUxkBpxbWec4BOKHbnY2YrfjLCTnHKcg1lZVfUqCMwdJYwYKDtGtdpJSrwnvDVjIUOSKZpkifGX4bjqHMj+9zxWVlUwSEmsnebeMt4EK4xyiZAZKjnK0jJx7s9KB7t2eWec0pbKdmfJQzWVlIYkbiXatthI8unZBp2VLCJbTZbzkhKeTQ5f+7jpzHj2ya7EcxkYJI/1rKypXUWoRytDdRmRneOy2/wBhlLkR9SIW2hOAlYJz+H86Fn7zd7K+UGUpDicZWwspz8j/AK1lZWvSxfvHrK4sddgfzHWFrS9SWVO/aBKZQQFJkpG4/AjnHzpUrVdnntli4WFCkHhSRhaT8lVlZV+jWXqwXmOI99HRahZkGfp6TWnSWiHnWr9F01GaejZdbWlAQpKkgkYxx18qjKHeI9zTIKGljbhslQHUJIPn61lZVzWkvh264gcKVaiUQYGT6CGlrlPx2WikoUhTCcpWgKHI99aZsGySUtmVZ2TtUSSyotE5JJ+7x1PmDWVlc/7R1c4M6QVI1eCIla0hY3FKDMqY0CSoJUhLmAT0zlOfpWVlZTfbWHcmUGRVOAJ//9k=",
+    "hash" : 8592392154997468227,
+    "refCount" : 1
+  } ],
+  "Orgs" : [ {
+    "OrganizationBean" : {
+      "id" : "admin",
+      "name" : "admin",
+      "description" : "",
+      "createdBy" : "admin",
+      "createdOn" : "2021-10-19T09:38:17Z",
+      "modifiedBy" : "admin",
+      "modifiedOn" : "2021-10-19T09:38:17Z"
+    },
+    "Memberships" : [ {
+      "id" : 999,
+      "userId" : "admin",
+      "roleId" : "OrganizationOwner",
+      "organizationId" : "admin",
+      "createdOn" : "2021-10-19T09:38:17Z"
+    } ],
+    "Plans" : [ {
+      "PlanBean" : {
+        "id" : "admin-plan",
+        "name" : "admin-plan",
+        "description" : "Eine Beschreibung",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T08:17:36Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1000,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T08:17:36Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T08:18:18Z",
+          "lockedOn" : "2021-10-20T08:18:22Z"
+        },
+        "Policies" : [ {
+          "id" : 1001,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "admin-plan",
+          "entityVersion" : "1.0",
+          "name" : "Transfer Quota Policy",
+          "configuration" : "{\"limit\":10485760000,\"granularity\":\"Api\",\"period\":\"Year\",\"direction\":\"both\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T08:18:01Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T08:18:01Z",
+          "definition" : {
+            "id" : "TransferQuotaPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        }, {
+          "id" : 1002,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "admin-plan",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":4000,\"granularity\":\"Ip\",\"period\":\"Month\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T08:18:18Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T08:18:18Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 2
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "day",
+        "name" : "day",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T16:01:11Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1003,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T16:01:11Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T16:01:30Z",
+          "lockedOn" : "2021-10-20T16:01:32Z"
+        },
+        "Policies" : [ {
+          "id" : 1004,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "day",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":12000,\"granularity\":\"Client\",\"period\":\"Day\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T16:01:30Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T16:01:30Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "endpoint",
+        "name" : "endpoint",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-25T08:24:38Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1205,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-25T08:24:38Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-25T08:24:50Z",
+          "lockedOn" : "2021-10-25T08:24:55Z"
+        },
+        "Policies" : [ {
+          "id" : 1207,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "endpoint",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":300,\"granularity\":\"Client\",\"period\":\"Day\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-25T08:24:50Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-25T08:24:50Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "hour",
+        "name" : "hour",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T15:56:39Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1005,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:56:39Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:56:56Z",
+          "lockedOn" : "2021-10-20T15:56:59Z"
+        },
+        "Policies" : [ {
+          "id" : 1006,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "hour",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":5000,\"granularity\":\"Client\",\"period\":\"Hour\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:56:56Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:56:56Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "kb",
+        "name" : "kb",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-21T08:24:27Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1007,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T08:24:27Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T08:24:54Z",
+          "lockedOn" : "2021-10-21T08:24:55Z"
+        },
+        "Policies" : [ {
+          "id" : 1008,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "kb",
+          "entityVersion" : "1.0",
+          "name" : "Transfer Quota Policy",
+          "configuration" : "{\"limit\":40000,\"period\":\"Minute\",\"direction\":\"both\",\"granularity\":\"Client\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T08:24:54Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T08:24:54Z",
+          "definition" : {
+            "id" : "TransferQuotaPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "mb",
+        "name" : "mb",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-21T08:40:26Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1009,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T08:40:26Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T08:41:13Z",
+          "lockedOn" : "2021-10-21T08:41:15Z"
+        },
+        "Policies" : [ {
+          "id" : 1010,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "mb",
+          "entityVersion" : "1.0",
+          "name" : "Transfer Quota Policy",
+          "configuration" : "{\"limit\":1048576,\"direction\":\"both\",\"granularity\":\"Api\",\"period\":\"Minute\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T08:41:13Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T08:41:13Z",
+          "definition" : {
+            "id" : "TransferQuotaPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "minute",
+        "name" : "minute",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T15:23:32Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1011,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:23:32Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:23:45Z",
+          "lockedOn" : "2021-10-20T15:23:49Z"
+        },
+        "Policies" : [ {
+          "id" : 1012,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "minute",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":3000,\"granularity\":\"Client\",\"period\":\"Minute\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:23:45Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:23:45Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "month",
+        "name" : "month",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T16:07:01Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1013,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T16:07:01Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T16:07:23Z",
+          "lockedOn" : "2021-10-20T16:07:25Z"
+        },
+        "Policies" : [ {
+          "id" : 1014,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "month",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":120,\"period\":\"Month\",\"granularity\":\"Client\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T16:07:23Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T16:07:23Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "neu",
+        "name" : "neu",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T08:34:52Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1015,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T08:34:53Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T08:36:16Z",
+          "lockedOn" : "2021-10-20T08:36:19Z"
+        },
+        "Policies" : [ {
+          "id" : 1016,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "neu",
+          "entityVersion" : "1.0",
+          "name" : "Transfer Quota Policy",
+          "configuration" : "{\"limit\":2147483648000,\"direction\":\"both\",\"granularity\":\"Api\",\"period\":\"Year\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T08:36:04Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T08:36:04Z",
+          "definition" : {
+            "id" : "TransferQuotaPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        }, {
+          "id" : 1017,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "neu",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":4000,\"granularity\":\"Api\",\"period\":\"Month\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T08:36:16Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T08:36:16Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 2
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "second",
+        "name" : "second",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T15:21:32Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1018,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:21:32Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:21:46Z",
+          "lockedOn" : "2021-10-20T15:21:49Z"
+        },
+        "Policies" : [ {
+          "id" : 1019,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "second",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":2000,\"period\":\"Second\",\"granularity\":\"Client\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:21:46Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:21:46Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "second-plan",
+        "name" : "second-plan",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T11:17:51Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1020,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T11:17:51Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T11:18:05Z",
+          "lockedOn" : "2021-10-20T11:18:07Z"
+        },
+        "Policies" : [ {
+          "id" : 1021,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "second-plan",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":3200,\"granularity\":\"Client\",\"period\":\"Second\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T11:18:05Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T11:18:05Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "test-plan",
+        "name" : "test-plan",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T10:51:44Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1022,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T10:51:44Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T10:53:59Z",
+          "lockedOn" : "2021-10-20T10:54:02Z"
+        },
+        "Policies" : [ {
+          "id" : 1023,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "test-plan",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":800,\"granularity\":\"Ip\",\"period\":\"Second\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T10:52:43Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T10:52:43Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        }, {
+          "id" : 1024,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "test-plan",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":1100,\"period\":\"Minute\",\"granularity\":\"Client\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T10:53:03Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T10:53:03Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 2
+        }, {
+          "id" : 1025,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "test-plan",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":3000,\"granularity\":\"Client\",\"period\":\"Hour\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T10:53:17Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T10:53:17Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 3
+        }, {
+          "id" : 1026,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "test-plan",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":600,\"granularity\":\"Api\",\"period\":\"Day\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T10:53:29Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T10:53:29Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 4
+        }, {
+          "id" : 1027,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "test-plan",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":1150,\"granularity\":\"Api\",\"period\":\"Month\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T10:53:47Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T10:53:47Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 5
+        }, {
+          "id" : 1028,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "test-plan",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":5500,\"granularity\":\"Client\",\"period\":\"Year\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T10:53:59Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T10:53:59Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 6
+        } ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "year",
+        "name" : "year",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-21T07:30:30Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1029,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T07:30:30Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T07:31:16Z",
+          "lockedOn" : "2021-10-21T07:31:18Z"
+        },
+        "Policies" : [ {
+          "id" : 1030,
+          "type" : "Plan",
+          "organizationId" : "admin",
+          "entityId" : "year",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":16000,\"period\":\"Year\",\"granularity\":\"Client\"}",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T07:31:16Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T07:31:16Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        } ]
+      } ]
+    } ],
+    "Apis" : [ {
+      "ApiBean" : {
+        "id" : "day",
+        "name" : "day",
+        "tags" : [ ],
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T16:02:28Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1031,
+          "status" : "Published",
+          "endpoint" : "http://day",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "day",
+            "version" : "1.0",
+            "discoverability" : "PORTAL",
+            "requiresApproval" : false
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T16:02:28Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T16:03:03Z",
+          "publishedOn" : "2021-10-20T16:03:09Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false,
+          "discoverability" : "PORTAL",
+          "extendedDescription" : ""
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "endpoint",
+        "name" : "endpoint",
+        "image" : "46d2-be8b-02a22dfe72ae/admin1635150441005_jpeg",
+        "tags" : [ {
+          "id" : 1217,
+          "key" : "featured"
+        } ],
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-25T08:25:04Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1211,
+          "status" : "Published",
+          "endpoint" : "https://petstore.swagger.io/v2/pet/1",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "endpoint",
+            "version" : "1.0",
+            "discoverability" : "ORG_MEMBERS",
+            "requiresApproval" : false
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-25T08:25:04Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-25T08:27:26Z",
+          "publishedOn" : "2021-10-25T08:27:35Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false,
+          "discoverability" : "PORTAL",
+          "extendedDescription" : "#Heading"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "hour",
+        "name" : "hour",
+        "tags" : [ {
+          "id" : 1032,
+          "key" : "featured"
+        } ],
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T15:57:07Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1033,
+          "status" : "Published",
+          "endpoint" : "http://hour",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "hour",
+            "version" : "1.0",
+            "discoverability" : "PORTAL",
+            "requiresApproval" : false
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:57:07Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:57:30Z",
+          "publishedOn" : "2021-10-20T15:57:32Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false,
+          "discoverability" : "PORTAL",
+          "extendedDescription" : ""
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "kb",
+        "name" : "kb",
+        "tags" : [ {
+          "id" : 1034,
+          "key" : "featured"
+        } ],
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-21T08:24:11Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1035,
+          "status" : "Published",
+          "endpoint" : "https://google.de",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "kb",
+            "version" : "1.0",
+            "discoverability" : "PORTAL",
+            "requiresApproval" : false
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T08:24:11Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T08:25:53Z",
+          "publishedOn" : "2021-10-21T08:25:56Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false,
+          "discoverability" : "PORTAL",
+          "extendedDescription" : ""
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "mb",
+        "name" : "mb",
+        "tags" : [ {
+          "id" : 1036,
+          "key" : "featured"
+        } ],
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-21T08:41:20Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1037,
+          "status" : "Published",
+          "endpoint" : "http://mb",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "mb",
+            "version" : "1.0",
+            "discoverability" : "PORTAL",
+            "requiresApproval" : false
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T08:41:20Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T08:41:54Z",
+          "publishedOn" : "2021-10-21T08:41:57Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false,
+          "discoverability" : "PORTAL",
+          "extendedDescription" : ""
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "minute",
+        "name" : "minute",
+        "tags" : [ {
+          "id" : 1038,
+          "key" : "featured"
+        } ],
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T15:23:58Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1039,
+          "status" : "Published",
+          "endpoint" : "http://minute",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "minute",
+            "version" : "1.0",
+            "discoverability" : "PORTAL",
+            "requiresApproval" : false
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:23:58Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:24:25Z",
+          "publishedOn" : "2021-10-20T15:24:34Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false,
+          "discoverability" : "PORTAL",
+          "extendedDescription" : ""
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "month",
+        "name" : "month",
+        "tags" : [ {
+          "id" : 1040,
+          "key" : "featured"
+        } ],
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T16:07:30Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1041,
+          "status" : "Published",
+          "endpoint" : "http://month",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "month",
+            "version" : "1.0",
+            "discoverability" : "PORTAL",
+            "requiresApproval" : false
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T16:07:30Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T16:07:59Z",
+          "publishedOn" : "2021-10-20T16:08:01Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false,
+          "discoverability" : "PORTAL",
+          "extendedDescription" : ""
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "second",
+        "name" : "second",
+        "tags" : [ ],
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T15:21:58Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1042,
+          "status" : "Published",
+          "endpoint" : "http://second",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "second",
+            "version" : "1.0",
+            "discoverability" : "PORTAL",
+            "requiresApproval" : false
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:21:58Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:22:27Z",
+          "publishedOn" : "2021-10-20T15:22:31Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false,
+          "discoverability" : "PORTAL",
+          "extendedDescription" : ""
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "year",
+        "name" : "year",
+        "tags" : [ ],
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-21T07:31:23Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1043,
+          "status" : "Published",
+          "endpoint" : "http://year",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "plans" : [ {
+            "planId" : "year",
+            "version" : "1.0",
+            "discoverability" : "PORTAL",
+            "requiresApproval" : false
+          } ],
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T07:31:23Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T07:31:47Z",
+          "publishedOn" : "2021-10-21T07:31:51Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false,
+          "discoverability" : "PORTAL",
+          "extendedDescription" : ""
+        },
+        "Policies" : [ ]
+      } ]
+    } ],
+    "Clients" : [ {
+      "ClientBean" : {
+        "id" : "day",
+        "name" : "day",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T16:03:16Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1044,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T16:03:16Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T16:03:25Z",
+          "publishedOn" : "2021-10-20T16:03:26Z",
+          "apikey" : "94496e66-861e-429e-9d1c-5bdc5047ac8b"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 1196,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "day",
+              "tags" : [ ]
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0",
+            "parsePayload" : false,
+            "disableKeysStrip" : false,
+            "discoverability" : "ORG_MEMBERS"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "day"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T16:03:25Z",
+          "status" : "Created"
+        } ]
+      } ]
+    }, {
+      "ClientBean" : {
+        "id" : "endoint",
+        "name" : "endoint",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-25T08:27:49Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1220,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-25T08:27:49Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-25T08:27:56Z",
+          "publishedOn" : "2021-10-25T08:28:20Z",
+          "apikey" : "9a96287c-4e7e-4541-8387-7ce87117add3"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 1222,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "endpoint",
+              "tags" : [ ]
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0",
+            "parsePayload" : false,
+            "disableKeysStrip" : false,
+            "discoverability" : "ORG_MEMBERS"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "endpoint"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-25T08:27:56Z",
+          "status" : "Created"
+        } ]
+      } ]
+    }, {
+      "ClientBean" : {
+        "id" : "hour",
+        "name" : "hour",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T15:57:46Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1045,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:57:46Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:57:54Z",
+          "publishedOn" : "2021-10-20T15:57:59Z",
+          "apikey" : "c4db251a-04f6-400e-b926-5c3a65f32c67"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 1197,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "hour",
+              "tags" : [ ]
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0",
+            "parsePayload" : false,
+            "disableKeysStrip" : false,
+            "discoverability" : "ORG_MEMBERS"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "hour"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:57:54Z",
+          "status" : "Created"
+        } ]
+      } ]
+    }, {
+      "ClientBean" : {
+        "id" : "kb",
+        "name" : "kb",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-21T08:26:08Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1046,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T08:26:08Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T08:26:15Z",
+          "publishedOn" : "2021-10-21T08:26:18Z",
+          "apikey" : "689ea5ae-b0d9-4ab2-9cf4-08dcd26ea0f2"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 1198,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "kb",
+              "tags" : [ ]
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0",
+            "parsePayload" : false,
+            "disableKeysStrip" : false,
+            "discoverability" : "ORG_MEMBERS"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "kb"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T08:26:15Z",
+          "status" : "Created"
+        } ]
+      } ]
+    }, {
+      "ClientBean" : {
+        "id" : "mb",
+        "name" : "mb",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-21T08:42:02Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1047,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T08:42:02Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T08:42:28Z",
+          "publishedOn" : "2021-10-21T08:42:31Z",
+          "apikey" : "b9dc1340-a06a-46d6-9015-05919f457882"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 1199,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "mb",
+              "tags" : [ ]
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0",
+            "parsePayload" : false,
+            "disableKeysStrip" : false,
+            "discoverability" : "ORG_MEMBERS"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "mb"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T08:42:28Z",
+          "status" : "Created"
+        } ]
+      } ]
+    }, {
+      "ClientBean" : {
+        "id" : "minute",
+        "name" : "minute",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T15:24:42Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1048,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:24:42Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:24:51Z",
+          "publishedOn" : "2021-10-20T15:24:53Z",
+          "apikey" : "2584b280-11d2-4881-a2cb-c25002c4894d"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 1200,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "minute",
+              "tags" : [ ]
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0",
+            "parsePayload" : false,
+            "disableKeysStrip" : false,
+            "discoverability" : "ORG_MEMBERS"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "minute"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:24:51Z",
+          "status" : "Created"
+        } ]
+      } ]
+    }, {
+      "ClientBean" : {
+        "id" : "month",
+        "name" : "month",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T16:08:09Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1049,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T16:08:09Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T16:08:18Z",
+          "publishedOn" : "2021-10-20T16:08:21Z",
+          "apikey" : "d1c5eff8-7cfa-4ffc-9966-505c34a4ddc7"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 1201,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "month",
+              "tags" : [ ]
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0",
+            "parsePayload" : false,
+            "disableKeysStrip" : false,
+            "discoverability" : "ORG_MEMBERS"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "month"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T16:08:18Z",
+          "status" : "Created"
+        } ]
+      } ]
+    }, {
+      "ClientBean" : {
+        "id" : "second",
+        "name" : "second",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-20T15:22:42Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1050,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:22:42Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-20T15:22:59Z",
+          "publishedOn" : "2021-10-20T15:23:02Z",
+          "apikey" : "180ca69b-81a4-47e5-8dce-90d13ae7fffe"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 1202,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "second",
+              "tags" : [ ]
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0",
+            "parsePayload" : false,
+            "disableKeysStrip" : false,
+            "discoverability" : "ORG_MEMBERS"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "second"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-20T15:22:59Z",
+          "status" : "Created"
+        } ]
+      } ]
+    }, {
+      "ClientBean" : {
+        "id" : "year",
+        "name" : "year",
+        "createdBy" : "admin",
+        "createdOn" : "2021-10-21T07:31:59Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1051,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T07:31:59Z",
+          "modifiedBy" : "admin",
+          "modifiedOn" : "2021-10-21T07:32:08Z",
+          "publishedOn" : "2021-10-21T07:32:10Z",
+          "apikey" : "528ad668-e385-4817-aad0-9b353f73a37c"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 1203,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "year",
+              "tags" : [ ]
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "version" : "1.0",
+            "parsePayload" : false,
+            "disableKeysStrip" : false,
+            "discoverability" : "ORG_MEMBERS"
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "admin"
+              },
+              "id" : "year"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "admin",
+          "createdOn" : "2021-10-21T07:32:08Z",
+          "status" : "Created"
+        } ]
+      } ]
+    } ],
+    "Audits" : [ {
+      "id" : 1052,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Organization",
+      "createdOn" : "2021-10-19T09:38:17Z",
+      "what" : "Create"
+    }, {
+      "id" : 1053,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "admin-plan",
+      "createdOn" : "2021-10-20T08:17:36Z",
+      "what" : "Create"
+    }, {
+      "id" : 1054,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "admin-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T08:17:36Z",
+      "what" : "Create"
+    }, {
+      "id" : 1055,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "admin-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T08:18:01Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"TransferQuotaPolicy\"}"
+    }, {
+      "id" : 1056,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "admin-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T08:18:18Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1057,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "admin-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T08:18:22Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1058,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "neu",
+      "createdOn" : "2021-10-20T08:34:53Z",
+      "what" : "Create"
+    }, {
+      "id" : 1059,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "neu",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T08:34:53Z",
+      "what" : "Create"
+    }, {
+      "id" : 1060,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "neu",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T08:36:04Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"TransferQuotaPolicy\"}"
+    }, {
+      "id" : 1061,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "neu",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T08:36:16Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1062,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "neu",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T08:36:19Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1063,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "test-plan",
+      "createdOn" : "2021-10-20T10:51:44Z",
+      "what" : "Create"
+    }, {
+      "id" : 1064,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "test-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T10:51:44Z",
+      "what" : "Create"
+    }, {
+      "id" : 1065,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "test-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T10:52:43Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1066,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "test-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T10:53:03Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1067,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "test-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T10:53:17Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1068,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "test-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T10:53:29Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1069,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "test-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T10:53:47Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1070,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "test-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T10:53:59Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1071,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "test-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T10:54:02Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1072,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "second-plan",
+      "createdOn" : "2021-10-20T11:17:51Z",
+      "what" : "Create"
+    }, {
+      "id" : 1073,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "second-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T11:17:51Z",
+      "what" : "Create"
+    }, {
+      "id" : 1074,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "second-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T11:18:05Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1075,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "second-plan",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T11:18:07Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1076,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "second",
+      "createdOn" : "2021-10-20T15:21:32Z",
+      "what" : "Create"
+    }, {
+      "id" : 1077,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:21:32Z",
+      "what" : "Create"
+    }, {
+      "id" : 1078,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:21:46Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1079,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:21:49Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1080,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "second",
+      "createdOn" : "2021-10-20T15:21:58Z",
+      "what" : "Create"
+    }, {
+      "id" : 1081,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:21:58Z",
+      "what" : "Create"
+    }, {
+      "id" : 1082,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:22:10Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://second\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 1083,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:22:21Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"second:1.0\"}]}"
+    }, {
+      "id" : 1084,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:22:27Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"second:1.0\",\"after\":\"second:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
+    }, {
+      "id" : 1085,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:22:31Z",
+      "what" : "Publish"
+    }, {
+      "id" : 1086,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "second",
+      "createdOn" : "2021-10-20T15:22:42Z",
+      "what" : "Create"
+    }, {
+      "id" : 1087,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:22:42Z",
+      "what" : "Create"
+    }, {
+      "id" : 1088,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:22:59Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"second\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"second\",\"apiVersion\":\"1.0\",\"planId\":\"second\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1089,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:22:59Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"second\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"second\",\"apiVersion\":\"1.0\",\"planId\":\"second\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1090,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "second",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:23:02Z",
+      "what" : "Register"
+    }, {
+      "id" : 1091,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "minute",
+      "createdOn" : "2021-10-20T15:23:32Z",
+      "what" : "Create"
+    }, {
+      "id" : 1092,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:23:32Z",
+      "what" : "Create"
+    }, {
+      "id" : 1093,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:23:45Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1094,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:23:49Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1095,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "minute",
+      "createdOn" : "2021-10-20T15:23:58Z",
+      "what" : "Create"
+    }, {
+      "id" : 1096,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:23:58Z",
+      "what" : "Create"
+    }, {
+      "id" : 1097,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:24:08Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://minute\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 1098,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:24:13Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"minute:1.0\"}]}"
+    }, {
+      "id" : 1099,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:24:25Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"minute:1.0\",\"after\":\"minute:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
+    }, {
+      "id" : 1100,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:24:34Z",
+      "what" : "Publish"
+    }, {
+      "id" : 1101,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "minute",
+      "createdOn" : "2021-10-20T15:24:42Z",
+      "what" : "Create"
+    }, {
+      "id" : 1102,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:24:42Z",
+      "what" : "Create"
+    }, {
+      "id" : 1103,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:24:51Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"minute\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"minute\",\"apiVersion\":\"1.0\",\"planId\":\"minute\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1104,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:24:51Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"minute\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"minute\",\"apiVersion\":\"1.0\",\"planId\":\"minute\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1105,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "minute",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:24:53Z",
+      "what" : "Register"
+    }, {
+      "id" : 1106,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "hour",
+      "createdOn" : "2021-10-20T15:56:39Z",
+      "what" : "Create"
+    }, {
+      "id" : 1107,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:56:39Z",
+      "what" : "Create"
+    }, {
+      "id" : 1108,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:56:56Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1109,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:56:59Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1110,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "hour",
+      "createdOn" : "2021-10-20T15:57:07Z",
+      "what" : "Create"
+    }, {
+      "id" : 1111,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:57:07Z",
+      "what" : "Create"
+    }, {
+      "id" : 1112,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:57:17Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://hour\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 1113,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:57:21Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"hour:1.0\"}]}"
+    }, {
+      "id" : 1114,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:57:30Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"hour:1.0\",\"after\":\"hour:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
+    }, {
+      "id" : 1115,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:57:32Z",
+      "what" : "Publish"
+    }, {
+      "id" : 1116,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "hour",
+      "createdOn" : "2021-10-20T15:57:46Z",
+      "what" : "Create"
+    }, {
+      "id" : 1117,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:57:46Z",
+      "what" : "Create"
+    }, {
+      "id" : 1118,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:57:54Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"hour\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"hour\",\"apiVersion\":\"1.0\",\"planId\":\"hour\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1119,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:57:54Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"hour\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"hour\",\"apiVersion\":\"1.0\",\"planId\":\"hour\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1120,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "hour",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T15:57:59Z",
+      "what" : "Register"
+    }, {
+      "id" : 1121,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "day",
+      "createdOn" : "2021-10-20T16:01:11Z",
+      "what" : "Create"
+    }, {
+      "id" : 1122,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:01:11Z",
+      "what" : "Create"
+    }, {
+      "id" : 1123,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:01:30Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1124,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:01:32Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1125,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "day",
+      "createdOn" : "2021-10-20T16:02:28Z",
+      "what" : "Create"
+    }, {
+      "id" : 1126,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:02:28Z",
+      "what" : "Create"
+    }, {
+      "id" : 1127,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:02:35Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://day\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 1128,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:02:40Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"day:1.0\"}]}"
+    }, {
+      "id" : 1129,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:03:03Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"day:1.0\",\"after\":\"day:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
+    }, {
+      "id" : 1130,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:03:09Z",
+      "what" : "Publish"
+    }, {
+      "id" : 1131,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "day",
+      "createdOn" : "2021-10-20T16:03:16Z",
+      "what" : "Create"
+    }, {
+      "id" : 1132,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:03:16Z",
+      "what" : "Create"
+    }, {
+      "id" : 1133,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:03:25Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"day\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"day\",\"apiVersion\":\"1.0\",\"planId\":\"day\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1134,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:03:25Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"day\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"day\",\"apiVersion\":\"1.0\",\"planId\":\"day\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1135,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "day",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:03:26Z",
+      "what" : "Register"
+    }, {
+      "id" : 1136,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "month",
+      "createdOn" : "2021-10-20T16:07:01Z",
+      "what" : "Create"
+    }, {
+      "id" : 1137,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:07:01Z",
+      "what" : "Create"
+    }, {
+      "id" : 1138,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:07:23Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1139,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:07:25Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1140,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "month",
+      "createdOn" : "2021-10-20T16:07:30Z",
+      "what" : "Create"
+    }, {
+      "id" : 1141,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:07:30Z",
+      "what" : "Create"
+    }, {
+      "id" : 1142,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:07:46Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://month\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 1143,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:07:51Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"month:1.0\"}]}"
+    }, {
+      "id" : 1144,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:07:59Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"month:1.0\",\"after\":\"month:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
+    }, {
+      "id" : 1145,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:08:01Z",
+      "what" : "Publish"
+    }, {
+      "id" : 1146,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "month",
+      "createdOn" : "2021-10-20T16:08:09Z",
+      "what" : "Create"
+    }, {
+      "id" : 1147,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:08:09Z",
+      "what" : "Create"
+    }, {
+      "id" : 1148,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:08:18Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"month\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"month\",\"apiVersion\":\"1.0\",\"planId\":\"month\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1149,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:08:18Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"month\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"month\",\"apiVersion\":\"1.0\",\"planId\":\"month\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1150,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "month",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-20T16:08:21Z",
+      "what" : "Register"
+    }, {
+      "id" : 1151,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "year",
+      "createdOn" : "2021-10-21T07:30:30Z",
+      "what" : "Create"
+    }, {
+      "id" : 1152,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:30:30Z",
+      "what" : "Create"
+    }, {
+      "id" : 1153,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:31:16Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1154,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:31:18Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1155,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "year",
+      "createdOn" : "2021-10-21T07:31:23Z",
+      "what" : "Create"
+    }, {
+      "id" : 1156,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:31:23Z",
+      "what" : "Create"
+    }, {
+      "id" : 1157,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:31:31Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://year\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 1158,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:31:35Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"year:1.0\"}]}"
+    }, {
+      "id" : 1159,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:31:47Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"year:1.0\",\"after\":\"year:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
+    }, {
+      "id" : 1160,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:31:51Z",
+      "what" : "Publish"
+    }, {
+      "id" : 1161,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "year",
+      "createdOn" : "2021-10-21T07:31:59Z",
+      "what" : "Create"
+    }, {
+      "id" : 1162,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:31:59Z",
+      "what" : "Create"
+    }, {
+      "id" : 1163,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:32:08Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"year\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"year\",\"apiVersion\":\"1.0\",\"planId\":\"year\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1164,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:32:08Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"year\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"year\",\"apiVersion\":\"1.0\",\"planId\":\"year\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1165,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "year",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T07:32:10Z",
+      "what" : "Register"
+    }, {
+      "id" : 1166,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "kb",
+      "createdOn" : "2021-10-21T08:24:11Z",
+      "what" : "Create"
+    }, {
+      "id" : 1167,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:24:11Z",
+      "what" : "Create"
+    }, {
+      "id" : 1168,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "kb",
+      "createdOn" : "2021-10-21T08:24:27Z",
+      "what" : "Create"
+    }, {
+      "id" : 1169,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:24:27Z",
+      "what" : "Create"
+    }, {
+      "id" : 1170,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:24:54Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"TransferQuotaPolicy\"}"
+    }, {
+      "id" : 1171,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:24:55Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1172,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:25:13Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"https://google.de\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 1173,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:25:19Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"kb:1.0\"}]}"
+    }, {
+      "id" : 1174,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:25:53Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"kb:1.0\",\"after\":\"kb:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
+    }, {
+      "id" : 1175,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:25:56Z",
+      "what" : "Publish"
+    }, {
+      "id" : 1176,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "kb",
+      "createdOn" : "2021-10-21T08:26:08Z",
+      "what" : "Create"
+    }, {
+      "id" : 1177,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:26:08Z",
+      "what" : "Create"
+    }, {
+      "id" : 1178,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:26:15Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"kb\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"kb\",\"apiVersion\":\"1.0\",\"planId\":\"kb\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1179,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:26:15Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"kb\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"kb\",\"apiVersion\":\"1.0\",\"planId\":\"kb\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1180,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "kb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:26:18Z",
+      "what" : "Register"
+    }, {
+      "id" : 1181,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "mb",
+      "createdOn" : "2021-10-21T08:40:26Z",
+      "what" : "Create"
+    }, {
+      "id" : 1182,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:40:26Z",
+      "what" : "Create"
+    }, {
+      "id" : 1183,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:41:13Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"TransferQuotaPolicy\"}"
+    }, {
+      "id" : 1184,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:41:15Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1185,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "mb",
+      "createdOn" : "2021-10-21T08:41:20Z",
+      "what" : "Create"
+    }, {
+      "id" : 1186,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:41:20Z",
+      "what" : "Create"
+    }, {
+      "id" : 1187,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:41:38Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://mb\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 1188,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:41:45Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"mb:1.0\"}]}"
+    }, {
+      "id" : 1189,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:41:54Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"mb:1.0\",\"after\":\"mb:1.0\"},{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
+    }, {
+      "id" : 1190,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:41:57Z",
+      "what" : "Publish"
+    }, {
+      "id" : 1191,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "mb",
+      "createdOn" : "2021-10-21T08:42:02Z",
+      "what" : "Create"
+    }, {
+      "id" : 1192,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:42:02Z",
+      "what" : "Create"
+    }, {
+      "id" : 1193,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:42:28Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"mb\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"mb\",\"apiVersion\":\"1.0\",\"planId\":\"mb\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1194,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:42:28Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"mb\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"mb\",\"apiVersion\":\"1.0\",\"planId\":\"mb\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1195,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "mb",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-21T08:42:31Z",
+      "what" : "Register"
+    }, {
+      "id" : 1204,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "endpoint",
+      "createdOn" : "2021-10-25T08:24:38Z",
+      "what" : "Create"
+    }, {
+      "id" : 1206,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "endpoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:24:38Z",
+      "what" : "Create"
+    }, {
+      "id" : 1208,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "endpoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:24:50Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1209,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Plan",
+      "entityId" : "endpoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:24:55Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1210,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "endpoint",
+      "createdOn" : "2021-10-25T08:25:04Z",
+      "what" : "Create"
+    }, {
+      "id" : 1212,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "endpoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:25:04Z",
+      "what" : "Create"
+    }, {
+      "id" : 1213,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "endpoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:26:51Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"https://petstore.swagger.io/v2/pet/1\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 1214,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "endpoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:27:00Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"endpoint:1.0\"}]}"
+    }, {
+      "id" : 1215,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "endpoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:27:26Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"extendedDescription\",\"before\":\"null\",\"after\":\"#Heading\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
+    }, {
+      "id" : 1216,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "endpoint",
+      "createdOn" : "2021-10-25T08:27:26Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"image\",\"before\":null,\"after\":\"46d2-be8b-02a22dfe72ae/admin1635150441005_jpeg\"}]}"
+    }, {
+      "id" : 1218,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "endpoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:27:35Z",
+      "what" : "Publish"
+    }, {
+      "id" : 1219,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "endoint",
+      "createdOn" : "2021-10-25T08:27:49Z",
+      "what" : "Create"
+    }, {
+      "id" : 1221,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "endoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:27:49Z",
+      "what" : "Create"
+    }, {
+      "id" : 1223,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "endoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:27:56Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"endoint\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"endpoint\",\"apiVersion\":\"1.0\",\"planId\":\"endpoint\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1224,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Api",
+      "entityId" : "endpoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:27:56Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"admin\",\"clientId\":\"endoint\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"admin\",\"apiId\":\"endpoint\",\"apiVersion\":\"1.0\",\"planId\":\"endpoint\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1226,
+      "who" : "admin",
+      "organizationId" : "admin",
+      "entityType" : "Client",
+      "entityId" : "endoint",
+      "entityVersion" : "1.0",
+      "createdOn" : "2021-10-25T08:28:20Z",
+      "what" : "Register"
+    } ]
+  } ]
+}
+
+----
+200
+Content-Type: text/plain;charset=utf-8
+X-RestTest-RegexMatching: true
+
+INFO: ----------------------------
+INFO: Starting apiman data import: .*apiman_import_migrated.*\.json\Q
+INFO: Importing a user: admin
+INFO: Importing a gateway: The Gateway
+INFO: Importing a role: API Developer
+INFO: Importing a role: Client App Developer
+INFO: Importing a role: Organization Owner
+INFO: Importing a policy definition: Authorization Policy
+INFO: Importing a policy definition: BASIC Authentication Policy
+INFO: Importing a policy definition: Caching Resources Policy
+INFO: Importing a policy definition: IP Blacklist Policy
+INFO: Importing a policy definition: IP Whitelist Policy
+INFO: Importing a policy definition: Ignored Resources Policy
+INFO: Importing a policy definition: Quota Policy
+INFO: Importing a policy definition: Rate Limiting Policy
+INFO: Importing a policy definition: Time Restricted Access Policy
+INFO: Importing a policy definition: Transfer Quota Policy
+INFO: Importing a policy definition: URL Rewriting Policy
+INFO: Importing a blob: 46d2-be8b-02a22dfe72ae/admin1635150441005_jpeg
+INFO: Importing an organization: admin
+INFO:   Importing a role membership: admin+OrganizationOwner=>admin
+INFO:   Importing a plan: admin-plan
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Transfer Quota Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: day
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: endpoint
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: hour
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: kb
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Transfer Quota Policy
+INFO:   Importing a plan: mb
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Transfer Quota Policy
+INFO:   Importing a plan: minute
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: month
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: neu
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Transfer Quota Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: second
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: second-plan
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: test-plan
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:   Importing a plan: year
+INFO:     Importing a plan version: 1.0
+INFO:       Importing a plan policy: Rate Limiting Policy
+INFO:     Importing an API: day
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: endpoint
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: hour
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: kb
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: mb
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: minute
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: month
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: second
+INFO:     Importing an API version: 1.0
+INFO:     Importing an API: year
+INFO:     Importing an API version: 1.0
+INFO:   Importing a client: day
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: endoint
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: hour
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: kb
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: mb
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: minute
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: month
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: second
+INFO:     Importing a client version: 1.0
+INFO:   Importing a client: year
+INFO:     Importing a client version: 1.0
+INFO:   Importing an audit entry: 1052
+INFO:   Importing an audit entry: 1053
+INFO:   Importing an audit entry: 1054
+INFO:   Importing an audit entry: 1055
+INFO:   Importing an audit entry: 1056
+INFO:   Importing an audit entry: 1057
+INFO:   Importing an audit entry: 1058
+INFO:   Importing an audit entry: 1059
+INFO:   Importing an audit entry: 1060
+INFO:   Importing an audit entry: 1061
+INFO:   Importing an audit entry: 1062
+INFO:   Importing an audit entry: 1063
+INFO:   Importing an audit entry: 1064
+INFO:   Importing an audit entry: 1065
+INFO:   Importing an audit entry: 1066
+INFO:   Importing an audit entry: 1067
+INFO:   Importing an audit entry: 1068
+INFO:   Importing an audit entry: 1069
+INFO:   Importing an audit entry: 1070
+INFO:   Importing an audit entry: 1071
+INFO:   Importing an audit entry: 1072
+INFO:   Importing an audit entry: 1073
+INFO:   Importing an audit entry: 1074
+INFO:   Importing an audit entry: 1075
+INFO:   Importing an audit entry: 1076
+INFO:   Importing an audit entry: 1077
+INFO:   Importing an audit entry: 1078
+INFO:   Importing an audit entry: 1079
+INFO:   Importing an audit entry: 1080
+INFO:   Importing an audit entry: 1081
+INFO:   Importing an audit entry: 1082
+INFO:   Importing an audit entry: 1083
+INFO:   Importing an audit entry: 1084
+INFO:   Importing an audit entry: 1085
+INFO:   Importing an audit entry: 1086
+INFO:   Importing an audit entry: 1087
+INFO:   Importing an audit entry: 1088
+INFO:   Importing an audit entry: 1089
+INFO:   Importing an audit entry: 1090
+INFO:   Importing an audit entry: 1091
+INFO:   Importing an audit entry: 1092
+INFO:   Importing an audit entry: 1093
+INFO:   Importing an audit entry: 1094
+INFO:   Importing an audit entry: 1095
+INFO:   Importing an audit entry: 1096
+INFO:   Importing an audit entry: 1097
+INFO:   Importing an audit entry: 1098
+INFO:   Importing an audit entry: 1099
+INFO:   Importing an audit entry: 1100
+INFO:   Importing an audit entry: 1101
+INFO:   Importing an audit entry: 1102
+INFO:   Importing an audit entry: 1103
+INFO:   Importing an audit entry: 1104
+INFO:   Importing an audit entry: 1105
+INFO:   Importing an audit entry: 1106
+INFO:   Importing an audit entry: 1107
+INFO:   Importing an audit entry: 1108
+INFO:   Importing an audit entry: 1109
+INFO:   Importing an audit entry: 1110
+INFO:   Importing an audit entry: 1111
+INFO:   Importing an audit entry: 1112
+INFO:   Importing an audit entry: 1113
+INFO:   Importing an audit entry: 1114
+INFO:   Importing an audit entry: 1115
+INFO:   Importing an audit entry: 1116
+INFO:   Importing an audit entry: 1117
+INFO:   Importing an audit entry: 1118
+INFO:   Importing an audit entry: 1119
+INFO:   Importing an audit entry: 1120
+INFO:   Importing an audit entry: 1121
+INFO:   Importing an audit entry: 1122
+INFO:   Importing an audit entry: 1123
+INFO:   Importing an audit entry: 1124
+INFO:   Importing an audit entry: 1125
+INFO:   Importing an audit entry: 1126
+INFO:   Importing an audit entry: 1127
+INFO:   Importing an audit entry: 1128
+INFO:   Importing an audit entry: 1129
+INFO:   Importing an audit entry: 1130
+INFO:   Importing an audit entry: 1131
+INFO:   Importing an audit entry: 1132
+INFO:   Importing an audit entry: 1133
+INFO:   Importing an audit entry: 1134
+INFO:   Importing an audit entry: 1135
+INFO:   Importing an audit entry: 1136
+INFO:   Importing an audit entry: 1137
+INFO:   Importing an audit entry: 1138
+INFO:   Importing an audit entry: 1139
+INFO:   Importing an audit entry: 1140
+INFO:   Importing an audit entry: 1141
+INFO:   Importing an audit entry: 1142
+INFO:   Importing an audit entry: 1143
+INFO:   Importing an audit entry: 1144
+INFO:   Importing an audit entry: 1145
+INFO:   Importing an audit entry: 1146
+INFO:   Importing an audit entry: 1147
+INFO:   Importing an audit entry: 1148
+INFO:   Importing an audit entry: 1149
+INFO:   Importing an audit entry: 1150
+INFO:   Importing an audit entry: 1151
+INFO:   Importing an audit entry: 1152
+INFO:   Importing an audit entry: 1153
+INFO:   Importing an audit entry: 1154
+INFO:   Importing an audit entry: 1155
+INFO:   Importing an audit entry: 1156
+INFO:   Importing an audit entry: 1157
+INFO:   Importing an audit entry: 1158
+INFO:   Importing an audit entry: 1159
+INFO:   Importing an audit entry: 1160
+INFO:   Importing an audit entry: 1161
+INFO:   Importing an audit entry: 1162
+INFO:   Importing an audit entry: 1163
+INFO:   Importing an audit entry: 1164
+INFO:   Importing an audit entry: 1165
+INFO:   Importing an audit entry: 1166
+INFO:   Importing an audit entry: 1167
+INFO:   Importing an audit entry: 1168
+INFO:   Importing an audit entry: 1169
+INFO:   Importing an audit entry: 1170
+INFO:   Importing an audit entry: 1171
+INFO:   Importing an audit entry: 1172
+INFO:   Importing an audit entry: 1173
+INFO:   Importing an audit entry: 1174
+INFO:   Importing an audit entry: 1175
+INFO:   Importing an audit entry: 1176
+INFO:   Importing an audit entry: 1177
+INFO:   Importing an audit entry: 1178
+INFO:   Importing an audit entry: 1179
+INFO:   Importing an audit entry: 1180
+INFO:   Importing an audit entry: 1181
+INFO:   Importing an audit entry: 1182
+INFO:   Importing an audit entry: 1183
+INFO:   Importing an audit entry: 1184
+INFO:   Importing an audit entry: 1185
+INFO:   Importing an audit entry: 1186
+INFO:   Importing an audit entry: 1187
+INFO:   Importing an audit entry: 1188
+INFO:   Importing an audit entry: 1189
+INFO:   Importing an audit entry: 1190
+INFO:   Importing an audit entry: 1191
+INFO:   Importing an audit entry: 1192
+INFO:   Importing an audit entry: 1193
+INFO:   Importing an audit entry: 1194
+INFO:   Importing an audit entry: 1195
+INFO:   Importing an audit entry: 1204
+INFO:   Importing an audit entry: 1206
+INFO:   Importing an audit entry: 1208
+INFO:   Importing an audit entry: 1209
+INFO:   Importing an audit entry: 1210
+INFO:   Importing an audit entry: 1212
+INFO:   Importing an audit entry: 1213
+INFO:   Importing an audit entry: 1214
+INFO:   Importing an audit entry: 1215
+INFO:   Importing an audit entry: 1216
+INFO:   Importing an audit entry: 1218
+INFO:   Importing an audit entry: 1219
+INFO:   Importing an audit entry: 1221
+INFO:   Importing an audit entry: 1223
+INFO:   Importing an audit entry: 1224
+INFO:   Importing an audit entry: 1226
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Importing a client contract.
+INFO: Publishing APIs to the gateway.
+INFO:  Publishing API: admin / second -> 1.0
+INFO:  Publishing API: admin / hour -> 1.0
+INFO:  Publishing API: admin / minute -> 1.0
+INFO:  Publishing API: admin / month -> 1.0
+INFO:  Publishing API: admin / year -> 1.0
+INFO:  Publishing API: admin / day -> 1.0
+INFO:  Publishing API: admin / mb -> 1.0
+INFO:  Publishing API: admin / kb -> 1.0
+INFO:  Publishing API: admin / endpoint -> 1.0
+INFO: Registering clients in the gateway.
+INFO:  Registering app: admin / second -> 1.0
+INFO:  Registering app: admin / hour -> 1.0
+INFO:  Registering app: admin / minute -> 1.0
+INFO:  Registering app: admin / month -> 1.0
+INFO:  Registering app: admin / year -> 1.0
+INFO:  Registering app: admin / day -> 1.0
+INFO:  Registering app: admin / mb -> 1.0
+INFO:  Registering app: admin / kb -> 1.0
+INFO:  Registering app: admin / endoint -> 1.0
+INFO: -----------------------------------
+INFO: Data import completed successfully!
+INFO: -----------------------------------\E

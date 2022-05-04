@@ -118,6 +118,34 @@
         </includes>
       </unpackOptions>
     </dependencySet>
+    <!-- Conf -->
+    <!-- Apiman Conf (e.g. email template) -->
+    <dependencySet>
+      <outputDirectory>conf</outputDirectory>
+      <includes>
+        <include>io.apiman:apiman-distro-conf:jar</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <exclude>/META-INF/**</exclude>
+        </excludes>
+      </unpackOptions>
+    </dependencySet>
+
+    <!-- Default H2 DB driver -->
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>com.h2database:h2:jar</include>
+      </includes>
+    </dependencySet>
   </dependencySets>
   <fileSets>
     <fileSet>

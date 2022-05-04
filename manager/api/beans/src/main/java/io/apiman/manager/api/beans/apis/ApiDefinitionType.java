@@ -15,13 +15,41 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import io.apiman.common.util.MediaType;
+
 /**
  * The type of definition stored for the API.
  *
  * @author eric.wittmann@redhat.com
  */
 public enum ApiDefinitionType {
+    None(null, false, false),
+    SwaggerJSON(MediaType.APPLICATION_JSON, false, true),
+    SwaggerYAML("application/x-yaml", false, true),
+    WSDL("text/xml", false, true),
+    WADL("application/vnd.sun.wadl+xml", false, true),
+    RAML("application/x-yaml", false, true),
+    External("", true, true);
 
-    None, SwaggerJSON, SwaggerYAML, WSDL, WADL, RAML, External
+    private final String mediaType;
+    private final boolean isExternal;
+    private final boolean isDefined;
 
+    ApiDefinitionType(String mediaType, boolean isExternal, boolean isDefined) {
+        this.mediaType = mediaType;
+        this.isExternal = isExternal;
+        this.isDefined = isDefined;
+    }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public boolean isExternal() {
+        return isExternal;
+    }
+
+    public boolean isDefined() {
+        return isDefined;
+    }
 }

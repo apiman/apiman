@@ -1,10 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var NewPluginController = _module.controller("Apiman.NewPluginController",
+_module.controller("Apiman.NewPluginController",
         ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', '$routeParams',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle, $routeParams) => {
+        function ($q, $scope, $location, ApimanSvcs, PageLifecycle, $routeParams) {
             $scope.plugin = {};
             var params = $routeParams;
             if (params && params.groupId) {
@@ -51,6 +49,4 @@ module Apiman {
                 $('#apiman-group-id').focus();
             });
             
-    }])
-
-}
+    }]);

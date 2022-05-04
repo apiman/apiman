@@ -18,6 +18,9 @@ package io.apiman.manager.ui.server;
 import io.apiman.common.config.ConfigFactory;
 import io.apiman.manager.ui.server.beans.ApiAuthType;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.apache.commons.configuration.Configuration;
 
 /**
@@ -34,6 +37,7 @@ public class UIConfig implements IUIConfig {
     public static final String APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR = "apiman-manager-ui.api.authentication.token.generator"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_UI_ENABLE_METRICS = "apiman-manager-ui.metrics.enable"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_UI_ENABLE_NOTIFICATIONS = "apiman-manager.config.notifications.enable"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_UI_PLATFORM = "apiman-manager-ui.platform"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_UI_ORG_CREATE_ADMIN_ONLY = "apiman-manager-ui.org-create-admin-only"; //$NON-NLS-1$
 
@@ -51,6 +55,14 @@ public class UIConfig implements IUIConfig {
     }
 
     /**
+     * @return true if notifications UI elements should be shown, else false.
+     */
+    @Override
+    public boolean isNotificationsEnabled() {
+        return config.getBoolean(UIConfig.APIMAN_MANAGER_UI_ENABLE_NOTIFICATIONS, true);
+    }
+
+    /**
      * @see io.apiman.manager.ui.server.IUIConfig#isMetricsEnabled()
      */
     @Override
@@ -64,6 +76,39 @@ public class UIConfig implements IUIConfig {
     @Override
     public String getPlatform() {
         return config.getString(UIConfig.APIMAN_MANAGER_UI_PLATFORM);
+    }
+
+    // TODO(msavy): deduplicate this block (perhaps extract into common interface?)
+    /**
+     * Return the standard Apiman config directory.
+     *
+     * Following precedence is used:
+     * <ul>
+     *     <li><code>${apiman.config.dir}</code></li>
+     *     <li><code>${jboss.server.config.dir}</code></li>
+     *     <li><code>${catalina.home}/conf</code></li>
+     * </ul>
+     */
+    @Override
+    public Path getConfigDirectory() {
+        // Grand unified conf directory!
+        String confDir = System.getProperty("apiman.config.dir");
+        if (confDir != null) {
+            return Paths.get(confDir);
+        }
+
+        // If that wasn't set, then check to see if we're running in wildfly/eap
+        confDir = System.getProperty("jboss.server.config.dir");
+        if (confDir != null) {
+            return Paths.get(confDir);
+        }
+
+        // If that didn't work, try to locate a tomcat data directory
+        confDir = System.getProperty("catalina.home");
+        if (confDir != null) {
+            return Paths.get(confDir, "conf");
+        }
+        throw new IllegalStateException("No config directory has been set. Please set apiman.config.dir=<data dir>");
     }
 
     /**

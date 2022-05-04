@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "module": "CommonJS",
+      "outDir": "./dist/",
+      "removeComments": true,
+      "preserveConstEnums": true,
+      "sourceMap": true,
+      "noImplicitAny": false, // TODO: Invert this later
+      "target": "ES5",
+      "allowJs": true
+//      "esModuleInterop": true,
+//      "allowSyntheticDefaultImports": false
+    },
+    "include": ["plugins/**/*.ts"],
+    "exclude": ["node_modules"]
+  }

@@ -1,10 +1,10 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+// @ts-nocheck
+import angular = require("angular");
+import {_module} from "../apimanPlugin";
 
- export var ApiEndpointController = _module.controller("Apiman.ApiEndpointController",
+_module.controller("Apiman.ApiEndpointController",
         ['$q', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'Configuration', 'EntityStatusSvc',
-        ($q, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, Configuration, EntityStatusSvc) => {
+        function ($q, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, Configuration, EntityStatusSvc) {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'endpoint';
@@ -25,7 +25,8 @@ module Apiman {
 
             // Initiates the tooltip (this is required for performance reasons)
             $(function () {
-                $('[data-toggle="tooltip"]').tooltip();
+                const result: any = ($('[data-toggle="tooltip"]') as any)
+                result.tooltip();
             });
 
             // Called if copy-to-clipboard functionality was successful
@@ -56,5 +57,3 @@ module Apiman {
                 PageLifecycle.setPageTitle('api-endpoint', [ $scope.api.name ]);
             });
         }]);
-
-}

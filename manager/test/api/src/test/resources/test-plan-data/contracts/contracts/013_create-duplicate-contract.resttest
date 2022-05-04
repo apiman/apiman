@@ -14,5 +14,5 @@ Content-Type: application/json
 {
   "type" : "ContractAlreadyExistsException",
   "errorCode" : 4005,
-  "message" : "Contract already exists."
+  "message" : "Error creating contract: duplicate contract detected."
 }

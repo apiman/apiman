@@ -17,6 +17,11 @@ X-RestTest-ArrayOrdering: any
         "email": "admin2@example.org",
         "admin": false
     }, {
+    		"username": "bmay",
+    		"fullName": "Brian",
+    		"email": "b@queen.com",
+    		"admin": false
+    }, {
         "username": "bwayne",
         "fullName": "Bruce Wayne",
         "email": "bwayne@wayne-enterprises.com",
@@ -30,6 +35,11 @@ X-RestTest-ArrayOrdering: any
         "username": "dprince",
         "fullName": "Diana Prince",
         "email": "dprince@themyscira.gov",
+        "admin": false
+    }, {
+        "username": "fmercury",
+        "fullName": "Freddie",
+        "email": "f@queen.com",
         "admin": false
     }, {
         "username": "user1",
@@ -63,8 +73,7 @@ X-RestTest-ArrayOrdering: any
         "description": "This is the gateway.",
         "createdBy": "admin",
         "modifiedBy": "admin",
-        "type": "REST",
-        "configuration": "{\"endpoint\":\"http://localhost:7070/mock-gateway\",\"username\":\"admin\",\"password\":\"$CRYPT::j8rdW76Z5gUI0I+9c8/GrA==\"}"
+        "type": "REST"
     }],
     "Plugins": [],
     "Roles": [],

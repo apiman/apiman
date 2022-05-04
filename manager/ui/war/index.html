@@ -1,23 +1,14 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>apiman</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apiman</title>
     <base href='/'>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="dist/deps.css" />
-    <link rel="stylesheet" href="plugins/api-manager/css/apiman.css" />
-    <link rel="stylesheet" href="plugins/api-manager/css/apiman-responsive.css" />
-
-    <!-- Scripts -->
-    <script src="dist/deps.js"></script>
   </head>
 
   <body>
-    <div ng-view></div>
-    <script src="dist/apiman-manager-ui.js"></script>
+    <div ng-view ng-strict-di="true"></div>
   </body>
 </html>

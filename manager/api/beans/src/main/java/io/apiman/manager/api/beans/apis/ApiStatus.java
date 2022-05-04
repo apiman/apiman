@@ -22,6 +22,28 @@ package io.apiman.manager.api.beans.apis;
  */
 public enum ApiStatus {
 
-    Created, Ready, Published, Retired
+    /**
+     * API has been created but is not yet fully configured.
+     */
+    Created,
+
+    /**
+     * API has been created and configured, and is ready for publication
+     */
+    Ready,
+
+    /**
+     * API has been published:
+     * <ul>
+     *     <li>If a public API: is published to a gateway.</li>
+     *     <li>if a non-public API: can be subscribed to by clients via a plan.</li>
+     * </ul>
+     */
+    Published,
+
+    /**
+     * API has been withdrawn
+     */
+    Retired
 
 }

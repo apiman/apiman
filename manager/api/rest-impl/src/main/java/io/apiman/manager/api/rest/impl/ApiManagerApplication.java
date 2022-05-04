@@ -16,19 +16,27 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.config.Version;
 import io.apiman.manager.api.exportimport.manager.ExportImportManager;
+import io.apiman.manager.api.providers.JacksonObjectMapperProvider;
+import io.apiman.manager.api.rest.exceptions.mappers.BeanValidationExceptionMapper;
+import io.apiman.manager.api.rest.exceptions.mappers.IllegalArgumentExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
-import io.swagger.jaxrs.config.BeanConfig;
+import io.apiman.manager.api.rest.interceptors.BlobResourceInterceptorProvider;
+import io.apiman.manager.api.rest.interceptors.TotalCountInterceptorProvider;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
 
+import io.swagger.jaxrs.config.BeanConfig;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 /**
  * The jax-rs application for the API Manager rest api.
@@ -38,9 +46,10 @@ import java.util.Set;
 @ApplicationPath("/")
 @ApplicationScoped
 public class ApiManagerApplication extends Application {
+    private IApimanLogger log = ApimanLoggerFactory.getLogger(ApiManagerApplication.class);
 
     @Inject
-    ExportImportManager manager;
+    private ExportImportManager manager;
 
     private Set<Class<?>> classes = new HashSet<>();
 
@@ -68,12 +77,33 @@ public class ApiManagerApplication extends Application {
         classes.add(ActionResourceImpl.class);
         classes.add(DownloadResourceImpl.class);
         classes.add(DeveloperResourceImpl.class);
+        classes.add(BlobResourceImpl.class);
+        classes.add(EventResourceImpl.class);
+        classes.add(DeveloperPortalResourceImpl.class);
+        classes.add(ProtectedDeveloperPortalResourceWrapper.class);
 
         //add swagger 2.0 resource
         classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
         classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
         classes.add(RestExceptionMapper.class);
+        classes.add(IllegalArgumentExceptionMapper.class);
+        classes.add(BeanValidationExceptionMapper.class);
+
+        registerProviders(
+                JacksonObjectMapperProvider.class,
+                BlobResourceInterceptorProvider.class,
+                TotalCountInterceptorProvider.class,
+                RestExceptionMapper.class
+                // EagerProvider.class
+        );
+    }
+
+    private void registerProviders(Class<?>... classes) {
+        for (Class<?> klazz : classes) {
+            log.info("Registering provider: {0}", klazz.getCanonicalName());
+            ResteasyProviderFactory.getInstance().register(klazz);
+        }
     }
     
     @PostConstruct

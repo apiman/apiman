@@ -16,6 +16,7 @@
 package io.apiman.manager.api.beans.actions;
 
 import java.io.Serializable;
+import java.util.StringJoiner;
 
 /**
  * The bean used to perform an action on an entity.
@@ -139,4 +140,13 @@ public class ActionBean implements Serializable {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ActionBean.class.getSimpleName() + "[", "]")
+             .add("type=" + type)
+             .add("organizationId='" + organizationId + "'")
+             .add("entityId='" + entityId + "'")
+             .add("entityVersion='" + entityVersion + "'")
+             .toString();
+    }
 }

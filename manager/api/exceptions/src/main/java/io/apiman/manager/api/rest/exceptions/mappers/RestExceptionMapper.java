@@ -17,11 +17,12 @@
 package io.apiman.manager.api.rest.exceptions.mappers;
 
 import io.apiman.common.config.ConfigFactory;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.exceptions.ErrorBean;
 import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 
 import java.io.PrintWriter;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,11 +42,9 @@ import org.apache.commons.io.output.StringBuilderWriter;
 @ApplicationScoped
 public class RestExceptionMapper implements ExceptionMapper<AbstractRestException> {
 
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(RestExceptionMapper.class);
     private static final String ENABLE_STACKTRACE = "apiman-manager.config.features.rest-response-should-contain-stacktraces";
-    private static Configuration config;
-    static {
-        config = ConfigFactory.createConfig();
-    }
+    private static final Configuration CONFIG = ConfigFactory.createConfig();
 
     /**
      * Constructor.
@@ -73,16 +72,14 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
     /**
      * Gets the full stack trace for the given exception and returns it as a
      * string.
-     * @param data
+     * @param exception
      */
-    private String getStackTrace(AbstractRestException data) {
+    private String getStackTrace(AbstractRestException exception) {
+        LOGGER.error(exception);
         if (isStackTraceEnabled()) {
-            StringBuilderWriter writer = new StringBuilderWriter();
-            try {
-                data.printStackTrace(new PrintWriter(writer));
+            try (StringBuilderWriter writer = new StringBuilderWriter()) {
+                exception.printStackTrace(new PrintWriter(writer));
                 return writer.getBuilder().toString();
-            } finally {
-                writer.close();
             }
         } else {
             return null;
@@ -90,6 +87,6 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
     }
 
     private boolean isStackTraceEnabled() {
-        return config.getBoolean(ENABLE_STACKTRACE, false);
+        return CONFIG.getBoolean(ENABLE_STACKTRACE, false);
     }
 }

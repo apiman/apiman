@@ -1,10 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var EditGatewayController = _module.controller("Apiman.EditGatewayController",
-        ['$location', '$q', '$rootScope', '$routeParams', '$scope', '$uibModal', 'ApimanSvcs', 'PageLifecycle',
-        ($location, $q, $rootScope, $routeParams, $scope, $uibModal, ApimanSvcs, PageLifecycle) => {
+_module.controller("Apiman.EditGatewayController",
+        ['$location', '$q', '$rootScope', '$routeParams', '$scope', '$uibModal', 'ApimanSvcs', 'PageLifecycle', 'Logger',
+        function ($location, $q, $rootScope, $routeParams, $scope, $uibModal, ApimanSvcs, PageLifecycle, Logger) {
             $scope.isValid = false;
             var params = $routeParams;
             
@@ -65,12 +64,12 @@ module Apiman {
                 })
             };
             
-            var testGateway  = function() {
+            var testGateway = function() {
                 $scope.testButton.state = 'in-progress';
                 var gateway = Gateway();
                 ApimanSvcs.update({ entityType: 'gateways' }, gateway, function(reply) {
                     $scope.testButton.state = 'complete';
-                    if (reply.success == true) {
+                    if (reply.success === true) {
                         Logger.info('Connected successfully to Gateway: {0}', reply.detail);
                         $scope.testResult = 'success';
                     } else {
@@ -151,6 +150,4 @@ module Apiman {
                 $scope.$watch('passwordConfirm', validate);
                 $('#apiman-gateway-description').focus();
             });
-    }])
-
-}
+    }]);

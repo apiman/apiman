@@ -1,9 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
-    export var ClientApisController = _module.controller('Apiman.ClientApisController',
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
+
+_module.controller('Apiman.ClientApisController',
         ['$q', '$scope', '$location', 'PageLifecycle','ClientEntityLoader','Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout', '$routeParams', 'Configuration', 'ApiRegistrySvcs', 'DownloadSvcs', '$window', '$uibModal', '$log', 'SwaggerUIContractService',
-        ($q, $scope, $location, PageLifecycle, ClientEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration, ApiRegistrySvcs, DownloadSvcs, $window, $uibModal, $log, SwaggerUIContractService) => {
+        function ($q, $scope, $location, PageLifecycle, ClientEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams, Configuration, ApiRegistrySvcs, DownloadSvcs, $window, $uibModal, $log, SwaggerUIContractService) {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -118,48 +118,44 @@ module Apiman {
             });
         }]);
 
+_module.controller('ClientApisModalCtrl',
+    ['$uibModalInstance', '$scope', 'api', 'apiKey',
+        function ($uibModalInstance, $scope, api, apiKey) {
 
-    export var ClientApisModalCtrl = _module.controller('ClientApisModalCtrl', function ($scope,
-                                                                                   $uibModalInstance,
-                                                                                   api, apiKey) {
-        $scope.api = api;
-        $scope.asQueryParam = api.httpEndpoint + '?apikey=' + apiKey;
-        if (api.httpEndpoint.indexOf('?') > -1) {
-            $scope.asQueryParam = api.httpEndpoint + '&apikey=' + apiKey;
-        }
-        $scope.asRequestHeader = 'X-API-Key: ' + apiKey;
+            $scope.asQueryParam = api.httpEndpoint + '?apikey=' + apiKey;
+            if (api.httpEndpoint.indexOf('?') > -1) {
+                $scope.asQueryParam = api.httpEndpoint + '&apikey=' + apiKey;
+            }
+            $scope.asRequestHeader = 'X-API-Key: ' + apiKey;
 
-        $scope.ok = function () {
-            $uibModalInstance.close();
-        };
+            $scope.ok = function () {
+                $uibModalInstance.close();
+            };
 
-        // Tooltip
-        $scope.tooltipTxt = 'Copy to clipboard';
+            // Tooltip
+            $scope.tooltipTxt = 'Copy to clipboard';
 
-        // Called on clicking the button the tooltip is attached to
-        $scope.tooltipChange = function() {
-            $scope.tooltipTxt = 'Copied!';
-        };
+            // Called on clicking the button the tooltip is attached to
+            $scope.tooltipChange = function() {
+                $scope.tooltipTxt = 'Copied!';
+            };
 
-        // Call when the mouse leaves the button the tooltip is attached to
-        $scope.tooltipReset = function() {
-            setTimeout(function() {
-                $scope.tooltipTxt = 'Copy to clipboard';
-            }, 100);
-        };
+            // Call when the mouse leaves the button the tooltip is attached to
+            $scope.tooltipReset = function() {
+                setTimeout(function() {
+                    $scope.tooltipTxt = 'Copy to clipboard';
+                }, 100);
+            };
 
-        // Copy-to-Clipboard
+            // Copy-to-Clipboard
 
-        // Called if copy-to-clipboard functionality was successful
-        $scope.copySuccess = function () {
-            //console.log('Copied!');
-        };
+            // Called if copy-to-clipboard functionality was successful
+            $scope.copySuccess = function () {
+                //console.log('Copied!');
+            };
 
-        // Called if copy-to-clipboard functionality was unsuccessful
-        $scope.copyFail = function (err) {
-            //console.error('Error!', err);
-        };
-    });
-
-
-}
+            // Called if copy-to-clipboard functionality was unsuccessful
+            $scope.copyFail = function (err) {
+                //console.error('Error!', err);
+            };
+        }]);

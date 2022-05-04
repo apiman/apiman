@@ -1,8 +1,7 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var ClientPoliciesController = _module.controller("Apiman.ClientPoliciesController",
+_module.controller("Apiman.ClientPoliciesController",
         [
             '$q',
             '$scope',
@@ -15,7 +14,8 @@ module Apiman {
             'Configuration',
             'EntityStatusSvc',
             'CurrentUser',
-        ($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, $routeParams, Configuration, EntityStatusSvc, CurrentUser) => {
+            'Logger',
+        function ($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, $routeParams, Configuration, EntityStatusSvc, CurrentUser, Logger) {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'policies';
@@ -99,6 +99,4 @@ module Apiman {
             PageLifecycle.loadPage('ClientPolicies', 'clientView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('client-policies', [ $scope.client.name ]);
             });
-        }])
-
-}
+        }]);

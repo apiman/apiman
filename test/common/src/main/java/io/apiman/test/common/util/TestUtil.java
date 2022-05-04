@@ -139,7 +139,7 @@ public class TestUtil {
 
             // Request Headers
             line = reader.readLine();
-            if (!line.trim().startsWith("----")) {
+            if (!line.trim().equals("----")) {
                 while (line.trim().length() > 0) {
                     int idx = line.indexOf(':');
                     String headerName = line.substring(0, idx).trim();
@@ -151,7 +151,7 @@ public class TestUtil {
                 // Request payload
                 StringBuilder builder = new StringBuilder();
                 line = reader.readLine();
-                while (!line.trim().startsWith("----")) {
+                while (!line.trim().equals("----")) {
                     builder.append(line).append("\n");
                     line = reader.readLine();
                     line = doPropertyReplacement(line);
@@ -178,7 +178,7 @@ public class TestUtil {
             if (line != null) {
                 StringBuilder builder = new StringBuilder();
                 line = reader.readLine();
-                while (line != null && !line.trim().startsWith("----")) {
+                while (line != null && !line.trim().equals("----")) {
                     builder.append(line).append("\n");
                     line = reader.readLine();
                 }

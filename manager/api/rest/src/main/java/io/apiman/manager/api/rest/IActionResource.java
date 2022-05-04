@@ -17,14 +17,21 @@
 package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.actions.ActionBean;
+import io.apiman.manager.api.beans.actions.ContractActionDto;
+import io.apiman.manager.api.beans.clients.ClientStatus;
+import io.apiman.manager.api.beans.clients.ClientVersionBean;
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.rest.exceptions.ActionException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
-import io.swagger.annotations.Api;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
+
+import io.swagger.annotations.Api;
 
 /**
  * The Action API.  This API allows callers to perform actions on various
@@ -45,8 +52,26 @@ public interface IActionResource {
      * @statuscode 204 If the action completes successfully.
      * @throws ActionException action is performed but an error occurs during processing
      */
+    @PermitAll
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void performAction(ActionBean action) throws ActionException, NotAuthorizedException;
+    void performAction(ActionBean action) throws ActionException, NotAuthorizedException;
 
+    /**
+     * Call this endpoint to approve a contract. If all contracts for a given {@link ClientVersionBean} have been
+     * approved, then it will transition from {@link ClientStatus#AwaitingApproval} to {@link ClientStatus#Ready} and
+     * hence can be published.
+     * <p>
+     * Requires a user with {@link PermissionType#planAdmin} permissions.
+     *
+     * @param action The details about what action to execute.
+     * @throws ActionException action is performed but an error occurs during processing
+     * @summary Approve a contract
+     * @statuscode 204 If the action completes successfully.
+     */
+    @RolesAllowed("apiuser")
+    @POST
+    @Path("contracts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    void approveContract(ContractActionDto action) throws ActionException, NotAuthorizedException;
 }

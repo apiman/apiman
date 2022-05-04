@@ -51,7 +51,7 @@ public abstract class AbstractInvalidInputException extends AbstractUserExceptio
      * @see AbstractRestException#getHttpCode()
      */
     @Override
-    public final int getHttpCode() {
+    public int getHttpCode() {
         return ErrorCodes.HTTP_STATUS_CODE_INVALID_INPUT;
     }
 

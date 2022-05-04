@@ -16,12 +16,23 @@
 
 package io.apiman.manager.api.beans.idm;
 
+import io.apiman.manager.api.beans.BeanUtils.LocaleConverter;
+import io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity;
+
 import java.io.Serializable;
 import java.util.Date;
-
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringJoiner;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -41,9 +52,15 @@ public class UserBean implements Serializable {
     private String username;
     @Column(name = "full_name")
     private String fullName;
+    @Column(name = "email")
     private String email;
     @Column(name = "joined_on", updatable=false)
     private Date joinedOn;
+    @Convert(converter = LocaleConverter.class)
+    @Column(name = "locale")
+    private Locale locale = Locale.getDefault();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<NotificationPreferenceEntity> notificationPreferences = new HashSet<>();
 
     // Used only when returning information about the current user
     @Transient
@@ -111,35 +128,13 @@ public class UserBean implements Serializable {
         this.joinedOn = joinedOn;
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((username == null) ? 0 : username.hashCode());
-        return result;
+    public Set<NotificationPreferenceEntity> getNotificationPreferences() {
+        return notificationPreferences;
     }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        UserBean other = (UserBean) obj;
-        if (username == null) {
-            if (other.username != null)
-                return false;
-        } else if (!username.equals(other.username))
-            return false;
-        return true;
+    public UserBean setNotificationPreferences(Set<NotificationPreferenceEntity> notificationPreferences) {
+        this.notificationPreferences = notificationPreferences;
+        return this;
     }
 
     /**
@@ -156,13 +151,52 @@ public class UserBean implements Serializable {
         this.admin = admin;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * Get locale language tag
+     *
+     * @see Locale#toLanguageTag()
+     * @return the locale
      */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Set locale
+     *
+     * @param locale the locale language tag
+     * @see Locale#toLanguageTag()
+     */
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
     @Override
-    @SuppressWarnings("nls")
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UserBean userBean = (UserBean) o;
+        return Objects.equals(username, userBean.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
+    }
+
+    @Override
     public String toString() {
-        return "UserBean [username=" + username + ", fullName=" + fullName + ", email=" + email
-                + ", joinedOn=" + joinedOn + ", admin=" + admin + "]";
+        return new StringJoiner(", ", UserBean.class.getSimpleName() + "[", "]")
+                .add("username='" + username + "'")
+                .add("fullName='" + fullName + "'")
+                .add("email='" + email + "'")
+                .add("joinedOn=" + joinedOn)
+                .add("locale='" + locale + "'")
+                .add("admin=" + admin)
+                .toString();
     }
 }

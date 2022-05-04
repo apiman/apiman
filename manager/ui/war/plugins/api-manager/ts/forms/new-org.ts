@@ -1,7 +1,6 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var NewOrgController = _module.controller("Apiman.NewOrgController",
+_module.controller("Apiman.NewOrgController",
         ['$q', '$location', '$rootScope', '$scope', 'OrgSvcs', 'PageLifecycle', 'CurrentUser', 'Logger',
         function ($q, $location, $rootScope, $scope, OrgSvcs, PageLifecycle, CurrentUser, Logger) {
             $scope.saveNewOrg = function() {
@@ -11,7 +10,7 @@ module Apiman {
                     PageLifecycle.redirectTo('/orgs/{0}/plans', reply.id);
                 }, PageLifecycle.handleError);
             };
-            
+
             PageLifecycle.loadPage('NewOrg', undefined, undefined, $scope, function() {
 
                 // Using this instead the existing permissions' system, as this is a global setting rather than an org based one
@@ -26,5 +25,3 @@ module Apiman {
                 });
             });
         }]);
-
-}

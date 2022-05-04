@@ -73,7 +73,7 @@ public class GatewayBean implements Serializable {
     private GatewayType type;
     @Lob
     @Column(updatable=true, nullable=false)
-    @Type(type = "org.hibernate.type.TextType")
+    // @Type(type = "org.hibernate.type.TextType")
     private String configuration;
 
     /**

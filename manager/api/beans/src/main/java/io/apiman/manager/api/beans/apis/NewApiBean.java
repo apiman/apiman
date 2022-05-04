@@ -15,9 +15,13 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
+import io.apiman.manager.api.beans.download.BlobReference;
+
 import java.io.Serializable;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -33,6 +37,10 @@ public class NewApiBean implements Serializable {
 
     private String name;
     private String description;
+    @JsonIgnore
+    @BlobReference
+    private String image;
+    private String extendedDescription;
 
     private String initialVersion;
 
@@ -45,6 +53,7 @@ public class NewApiBean implements Serializable {
     private Set<ApiPlanBean> plans;
     private String definitionUrl;
     private ApiDefinitionType definitionType;
+    private Set<KeyValueTagDto> tags;
 
     /**
      * Constructor.
@@ -226,4 +235,30 @@ public class NewApiBean implements Serializable {
      */
     public void setDisableKeysStrip(Boolean disableKeysStrip) { this.disableKeysStrip = disableKeysStrip; }
 
+    public String getImage() {
+        return image;
+    }
+
+    public NewApiBean setImage(String image) {
+        this.image = image;
+        return this;
+    }
+
+    public String getExtendedDescription() {
+        return extendedDescription;
+    }
+
+    public NewApiBean setExtendedDescription(String extendedDescription) {
+        this.extendedDescription = extendedDescription;
+        return this;
+    }
+
+    public Set<KeyValueTagDto> getTags() {
+        return tags;
+    }
+
+    public NewApiBean setTags(Set<KeyValueTagDto> tags) {
+        this.tags = tags;
+        return this;
+    }
 }

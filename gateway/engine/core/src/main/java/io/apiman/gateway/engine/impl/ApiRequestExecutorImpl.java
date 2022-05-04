@@ -346,30 +346,30 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         // then we lookup the Contract and use that.
         if (request.getApiKey() == null || (api != null && api.isKeysStrippingDisabled())) {
 
-                            if (api == null) {
-                                ApiNotFoundException error = new ApiNotFoundException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
-                                resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
-                            } else if (!api.isPublicAPI()) {
-                                InvalidApiException error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotPublic")); //$NON-NLS-1$
-                                error.setStatusCode(403); // Forbidden
-                                resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
-                            } else {
-                                resolvePropertyReplacements(api);
+            if (api == null) {
+                ApiNotFoundException error = new ApiNotFoundException(Messages.i18n.format("EngineImpl.ApiNotFound")); //$NON-NLS-1$
+                resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
+            } else if (!api.isPublicAPI()) {
+                InvalidApiException error = new InvalidApiException(Messages.i18n.format("EngineImpl.ApiNotPublic")); //$NON-NLS-1$
+                error.setStatusCode(403); // Forbidden
+                resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
+            } else {
+                resolvePropertyReplacements(api);
 
-                                request.setApi(api);
-                                policies = api.getApiPolicies();
-                                policyImpls = new ArrayList<>(policies.size());
+                request.setApi(api);
+                policies = api.getApiPolicies();
+                policyImpls = new ArrayList<>(policies.size());
 
-                                // If the API is configured to be "stateful", we need to parse the
-                                // inbound request body into an object appropriate to the type and
-                                // format of the API.  This could be a SOAP message, an XML document,
-                                // or a JSON document
-                                if (api.isParsePayload()) {
-                                    parsePayload(payloadParserHandler);
-                                } else {
-                                    loadPolicies(policiesLoadedHandler);
-                                }
-                            }
+                // If the API is configured to be "stateful", we need to parse the
+                // inbound request body into an object appropriate to the type and
+                // format of the API.  This could be a SOAP message, an XML document,
+                // or a JSON document
+                if (api.isParsePayload()) {
+                    parsePayload(payloadParserHandler);
+                } else {
+                    loadPolicies(policiesLoadedHandler);
+                }
+            }
         } else {
             String apiOrgId = request.getApiOrgId();
             String apiId = request.getApiId();

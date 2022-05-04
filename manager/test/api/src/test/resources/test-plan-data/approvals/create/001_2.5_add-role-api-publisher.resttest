@@ -1,0 +1,21 @@
+POST /roles admin/admin
+Content-Type: application/json
+
+{
+  "name" : "ApiPublisherAndPlanManager",
+  "autoGrant" : false,
+  "description" : "API Publisher and Plan Manager.",
+  "permissions" : [ "apiAdmin", "apiView", "apiEdit", "planAdmin", "planEdit", "planView"]
+}
+----
+200
+Content-Type: application/json
+X-RestTest-ArrayOrdering: any
+
+{
+  "id" : "ApiPublisherAndPlanManager",
+  "name" : "ApiPublisherAndPlanManager",
+  "autoGrant" : false,
+  "description" : "API Publisher and Plan Manager.",
+  "permissions" : [ "apiAdmin", "apiView", "apiEdit", "planAdmin", "planEdit", "planView"]
+}

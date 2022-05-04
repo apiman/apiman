@@ -1,8 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
-    
-    export var ClientContractsController = _module.controller('Apiman.ClientContractsController',
+import {_module} from "../apimanPlugin";
+import {ContractSummaryBean} from "../model/contract.model";
+import angular = require("angular");
+
+_module.controller('Apiman.ClientContractsController',
         [
             '$q',
             '$scope',
@@ -14,7 +14,8 @@ module Apiman {
             'Logger',
             '$routeParams',
             'Configuration',
-        ($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, Logger, $routeParams, Configuration) => {
+            'ContractService',
+        function($q, $scope, $location, $uibModal, PageLifecycle, ClientEntityLoader, OrgSvcs, Logger, $routeParams, Configuration, ContractService) {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -27,7 +28,7 @@ module Apiman {
             pageData = angular.extend(pageData, {
                 contracts: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'clients', entityId: params.client, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'contracts' }, function(contracts) {
-                        $scope.filteredContracts = contracts;
+                        $scope.filteredContracts = contracts as ContractSummaryBean[];
                         resolve(contracts);
                     }, reject);
                 })
@@ -133,10 +134,13 @@ module Apiman {
                     //console.log('Modal dismissed at: ' + new Date());
                 });
             };
+
+            $scope.approveContract = (id: number) => {
+                Logger.debug("Approving {0}", id);
+                ContractService.approveContract(id);
+            };
             
             PageLifecycle.loadPage('ClientContracts', 'clientView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('client-contracts', [ $scope.client.name ]);
             });
-        }])
-
-}
+        }]);

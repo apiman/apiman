@@ -29,12 +29,14 @@ import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.apis.ApiGatewayBean;
 import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionMapper;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -48,6 +50,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.config.Version;
+import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.exceptions.ImportNotNeededException;
@@ -69,6 +72,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Used to store imported entities into the {@link IStorage}.
@@ -76,11 +80,14 @@ import javax.inject.Inject;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
+@Transactional
 public class StorageImportDispatcher implements IImportReaderDispatcher {
+    private IApimanLogger logger = ApimanLoggerFactory.getLogger(StorageImportDispatcher.class);
 
     @Inject
     private IStorage storage;
-    private IApimanLogger logger = ApimanLoggerFactory.getLogger(StorageImportDispatcher.class);
+    @Inject
+    private IBlobStore blobStore;
 
     @Inject
     private Version version;
@@ -105,6 +112,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     private Map<String, IGatewayLink> gatewayLinkCache = new HashMap<>();
 
     private MetadataBean currentMetadata = new MetadataBean();
+
+    private ApiVersionMapper apiVersionMapper = ApiVersionMapper.INSTANCE;
 
     /**
      * Constructor.
@@ -153,12 +162,6 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         apisToPublish.clear();
         clientsToRegister.clear();
         gatewayLinkCache.clear();
-
-        try {
-            this.storage.beginTx();
-        } catch (StorageException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -386,6 +389,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void api(ApiBean api) {
         currentApi = api;
         try {
+            api.getTags().forEach(t -> t.setId(null));
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApi") + api.getName()); //$NON-NLS-1$
             api.setOrganization(currentOrg);
             storage.createApi(api);
@@ -405,7 +409,10 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingApiVersion") + apiVersion.getVersion()); //$NON-NLS-1$
             apiVersion.setApi(currentApi);
             apiVersion.setId(null);
+
             storage.createApiVersion(apiVersion);
+
+            apiVersion.getPlans().forEach(p -> p.setApiVersion(apiVersion));
 
             if (apiVersion.getStatus() == ApiStatus.Published) {
                 apisToPublish.add(new EntityInfo(
@@ -536,6 +543,12 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
         }
     }
 
+    @Override
+    public void blob(ExportedBlobDto blob) {
+        logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingBlob", blob.getId()));
+        blobStore.reimportBlob(blob);
+    }
+
     /**
      * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#close()
      */
@@ -553,7 +566,6 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
 
             saveMetadata(true);
 
-            storage.commitTx();
             logger.info("-----------------------------------"); //$NON-NLS-1$
             logger.info(Messages.i18n.format("StorageImportDispatcher.ImportingImportComplete")); //$NON-NLS-1$
             logger.info("-----------------------------------"); //$NON-NLS-1$
@@ -584,7 +596,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
      */
     @Override
     public void cancel() {
-        this.storage.rollbackTx();
+       // throw new RuntimeException("Stopped");
+        //this.storage.rollbackTx();
     }
 
     /**

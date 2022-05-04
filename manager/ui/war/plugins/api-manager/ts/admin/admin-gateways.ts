@@ -1,9 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var AdminGatewaysController = _module.controller("Apiman.AdminGatewaysController",
-        ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', ($q, $scope, ApimanSvcs, PageLifecycle) => {
+_module.controller("Apiman.AdminGatewaysController",
+        ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', 
+        function ($q, $scope, ApimanSvcs, PageLifecycle) {
             $scope.tab = 'gateways';
             var pageData = {
                 gateways: $q(function(resolve, reject) {
@@ -15,6 +14,4 @@ module Apiman {
             PageLifecycle.loadPage('AdminGateways', 'admin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-gateways');
             });
-    }])
-
-}
+    }]);

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <datasources>
-  <datasource jndi-name="java:jboss/datasources/apiman-manager" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
+  <datasource jndi-name="java:/apiman/datasources/apiman-manager" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
     <connection-url>jdbc:postgresql://POSTGRESQLSERVER:5432/apiman</connection-url>
-    <driver>postgresql-9.3-1102.jdbc41.jar</driver>
+    <driver>postgresql-42.3.0.jar</driver>
     <pool>
       <max-pool-size>30</max-pool-size>
     </pool>

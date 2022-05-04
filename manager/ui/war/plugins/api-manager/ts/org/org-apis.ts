@@ -1,10 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var OrgApisController = _module.controller("Apiman.OrgApisController",
+_module.controller("Apiman.OrgApisController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams', 'CurrentUser',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams, CurrentUser) => {
+        function ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams, CurrentUser) {
             $scope.tab = 'apis';
             var params = $routeParams;
             $scope.organizationId = params.org;
@@ -49,6 +48,4 @@ module Apiman {
             PageLifecycle.loadPage('OrgSvcs', 'apiView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('org-apis', [ $scope.org.name ]);
             });
-        }])
-
-}
+        }]);

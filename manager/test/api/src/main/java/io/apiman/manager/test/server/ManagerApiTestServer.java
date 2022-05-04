@@ -15,9 +15,6 @@
  */
 package io.apiman.manager.test.server;
 
-import io.apiman.common.es.util.AbstractClientFactory;
-import io.apiman.common.es.util.DefaultEsClientFactory;
-import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.servlet.ApimanCorsFilter;
 import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
@@ -26,8 +23,20 @@ import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.api.war.TransactionWatchdogFilter;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
-import io.apiman.test.common.es.EsTestUtil;
 import io.apiman.test.common.util.TestUtil;
+
+import java.io.File;
+import java.nio.file.NoSuchFileException;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.SQLException;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+import javax.naming.InitialContext;
+import javax.naming.NameAlreadyBoundException;
+import javax.servlet.DispatcherType;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
@@ -39,24 +48,13 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Credential;
-import org.elasticsearch.action.admin.indices.cache.clear.ClearIndicesCacheRequest;
-import org.elasticsearch.action.admin.indices.flush.FlushRequest;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
-import org.testcontainers.elasticsearch.ElasticsearchContainer;
-
-import javax.naming.InitialContext;
-import javax.servlet.DispatcherType;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.SQLException;
-import java.util.*;
+import org.jdbi.v3.core.Jdbi;
+import org.testcontainers.shaded.org.bouncycastle.util.Arrays;
 
 /**
  * This class starts up an embedded Jetty test server so that integration tests
@@ -78,13 +76,6 @@ public class ManagerApiTestServer {
      * DataSource created - only if using JPA
      */
     private BasicDataSource ds = null;
-
-    /*
-     * The elasticsearch node - only if using ES
-     */
-    private static ElasticsearchContainer node;
-    private static final int ES_CLIENT_TIMEOUT = -1;
-    private static final String ES_DEFAULT_INDEX = EsConstants.MANAGER_INDEX_NAME;
 
     /**
      * Constructor.
@@ -114,27 +105,17 @@ public class ManagerApiTestServer {
         System.out.println("******* Started in " + (endTime - startTime) + "ms");
     }
 
-    private void deleteAndFlush() throws Exception {
-        if (ES_CLIENT != null) {
-            System.out.println("FLUSH AND DELETE>>>>>>");
-            AbstractClientFactory.deleteIndices(ES_CLIENT);
-            DefaultEsClientFactory.clearClientCache();
-        }
-    }
-
     /**
      * Stop the server.
      * @throws Exception
      */
     public void stop() throws Exception {
-        if (node != null) {
-            deleteAndFlush();
-        }
         server.stop();
         if (ds != null) {
             ds.close();
             InitialContext ctx = TestUtil.initialContext();
-            ctx.unbind("java:comp/env/jdbc/ApiManagerDS");
+            // ctx.unbind("java:comp/env/jdbc/ApiManagerDS"); 
+            ctx.unbind("java:/apiman/datasources/apiman-manager"); 
         }
     }
 
@@ -150,50 +131,47 @@ public class ManagerApiTestServer {
      */
     protected void preStart() throws Exception {
         if (ManagerTestUtils.getTestType() == TestType.jpa) {
+            TestUtil.setProperty("hibernate.hbm2ddl.import_files", "import.sql");
             TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
-            TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/comp/env/jdbc/ApiManagerDS");
+            TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");
+            TestUtil.setProperty("apiman-manager.config.features.rest-response-should-contain-stacktraces", "true");
+
+            // Set data directory to be test data dir
+            File apimanConfigDir = new File("src/test/resources/apiman/config");
+            if (!apimanConfigDir.exists()) {
+                throw new NoSuchFileException("src/test/resources/apiman/config not found. If you are using Eclipse you may need "
+                   + "to set the working directory manually (works automatically on all other platforms)");
+            }
+            TestUtil.setProperty("apiman.config.dir", apimanConfigDir.getAbsolutePath());
+            var apimanDataDir = new File("src/test/resources/apiman/data");
+            TestUtil.setProperty("apiman.data.dir", apimanDataDir.getAbsolutePath());
+
             try {
                 InitialContext ctx = TestUtil.initialContext();
-                TestUtil.ensureCtx(ctx, "java:/comp/env");
-                TestUtil.ensureCtx(ctx, "java:/comp/env/jdbc");
+                // TestUtil.ensureCtx(ctx, "java:/comp/env");
+                // TestUtil.ensureCtx(ctx, "java:/comp/env/jdbc");
+                TestUtil.ensureCtx(ctx, "java:/apiman");
+                TestUtil.ensureCtx(ctx, "java:/apiman/datasources");
                 String dbOutputPath = System.getProperty("apiman.test.h2-output-dir", null);
                 if (dbOutputPath != null) {
                     ds = createFileDatasource(new File(dbOutputPath));
                 } else {
                     ds = createInMemoryDatasource();
                 }
-                ctx.bind("java:/comp/env/jdbc/ApiManagerDS", ds);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                try {
+                    // For H2 versions older than 1.4.200 this ensures JSON type exists.
+                    Jdbi.create(ds).useHandle(h -> {
+                        h.getConnection().setAutoCommit(false);
+                        h.execute("CREATE domain IF NOT EXISTS json AS other");
+                        h.commit();
+                    });
+                } catch (Exception e) {}
+                // ctx.bind("java:/comp/env/jdbc/ApiManagerDS", ds);
+                ctx.bind("java:/apiman/datasources/apiman-manager", ds);
+            } catch (NameAlreadyBoundException nbe) {
+                nbe.printStackTrace();
             }
         }
-        if (ManagerTestUtils.getTestType() == TestType.es) {
-            if (node == null) {
-                node = EsTestUtil.provideElasticsearchContainer();
-            }
-            if (!node.isRunning()) {
-                // We have to start the test container here manually but it is stopped automatically from the test container library
-                // For performance reasons we do not stop the elasticsearch container between test runs
-                node.start();
-            }
-            ES_CLIENT = createEsClient();
-        }
-    }
-
-    private static RestHighLevelClient createEsClient() {
-        Map<String, String> config = getTestClientConfig();
-        return new DefaultEsClientFactory().createClient(config, Collections.emptyMap(), ES_DEFAULT_INDEX);
-    }
-
-    public static Map<String, String> getTestClientConfig() {
-        Map<String, String> config = new HashMap<>();
-        config.put("client.type", "es");
-        config.put("client.protocol", "http");
-        config.put("client.host", node.getContainerIpAddress());
-        config.put("client.port", node.getFirstMappedPort().toString());
-        config.put("client.timeout", String.valueOf(ES_CLIENT_TIMEOUT));
-        config.put("client.initialize", "true");
-        return config;
     }
 
     /**
@@ -201,12 +179,14 @@ public class ManagerApiTestServer {
      * @throws SQLException
      */
     private static BasicDataSource createInMemoryDatasource() throws SQLException {
-        TestUtil.setProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        TestUtil.setProperty("apiman.hibernate.dialect", "io.apiman.manager.api.jpa.ApimanH2Dialect");
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
         ds.setPassword("");
-        ds.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1");
+        // Use this for trace level JDBC logging
+        // ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1;TRACE_LEVEL_SYSTEM_OUT=3");
         Connection connection = ds.getConnection();
         connection.close();
         System.out.println("DataSource created and bound to JNDI.");
@@ -253,13 +233,18 @@ public class ManagerApiTestServer {
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(TransactionWatchdogFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(RootResourceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+
+
+        apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
+        // apiManServer.setInitParameter("resteasy.scan", "true");
+        apiManServer.setInitParameter("resteasy.scan.providers", "true");
+        apiManServer.setInitParameter("resteasy.scan.resources", "true");
+        apiManServer.setInitParameter("resteasy.servlet.mapping.prefix", "");
+        //apiManServer.setInitParameter("resteasy.providers", "io.apiman.manager.api.providers.JacksonObjectMapperProvider");
+
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", TestManagerApiApplication.class.getName());
         apiManServer.addServlet(resteasyServlet, "/*");
-
-        apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
-        apiManServer.setInitParameter("resteasy.scan", "true");
-        apiManServer.setInitParameter("resteasy.servlet.mapping.prefix", "");
 
         // Add the web contexts to jetty
         handlers.addHandler(apiManServer);
@@ -306,9 +291,9 @@ public class ManagerApiTestServer {
         for (String [] userInfo : TestUsers.USERS) {
             String user = userInfo[0];
             String pwd = userInfo[1];
-            String[] roles = new String[] { "apiuser" };
+            String[] roles = userInfo[4].split(",");
             if (user.startsWith("admin")) {
-                roles = new String[] { "apiuser", "apiadmin"};
+                roles = Arrays.append(roles, "apiadmin");
             }
             userStore.addUser(user, Credential.getCredential(pwd), roles);
         }
@@ -323,27 +308,5 @@ public class ManagerApiTestServer {
     }
 
     public void flush() {
-        if (ES_CLIENT != null) {
-            System.out.println("FLUSH>>>>>>");
-            this.flushIndices();
-        }
-    }
-
-    /**
-     * Flush indices
-     * @throws IOException
-     */
-    private void flushIndices() {
-        String[] indices = new String[EsConstants.MANAGER_INDEX_POSTFIXES.length];
-        int i = 0;
-        for(String postfix: EsConstants.MANAGER_INDEX_POSTFIXES) {
-            indices[i++] = (ES_DEFAULT_INDEX + "_" + postfix).toLowerCase();
-        }
-        try {
-            ES_CLIENT.indices().flush(new FlushRequest(indices).force(true).waitIfOngoing(true), RequestOptions.DEFAULT);
-            ES_CLIENT.indices().clearCache(new ClearIndicesCacheRequest(indices), RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            System.err.println("Error flushing indices " + indices);
-        }
     }
 }

@@ -1,0 +1,9 @@
+PUT /users/bwayne/notifications bwayne/bwayne
+Content-Type: application/json
+
+{
+  "markAll": true,
+  "status": "USER_DISMISSED"
+}
+----
+204

@@ -26,7 +26,6 @@ public class FilterBuilder extends AbstractQueryBuilder {
 
     /**
      * Constructor.
-     * @param operationType
      * @param filters
      */
     public FilterBuilder(QueryBuilder... filters) {

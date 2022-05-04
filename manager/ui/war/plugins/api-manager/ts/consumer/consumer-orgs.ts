@@ -1,9 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var ConsumerOrgsController = _module.controller("Apiman.ConsumerOrgsController",
+_module.controller("Apiman.ConsumerOrgsController",
         ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 'Logger', 'CurrentUser',
-        ($q, $location, $scope, ApimanSvcs, PageLifecycle, Logger, CurrentUser) => {
+        function ($q, $location, $scope, ApimanSvcs, PageLifecycle, Logger, CurrentUser) {
             var params = $location.search();
 
             if (params.q) {
@@ -29,7 +29,7 @@ module Apiman {
 
                         body.filters.push( {"name": "name", "value": "*" + params.q + "*", "operator": "like"});
                         var searchStr = angular.toJson(body);
-                        ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(result) { 
+                        ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(result) {
 
                             $scope.resultCount = result.totalSize;
                             $scope.currentPage = params.cp;
@@ -44,7 +44,8 @@ module Apiman {
             };
 
             function loadFirstPage() {
-                if ($scope.orgs.length == 0) {
+                // only load first page if there are no query params
+                if ($scope.orgs.length == 0 && !$location.search().q) {
                     $scope.searchOrg('*', 1, 12);
                 }
             }
@@ -60,5 +61,3 @@ module Apiman {
                 });
             });
         }]);
-
-}

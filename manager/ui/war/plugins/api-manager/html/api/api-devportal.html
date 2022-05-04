@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<div ng-include="headerInclude"></div>
+<div ng-controller="Apiman.DevPortalController"
+     id="page-content"
+     class="page container-pf-nav-pf-vertical container-fluid"
+     data-field="page"
+     ng-cloak
+     ng-show="pageState == 'loaded'">
+  <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
+  <!-- Entity Summary Row -->
+  <div ng-include="'plugins/api-manager/html/api/api_entity.include'"></div>
+
+  <!-- Navigation + Content Row -->
+  <div class="row">
+    <!-- Left hand nav -->
+    <div ng-include="'plugins/api-manager/html/api/api_tabs.include'"></div>
+    <!-- /Left hand nav -->
+
+    <!-- Content -->
+    <div class="col-md-10 apiman-entity-content">
+      <div class="col-md-10">
+        <div>
+          <!-- Feature in Portal -->
+          <div class="title" apiman-i18n-key="dev-portal">Feature In Developer Portal</div>
+          <div>
+          <span apiman-i18n-key="feature-api-in-portal-help">Do you want to feature this API version in the developer portal?
+            If selected, the API will appear as a default entry on the developer portal landing page.</span>
+          </div>
+          <div style="padding: 8px; margin-bottom: 10px">
+            <input
+                ng-model="data.isFeaturedApi"
+                ng-click="updateFeaturedApi()"
+                type="checkbox"
+                id="feature-api-in-portal">
+            <label for="feature-api-in-portal"
+                   apiman-i18n-key="feature-api-in-portal"
+                   style="padding-left: 3px">Feature this API</label>
+          </div>
+          <!--/ Feature in Portal -->
+          <!-- Attached plans -->
+          <div class="title" apiman-i18n-key="available-plans">Attached Plans</div>
+          <div>
+            <span apiman-i18n-key="available-plans-help">
+              Select which plans appear in the developer portal, and whether developers need approval before they can finalise their subscription.
+            </span>
+          </div>
+          <div class="apiman-divider-40"
+               ng-show="data.planSummaries.length === 0">
+            <div class="alert alert-warning">
+              <span class="pficon pficon-info"></span>
+              <span apiman-i18n-key="api-plans.no-locked-plans-found">No plans are attached to this API. Without plans, this API will not appear in the developer portal.</span>
+            </div>
+          </div>
+
+          <div class="container-fluid container-cards-pf">
+            <div class="row row-cards-pf"  style="display: flex;">
+              <div class="col-xs-6 col-sm-5 col-md-5 container-border" style="display: inline-flex; width: 27em;" ng-repeat="plan in data.apiVersion.plans">
+                <div class="card-pf card-pf-accented card-pf-aggregate-status">
+                  <h2 class="card-pf-title">
+                    {{  data.planSummaries[$index].planName }}
+                  </h2>
+                  <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
+                  <div class="card-pf-body text-left">
+                    <p class="card-text">{{ data.planSummaries[$index].planDescription }}</p>
+                    <div>
+                      <ul class="list-group list-group-flush">
+                        <li style="max-width: max-content !important;" class="list-group-item">&#9702;  Plan <strong>is available</strong> to: {{ getDiscoverabilityDescription(plan.discoverability) }}</li>
+                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.discoverability !== 'PORTAL'">&#9702; Plan is <strong>not visible</strong> in the developer portal to anonymous users, but is visible to users who are logged-in with the correct permissions.</li>
+                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.requiresApproval === true">&#9702; Developers <strong>require approval</strong> to complete sign up.</li>
+                        <li style="max-width: max-content !important;" class="list-group-item"  ng-show="!plan.requiresApproval">&#9702; Developers <strong>do not require approval</strong> to complete sign up.</li>
+                      </ul>
+                      <!-- Checkbox -- requires approval -->
+                      <div class="form-check px-4 pl-2">
+                        <input class="form-check-input" type="checkbox" ng-model="plan.requiresApproval" value="{{ plan.requiresApproval }}" id="requiresApproval-{{$index}}">
+                        <label class="form-check-label" for="requiresApproval-{{$index}}">
+                          Requires approval
+                        </label>
+                      </div>
+                      <hr/>
+                      <!-- Checkbox -- expose in portal -->
+                      <div class="form-check py-1 px-2">
+                        <apiman-discoverability-select
+                            on-discoverability-change="onDiscoverabilityChange"
+                            plan="plan"
+                            initial-value="plan.discoverability"
+                            class="w-100">
+                        </apiman-discoverability-select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /row -->
+            <!-- /Attached plans -->
+            <hr />
+            <!-- Image cropper modal and/or image -->
+            <div class="row row-cards-pf api-logo-container">
+              <div class="col-xs-6 col-sm-5 col-md-5 container-border"  style="width: 27em;">
+                <div class="card-pf card-pf-accented card-pf-aggregate-status">
+                  <h2 class="card-pf-title">
+                    Select a logo for your API
+                  </h2>
+                  <h6 class="card-subtitle mb-2 text-left"><em>Optional</em>. A stand-in will be provided if no logo is chosen.</h6>
+                  <div class="card-pf-body text-center">
+                    <img src="{{ getImageEndpoint() }}" ng-hide="!data.latestImage" alt="API image" id="devportal-api-logo" />
+                    <span ng-show="!data.latestImage" class="fa fa-file-image-o" style="font-size: 10em;"></span>
+                  </div>
+                  <div class="card-pf-footer text-center" style="margin: 0 -10px !important;">
+                    <button class="btn btn-primary" ng-click="openImageCropper()" type="button" data-field="uploadButton">
+                      <span class="fa fa-upload"></span> Upload image
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <!-- /image cropper and/or image -->
+            <!-- API version description markdown row -->
+            <div class="title" apiman-i18n-key="extended-api-description">Extended API Description</div>
+            <p apiman-i18n-key="extended-api-description-help">
+              Provide a Markdown description of your API to help developers understand how to use your API.
+            </p>
+            <div id="editor"></div>
+            <!-- /row -->
+          </div>
+        </div>
+
+        <!-- save -->
+        <div class="row">
+          <hr />
+          <div apiman-permission="apiEdit"
+               class="actions"
+               style="margin-top: 20px">
+            <button ng-disabled="!isDirty"
+                    class="btn btn-primary"
+                    ng-click="doSave()"
+                    type="submit"
+                    data-icon="fa-cog">
+              <span ng-show="saving" apiman-i18n-key="saving">Saving</span>
+              <span ng-hide="saving" apiman-i18n-key="save">Save</span>
+            </button>
+            <button ng-disabled="!isDirty"
+                    ng-click="reset()"
+                    class="btn btn-default"
+                    data-field="cancelButton"
+                    apiman-i18n-key="cancel">Cancel</button>
+          </div>
+          <!-- /save -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Content -->
+</div>
+</body>
+</html>

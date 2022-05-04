@@ -15,9 +15,14 @@
  */
 package io.apiman.manager.api.beans.apis;
 
-import java.io.Serializable;
+import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
+import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.Serializable;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 
 /**
@@ -25,12 +30,16 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class UpdateApiBean implements Serializable {
 
     private static final long serialVersionUID = 8811488441452291116L;
 
     private String description;
+    // The image reference
+    private String image;
+    private Set<KeyValueTagDto> tags;
+    private DiscoverabilityLevel publicDiscoverability;
 
     /**
      * Constructor.
@@ -50,6 +59,33 @@ public class UpdateApiBean implements Serializable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public UpdateApiBean setImage(String imageRef) {
+        this.image = imageRef;
+        return this;
+    }
+
+    public Set<KeyValueTagDto> getTags() {
+        return tags;
+    }
+
+    public UpdateApiBean setTags(Set<KeyValueTagDto> tags) {
+        this.tags = tags;
+        return this;
+    }
+
+    public DiscoverabilityLevel getPublicDiscoverability() {
+        return publicDiscoverability;
+    }
+
+    public UpdateApiBean setPublicDiscoverability(DiscoverabilityLevel publicDiscoverability) {
+        this.publicDiscoverability = publicDiscoverability;
+        return this;
     }
 
     /* (non-Javadoc)

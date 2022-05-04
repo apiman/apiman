@@ -15,16 +15,20 @@
  */
 package io.apiman.manager.api.beans.clients;
 
+import io.apiman.manager.api.beans.download.BlobReference;
+
 import java.io.Serializable;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Bean used when creating a client.
  *
  * @author eric.wittmann@redhat.com
  */
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public class NewClientBean implements Serializable {
 
     private static final long serialVersionUID = 5833699118241379535L;
@@ -32,6 +36,9 @@ public class NewClientBean implements Serializable {
     private String name;
     private String description;
     private String initialVersion;
+    @JsonIgnore
+    @BlobReference
+    private String image;
 
     /**
      * Constructor.
@@ -79,6 +86,15 @@ public class NewClientBean implements Serializable {
      */
     public void setInitialVersion(String initialVersion) {
         this.initialVersion = initialVersion;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public NewClientBean setImage(String image) {
+        this.image = image;
+        return this;
     }
 
     /* (non-Javadoc)

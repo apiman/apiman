@@ -1,0 +1,112 @@
+POST /users/bwayne/notifications bwayne/bwayne
+Content-Type: application/json
+
+{
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : false
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+	"beans": [{
+		"category": "API_ADMINISTRATION",
+		"reason": "apiman.client.status_change",
+		"reasonMessage": "Client was published",
+		"status": "OPEN",
+		"recipient": {
+			"username": "bwayne",
+			"fullName": "Bruce Wayne",
+			"email": "bwayne@wayne-enterprises.com"
+		},
+		"source": "/apiman/notifications/clients/status",
+		"payload": {
+			"headers": {
+				"source": "/apiman/events/clients",
+				"type": "io.apiman.manager.api.beans.events.ClientVersionStatusEvent",
+				"subject": "status.change",
+				"eventVersion": 1,
+				"otherProperties": {}
+			},
+			"clientOrgId": "Organization1",
+			"clientId": "Client1",
+			"clientVersion": "1.0",
+			"previousStatus": "Ready",
+			"newStatus": "Registered"
+		}
+	}, {
+		"category": "API_ADMINISTRATION",
+		"reason": "apiman.client.contract.approval.granted",
+		"reasonMessage": "Signup was approved!",
+		"status": "OPEN",
+		"recipient": {
+			"username": "bwayne",
+			"fullName": "Bruce Wayne",
+			"email": "bwayne@wayne-enterprises.com"
+		},
+		"source": "/apiman/notifications/contracts/approvals",
+		"payload": {
+			"headers": {
+				"source": "/apiman/events/contracts/approvals",
+				"type": "io.apiman.manager.api.beans.events.ContractApprovalEvent",
+				"subject": "approval",
+				"eventVersion": 1,
+				"otherProperties": {}
+			},
+			"approver": {
+				"username": "admin",
+				"fullName": "Admin",
+				"email": "admin@example.org"
+			},
+			"clientOrgId": "Organization1",
+			"clientId": "Client1",
+			"clientVersion": "1.0",
+			"apiOrgId": "Organization2",
+			"apiId": "API2",
+			"apiVersion": "1.5",
+			"planId": "PlanA",
+			"planVersion": "2.0",
+			"approved": true,
+			"rejectionReason": null
+		}
+	}, {
+		"category": "API_ADMINISTRATION",
+		"reason": "apiman.client.contract.approval.granted",
+		"reasonMessage": "Signup was approved!",
+		"status": "OPEN",
+		"recipient": {
+			"username": "bwayne",
+			"fullName": "Bruce Wayne",
+			"email": "bwayne@wayne-enterprises.com"
+		},
+		"source": "/apiman/notifications/contracts/approvals",
+		"payload": {
+			"headers": {
+				"source": "/apiman/events/contracts/approvals",
+				"type": "io.apiman.manager.api.beans.events.ContractApprovalEvent",
+				"subject": "approval",
+				"eventVersion": 1,
+				"otherProperties": {}
+			},
+			"approver": {
+				"username": "admin",
+				"fullName": "Admin",
+				"email": "admin@example.org"
+			},
+			"clientOrgId": "Organization1",
+			"clientId": "Client1",
+			"clientVersion": "1.0",
+			"apiOrgId": "Organization1",
+			"apiId": "API1",
+			"apiVersion": "1.0",
+			"planId": "Plan1",
+			"planVersion": "1.0",
+			"approved": true,
+			"rejectionReason": null
+		}
+	}],
+	"totalSize": 3
+}

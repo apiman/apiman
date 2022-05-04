@@ -27,35 +27,30 @@ import io.apiman.manager.api.core.IDownloadManager;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.json.JsonExportWriter;
-import io.apiman.manager.api.exportimport.json.JsonImportReader;
 import io.apiman.manager.api.exportimport.manager.StorageExporter;
-import io.apiman.manager.api.exportimport.manager.StorageImportDispatcher;
-import io.apiman.manager.api.exportimport.read.IImportReader;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
-import io.apiman.manager.api.migrator.DataMigrator;
 import io.apiman.manager.api.rest.ISystemResource;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.service.ImportExportService;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.UncheckedIOException;
 import java.text.MessageFormat;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 /**
@@ -64,21 +59,15 @@ import org.apache.commons.lang3.BooleanUtils;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
+@Transactional
 public class SystemResourceImpl implements ISystemResource {
-    @Inject
+    
     private IStorage storage;
-    @Inject
     private ISecurityContext securityContext;
-    @Inject
     private Version version;
-    @Inject
     private StorageExporter exporter;
-    @Inject
-    private StorageImportDispatcher importer;
-    @Inject
-    private DataMigrator migrator;
-    @Inject
     private IDownloadManager downloadManager;
+    private ImportExportService importExportService;
 
     @Context
     private HttpServletRequest request;
@@ -86,6 +75,23 @@ public class SystemResourceImpl implements ISystemResource {
     /**
      * Constructor.
      */
+    @Inject
+    public SystemResourceImpl(
+         IStorage storage,
+         ISecurityContext securityContext,
+         Version version,
+         StorageExporter exporter,
+         IDownloadManager downloadManager,
+         ImportExportService importExportService
+    ) {
+        this.storage = storage;
+        this.securityContext = securityContext;
+        this.version = version;
+        this.exporter = exporter;
+        this.downloadManager = downloadManager;
+        this.importExportService = importExportService;
+    }
+
     public SystemResourceImpl() {
     }
 
@@ -99,10 +105,10 @@ public class SystemResourceImpl implements ISystemResource {
         rval.setName("API Manager REST API"); //$NON-NLS-1$
         rval.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs."); //$NON-NLS-1$
         rval.setMoreInfo("https://www.apiman.io/latest/api-manager-restdocs.html"); //$NON-NLS-1$
-        rval.setUp(getStorage() != null);
-        if (getVersion() != null) {
-            rval.setVersion(getVersion().getVersionString());
-            rval.setBuiltOn(getVersion().getVersionDate());
+        rval.setUp(storage != null);
+        if (version != null) {
+            rval.setVersion(version.getVersionString());
+            rval.setBuiltOn(version.getVersionDate());
         }
         return rval;
     }
@@ -136,8 +142,8 @@ public class SystemResourceImpl implements ISystemResource {
             @Override
             public void write(OutputStream os) throws IOException, WebApplicationException {
                 IExportWriter writer = new JsonExportWriter(os, exportLogger);
-                getExporter().init(writer);
-                getExporter().export();
+                exporter.init(writer);
+                exporter.export();
                 os.flush();
             }
         };
@@ -176,6 +182,7 @@ public class SystemResourceImpl implements ISystemResource {
         // the HTTP response output stream.
         StreamingOutput stream = new StreamingOutput() {
             @Override
+            @Transactional
             public void write(final OutputStream output) throws IOException, WebApplicationException {
                 final PrintWriter writer = new PrintWriter(output);
                 IApimanLogger logger = new IApimanLogger() {
@@ -242,94 +249,12 @@ public class SystemResourceImpl implements ISystemResource {
                         debug(MessageFormat.format(message, args));
                     }
                 };
-
-                File migratedImportFile = File.createTempFile("apiman_import_migrated", ".json"); //$NON-NLS-1$ //$NON-NLS-2$
-                migratedImportFile.deleteOnExit();
-
-                // Migrate the data (if necessary)
-                migrator.migrate(importFile, migratedImportFile, logger);
-
-                // Now import the migrated data
-                InputStream importData = null;
-                IImportReader reader;
-                try {
-                    importData = new FileInputStream(migratedImportFile);
-                    reader = new JsonImportReader(logger, importData);
-                } catch (IOException e) {
-                    IOUtils.closeQuietly(importData);
-                    throw new UncheckedIOException(e);
-                }
-
-                try {
-                    importer.start(migratedImportFile.getAbsolutePath(), logger);
-                    reader.setDispatcher(importer);
-                    reader.read();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                } finally {
-                    IOUtils.closeQuietly(importData);
-                    FileUtils.deleteQuietly(importFile);
-                    FileUtils.deleteQuietly(migratedImportFile);
-                }
+                // Make sure we call through a managed service as the other `Stream` takes us out the managed context
+                // which can mess with our CDI interceptors.
+                importExportService.fullImport(importFile, logger);
             }
         };
 
         return Response.ok(stream).build();
-    }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
-    }
-
-    /**
-     * @return the version
-     */
-    public Version getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version the version to set
-     */
-    public void setVersion(Version version) {
-        this.version = version;
-    }
-
-    /**
-     * @return the exporter
-     */
-    public StorageExporter getExporter() {
-        return exporter;
-    }
-
-    /**
-     * @param exporter the exporter to set
-     */
-    public void setExporter(StorageExporter exporter) {
-        this.exporter = exporter;
-    }
-
-    /**
-     * @return the securityContext
-     */
-    public ISecurityContext getSecurityContext() {
-        return securityContext;
-    }
-
-    /**
-     * @param securityContext the securityContext to set
-     */
-    public void setSecurityContext(ISecurityContext securityContext) {
-        this.securityContext = securityContext;
     }
 }

@@ -1,10 +1,12 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
-    
-    export var ConsumerApiRedirectController = _module.controller("Apiman.ConsumerApiRedirectController",
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
+import * as SwaggerUI from 'swagger-ui';
+import 'swagger-ui/dist/swagger-ui.css';
+import URI = require("urijs");
+
+_module.controller("Apiman.ConsumerApiRedirectController",
         ['$q', '$scope', 'OrgSvcs', 'PageLifecycle', '$routeParams',
-        ($q, $scope, OrgSvcs, PageLifecycle, $routeParams) => {
+        function ($q, $scope, OrgSvcs, PageLifecycle, $routeParams) {
             var orgId = $routeParams.org;
             var apiId = $routeParams.api;
             var pageData = {
@@ -26,9 +28,9 @@ module Apiman {
         }]);
 
     
-    export var ConsumerApiController = _module.controller("Apiman.ConsumerApiController",
+_module.controller("Apiman.ConsumerApiController",
         ['$q', '$scope', 'OrgSvcs', 'PageLifecycle', '$routeParams',
-        ($q, $scope, OrgSvcs, PageLifecycle, $routeParams) => {
+        function ($q, $scope, OrgSvcs, PageLifecycle, $routeParams) {
             $scope.params = $routeParams;
             $scope.chains = {};
             
@@ -114,9 +116,9 @@ module Apiman {
             };
         }]);
 
-    export var ConsumerApiDefController = _module.controller("Apiman.ConsumerApiDefController",
+_module.controller("Apiman.ConsumerApiDefController",
         ['$q', '$rootScope', '$scope', 'OrgSvcs', 'PageLifecycle', '$routeParams', '$window', 'Logger', 'ApiDefinitionSvcs', 'Configuration', 'SwaggerUIContractService',
-        ($q, $rootScope, $scope, OrgSvcs, PageLifecycle, $routeParams, $window, Logger, ApiDefinitionSvcs, Configuration, SwaggerUIContractService) => {
+        function ($q, $rootScope, $scope, OrgSvcs, PageLifecycle, $routeParams, $window, Logger, ApiDefinitionSvcs, Configuration, SwaggerUIContractService) {
             $scope.params = $routeParams;
             $scope.chains = {};
 
@@ -173,7 +175,7 @@ module Apiman {
 
                 PageLifecycle.setPageTitle('consumer-api-def', [ $scope.api.name ]);
 
-                if (($scope.version.definitionType == 'SwaggerJSON' || $scope.version.definitionType == 'SwaggerYAML') && SwaggerUIBundle) {
+                if (($scope.version.definitionType == 'SwaggerJSON' || $scope.version.definitionType == 'SwaggerYAML') && SwaggerUI) {
                     var url = ApiDefinitionSvcs.getApimanDefinitionUrl($scope.params.org, $scope.params.api, $scope.params.version);
                     Logger.debug("!!!!! Using definition URL: {0}", url);
 
@@ -183,9 +185,6 @@ module Apiman {
                         url: url,
                         dom_id: "#swagger-ui-container",
                         validatorUrl: "https://online.swagger.io/validator",
-                        presets: [
-                            SwaggerUIBundle.presets.apis
-                        ],
                         layout: "BaseLayout",
                         sorter : "alpha",
 
@@ -231,12 +230,10 @@ module Apiman {
                         swaggerOptions.plugins.push(DisableTryItOutPlugin, DisableAuthorizePlugin);
                     }
 
-                    ui = SwaggerUIBundle(swaggerOptions);
+                    ui = SwaggerUI(swaggerOptions);
                     $scope.hasDefinition = true;
                 } else {
                     $scope.hasDefinition = false;
                 }
             });
         }]);
-
-}

@@ -1,0 +1,22 @@
+POST /users/bwayne/notifications bwayne/bwayne
+Content-Type: application/json
+
+{
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : false
+  },
+  "filters": [{
+    "name": "status",
+    "operator": "eq",
+    "value": "OPEN"
+  }]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "beans": [],
+  "totalSize": 0
+}

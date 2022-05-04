@@ -16,6 +16,11 @@
 
 package io.apiman.manager.api.migrator;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -23,11 +28,6 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -134,6 +134,13 @@ public class JsonDataMigratorReader implements IDataMigratorReader {
                         jp.nextToken();
                     }
 
+                } else if (name.equals("Blobs")) {
+                    readArrayStart();
+                    while (jp.getCurrentToken() == JsonToken.START_OBJECT) {
+                        ObjectNode obj = readObjectNode();
+                        readerHandler.onBlob(obj);
+                        jp.nextToken();
+                    }
                 }
             }
         } finally {

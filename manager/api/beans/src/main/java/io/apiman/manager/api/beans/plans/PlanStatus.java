@@ -22,6 +22,19 @@ package io.apiman.manager.api.beans.plans;
  */
 public enum PlanStatus {
 
-    Created, Ready, Locked
+    /**
+     * Plan has been created but is not yet fully configured.
+     */
+    Created,
+
+    /**
+     * Plan has been created and configured, and is ready to be locked & made available.
+     */
+    Ready,
+
+    /**
+     * Plan has been locked and can no longer be changed. It is available for attaching to APIs.
+     */
+    Locked
     
 }

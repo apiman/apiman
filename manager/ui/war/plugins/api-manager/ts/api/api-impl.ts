@@ -1,10 +1,10 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
+import _ = require("lodash");
 
- export var ApiImplController = _module.controller("Apiman.ApiImplController",
+_module.controller("Apiman.ApiImplController",
         ['$q', '$rootScope', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusSvc', 'Logger', 'Configuration',
-        ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Logger, Configuration) => {
+        function ($q, $rootScope, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusSvc, Logger, Configuration) {
             var params = $routeParams;
 
             $scope.organizationId = params.org;
@@ -321,4 +321,3 @@ module Apiman {
                 // $scope.updatedApi.gateways - what we submit to the API, with only the `gatewayId`
             });
         }]);
-}

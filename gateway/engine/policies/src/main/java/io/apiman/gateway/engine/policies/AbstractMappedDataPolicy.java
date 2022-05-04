@@ -27,6 +27,7 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  * @author eric.wittmann@redhat.com
  * @param <C> Policy configuration type
  */
+// TODO(msavy): Change to be interface to avoid diamond inheritance problem for TransferQuotaPolicy et al
 public abstract class AbstractMappedDataPolicy<C> extends AbstractMappedPolicy<C> implements IDataPolicy {
 
     /**

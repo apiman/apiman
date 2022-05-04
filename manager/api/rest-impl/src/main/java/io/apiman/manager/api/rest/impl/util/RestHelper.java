@@ -1,7 +1,7 @@
 package io.apiman.manager.api.rest.impl.util;
 
-import io.apiman.manager.api.beans.apis.ApiBean;
-import io.apiman.manager.api.beans.apis.ApiVersionBean;
+import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.summary.ApiSummaryBean;
@@ -63,6 +63,8 @@ public final class RestHelper {
             apiSummary.setId(apiSummaryBean.getId());
             apiSummary.setName(apiSummaryBean.getName());
             apiSummary.setDescription(apiSummaryBean.getDescription());
+            apiSummary.setImage(apiSummaryBean.getImage());
+            apiSummary.setTags(apiSummaryBean.getTags());
             apis.add(apiSummary);
         }
         return apis;
@@ -78,18 +80,18 @@ public final class RestHelper {
     public static List<PolicySummaryBean> hideSensitiveDataFromPolicySummaryBeanList(ISecurityContext securityContext, List<PolicySummaryBean> policySummaryBeans) {
         List<PolicySummaryBean> policies = new ArrayList<>();
         for (PolicySummaryBean policySummaryBean : policySummaryBeans) {
-            PolicySummaryBean policySumarry = new PolicySummaryBean();
-            policySumarry.setId(policySummaryBean.getId());
-            policySumarry.setPolicyDefinitionId(policySummaryBean.getPolicyDefinitionId());
-            policySumarry.setName(policySummaryBean.getName());
-            policySumarry.setDescription(policySummaryBean.getDescription());
-            policySumarry.setIcon(policySummaryBean.getIcon());
+            PolicySummaryBean policySummary = new PolicySummaryBean();
+            policySummary.setId(policySummaryBean.getId());
+            policySummary.setPolicyDefinitionId(policySummaryBean.getPolicyDefinitionId());
+            policySummary.setName(policySummaryBean.getName());
+            policySummary.setDescription(policySummaryBean.getDescription());
+            policySummary.setIcon(policySummaryBean.getIcon());
             // check if the role was created by the current user
             if (securityContext.getCurrentUser().equals(policySummaryBean.getCreatedBy())) {
-                policySumarry.setCreatedBy(policySummaryBean.getCreatedBy());
-                policySumarry.setCreatedOn(policySummaryBean.getCreatedOn());
+                policySummary.setCreatedBy(policySummaryBean.getCreatedBy());
+                policySummary.setCreatedOn(policySummaryBean.getCreatedOn());
             }
-            policies.add(policySumarry);
+            policies.add(policySummary);
         }
         return policies;
     }
@@ -100,11 +102,12 @@ public final class RestHelper {
      * @param apiVersionBean the apiVersionBean
      * @return the apiVersionBean without sensitive data
      */
-    public static ApiVersionBean hideSensitiveDataFromApiVersionBean(ApiVersionBean apiVersionBean) {
-        ApiBean api = new ApiBean();
+    public static ApiVersionBeanDto hideSensitiveDataFromApiVersionBean(ApiVersionBeanDto apiVersionBean) {
+        ApiBeanDto api = new ApiBeanDto();
         api.setId(apiVersionBean.getApi().getId());
         api.setName(apiVersionBean.getApi().getName());
         api.setDescription(apiVersionBean.getApi().getDescription());
+        api.setImage(apiVersionBean.getApi().getImage());
 
         OrganizationBean org = new OrganizationBean();
         org.setId(apiVersionBean.getApi().getOrganization().getId());
@@ -113,7 +116,7 @@ public final class RestHelper {
 
         api.setOrganization(org);
 
-        ApiVersionBean apiVersion = new ApiVersionBean();
+        ApiVersionBeanDto apiVersion = new ApiVersionBeanDto();
         apiVersion.setApi(api);
         apiVersion.setStatus(apiVersionBean.getStatus());
         apiVersion.setEndpointType(apiVersionBean.getEndpointType());
@@ -123,6 +126,14 @@ public final class RestHelper {
         apiVersion.setPlans(apiVersionBean.getPlans());
         apiVersion.setVersion(apiVersionBean.getVersion());
         apiVersion.setDefinitionType(apiVersionBean.getDefinitionType());
+        apiVersion.setPublicDiscoverability(apiVersionBean.getPublicDiscoverability());
+        apiVersion.setExtendedDescription(apiVersionBean.getExtendedDescription());
+        //dates
+        apiVersion.setCreatedOn(apiVersionBean.getCreatedOn());
+        apiVersion.setModifiedOn(apiVersionBean.getModifiedOn());
+        apiVersion.setPublishedOn(apiVersionBean.getPublishedOn());
+        apiVersion.setRetiredOn(apiVersionBean.getRetiredOn());
+
         return apiVersion;
     }
 

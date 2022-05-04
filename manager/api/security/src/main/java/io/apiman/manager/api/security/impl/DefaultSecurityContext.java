@@ -15,8 +15,17 @@
  */
 package io.apiman.manager.api.security.impl;
 
+import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.core.IStorageQuery;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -30,11 +39,14 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
     /**
      * Constructor.
      */
-    public DefaultSecurityContext() {
+    @Inject
+    public DefaultSecurityContext(IStorageQuery query, IStorage storage, ApiManagerConfig config) {
+        super(query, storage, config);
     }
 
     /**
      * Called to set the current context http servlet request.
+     *
      * @param request
      */
     protected static void setServletRequest(HttpServletRequest request) {
@@ -48,6 +60,11 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
         AbstractSecurityContext.clearPermissions();
     }
 
+    @Override
+    public Locale getLocale() {
+        return servletRequest.get().getLocale();
+    }
+
     /**
      * Called to clear the context http servlet request.
      */
@@ -55,4 +72,8 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
         servletRequest.remove();
     }
 
+    @Override
+    public List<UserDto> getRemoteUsersWithRole(String roleName) {
+        return Collections.emptyList();
+    }
 }

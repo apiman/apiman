@@ -12,7 +12,7 @@
                     Version: {{ version.version }}<span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu" role="menu">
-                    <li ng-repeat="planVersion in versions"><a href="#" ng-click="setVersion( planVersion )">{{ planVersion.version }}</a></li>
+                    <li ng-repeat="planVersion in versions"><a ng-click="setVersion( planVersion )">{{ planVersion.version }}</a></li>
                   </ul>
                 </div>
                 <a apiman-permission="planEdit" href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{version.version}}/new-version" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" apiman-i18n-key="new-version">New Version</a>
@@ -21,8 +21,7 @@
                 <!-- Dropdown Cog -->
                 <ul class="plan-menu pull-right" style="list-style-type: none; padding-left: 10px; padding-top: 6px;" ng-hide="canNotDelete()">
                   <li class="dropdown">
-                    <a href="#"
-                       style="text-decoration: none;"
+                    <a style="text-decoration: none;"
                        class="dropdown-toggle dropdown-cog"
                        data-toggle="dropdown">
                       <span class="fa fa-cog"></span>
@@ -31,7 +30,6 @@
                     <ul class="dropdown-menu">
                       <li>
                         <a class="plan-delete"
-                           href="#"
                            ng-click="callDelete()"
                            apiman-i18n-key="delete-plan">Delete Plan</a>
                       </li>
@@ -63,7 +61,7 @@
             </div>
             <div class="entity-info-with-icon">
               <span apiman-i18n-key="status-label">Status:</span>
-              <span apiman-entity-status="" />
+              <span apiman-entity-status></span>
             </div>
           </div>
           <div class="col-md-5" apiman-permission="planAdmin">

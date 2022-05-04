@@ -1,5 +1,6 @@
 html {
-  overflow: auto;
+  /*Disable overflow to keep header fixed*/
+  overflow: hidden;
 }
 body {
   line-height: normal;
@@ -20,6 +21,11 @@ textarea#api-definition.apiman-form-data.myBlur {
 
 .actions .btn:focus, .actions .btn:active:focus {
   outline: none;
+}
+
+/* Workaround for select2 ui-select Angular component no longer quite working properly (search is always enabled even when set as disabled in properties) */
+.ui-select-search-hidden {
+  display: none;
 }
 
 .ui-select-bootstrap .ui-select-choices-row>a:hover, .ui-select-bootstrap .ui-select-choices-row>a:focus {
@@ -376,9 +382,7 @@ div.page {
 
 .dash-group {
   border: 1px solid rgb(200, 200, 200);
-  width: 49%;
   float: left;
-  margin-top: 20px;
   box-shadow: 2px 2px 3px rgb(221, 221, 221);
 }
 .dash-group:hover {
@@ -425,6 +429,13 @@ div.page {
   color: rgb(217, 82, 79);
 }
 
+#dash-container {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
 .browse-items {
   padding: 0px;
 }
@@ -433,12 +444,9 @@ div.page {
   margin-bottom: 15px;
 }
 .browse-items .item {
-  position: relative;
   padding: 10px;
   border: 1px solid rgb(218, 218, 218);
-  float: left;
-  margin-right: 15px;
-  margin-bottom: 15px;
+  margin-bottom: 3%;
 }
 .browse-items .item.card {
   height: 110px;
@@ -471,7 +479,8 @@ div.page {
 .browse-items .item .ismember {
   position: absolute;
   top: 0;
-  right: 0;
+  /*right: 20px because of bootstrap padding*/
+  right: 20px;
   border: 0;
   width: 57px;
   height: 57px;
@@ -616,7 +625,7 @@ div.page {
 }
 .apiman-summaryrow .fa {
   float: left;
-  line-height: 14px;
+  /*line-height: 14px;*/
 }
 .apiman-summaryrow .fa-inline {
   float: none;
@@ -2130,14 +2139,13 @@ html, body {height: 100%;}
     padding: 19px 0;
 }*/
 
-/*angulr-scrollable-table*/
+/*angular-scrollable-table*/
 .scrollableContainer .headerSpacer {
   background-clip: padding-box;
   background-color: #f5f5f5;
   background-image: linear-gradient(to bottom, #fafafa 0%, #ededed 100%);
   background-repeat: repeat-x;
 }
-
 
 #logo {
   background-image: url(../img/logo-header.png);
@@ -2151,3 +2159,20 @@ html, body {height: 100%;}
   padding-left: 5vw;
   padding-right: 5vw;
 }
+
+/*Notifications*/
+ .notification-main-body:hover {
+   cursor: pointer;
+ }
+/*End Notifications*/
+
+/*Cropper*/
+#image-cropper-container .cropper-view-box,
+#image-cropper-container .cropper-face {
+  border-radius: 50%;
+}
+
+img#devportal-api-logo {
+  border-radius: 50%;
+}
+/*End Cropper*/

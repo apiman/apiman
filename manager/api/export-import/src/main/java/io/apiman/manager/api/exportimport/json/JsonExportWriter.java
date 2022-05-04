@@ -23,6 +23,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -49,7 +50,10 @@ import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.google.common.io.FileBackedOutputStream;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -64,8 +68,13 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
     private final ObjectMapper om = new ObjectMapper();
 
     {
-        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        om.setDateFormat(new ISO8601DateFormat());
+        om.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .setDateFormat(new ISO8601DateFormat())
+                .registerModule(new GuavaModule())
+                .findAndRegisterModules()
+                // Custom module for FileBackedOutputStream
+                .registerModule(new FbosModule());
+
         for (GlobalElementsEnum v : GlobalElementsEnum.values()) {
             finished.put(v, false);
         }
@@ -202,6 +211,29 @@ public class JsonExportWriter extends AbstractJsonWriter<GlobalElementsEnum> imp
         validityCheckEnd(GlobalElementsEnum.Developers);
         writeEndArray(GlobalElementsEnum.Developers);
         unlock(GlobalElementsEnum.Developers);
+        return this;
+    }
+
+    @Override
+    public IExportWriter startBlobs() {
+        validityCheckStart(GlobalElementsEnum.Blobs);
+        lock(GlobalElementsEnum.Blobs);
+        writeStartArray(GlobalElementsEnum.Blobs);
+        return this;
+    }
+
+    @Override
+    public IExportWriter writeBlob(ExportedBlobDto blob) {
+        writeCheck(GlobalElementsEnum.Blobs);
+        writePojo(blob);
+        return this;
+    }
+
+    @Override
+    public IExportWriter endBlobs() {
+        validityCheckEnd(GlobalElementsEnum.Blobs);
+        writeEndArray(GlobalElementsEnum.Blobs);
+        unlock(GlobalElementsEnum.Blobs);
         return this;
     }
 

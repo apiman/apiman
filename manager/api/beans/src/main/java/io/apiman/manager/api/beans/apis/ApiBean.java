@@ -15,14 +15,16 @@
  */
 package io.apiman.manager.api.beans.apis;
 
+import io.apiman.manager.api.beans.download.BlobReference;
 import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
+import java.util.StringJoiner;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,8 +33,12 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PostPersist;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -63,8 +69,17 @@ public class ApiBean implements Serializable, Cloneable {
     private String id;
     @Column(nullable=false)
     private String name;
-    @Column(updatable=true, nullable=true, length=512)
+    @Column(name = "image_file_ref", updatable = true, nullable = true) // Reference to file storage (we'll ship with DB blob)
+    @BlobReference
+    private String image;
+    @Column(name = "description", updatable=true, nullable=true, length=512)
     private String description;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "api_tag",
+            joinColumns = { @JoinColumn(name = "api_id"), @JoinColumn(name = "org_id") },
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<KeyValueTag> tags = new HashSet<>();
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
     @Column(name = "created_on", updatable=false, nullable=false)
@@ -179,17 +194,56 @@ public class ApiBean implements Serializable, Cloneable {
         this.numPublished = numPublished;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * Get the image blob ref for this API.
+     *
+     * To dereference this manually refer to IBlobStore.
+     *
+     * @see BlobReference
+     * @return get the blob ref.
      */
-    @Override
-    @SuppressWarnings("nls")
-    public String toString() {
-        return "APIBean [organization=" + organization + ", id=" + id + ", name=" + name
-                + ", description=" + description + ", createdBy=" + createdBy + ", createdOn=" + createdOn
-                + "]";
+    public String getImage() {
+        return image;
     }
-    
+
+    /**
+     * @param imageFileRef image's blob ref
+     */
+    public void setImage(String imageFileRef) {
+        this.image = imageFileRef;
+    }
+
+    public Set<KeyValueTag> getTags() {
+        return tags;
+    }
+
+    public ApiBean setTags(Set<KeyValueTag> tags) {
+        this.tags = tags;
+        return this;
+    }
+
+    public void addTag(KeyValueTag keyValueTag) {
+        this.tags.add(keyValueTag);
+    }
+
+    public void removeTagByKey(String key) {
+        this.tags.remove(new KeyValueTag().setKey(key));
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ApiBean.class.getSimpleName() + "[", "]")
+                .add("organization=" + organization)
+                .add("id='" + id + "'")
+                .add("name='" + name + "'")
+                .add("image='" + image + "'")
+                .add("description='" + description + "'")
+                .add("createdBy='" + createdBy + "'")
+                .add("createdOn=" + createdOn)
+                .add("numPublished=" + numPublished)
+                .toString();
+    }
+
     /**
      * @see java.lang.Object#clone()
      */

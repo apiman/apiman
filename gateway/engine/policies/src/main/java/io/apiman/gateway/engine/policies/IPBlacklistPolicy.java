@@ -37,18 +37,12 @@ public class IPBlacklistPolicy extends AbstractIPListPolicy<IPListConfig> {
      */
     public IPBlacklistPolicy() {
     }
-
-    /**
-     * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
-     */
+    
     @Override
-    protected Class<IPListConfig> getConfigurationClass() {
+    public Class<IPListConfig> getConfigurationClass() {
         return IPListConfig.class;
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
-     */
     @Override
     protected void doApply(ApiRequest request, IPolicyContext context, IPListConfig config,
             IPolicyChain<ApiRequest> chain) {

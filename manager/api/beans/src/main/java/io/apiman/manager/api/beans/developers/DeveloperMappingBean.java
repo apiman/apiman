@@ -17,15 +17,22 @@
 package io.apiman.manager.api.beans.developers;
 
 import java.io.Serializable;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 
 /**
  * Models the mapping data for a developer
  */
+@Embeddable
 public class DeveloperMappingBean implements Serializable {
 
     private static final long serialVersionUID = -5334196591430185705L;
 
+    @Column(name = "client_id", nullable = false)
     private String clientId;
+    @Column(name = "organization_id", nullable = false)
     private String organizationId;
 
     /**
@@ -51,7 +58,7 @@ public class DeveloperMappingBean implements Serializable {
     }
 
     /**
-     * Get the organiztaion id
+     * Get the organization id
      * @return the organization id
      */
     public String getOrganizationId() {
@@ -72,6 +79,23 @@ public class DeveloperMappingBean implements Serializable {
     @Override
     public String toString() {
         return "DeveloperMappingBean [clientId=" + clientId + ",organizationId=" + organizationId + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DeveloperMappingBean that = (DeveloperMappingBean) o;
+        return Objects.equals(clientId, that.clientId) && Objects.equals(organizationId, that.organizationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clientId, organizationId);
     }
 }
 

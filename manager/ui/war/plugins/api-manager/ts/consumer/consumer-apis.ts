@@ -1,9 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var ConsumerApisController = _module.controller("Apiman.ConsumerApisController",
+_module.controller("Apiman.ConsumerApisController",
         ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 'Logger',
-        ($q, $location, $scope, ApimanSvcs, PageLifecycle, Logger) => {
+        function ($q, $location, $scope, ApimanSvcs, PageLifecycle, Logger) {
             var params = $location.search();
             if (params.q) {
                 $scope.apiName = params.q;
@@ -28,9 +28,9 @@ module Apiman {
 
                         body.filters.push( {"name": "name", "value": "*" + params.q + "*", "operator": "like"});
                         var searchStr = angular.toJson(body);
-                        
+
                         ApimanSvcs.save({ entityType: 'search', secondaryType: 'apis' }, searchStr, function(result) {
-                            
+
                             $scope.resultCount = result.totalSize;
                             $scope.currentPage = params.cp;
                             $scope.pageSize = params.ps;
@@ -43,8 +43,10 @@ module Apiman {
                 })
             };
 
+
             function loadFirstPage() {
-                if ($scope.apis.length == 0) {
+                // only load first page if there are no query params
+                if ($scope.apis.length == 0 && !$location.search().q) {
                     $scope.searchSvcs('*', 1, 12);
                 }
             }
@@ -57,5 +59,3 @@ module Apiman {
                 });
             });
         }]);
-
-}

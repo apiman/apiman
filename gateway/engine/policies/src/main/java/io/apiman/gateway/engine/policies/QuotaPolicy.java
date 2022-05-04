@@ -17,10 +17,12 @@ package io.apiman.gateway.engine.policies;
 
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
-import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.config.RateLimitingConfig;
 import io.apiman.gateway.engine.policies.i18n.Messages;
+import io.apiman.gateway.engine.policies.limiting.BucketFactory.BucketIdBuilderContext;
+import io.apiman.gateway.engine.policies.probe.RateLimitingProbeConfig;
+import io.apiman.gateway.engine.policy.IPolicyProbe;
 
 /**
  * Similar to the rate limiting policy, but less granular.  Useful primarily
@@ -28,7 +30,8 @@ import io.apiman.gateway.engine.policies.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class QuotaPolicy extends RateLimitingPolicy {
+public class QuotaPolicy extends RateLimitingPolicy
+        implements IPolicyProbe<RateLimitingConfig, RateLimitingProbeConfig> {
 
     private static final String DEFAULT_LIMIT_HEADER = "X-Quota-Limit"; //$NON-NLS-1$
     private static final String DEFAULT_REMAINING_HEADER = "X-Quota-Remaining"; //$NON-NLS-1$
@@ -74,12 +77,8 @@ public class QuotaPolicy extends RateLimitingPolicy {
         return DEFAULT_RESET_HEADER;
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.RateLimitingPolicy#createBucketId(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policies.config.RateLimitingConfig)
-     */
     @Override
-    protected String createBucketId(ApiRequest request, RateLimitingConfig config) {
-        return "QUOTA||" + super.createBucketId(request, config); //$NON-NLS-1$
+    protected String bucketId(RateLimitingConfig config, BucketIdBuilderContext context) {
+        return "QUOTA||" + super.bucketId(config, context);
     }
-
 }

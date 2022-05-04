@@ -31,6 +31,7 @@ import java.io.StringWriter;
 import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
@@ -48,6 +49,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.DifferenceListener;
@@ -59,8 +62,6 @@ import org.mvel2.MVEL;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.integration.VariableResolverFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -74,7 +75,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings({ "nls", "javadoc" })
 public class TestPlanRunner {
 
-    private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
+    //private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
+    private static Logger logger = LogManager.getLogger(TestPlanRunner.class);
     private final CaseInsensitiveStringMultiMap testMetaHeaders = new CaseInsensitiveStringMultiMap();
 
     /**
@@ -256,7 +258,7 @@ public class TestPlanRunner {
             List<String> headers = response.headers().get(expectedHeaderName);
 
             Assert.assertNotNull("Expected header to exist but was not found: " + expectedHeaderName, headers);
-            Assert.assertEquals(expectedHeaderValue, headers.get(0));
+            Assert.assertEquals("For response header " + expectedHeaderName, expectedHeaderValue, headers.get(0));
         }
         List<String> ctValueList = response.headers().get("Content-Type");
         if (ctValueList == null) {
@@ -269,10 +271,15 @@ public class TestPlanRunner {
                 assertTextPayload(restTest, response);
             } else if (ctValueFirst.startsWith("application/xml") || ctValueFirst.startsWith("application/wsdl+xml") || ctValueFirst.startsWith("text/xml")) {
                 assertXmlPayload(restTest, response);
-            } else {
-                Assert.fail("Unsupported response payload type: " + ctValueFirst);
+            } else if (ctValueFirst.startsWith("image/")) {
+                assertBinaryEquals(restTest, response);
             }
         }
+    }
+
+    private void assertBinaryEquals(RestTest restTest, Response response) {
+        byte[] expected = restTest.getExpectedResponsePayload().getBytes(StandardCharsets.UTF_8);
+        assertThat(response.binary()).isEqualTo(expected);
     }
 
     /**

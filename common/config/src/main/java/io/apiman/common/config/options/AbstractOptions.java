@@ -112,5 +112,4 @@ public abstract class AbstractOptions {
                 })
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
-
 }

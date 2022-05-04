@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+  <persistence-unit name="apiman-manager-api-jpa" transaction-type="RESOURCE_LOCAL">
+<!--    <jta-data-source>java:/apiman/datasources/apiman-manager</jta-data-source>-->
+    <class>io.apiman.manager.api.beans.idm.UserBean</class>
+    <class>io.apiman.manager.api.beans.idm.RoleBean</class>
+    <class>io.apiman.manager.api.beans.idm.RoleMembershipBean</class>
+    <class>io.apiman.manager.api.beans.idm.DiscoverabilityEntity</class>
+    <class>io.apiman.manager.api.beans.orgs.OrganizationBean</class>
+    <class>io.apiman.manager.api.beans.clients.ClientBean</class>
+    <class>io.apiman.manager.api.beans.clients.ClientVersionBean</class>
+    <class>io.apiman.manager.api.beans.apis.ApiBean</class>
+    <class>io.apiman.manager.api.beans.apis.ApiVersionBean</class>
+    <class>io.apiman.manager.api.beans.apis.ApiDefinitionBean</class>
+    <class>io.apiman.manager.api.beans.apis.ApiPlanBean</class>
+    <class>io.apiman.manager.api.beans.plans.PlanBean</class>
+    <class>io.apiman.manager.api.beans.plans.PlanVersionBean</class>
+    <class>io.apiman.manager.api.beans.contracts.ContractBean</class>
+    <class>io.apiman.manager.api.beans.policies.PolicyDefinitionBean</class>
+    <class>io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean</class>
+    <class>io.apiman.manager.api.beans.policies.PolicyBean</class>
+    <class>io.apiman.manager.api.beans.audit.AuditEntryBean</class>
+    <class>io.apiman.manager.api.beans.gateways.GatewayBean</class>
+    <class>io.apiman.manager.api.beans.plugins.PluginBean</class>
+    <class>io.apiman.manager.api.beans.download.DownloadBean</class>
+    <class>io.apiman.manager.api.beans.system.MetadataBean</class>
+    <class>io.apiman.manager.api.beans.developers.DeveloperBean</class>
+    <class>io.apiman.manager.api.beans.developers.DeveloperMappingBean</class>
+    <class>io.apiman.manager.api.beans.blobs.BlobEntity</class>
+    <class>io.apiman.manager.api.beans.notifications.NotificationPreferenceEntity</class>
+    <class>io.apiman.manager.api.beans.notifications.NotificationFilterEntity</class>
+    <class>io.apiman.manager.api.beans.notifications.NotificationEntity</class>
+    <class>io.apiman.manager.api.beans.apis.KeyValueTag</class>
+    <class>io.apiman.manager.api.jpa.model.outbox.OutboxEventEntity</class>
+    <!--    <exclude-unlisted-classes>true</exclude-unlisted-classes>-->
+    <properties>
+      <property name="hibernate.show_sql" value="false" />
+      <property name="hibernate.id.new_generator_mappings" value="true" />
+      <property name="hibernate.order_updates" value="true"/>
+      <!-- TODO(msavy): Can we safely add batch optimisations here too? -->
+      <property name="hibernate.connection.autocommit" value="false"/>
+<!--      <property name="hibernate.format_sql" value="true"/>-->
+      <property name="jboss.as.jpa.managed" value="false"/>
+    </properties>
+  </persistence-unit>
+
+</persistence>

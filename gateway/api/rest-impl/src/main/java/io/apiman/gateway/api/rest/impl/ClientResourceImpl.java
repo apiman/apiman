@@ -16,6 +16,8 @@
 
 package io.apiman.gateway.api.rest.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.api.rest.IClientResource;
 import io.apiman.gateway.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Client;
@@ -24,8 +26,8 @@ import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-
 import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -36,6 +38,8 @@ import javax.ws.rs.core.Response.Status;
  * @author eric.wittmann@redhat.com
  */
 public class ClientResourceImpl extends AbstractResourceImpl implements IClientResource {
+
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ClientResourceImpl.class);
 
     /**
      * Constructor.
@@ -77,7 +81,7 @@ public class ClientResourceImpl extends AbstractResourceImpl implements IClientR
     }
 
     @Override
-    public void unregister(String organizationId, String clientId, String version, AsyncResponse response)
+    public void unregister(String organizationId, String clientId, String version, @Suspended AsyncResponse response)
             throws RegistrationException, NotAuthorizedException {
         Client application = new Client();
         application.setOrganizationId(organizationId);
@@ -87,18 +91,18 @@ public class ClientResourceImpl extends AbstractResourceImpl implements IClientR
     }
 
     @Override
-    public void listClients(String organizationId, int page, int pageSize, AsyncResponse response) throws NotAuthorizedException {
+    public void listClients(String organizationId, int page, int pageSize, @Suspended AsyncResponse response) throws NotAuthorizedException {
         getEngine().getRegistry().listClients(organizationId, page, pageSize, handlerWithResult(response));
     }
 
     @Override
-    public void listClientVersions(String organizationId, String clientId, int page, int pageSize, AsyncResponse response)
+    public void listClientVersions(String organizationId, String clientId, int page, int pageSize, @Suspended AsyncResponse response)
             throws NotAuthorizedException {
         getEngine().getRegistry().listClientVersions(organizationId, clientId, page, pageSize, handlerWithResult(response));
     }
 
     @Override
-    public void getClientVersion(String organizationId, String clientId, String version, AsyncResponse response) throws NotAuthorizedException {
+    public void getClientVersion(String organizationId, String clientId, String version, @Suspended AsyncResponse response) throws NotAuthorizedException {
         getEngine().getRegistry().getClient(organizationId, clientId, version, result -> {
             if (result.isSuccess()) {
                 Client client = result.getResult();
@@ -112,5 +116,4 @@ public class ClientResourceImpl extends AbstractResourceImpl implements IClientR
             }
         });
     }
-
 }

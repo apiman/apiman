@@ -12,12 +12,16 @@ Content-Type: application/json
     "fullName" : "apiman admin",
     "email" : "admin@example.org",
     "joinedOn" : "2022-03-25T10:40:36Z",
+    "locale" : "en",
+    "notificationPreferences" : [ ],
     "admin" : false
   }, {
     "username" : "user",
     "fullName" : "apiman user",
     "email" : "user@example.com",
     "joinedOn" : "2022-03-25T11:04:30Z",
+    "locale" : "en",
+    "notificationPreferences" : [ ],
     "admin" : false
   } ],
   "Gateways" : [ {
@@ -179,6 +183,7 @@ Content-Type: application/json
     "deleted" : false
   } ],
   "Developers" : [ ],
+  "Blobs" : [ ],
   "Orgs" : [ {
     "OrganizationBean" : {
       "id" : "Organization1",
@@ -243,6 +248,7 @@ Content-Type: application/json
       "ApiBean" : {
         "id" : "Test",
         "name" : "Test",
+        "tags" : [ ],
         "createdBy" : "admin",
         "createdOn" : "2022-03-25T10:43:44Z"
       },
@@ -263,7 +269,8 @@ Content-Type: application/json
           "modifiedOn" : "2022-03-25T10:43:58Z",
           "definitionType" : "None",
           "parsePayload" : false,
-          "disableKeysStrip" : false
+          "disableKeysStrip" : false,
+          "discoverability" : "ORG_MEMBERS"
         },
         "Policies" : [ {
           "id" : 1014,

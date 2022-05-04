@@ -25,7 +25,7 @@ import java.util.List;
  * @author eric.wittmann@redhat.com
  * @param <T> the bean type
  */
-public class SearchResultsBean<T> implements Serializable {
+public class SearchResultsBean<T> implements Serializable, ITotalSize {
 
     private static final long serialVersionUID = -1672829715471947181L;
 
@@ -38,6 +38,11 @@ public class SearchResultsBean<T> implements Serializable {
     public SearchResultsBean() {
     }
 
+    public SearchResultsBean(List<T> beans, int totalSize) {
+        this.beans = beans;
+        this.totalSize = totalSize;
+    }
+
     /**
      * @return the beans
      */
@@ -48,8 +53,9 @@ public class SearchResultsBean<T> implements Serializable {
     /**
      * @param beans the beans to set
      */
-    public void setBeans(List<T> beans) {
+    public SearchResultsBean<T> setBeans(List<T> beans) {
         this.beans = beans;
+        return this;
     }
 
     /**
@@ -62,8 +68,9 @@ public class SearchResultsBean<T> implements Serializable {
     /**
      * @param totalSize the totalSize to set
      */
-    public void setTotalSize(int totalSize) {
+    public SearchResultsBean<T> setTotalSize(int totalSize) {
         this.totalSize = totalSize;
+        return this;
     }
 
 }

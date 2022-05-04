@@ -147,6 +147,7 @@ public class EngineImpl implements IEngine {
     /**
      * @return the policyFactory
      */
+    @Override
     public IPolicyFactory getPolicyFactory() {
         return policyFactory;
     }
@@ -161,6 +162,7 @@ public class EngineImpl implements IEngine {
     /**
      * @return the componentRegistry
      */
+    @Override
     public IComponentRegistry getComponentRegistry() {
         return componentRegistry;
     }

@@ -1,0 +1,62 @@
+POST /organizations/Organization1/clients/Client1/versions/1.0/contracts bwayne/bwayne
+Content-Type: application/json
+
+{
+  "apiOrgId" : "Organization2",
+  "apiId" : "API2",
+  "apiVersion" : "1.5",
+  "planId" : "PlanA"
+}
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-contract2Id: id
+
+{
+  "client" : {
+    "client" : {
+      "organization" : {
+        "id" : "Organization1"
+      },
+      "id" : "Client1",
+      "name" : "Client 1",
+      "description" : "This is the description of Client 1.",
+      "createdBy" : "admin"
+    },
+    "status" : "AwaitingApproval",
+    "version" : "1.0",
+    "createdBy" : "admin"
+  },
+  
+  "api" : {
+    "api" : {
+      "organization" : {
+        "id" : "Organization2"
+      },
+      "id" : "API2",
+      "name" : "API 2",
+      "description" : "This is the description of API 2.",
+      "createdBy" : "admin"
+    },
+    "status" : "Published",
+    "endpoint" : "http://localhost:8080/ping",
+    "endpointType" : "rest",
+    "version" : "1.5",
+    "createdBy" : "admin"
+  },
+  
+  "plan" : {
+    "plan" : {
+      "organization" : {
+        "id" : "Organization2"
+      },
+      "id" : "PlanA",
+      "name" : "Plan A",
+      "description" : "This is the description of Plan A.",
+      "createdBy" : "admin"
+    },
+    "status" : "Locked",
+    "version" : "2.0",
+    "createdBy" : "admin"
+  }
+}

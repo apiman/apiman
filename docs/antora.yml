@@ -1,6 +1,8 @@
 name: core
 title: Apiman Guides
-version: 2.2.3.Final
+display_version: 'nightly'
+version: 'main'
+prerelease: true
 start_page: ROOT:index.adoc
 nav:
   - modules/ROOT/nav.adoc

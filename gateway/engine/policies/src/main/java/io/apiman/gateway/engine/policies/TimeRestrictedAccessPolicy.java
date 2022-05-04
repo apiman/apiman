@@ -49,7 +49,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
      * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<TimeRestrictedAccessConfig> getConfigurationClass() {
+    public Class<TimeRestrictedAccessConfig> getConfigurationClass() {
         return TimeRestrictedAccessConfig.class;
     }
 
@@ -128,8 +128,6 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
     /**
      * Returns true if the given DateTime matches the time range indicated by the
      * filter/rule.
-     * @param currentTime
-     * @param filter
      */
     private boolean matchesTime(TimeRestrictedAccess filter) {
         Date start = filter.getTimeStart();

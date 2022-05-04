@@ -23,6 +23,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -203,7 +204,12 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
      */
     @Override
     public void developer(DeveloperBean developer) {
-        System.out.println("developer:" + developer);
+        System.out.println("developer: " + developer);
+    }
+
+    @Override
+    public void blob(ExportedBlobDto blob) {
+       System.out.println("blob: " + blob);
     }
 
     /**

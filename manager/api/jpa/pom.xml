@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager-api</artifactId>
-    <version>2.2.4-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-api-jpa</artifactId>
   <name>apiman-manager-api-jpa</name>
@@ -28,6 +28,16 @@
       <artifactId>apiman-distro-data</artifactId>
     </dependency>
 
+    <!-- SQL builder -->
+    <dependency>
+      <groupId>org.jdbi</groupId>
+      <artifactId>jdbi3-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+
     <!-- Spec Libs -->
     <dependency>
       <groupId>javax.enterprise</groupId>
@@ -35,9 +45,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
-      <scope>provided</scope>
+      <groupId>javax.persistence</groupId>
+      <artifactId>javax.persistence-api</artifactId>
+<!--      <scope>provided</scope>-->
     </dependency>
 
     <!-- Hibernate -->
@@ -45,13 +55,24 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <scope>provided</scope>
+      <exclusions>
+
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>com.vladmihalcea</groupId>
+      <artifactId>hibernate-types-52</artifactId>
+    </dependency>
+    <!-- Useful for xxhash, amongst other things. -->
+    <dependency>
+      <groupId>org.lz4</groupId>
+      <artifactId>lz4-java</artifactId>
+    </dependency>
     <!-- Commons -->
     <dependency>
       <groupId>commons-io</groupId>
@@ -65,5 +86,47 @@
       <groupId>commons-dbutils</groupId>
       <artifactId>commons-dbutils</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.blazebit</groupId>
+      <artifactId>blaze-persistence-core-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.blazebit</groupId>
+      <artifactId>blaze-persistence-core-impl</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.blazebit</groupId>
+      <artifactId>blaze-persistence-integration-hibernate-5.3</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.blazebit</groupId>
+      <artifactId>blaze-persistence-integration-querydsl-expressions</artifactId>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${version.compiler.plugin}</version>
+        <configuration>
+          <source>11</source>
+          <source>11</source>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.mapstruct</groupId>
+              <artifactId>mapstruct-processor</artifactId>
+              <version>${version.org.mapstruct}</version>
+            </path>
+            <!-- other annotation processors -->
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

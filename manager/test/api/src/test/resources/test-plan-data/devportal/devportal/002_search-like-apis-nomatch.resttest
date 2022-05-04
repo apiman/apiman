@@ -1,0 +1,24 @@
+POST /devportal/search/apis
+Content-Type: application/json
+
+{
+  "filters" : [
+    {
+      "name" : "name",
+      "value" : "blahblahblah",
+      "operator" : "like"
+    }
+  ],
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+	"beans": [],
+	"totalSize": 0
+}

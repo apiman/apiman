@@ -17,17 +17,18 @@ package io.apiman.manager.api.jpa;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
 /**
- * Produces an instance of {@link EntityManagerFactory}.
+ * Produces an instance of {@link EntityManagerFactory}. Or the managed persistence unit, if there is one :-).
  *
  * @author eric.wittmann@redhat.com
  */
@@ -38,6 +39,11 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
     private IJpaProperties jpaProperties;
 
     private EntityManagerFactory emf;
+
+    // @PersistenceContext(unitName = "apiman-manager-api-jpa")
+    // private EntityManager pcEm;
+
+    private final ThreadLocal<EntityManager> threadLocal = new ThreadLocal<>();
 
     /**
      * Constructor.
@@ -56,27 +62,32 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         }
 
         // Get two specific properties from the System (for backward compatibility only)
-        String s = properties.get("hibernate.hbm2ddl.auto"); //$NON-NLS-1$
+        String s = properties.get("hibernate.hbm2ddl.auto");
         if (s == null) {
-            s = "validate"; //$NON-NLS-1$
+            s = "validate";
         }
-        String autoValue = System.getProperty("apiman.hibernate.hbm2ddl.auto", s); //$NON-NLS-1$
-        s = properties.get("hibernate.dialect"); //$NON-NLS-1$
+        String autoValue = System.getProperty("apiman.hibernate.hbm2ddl.auto", s);
+        s = properties.get("hibernate.dialect");
         if (s == null) {
-            s = "org.hibernate.dialect.H2Dialect"; //$NON-NLS-1$
+            s = "org.hibernate.dialect.H2Dialect";
         }
-        String dialect = System.getProperty("apiman.hibernate.dialect", s); //$NON-NLS-1$
-        properties.put("hibernate.hbm2ddl.auto", autoValue); //$NON-NLS-1$
-        properties.put("hibernate.dialect", dialect); //$NON-NLS-1$
+        String dialect = System.getProperty("apiman.hibernate.dialect", s);
+        properties.put("hibernate.hbm2ddl.auto", autoValue);
+        properties.put("hibernate.dialect", dialect);
 
         // First try using standard JPA to load the persistence unit.  If that fails, then
         // try using hibernate directly in a couple ways (depends on hibernate version and
         // platform we're running on).
+
+        // if (pcEm != null) {
+        //     return;
+        // }
+
         try {
-            emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+            emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties);
         } catch (Throwable t1) {
             try {
-                emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+                emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties);
             } catch (Throwable t3) {
                 throw t1;
             }
@@ -87,8 +98,24 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
      * @see io.apiman.manager.api.jpa.IEntityManagerFactoryAccessor#getEntityManagerFactory()
      */
     @Override
+    @Produces
     public EntityManagerFactory getEntityManagerFactory() {
-        return emf;
+        return getEntityManager().getEntityManagerFactory();
+    }
+
+    @Produces
+    public EntityManager getEntityManager() {
+        // if (pcEm != null) {
+        //     return pcEm;
+        // }
+        EntityManager threadLocalEm = threadLocal.get();
+        if (threadLocalEm != null && threadLocalEm.isOpen()) {
+            return threadLocalEm;
+        } else {
+            EntityManager newEm = emf.createEntityManager();
+            threadLocal.set(newEm);
+            return newEm;
+        }
     }
 
 }

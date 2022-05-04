@@ -16,6 +16,7 @@
 package io.apiman.gateway.engine.policies;
 
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.IPolicyProbeRequest;
 import io.apiman.gateway.engine.policies.config.IPListConfig;
 
 

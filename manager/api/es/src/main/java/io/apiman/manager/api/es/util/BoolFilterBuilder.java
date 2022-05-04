@@ -29,7 +29,6 @@ public class BoolFilterBuilder extends AbstractQueryBuilder {
 
     /**
      * Constructor.
-     * @param operationType
      * @param filters
      */
     public BoolFilterBuilder(QueryBuilder... filters) {

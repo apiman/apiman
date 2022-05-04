@@ -38,7 +38,6 @@ import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
 import io.apiman.manager.api.es.EsMetricsAccessor;
-import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -48,6 +47,8 @@ import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
@@ -63,15 +64,14 @@ public class WarCdiFactory {
     private static IEsClientFactory sStorageEsClientFactory;
     private static JpaStorage sJpaStorage;
 
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {}
+
     @Produces @ApplicationScoped
     public static INewUserBootstrapper provideNewUserBootstrapper(WarApiManagerConfig config, IPluginRegistry pluginRegistry) {
         String type = config.getNewUserBootstrapperType();
         if (type == null) {
-            return new INewUserBootstrapper() {
-                @Override
-                public void bootstrapUser(UserBean user, IStorage storage) throws StorageException {
-                    // Do nothing special.
-                }
+            return (user, storage) -> {
+                // Do nothing special.
             };
         } else {
             try {
@@ -100,12 +100,9 @@ public class WarCdiFactory {
         IStorage storage;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = initJpaStorage(config, jpaStorage);
-        } else if (EsUtils.isEsOrJest(config.getStorageType())) { //$NON-NLS-1$
-            storage = new EsStorage(config.getStorageESClientFactoryConfig());
         } else {
             try {
-                storage = createCustomComponent(IStorage.class, config.getStorageType(),
-                        config.getStorageProperties(), pluginRegistry);
+                storage = createCustomComponent(IStorage.class, config.getStorageType(), config.getStorageProperties(), pluginRegistry);
             } catch (Throwable t) {
                 throw new RuntimeException("Error or unknown storage type: " + config.getStorageType(), t); //$NON-NLS-1$
             }
@@ -117,9 +114,7 @@ public class WarCdiFactory {
     public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage, IStorage storage, IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             return initJpaStorage(config, jpaStorage);
-        } else if (EsUtils.isEsOrJest(config.getStorageType())) { //$NON-NLS-1$
-            return new EsStorage(config.getStorageESClientFactoryConfig());
-        } else if (storage != null && storage instanceof IStorageQuery) {
+        } else if (storage instanceof IStorageQuery) {
             return (IStorageQuery) storage;
         } else {
             try {

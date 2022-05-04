@@ -15,7 +15,9 @@
  */
 package io.apiman.manager.api.core;
 
+import io.apiman.manager.api.beans.apis.ApiBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.idm.PermissionConstraint;
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -52,14 +54,14 @@ import java.util.Set;
 public interface IStorageQuery {
 
     /**
-     * Lists all of the Plugins.
+     * Lists all the Plugins.
      * @return list of plugins
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public List<PluginSummaryBean> listPlugins() throws StorageException;
 
     /**
-     * Lists all of the Gateways.
+     * Lists all the Gateways.
      * @return list of gateways
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
@@ -71,7 +73,7 @@ public interface IStorageQuery {
      * @return found orgs
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria) throws StorageException;
+    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria, PermissionConstraint permissionConstraint) throws StorageException;
 
     /**
      * Finds clients by the provided criteria.
@@ -79,7 +81,7 @@ public interface IStorageQuery {
      * @return found clients
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria) throws StorageException;
+    public SearchResultsBean<ClientSummaryBean> findClients(SearchCriteriaBean criteria, PermissionConstraint permissionConstraint) throws StorageException;
 
     /**
      * Finds APIs by the provided criteria.
@@ -87,7 +89,7 @@ public interface IStorageQuery {
      * @return found APIs
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria) throws StorageException;
+    public SearchResultsBean<ApiSummaryBean> findApis(SearchCriteriaBean criteria, PermissionConstraint permissionConstraint, boolean paginate) throws StorageException;
 
     /**
      * Finds plans (within an organization) with the given criteria.
@@ -96,7 +98,7 @@ public interface IStorageQuery {
      * @return found plans
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
-    public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria) throws StorageException;
+    public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria,  PermissionConstraint permissionConstraint) throws StorageException;
 
     /**
      * Gets the audit log for an entity.
@@ -193,6 +195,7 @@ public interface IStorageQuery {
      */
     public List<ApiSummaryBean> getApisInOrg(String organizationId) throws StorageException;
 
+
     /**
      * Returns all API versions for a given API.
      * @param organizationId the organization id
@@ -201,6 +204,10 @@ public interface IStorageQuery {
      * @throws StorageException if a storage problem occurs while storing a bean.
      */
     public List<ApiVersionSummaryBean> getApiVersions(String organizationId, String apiId) throws StorageException;
+
+    List<ApiBean> getApisByTagNameAndValue(String tagKey, String tagValue);
+
+    List<ApiBean> getApisByTagName(String tagKey);
 
     /**
      * Returns the API plans configured for the given API version.
@@ -286,7 +293,7 @@ public interface IStorageQuery {
             PolicyType type) throws StorageException;
 
     /**
-     * Lists all of the policy definitions contributed via a particular plugin.
+     * Lists all the policy definitions contributed via a particular plugin.
      * @param pluginId the plugin id
      * @return list of plugin policy defs
      * @throws StorageException if a storage problem occurs while storing a bean.

@@ -1,0 +1,28 @@
+POST /devportal/search/apis
+Content-Type: application/json
+
+{
+  "filters" : [],
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+	"beans": [{
+		"organizationId": "test",
+		"organizationName": "test",
+		"id": "Api1",
+		"name": "Api 1",
+		"createdOn": "2021-10-17T22:01:34.000+00:00",
+		"tags": [{
+			"key": "featured",
+			"value": null
+		}]
+	}],
+	"totalSize": 1
+}

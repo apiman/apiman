@@ -1,0 +1,18 @@
+GET /devportal/apis/featured
+
+----
+200
+Content-Type: application/json
+
+{
+	"beans": [{
+		"organizationId": "test",
+		"organizationName": "test",
+		"id": "Api1",
+		"name": "Api 1",
+		"tags": [{
+			"key": "featured"
+		}]
+	}],
+	"totalSize": 1
+}

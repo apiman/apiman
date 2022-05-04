@@ -23,6 +23,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -44,15 +45,15 @@ import io.apiman.manager.api.exportimport.read.IImportReaderDispatcher;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Read JSON in to recreate manager's state. FIFO.
@@ -60,6 +61,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
+@Transactional
 public class JsonImportReader extends AbstractJsonReader implements IImportReader {
 
     private IApimanLogger logger;
@@ -80,7 +82,11 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
         this.logger = logger;
         this.in = in;
         jp = new JsonFactory().createParser(in);
-        jp.setCodec(new ObjectMapper());
+        ObjectMapper om = new ObjectMapper()
+                .findAndRegisterModules()
+                // Custom deser for FileBackedOutputStream
+                .registerModule(new FbosModule());
+        jp.setCodec(om);
     }
 
     /**
@@ -128,6 +134,9 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                     break;
                 case Developers:
                     processEntities(DeveloperBean.class, dispatcher::developer);
+                    break;
+                case Blobs:
+                    processEntities(ExportedBlobDto.class, dispatcher::blob);
                     break;
                 default:
                     throw new IllegalArgumentException("Unhandled field: " + fieldName);

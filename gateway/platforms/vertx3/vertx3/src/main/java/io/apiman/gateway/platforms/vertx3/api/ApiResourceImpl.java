@@ -16,19 +16,32 @@
 
 package io.apiman.gateway.platforms.vertx3.api;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.api.rest.IApiResource;
 import io.apiman.gateway.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
+import io.apiman.gateway.engine.beans.ApiContract;
 import io.apiman.gateway.engine.beans.ApiEndpoint;
+import io.apiman.gateway.engine.beans.Client;
+import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
+import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.apiman.gateway.engine.policies.probe.ProbeRegistry;
+import io.apiman.gateway.engine.policy.IPolicy;
+import io.apiman.gateway.engine.policy.IPolicyFactory;
+import io.apiman.gateway.engine.policy.IPolicyProbe;
+import io.apiman.gateway.engine.policy.PolicyContextImpl;
+import io.apiman.gateway.engine.policy.ProbeContext;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.helpers.EndpointHelper;
 
 import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -37,12 +50,15 @@ import javax.ws.rs.core.Response.Status;
  */
 public class ApiResourceImpl extends AbstractResource implements IApiResource {
 
-    private VertxEngineConfig apimanConfig;
-    private IRegistry registry;
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ApiResourceImpl.class);
+    private final VertxEngineConfig apimanConfig;
+    private final IRegistry registry;
+    private final IEngine engine;
 
     public ApiResourceImpl(VertxEngineConfig apimanConfig, IEngine engine) {
         this.apimanConfig = apimanConfig;
         this.registry = engine.getRegistry();
+        this.engine = engine;
     }
 
     @Override
@@ -118,5 +134,105 @@ public class ApiResourceImpl extends AbstractResource implements IApiResource {
                 throwError(result.getError());
             }
         });
+    }
+
+    @Override
+    public void probePolicyState(String organizationId, String apiId, String version, int policyIdx, String apiKey, String probeConfigRaw,
+                                 @Suspended AsyncResponse response) throws NotAuthorizedException {
+        if (apiKey == null) {
+            engine.getRegistry().getApi(organizationId, apiId, version, result -> {
+                if (result.isSuccess()) {
+                    Api api = result.getResult();
+                    if (api != null) {
+                        getPolicy(api, policyIdx, probeConfigRaw, response);
+                    } else {
+                        response.resume(Response.status(Status.NOT_FOUND).build());
+                    }
+                } else {
+                    throwError(result.getError());
+                }
+            });
+        } else {
+            engine.getRegistry().getContract(organizationId, apiId, version, apiKey, result -> {
+                if (result.isSuccess()) {
+                    ApiContract contract = result.getResult();
+                    if (contract != null) {
+                        getPolicy(contract, policyIdx, probeConfigRaw, response);
+                    } else {
+                        response.resume(Response.status(Status.NOT_FOUND).build());
+                    }
+                } else {
+                    throwError(result.getError());
+                }
+            });
+        }
+    }
+
+    private void getPolicy(Api api, int policyIdx, String probeConfigRaw, @Suspended AsyncResponse response) {
+        if (policyIdx < api.getApiPolicies().size()) {
+            // Get API policy by index
+            Policy policyConfig = api.getApiPolicies().get(policyIdx);
+            IPolicyFactory policyFactory = engine.getPolicyFactory();
+            // Load the policy (may not have been loaded yet, but is usually cached).
+            policyFactory.loadPolicy(policyConfig.getPolicyImpl(), policyLoad -> {
+                // Generate & load appropriate config for policy (is cached, so OK to do repeatedly).
+                IPolicy policy = policyLoad.getResult();
+                PolicyContextImpl policyContext = new PolicyContextImpl(engine.getComponentRegistry());
+                ProbeContext probeContext = buildProbeContext(api, null, null, api.getEndpointType());
+                // Probe it!
+                if (policy instanceof IPolicyProbe) {
+                    IPolicyProbe<?, ?> policyWithProbe = (IPolicyProbe<?, ?>) policy;
+                    policyWithProbe.probe(probeConfigRaw, policyConfig.getPolicyJsonConfig(), probeContext, policyContext, probeResult -> {
+                        IPolicyProbeResponse probeResponse = probeResult.getResult();
+                        LOGGER.debug("Probe response for config {0} -> {1}", probeConfigRaw, probeResponse);
+                        response.resume(Response.ok(ProbeRegistry.serialize(probeResponse)).build());
+                    });
+                } else {
+                    response.resume(Response.status(Status.NOT_IMPLEMENTED.getStatusCode(),
+                            "Requested policy does not implement a policy probe").build());
+                }
+            });
+        } else {
+            response.resume(new IllegalArgumentException("Provided policy index out of bounds: " + policyIdx));
+        }
+    }
+
+    private void getPolicy(ApiContract contract, int policyIdx, String probeConfigRaw, AsyncResponse response) {
+        if (policyIdx < contract.getPolicies().size()) {
+            // Get API policy by index
+            Policy policyConfig = contract.getPolicies().get(policyIdx);
+            IPolicyFactory policyFactory = engine.getPolicyFactory();
+            // Load the policy (may not have been loaded yet, but is usually cached).
+            policyFactory.loadPolicy(policyConfig.getPolicyImpl(), policyLoad -> {
+                // Generate & load appropriate config for policy (is cached, so OK to do repeatedly).
+                IPolicy policy = policyLoad.getResult();
+                PolicyContextImpl policyContext = new PolicyContextImpl(engine.getComponentRegistry());
+                Api api = contract.getApi();
+                Client client = contract.getClient();
+                ProbeContext probeContext = buildProbeContext(contract.getApi(), contract, client.getApiKey(), api.getEndpointType());
+                // Probe it!
+                if (policy instanceof IPolicyProbe) {
+                    IPolicyProbe<?, ?> policyWithProbe = (IPolicyProbe<?, ?>) policy;
+                    policyWithProbe.probe(probeConfigRaw, policyConfig.getPolicyJsonConfig(), probeContext, policyContext, probeResult -> {
+                        IPolicyProbeResponse probeResponse = probeResult.getResult();
+                        LOGGER.debug("Probe response for config {0} -> {1}", probeConfigRaw, probeResponse);
+                        response.resume(Response.ok(probeResponse).build());
+                    });
+                } else {
+                    response.resume(Response.status(Status.NOT_IMPLEMENTED.getStatusCode(),
+                            "Requested policy does not implement a policy probe").build());
+                }
+            });
+        } else {
+            response.resume(new IllegalArgumentException("Provided policy index out of bounds: " + policyIdx));
+        }
+    }
+
+    private ProbeContext buildProbeContext(Api api, ApiContract contract, String apiKey, String url) {
+        return new ProbeContext()
+                .setApi(api)
+                .setContract(contract)
+                .setApiKey(apiKey)
+                .setUrl(url);
     }
 }

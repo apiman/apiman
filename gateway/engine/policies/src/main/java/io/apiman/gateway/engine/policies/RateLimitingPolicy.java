@@ -15,21 +15,27 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.policies.config.RateLimitingConfig;
-import io.apiman.gateway.engine.policies.config.rates.RateLimitingGranularity;
-import io.apiman.gateway.engine.policies.config.rates.RateLimitingPeriod;
 import io.apiman.gateway.engine.policies.i18n.Messages;
+import io.apiman.gateway.engine.policies.limiting.BucketFactory;
+import io.apiman.gateway.engine.policies.limiting.BucketFactory.BucketIdBuilderContext;
+import io.apiman.gateway.engine.policies.probe.RateLimitingProbeConfig;
+import io.apiman.gateway.engine.policies.probe.RateLimitingProbeResponse;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.policy.IPolicyProbe;
+import io.apiman.gateway.engine.policy.ProbeContext;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 
 import java.util.HashMap;
@@ -42,14 +48,14 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig> {
-
-    protected static final String NO_USER_AVAILABLE = new String();
-    protected static final String NO_CLIENT_AVAILABLE = new String();
+public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
+     implements IPolicyProbe<RateLimitingConfig, RateLimitingProbeConfig> {
 
     private static final String DEFAULT_LIMIT_HEADER = "X-RateLimit-Limit"; //$NON-NLS-1$
     private static final String DEFAULT_REMAINING_HEADER = "X-RateLimit-Remaining"; //$NON-NLS-1$
     private static final String DEFAULT_RESET_HEADER = "X-RateLimit-Reset"; //$NON-NLS-1$
+
+    private final BucketFactory bucketFactory = new BucketFactory();
 
     /**
      * Constructor.
@@ -57,11 +63,8 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     public RateLimitingPolicy() {
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
-     */
     @Override
-    protected Class<RateLimitingConfig> getConfigurationClass() {
+    public Class<RateLimitingConfig> getConfigurationClass() {
         return RateLimitingConfig.class;
     }
 
@@ -71,16 +74,16 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     @Override
     protected void doApply(final ApiRequest request, final IPolicyContext context, final RateLimitingConfig config,
             final IPolicyChain<ApiRequest> chain) {
-        String bucketId = createBucketId(request, config);
-        final RateBucketPeriod period = getPeriod(config);
+        String bucketId = bucketId(request, config);
+        final RateBucketPeriod period = bucketFactory.getPeriod(config);
 
-        if (bucketId == NO_USER_AVAILABLE) {
+        if (bucketId.equals(BucketFactory.NO_USER_AVAILABLE)) {
             IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.NO_USER_FOR_RATE_LIMITING, Messages.i18n.format("RateLimitingPolicy.NoUser")); //$NON-NLS-1$
             chain.doFailure(failure);
             return;
         }
-        if (bucketId == NO_CLIENT_AVAILABLE) {
+        if (bucketId.equals(BucketFactory.NO_CLIENT_AVAILABLE)) {
             IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.NO_APP_FOR_RATE_LIMITING, Messages.i18n.format("RateLimitingPolicy.NoApp")); //$NON-NLS-1$
             chain.doFailure(failure);
@@ -114,19 +117,11 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     }
 
     /**
-     * @param request
-     * @param config
-     */
-    protected String createBucketId(ApiRequest request, RateLimitingConfig config) {
-        return bucketId(request, config);
-    }
-
-    /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ApiResponse response, IPolicyContext context, RateLimitingConfig config,
-            IPolicyChain<ApiResponse> chain) {
+    protected void doApply(final ApiResponse response, final IPolicyContext context, final RateLimitingConfig config,
+            final IPolicyChain<ApiResponse> chain) {
         Map<String, String> headers = context.getAttribute("rate-limit-response-headers", null); //$NON-NLS-1$
         if (headers != null) {
             response.getHeaders().putAll(headers);
@@ -135,105 +130,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     }
 
     /**
-     * Creates the ID of the rate bucket to use.  The ID is composed differently
-     * depending on the configuration of the policy.
-     *
-     * @param request
-     * @param config
-     */
-    protected static String bucketId(ApiRequest request, RateLimitingConfig config) {
-        StringBuilder builder = new StringBuilder();
-        if (request.getContract() == null) {
-            builder.append("PUBLIC||"); //$NON-NLS-1$
-            builder.append("||"); //$NON-NLS-1$
-            builder.append(request.getApiOrgId());
-            builder.append("||"); //$NON-NLS-1$
-            builder.append(request.getApiId());
-            builder.append("||"); //$NON-NLS-1$
-            builder.append(request.getApiVersion());
-            if (config.getGranularity() == RateLimitingGranularity.User) {
-                String header = config.getUserHeader();
-                if (!request.getHeaders().containsKey(header)) {
-                    return NO_USER_AVAILABLE;
-                }
-                String user = request.getHeaders().get(header);
-                builder.append("||"); //$NON-NLS-1$
-                builder.append(user);
-            } else if (config.getGranularity() == RateLimitingGranularity.Ip) {
-                builder.append("||"); //$NON-NLS-1$
-                builder.append(request.getRemoteAddr());
-            } else if (config.getGranularity() == RateLimitingGranularity.Api) {
-            } else {
-                return NO_CLIENT_AVAILABLE;
-            }
-        } else {
-            builder.append(request.getApiKey());
-            if (config.getGranularity() == RateLimitingGranularity.User) {
-                String header = config.getUserHeader();
-                String user = request.getHeaders().get(header);
-                if (user == null) {
-                    return NO_USER_AVAILABLE;
-                } else {
-                    builder.append("||USER||"); //$NON-NLS-1$
-                    builder.append(request.getContract().getClient().getOrganizationId());
-                    builder.append("||"); //$NON-NLS-1$
-                    builder.append(request.getContract().getClient().getClientId());
-                    builder.append("||"); //$NON-NLS-1$
-                    builder.append(user);
-                }
-            } else if (config.getGranularity() == RateLimitingGranularity.Client) {
-                builder.append(request.getApiKey());
-                builder.append("||APP||"); //$NON-NLS-1$
-                builder.append(request.getContract().getClient().getOrganizationId());
-                builder.append("||"); //$NON-NLS-1$
-                builder.append(request.getContract().getClient().getClientId());
-            } else if (config.getGranularity() == RateLimitingGranularity.Ip) {
-                builder.append(request.getApiKey());
-                builder.append("||IP||"); //$NON-NLS-1$
-                builder.append(request.getContract().getClient().getOrganizationId());
-                builder.append("||"); //$NON-NLS-1$
-                builder.append(request.getRemoteAddr());
-            } else {
-                builder.append(request.getApiKey());
-                builder.append("||SERVICE||"); //$NON-NLS-1$
-                builder.append(request.getContract().getApi().getOrganizationId());
-                builder.append("||"); //$NON-NLS-1$
-                builder.append(request.getContract().getApi().getApiId());
-            }
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Gets the appropriate bucket period from the config.
-     * @param config
-     */
-    protected static RateBucketPeriod getPeriod(RateLimitingConfig config) {
-        RateLimitingPeriod period = config.getPeriod();
-        switch (period) {
-        case Second:
-            return RateBucketPeriod.Second;
-        case Day:
-            return RateBucketPeriod.Day;
-        case Hour:
-            return RateBucketPeriod.Hour;
-        case Minute:
-            return RateBucketPeriod.Minute;
-        case Month:
-            return RateBucketPeriod.Month;
-        case Year:
-            return RateBucketPeriod.Year;
-        default:
-            return RateBucketPeriod.Month;
-        }
-    }
-
-    /**
-     * @param config
-     * @param rtr
-     * @param defaultLimitHeader
-     * @param defaultRemainingHeader
-     * @param defaultResetHeader
+     * Set response headers
      */
     protected static Map<String, String> responseHeaders(RateLimitingConfig config,
             RateLimitResponse rtr, String defaultLimitHeader, String defaultRemainingHeader,
@@ -258,8 +155,10 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     }
 
     /**
-     * @param responseHeaders
-     * @param failureFactory
+     * Generate a rate limit exceeded policy failure.
+     *
+     * @param failureFactory failure factory
+     * @return a limit exceeded policy failure
      */
     protected PolicyFailure limitExceededFailure(IPolicyFailureFactoryComponent failureFactory) {
         PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.RATE_LIMIT_EXCEEDED, Messages.i18n.format("RateLimitingPolicy.RateExceeded")); //$NON-NLS-1$
@@ -288,4 +187,31 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
         return DEFAULT_LIMIT_HEADER;
     }
 
+    protected String bucketId(ApiRequest request, RateLimitingConfig config) {
+        return bucketFactory.bucketId(request, config);
+    }
+
+    protected String bucketId(RateLimitingConfig config, BucketIdBuilderContext context) {
+        return bucketFactory.bucketId(config, context);
+    }
+
+    @Override
+    public Class<RateLimitingProbeConfig> getProbeRequestClass() {
+        return RateLimitingProbeConfig.class;
+    }
+
+    @Override
+    public void probe(RateLimitingProbeConfig probeRequest, RateLimitingConfig policyConfig, ProbeContext probeContext,
+         IPolicyContext context, IAsyncResultHandler<IPolicyProbeResponse> resultHandler) {
+        String bucketId = bucketFactory.bucketId(probeRequest, probeContext, policyConfig);
+        IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class);
+        // Ask for rate limit, but don't actually decrement the counter.
+        rateLimiter.accept(bucketId, bucketFactory.getPeriod(policyConfig), policyConfig.getLimit(), 0, rateLimResult -> {
+            RateLimitResponse remaining = rateLimResult.getResult();
+            var probeResult = new RateLimitingProbeResponse()
+                    .setStatus(remaining)
+                    .setConfig(policyConfig);
+            resultHandler.handle(AsyncResultImpl.create(probeResult));
+        });
+    }
 }

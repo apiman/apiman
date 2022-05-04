@@ -1,10 +1,9 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
 
-    export var ClientActivityController = _module.controller("Apiman.ClientActivityController",
+_module.controller("Apiman.ClientActivityController",
         ['$q', '$scope', '$location', 'Logger', 'PageLifecycle', 'ClientEntityLoader', 'AuditSvcs', '$routeParams', 'Configuration',
-        ($q, $scope, $location, Logger, PageLifecycle, ClientEntityLoader, AuditSvcs, $routeParams, Configuration) => {
+        function ($q, $scope, $location, Logger, PageLifecycle, ClientEntityLoader, AuditSvcs, $routeParams, Configuration) {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'activity';
@@ -30,6 +29,4 @@ module Apiman {
             PageLifecycle.loadPage('ClientActivity', 'clientView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('client-activity', [ $scope.client.name ]);
             });
-        }])
-
-}
+        }]);

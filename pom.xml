@@ -3,14 +3,14 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-parent</artifactId>
-    <version>2.2.3.Final</version>
+    <version>3.0.0-SNAPSHOT</version>
     <relativePath>parent/pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>apiman</artifactId>
-  <version>2.2.4-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>apiman</name>
 
@@ -474,6 +474,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-conf</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-distro-data</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -518,6 +523,14 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>22.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <pluginManagement>
@@ -540,16 +553,17 @@
             <goals>
               <goal>revision</goal>
             </goals>
+            <phase>initialize</phase>
           </execution>
         </executions>
         <configuration>
+          <injectAllReactorProjects>true</injectAllReactorProjects>
           <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
           <dateFormat>yyyy-MM-dd'T'HH:mm:ss'Z'</dateFormat>
           <dateFormatTimeZone>UTC</dateFormatTimeZone>
           <verbose>false</verbose>
           <generateGitPropertiesFile>false</generateGitPropertiesFile>
-          <skipPoms>true</skipPoms>
-          <injectAllReactorProjects>false</injectAllReactorProjects>
+          <skipPoms>false</skipPoms>
           <failOnNoGitDirectory>false</failOnNoGitDirectory>
           <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
           <useNativeGit>false</useNativeGit>
@@ -599,6 +613,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <quiet>true</quiet>
+        </configuration>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -692,7 +709,7 @@
             <extensions>true</extensions>
             <configuration>
               <serverId>ossrh</serverId>
-              <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
               <autoReleaseAfterClose>true</autoReleaseAfterClose>
             </configuration>
           </plugin>

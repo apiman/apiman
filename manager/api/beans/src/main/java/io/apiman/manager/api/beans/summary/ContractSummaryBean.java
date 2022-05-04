@@ -15,8 +15,11 @@
  */
 package io.apiman.manager.api.beans.summary;
 
+import io.apiman.manager.api.beans.contracts.ContractStatus;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.StringJoiner;
 
 /**
  * A summary bean for a contract.  Includes information useful for displaying
@@ -44,6 +47,7 @@ public class ContractSummaryBean implements Serializable {
     private String planId;
     private String planVersion;
     private Date createdOn;
+    private ContractStatus status;
 
     /**
      * Constructor.
@@ -275,8 +279,16 @@ public class ContractSummaryBean implements Serializable {
         this.apiName = apiName;
     }
 
+    public ContractStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ContractStatus status) {
+        this.status = status;
+    }
+
     /**
-     * @see java.lang.Object#hashCode()
+     * @see Object#hashCode()
      */
     @Override
     public int hashCode() {
@@ -287,7 +299,7 @@ public class ContractSummaryBean implements Serializable {
     }
 
     /**
-     * @see java.lang.Object#equals(java.lang.Object)
+     * @see Object#equals(Object)
      */
     @Override
     public boolean equals(Object obj) {
@@ -306,20 +318,26 @@ public class ContractSummaryBean implements Serializable {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
-    @SuppressWarnings("nls")
     public String toString() {
-        return "ContractSummaryBean [contractId=" + contractId
-                + ", clientOrganizationId=" + clientOrganizationId + ", clientOrganizationName=" + clientOrganizationName
-                + ", clientId=" + clientId + ", clientName=" + clientName + ", clientVersion=" + clientVersion
-                + ", apiOrganizationId=" + apiOrganizationId + ", apiOrganizationName="
-                + apiOrganizationName + ", apiId=" + apiId + ", apiName=" + apiName
-                + ", apiVersion=" + apiVersion + ", apiDescription=" + apiDescription
-                + ", planName=" + planName + ", planId=" + planId + ", planVersion=" + planVersion
-                + ", createdOn=" + createdOn + "]";
+        return new StringJoiner(", ", ContractSummaryBean.class.getSimpleName() + "[", "]")
+             .add("contractId=" + contractId)
+             .add("clientOrganizationId='" + clientOrganizationId + "'")
+             .add("clientOrganizationName='" + clientOrganizationName + "'")
+             .add("clientId='" + clientId + "'")
+             .add("clientName='" + clientName + "'")
+             .add("clientVersion='" + clientVersion + "'")
+             .add("apiOrganizationId='" + apiOrganizationId + "'")
+             .add("apiOrganizationName='" + apiOrganizationName + "'")
+             .add("apiId='" + apiId + "'")
+             .add("apiName='" + apiName + "'")
+             .add("apiVersion='" + apiVersion + "'")
+             .add("apiDescription='" + apiDescription + "'")
+             .add("planName='" + planName + "'")
+             .add("planId='" + planId + "'")
+             .add("planVersion='" + planVersion + "'")
+             .add("createdOn=" + createdOn)
+             .add("status=" + status)
+             .toString();
     }
-
 }

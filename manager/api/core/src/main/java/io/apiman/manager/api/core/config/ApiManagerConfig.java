@@ -18,9 +18,12 @@ package io.apiman.manager.api.core.config;
 import io.apiman.common.config.ConfigFactory;
 import io.apiman.common.es.util.EsConstants;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.logging.annotations.ApimanLoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +48,8 @@ public abstract class ApiManagerConfig {
     public static final String APIMAN_MANAGER_NEW_USER_BOOTSTRAPPER_TYPE = "apiman-manager.user-bootstrapper.type"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_FEATURES_ORG_CREATE_ADMIN_ONLY = "apiman-manager.config.features.org-create-admin-only"; //$NON-NLS-1$
+
+    public static final String APIMAN_MANAGER_CONFIG_NOTIFICATIONS = "apiman-manager.notifications";
 
     /*
      * Database/hibernate properties
@@ -76,6 +81,11 @@ public abstract class ApiManagerConfig {
 
     public static final String APIMAN_PLUGIN_REPOSITORIES = "apiman.plugins.repositories"; //$NON-NLS-1$
     public static final String APIMAN_PLUGIN_REGISTRIES = "apiman-manager.plugins.registries"; //$NON-NLS-1$
+
+    /* -------------------------------------------------------
+     * Endpoint-related
+     * ------------------------------------------------------- */
+    public static final String APIMAN_MANAGER_UI_ENDPOINT = "apiman-manager.ui.endpoint";
 
     private final Configuration config;
 
@@ -141,6 +151,10 @@ public abstract class ApiManagerConfig {
             }
         }
         return rval;
+    }
+
+    public Map<String, String> getNotificationsConfig() {
+        return getPrefixedProperties(APIMAN_MANAGER_CONFIG_NOTIFICATIONS);
     }
 
     public boolean isAdminOnlyOrgCreationEnabled() {
@@ -319,6 +333,18 @@ public abstract class ApiManagerConfig {
         return getPrefixedProperties("apiman.encrypter."); //$NON-NLS-1$
     }
 
+    public Map<String, String> getEmailNotificationProperties() {
+        return getPrefixedProperties("apiman-manager.notifications.email.");
+    }
+
+    public String getApimanManagerUiEndpoint() {
+        return config.getString(APIMAN_MANAGER_UI_ENDPOINT, "http://localhost:8080/apimanui/api-manager/");
+    }
+
+    public Map<String, String> getIdmDiscoverabilityMappings() {
+        return getPrefixedProperties("apiman-manager.idm.discoverability.");
+    }
+
     /**
      * Gets a map of properties prefixed by the given string.
      */
@@ -328,9 +354,15 @@ public abstract class ApiManagerConfig {
         while (keys.hasNext()) {
             String key = keys.next();
             if (key.startsWith(prefix)) {
-                String value = getConfig().getString(key);
+                String[] value = getConfig().getStringArray(key);
                 key = key.substring(prefix.length());
-                rval.put(key, value);
+                if (value.length == 0) {
+                    rval.put(key, null);
+                } else if (value.length == 1) {
+                    rval.put(key, value[0]);
+                } else {
+                    rval.put(key, String.join(",", value));
+                }
             }
         }
         return rval;
@@ -346,10 +378,76 @@ public abstract class ApiManagerConfig {
     /**
      * 'Simple', 'JSON' or FQDN with {@link IApimanLogger} implementation.
      *
+     * @deprecated set the system property <code>apiman.logger-delegate=name`</code> instead (e.g. log4j2).
+     * @see ApimanLoggerFactory Names are defined in <code>@ApimanLoggerFactory</code> annotations.
      * @return Logger name or FQDN
      */
+    @Deprecated(forRemoval = true)
     public String getLoggerName() {
         return config.getString(APIMAN_MANAGER_CONFIG_LOGGER);
+    }
+
+    // TODO(msavy): deduplicate this block (perhaps extract into common interface?)
+    /**
+     * Return the standard Apiman config directory.
+     *
+     * Following precedence is used:
+     * <ul>
+     *     <li><code>${apiman.config.dir}</code></li>
+     *     <li><code>${jboss.server.config.dir}</code></li>
+     *     <li><code>${catalina.home}/conf</code></li>
+     * </ul>
+     */
+    public Path getConfigDirectory() {
+        // Grand unified conf directory!
+        String confDir = System.getProperty("apiman.config.dir");
+        if (confDir != null) {
+            return Paths.get(confDir);
+        }
+
+        // If that wasn't set, then check to see if we're running in wildfly/eap
+        confDir = System.getProperty("jboss.server.config.dir");
+        if (confDir != null) {
+            return Paths.get(confDir);
+        }
+
+        // If that didn't work, try to locate a tomcat data directory
+        confDir = System.getProperty("catalina.home");
+        if (confDir != null) {
+            return Paths.get(confDir, "conf");
+        }
+        throw new IllegalStateException("No config directory has been set. Please set apiman.config.dir=<data dir>");
+    }
+
+    /**
+     * Return the standard Apiman data directory.
+     *
+     * Following precedence is used:
+     * <ul>
+     *     <li><code>${apiman.data.dir}</code></li>
+     *     <li><code>${jboss.server.data.dir}</code></li>
+     *     <li><code>${catalina.home}/data</code></li>
+     * </ul>
+     */
+    public Path getDataDirectory() {
+        // Grand unified data directory!
+        String dataDir = System.getProperty("apiman.data.dir");
+        if (dataDir != null) {
+            return Paths.get(dataDir);
+        }
+
+        // If that wasn't set, then check to see if we're running in wildfly/eap
+        dataDir = System.getProperty("jboss.server.data.dir");
+        if (dataDir != null) {
+            return Paths.get(dataDir, "apiman");
+        }
+
+        // If that didn't work, try to locate a tomcat data directory
+        dataDir = System.getProperty("catalina.home");
+        if (dataDir != null) {
+            return Paths.get(dataDir, "apiman");
+        }
+        throw new IllegalStateException("No data directory has been set. Please set apiman.data.dir=<data dir>");
     }
 
 }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" name="Discoverability (implicit permissions) tests - more complex scenarios">
+
+  <!-- Create Organizations -->
+  <testGroup name="Initial Creates">
+    <test name="Setup via import">test-plan-data/discoverability/complex/create/000_setup_via_import.resttest</test>
+  </testGroup>
+
+  <!--
+    Alpha:
+    - Public: default
+    - Blue: org members only
+    - Red: expose in portal
+  -->
+  <testGroup name="Alpha">
+    <test name="Alpha: list versions in portal">test-plan-data/discoverability/complex/alpha/000_portal_list_versions.resttest</test>
+    <test name="Alpha: inspect v1.0">test-plan-data/discoverability/complex/alpha/001_portal_version_1.resttest</test>
+    <test name="Alpha: inspect v1.0 plans">test-plan-data/discoverability/complex/alpha/002_portal_version_1_plans.resttest</test>
+    <test name="Alpha: inspect v1.0 search">test-plan-data/discoverability/complex/alpha/003_portal_version_1_search.resttest</test>
+  </testGroup>
+
+  <!--
+    Beta:
+    - Public: expose in portal
+    - Blue: org members only
+    - Red: org members only
+  -->
+  <testGroup name="Beta">
+    <test name="Beta: list versions in portal">test-plan-data/discoverability/complex/beta/000_portal_list_versions.resttest</test>
+    <test name="Beta: inspect v1.0">test-plan-data/discoverability/complex/beta/001_portal_version_1.resttest</test>
+    <test name="Beta: inspect v1.0 plans">test-plan-data/discoverability/complex/beta/002_portal_version_1_plans.resttest</test>
+    <test name="Beta: version v1.0 search">test-plan-data/discoverability/complex/beta/003_portal_version_1_search.resttest</test>
+  </testGroup>
+
+<!--
+  Gamma:
+  - Public: expose in portal
+  - Blue: expose in portal
+  - Red: org members only
+-->
+  <testGroup name="Gamma">
+    <test name="Gamma: list versions in portal">test-plan-data/discoverability/complex/gamma/000_portal_list_versions.resttest</test>
+    <test name="Gamma: inspect v1.0">test-plan-data/discoverability/complex/gamma/001_portal_version_1.resttest</test>
+    <test name="Gamma: inspect v1.0 plans">test-plan-data/discoverability/complex/gamma/002_portal_version_1_plans.resttest</test>
+    <test name="Gamma: version v1.0 search">test-plan-data/discoverability/complex/gamma/003_portal_version_1_search.resttest</test>
+  </testGroup>
+</testPlan>

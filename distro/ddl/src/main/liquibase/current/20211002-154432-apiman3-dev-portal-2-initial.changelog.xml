@@ -1,0 +1,230 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-6">
+        <createTable tableName="developer_mappings">
+            <column name="developer_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="client_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="organization_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-7">
+        <createTable tableName="developers">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="developersPK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-8">
+        <createTable tableName="notification_category_preferences">
+            <column name="NotificationPreferenceEntity_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-9">
+        <createTable tableName="notification_preferences">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="notification_preferencesPK"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-10">
+        <createTable tableName="notification_types">
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="notification_typesPK"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-11">
+        <createTable tableName="notifications">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="notificationsPK"/>
+            </column>
+            <column name="category" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP"/>
+            <column name="modified_on" type="TIMESTAMP"/>
+            <column name="payload" type="JSON">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reason" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reason_message" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recipient" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-14">
+        <addColumn tableName="api_versions">
+            <column name="extended_description" type="nclob"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-15">
+        <addColumn tableName="apis">
+            <column name="image_file_ref" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-16">
+        <addColumn tableName="clients">
+            <column name="image_file_ref" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-17">
+        <addColumn tableName="api_plans">
+            <column name="requires_approval" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-18">
+        <addColumn tableName="contracts">
+            <column name="status" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-19">
+        <addPrimaryKey columnNames="id" constraintName="downloadsPK" tableName="downloads"/>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-20">
+        <addPrimaryKey columnNames="id" constraintName="metadataPK" tableName="metadata"/>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-21">
+        <addUniqueConstraint columnNames="plan_id, plan_org_id, version" constraintName="UK53ss55b2hiye2e9v6lftdo5jg" tableName="plan_versions"/>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-22">
+        <addUniqueConstraint columnNames="user_id, role_id, org_id" constraintName="UKfwy6c61bcnvshcsxubanjvi08" tableName="memberships"/>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-23">
+        <addUniqueConstraint columnNames="group_id, artifact_id" constraintName="UKofbok9ushig9vviq01dnu11x" tableName="plugins"/>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-24">
+        <addUniqueConstraint columnNames="user_id, type" constraintName="UserAllowedOnlyOneOfEachNotificationType" tableName="notification_preferences"/>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-26">
+        <addForeignKeyConstraint baseColumnNames="NotificationPreferenceEntity_id" baseTableName="notification_category_preferences" constraintName="FKaq4x0n83d83xevui0ctqwdgbi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="notification_preferences" validate="true"/>
+    </changeSet>
+    <changeSet author="msavy marc@blackparrotlabs.io (generated)" id="dev-portal-2-initial-changeset-27">
+        <addForeignKeyConstraint baseColumnNames="developer_id" baseTableName="developer_mappings" constraintName="FKhl2dwc4m0kvisedxfb9crceqd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="developers" validate="true"/>
+    </changeSet>
+    <!-- tagging bits -->
+    <changeSet author="msavy (generated)" id="1633441143380-4">
+        <createTable tableName="kv_tags">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="kv_tagsPK"/>
+            </column>
+            <column name="key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy (generated)" id="1633441143380-5">
+        <createTable tableName="api_tag">
+            <column name="api_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="org_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="tag_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!-- blobstore + eventstore -->
+    <changeSet author="msavy (generated)" id="1633542267834-6">
+        <createTable tableName="blob_store">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="blob_storePK"/>
+            </column>
+            <column name="mrblobby" type="BLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hash" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mime_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ref_count" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy (generated)" id="1633542267834-7">
+        <createTable tableName="outbox">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="outboxPK"/>
+            </column>
+            <column name="event_version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payload" type="JSON">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="msavy (generated)" id="1633542267834-8">
+        <addUniqueConstraint columnNames="id" constraintName="UC_BLOB_STOREID_COL" tableName="blob_store"/>
+    </changeSet>
+    <changeSet author="msavy (generated)" id="1633542267834-10">
+        <addUniqueConstraint columnNames="hash, mime_type, name" constraintName="UK_4jee67ekw7s4y8spoc58i4dsf" tableName="blob_store"/>
+    </changeSet>
+    <changeSet author="msavy (generated)" id="1633542267834-15">
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="api_tag" constraintName="FK2h64maqscweorti1hta9josl2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="kv_tags" validate="true"/>
+    </changeSet>
+    <changeSet author="msavy (generated)" id="1633542267834-16">
+        <addForeignKeyConstraint baseColumnNames="api_id,org_id" baseTableName="api_tag" constraintName="FKlpr8yu65omneju5297uqthb6k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id,organization_id" referencedTableName="apis" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

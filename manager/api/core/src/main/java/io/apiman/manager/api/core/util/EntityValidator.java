@@ -19,19 +19,30 @@ import io.apiman.manager.api.beans.apis.ApiStatus;
 import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.ApiVersionStatusBean;
 import io.apiman.manager.api.beans.apis.StatusItemBean;
+import io.apiman.manager.api.beans.clients.ClientBean;
+import io.apiman.manager.api.beans.clients.ClientStatus;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
+import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.contracts.ContractStatus;
+import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IApiValidator;
 import io.apiman.manager.api.core.IClientValidator;
+import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
+import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.i18n.Messages;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
 
+import com.google.common.collect.Lists;
+
 /**
+ * TODO could rework this to return or set a status?
+ *
  * Validates the state of various entities, including APIs and clients.
  *
  * @author eric.wittmann@redhat.com
@@ -40,6 +51,8 @@ public class EntityValidator implements IApiValidator, IClientValidator {
 
     @Inject
     private IStorageQuery storageQuery;
+    @Inject
+    private IStorage storage;
 
     /**
      * Constructor.
@@ -52,15 +65,14 @@ public class EntityValidator implements IApiValidator, IClientValidator {
      */
     @Override
     public boolean isReady(ClientVersionBean client) throws Exception {
-        boolean hasContracts = true;
-
         List<ContractSummaryBean> contracts = storageQuery.getClientContracts(client.getClient().getOrganization().getId(), client
                 .getClient().getId(), client.getVersion());
+        // If empty, not ready
         if (contracts.isEmpty()) {
-            hasContracts = false;
+            return false;
         }
-
-        return isReady(client, hasContracts);
+        // None must be in unapproved state
+        return contracts.stream().allMatch(c -> c.getStatus() == ContractStatus.Created);
     }
 
     /**
@@ -68,8 +80,38 @@ public class EntityValidator implements IApiValidator, IClientValidator {
      */
     @Override
     public boolean isReady(ClientVersionBean client, boolean hasContracts) throws Exception {
-        boolean ready = hasContracts;
-        return ready;
+        if (!hasContracts) {
+            return false;
+        }
+        return isReady(client);
+    }
+
+    @Override
+    public ClientStatus determineStatus(ClientVersionBean cvb, List<ContractBean> contracts) {
+        ClientStatus currentStatus = cvb.getStatus();
+
+        boolean anyAwaitingApproval = contracts.stream().anyMatch(c -> c.getStatus() == ContractStatus.AwaitingApproval);
+        if (anyAwaitingApproval) {
+            return ClientStatus.AwaitingApproval;
+        }
+        // If already registered, then continue to be registered (indicates some number of contracts are still active on gateway).
+        if (currentStatus == ClientStatus.Registered) {
+            return ClientStatus.Registered;
+        }
+        // No contracts and not registered, then just created state
+        if (contracts.isEmpty()) {
+            return ClientStatus.Created;
+        }
+        // Ready to be published
+        return ClientStatus.Ready;
+    }
+
+    @Override
+    public ClientStatus determineStatus(ClientVersionBean bean) throws StorageException {
+        OrganizationBean orgBean = bean.getClient().getOrganization();
+        ClientBean cb = bean.getClient();
+        ArrayList<ContractBean> contracts = Lists.newArrayList(storage.getAllContracts(orgBean.getId(), cb.getId(), bean.getVersion()));
+        return determineStatus(bean, contracts);
     }
 
     /**

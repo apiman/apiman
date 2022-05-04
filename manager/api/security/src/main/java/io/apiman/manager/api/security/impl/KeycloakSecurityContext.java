@@ -15,9 +15,25 @@
  */
 package io.apiman.manager.api.security.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.api.beans.idm.UserDto;
+import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.IStorageQuery;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.LocaleUtils;
+import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 
 /**
  * An alternative security context used when protected by keycloak.
@@ -26,15 +42,19 @@ import javax.servlet.http.HttpServletRequest;
  */
 @ApplicationScoped @Alternative
 public class KeycloakSecurityContext extends AbstractSecurityContext {
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(KeycloakSecurityContext.class);
+    private volatile KeycloakAdminClient keycloakAdminClient;
 
     /**
      * Constructor.
      */
-    public KeycloakSecurityContext() {
+    @Inject
+    public KeycloakSecurityContext(IStorageQuery query, IStorage storage, ApiManagerConfig config) {
+        super(query, storage, config);
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getCurrentUser()
+     * {@inheritDoc}
      */
     @Override
     public String getCurrentUser() {
@@ -42,7 +62,7 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
     }
 
     /**
-     * @see io.apiman.manager.api.security.impl.DefaultSecurityContext#getFullName()
+     * {@inheritDoc}
      */
     @Override
     public String getFullName() {
@@ -54,9 +74,8 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
             return null;
         }
     }
-
     /**
-     * @see io.apiman.manager.api.security.impl.DefaultSecurityContext#getEmail()
+     * {@inheritDoc}
      */
     @Override
     public String getEmail() {
@@ -67,5 +86,49 @@ public class KeycloakSecurityContext extends AbstractSecurityContext {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public Locale getLocale() {
+        HttpServletRequest request = servletRequest.get();
+        org.keycloak.KeycloakSecurityContext session = (org.keycloak.KeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
+        if (session != null) {
+            return Optional.ofNullable(LocaleUtils.toLocale(session.getToken().getLocale()))
+                    .orElse(request.getLocale());
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<UserDto> getRemoteUsersWithRole(String roleName) {
+        List<UserDto> keycloakUsersWithRole = getKeycloakAdminClient().getUsersForRole(roleName);
+        LOGGER.debug("Keycloak users for role {0} (using same realm as configured): {2}", roleName, keycloakUsersWithRole);
+        return keycloakUsersWithRole;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UserDto> getUsersWithRole(String roleName, String orgName) {
+        List<UserDto> apimanUsers = super.getUsersWithRole(roleName, orgName);
+        LOGGER.debug("Apiman stored users for role {0} and org {1}: {2}", roleName, orgName, apimanUsers);
+        // join lists, distinct as there is likely be overlap
+        return Stream.concat(apimanUsers.stream(), getRemoteUsersWithRole(roleName).stream())
+                     .distinct()
+                     .collect(Collectors.toUnmodifiableList());
+    }
+
+    private KeycloakAdminClient getKeycloakAdminClient() {
+        if (keycloakAdminClient == null) {
+            synchronized (this) {
+                HttpServletRequest request = servletRequest.get();
+                RefreshableKeycloakSecurityContext session = (RefreshableKeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
+                keycloakAdminClient = new KeycloakAdminClient(session.getDeployment());
+                return keycloakAdminClient;
+            }
+        }
+        return keycloakAdminClient;
     }
 }

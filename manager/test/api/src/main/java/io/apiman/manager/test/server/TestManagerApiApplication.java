@@ -15,12 +15,29 @@
  */
 package io.apiman.manager.test.server;
 
+import io.apiman.manager.api.rest.exceptions.mappers.BeanValidationExceptionMapper;
+import io.apiman.manager.api.rest.exceptions.mappers.IllegalArgumentExceptionMapper;
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
-import io.apiman.manager.api.rest.impl.*;
+import io.apiman.manager.api.rest.impl.ActionResourceImpl;
+import io.apiman.manager.api.rest.impl.ApiManagerApplication;
+import io.apiman.manager.api.rest.impl.BlobResourceImpl;
+import io.apiman.manager.api.rest.impl.DeveloperPortalResourceImpl;
+import io.apiman.manager.api.rest.impl.DeveloperResourceImpl;
+import io.apiman.manager.api.rest.impl.DownloadResourceImpl;
+import io.apiman.manager.api.rest.impl.EventResourceImpl;
+import io.apiman.manager.api.rest.impl.GatewayResourceImpl;
+import io.apiman.manager.api.rest.impl.OrganizationResourceImpl;
+import io.apiman.manager.api.rest.impl.PluginResourceImpl;
+import io.apiman.manager.api.rest.impl.PolicyDefinitionResourceImpl;
+import io.apiman.manager.api.rest.impl.ProtectedDeveloperPortalResourceWrapper;
+import io.apiman.manager.api.rest.impl.RoleResourceImpl;
+import io.apiman.manager.api.rest.impl.SearchResourceImpl;
+import io.apiman.manager.api.rest.impl.SystemResourceImpl;
+import io.apiman.manager.api.rest.impl.UserResourceImpl;
 
-import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
+import javax.ws.rs.core.Application;
 
 /**
  * JAX-RS {@link Application} used for testing.
@@ -47,7 +64,14 @@ public class TestManagerApiApplication extends ApiManagerApplication {
         classes.add(ActionResourceImpl.class);
         classes.add(DownloadResourceImpl.class);
         classes.add(DeveloperResourceImpl.class);
+        classes.add(BlobResourceImpl.class);
+        classes.add(EventResourceImpl.class);
+        classes.add(DeveloperPortalResourceImpl.class);
+        classes.add(ProtectedDeveloperPortalResourceWrapper.class);
+
         classes.add(RestExceptionMapper.class);
+        classes.add(IllegalArgumentExceptionMapper.class);
+        classes.add(BeanValidationExceptionMapper.class);
     }
 
     @Override

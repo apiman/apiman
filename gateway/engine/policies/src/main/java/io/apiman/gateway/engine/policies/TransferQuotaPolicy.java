@@ -15,12 +15,14 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
@@ -30,8 +32,13 @@ import io.apiman.gateway.engine.io.IReadWriteStream;
 import io.apiman.gateway.engine.policies.config.TransferDirectionType;
 import io.apiman.gateway.engine.policies.config.TransferQuotaConfig;
 import io.apiman.gateway.engine.policies.i18n.Messages;
+import io.apiman.gateway.engine.policies.limiting.BucketFactory;
+import io.apiman.gateway.engine.policies.probe.RateLimitingProbeConfig;
+import io.apiman.gateway.engine.policies.probe.TransferQuotaProbeResponse;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.policy.IPolicyProbe;
+import io.apiman.gateway.engine.policy.ProbeContext;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 
 import java.util.Map;
@@ -41,7 +48,8 @@ import java.util.Map;
  *
  * @author eric.wittmann@redhat.com
  */
-public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaConfig> {
+public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaConfig>
+        implements IPolicyProbe<TransferQuotaConfig, RateLimitingProbeConfig> {
 
     private static final String BUCKET_ID_ATTR = TransferQuotaPolicy.class.getName() + ".bucketId"; //$NON-NLS-1$
     private static final String PERIOD_ATTR = TransferQuotaPolicy.class.getName() + ".period"; //$NON-NLS-1$
@@ -52,23 +60,27 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
     private static final String DEFAULT_REMAINING_HEADER = "X-TransferQuota-Remaining"; //$NON-NLS-1$
     private static final String DEFAULT_RESET_HEADER = "X-TransferQuota-Reset"; //$NON-NLS-1$
 
+    private final BucketFactory bucketFactory = new BucketFactory();
+
     /**
      * Constructor.
      */
     public TransferQuotaPolicy() {
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
-     */
     @Override
-    protected Class<TransferQuotaConfig> getConfigurationClass() {
+    public Class<TransferQuotaConfig> getConfigurationClass() {
         return TransferQuotaConfig.class;
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
-     */
+    protected String bucketId(ApiRequest request, TransferQuotaConfig config) {
+        return "XFERQUOTA||" + bucketFactory.bucketId(request, config);
+    }
+
+    protected String bucketId(RateLimitingProbeConfig request, ProbeContext probeContext, TransferQuotaConfig config) {
+        return "XFERQUOTA||" + bucketFactory.bucketId(request, probeContext, config);
+    }
+
     @Override
     protected void doApply(final ApiRequest request, final IPolicyContext context, final TransferQuotaConfig config,
             final IPolicyChain<ApiRequest> chain) {
@@ -76,16 +88,16 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         // Step 1:  check to see if we're already in violation of this
         //          policy.  If so, fail fast.
         // *************************************************************
-        String bucketId = "XFERQUOTA||" + RateLimitingPolicy.bucketId(request, config); //$NON-NLS-1$
-        final RateBucketPeriod period = RateLimitingPolicy.getPeriod(config);
+        String bucketId = bucketId(request, config); //$NON-NLS-1$
+        final RateBucketPeriod period = bucketFactory.getPeriod(config);
 
-        if (bucketId == RateLimitingPolicy.NO_USER_AVAILABLE) {
+        if (bucketId.equals(BucketFactory.NO_USER_AVAILABLE)) {
             IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.NO_USER_FOR_RATE_LIMITING, Messages.i18n.format("TransferQuotaPolicy.NoUser")); //$NON-NLS-1$
             chain.doFailure(failure);
             return;
         }
-        if (bucketId == RateLimitingPolicy.NO_CLIENT_AVAILABLE) {
+        if (bucketId.equals(BucketFactory.NO_CLIENT_AVAILABLE)) {
             IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.NO_APP_FOR_RATE_LIMITING, Messages.i18n.format("TransferQuotaPolicy.NoApp")); //$NON-NLS-1$
             chain.doFailure(failure);
@@ -114,9 +126,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         });
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#requestDataHandler(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
-     */
     @Override
     protected IReadWriteStream<ApiRequest> requestDataHandler(final ApiRequest request,
             final IPolicyContext context, final TransferQuotaConfig config) {
@@ -150,9 +159,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         }
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
-     */
     @Override
     protected void doApply(final ApiResponse response, final IPolicyContext context, final TransferQuotaConfig config,
             final IPolicyChain<ApiResponse> chain) {
@@ -195,9 +201,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         }
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedDataPolicy#responseDataHandler(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
-     */
     @Override
     protected IReadWriteStream<ApiResponse> responseDataHandler(final ApiResponse response,
             final IPolicyContext context, final TransferQuotaConfig config) {
@@ -238,9 +241,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
     /**
      * Called when everything is done (the last byte is written).  This is used to
      * record the # of bytes downloaded.
-     * @param context
-     * @param config
-     * @param downloadedBytes
      */
     protected void doFinalApply(IPolicyContext context, TransferQuotaConfig config, long downloadedBytes) {
         if (config.getDirection() == TransferDirectionType.download || config.getDirection() == TransferDirectionType.both) {
@@ -260,10 +260,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
 
     /**
      * Called to send a 'quota exceeded' failure.
-     * @param context
-     * @param config
-     * @param chain
-     * @param rtr
      */
     protected void doQuotaExceededFailure(final IPolicyContext context, final TransferQuotaConfig config,
             final IPolicyChain<?> chain, RateLimitResponse rtr) {
@@ -276,10 +272,6 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         chain.doFailure(failure);
     }
 
-    /**
-     * @param responseHeaders
-     * @param failureFactory
-     */
     protected PolicyFailure limitExceededFailure(IPolicyFailureFactoryComponent failureFactory) {
         PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other,
                 PolicyFailureCodes.BYTE_QUOTA_EXCEEDED,
@@ -309,4 +301,24 @@ public class TransferQuotaPolicy extends AbstractMappedDataPolicy<TransferQuotaC
         return DEFAULT_LIMIT_HEADER;
     }
 
+
+    @Override
+    public Class<RateLimitingProbeConfig> getProbeRequestClass() {
+        return RateLimitingProbeConfig.class;
+    }
+
+    @Override
+    public void probe(RateLimitingProbeConfig probeRequest, TransferQuotaConfig policyConfig, ProbeContext probeContext, IPolicyContext context,
+                      IAsyncResultHandler<IPolicyProbeResponse> resultHandler) {
+        String bucketId = bucketId(probeRequest, probeContext, policyConfig);
+        IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class);
+        // Ask for rate limit, but don't actually decrement the counter.
+        rateLimiter.accept(bucketId, bucketFactory.getPeriod(policyConfig), policyConfig.getLimit(), 0, rateLimResult -> {
+            RateLimitResponse remaining = rateLimResult.getResult();
+            var probeResult = new TransferQuotaProbeResponse()
+                    .setStatus(remaining)
+                    .setConfig(policyConfig);
+            resultHandler.handle(AsyncResultImpl.create(probeResult));
+        });
+    }
 }

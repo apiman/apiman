@@ -25,6 +25,7 @@ import io.apiman.manager.api.beans.clients.ClientBean;
 import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.developers.DeveloperBean;
+import io.apiman.manager.api.beans.download.ExportedBlobDto;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -38,30 +39,35 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.system.MetadataBean;
 import io.apiman.manager.api.config.Version;
+import io.apiman.manager.api.core.IBlobStore;
 import io.apiman.manager.api.core.IStorage;
-import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.exportimport.i18n.Messages;
 import io.apiman.manager.api.exportimport.write.IExportWriter;
 
 import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.util.Date;
 import java.util.Iterator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
 
 import static io.apiman.manager.api.beans.apis.ApiDefinitionType.None;
 
 @ApplicationScoped
+@Transactional
 public class StorageExporter {
     private final IApimanLogger logger = ApimanLoggerFactory.getLogger(StorageExporter.class);
 
     @Inject
     private Version version;
+
     @Inject
     private IStorage storage;
+
+    @Inject
+    private IBlobStore blobStore;
 
     private IExportWriter writer;
 
@@ -85,8 +91,6 @@ public class StorageExporter {
         logger.info("----------------------------"); //$NON-NLS-1$
         logger.info(Messages.i18n.format("StorageExporter.StartingExport")); //$NON-NLS-1$
         try {
-            storage.beginTx();
-            try {
                 exportMetadata();
                 exportUsers();
                 exportGateways();
@@ -94,18 +98,17 @@ public class StorageExporter {
                 exportRoles();
                 exportPolicyDefs();
                 exportDevelopers();
+                exportBlobs();
 
                 exportOrgs();
-            } finally {
-                storage.rollbackTx();
-                try { writer.close(); } catch (Exception e) { }
-            }
             logger.info(Messages.i18n.format("StorageExporter.ExportComplete")); //$NON-NLS-1$
             logger.info("------------------------------------------"); //$NON-NLS-1$
-        } catch (StorageException e) {
+        } catch (RuntimeException e) {
             logger.error(e, "Apiman encountered a serious error during its attempt to export. "
                 + "Any export data received should not be relied upon, and the output may be corrupted.");
-            throw new RuntimeException(e);
+            throw e;
+        } finally {
+            IOUtils.closeQuietly(writer);
         }
     }
 
@@ -404,9 +407,8 @@ public class StorageExporter {
     }
 
     private void exportDevelopers() {
-        Iterator<DeveloperBean> iter;
         try {
-            iter = storage.getDevelopers();
+            Iterator<DeveloperBean> iter = storage.getDevelopers();
             writer.startDevelopers();
 
             // iter can be null because jpa storage is not implemented
@@ -418,6 +420,23 @@ public class StorageExporter {
 
             writer.endDevelopers();
 
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void exportBlobs() {
+        try {
+            Iterator<ExportedBlobDto> iter = blobStore.getAll();
+            writer.startBlobs();
+
+            while (iter.hasNext()) {
+                ExportedBlobDto blob = iter.next();
+                logger.info(Messages.i18n.format("StorageExporter.ExportingBlob", blob)); //$NON-NLS-1$
+                writer.writeBlob(blob);
+            }
+
+            writer.endBlobs();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

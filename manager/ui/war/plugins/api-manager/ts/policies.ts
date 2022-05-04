@@ -1,22 +1,23 @@
-/// <reference path="apimanPlugin.ts"/>
-/// <reference path="rpc.ts"/>
-module Apiman {
+import { _module } from './apimanPlugin';
+import angular = require("angular");
+import { JSONEditor } from '@json-editor/json-editor/dist/jsoneditor'
+import { DateTime } from 'luxon';
 
-    export var isRegexpValid = function(v) {
-        var valid = true;
+export var isRegexpValid = function(v) {
+    var valid = true;
 
-        try {
-            new RegExp(v, '');
-        } catch(e) {
-            valid = false;
-        }
+    try {
+        new RegExp(v, '');
+    } catch(e) {
+        valid = false;
+    }
 
-        return valid;
-    };
+    return valid;
+};
 
-    _module.controller('Apiman.DefaultPolicyConfigFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+_module.controller('Apiman.DefaultPolicyConfigFormController',
+    ['$scope', 'Logger', 'EntityStatusSvc',
+        function ($scope, Logger, EntityStatusSvc) {
             var validateRaw = function(config) {
                 var valid = true;
                 try {
@@ -38,15 +39,15 @@ module Apiman {
             $scope.$watch('rawConfig', validateRaw);
         }]);
 
-    _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
-        ['$scope', 'Logger', 'PluginSvcs', 'EntityStatusSvc',
-        ($scope, Logger, PluginSvcs, EntityStatusSvc) => {
+_module.controller('Apiman.JsonSchemaPolicyConfigFormController',
+    ['$scope', 'Logger', 'PluginSvcs', 'EntityStatusSvc',
+        function ($scope, Logger, PluginSvcs, EntityStatusSvc) {
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
 
             var initEditor = function(schema) {
-                var holder = document.getElementById('json-editor-holder');
+                const holder = document.getElementById('json-editor-holder');
 
-                var editor = new window['JSONEditor'](holder, {
+                const editor = new JSONEditor(holder, {
                     // Disable fetching schemas via ajax
                     ajax: false,
                     // The schema for the editor
@@ -96,16 +97,19 @@ module Apiman {
                 var pluginId = $scope.selectedDef.pluginId;
                 var policyDefId = $scope.selectedDef.id;
 
-                PluginSvcs.getPolicyForm(pluginId, policyDefId, function(schema) {
-                    destroyEditor();
-                    initEditor(schema);
-                    $scope.editor.setValue($scope.config);
-                    $scope.schemaState = 'loaded';
-                }, function (error) {
-                    // TODO handle the error better here!
-                    Logger.error(error);
-                    $scope.schemaState = 'loaded';
-                });
+                PluginSvcs.getPolicyForm(pluginId, policyDefId).then(
+                    (schema: string) => {
+                        destroyEditor();
+                        initEditor(schema);
+                        $scope.editor.setValue($scope.config);
+                        $scope.schemaState = 'loaded';
+                    },
+                    error => {
+                        // TODO handle the error better here!
+                        Logger.error(error);
+                        $scope.schemaState = 'loaded';
+                    }
+                );
             };
 
             // Watch for changes to selectedDef - if the user changes from one schema-based policy
@@ -126,9 +130,9 @@ module Apiman {
             loadSchema();
         }]);
 
-    _module.controller('Apiman.RateLimitingFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+_module.controller('Apiman.RateLimitingFormController',
+    ['$scope', 'Logger', 'EntityStatusSvc',
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = true;
 
@@ -164,9 +168,9 @@ module Apiman {
             $scope.$watch('config', validate, true);
         }]);
 
-    _module.controller('Apiman.QuotaFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+_module.controller('Apiman.QuotaFormController',
+    ['$scope', 'Logger', 'EntityStatusSvc',
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = true;
                 if (config.limit) {
@@ -197,13 +201,13 @@ module Apiman {
             $scope.$watch('config', validate, true);
         }]);
 
-    export var KB = 1024;
-    export var MB = 1024 * 1024;
-    export var GB = 1024 * 1024 * 1024;
+export var KB = 1024;
+export var MB = 1024 * 1024;
+export var GB = 1024 * 1024 * 1024;
 
-    _module.controller('Apiman.TransferQuotaFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+_module.controller('Apiman.TransferQuotaFormController',
+    ['$scope', 'Logger', 'EntityStatusSvc',
+        function ($scope, Logger, EntityStatusSvc) {
             $scope.limitDenomination = 'B';
 
             if ($scope.config && $scope.config.limit) {
@@ -285,9 +289,9 @@ module Apiman {
             $scope.$watch('limitAmount', onLimitChange, false);
         }]);
 
-    _module.controller('Apiman.IPListFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+_module.controller('Apiman.IPListFormController',
+    ['$scope', 'Logger', 'EntityStatusSvc',
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = true;
                 $scope.setValid(valid);
@@ -337,14 +341,14 @@ module Apiman {
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
         }]);
 
-    _module.controller('Apiman.IgnoredResourcesFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+_module.controller('Apiman.IgnoredResourcesFormController',
+    ['$scope', 'Logger', 'EntityStatusSvc',
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
-              	var valid = config.rules && config.rules.length > 0;
+                var valid = config.rules && config.rules.length > 0;
                 $scope.setValid(valid);
             };
-			$scope.currentItemInvalid=function(){ return !$scope.pathPattern || !$scope.verb || !isRegexpValid($scope.path); };
+            $scope.currentItemInvalid=function(){ return !$scope.pathPattern || !$scope.verb || !isRegexpValid($scope.path); };
             $scope.$watch('config', validate, true);
 
             $scope.add = function(path, verb) {
@@ -363,7 +367,7 @@ module Apiman {
             };
 
             $scope.remove = function(selectedRule) {
- 				var idx = -1;
+                var idx = -1;
                 angular.forEach($scope.config.rules, function (item, index) {
                     if (item == selectedRule) {
                         idx = index;
@@ -383,9 +387,9 @@ module Apiman {
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
         }]);
 
-    _module.controller('Apiman.BasicAuthFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+_module.controller('Apiman.BasicAuthFormController',
+    ['$scope', 'Logger', 'EntityStatusSvc',
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 if (!config) {
                     return;
@@ -568,9 +572,9 @@ module Apiman {
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
         }]);
 
-    _module.controller('Apiman.AuthorizationFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+_module.controller('Apiman.AuthorizationFormController',
+    ['$scope', 'Logger', 'EntityStatusSvc',
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = config.rules && config.rules.length > 0;
 
@@ -631,9 +635,9 @@ module Apiman {
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
         }]);
 
-    _module.controller('Apiman.CachingFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+_module.controller('Apiman.CachingFormController',
+    ['$scope', 'Logger', 'EntityStatusSvc',
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = false;
 
@@ -683,63 +687,63 @@ module Apiman {
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
         }]);
 
-    _module.controller('Apiman.CachingResourcesFormController',
-        ['$scope', 'EntityStatusSvc',
-            ($scope, EntityStatusSvc) => {
-                let validate = function(config) {
-                    let valid = false;
+_module.controller('Apiman.CachingResourcesFormController',
+    ['$scope', 'EntityStatusSvc',
+        function ($scope, EntityStatusSvc) {
+            let validate = function(config) {
+                let valid = false;
 
-                    if (config.ttl) {
-                        config.ttl = Number(config.ttl);
+                if (config.ttl) {
+                    config.ttl = Number(config.ttl);
 
-                        // Check that TTL & Policy Definition ID are set
-                        valid = ((config.ttl && config.ttl > 0) && ($scope.selectedDef && $scope.selectedDef.id != null));
-                        valid = valid && config.cachingResourcesSettingsEntries && config.cachingResourcesSettingsEntries.length > 0;
-                    }
-
-                    $scope.setValid(valid);
-                };
-                $scope.currentItemInvalid=function(){ return !$scope.pathPattern || !$scope.httpMethod || !$scope.statusCodeCaching || !isRegexpValid($scope.path); };
-                $scope.$watch('config', validate, true);
-                if (!$scope.config.statusCodes) {
-                    $scope.config.statusCodes = [];
+                    // Check that TTL & Policy Definition ID are set
+                    valid = ((config.ttl && config.ttl > 0) && ($scope.selectedDef && $scope.selectedDef.id != null));
+                    valid = valid && config.cachingResourcesSettingsEntries && config.cachingResourcesSettingsEntries.length > 0;
                 }
 
-                $scope.add = function (statusCode, pathPattern, httpMethod) {
-                    if(!$scope.config.cachingResourcesSettingsEntries) {
-                        $scope.config.cachingResourcesSettingsEntries = [];
-                    }
-                    let cachingResourcesSetting = {
-                        "statusCode": statusCode,
-                        "pathPattern": pathPattern,
-                        "httpMethod": httpMethod
-                    }
-                    $scope.config.cachingResourcesSettingsEntries.push(cachingResourcesSetting);
+                $scope.setValid(valid);
+            };
+            $scope.currentItemInvalid=function(){ return !$scope.pathPattern || !$scope.httpMethod || !$scope.statusCodeCaching || !isRegexpValid($scope.path); };
+            $scope.$watch('config', validate, true);
+            if (!$scope.config.statusCodes) {
+                $scope.config.statusCodes = [];
+            }
 
-                    $scope.pathPattern = undefined;
-                    $scope.httpMethod = undefined;
-                    $scope.statusCodeCaching = undefined;
-                };
-
-                $scope.remove = function (cachingResourceSetting) {
-                    $scope.config.cachingResourcesSettingsEntries.remove(cachingResourceSetting);
-                };
-
-                $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
-
-                $scope.isPostRequestCached = function () {
-                    if ($scope.config.cachingResourcesSettingsEntries != null) {
-                        return $scope.config.cachingResourcesSettingsEntries.some((e) => {
-                            return e.httpMethod === "POST" || e.httpMethod === "*";
-                        });
-                    }
-                    return false;
+            $scope.add = function (statusCode, pathPattern, httpMethod) {
+                if(!$scope.config.cachingResourcesSettingsEntries) {
+                    $scope.config.cachingResourcesSettingsEntries = [];
                 }
-            }]);
+                let cachingResourcesSetting = {
+                    "statusCode": statusCode,
+                    "pathPattern": pathPattern,
+                    "httpMethod": httpMethod
+                }
+                $scope.config.cachingResourcesSettingsEntries.push(cachingResourcesSetting);
 
-    _module.controller('Apiman.URLRewritingFormController',
-        ['$scope', 'Logger', 'EntityStatusSvc',
-        ($scope, Logger, EntityStatusSvc) => {
+                $scope.pathPattern = undefined;
+                $scope.httpMethod = undefined;
+                $scope.statusCodeCaching = undefined;
+            };
+
+            $scope.remove = function (idx: number) {
+                $scope.config.cachingResourcesSettingsEntries.splice(idx, 1);
+            };
+
+            $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
+
+            $scope.isPostRequestCached = function () {
+                if ($scope.config.cachingResourcesSettingsEntries != null) {
+                    return $scope.config.cachingResourcesSettingsEntries.some((e) => {
+                        return e.httpMethod === "POST" || e.httpMethod === "*";
+                    });
+                }
+                return false;
+            }
+        }]);
+
+_module.controller('Apiman.URLRewritingFormController',
+    ['$scope', 'Logger', 'EntityStatusSvc',
+        function ($scope, Logger, EntityStatusSvc) {
             var validate = function(config) {
                 var valid = true;
 
@@ -772,29 +776,29 @@ module Apiman {
         }]);
 
 
-
-      _module.controller('Apiman.TimeRestrictedAccessFormController',
-        ['$window','$scope', 'Logger', 'EntityStatusSvc',
-        ($window, $scope, Logger, EntityStatusSvc) => {
-            var moment=$window.moment;
+// used in time-restricted-access.include
+_module.controller('Apiman.TimeRestrictedAccessFormController',
+    ['$window','$scope', 'Logger', 'EntityStatusSvc',
+        function ($window, $scope, Logger, EntityStatusSvc) {
+            $scope.offsetName = DateTime.local().offsetNameShort;
             var isoTimeFormat="HH:mm:ss";
             var validate = function(config) {
-              	var valid = config.rules && config.rules.length > 0;
+                var valid = config.rules && config.rules.length > 0;
                 $scope.setValid(valid);
             };
             $scope.weekdays=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat","Sun"];
-			$scope.currentItemInvalid=function(){
-			   return !$scope.pathPattern || !$scope.timeStart ||
-			       !$scope.timeEnd || !$scope.dayStart ||
-                   !$scope.dayEnd || !isRegexpValid($scope.path);
-			};
+            $scope.currentItemInvalid=function(){
+                return !$scope.pathPattern || !$scope.timeStart ||
+                    !$scope.timeEnd || !$scope.dayStart ||
+                    !$scope.dayEnd || !isRegexpValid($scope.path);
+            };
             $scope.$watch('config', validate, true);
             $scope.add = function() {
                 if (!$scope.config.rules) {
                     $scope.config.rules = [];
                 }
-                var timeStart = moment($scope.timeStart).utc().format(isoTimeFormat);
-                var timeEnd = moment($scope.timeEnd).utc().format(isoTimeFormat);
+                const timeStart = DateTime.fromJSDate($scope.timeStart).toUTC().toFormat(isoTimeFormat);
+                const timeEnd = DateTime.fromJSDate($scope.timeEnd).toUTC().toFormat(isoTimeFormat)
                 var rule = {
                     'timeStart' : timeStart,
                     'timeEnd' : timeEnd,
@@ -807,7 +811,7 @@ module Apiman {
                 $('#path').focus();
             };
             $scope.remove = function(selectedRule) {
- 				var idx = -1;
+                var idx = -1;
                 angular.forEach($scope.config.rules, function (item, index) {
                     if (item == selectedRule) {
                         idx = index;
@@ -818,23 +822,25 @@ module Apiman {
                 }
             };
             $scope.resetModel = function() {
-                $scope.timeStart = $window.moment("8:00","hh:mm").toDate();
-                $scope.timeEnd = $window.moment("16:00","hh:mm").toDate();
+                $scope.timeStart = DateTime.fromObject({ hour: 8 }).toJSDate();
+                $scope.timeEnd = DateTime.fromObject({ hour: 16 }).toJSDate();
                 $scope.dayStart = $scope.weekdays[0];
                 $scope.dayEnd = $scope.weekdays[4];
                 $scope.selectedPath = undefined;
             };
             $scope.resetModel();
-            $scope.formatToTime = function(time){
-                return moment.utc(time,isoTimeFormat).local().format("HH:mm");
+            $scope.formatToTime = function(utcTime){
+                return DateTime.fromISO(utcTime, {zone: 'utc'}).toFormat("HH:mm");
+            };
+            $scope.formatToLocalTime = function(utcTime){
+                return DateTime.fromISO(utcTime, {zone: 'utc'}).toLocal().toFormat("HH:mm");
             };
             $scope.getDayIndex = function(day){
-               return $scope.weekdays.indexOf(day)+1;
+                return $scope.weekdays.indexOf(day)+1;
             };
             $scope.getDayForIndex = function(index){
-              return $scope.weekdays[index-1];
+                return $scope.weekdays[index-1];
             };
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
         }]);
 
-}

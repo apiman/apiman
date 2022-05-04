@@ -1,16 +1,30 @@
 <jboss-deployment-structure>
   <deployment>
-    <exclusions>
-      <module name="org.apache.log4j" />
-      <module name="org.apache.logging.log4j.api" />
-    </exclusions>
     <dependencies>
       <module name="org.infinispan" />
       <module name="org.hibernate" />
+      <module name="org.slf4j" />
       <module name="org.picketbox" />
+      <module name="org.hibernate.commons-annotations" />
+      <module name="org.jboss.logging" services="import"/>
+      <module name="org.jboss.resteasy.resteasy-jaxrs"/>
+      <module name="com.h2database.h2" services="import"/>
     </dependencies>
     <exclude-subsystems>
       <subsystem name="webservices" />
     </exclude-subsystems>
+    <exclusions>
+      <module name="org.apache.log4j" />
+      <module name="org.apache.logging.log4j.api" />
+      <module name="com.fasterxml.jackson.core.jackson-core" />
+      <module name="com.fasterxml.jackson.core.jackson-annotations" />
+      <module name="com.fasterxml.jackson.core.jackson-databind" />
+      <module name="com.fasterxml.jackson.datatype.jackson-datatype-jdk8" />
+      <module name="com.fasterxml.jackson.datatype.jackson-datatype-jsr310" />
+      <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+      <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
+      <module name="org.jboss.resteasy.resteasy-jackson-provider" />
+      <module name="org.jboss.resteasy.resteasy-jackson-provider" />
+    </exclusions>
   </deployment>
 </jboss-deployment-structure>

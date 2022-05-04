@@ -1,10 +1,11 @@
-/// <reference path="../apimanPlugin.ts"/>
-/// <reference path="../rpc.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
+import angular = require("angular");
+import {NINETY_DAYS, ONE_DAY, ONE_HOUR, SEVEN_DAYS, THIRTY_DAYS} from "../api/api-metrics";
+import c3 = require("c3");
 
-    export var ClientMetricsController = _module.controller("Apiman.ClientMetricsController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ClientEntityLoader', '$routeParams', 'MetricsSvcs', 'Configuration',
-        ($q, $scope, $location, PageLifecycle, ClientEntityLoader, $routeParams, MetricsSvcs, Configuration) => {
+_module.controller("Apiman.ClientMetricsController",
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ClientEntityLoader', '$routeParams', 'MetricsSvcs', 'Configuration', 'Logger',
+        function ($q, $scope, $location, PageLifecycle, ClientEntityLoader, $routeParams, MetricsSvcs, Configuration, Logger) {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'metrics';
@@ -14,12 +15,12 @@ module Apiman {
             $scope.metricsType = 'usage';
 
             var usageByApiChart;
-            
+
             var renderApiUsageChart = function(data) {
                 var columns = [];
                 var x = ['x'];
                 var dataPoints = ['data'];
-                angular.forEach(data.data, function(numRequests, apiName) {
+                angular.forEach(data.data, function(numRequests: string,  apiName: string) {
                     x.push(apiName);
                     dataPoints.push(numRequests);
                 });
@@ -60,14 +61,14 @@ module Apiman {
                 date.setHours(0);
                 return date;
             };
-            
+
             var truncateToHour = function(date) {
                 date.setMinutes(0);
                 date.setSeconds(0);
                 date.setMilliseconds(0);
                 return date;
             };
-            
+
             var getChartDateRange = function() {
                 var from = new Date();
                 var to = new Date();
@@ -91,13 +92,13 @@ module Apiman {
                     to: to
                 }
             };
-            
+
             // *******************************************************
             // Refresh the usage charts
             // *******************************************************
             var refreshUsageCharts = function() {
                 $scope.apiUsageChartLoading = true;
-                
+
                 var range = getChartDateRange();
                 var from = range.from;
                 var to = range.to;
@@ -108,7 +109,7 @@ module Apiman {
                 if ($scope.metricsRange == 'hour') {
                     interval = 'minute';
                 }
-                
+
                 // Refresh the usage chart
                 if (usageByApiChart) {
                     usageByApiChart.destroy();
@@ -130,7 +131,7 @@ module Apiman {
                 }
             };
             $scope.refreshCharts = refreshCharts;
-            
+
             $scope.$watch('metricsRange', function(newValue, oldValue) {
                 if (newValue && newValue != oldValue) {
                     refreshCharts();
@@ -141,12 +142,10 @@ module Apiman {
                     refreshCharts();
                 }
             });
-            
+
             var pageData = ClientEntityLoader.getCommonData($scope, $location);
             PageLifecycle.loadPage('ClientMetrics', 'clientView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('client-metrics', [ $scope.client.name ]);
                 refreshCharts();
             });
-        }])
-
-}
+        }]);

@@ -34,7 +34,7 @@
                   <span id="selector-org-value">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" data-field="organizations">
-                   <li ng-repeat="org in organizations"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
+                   <li ng-repeat="org in organizations"><a ng-click="setOrg( org )">{{ org.name }}</a></li>
                 </ul>
               </div>
             </dd>

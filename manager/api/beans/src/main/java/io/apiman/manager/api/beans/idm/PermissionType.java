@@ -21,10 +21,10 @@ package io.apiman.manager.api.beans.idm;
  * @author eric.wittmann@redhat.com
  */
 public enum PermissionType {
-    
+
     orgView,  orgEdit,  orgAdmin,
     apiView,  apiEdit,  apiAdmin,
     clientView,  clientEdit,  clientAdmin,
     planView, planEdit, planAdmin
-    
+
 }

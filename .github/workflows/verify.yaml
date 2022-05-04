@@ -14,7 +14,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master, 3.x]
+    branches: [master]
 
 jobs:
   build-verify:
@@ -23,23 +23,20 @@ jobs:
     if: github.repository_owner == 'Apiman'
     strategy:
       matrix:
-        java: [ 8, 11, 17 ]
+        java: [ 11, 17 ]
         integration-suite:
           # Default, empty string to avoid setting
           - name: Default configuration (JPA)
             command: " "
           # Servlet elasticsearch
-          - name: Servlet with Elasticsearch registry
-            command: -Dapiman-test.type=es -Dapiman.gateway-test.config=servlet-es
+          - name: Servlet with Elasticsearch gateway
+            command: -Dapiman.gateway-test.config=servlet-es
           # Vert.x in-memory gateway
           - name: Vert.x with in-memory registry
             command: -Dapiman.gateway-test.config=vertx3-mem
-          # Vert.x elasticsearch gateway
+          # Vert.x elasticsearch
           - name: Vert.x with Elasticsearch registry
             command: -Dapiman.gateway-test.config=vertx3-es
-          # Vert.x file/static
-          - name: Vert.x with immutable file registry
-            command: -Dapiman.gateway-test.config=vertx3-file
 
     steps:
       - name: Checkout Code
@@ -67,10 +64,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Build Project
-        run: |
-          cd parent && sh ../mvnw -B clean install && cd ..
-          ./mvnw clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.test.skip=true -DskipTests=true -B -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
+      - name: Build Project (including /parent)
+        run: ./fastbuild.sh
 
       - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
         run: ./mvnw test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
@@ -89,14 +84,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
 
       - name: Set up JDK 11 (for deploying assets, docker builds, etc)
         uses: actions/setup-java@v2
@@ -170,4 +157,3 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

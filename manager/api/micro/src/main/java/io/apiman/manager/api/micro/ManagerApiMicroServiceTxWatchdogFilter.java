@@ -55,14 +55,14 @@ public class ManagerApiMicroServiceTxWatchdogFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         chain.doFilter(request, response);
-        try {
-            if (AbstractJpaStorage.isTxActive()) {
-                throw new Exception("Error: storage transaction is still open for request: " + ((HttpServletRequest) request).getPathInfo()); //$NON-NLS-1$
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ServletException(e);
-        }
+        // try {
+        //     if (AbstractJpaStorage.isTxActive()) {
+        //         throw new Exception("Error: storage transaction is still open for request: " + ((HttpServletRequest) request).getPathInfo()); //$NON-NLS-1$
+        //     }
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        //     throw new ServletException(e);
+        // }
 
     }
 

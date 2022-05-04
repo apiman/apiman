@@ -18,7 +18,6 @@ package io.apiman.manager.test.server;
 import io.apiman.manager.api.core.IStorage;
 
 import java.io.IOException;
-
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -26,12 +25,14 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.transaction.Transactional;
 
 /**
  * Used to seed the test server with some initial data, such as users.
  *
  * @author eric.wittmann@redhat.com
  */
+@Transactional
 public class DatabaseSeedFilter implements Filter {
 
     @Inject IStorage storage;
@@ -50,12 +51,9 @@ public class DatabaseSeedFilter implements Filter {
         String seederClass = System.getProperty(ISeeder.SYSTEM_PROPERTY, DefaultTestDataSeeder.class.getName());
         try {
             ISeeder seeder = (ISeeder) Class.forName(seederClass).newInstance();
-            storage.beginTx();
             seeder.seed(storage);
-            storage.commitTx();
         } catch (Exception e) {
             e.printStackTrace();
-            storage.rollbackTx();
             throw new ServletException(e);
         }
     }

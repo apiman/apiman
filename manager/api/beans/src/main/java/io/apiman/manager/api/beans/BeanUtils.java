@@ -15,7 +15,12 @@
  */
 package io.apiman.manager.api.beans;
 
+import java.util.Locale;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+
 import com.ibm.icu.text.Transliterator;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Some simple bean utils.
@@ -52,7 +57,34 @@ public class BeanUtils {
      * @param version the version
      * @return true if valid, else false
      */
-    public static final boolean isValidVersion(String version) {
+    public static boolean isValidVersion(String version) {
         return removeNonWord(version).equals(version);
     }
+
+    @Converter
+    public static final class LocaleConverter implements AttributeConverter<Locale, String> {
+
+        /**
+         * Convert {@link Locale} to language tag string.
+         */
+        @Override
+        public String convertToDatabaseColumn(Locale locale) {
+            if (locale == null) {
+                return Locale.getDefault().toLanguageTag();
+            }
+            return locale.toLanguageTag();
+        }
+
+        /**
+         * Convert language tag string into a {@link Locale} using {@link Locale.Builder}.
+         */
+        @Override
+        public Locale convertToEntityAttribute(String localeLanguageTag) {
+            if (localeLanguageTag == null || StringUtils.isBlank(localeLanguageTag)) {
+                return Locale.getDefault();
+            }
+            return new Locale.Builder().setLanguageTag(localeLanguageTag).build();
+        }
+    }
+
 }

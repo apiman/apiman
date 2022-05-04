@@ -26,19 +26,26 @@ import io.apiman.gateway.engine.policy.IPolicyFailureChain;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 /**
- * A base class for policy impls that use jackson to parse configuration info.
+ * A base class for policy impls that uses Jackson to parse configuration info.
  *
  * @author eric.wittmann@redhat.com
+ * @author marc@blackparrotlabs.io
  * @param <C> the config type
  */
 public abstract class AbstractMappedPolicy<C> implements IPolicy {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-    static {
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
+    private static final ObjectMapper mapper = JsonMapper
+            .builder()
+            // Avoid weird floating point timestamps
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            // Enable various Java 8 and library data structures to be serialized
+            .findAndAddModules()
+            .build();
 
     /**
      * Constructor.
@@ -47,7 +54,12 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#parseConfiguration(java.lang.String)
+     * {@inheritDoc}
+     * <p>
+     * Using Jackson, the configuration is read into the class specified structure by {@link #getConfigurationClass()}.
+     * <p>
+     * Most implementors should not override this method unless they do not want to use Jackson (e.g. using a non-JSON
+     * format).
      */
     @Override
     public C parseConfiguration(String jsonConfiguration) throws ConfigurationParseException {
@@ -59,12 +71,14 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
     }
 
     /**
-     * @return the class to use for JSON configuration deserialization
+     * The class to use for JSON configuration deserialization
+     *
+     * @return the class
      */
-    protected abstract Class<C> getConfigurationClass();
+    public abstract Class<C> getConfigurationClass();
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -74,15 +88,18 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
     }
 
     /**
-     * @param request
-     * @param chain
+     * Override this method to interact with or observe the request.
+     *
+     * @see #apply(ApiResponse, IPolicyContext, Object, IPolicyChain)
+     * @param request the request
+     * @param chain the ordered policy chain
      */
     protected void doApply(ApiRequest request, IPolicyContext context, C config, IPolicyChain<ApiRequest> chain) {
         chain.doApply(request);
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -93,10 +110,13 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
 
     /**
      * Apply the policy to the response.
-     * @param response
-     * @param context
-     * @param config
-     * @param chain
+     * <p>
+     * Override this method to interact with or observe the response.
+     *
+     * @param response the response
+     * @param context the policy context
+     * @param config the configuration (see {@link #getConfigurationClass()})
+     * @param chain the ordered policy chain
      */
     protected void doApply(ApiResponse response, IPolicyContext context, C config, IPolicyChain<ApiResponse> chain) {
         chain.doApply(response);
@@ -111,10 +131,9 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
     /**
      * Override if you wish to modify a failure.
      *
-     * @see IPolicy#processFailure(PolicyFailure, IPolicyContext, Object)
+     * @see IPolicy#processFailure(PolicyFailure, IPolicyContext, Object, IPolicyFailureChain)
      */
     protected void doProcessFailure(PolicyFailure failure, IPolicyContext context, C config, IPolicyFailureChain chain) {
         chain.doFailure(failure);
     }
-
 }

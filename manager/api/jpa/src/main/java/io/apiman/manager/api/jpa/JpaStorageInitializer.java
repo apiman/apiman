@@ -16,6 +16,8 @@
 
 package io.apiman.manager.api.jpa;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.ddl.DdlParser;
 
 import java.io.InputStream;
@@ -25,56 +27,69 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Objects;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.hibernate.dialect.H2Dialect;
-import org.hibernate.dialect.MySQL57InnoDBDialect;
-import org.hibernate.dialect.MySQL5Dialect;
-import org.hibernate.dialect.MySQL5InnoDBDialect;
+import org.hibernate.dialect.MySQL8Dialect;
 import org.hibernate.dialect.MySQLDialect;
-import org.hibernate.dialect.Oracle10gDialect;
-import org.hibernate.dialect.Oracle12cDialect;
+import org.hibernate.dialect.Oracle8iDialect;
+import org.hibernate.dialect.Oracle9iDialect;
+import org.hibernate.dialect.OracleDialect;
+import org.hibernate.dialect.PostgreSQL81Dialect;
 import org.hibernate.dialect.PostgreSQL82Dialect;
+import org.hibernate.dialect.PostgreSQL91Dialect;
 import org.hibernate.dialect.PostgreSQL92Dialect;
+import org.hibernate.dialect.PostgreSQL93Dialect;
 import org.hibernate.dialect.PostgreSQL94Dialect;
+import org.hibernate.dialect.PostgreSQL95Dialect;
 import org.hibernate.dialect.PostgreSQL9Dialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServer2012Dialect;
 import org.hibernate.dialect.SQLServerDialect;
+import org.jdbi.v3.core.Jdbi;
 
 /**
  * Initializes the database by installing the appropriate DDL for the database in
  * use.
  * @author eric.wittmann@gmail.com
  */
+// TODO(msavy): let's replace this with the liquibase DB initialiser + migrator
 public class JpaStorageInitializer {
-    
+
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JpaStorageInitializer.class);
     private static final Map<String, String> DB_TYPE_MAP = new HashMap<>();
     static {
-        DB_TYPE_MAP.put(ApimanH2Dialect.class.getName(), "h2"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(H2Dialect.class.getName(), "h2"); //$NON-NLS-1$
+        DB_TYPE_MAP.put(ApimanH2Dialect.class.getName(), "h2");
+        DB_TYPE_MAP.put(H2Dialect.class.getName(), "h2");
 
-        DB_TYPE_MAP.put(ApimanMySQL5Dialect.class.getName(), "mysql5"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(MySQL5Dialect.class.getName(), "mysql5"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(MySQLDialect.class.getName(), "mysql5"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(MySQL5InnoDBDialect.class.getName(), "mysql5"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(MySQL57InnoDBDialect.class.getName(), "mysql5"); //$NON-NLS-1$
+        DB_TYPE_MAP.put("io.apiman.manager.api.jpa.ApimanMySQL5Dialect",  "mysql8"); // compatibility but might need to drop this
+        DB_TYPE_MAP.put(ApimanMySQL8Dialect.class.getName(),  "mysql8"); // Hmm
+        DB_TYPE_MAP.put(MySQLDialect.class.getName(), "mysql8");
+        DB_TYPE_MAP.put(MySQL8Dialect.class.getName(), "mysql8");
 
-        DB_TYPE_MAP.put(ApimanOracle12Dialect.class.getName(), "oracle12"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(Oracle12cDialect.class.getName(), "oracle12"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(Oracle10gDialect.class.getName(), "oracle12"); //$NON-NLS-1$
+        DB_TYPE_MAP.put(ApimanOracle19Dialect.class.getName(),  "oracle19");
+        DB_TYPE_MAP.put(OracleDialect.class.getName(), "oracle19");
+        DB_TYPE_MAP.put(Oracle8iDialect.class.getName(), "oracle19");
+        DB_TYPE_MAP.put(Oracle9iDialect.class.getName(), "oracle19");
 
-        DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(), "postgresql9"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(PostgreSQL9Dialect.class.getName(), "postgresql9"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(PostgreSQL82Dialect.class.getName(), "postgresql9"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(PostgreSQL92Dialect.class.getName(), "postgresql9"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(PostgreSQL94Dialect.class.getName(), "postgresql9"); //$NON-NLS-1$
+        DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(),  "postgresql9");
+        DB_TYPE_MAP.put(PostgreSQLDialect.class.getName(), "postgresql9");
+        DB_TYPE_MAP.put(PostgreSQL81Dialect.class.getName(), "postgresql9");
+        DB_TYPE_MAP.put(PostgreSQL82Dialect.class.getName(), "postgresql9");
+        DB_TYPE_MAP.put(PostgreSQL9Dialect.class.getName(), "postgresql9");
+        DB_TYPE_MAP.put(PostgreSQL91Dialect.class.getName(), "postgresql9");
+        DB_TYPE_MAP.put(PostgreSQL92Dialect.class.getName(), "postgresql9");
+        DB_TYPE_MAP.put(PostgreSQL93Dialect.class.getName(), "postgresql9");
+        DB_TYPE_MAP.put(PostgreSQL94Dialect.class.getName(), "postgresql9");
+        DB_TYPE_MAP.put(PostgreSQL95Dialect.class.getName(), "postgresql9");
 
-        DB_TYPE_MAP.put(SQLServer2012Dialect.class.getName(), "mssql11"); //$NON-NLS-1$
-        DB_TYPE_MAP.put(SQLServerDialect.class.getName(), "mssql11"); //$NON-NLS-1$
+        DB_TYPE_MAP.put(SQLServerDialect.class.getName(), "mssql15");
+        DB_TYPE_MAP.put(SQLServer2012Dialect.class.getName(), "mssql15");
+
     }
     
     private final DataSource ds;
@@ -82,16 +97,16 @@ public class JpaStorageInitializer {
 
     /**
      * Constructor.
-     * @param config
      */
     public JpaStorageInitializer(String dsJndiLocation, String hibernateDialect) {
         if (dsJndiLocation == null) {
-            throw new RuntimeException("Missing datasource JNDI location from JPA storage configuration."); //$NON-NLS-1$
+            throw new RuntimeException("Missing datasource JNDI location from JPA storage configuration."); 
         }
         ds = lookupDS(dsJndiLocation);
+
         dbType = DB_TYPE_MAP.get(hibernateDialect);
         if (dbType == null) {
-            throw new RuntimeException("Unknown hibernate dialect configured: " + hibernateDialect); //$NON-NLS-1$
+            throw new RuntimeException("Unknown hibernate dialect configured: " + hibernateDialect); 
         }
     }
 
@@ -109,11 +124,11 @@ public class JpaStorageInitializer {
         }
 
         if (ds == null) {
-            throw new RuntimeException("Datasource not found: " + dsJndiLocation); //$NON-NLS-1$
+            throw new RuntimeException("Datasource not found: " + dsJndiLocation); 
         }
         return ds;
     }
-    
+
     /**
      * Called to initialize the database.
      */
@@ -130,31 +145,41 @@ public class JpaStorageInitializer {
                 }
             });
         } catch (SQLException e) {
+            LOGGER.trace("Is initialised error: {0}", e);
             isInitialized = false;
         }
         
         if (isInitialized) {
-            System.out.println("============================================");
-            System.out.println("Apiman Manager database already initialized.");
-            System.out.println("============================================");
+            LOGGER.info("============================================");
+            LOGGER.info("Apiman Manager database already initialized.");
+            LOGGER.info("============================================");
             return;
         }
-        
+
         ClassLoader cl = JpaStorageInitializer.class.getClassLoader();
         URL resource = cl.getResource("ddls/apiman_" + dbType + ".ddl");
-        try (InputStream is = resource.openStream()) {
-            System.out.println("=======================================");
-            System.out.println("Initializing apiman Manager database.");
-            DdlParser ddlParser = new DdlParser();
-            List<String> statements = ddlParser.parse(is);
-            for (String sql : statements){
-                System.out.println(sql);
-                run.update(sql);
+        Objects.requireNonNull(resource, "DDLs are missing");
+        try {
+            try (InputStream is = resource.openStream()) {
+                LOGGER.info("=======================================");
+                LOGGER.info("Initializing Apiman Manager database. "  + resource.getPath());
+                DdlParser ddlParser = new DdlParser();
+                List<String> statements = ddlParser.parse(is);
+                Jdbi jdbi = Jdbi.create(ds);
+                for (String sql : statements) {
+                    LOGGER.info(sql);
+                    jdbi.useHandle(h -> {
+                        h.getConnection().setAutoCommit(false);
+                        h.createUpdate(sql).execute();
+                        h.commit();
+                    });
+                }
+                LOGGER.info("=======================================");
             }
-            System.out.println("=======================================");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
     }
 
 }

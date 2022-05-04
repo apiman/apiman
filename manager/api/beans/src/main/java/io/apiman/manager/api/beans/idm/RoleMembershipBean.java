@@ -41,7 +41,7 @@ public class RoleMembershipBean implements Serializable {
 
     private static final long serialVersionUID = 7798709783947356888L;
 
-    public static final RoleMembershipBean create(String userId, String roleId, String organizationId) {
+    public static RoleMembershipBean create(String userId, String roleId, String organizationId) {
         RoleMembershipBean bean = new RoleMembershipBean();
         bean.setUserId(userId);
         bean.setRoleId(roleId);

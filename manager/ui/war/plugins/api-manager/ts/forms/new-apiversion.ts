@@ -1,9 +1,8 @@
-/// <reference path="../apimanPlugin.ts"/>
-module Apiman {
+import {_module} from "../apimanPlugin";
 
-    export var NewApiVersionController = _module.controller("Apiman.NewApiVersionController",
+_module.controller("Apiman.NewApiVersionController",
         ['$q', '$location', '$scope', 'OrgSvcs', 'PageLifecycle', 'Logger', '$routeParams',
-        ($q, $location, $scope, OrgSvcs, PageLifecycle, Logger, $routeParams) => {
+        function ($q, $location, $scope, OrgSvcs, PageLifecycle, Logger, $routeParams) {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.apiversion = {
@@ -25,5 +24,3 @@ module Apiman {
                 });
             });
         }]);
-
-}

@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.beans.clients;
 
+import io.apiman.manager.api.beans.download.BlobReference;
 import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
@@ -22,7 +23,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -63,6 +63,9 @@ public class ClientBean implements Serializable, Cloneable {
     private String id;
     @Column(nullable=false)
     private String name;
+    @Column(name = "image_file_ref", updatable = true, nullable = true) // Reference to file storage (we'll ship with DB blob)
+    @BlobReference
+    private String image;
     @Column(updatable=true, nullable=true, length=512)
     private String description;
     @Column(name = "created_by", updatable=false, nullable=false)
@@ -155,6 +158,25 @@ public class ClientBean implements Serializable, Cloneable {
      */
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public ClientBean setImage(String image) {
+        this.image = image;
+        return this;
+    }
+
+    public Set<ClientVersionBean> getClientVersionSet() {
+        return clientVersionSet;
+    }
+
+    public ClientBean setClientVersionSet(
+         Set<ClientVersionBean> clientVersionSet) {
+        this.clientVersionSet = clientVersionSet;
+        return this;
     }
 
     /* (non-Javadoc)

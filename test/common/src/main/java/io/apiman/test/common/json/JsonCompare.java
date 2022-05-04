@@ -180,11 +180,15 @@ public class JsonCompare {
      * @param actualJson
      */
     public void assertJson(JsonNode expectedJson, JsonNode actualJson) {
+            String expectedS = null;
+            String actualS = null;
         try {
-            String expectedS = jacksonParser.writeValueAsString(expectedJson);
-            String actualS = jacksonParser.writeValueAsString(actualJson);
+            expectedS = jacksonParser.writeValueAsString(expectedJson);
+            actualS = jacksonParser.writeValueAsString(actualJson);
             JSONAssert.assertEquals(expectedS, actualS, new WildcardComparator(JSONCompareMode.LENIENT));
         } catch (JsonProcessingException | JSONException e1) {
+            System.out.println("Expected: " + expectedS);
+            System.out.println("Actual: " + actualS);
             throw new RuntimeException(e1);
         }
     }

@@ -43,17 +43,11 @@ public class URLRewritingPolicy extends AbstractMappedDataPolicy<URLRewritingCon
     public URLRewritingPolicy() {
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
-     */
     @Override
-    protected Class<URLRewritingConfig> getConfigurationClass() {
+    public Class<URLRewritingConfig> getConfigurationClass() {
         return URLRewritingConfig.class;
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
-     */
     @Override
     protected void doApply(ApiRequest request, IPolicyContext context, URLRewritingConfig config,
             IPolicyChain<ApiRequest> chain) {
@@ -68,9 +62,6 @@ public class URLRewritingPolicy extends AbstractMappedDataPolicy<URLRewritingCon
         super.doApply(request, context, config, chain);
     }
 
-    /**
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ApiResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
-     */
     @Override
     protected void doApply(ApiResponse response, IPolicyContext context, URLRewritingConfig config,
             IPolicyChain<ApiResponse> chain) {
@@ -86,9 +77,6 @@ public class URLRewritingPolicy extends AbstractMappedDataPolicy<URLRewritingCon
 
     /**
      * Perform replacement.
-     *
-     * @param config
-     * @param headers
      */
     private void replaceHeaders(URLRewritingConfig config, HeaderMap headers) {
         for (Entry<String, String> entry : headers) {

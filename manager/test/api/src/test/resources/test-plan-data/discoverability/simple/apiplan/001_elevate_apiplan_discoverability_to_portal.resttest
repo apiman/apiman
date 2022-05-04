@@ -1,0 +1,62 @@
+PUT /organizations/test/apis/privateapi/versions/1.0 admin/admin
+Content-Type: application/json
+
+{
+  "plans": [{
+      "planId": "gold",
+      "version": "1.0",
+      "requiresApproval": false,
+      "discoverability": "PORTAL"
+    }, {
+      "planId": "silver",
+      "version": "1.0",
+      "requiresApproval": false,
+      "discoverability": "PORTAL"
+    }]
+}
+----
+200
+Content-Type: application/json
+
+{
+	"api": {
+		"organization": {
+			"id": "test",
+			"name": "test",
+			"description": "test",
+			"createdBy": "admin",
+			"modifiedBy": "admin"
+		},
+		"id": "privateapi",
+		"name": "privateapi",
+		"tags": [],
+		"createdBy": "admin",
+		"numPublished": 1
+	},
+	"version": "1.0",
+	"status": "Ready",
+	"endpoint": "http://example.org",
+	"endpointType": "rest",
+	"endpointContentType": "json",
+	"endpointProperties": {},
+	"gateways": [{
+		"gatewayId": "TheGateway"
+	}],
+	"publicAPI": false,
+	"publicDiscoverability": "PORTAL",
+	"plans": [{
+		"planId": "gold",
+		"version": "1.0",
+		"requiresApproval": false,
+		"discoverability": "PORTAL"
+	}, {
+		"planId": "silver",
+		"version": "1.0",
+		"requiresApproval": false,
+		"discoverability": "PORTAL"
+	}],
+	"definitionType": "None",
+	"parsePayload": false,
+	"disableKeysStrip": false,
+	"definitionUrl": null
+}
