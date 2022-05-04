@@ -7,33 +7,6 @@ updates:
     target-branch: "master"
     directory: "/"
     schedule:
-      interval: "weekly"
-    labels:
-      - "V: Apiman 2"
-      - "dependency"
-      - "java"
- 
-  - package-ecosystem: "maven"
-    open-pull-requests-limit: 2
-    target-branch: "master"
-    directory: "/parent"
-    schedule:
-      interval: "weekly"
-    ignore:
-      - dependency-name: org.eclipse.jetty:jetty-*
-        versions:
-          - "<10"
-    labels:
-      - "V: Apiman 2"
-      - "dependency"
-      - "java"
-      
-# 3.x 
-  - package-ecosystem: "maven"
-    open-pull-requests-limit: 2
-    target-branch: "3.x"
-    directory: "/"
-    schedule:
       interval: "daily"
     labels:
       - "V: Apiman 3"
@@ -42,7 +15,7 @@ updates:
   
   - package-ecosystem: "maven"
     open-pull-requests-limit: 2
-    target-branch: "3.x"
+    target-branch: "master"
     directory: "/parent"
     schedule:
       interval: "daily"
@@ -57,7 +30,7 @@ updates:
       
   - package-ecosystem: "npm"
     open-pull-requests-limit: 2
-    target-branch: "3.x"
+    target-branch: "master"
     directory: "manager/ui/war"
     schedule:
       interval: "daily"
