@@ -47,6 +47,9 @@
 .app-client-header-label {
   white-space: nowrap;
   text-align: right;
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
 
   span {
     margin-left: 8px;
@@ -56,6 +59,12 @@
 
   span:last-child {
     margin-right: 0;
+  }
+
+  mat-icon {
+    font-size: 28px;
+    height: 28px;
+    width: 28px;
   }
 }
 

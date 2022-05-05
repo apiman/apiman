@@ -19,6 +19,7 @@ import { Router } from '@angular/router';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  IAction,
   IClientSummary,
   IContract,
   IContractSummary,
@@ -32,10 +33,11 @@ import { ISignUpInfo } from '../../interfaces/ISignUpInfo';
 import { BackendService } from '../../services/backend/backend.service';
 import { MatStepper } from '@angular/material/stepper';
 import { IContractExt } from '../../interfaces/IContractExt';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { TocService } from '../../services/toc/toc.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { EMPTY, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
+import { ClientService } from '../../services/client/client.service';
 
 @Component({
   selector: 'app-marketplace-signup-stepper',
@@ -60,7 +62,8 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     private signUpService: SignUpService,
     private router: Router,
     private backend: BackendService,
-    private tocService: TocService
+    private tocService: TocService,
+    private clientService: ClientService
   ) {
     this.termsEnabled = this.configService.getTerms().enabled;
     this.newContractDetails = this.signUpService.getSignUpInfo();
@@ -204,25 +207,14 @@ export class MarketplaceSignupStepperComponent implements OnInit {
       );
   }
 
-  private registerClient() {
-    return this.backend
-      .sendAction({
-        type: 'registerClient',
-        entityVersion: '1.0',
-        organizationId: this.contract.client.client.organization.id,
-        entityId: this.contract.client.client.id
-      })
-      .pipe(
-        catchError((err: HttpErrorResponse) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          if (err.error.type === 'InvalidContractStatusException') {
-            // Ignore this error because this is still valid
-            return EMPTY;
-          } else {
-            return throwError(() => err);
-          }
-        })
-      );
+  private registerClient(): Observable<void> {
+    const action: IAction = {
+      type: 'registerClient',
+      entityVersion: '1.0',
+      organizationId: this.contract.client.client.organization.id,
+      entityId: this.contract.client.client.id
+    };
+    return this.clientService.registerClient(action);
   }
 
   finish(): void {

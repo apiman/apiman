@@ -71,6 +71,15 @@
               matTooltip="{{ 'CLIENTS.REMOVE_CLIENT_TOOLTIP' | translate }}">
               <mat-icon>delete</mat-icon>
             </button>
+            <button
+              id="client-register-btn"
+              *ngIf="cliCon.value[0].registerable"
+              (click)="register(cliCon.value[0])"
+              mat-icon-button
+              color="primary"
+              matTooltip="{{ 'CLIENTS.REGISTER' | translate }}">
+              <mat-icon>app_registration</mat-icon>
+            </button>
             <span
               id="client-status-label"
               matTooltip="Client Status"

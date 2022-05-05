@@ -75,7 +75,8 @@
     "RETIRED_API": "Diese API kann nicht mehr verwendet werden.",
     "SELECT": "Aus vorhandenen Anwendungen auswählen",
     "CLIENT_TOOLTIP": "Client Organization: {{ client.client.organization.name }}\nClient Name (Version): {{ client.client.name }} ({{ client.version }})",
-    "API_TOOLTIP": "API Organization: {{ api.api.organization.name }}\nAPI Name (Version): {{ api.api.name }} ({{ api.version }})\nPlan Name (Version): {{ plan.plan.name }} ({{ plan.version }})"
+    "API_TOOLTIP": "API Organization: {{ api.api.organization.name }}\nAPI Name (Version): {{ api.api.name }} ({{ api.version }})\nPlan Name (Version): {{ plan.plan.name }} ({{ plan.version }})",
+    "REGISTER": "Client registrieren"
   },
   "WIZARD": {
     "FIRST_STEP_LABEL": "Client auswählen/erstellen",

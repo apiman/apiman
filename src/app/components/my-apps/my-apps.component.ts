@@ -26,6 +26,7 @@ import {
   statusColorMap
 } from '../../interfaces/IStatus';
 import {
+  IAction,
   IClientSummary,
   IClientVersionSummary,
   IContract,
@@ -54,6 +55,7 @@ import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ConfigService } from '../../services/config/config.service';
 import { IPolicyExt, IPolicyProbe } from '../../interfaces/IPolicy';
 import { PermissionsService } from '../../services/permissions/permissions.service';
+import { ClientService } from '../../services/client/client.service';
 
 @Component({
   selector: 'app-my-apps',
@@ -90,7 +92,8 @@ export class MyAppsComponent implements OnInit {
     private snackbarService: SnackbarService,
     public configService: ConfigService,
     private cdr: ChangeDetectorRef,
-    private permissionsService: PermissionsService
+    private permissionsService: PermissionsService,
+    private clientService: ClientService
   ) {}
 
   ngOnInit(): void {
@@ -194,7 +197,8 @@ export class MyAppsComponent implements OnInit {
                     docsAvailable: this.apiService.isApiDocAvailable(
                       contract.api
                     ),
-                    deletable: this.isDeleteAllowed(contract)
+                    deletable: this.isDeleteAllowed(contract),
+                    registerable: this.isRegisterable(contract)
                   } as IContractExt;
                 })
               );
@@ -413,6 +417,21 @@ export class MyAppsComponent implements OnInit {
     return `${contract.api.api.name} ${contract.api.version} - ${contract.plan.plan.name}`;
   }
 
+  register(contract: IContractExt) {
+    const action: IAction = {
+      type: 'registerClient',
+      organizationId: contract.client.client.organization.id,
+      entityId: contract.client.client.id,
+      entityVersion: contract.client.version
+    };
+    this.clientService.registerClient(action).subscribe(() => {
+      console.info(
+        `Client ${action.organizationId}/${action.entityId}/${action.entityVersion} successfully registered`
+      );
+      contract.client.status = 'Registered';
+    });
+  }
+
   unregister(contract: IContractExt, clientNameVersion: string): void {
     const dialogRef = this.dialog.open(UnregisterClientComponent, {
       autoFocus: false
@@ -432,6 +451,12 @@ export class MyAppsComponent implements OnInit {
     });
   }
 
+  private getClientAdminOrgs() {
+    return this.permissionsService.getAllowedOrganizations({
+      name: 'clientAdmin'
+    } as IPermission);
+  }
+
   private isDeleteAllowed(contract: IContract): boolean {
     const clientAdminOrganizations =
       this.permissionsService.getAllowedOrganizations({
@@ -439,6 +464,16 @@ export class MyAppsComponent implements OnInit {
       } as IPermission);
     return (
       contract.client.status !== 'Retired' &&
+      clientAdminOrganizations.includes(contract.client.client.organization.id)
+    );
+  }
+
+  private isRegisterable(contract: IContract): boolean {
+    const clientAdminOrganizations = this.getClientAdminOrgs();
+    return (
+      (contract.client.status === 'Ready' ||
+        contract.client.status === 'Unregistered' ||
+        contract.client.status === 'Retired') &&
       clientAdminOrganizations.includes(contract.client.client.organization.id)
     );
   }
