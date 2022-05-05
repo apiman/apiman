@@ -23,7 +23,7 @@
     </description>
 
     <modules>
-        <module>keycloak</module>
+        <!-- <module>keycloak</module> -->
     </modules>
 
 </project>
