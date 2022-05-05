@@ -1,5 +1,14 @@
 import {_module} from "../apimanPlugin";
-import {ApiBean, ApiPlanSummaryBean, ApiVersionBean, Discoverability, KeyValueTagDto, UpdateApiBean, UpdateApiVersionBean,} from "../model/api.model";
+import {
+  ApiBean,
+  ApiPlanBean,
+  ApiPlanSummaryBean,
+  ApiVersionBean,
+  Discoverability,
+  KeyValueTagDto,
+  UpdateApiBean,
+  UpdateApiVersionBean,
+} from "../model/api.model";
 
 // CSS
 import 'prismjs/themes/prism.css'
@@ -371,7 +380,10 @@ function devPortalBusinessLogic(
   }
 
   function onDiscoverabilityChange(change): void {
-    change.plan.discoverability = change.level;
+    const changedPlanSummary: ApiPlanSummaryBean = change.plan;
+    // change the real plan bean and not the summary (used for save)
+    let planToChange: ApiPlanBean = $scope.data.apiVersion.plans.find((plan: ApiPlanBean) => { return plan.planId === changedPlanSummary.planId})
+    planToChange.discoverability = change.level;
   }
 
   function getDiscoverabilityDescription(discoverability: Discoverability): string {
