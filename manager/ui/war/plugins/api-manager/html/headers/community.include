@@ -71,7 +71,7 @@
                             </a>
                         </li>
                         <li class="list-group-item" id="apiman-sidebar-apis-consume" data-target="#apis-all_apis-tertiary">
-                            <a href="{{ pluginName }}/browse/apis">
+                            <a href="{{ pluginName }}/browse/apis?q=*&cp=1&ps=12">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.find-api">All APIs</span>
                             </a>
                         </li>
@@ -138,7 +138,7 @@
                             </a>
                         </li>
                         <li class="list-group-item" id="apiman-sidebar-orgs-browse" data-target="#apis-new_contract-tertiary">
-                            <a href="{{ pluginName }}/browse/orgs">
+                            <a href="{{ pluginName }}/browse/orgs?q=*&cp=1&ps=12">
                                 <span class="list-group-item-value" apiman-i18n-key="actions.browse-orgs">All Organizations</span>
                             </a>
                         </li>
