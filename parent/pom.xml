@@ -109,7 +109,7 @@
     <version.org.opensearch.opensearch>1.2.4</version.org.opensearch.opensearch>
     <version.com.zaxxer>2.7.9</version.com.zaxxer>
     <version.com.google.guava>31.1-jre</version.com.google.guava>
-    <version.io.prometheus>0.0.13</version.io.prometheus>
+    <version.io.prometheus>0.15.0</version.io.prometheus>
     <version.joda-time>2.10.14</version.joda-time>
     <version.junit>4.13.2</version.junit>
     <version.org.assertj>3.21.0</version.org.assertj>
