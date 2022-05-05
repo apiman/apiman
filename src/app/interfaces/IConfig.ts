@@ -19,6 +19,7 @@ export interface IConfig {
   supportedLanguages: string[];
   theme: string;
   endpoint: string;
+  managerUiEndpoint?: string; // TODO (fvolk)
   backendRoles: string[];
   hero: IHero;
   navigation: INavigation;

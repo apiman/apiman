@@ -78,6 +78,13 @@ export class ConfigService {
     return this.config.endpoint;
   }
 
+  // TODO (fvolk)
+  getManagerUiEndpoint(): string {
+    return this.config.managerUiEndpoint
+      ? this.config.managerUiEndpoint
+      : `${this.config.endpoint}ui/api-manager`;
+  }
+
   getBackendRoles(): string[] {
     return this.config.backendRoles;
   }

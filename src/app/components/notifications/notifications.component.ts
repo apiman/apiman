@@ -152,9 +152,19 @@ export class NotificationsComponent implements OnInit {
       });
   }
 
-  public redirectToClient(notification: INotificationsDto): void {
-    let routerFragment = '';
+  public redirect(notification: INotificationsDto): void {
+    switch (notification.reason) {
+      case 'apiman.client.contract.approval.request':
+        this.redirectAdminApprovalRequest(notification);
+        break;
+      default:
+        this.redirectToMyClientsPage(notification);
+        break;
+    }
+  }
 
+  private redirectToMyClientsPage(notification: INotificationsDto): void {
+    let routerFragment = '';
     if (notification.payload.clientId && notification.payload.clientVersion) {
       routerFragment = `${notification.payload.clientId}-${notification.payload.clientVersion}`;
     }
@@ -163,13 +173,25 @@ export class NotificationsComponent implements OnInit {
       notification.payload.apiId &&
       notification.payload.apiVersion
     ) {
-      routerFragment =
-        routerFragment +
-        `-${notification.payload.apiId}-${notification.payload.apiVersion}`;
+      routerFragment += `-${notification.payload.apiId}-${notification.payload.apiVersion}`;
     }
     void this.router.navigate(['applications'], {
       fragment: routerFragment
     });
+  }
+
+  private redirectAdminApprovalRequest(notification: INotificationsDto): void {
+    if (
+      notification.payload &&
+      notification.payload.apiOrgId &&
+      notification.payload.apiId &&
+      notification.payload.apiVersion
+    ) {
+      // TODO (fvolk): get endpoint from Manger REST API or from the notification
+      // prettier-ignore
+      const url = `${this.configService.getManagerUiEndpoint()}/orgs/${notification.payload.apiOrgId}/apis/${notification.payload.apiId}/${notification.payload.apiVersion}/contracts`;
+      window.open(url, '_blank');
+    }
   }
 
   public convertTimestamp(timestamp: string): string {

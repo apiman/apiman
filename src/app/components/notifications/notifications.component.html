@@ -52,11 +52,9 @@
       {{ 'NOTIFICATION.COLUMN_TITLE.MESSAGE' | translate }}
     </th>
     <td mat-cell *matCellDef="let notification">
-      <span
-        class="notifications-message"
-        (click)="redirectToClient(notification)"
-        >{{ mapNotificationMessage(notification) }}</span
-      >
+      <span class="notifications-message" (click)="redirect(notification)">{{
+        mapNotificationMessage(notification)
+      }}</span>
     </td>
   </ng-container>
   <ng-container matColumnDef="date">
