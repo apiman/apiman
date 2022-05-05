@@ -59,14 +59,14 @@
 
           <div class="container-fluid container-cards-pf">
             <div class="row row-cards-pf"  style="display: flex;">
-              <div class="col-xs-6 col-sm-5 col-md-5 container-border" style="display: inline-flex; width: 27em;" ng-repeat="plan in data.apiVersion.plans">
+              <div class="col-xs-6 col-sm-5 col-md-5 container-border" style="display: inline-flex; width: 27em;" ng-repeat="plan in data.planSummaries">
                 <div class="card-pf card-pf-accented card-pf-aggregate-status">
                   <h2 class="card-pf-title">
-                    {{  data.planSummaries[$index].planName }}
+                    {{ plan.planName  }}
                   </h2>
                   <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
                   <div class="card-pf-body text-left">
-                    <p class="card-text">{{ data.planSummaries[$index].planDescription }}</p>
+                    <p class="card-text">{{ plan.planDescription }}</p>
                     <div>
                       <ul class="list-group list-group-flush">
                         <li style="max-width: max-content !important;" class="list-group-item">&#9702;  Plan <strong>is available</strong> to: {{ getDiscoverabilityDescription(plan.discoverability) }}</li>
@@ -76,8 +76,8 @@
                       </ul>
                       <!-- Checkbox -- requires approval -->
                       <div class="form-check px-4 pl-2">
-                        <input class="form-check-input" type="checkbox" ng-model="plan.requiresApproval" value="{{ plan.requiresApproval }}" id="requiresApproval-{{$index}}">
-                        <label class="form-check-label" for="requiresApproval-{{$index}}">
+                        <input class="form-check-input" type="checkbox" ng-model="plan.requiresApproval" value="{{ plan.requiresApproval }}" id="requiresApproval-{{plan.planId}}">
+                        <label class="form-check-label" for="requiresApproval-{{plan.planId}}">
                           Requires approval
                         </label>
                       </div>
