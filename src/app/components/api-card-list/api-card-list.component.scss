@@ -15,9 +15,15 @@
  */
 
 .align {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-items: center;
   align-items: center;
+}
+
+#api-counter {
+  margin-left: auto;
+  font-size: 14px;
 }
 
 #grid {
@@ -28,6 +34,10 @@
   align-items: end;
   grid-template-columns: repeat(auto-fit, 360px);
   grid-gap: 32px;
+}
+
+#grid-spinner {
+  margin: auto;
 }
 
 @media screen and (max-width: 1745px) {
@@ -43,6 +53,7 @@
 }
 
 #search-form-field {
+  grid-column: 2;
   width: 234px;
 }
 

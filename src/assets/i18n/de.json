@@ -38,7 +38,8 @@
     "SUBTITLE": "Entdecken Sie unsere APIs",
     "SEARCH": "APIs und Tags",
     "LEARN_MORE": "Mehr",
-    "NO_DESC": "Keine API-Beschreibung verfügbar"
+    "NO_DESC": "Keine API-Beschreibung verfügbar",
+    "APIS_AVAILABLE": "{{totalSize}} APIs verfügbar"
   },
   "ACCOUNT": {
     "TITLE": "Benutzerkonto",

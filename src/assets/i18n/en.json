@@ -38,7 +38,8 @@
     "SUBTITLE": "Discover our APIs",
     "SEARCH": "APIs and tags",
     "LEARN_MORE": "Learn more",
-    "NO_DESC": "No API description available"
+    "NO_DESC": "No API description available",
+    "APIS_AVAILABLE": "{{totalSize}} API(s) available"
   },
   "ACCOUNT": {
     "TITLE": "Account",

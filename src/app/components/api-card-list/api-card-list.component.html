@@ -32,17 +32,23 @@
       mat-icon-button
       aria-label="Clear"
       color="primary"
-      (click)="search('')">
+      (click)="fetchApis(true)">
       <mat-icon>clear</mat-icon>
     </button>
   </mat-form-field>
+  <span id="api-counter" class="accent">{{
+    'MPLACE.APIS_AVAILABLE' | translate: { totalSize: this.totalSize }
+  }}</span>
 </div>
-<ng-container *ngIf="apis.length > 0 && ready; else NoDataMsg">
+<ng-container *ngIf="(apis$ | async)!.length > 0 && ready; else NoDataMsg">
   <div id="grid">
     <app-api-card
-      *ngFor="let api of apis"
+      *ngFor="let api of apis$ | async"
       [api]="api"
       class="api-card"></app-api-card>
+    <div id="grid-spinner" [hidden]="!loadingMoreApis">
+      <mat-spinner strokeWidth="3" diameter="50"></mat-spinner>
+    </div>
   </div>
 </ng-container>
 <ng-template #NoDataMsg>
@@ -59,18 +65,6 @@
       [textClass]="'text-big2'"></app-no-data>
   </div>
 </ng-template>
-<div
-  *ngIf="listType === 'api' && totalSize > searchCriteria.paging.pageSize"
-  class="align">
-  <mat-paginator
-    *ngIf="allowPagination"
-    [length]="totalSize"
-    [pageSize]="searchCriteria.paging.pageSize"
-    [pageSizeOptions]="[4, 8, 12, 16, totalSize]"
-    [pageIndex]="pageIndex"
-    (page)="OnPageChange($event)">
-  </mat-paginator>
-</div>
 <div id="show-all-wrapper" *ngIf="listType === 'featuredApi' && ready">
   <button
     id="show-all-btn"

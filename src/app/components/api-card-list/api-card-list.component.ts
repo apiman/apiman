@@ -16,16 +16,20 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api/api.service';
-import { PageEvent } from '@angular/material/paginator';
-import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
-import { forkJoin, Observable, of, Subject } from 'rxjs';
+import {
+  debounceTime,
+  map,
+  switchMap,
+  takeUntil,
+  throttleTime
+} from 'rxjs/operators';
+import { forkJoin, fromEvent, Observable, of, Subject } from 'rxjs';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import {
   IApiSummary,
   ISearchCriteria,
   ISearchResultsApiSummary
 } from '../../interfaces/ICommunication';
-import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IApiSummaryExt } from '../../interfaces/IApiSummaryExt';
 
 @Component({
@@ -35,108 +39,88 @@ import { IApiSummaryExt } from '../../interfaces/IApiSummaryExt';
 })
 export class ApiCardListComponent implements OnInit, OnDestroy {
   apis: IApiSummaryExt[] = [];
+  apis$: Observable<IApiSummaryExt[]> = of([]);
+  currentPage = 0;
+  pageSize = 24;
   totalSize = 0;
   ready = false;
   error = false;
+  loadingMoreApis = false;
   searchTerm = '';
   searchTermNotifier = new Subject();
   pageIndex = 0;
-  searchCriteria: ISearchCriteria = {
-    filters: [
-      {
-        name: 'name',
-        value: '*',
-        operator: 'like'
-      }
-    ],
-    paging: {
-      page: 1,
-      pageSize: 8
-    }
-  };
 
   @Input() listType = '';
-  allowPagination = false;
 
   constructor(
     public apiService: ApiService,
-    public loadingSpinnerService: SpinnerService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    public loadingSpinnerService: SpinnerService
+  ) {
+    this.initScrollEventListener();
+  }
+
+  /**
+   * Initializes the event listener for scroll events.
+   */
+  private initScrollEventListener() {
+    fromEvent(window, 'scroll')
+      .pipe(throttleTime(200))
+      .subscribe(() => {
+        const scrollPosition = window.scrollY;
+        const windowSize = window.innerHeight;
+        const bodyHeight = document.body.offsetHeight;
+        if (
+          bodyHeight - (scrollPosition + windowSize) < 400 &&
+          this.totalSize > this.currentPage * this.pageSize
+        ) {
+          this.fetchApis(false);
+        }
+      });
+  }
 
   ngOnInit(): void {
     this.apis = [];
     this.searchTerm = '';
     this.initSearchDebounce();
-    this.handleQueryParams();
+    this.fetchApis(true);
   }
 
-  private initSearchDebounce() {
-    // https://m.clearbluedesign.com/how-to-simple-angular-debounce-using-rxjs-e7b86fde6167
-    this.searchTermNotifier.pipe(debounceTime(300)).subscribe(() => {
-      this.search(this.searchTerm);
-    });
-  }
+  /**
+   * Fetches APIs from the backend, which will extend or reset the entire API list.
+   *
+   * @param resetApiList - If set to true, the apiList will be reset and not extended.
+   */
+  public fetchApis(resetApiList: boolean) {
+    let apiSearchResult$: Observable<ISearchResultsApiSummary>;
+    if (resetApiList) {
+      this.loadingSpinnerService.startWaiting();
+      this.ready = false;
+      this.error = false;
+      this.currentPage = 1;
+    } else {
+      this.currentPage = this.currentPage + 1;
+      this.loadingMoreApis = true;
+    }
 
-  handleQueryParams(): void {
-    this.route.queryParams.subscribe((params: Params) => {
-      if (params && params.page) {
-        this.searchCriteria.paging.page = params.page as number;
-        this.pageIndex = params.page - 1;
-      } else {
-        this.searchCriteria.paging.page = 1;
+    const searchCriteria: ISearchCriteria = {
+      filters: [
+        {
+          name: 'name',
+          value: this.searchTerm ? `*${this.searchTerm}*` : '*',
+          operator: 'like'
+        }
+      ],
+      paging: {
+        page: this.currentPage,
+        pageSize: this.pageSize
       }
-      if (params && params.pageSize) {
-        this.searchCriteria.paging.pageSize = params.pageSize as number;
-      } else {
-        this.searchCriteria.paging.pageSize = 8;
-      }
-      let searchTerm = '';
-      if (params && params.searchTerm) {
-        searchTerm = params.searchTerm as string;
-        this.searchTerm = searchTerm.replaceAll('*', '');
-        this.searchCriteria.filters[0].value = searchTerm;
-      } else {
-        this.searchTerm = '';
-        this.searchCriteria.filters[0].value = '*';
-      }
-
-      if (this.listType === 'api') {
-        this.getApiList();
-      } else if (this.listType === 'featuredApi') {
-        this.getFeaturedApiList();
-      }
-    });
-  }
-
-  public search(searchTerm: string): void {
-    void this.router.navigate(['/marketplace'], {
-      queryParams: {
-        page: 1,
-        pageSize: this.searchCriteria.paging.pageSize,
-        searchTerm: `*${searchTerm}*`
-      }
-    });
-  }
-
-  OnPageChange(event: PageEvent): void {
-    void this.router.navigate(['/marketplace'], {
-      queryParams: {
-        page: event.pageIndex + 1,
-        pageSize: event.pageSize,
-        searchTerm: this.searchCriteria.filters[0].value
-      }
-    });
-  }
-
-  private getApiList(): void {
-    this.loadingSpinnerService.startWaiting();
-    this.ready = false;
-    this.error = false;
-
-    this.apiService
-      .searchApis(this.searchCriteria)
+    };
+    if (this.listType === 'api') {
+      apiSearchResult$ = this.apiService.searchApis(searchCriteria);
+    } else {
+      apiSearchResult$ = this.apiService.getFeaturedApis();
+    }
+    apiSearchResult$
       .pipe(
         // takeUntil cancels the search if a new search input is made
         takeUntil(this.searchTermNotifier),
@@ -145,15 +129,20 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
           this.totalSize = searchResult.totalSize;
           return searchResult.beans;
         }),
-
         switchMap((apiSummaries: IApiSummary[]) => {
           return this.checkApisDocsInApiVersions(apiSummaries);
         })
       )
       .subscribe({
         next: (apiList: IApiSummaryExt[]) => {
-          this.apis = apiList;
+          if (resetApiList) {
+            this.apis = apiList;
+          } else {
+            this.apis = [...this.apis, ...apiList];
+          }
+          this.apis$ = of(this.apis);
           this.loadingSpinnerService.stopWaiting();
+          this.loadingMoreApis = false;
           this.ready = true;
         },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
@@ -165,33 +154,23 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
       });
   }
 
-  private getFeaturedApiList() {
-    this.loadingSpinnerService.startWaiting();
-    this.ready = false;
-    this.error = false;
-
-    this.apiService
-      .getFeaturedApis()
-      .pipe(
-        switchMap((apiSummaries: ISearchResultsApiSummary) => {
-          return this.checkApisDocsInApiVersions(apiSummaries.beans);
-        })
-      )
-      .subscribe({
-        next: (apiList: IApiSummaryExt[]) => {
-          this.apis = apiList;
-          this.loadingSpinnerService.stopWaiting();
-          this.ready = true;
-        },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-        error: (err: any) => {
-          console.error(err);
-          this.error = true;
-          this.loadingSpinnerService.stopWaiting();
-        }
-      });
+  /**
+   * Initializes the debounceTime for the search input.
+   */
+  private initSearchDebounce() {
+    // https://m.clearbluedesign.com/how-to-simple-angular-debounce-using-rxjs-e7b86fde6167
+    this.searchTermNotifier.pipe(debounceTime(300)).subscribe(() => {
+      this.fetchApis(true);
+    });
   }
 
+  /**
+   * Checks if API Documentation is available for the APIs.
+   *
+   * @param apiSummaries - Array of API summaries
+   *
+   * @returns Array of extended API summaries
+   */
   private checkApisDocsInApiVersions(apiSummaries: IApiSummary[]) {
     if (apiSummaries.length > 0) {
       return forkJoin(
