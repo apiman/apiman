@@ -31,7 +31,8 @@
     "graceful-fs": "4.2.10",
     "jquery": "3.5.1",
     "@types/jquery": "3.5.1",
-    "@braintree/sanitize-url": "6.0.0"
+    "@braintree/sanitize-url": "6.0.0",
+    "bootstrap-select": "1.13.6"
   },
   "dependencies": {
     "@json-editor/json-editor": "2.7.0",
