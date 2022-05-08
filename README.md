@@ -3,8 +3,7 @@
 
 # The Apiman project (Open Source API Management)
 
-💡 Apiman 3 is under very active development. You can find it on the [3.x branch](https://github.com/apiman/apiman/tree/3.x).
-We hope to do our first release very soon.
+💡 Apiman 3 is under very active development. We hope to do our first release very soon.
 
 ## Summary
 
