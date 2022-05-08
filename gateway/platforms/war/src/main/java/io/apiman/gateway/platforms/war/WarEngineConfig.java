@@ -341,7 +341,15 @@ public class WarEngineConfig implements IEngineConfig {
                 continue;
             }
             String shortKey = key.substring(prefix.length() + 1);
-            rval.put(shortKey, config.getString(key));
+            String[] values = config.getStringArray(key);
+            if (values.length == 0) {
+                rval.put(shortKey, null);
+            } else if (values.length == 1) {
+                rval.put(shortKey, values[0]);
+            } else {
+                // Rejoin array into comma-separated to preserve compatibility.
+                rval.put(shortKey, String.join(",", values));
+            }
         }
         return rval;
     }
