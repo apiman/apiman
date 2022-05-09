@@ -25,12 +25,17 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 /**
  * A map of query parameters to associated values. It is possible to
  * have multiple values for a given key.
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@JsonSerialize(using = MultiMapSerializer.class)
+@JsonDeserialize(using = MultiMapDeserializer.class)
 public class QueryMap extends CaseInsensitiveStringMultiMap implements Serializable {
     private static final long serialVersionUID = -3539301043663183648L;
 

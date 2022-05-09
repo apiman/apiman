@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
 import java.util.Map;
+import java.util.Optional;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
@@ -35,6 +36,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
@@ -158,18 +160,20 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             // TODO(msavy): merge together with TLSOptions?
             final boolean allowSelfSigned = config.getBool(keys("client.allowSelfSigned", "client.trust.certificate"), false);
             final boolean allowAnyHost = config.getBool(keys("client.allowAnyHost", "client.trust.host"), false);
+            final boolean trustAll = config.getBool(keys("client.trustAll"), false);
 
-            Path clientKeystorePath = config.getRequiredPath(
+            Path clientKeystorePath = config.getPath(
                 keys("client.keystore.path", "client.keystore"),
-                Predicates.fileExists().and(Predicates.fileSizeGreaterThanZero()),
+            null,
+                Predicates.anyOk(),
                 Predicates.fileExistsMsg("key store")
             );
 
-            String clientKeystorePassword = config.getString(
+            Optional<String> clientKeystorePassword = Optional.ofNullable(config.getString(
                 keys("client.keystore.password"),
                 null,
                 Predicates.anyOk(), ""
-            );
+            ));
 
             String clientKeystoreFormat = config.getString(
                 keys("client.keystore.format"),
@@ -178,17 +182,18 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
                 "format must be jks or pkcs12"
             );
 
-            Path trustStorePath = config.getRequiredPath(
+            Path trustStorePath = config.getPath(
                 keys("client.truststore.path", "client.truststore"),
-                Predicates.fileExists().and(Predicates.fileSizeGreaterThanZero()),
+                null,
+                Predicates.anyOk(),
                 Predicates.fileExistsMsg("trust store")
             );
 
-            String trustStorePassword = config.getString(
+            Optional<String> trustStorePassword = Optional.ofNullable(config.getString(
                 keys("client.truststore.password"),
                 null,
                 Predicates.anyOk(), ""
-            );
+            ));
 
             String trustStoreFormat = config.getString(
                 keys("client.truststore.format"),
@@ -200,19 +205,25 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             KeyStore truststore = KeyStore.getInstance(trustStoreFormat);
             KeyStore keyStore = KeyStore.getInstance(clientKeystoreFormat);
 
-            try (InputStream is = Files.newInputStream(trustStorePath)) {
-                truststore.load(is, trustStorePassword.toCharArray());
+            if (trustStorePath != null) {
+                try (InputStream is = Files.newInputStream(trustStorePath)) {
+                    truststore.load(is, trustStorePassword.map(String::toCharArray).orElse(null));
+                }
             }
-            try (InputStream is = Files.newInputStream(clientKeystorePath)) {
-                keyStore.load(is, clientKeystorePassword.toCharArray());
+            if (clientKeystorePath != null) {
+                try (InputStream is = Files.newInputStream(clientKeystorePath)) {
+                    keyStore.load(is, clientKeystorePassword.map(String::toCharArray).orElse(null));
+                }
             }
 
             SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
             if (allowSelfSigned) {
                 sslContextBuilder.loadTrustMaterial(new TrustSelfSignedStrategy());
+            } else if (trustAll) {
+                sslContextBuilder.loadTrustMaterial(new TrustAllStrategy());
             } else {
                 sslContextBuilder.loadTrustMaterial(truststore, null);
-                sslContextBuilder.loadKeyMaterial(keyStore, clientKeystorePassword.toCharArray());
+                sslContextBuilder.loadKeyMaterial(keyStore, clientKeystorePassword.map(String::toCharArray).orElse(null));
             }
             SSLContext sslContext = sslContextBuilder.build();
 

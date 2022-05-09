@@ -27,19 +27,19 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class HeaderMapSerializer extends JsonSerializer<HeaderMap> {
+public class MultiMapSerializer extends JsonSerializer<CaseInsensitiveStringMultiMap> {
 
     /**
      * Constructor.
      */
-    public HeaderMapSerializer() {
+    public MultiMapSerializer() {
     }
 
     /**
      * @see com.fasterxml.jackson.databind.JsonSerializer#serialize(java.lang.Object, com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)
      */
     @Override
-    public void serialize(HeaderMap map, JsonGenerator gen, SerializerProvider serializers)
+    public void serialize(CaseInsensitiveStringMultiMap map, JsonGenerator gen, SerializerProvider serializers)
             throws IOException, JsonProcessingException {
         gen.writeStartObject(); // {
 
