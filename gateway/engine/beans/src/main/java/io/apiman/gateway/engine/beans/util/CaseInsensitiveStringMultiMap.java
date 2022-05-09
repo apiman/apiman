@@ -30,6 +30,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.openhft.hashing.Access;
 import net.openhft.hashing.LongHashFunction;
 
@@ -59,6 +61,8 @@ import static java.nio.ByteOrder.LITTLE_ENDIAN;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@JsonSerialize(using = MultiMapSerializer.class)
+@JsonDeserialize(using = MultiMapDeserializer.class)
 public class CaseInsensitiveStringMultiMap implements IStringMultiMap, Serializable {
     private static final long serialVersionUID = -2052530527825235543L;
     private static final Access<String> LOWER_CASE_ACCESS_INSTANCE = new LowerCaseAccess();
