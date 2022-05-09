@@ -171,11 +171,13 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
      */
     private IAsyncResultHandler<IEngineResult> wrapResultHandler(final IAsyncResultHandler<IEngineResult> handler) {
         return (IAsyncResult<IEngineResult> result) -> {
+            ApiResponse response = null;
             boolean doRecord = true;
             if (result.isError()) {
                 recordErrorMetrics(result.getError());
             } else {
                 IEngineResult engineResult = result.getResult();
+                response = engineResult.getApiResponse();
                 if (engineResult.isFailure()) {
                     recordFailureMetrics(engineResult.getPolicyFailure());
                 } else {
@@ -185,7 +187,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
             }
             requestMetric.setRequestEnd(new Date());
             if (doRecord) {
-                metrics.record(requestMetric);
+                metrics.record(requestMetric, request, response);
             }
             handler.handle(result);
         };
@@ -234,11 +236,11 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     }
                 });
 
-            //check if api disable key are enabled
-            if (api != null && !api.isKeysStrippingDisabled()) {
-                // Strip apikey
-                stripApiKey();
-            }
+        //check if api disable key are enabled
+        if (api != null && !api.isKeysStrippingDisabled()) {
+            // Strip apikey
+            stripApiKey();
+        }
 
 
         // Fill out some of the basic metrics structure.
@@ -715,7 +717,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     responseChain.endHandler(isEnd -> {
                         engineResult.end();
                         finished = true;
-                        metrics.record(requestMetric);
+                        metrics.record(requestMetric, request, response);
                     });
 
                     // Signal to the connector that it's safe to start transmitting data.
@@ -832,13 +834,13 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         chain.headHandler(responseHandler);
         chain.policyFailureHandler(result -> {
             if (apiConnectionResponse != null) {
-            apiConnectionResponse.abort();
+                apiConnectionResponse.abort();
             }
             policyFailureHandler.handle(result);
         });
         chain.policyErrorHandler(result -> {
             if (apiConnectionResponse != null) {
-            apiConnectionResponse.abort();
+                apiConnectionResponse.abort();
             }
             policyErrorHandler.handle(result);
         });

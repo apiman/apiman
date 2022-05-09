@@ -28,12 +28,12 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class HeaderMapDeserializer extends JsonDeserializer<HeaderMap> {
+public class MultiMapDeserializer extends JsonDeserializer<HeaderMap> {
 
     /**
      * Constructor.
      */
-    public HeaderMapDeserializer() {
+    public MultiMapDeserializer() {
     }
 
     /**
