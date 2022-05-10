@@ -145,7 +145,7 @@
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.36</version.org.slf4j>
     <version.org.testcontainers>1.17.1</version.org.testcontainers>
-    <version.io.netty>4.1.74.Final</version.io.netty>
+    <version.io.netty>4.1.77.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
     <version.io.swagger>1.6.6</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
