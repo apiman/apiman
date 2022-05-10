@@ -870,12 +870,15 @@ angular-ui-bootstrap@0.14.3:
   resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-0.14.3.tgz#d96ce604c84bbd706ba34aabca1d5a7376e18ba6"
   integrity sha1-2WzmBMhLvXBro0qryh1ac3bhi6Y=
 
-angular-xeditable-npm@0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/angular-xeditable-npm/-/angular-xeditable-npm-0.1.9.tgz#1f35b9c7ef2b67282934896882fe78e2a97e5e5b"
-  integrity sha1-HzW5x+8rZygpNIlogv544ql+Xls=
+angular-xeditable-npm@0.1.11:
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/angular-xeditable-npm/-/angular-xeditable-npm-0.1.11.tgz#f9a086af9ddc411fa55bebb82c31a1ce6819514b"
+  integrity sha1-+aCGr53cQR+lW+u4LDGhzmgZUUs=
   dependencies:
     angular "~1.x"
+    bootstrap "^3.1.1"
+    jquery "^1.11.1"
+    moment "^2.5.0"
 
 angular@1.8.2:
   version "1.8.2"
@@ -1134,7 +1137,7 @@ bootstrap-touchspin@~3.1.1:
   resolved "https://registry.yarnpkg.com/bootstrap-touchspin/-/bootstrap-touchspin-3.1.1.tgz#9779deac72aaf577e5e762b8512c747c871d9597"
   integrity sha1-l3nerHKq9Xfl52K4USx0fIcdlZc=
 
-bootstrap@^3.3, bootstrap@^3.4.1, bootstrap@~3.4.1:
+bootstrap@^3.1.1, bootstrap@^3.3, bootstrap@^3.4.1, bootstrap@~3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.4.1.tgz#c3a347d419e289ad11f4033e3c4132b87c081d72"
   integrity sha512-yN5oZVmRCwe5aKwzRj6736nSmKDX7pLYwsXiCj/EYmo16hODaBiT4En5btW/jhBF/seV+XMx3aYwukYC3A49DA==
@@ -2931,7 +2934,7 @@ jquery-match-height@^0.7.2:
   resolved "https://registry.yarnpkg.com/jquery-match-height/-/jquery-match-height-0.7.2.tgz#f8d9f3ba5314daab109cf07408674be204be5f0e"
   integrity sha1-+NnzulMU2qsQnPB0CGdL4gS+Xw4=
 
-jquery@3.5.1, jquery@>=1.7, jquery@>=1.7.0, "jquery@>=1.7.1 <4.0.0", jquery@>=1.8, jquery@^3.4.1, jquery@^3.5.1, jquery@~3.4.1:
+jquery@3.5.1, jquery@>=1.7, jquery@>=1.7.0, "jquery@>=1.7.1 <4.0.0", jquery@>=1.8, jquery@^1.11.1, jquery@^3.4.1, jquery@^3.5.1, jquery@~3.4.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.1.tgz#d7b4d08e1bfdb86ad2f1a3d039ea17304717abb5"
   integrity sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg==
@@ -3264,7 +3267,7 @@ moment-timezone@^0.4.0, moment-timezone@^0.4.1:
   dependencies:
     moment ">= 2.6.0"
 
-"moment@>= 2.6.0", moment@^2.10, moment@^2.19.1:
+"moment@>= 2.6.0", moment@^2.10, moment@^2.19.1, moment@^2.5.0:
   version "2.29.3"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.3.tgz#edd47411c322413999f7a5940d526de183c031f3"
   integrity sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw==
