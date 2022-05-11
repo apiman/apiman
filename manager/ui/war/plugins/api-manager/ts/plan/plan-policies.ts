@@ -2,8 +2,8 @@ import {_module} from "../apimanPlugin";
 import angular = require("angular");
 
 _module.controller("Apiman.PlanPoliciesController",
-    ['$q', '$scope', '$location', '$uibModal', 'OrgSvcs', 'ApimanSvcs', 'Logger', 'PageLifecycle', 'PlanEntityLoader', '$routeParams',
-    function ($q, $scope, $location, $uibModal, OrgSvcs, ApimanSvcs, Logger, PageLifecycle, PlanEntityLoader, $routeParams) {
+    ['$q', '$scope', '$location', '$uibModal', 'OrgSvcs', 'ApimanSvcs', 'EntityStatusSvc', 'Logger', 'PageLifecycle', 'PlanEntityLoader', '$routeParams',
+    function ($q, $scope, $location, $uibModal, OrgSvcs, ApimanSvcs, EntityStatusSvc, Logger, PageLifecycle, PlanEntityLoader, $routeParams) {
         var params = $routeParams;
         $scope.organizationId = params.org;
         $scope.tab = 'policies';
@@ -16,6 +16,8 @@ _module.controller("Apiman.PlanPoliciesController",
                 }
             });
         };
+
+        $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
 
         $scope.removePolicy = function(policy, size) {
             Logger.info('Removing policy: {0}', policy);
