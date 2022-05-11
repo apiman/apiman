@@ -540,8 +540,10 @@ _module.directive('apimanPolicyList',
                         $scope.ctrl.reorder($scope.ctrl.policies);
                     }
                 };
-
+                // access values from parent component
                 $scope.pluginName = $scope.$parent.pluginName;
+                // change name from parent to avoid confusing name clashes through the project (directives)
+                $scope.isButtonDisabled = $scope.$parent.isEntityDisabled;
             }],
             controllerAs: 'ctrl',
             bindToController: true,
