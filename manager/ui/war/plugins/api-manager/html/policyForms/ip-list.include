@@ -1,26 +1,37 @@
-<div class="form policy-config ip-list" data-field="form" ng-controller="Apiman.IPListFormController">
+<form name="iplistform" class="form policy-config ip-list" data-field="form" ng-controller="Apiman.IPListFormController">
   <div style="width: 100%; float: left">
-    <dl style="margin-bottom: 0px">
+    <dl style="margin-bottom: 0">
       <dt apiman-i18n-key="ip-http-header">IP Address HTTP Header</dt>
       <dd>
+        <p apiman-i18n-key="ip-list.ip-http-header-explanation">Optionally, a header can be used to identify the originating IP address of the client (e.g. <code>X-Forwarded-For</code>).</p>
         <input id="http-header" ng-model="config.httpHeader" data-field="httpHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="iplist.enter-http-header" placeholder="HTTP header (optional)..." ng-disabled="isEntityDisabled()">
       </dd>
       <dt apiman-i18n-key="failure-code">Failure Response</dt>
       <dd>
-        <p apiman-i18n-key="ip-list.response-code-explanation">Choose how the gateway should respond to a client if the
-          request fails due to a violation of this policy.</p>
+        <p apiman-i18n-key="ip-list.response-code-explanation">Choose how the gateway should respond to a client if the request fails due to a violation of this policy.</p>
         <select id="failure-code" ng-model="config.responseCode" apiman-select-picker="" class="selectpicker" data-live-search="false" ng-disabled="isEntityDisabled()">
           <option value="403" apiman-i18n-key="ip-list.auth-failure-403">Authentication Failure (403)</option>
           <option value="404" apiman-i18n-key="ip-list.not-found-404">Not Found (404)</option>
           <option value="500" apiman-i18n-key="ip-list.server-error-500">Server Error (500)</option>
         </select>
       </dd>
-      <dt apiman-i18n-key="ip-addresses">IP Addresses</dt>
+      <dt apiman-i18n-key="ip-addresses">IP Addresses and Ranges</dt>
     </dl>
   </div>
-  <div style="width: 300px" apiman-i18n-key="ip-list-message">Manage the list of IP addresses in the box below.  Wildcards can be used by specifying "*" as one of the components of the IP address, such as "10.0.*.*".</div>
+  <section style="max-width: 600px">
+    <p apiman-i18n-key="ip-list-message">Manage the list of IP addresses in the box below. You can use IPv4 and IPv6 equivalents for:</p>
+    <ul>
+      <li apiman-i18n-key="ip-list-message-example-1">Literal addresses, such as: <code>192.0.2.0</code> or <code>2001:db8::1</code></li>
+      <li apiman-i18n-key="ip-list-message-example-2">CIDR address ranges, such as: <code>192.0.2.0/24</code> or <code>2001:db8:1212::/48</code></li>
+      <li apiman-i18n-key="ip-list-message-example-3">Dashed address ranges, such as: <code>192.0.2.0-192.0.2.10</code>
+      <li apiman-i18n-key="ip-list-message-example-4">Wildcards, such as: <code>192.0.2.*</code></li>
+    </ul>
+  </section>
   <div style="width: 100%; float: left; margin-bottom: 5px; margin-top: 5px">
-    <select id="ip-addresses" ng-model="selectedIP" data-field="ipAddresses" multiple class="apiman-form-control form-control" style="height: 150px; width: 200px; float: left;" ng-options="item for item in config.ipList | orderBy: 'toString()'" ng-disabled="isEntityDisabled()">
+    <select id="ip-addresses" ng-model="selectedIP" data-field="ipAddresses" multiple class="apiman-form-control form-control" style="height: 150px; width: 300px; float: left;" ng-disabled="isEntityDisabled()">
+      <option ng-repeat="item in config.ipList | orderBy: 'toString()'" value="{{item}}">
+        {{item}}
+      </option>
     </select>
     <div style="margin-left: 5px; float: left">
       <button id="clear" ng-click="clear()" ng-disabled="!config.ipList || isEntityDisabled()" data-field="clear" apiman-i18n-key="clear" class="btn btn-default" style="min-width: 75px">Clear</button>
@@ -28,6 +39,10 @@
       <button id="remove" ng-click="remove(selectedIP)" ng-disabled="!selectedIP || isEntityDisabled()" data-field="remove" apiman-i18n-key="remove" class="btn btn-default" style="min-width: 75px; margin-top: 5px;">Remove</button>
     </div>
   </div>
-  <input id="ip-address" ng-model="ipAddress" ng-pattern="/((^\s*(((?:\*|([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\.){3}(?:\*|([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])))\s*$))/" data-field="ipAddress" class="form-control" style="width: 200px; float: left; margin-right: 5px" type="text" apiman-i18n-key="iplist.enter-ip-address" placeholder="Enter an IP address..." ng-disabled="isEntityDisabled()">
-  <button id="add" ng-disabled="!ipAddress || isEntityDisabled()" ng-click="add(ipAddress)" data-field="add" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
-</div>
+  <!-- Use ng-model-options allowInvalid, otherwise value is not set until it passes validation, meaning we can't display any useful hints/prompts for user -->
+  <input id="ip-address" name="ipinput" ng-model="ipAddress" data-field="ipAddress" class="form-control" style="max-width: 300px; float: left; margin-right: 5px" type="text" apiman-i18n-key="iplist.enter-ip-address" placeholder="Enter an IP address..." ng-disabled="isEntityDisabled()" ng-model-options="{ updateOn: 'default', allowInvalid:'true' }" validate-ip-address/>
+  <button id="add" ng-disabled="!ipAddress || isEntityDisabled() || iplistform.ipinput.$invalid" ng-click="add(ipAddress)" data-field="add" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
+  <div class="alert-warning p-2" style="width: 300px" ng-show="iplistform.ipinput.$invalid && ipAddress.length > 0">
+    <span apiman-i18n-key="ip-invalid-error-message">This doesn't look like a valid IP address yet</span>
+  </div>
+</form>
