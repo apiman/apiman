@@ -142,6 +142,11 @@ public abstract class AbstractIPListPolicy<C> extends AbstractMappedPolicy<C> {
         matchCache.put(key, result);
     }
 
+    /**
+     * Cache key consisting of configuration and address, which should uniquely identify a policy + IP being operated upon.
+     * <p>
+     * {@link IPListConfig} is immutable and caches <code>hashCode</code> in order to avoid expensive re-hashing of the IP list (which could be very long).
+     */
     private static final class MatchCacheKey {
 
         private final IPListConfig config;
