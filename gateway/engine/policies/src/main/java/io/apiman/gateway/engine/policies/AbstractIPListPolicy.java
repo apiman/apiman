@@ -22,7 +22,9 @@ import io.apiman.gateway.engine.policies.config.IPListConfig;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -40,7 +42,7 @@ import inet.ipaddr.IPAddressString;
  */
 public abstract class AbstractIPListPolicy<C> extends AbstractMappedPolicy<C> {
     private final Map<IPListConfig, Set<IPAddressString>> ipPatternRulesCache = new HashMap<>();
-    private final Cache<String, Boolean> matchCache = Caffeine.newBuilder().maximumSize(10_000).build();
+    private final Cache<MatchCacheKey, Boolean> matchCache = Caffeine.newBuilder().maximumSize(10_000).build();
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(AbstractIPListPolicy.class);
 
     /**
@@ -93,7 +95,8 @@ public abstract class AbstractIPListPolicy<C> extends AbstractMappedPolicy<C> {
             return true;
         }
         // If we've matched this IP before, then we can just re-use that result.
-        Boolean cacheResult = matchCache.getIfPresent(remoteAddrStr);
+        MatchCacheKey cacheKey = new MatchCacheKey(config, remoteAddrStr);
+        Boolean cacheResult = matchCache.getIfPresent(cacheKey);
         if (cacheResult != null) {
             return cacheResult;
         }
@@ -105,13 +108,13 @@ public abstract class AbstractIPListPolicy<C> extends AbstractMappedPolicy<C> {
             // If it's prefix like CIDR or a wildcard (/12, .*)
             if (rule.isPrefixed()) {
                 if (rule.prefixEquals(remoteAddr)) {
-                    cacheMatch(remoteAddrStr, true);
+                    cacheMatch(cacheKey, true);
                     return true;
                 }
             } else {
                 // Rule matches exactly (or via some direct match).
                 if (rule.equals(remoteAddr) || rule.contains(remoteAddr) ) {
-                    cacheMatch(remoteAddrStr, true);
+                    cacheMatch(cacheKey, true);
                     return true;
                 }
 
@@ -126,16 +129,60 @@ public abstract class AbstractIPListPolicy<C> extends AbstractMappedPolicy<C> {
                     IPAddress lower = new IPAddressString(rangeSplit[0]).toAddress();
                     IPAddress upper = new IPAddressString(rangeSplit[1]).toAddress();
                     IPAddressSeqRange ruleRange = lower.spanWithRange(upper);
-                    cacheMatch(remoteAddrStr, true);
+                    cacheMatch(cacheKey, true);
                     return ruleRange.contains(remoteAddr.toAddress());
                 }
             }
         }
-        cacheMatch(remoteAddrStr, false);
+        cacheMatch(cacheKey, false);
         return false;
     }
 
-    private void cacheMatch(String remoteAddr, boolean result) {
-        matchCache.put(remoteAddr, result);
+    private void cacheMatch(MatchCacheKey key, boolean result) {
+        matchCache.put(key, result);
+    }
+
+    private static final class MatchCacheKey {
+
+        private final IPListConfig config;
+        private final String addr;
+
+        public MatchCacheKey(IPListConfig config, String addr) {
+            this.config = config;
+            this.addr = addr;
+        }
+
+        public IPListConfig getConfig() {
+            return config;
+        }
+
+        public String getAddr() {
+            return addr;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            MatchCacheKey that = (MatchCacheKey) o;
+            return Objects.equals(config, that.config) && Objects.equals(addr, that.addr);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(config, addr);
+        }
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", MatchCacheKey.class.getSimpleName() + "[", "]")
+                    .add("config=" + config)
+                    .add("addr='" + addr + "'")
+                    .toString();
+        }
     }
 }
