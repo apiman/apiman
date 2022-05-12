@@ -7,7 +7,7 @@
   </head>
 
   <body>
-    
+
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.EditPolicyController"
          id="form-page"
@@ -37,7 +37,7 @@
       <div class="row"
            ng-show="include">
         <h3 data-field="policyHeading">{{ policy.definition.name }} Configuration</h3>
-        <div class="apiman-box col-md-9 container-pf-nav-pf-vertical container-fluid">
+        <div class="apiman-box col-md-9 container">
           <div ng-include="include"></div>
         </div>
       </div>
