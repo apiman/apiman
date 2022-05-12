@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 /**
  * Metric information about a single request processed by the API Gateway.
@@ -461,4 +462,37 @@ public class RequestMetric implements Serializable {
         this.attributes = attributes;
     }
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", RequestMetric.class.getSimpleName() + "[", "]")
+                .add("requestStart=" + requestStart)
+                .add("requestEnd=" + requestEnd)
+                .add("requestDuration=" + requestDuration)
+                .add("apiStart=" + apiStart)
+                .add("apiEnd=" + apiEnd)
+                .add("apiDuration=" + apiDuration)
+                .add("url='" + url + "'")
+                .add("resource='" + resource + "'")
+                .add("method='" + method + "'")
+                .add("apiOrgId='" + apiOrgId + "'")
+                .add("apiId='" + apiId + "'")
+                .add("apiVersion='" + apiVersion + "'")
+                .add("planId='" + planId + "'")
+                .add("clientOrgId='" + clientOrgId + "'")
+                .add("clientId='" + clientId + "'")
+                .add("clientVersion='" + clientVersion + "'")
+                .add("contractId='" + contractId + "'")
+                .add("user='" + user + "'")
+                .add("responseCode=" + responseCode)
+                .add("responseMessage='" + responseMessage + "'")
+                .add("failure=" + failure)
+                .add("failureCode=" + failureCode)
+                .add("failureReason='" + failureReason + "'")
+                .add("error=" + error)
+                .add("errorMessage='" + errorMessage + "'")
+                .add("bytesUploaded=" + bytesUploaded)
+                .add("bytesDownloaded=" + bytesDownloaded)
+                .add("attributes=" + attributes)
+                .toString();
+    }
 }
