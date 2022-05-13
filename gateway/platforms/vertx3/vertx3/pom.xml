@@ -120,6 +120,10 @@
     </dependency>
     <dependency>
       <groupId>io.apiman</groupId>
+      <artifactId>apiman-gateway-engine-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-es</artifactId>
     </dependency>
     <dependency>
