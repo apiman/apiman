@@ -1,12 +1,13 @@
 // @ts-nocheck
 import {_module} from "./apimanPlugin";
 import {Discoverability} from "./model/api.model";
+import {Address4, Address6} from "ip-address";
 
 _module.factory('EntityStatusSvc',
     ['$rootScope', 'Logger',
         function($rootScope, Logger) {
-            var entity = null;
-            var entityType = null;
+            let entity = null;
+            let entityType = null;
 
             return {
                 setEntity: function(theEntity, type) {
@@ -53,10 +54,10 @@ _module.directive('apimanActionBtn',
         return {
             restrict: 'A',
             link: function(scope, element, attrs) {
-                var actionVar = attrs.field;
-                var actionText = attrs.placeholder;
-                var icon = attrs.icon;
-                var disabledExpr = attrs.ngDisabled;
+                let actionVar = attrs.field;
+                let actionText = attrs.placeholder;
+                let icon = attrs.icon;
+                let disabledExpr = attrs.ngDisabled;
                 scope[actionVar] = {
                     state: 'ready',
                     html: $(element).html(),
@@ -161,9 +162,9 @@ _module.directive('apimanPermission',
             restrict: 'A',
             link: function($scope, element, attrs) {
                 var refresh = function(newValue) {
-                    var orgId = $scope.organizationId;
+                    let orgId = $scope.organizationId;
                     if (orgId) {
-                        var permission = attrs.apimanPermission;
+                        let permission = attrs.apimanPermission;
                         $(element).removeClass('apiman-not-permitted');
                         if (!CurrentUser.hasPermission(orgId, permission)) {
                             $(element).addClass('apiman-not-permitted');
@@ -457,8 +458,8 @@ _module.directive('apimanEditableDescription',
             link: function($scope, $elem, $attrs) {
                 $scope.defaultValue = $attrs.defaultValue;
 
-                var elem = null;
-                var previousRows = 1;
+                let elem = null;
+                let previousRows = 1;
 
                 //$scope.topPosition = 0;
                 //$scope.leftPosition = 0;
@@ -693,3 +694,57 @@ _module.directive('apimanDiscoverabilitySelect',
             }]
         };
     }]);
+
+_module.directive('validateIpAddress', ['Logger', function(Logger) {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, element, attrs, mCtrl) {
+            function ipValidator(value: string) {
+                if (!value) {
+                    return false;
+                }
+                // If contains wildcard (this is a non-standard thing), then replace with zeroes for purposes of validation.
+                const addr = value.replaceAll('*', '0');
+
+                if (addr.includes('-')) {
+                    // If looks like a dash-specified range
+                    const range: string[] = addr.split('-');
+                    if (range.length == 2) {
+                        const start: boolean = isValidIP(range[0]);
+                        const end: boolean = isValidIP(range[1]);
+                        return start && end;
+                    } else {
+                        Logger.error("Invalid range: {0}", range)
+                        return false;
+                    }
+                } else {
+                    return isValidIP(addr);
+                }
+            }
+
+            function isValidIP(value: string): boolean {
+                if (!value || value.length == 0) {
+                    return false;
+                }
+                try {
+                    new Address4(value);
+                    // Did not throw, hence is valid IPv4 addr
+                    return true;
+                } catch(e) {
+                    Logger.debug("Not IPv4: {0}", value);
+                }
+                try {
+                    new Address6(value);
+                    // Did not throw, hence is valid IPv6 addr
+                    return true;
+                } catch(e) {
+                    Logger.debug("Not IPv6: {0}", value);
+                }
+                Logger.debug("Could not parse: {0}. Will return invalid", value);
+                return false;
+            }
+            mCtrl.$validators.ipValidator = ipValidator;
+        }
+    };
+}]);

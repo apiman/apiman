@@ -292,6 +292,15 @@ _module.controller('Apiman.TransferQuotaFormController',
 _module.controller('Apiman.IPListFormController',
     ['$scope', 'Logger', 'EntityStatusSvc',
         function ($scope, Logger, EntityStatusSvc) {
+            $scope.setCurrentTypedValue = setCurrentTypedValue;
+            $scope.currentTypedValue = null;
+
+            // As field is disabled by validator, we get no useful change data in the event AFAICT
+            function setCurrentTypedValue(ignored) {
+                console.log("der");
+                $scope.currentTypedValue = $('#ip-address').text();
+            }
+
             var validate = function(config) {
                 var valid = true;
                 $scope.setValid(valid);

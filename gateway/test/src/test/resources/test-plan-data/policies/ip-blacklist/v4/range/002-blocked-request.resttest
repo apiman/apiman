@@ -1,0 +1,14 @@
+GET /Policy_IPBlacklistTest/echo/1.0.0/path/to/app/resource admin/admin
+X-API-Key: 12345
+X-IP-Address-Test: 192.168.42.1
+
+----
+500
+Content-Type: application/json
+
+{
+	"type": "Other",
+	"failureCode": 10002,
+	"responseCode": 500,
+	"message": "Inbound IP address \"192.168.42.1\" has been black-listed."
+}

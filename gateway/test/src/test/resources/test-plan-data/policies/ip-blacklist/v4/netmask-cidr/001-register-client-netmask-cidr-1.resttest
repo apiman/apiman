@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "organizationId" : "Policy_IPBlacklistTest",
-  "clientId" : "v4-netmask-1",
+  "clientId" : "cidr-1",
   "version" : "1.0.0",
   "apiKey" : "12345",
   "contracts" : [
@@ -14,7 +14,7 @@ Content-Type: application/json
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
-          "policyJsonConfig" : "{ \"ipList\" : [ \"1.2.3.4\" ] }"
+          "policyJsonConfig" : "{ \"ipList\" : [ \"192.168.42.23/24\" ], \"httpHeader\": \"X-IP-Address-Test\" }"
         }
       ]
     }

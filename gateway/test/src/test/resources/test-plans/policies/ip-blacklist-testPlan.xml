@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" name="IP blocklist testing">
 
-  <testGroup name="Test Policy">
+  <testGroup name="Simple blocklist testing">
     <test name="Publish Api" endpoint="api">test-plan-data/policies/ip-blacklist/001-publish-api.resttest</test>
     <test name="Register Client 1" endpoint="api">test-plan-data/policies/ip-blacklist/002.01-register-client.resttest</test>
     <test name="Register Client 2" endpoint="api">test-plan-data/policies/ip-blacklist/002.02-register-client.resttest</test>
@@ -11,6 +11,18 @@
     <test name="Failure">test-plan-data/policies/ip-blacklist/004-failure.resttest</test>
     <test name="Failure (404)">test-plan-data/policies/ip-blacklist/005-failure-404.resttest</test>
     <test name="Failure (403)">test-plan-data/policies/ip-blacklist/006-failure-403.resttest</test>
+  </testGroup>
+
+  <testGroup name="Blocklist IPv4 with CIDR netmask">
+    <test name="Register Client with CIDR netmask" endpoint="api">test-plan-data/policies/ip-blacklist/v4/netmask-cidr/001-register-client-netmask-cidr-1.resttest</test>
+    <test name="Blocked request">test-plan-data/policies/ip-blacklist/v4/netmask-cidr/002-blocked-request.resttest</test>
+    <test name="Blocked request 2">test-plan-data/policies/ip-blacklist/v4/netmask-cidr/003-blocked-request-2.resttest</test>
+  </testGroup>
+
+  <testGroup name="Blocklist IPv4 with dashed numeric range">
+    <test name="Register Client with dashed numeric range" endpoint="api">test-plan-data/policies/ip-blacklist/v4/range/001-register-client-range-1.resttest</test>
+    <test name="Blocked request">test-plan-data/policies/ip-blacklist/v4/range/002-blocked-request.resttest</test>
+    <test name="Blocked request 2">test-plan-data/policies/ip-blacklist/v4/range/003-blocked-request-2.resttest</test>
   </testGroup>
 
 </testPlan>
