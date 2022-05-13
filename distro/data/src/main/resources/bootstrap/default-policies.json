@@ -41,7 +41,7 @@
     }, {
       "id" : "IPBlacklistPolicy",
       "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
-      "name" : "IP Blacklist Policy",
+      "name" : "IP Blocklist Policy",
       "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
       "icon" : "thumbs-down",
       "templates" : [ {
@@ -52,7 +52,7 @@
     }, {
       "id" : "IPWhitelistPolicy",
       "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
-      "name" : "IP Whitelist Policy",
+      "name" : "IP Allowlist Policy",
       "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
       "icon" : "filter",
       "templates" : [ {
