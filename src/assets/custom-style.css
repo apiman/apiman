@@ -62,8 +62,8 @@
 }
 
 /* set color for login/logout button */
-#login-btn,
-#logout-btn {
+#hero-login-btn,
+#hero-logout-btn {
   color: var(--primary);
   background-color: var(--primary-warn-contrast);
 
@@ -90,6 +90,11 @@
 #hero-title,
 #hero-subtitle {
   color: var(--primary-warn-contrast);
+}
+
+#hero-username {
+  color: var(--primary-warn-contrast);
+  cursor: pointer;
 }
 
 /* Example to override scrollbar color */

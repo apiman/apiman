@@ -39,7 +39,7 @@ describe('Testing the home page', () => {
     cy.visit('/home');
     cy.get('#hero-title').should('include.text', 'API Developer Portal');
     cy.get('#hero-subtitle').should('include.text', '');
-    cy.get('#login-btn').should('exist').and('be.visible');
+    cy.get('#hero-login-btn').should('exist').and('be.visible');
   });
 
   it('Check Navigation Bar', () => {

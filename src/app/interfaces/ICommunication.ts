@@ -970,6 +970,7 @@ export interface ICurrentUser {
   joinedOn: string;
   admin: boolean;
   permissions: IPermission[];
+  notificationPreferences: [];
 }
 
 export interface IUser {

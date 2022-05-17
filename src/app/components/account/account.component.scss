@@ -13,3 +13,42 @@
  *  See the License for the specific language governing permissions and
  *  imitations under the License.
  */
+
+mat-icon.account-confirmed {
+  color: green;
+}
+
+mat-icon.account-pending {
+  color: red;
+}
+
+.flex-centered {
+  display: flex;
+  align-items: center;
+}
+
+.flex-centered mat-icon {
+  padding-left: 5px;
+}
+
+.default-btn {
+  color: var(--primary);
+  background-color: var(--primary-warn-contrast);
+}
+
+.default-btn span {
+  margin-left: 5px;
+}
+
+#profile-avatar {
+  font-size: 40px;
+  color: var(--primary);
+}
+
+.property-container {
+  margin-bottom: 5px;
+}
+
+.property-container:last-child {
+  margin: 0;
+}

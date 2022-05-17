@@ -16,7 +16,11 @@
 
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
-import { KeycloakInstance, KeycloakProfile } from 'keycloak-js';
+import {
+  KeycloakInstance,
+  KeycloakProfile,
+  KeycloakTokenParsed
+} from 'keycloak-js';
 import { ConfigService } from '../config/config.service';
 import { Router } from '@angular/router';
 
@@ -80,6 +84,16 @@ export class KeycloakHelperService {
     return null;
   }
 
+  public getKeycloakAccountUrl(): string {
+    if (this.configService.getAuth().accountUrl) {
+      return <string>this.configService.getAuth().accountUrl;
+    } else {
+      return `${this.configService.getAuth().url}/realms/${
+        this.configService.getAuth().realm
+      }/account`;
+    }
+  }
+
   public login(): void {
     void this.keycloak.login();
   }
@@ -138,5 +152,16 @@ export class KeycloakHelperService {
       this.username = this.keycloak.getUsername();
     }
     return this.username;
+  }
+
+  public decodeCurrentKeyloakToken(): KeycloakTokenParsed {
+    try {
+      return <KeycloakTokenParsed>(
+        JSON.parse(atob(this.getTokenFromLocalStorage().split('.')[1]))
+      );
+    } catch (error) {
+      console.error('Error while decoding keycloak token', error);
+      throw error;
+    }
   }
 }

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2022 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -14,32 +14,87 @@
   ~  imitations under the License.
   -->
 
-<!-- TODO: Language Strings -->
+<ng-container *ngIf="userProfile$ | async as userProfile">
+  <mat-card>
+    <mat-card-header>
+      <mat-icon id="profile-avatar" mat-card-avatar matSuffix aria-hidden="true"
+        >account_circle</mat-icon
+      >
+      <mat-card-title
+        >{{ userProfile.firstName }} {{ userProfile.lastName }}</mat-card-title
+      >
+      <mat-card-subtitle>{{ userProfile.email }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="property-container">
+        <label class="default-label">{{
+          'ACCOUNT.USER_ENTITY.USERNAME' | translate
+        }}</label>
+        <div>{{ userProfile.username }}</div>
+      </div>
 
-<ng-container *ngIf="userProfile">
-  <h2>User information</h2>
-  <table>
-    <tr *ngIf="userProfile.username">
-      <th scope="row">Username</th>
-      <td>{{ userProfile.username }}</td>
-    </tr>
-    <tr *ngIf="userProfile.firstName">
-      <th scope="row">First name</th>
-      <td>{{ userProfile.firstName }}</td>
-    </tr>
-    <tr *ngIf="userProfile.lastName">
-      <th scope="row">First name</th>
-      <td>{{ userProfile.lastName }}</td>
-    </tr>
-    <tr *ngIf="userProfile.email">
-      <th scope="row">E-mail</th>
-      <td>{{ userProfile.email }}</td>
-    </tr>
-    <tr>
-      <th scope="row">E-mail verified</th>
-      <td>{{ userProfile.emailVerified ? 'Yes' : 'No' }}</td>
-    </tr>
-  </table>
+      <div class="property-container">
+        <label class="default-label">{{
+          'ACCOUNT.USER_ENTITY.FIRSTNAME' | translate
+        }}</label>
+        <div>{{ userProfile.firstName }}</div>
+      </div>
+
+      <div class="property-container">
+        <label class="default-label">{{
+          'ACCOUNT.USER_ENTITY.LASTNAME' | translate
+        }}</label>
+        <div>{{ userProfile.lastName }}</div>
+      </div>
+
+      <div class="property-container">
+        <label class="default-label">{{
+          'ACCOUNT.USER_ENTITY.EMAIL' | translate
+        }}</label>
+        <div class="flex-centered">
+          <span>{{ userProfile.email }}</span>
+          <mat-icon
+            matSuffix
+            [ngClass]="
+              userProfile.emailVerified
+                ? 'account-confirmed'
+                : 'account-pending'
+            "
+            >{{
+              userProfile.emailVerified ? 'verified_user' : 'gpp_bad'
+            }}</mat-icon
+          >
+        </div>
+      </div>
+
+      <div class="property-container">
+        <label class="default-label">{{
+          'ACCOUNT.USER_ENTITY.LOCALE' | translate
+        }}</label>
+        <ng-container *ngIf="apimanAccount$ | async as apimanAccount"
+          ><div>{{ apimanAccount.locale }}</div></ng-container
+        >
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <a [href]="accountUrl" target="_blank">
+        <button mat-raised-button class="default-btn">
+          <mat-icon>open_in_new</mat-icon>
+          <span>{{ 'ACCOUNT.EDIT_EXTERNAL_BTN' | translate }}</span>
+        </button>
+      </a>
+    </mat-card-actions>
+  </mat-card>
+
+  <br />
+
+  <app-account-idm></app-account-idm>
+
+  <br />
+
+  <app-account-organization-permissions
+    [apimanAccount]="
+      apimanAccount$ | async
+    "></app-account-organization-permissions>
 </ng-container>
-
-<button mat-raised-button (click)="logout()">Log-Out</button>

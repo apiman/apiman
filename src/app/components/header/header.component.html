@@ -22,30 +22,40 @@
     </div>
     <div id="hero-actions">
       <div id="hero-actions-logged-in" *ngIf="loggedIn">
+        <span id="hero-username" class="pr-5" [routerLink]="['/account']">{{
+          username
+        }}</span>
+        <mat-icon
+          id="hero-account"
+          class="hero-action"
+          [routerLink]="['/account']"
+          >account_circle</mat-icon
+        >
+        <mat-divider [vertical]="true"></mat-divider>
         <mat-icon
           id="hero-notifications"
+          class="hero-action"
           matBadge="{{ heroService.hero.notificationCount }}"
           matBadgeColor="warn"
           [matBadgeHidden]="heroService.hero.notificationCount === '0'"
           [routerLink]="['/notifications']">
           notifications
         </mat-icon>
+        <mat-divider [vertical]="true"></mat-divider>
         <button
-          id="hero-logout-btn"
           mat-raised-button
           (click)="logout()"
           *ngIf="loggedIn"
-          id="logout-btn">
+          id="hero-logout-btn">
           {{ 'COMMON.LOGOUT' | translate }}
         </button>
       </div>
 
       <button
-        id="hero-login-btn"
         mat-raised-button
         (click)="login()"
         *ngIf="!loggedIn"
-        id="login-btn">
+        id="hero-login-btn">
         {{ 'COMMON.LOGIN' | translate }}
       </button>
     </div>

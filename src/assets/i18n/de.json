@@ -43,7 +43,30 @@
   },
   "ACCOUNT": {
     "TITLE": "Benutzerkonto",
-    "SUBTITLE": "Verwalten Sie Ihre Einstellungen"
+    "SUBTITLE": "Verwalten Sie Ihre Einstellungen",
+    "USER_ENTITY": {
+      "USERNAME": "Benutzername",
+      "FIRSTNAME": "Vorname",
+      "LASTNAME": "Nachname",
+      "EMAIL": "E-Mail",
+      "PASSWORD": "Passwort",
+      "LOCALE": "Sprache"
+    },
+    "EDIT_EXTERNAL_BTN": "Öffne Profilverwaltung",
+    "IDENTITY_MANAGEMENT": {
+      "TITLE": "Identity Management",
+      "IDM_ENTITY": {
+        "REALM_ACCESS": "Realm access roles",
+        "RESOURCE_ACCESS": "Resource access",
+        "TOKEN_ISSUER": "Token issuer",
+        "AUTHORIZED_PARTY": "Authorized party",
+        "SCOPE": "Scope",
+        "TOKEN_TYPE": "Type"
+      }
+    },
+    "API_MANAGEMENT": {
+      "TITLE": "Scheer PAS API Management"
+    }
   },
   "CLIENTS": {
     "SEARCH": "Clients und APIs",

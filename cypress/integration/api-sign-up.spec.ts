@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Scheer PAS Schweiz AG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  imitations under the License.
+ */
+
 /// <reference types="cypress" />
 
 import { IApimanData } from '../../src/app/interfaces/ICommunication';
@@ -59,7 +75,7 @@ describe('Testing the api-signup', () => {
       'DELETE',
       'https://vagrantguest/pas/apiman/organizations/cypress.admin/clients/TestClient1'
     );
-    cy.get('#logout-btn').click({ force: true });
+    cy.get('#hero-logout-btn').click({ force: true });
   });
 
   it('Check api sign-up process as non admin', () => {
@@ -101,6 +117,6 @@ describe('Testing the api-signup', () => {
       'DELETE',
       'https://vagrantguest/pas/apiman/organizations/cypress.user/clients/TestClient2'
     );
-    cy.get('#logout-btn').click({ force: true });
+    cy.get('#hero-logout-btn').click({ force: true });
   });
 });

@@ -45,28 +45,33 @@ p {
   }
 }
 
+.hero-action {
+  cursor: pointer;
+}
+
 #hero-actions {
-  display: grid;
   position: absolute;
   top: 22px;
   right: 3%;
 }
 
 #hero-actions-logged-in {
-  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  display: flex;
 }
 
 #hero-notifications {
-  right: 20%;
-  top: 20%;
-  grid-column: 1;
   cursor: pointer;
 }
 
-#hero-logout-btn {
-  grid-column: 2;
+#hero-account {
+  color: white;
 }
 
 .hero-large {
   min-height: 32vh;
+}
+
+mat-divider {
+  width: 0.8vw;
 }

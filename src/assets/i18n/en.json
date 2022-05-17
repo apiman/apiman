@@ -43,7 +43,30 @@
   },
   "ACCOUNT": {
     "TITLE": "Account",
-    "SUBTITLE": "Administrate User Settings"
+    "SUBTITLE": "Administrate User Settings",
+    "USER_ENTITY": {
+      "USERNAME": "Username",
+      "FIRSTNAME": "Firstname",
+      "LASTNAME": "Lastname",
+      "EMAIL": "E-Mail",
+      "PASSWORD": "Password",
+      "LOCALE": "Language"
+    },
+    "EDIT_EXTERNAL_BTN": "Edit external",
+    "IDENTITY_MANAGEMENT": {
+      "TITLE": "Identity Management",
+      "IDM_ENTITY": {
+        "REALM_ACCESS": "Realm access roles",
+        "RESOURCE_ACCESS": "Resource access",
+        "TOKEN_ISSUER": "Token issuer",
+        "AUTHORIZED_PARTY": "Authorized party",
+        "SCOPE": "Scope",
+        "TOKEN_TYPE": "Type"
+      }
+    },
+    "API_MANAGEMENT": {
+      "TITLE": "Scheer PAS API Management"
+    }
   },
   "CLIENTS": {
     "SEARCH": "Clients and APIs",

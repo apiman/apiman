@@ -65,6 +65,8 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { ApiMarkdownDescriptionComponent } from './components/api-markdown-description/api-markdown-description.component';
 import { ApiStatusTagComponent } from './components/api-status-tag/api-status-tag.component';
+import { AccountIdmComponent } from './components/account-idm/account-idm.component';
+import { AccountOrganizationPermissionsComponent } from './components/account-organization-permissions/account-organization-permissions.component';
 import { ApiPublicEndpointComponent } from './components/api-public-endpoint/api-public-endpoint.component';
 import { MatRadioModule } from '@angular/material/radio';
 
@@ -119,6 +121,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     MarketplaceClientAppComponent,
     MarketplaceComponent,
     MarketplaceSignupStepperComponent,
+    AccountIdmComponent,
+    AccountOrganizationPermissionsComponent,
     MyAppsComponent,
     MyAppsManageApiComponent,
     MyAppsPoliciesComponent,

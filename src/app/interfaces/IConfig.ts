@@ -64,6 +64,7 @@ export interface ILink {
 }
 
 export interface IAuthProvider {
+  accountUrl?: string;
   url: string;
   realm: string;
   clientId: string;

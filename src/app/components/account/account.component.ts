@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import { KeycloakHelperService } from '../../services/keycloak-helper/keycloak-helper.service';
 import { KeycloakProfile } from 'keycloak-js';
+import { BackendService } from '../../services/backend/backend.service';
+import { ICurrentUser } from '../../interfaces/ICommunication';
+import { from, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-account',
@@ -26,17 +29,22 @@ import { KeycloakProfile } from 'keycloak-js';
   styleUrls: ['./account.component.scss']
 })
 export class AccountComponent implements OnInit {
-  public userProfile: KeycloakProfile | null = null;
+  public userProfile$: Observable<KeycloakProfile | null> = of({});
+  public accountUrl = '';
+  public apimanAccount$: Observable<ICurrentUser> = of({} as ICurrentUser);
 
   constructor(
     private heroService: HeroService,
     private translator: TranslateService,
-    private keycloakHelper: KeycloakHelperService
+    private keycloakHelper: KeycloakHelperService,
+    private backendService: BackendService
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit() {
     this.setUpHero();
-    this.userProfile = await this.keycloakHelper.getUserProfile();
+    this.accountUrl = this.keycloakHelper.getKeycloakAccountUrl();
+    this.userProfile$ = from(this.keycloakHelper.getUserProfile());
+    this.apimanAccount$ = this.backendService.getCurrentUser();
   }
 
   private setUpHero() {

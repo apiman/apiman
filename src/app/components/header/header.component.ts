@@ -26,6 +26,7 @@ import { KeycloakHelperService } from '../../services/keycloak-helper/keycloak-h
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
   loggedIn = false;
+  username = '';
 
   constructor(
     public heroService: HeroService,
@@ -35,10 +36,16 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   async ngOnInit(): Promise<void> {
     this.loggedIn = await this.keycloak.isLoggedIn();
+    if (this.loggedIn) {
+      this.username = this.keycloakHelper.getUsername();
+    }
   }
 
   async ngAfterViewInit(): Promise<void> {
     this.loggedIn = await this.keycloak.isLoggedIn();
+    if (this.loggedIn) {
+      this.username = this.keycloakHelper.getUsername();
+    }
   }
 
   public login(): void {

@@ -1,0 +1,32 @@
+<mat-accordion class="headers-align">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{
+        'ACCOUNT.API_MANAGEMENT.TITLE' | translate
+      }}</mat-panel-title>
+      <mat-panel-description>
+        &nbsp;
+        <mat-icon>security</mat-icon>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div
+      class="api-management-permission"
+      *ngFor="
+        let apiManagementPermission of apiManagementPermissions | keyvalue
+      ">
+      <label class="default-label">{{ apiManagementPermission.key }}</label>
+      <mat-list dense>
+        <span
+          mat-list-item
+          *ngFor="
+            let permission of apiManagementPermission.value;
+            last as isLast
+          ">
+          {{ permission }}
+          <span *ngIf="!isLast">&nbsp;|&nbsp;</span>
+        </span>
+      </mat-list>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
