@@ -76,7 +76,7 @@ public class PolicyBean implements Serializable, Cloneable {
     private String description;
     @Lob
     @Column(updatable=true, nullable=true)
-    // @Type(type = "org.hibernate.type.TextType")
+    @Type(type = "org.hibernate.type.TextType")
     private String configuration;
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;

@@ -20,7 +20,6 @@ import io.apiman.common.util.crypt.DataEncryptionContext;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -34,10 +33,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.hibernate.annotations.Type;
 
 /**
  * Models a single gateway configured by an admin.  When publishing APIs,
@@ -73,7 +71,7 @@ public class GatewayBean implements Serializable {
     private GatewayType type;
     @Lob
     @Column(updatable=true, nullable=false)
-    // @Type(type = "org.hibernate.type.TextType")
+    @Type(type = "org.hibernate.type.TextType")
     private String configuration;
 
     /**
