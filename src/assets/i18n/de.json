@@ -39,7 +39,6 @@
     "SEARCH": "APIs und Tags",
     "LEARN_MORE": "Mehr",
     "NO_DESC": "Keine API-Beschreibung verfügbar",
-    "APIS_AVAILABLE": "{{totalSize}} APIs verfügbar",
     "ERROR_WHILE_FETCHING_APIS": "Es konnten nicht alle APIs geladen werden."
   },
   "ACCOUNT": {
