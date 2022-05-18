@@ -39,7 +39,8 @@
     "SEARCH": "APIs and tags",
     "LEARN_MORE": "Learn more",
     "NO_DESC": "No API description available",
-    "APIS_AVAILABLE": "{{totalSize}} API(s) available"
+    "APIS_AVAILABLE": "{{totalSize}} API(s) available",
+    "ERROR_WHILE_FETCHING_APIS": "Not all APIs could be loaded."
   },
   "ACCOUNT": {
     "TITLE": "Account",

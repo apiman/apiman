@@ -71,13 +71,28 @@ export class ApiService {
   getLatestApiVersion(orgId: string, apiId: string): Observable<IApiVersion> {
     let latestApiVersionSummary: IApiVersionSummary;
     return this.backendService.getApiVersionSummaries(orgId, apiId).pipe(
+      catchError((err: HttpErrorResponse) => {
+        console.log(err);
+        return of([] as IApiVersionSummary[]);
+      }),
       switchMap((apiVersions) => {
-        latestApiVersionSummary = apiVersions[0];
-        return this.backendService.getApiVersion(
-          latestApiVersionSummary.organizationId,
-          latestApiVersionSummary.id,
-          latestApiVersionSummary.version
-        );
+        if (apiVersions.length > 0) {
+          latestApiVersionSummary = apiVersions[0];
+          return this.backendService
+            .getApiVersion(
+              latestApiVersionSummary.organizationId,
+              latestApiVersionSummary.id,
+              latestApiVersionSummary.version
+            )
+            .pipe(
+              catchError((err: HttpErrorResponse) => {
+                console.log(err);
+                return of({} as IApiVersion);
+              })
+            );
+        } else {
+          return of({} as IApiVersion);
+        }
       })
     );
   }

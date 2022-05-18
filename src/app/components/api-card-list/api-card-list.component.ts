@@ -31,6 +31,8 @@ import {
   ISearchResultsApiSummary
 } from '../../interfaces/ICommunication';
 import { IApiSummaryExt } from '../../interfaces/IApiSummaryExt';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-api-card-list',
@@ -49,12 +51,15 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
   searchTerm = '';
   searchTermNotifier = new Subject();
   pageIndex = 0;
+  showErrorSnackbar = false;
 
   @Input() listType = '';
 
   constructor(
     public apiService: ApiService,
-    public loadingSpinnerService: SpinnerService
+    public loadingSpinnerService: SpinnerService,
+    private snackbarService: SnackbarService,
+    private translatorService: TranslateService
   ) {
     this.initScrollEventListener();
   }
@@ -140,6 +145,14 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
           } else {
             this.apis = [...this.apis, ...apiList];
           }
+          if (this.showErrorSnackbar) {
+            this.snackbarService.showErrorSnackBar(
+              this.translatorService.instant(
+                'MPLACE.ERROR_WHILE_FETCHING_APIS'
+              ) as string
+            );
+            this.showErrorSnackbar = false;
+          }
           this.apis$ = of(this.apis);
           this.loadingSpinnerService.stopWaiting();
           this.loadingMoreApis = false;
@@ -179,12 +192,17 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
             .getLatestApiVersion(apiSummary.organizationId, apiSummary.id)
             .pipe(
               map((latestApiVersion) => {
-                return {
-                  ...apiSummary,
-                  latestApiVersion: latestApiVersion,
-                  docsAvailable:
-                    this.apiService.isApiDocAvailable(latestApiVersion)
-                } as IApiSummaryExt;
+                if (latestApiVersion.api) {
+                  return {
+                    ...apiSummary,
+                    latestApiVersion: latestApiVersion,
+                    docsAvailable:
+                      this.apiService.isApiDocAvailable(latestApiVersion)
+                  } as IApiSummaryExt;
+                } else {
+                  this.showErrorSnackbar = true;
+                  return {} as IApiSummaryExt;
+                }
               })
             );
         })

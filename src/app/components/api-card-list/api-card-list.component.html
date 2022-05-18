@@ -42,10 +42,9 @@
 </div>
 <ng-container *ngIf="(apis$ | async)!.length > 0 && ready; else NoDataMsg">
   <div id="grid">
-    <app-api-card
-      *ngFor="let api of apis$ | async"
-      [api]="api"
-      class="api-card"></app-api-card>
+    <ng-container *ngFor="let api of apis$ | async">
+      <app-api-card *ngIf="api.id" [api]="api" class="api-card"></app-api-card>
+    </ng-container>
     <div id="grid-spinner" [hidden]="!loadingMoreApis">
       <mat-spinner strokeWidth="3" diameter="50"></mat-spinner>
     </div>
