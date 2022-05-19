@@ -13,10 +13,22 @@ _module.controller('Apiman.ApiDefController',
         $scope.textAreaHeight = '100';
         $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
         $scope.typeOptions = [
-            { "label" : "No API Definition",     "value" : "None" },
-            { "label" : "Swagger (JSON)",        "value" : "SwaggerJSON" },
-            { "label" : "Swagger (YAML)",        "value" : "SwaggerYAML" },
-            { "label" : "WSDL",                  "value" : "WSDL" }
+            {
+                "label" : "No API Definition",
+                "value" : "None"
+            },
+            {
+                "label" : "OpenAPI & Swagger v2/v3 (JSON)",
+                "value" : "SwaggerJSON"
+            },
+            {
+                "label" : "OpenAPI & Swagger v2/v3 (YAML)",
+                "value" : "SwaggerYAML"
+            },
+            {
+                "label" : "WSDL",
+                "value" : "WSDL"
+            }
         ];
 
         const selectType = function (newType) {
