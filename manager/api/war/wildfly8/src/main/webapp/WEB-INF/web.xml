@@ -117,6 +117,12 @@
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
     <web-resource-collection>
+      <web-resource-name>Blobs</web-resource-name>
+      <url-pattern>/blobs</url-pattern>
+      <http-method-omission>OPTIONS</http-method-omission>
+      <http-method-omission>GET</http-method-omission>
+    </web-resource-collection>
+    <web-resource-collection>
       <web-resource-name>Developers (deprecated)</web-resource-name>
       <url-pattern>/developers/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
