@@ -21,6 +21,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
+import java.util.StringJoiner;
 import javax.inject.Inject;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -59,7 +60,7 @@ import org.checkerframework.checker.nullness.qual.PolyNull;
 public class SchemaRewriterService {
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(SchemaRewriterService.class);
     private static final ApiDefinitionProvider PASSTHROUGH_PROVIDER = new NoOpProvider();
-    private static final Cache<Long, FileBackedOutputStream> SCHEMA_CACHE = Caffeine.newBuilder()
+    private static final Cache<SchemaCacheKey, FileBackedOutputStream> SCHEMA_CACHE = Caffeine.newBuilder()
                                                                     .expireAfterWrite(Duration.ofMinutes(5)) // TODO(msavy): make configurable
                                                                     .build();
     private static final Map<ApiDefinitionType, ApiDefinitionProvider> SCHEMA_HANDLERS;
@@ -94,8 +95,9 @@ public class SchemaRewriterService {
                 avb,
                 gatewayLinkFactory
         );
+        var cacheKey = new SchemaCacheKey(ctx.getAvb().getId(), type);
         // Due to checked exceptions, can't use the `#get(key, (cache) -> { lambda });` form
-        @PolyNull FileBackedOutputStream cachedEntry = SCHEMA_CACHE.getIfPresent(ctx.getAvb().getId());
+        @PolyNull FileBackedOutputStream cachedEntry = SCHEMA_CACHE.getIfPresent(cacheKey);
         if (cachedEntry != null) {
             return cachedEntry;
         } else {
@@ -103,7 +105,7 @@ public class SchemaRewriterService {
             String rewritten = handler.rewrite(ctx, is, type);
             FileBackedOutputStream fbos = new FileBackedOutputStream(Math.toIntExact(FileUtils.ONE_KB * 256));
             fbos.write(rewritten.getBytes(StandardCharsets.UTF_8));
-            SCHEMA_CACHE.put(ctx.getAvb().getId(), fbos);
+            SCHEMA_CACHE.put(cacheKey, fbos);
             return fbos;
         }
     }
@@ -117,6 +119,32 @@ public class SchemaRewriterService {
             try (Reader reader = new InputStreamReader(is)) {
                 return CharStreams.toString(reader);
             }
+        }
+    }
+
+    private static class SchemaCacheKey {
+        private final long apiVersionId;
+        private final ApiDefinitionType apiDefinitionType;
+
+        private SchemaCacheKey(long apiVersionId, ApiDefinitionType apiDefinitionType) {
+            this.apiVersionId = apiVersionId;
+            this.apiDefinitionType = apiDefinitionType;
+        }
+
+        public long getApiVersionId() {
+            return apiVersionId;
+        }
+
+        public ApiDefinitionType getApiDefinitionType() {
+            return apiDefinitionType;
+        }
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", SchemaCacheKey.class.getSimpleName() + "[", "]")
+                           .add("apiVersionId=" + apiVersionId)
+                           .add("apiDefinitionType=" + apiDefinitionType)
+                           .toString();
         }
     }
 }
