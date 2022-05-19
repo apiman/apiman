@@ -16,6 +16,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.core.models.DocumentType;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Parse and rewrite OpenAPI/Swagger v2 and OpenAPI v3 schemas to point to the Apiman managed gateway endpoints.
@@ -46,7 +47,16 @@ public class OpenApiProvider implements ApiDefinitionProvider {
     @Override
     public String rewrite(ProviderContext providerCtx, InputStream is, ApiDefinitionType apiDefinitionType)
             throws IOException, StorageException, GatewayAuthenticationException {
+        // Special case for Swagger/OAI 1.x, we don't do anything (yet)
         JsonNode root = om(apiDefinitionType).readTree(is);
+        if (root.has("swaggerVersion")) {
+            // If seems to be OAI/Swagger 1.x then just return the stringified version.
+            if (StringUtils.startsWith(root.get("swaggerVersion").asText(), "1.")) {
+                return om(apiDefinitionType).writeValueAsString(root);
+            }
+        }
+
+        // All other versions
         Document parsedLib = Library.readDocument(root);
         DocumentType docType = parsedLib.getDocumentType();
         switch (docType) {

@@ -8,11 +8,6 @@ import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.openapi.v2.models.Oas20Document;
@@ -48,15 +43,11 @@ public class OpenApi2 implements OAIRewriter {
 
         // We can guarantee it's an OAS2.x doc (aka. Swagger v2).
         Oas20Document oas2 = (Oas20Document) schema;
-        int port;
-        if (apiEndpointUri.getPort() != -1) {
-            port = apiEndpointUri.getPort();;
-        } else if (apiEndpointUri.getScheme().startsWith("https")) {
-            port = 443;
+        if (apiEndpointUri.getPort() == -1) {
+            oas2.host = apiEndpointUri.getHost();
         } else {
-            port = 80;
+            oas2.host = apiEndpointUri.getHost() + ":" + apiEndpointUri.getPort();
         }
-        oas2.host = apiEndpointUri.getHost() + ":" + port;
         oas2.basePath = apiEndpointUri.getPath();
     }
 
