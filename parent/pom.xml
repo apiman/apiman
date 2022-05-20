@@ -138,7 +138,7 @@
     <version.org.jsoup>1.14.3</version.org.jsoup>
     <version.org.keycloak>15.1.1</version.org.keycloak>
     <version.org.lz4.lz4-java>1.8.0</version.org.lz4.lz4-java>
-    <version.org.mockito>3.12.1</version.org.mockito>
+    <version.org.mockito>4.5.1</version.org.mockito>
     <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
     <version.org.mvel>2.4.12.Final</version.org.mvel>
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
