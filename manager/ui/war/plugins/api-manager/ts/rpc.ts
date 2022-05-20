@@ -1,13 +1,7 @@
 import angular = require("angular");
-import { BlobRef } from "./model/blob.model";
-import {
-    ApiBean,
-    ApiPlanBean,
-    ApiPlanSummaryBean,
-    ApiVersionBean, KeyValueTagDto, UpdateApiBean,
-    UpdateApiVersionBean,
-} from "./model/api.model";
-import { ContractAction } from "./model/contract.model";
+import {BlobRef} from "./model/blob.model";
+import {ApiPlanBean, ApiPlanSummaryBean, ApiVersionBean, KeyValueTagDto, UpdateApiBean, UpdateApiVersionBean,} from "./model/api.model";
+import {ContractAction} from "./model/contract.model";
 
 const _module = angular.module("ApimanRPC", [
   "ngResource",
@@ -269,10 +263,9 @@ _module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration', '$q
     function($resource, $http, Configuration, $q) {
         return {
             getApimanDefinitionUrl: function(orgId, apiId, version) {
-                var endpoint = formatEndpoint(
+                return formatEndpoint(
                     Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/definition',
-                    { organizationId: orgId, apiId: apiId, version: version });
-                return endpoint;
+                    {organizationId: orgId, apiId: apiId, version: version});
             },
             getApiDefinition: function(orgId, apiId, version, handler): Promise<string> {
                 var endpoint = formatEndpoint(

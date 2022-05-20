@@ -79,15 +79,12 @@ import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 import io.apiman.manager.api.rest.impl.util.FieldValidator;
 import io.apiman.manager.api.rest.impl.util.RestHelper;
-import io.apiman.manager.api.rest.impl.util.SwaggerWsdlHelper;
+import io.apiman.manager.api.schema.SchemaRewriterService;
 import io.apiman.manager.api.security.ISecurityContext;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -130,6 +127,7 @@ public class ApiService implements DataAccessUtilMixin {
     private IGatewayLinkFactory gatewayLinkFactory;
     private PolicyService policyService;
     private IBlobStore blobStore;
+    private SchemaRewriterService schemaRewriterService;
     private final ApiVersionMapper apiVersionMapper = ApiVersionMapper.INSTANCE;
     private final ApiMapper apiMapper = ApiMapper.INSTANCE;
     private final KeyValueTagMapper tagMapper = KeyValueTagMapper.INSTANCE;
@@ -143,7 +141,8 @@ public class ApiService implements DataAccessUtilMixin {
                       IDataEncrypter encrypter,
                       IGatewayLinkFactory gatewayLinkFactory,
                       PolicyService policyService,
-                      IBlobStore blobStore) {
+                      IBlobStore blobStore,
+                      SchemaRewriterService schemaRewriterService) {
         this.storage = storage;
         this.query = query;
         this.organizationService = organizationService;
@@ -153,6 +152,7 @@ public class ApiService implements DataAccessUtilMixin {
         this.gatewayLinkFactory = gatewayLinkFactory;
         this.policyService = policyService;
         this.blobStore = blobStore;
+        this.schemaRewriterService = schemaRewriterService;
     }
 
     public ApiService() {
@@ -250,7 +250,7 @@ public class ApiService implements DataAccessUtilMixin {
      * @param organizationId the organizationId
      * @param apiId the apiId
      * @return the api
-     * @throws StorageException if the API is not found
+     * @throws ApiNotFoundException if the API is not found
      */
     private ApiBean getApiFromStorage(String organizationId, String apiId) throws ApiNotFoundException {
         ApiBean apiBean = tryAction(() -> storage.getApi(organizationId, apiId));
@@ -393,6 +393,7 @@ public class ApiService implements DataAccessUtilMixin {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                // TODO(msavy): is this actually doing anything useful? Should we just remove this?
                 // TODO it's ok if the clone fails - we did our best
                 if (e != null) {
                     Throwable t = e;
@@ -511,60 +512,20 @@ public class ApiService implements DataAccessUtilMixin {
     public ApiDefinitionStream getApiDefinition(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
        return tryAction(() -> {
-            ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
-
-            InputStream definition = storage.getApiDefinition(apiVersion);
-            if (definition == null) {
-                throw ExceptionFactory.apiDefinitionNotFoundException(apiId, version);
-            }
-
-            definition = updateDefinitionWithManagedEndpoint(organizationId, apiId, version, apiVersion, definition);
-            return new ApiDefinitionStream(apiVersion.getDefinitionType(), definition);
+           ApiVersionBean apiVersion = getApiVersionFromStorage(organizationId, apiId, version);
+           try (InputStream defStream = storage.getApiDefinition(apiVersion)) {
+               if (defStream == null) {
+                   throw ExceptionFactory.apiDefinitionNotFoundException(apiId, version);
+               }
+               if (apiVersion.getStatus() != ApiStatus.Published) {
+                   return new ApiDefinitionStream(apiVersion.getDefinitionType(), defStream);
+               }
+               return new ApiDefinitionStream(
+                       apiVersion.getDefinitionType(),
+                       schemaRewriterService.rewrite(apiVersion, defStream, apiVersion.getDefinitionType()).asByteSource().openStream()
+               );
+           }
        });
-    }
-
-    /**
-     * Replaces the location with the location of the managed endpoint if it is a wsdl definition.
-     * Replaces the host and base path with the information of the managed endpoint if it is a swagger 2+ definition.
-     * Updates the definition in storage if needed.
-     * @param organizationId the organizationId
-     * @param apiId the apiId
-     * @param version the version
-     * @param definition the definition as stream
-     * @param apiVersion the apiVersion
-     * @return a ByteArrayInputStream with the updated definition
-     * @throws IOException
-     * @throws StorageException
-     */
-    protected InputStream updateDefinitionWithManagedEndpoint(String organizationId, String apiId, String version, ApiVersionBean apiVersion, InputStream definition) throws IOException, StorageException {
-        // If it is not a published API we will not try to update the API definition. We will return definition from storage
-        if (apiVersion.getStatus() != ApiStatus.Published) {
-            return definition;
-        }
-
-        URL managedEndpoint = null;
-        try {
-            managedEndpoint = new URL(getApiVersionEndpointInfoFromStorage(apiVersion, organizationId, apiId, version).getManagedEndpoint());
-        } catch (Exception e) {
-            // If the gateway is not available we return the definition from storage
-            return definition;
-        }
-
-        String definitionString = null;
-        String updatedDefinitionString = null;
-        if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerJSON) {
-            definitionString = SwaggerWsdlHelper.readSwaggerStreamToString(definition);
-            updatedDefinitionString = SwaggerWsdlHelper.updateSwaggerDefinitionWithEndpoint(managedEndpoint, definitionString, apiVersion, storage);
-        } else if (apiVersion.getDefinitionType() == ApiDefinitionType.SwaggerYAML) {
-            definitionString = SwaggerWsdlHelper.convertYamlToJson(SwaggerWsdlHelper.readSwaggerStreamToString(definition));
-            updatedDefinitionString = SwaggerWsdlHelper.updateSwaggerDefinitionWithEndpoint(managedEndpoint, definitionString, apiVersion, storage);
-        } else if (apiVersion.getDefinitionType() == ApiDefinitionType.WSDL) {
-            updatedDefinitionString = SwaggerWsdlHelper.updateLocationEndpointInWsdl(definition, managedEndpoint, apiVersion, storage);
-        } else {
-            return definition;
-        }
-
-        return new ByteArrayInputStream(updatedDefinitionString.getBytes(StandardCharsets.UTF_8));
     }
 
     public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(String organizationId, String apiId, String version)
@@ -574,8 +535,7 @@ public class ApiService implements DataAccessUtilMixin {
             if (apiVersion.getStatus() != ApiStatus.Published) {
                 throw new InvalidApiStatusException(Messages.i18n.format("ApiNotPublished")); //$NON-NLS-1$
             }
-            ApiVersionEndpointSummaryBean rval = getApiVersionEndpointInfoFromStorage(apiVersion, organizationId, apiId, version);
-            return rval;
+            return getApiVersionEndpointInfoFromStorage(apiVersion, organizationId, apiId, version);
         });
     }
 
