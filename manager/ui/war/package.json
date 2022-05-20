@@ -54,7 +54,7 @@
     "ip-address": "8.1.0",
     "jquery": "3.5.1",
     "lodash": "4.17.21",
-    "luxon": "2.3.2",
+    "luxon": "2.4.0",
     "ng-file-upload": "9.1.1",
     "ng-sortable": "1.2.2",
     "ngtemplate-loader": "2.1.0",
