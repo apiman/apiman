@@ -835,10 +835,10 @@ angular-mocks@1.8.2:
   resolved "https://registry.yarnpkg.com/angular-mocks/-/angular-mocks-1.8.2.tgz#dc022420b86978cf317a8447c116c0be73a853bf"
   integrity sha512-I5L3P0l21HPdVsP4A4qWmENt4ePjjbkDFdAzOaM7QiibFySbt14DptPbt2IjeG4vFBr4vSLbhIz8Fk03DISl8Q==
 
-angular-resource@1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/angular-resource/-/angular-resource-1.8.2.tgz#fc1f1adb93dfb83e295d1cfff2a48cec4296e20a"
-  integrity sha512-CbTu8ypkVZMBLm+Wd+jI9xR7QEVCeUgN8WXsr9Yi9l0s/8ZQa5kEIuYX3F/75Ej8Xs1Jp9DoKjAyvACI6Q8IJA==
+angular-resource@1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/angular-resource/-/angular-resource-1.8.3.tgz#013994c332f0e084f2735fe28af7bccc82f0774c"
+  integrity sha512-x3+4w2SyIDEIe6PUBTzcjDFI5MhZNWAPELUxkYK0QMOkOo4w3BN/qhpd+fO1deFiDS23mZKqT8kfctO1IDkCDA==
 
 angular-route@1.8.2:
   version "1.8.2"
