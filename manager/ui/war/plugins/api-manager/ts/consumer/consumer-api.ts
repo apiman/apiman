@@ -27,13 +27,13 @@ _module.controller("Apiman.ConsumerApiRedirectController",
             });
         }]);
 
-    
+
 _module.controller("Apiman.ConsumerApiController",
         ['$q', '$scope', 'OrgSvcs', 'PageLifecycle', '$routeParams',
         function ($q, $scope, OrgSvcs, PageLifecycle, $routeParams) {
             $scope.params = $routeParams;
             $scope.chains = {};
-            
+
             $scope.getPolicyChain = function(plan) {
                 var planId = plan.planId;
                 if (!$scope.chains[planId]) {
@@ -44,7 +44,7 @@ _module.controller("Apiman.ConsumerApiController",
                     });
                 }
             };
-            
+
             var pageData = {
                 version: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: $routeParams.org, entityType: 'apis', entityId: $routeParams.api, versionsOrActivity: 'versions', version: $routeParams.version }, resolve, reject);
@@ -74,7 +74,7 @@ _module.controller("Apiman.ConsumerApiController",
                     OrgSvcs.query({ organizationId: $routeParams.org, entityType: 'apis', entityId: $routeParams.api, versionsOrActivity: 'versions', version: $routeParams.version, policiesOrActivity: 'plans' }, resolve, reject);
                 })
             };
-            
+
             $scope.setVersion = function(apiVersion) {
                 PageLifecycle.redirectTo('/browse/orgs/{0}/{1}/{2}', $routeParams.org, $routeParams.api, apiVersion.version);
             };
@@ -135,18 +135,6 @@ _module.controller("Apiman.ConsumerApiDefController",
                 })
             };
 
-            const DisableTryItOutPlugin = function() {
-                return {
-                    statePlugins: {
-                        spec: {
-                            wrapSelectors: {
-                                allowTryItOutFor: () => () => false
-                            }
-                        }
-                    }
-                }
-            };
-
             // SwaggerUI Plugins
             const DisableAuthorizePlugin = function() {
                 return {
@@ -181,12 +169,23 @@ _module.controller("Apiman.ConsumerApiDefController",
 
                     $scope.definitionStatus = 'loading';
                     let ui;
-                    let swaggerOptions = <any>{
+                    let swaggerOptions: SwaggerUI.SwaggerUIOptions = {
                         url: url,
                         dom_id: "#swagger-ui-container",
                         validatorUrl: "https://online.swagger.io/validator",
                         layout: "BaseLayout",
-                        sorter : "alpha",
+                        operationsSorter: "alpha",
+                        tryItOutEnabled: true,
+                        supportedSubmitMethods: [
+                            'get',
+                            'put',
+                            'post',
+                            'delete',
+                            'options',
+                            'head',
+                            'patch',
+                            'trace'
+                        ],
 
                         requestInterceptor: function(request) {
                             // Only add auth header to requests where the URL matches the one specified above.
@@ -227,7 +226,8 @@ _module.controller("Apiman.ConsumerApiDefController",
                     // Remove try-out and authorize if the API is not public or has no contract
                     if (!(hasContract || hasPublicPublishedAPI)){
                         swaggerOptions.plugins = [];
-                        swaggerOptions.plugins.push(DisableTryItOutPlugin, DisableAuthorizePlugin);
+                        swaggerOptions.supportedSubmitMethods = [];
+                        swaggerOptions.plugins.push(DisableAuthorizePlugin);
                     }
 
                     ui = SwaggerUI(swaggerOptions);

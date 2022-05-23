@@ -1,8 +1,9 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack')
 
-module.exports = (env, argv) => { 
+module.exports = (env, argv) => {
   return {
     mode: 'development',
     entry: {
@@ -22,13 +23,19 @@ module.exports = (env, argv) => {
       new CopyPlugin({
         patterns: [
           { from: "./apiman", to: "apiman" },
-          { 
+          {
             from: "./plugins/api-manager/**/*.{html,include}",
             to({ context, absoluteFilename }) {
               return `${path.relative("./", absoluteFilename)}`;
             },
         }
         ],
+      }),
+      // https://github.com/webpack/changelog-v5/issues/10
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+        process: 'process/browser',
+
       })
     ],
     module: {
@@ -58,6 +65,9 @@ module.exports = (env, argv) => {
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
+      fallback: {
+        "stream": require.resolve("stream-browserify")
+      }
     },
     optimization: {
       splitChunks: {
