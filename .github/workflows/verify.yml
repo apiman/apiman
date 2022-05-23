@@ -24,6 +24,7 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '16'
+          cache: 'npm'
           check-latest: true
       - name: Install node modules
         run: npm ci
@@ -38,6 +39,7 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '16'
+          cache: 'npm'
           check-latest: true
       - name: Install node modules
         run: npm ci
