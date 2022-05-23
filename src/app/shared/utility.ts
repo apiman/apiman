@@ -58,3 +58,23 @@ export function removeCssClass(selctor: string, className: string): void {
     element.classList.remove(className);
   });
 }
+
+/**
+ * Checks if the user has all required roles, Apiman users and admins with the default roles also pass
+ *
+ * @param requiredRoles - string array of roles a user must have
+ * @param actualRoles - string array of roles a user currently has
+ * @returns True if the user has one of the configured roles or if the user is a full Apiman user (based on IDM default roles)
+ */
+export function hasRequiredAuthRoles(
+  requiredRoles: string[],
+  actualRoles: string[]
+) {
+  const apimanAdminFallback: string[] = ['apiuser', 'apiadmin'];
+
+  return (
+    requiredRoles.every((role: string) => actualRoles.includes(role)) ||
+    (actualRoles.includes('view-profile') &&
+      apimanAdminFallback.some((role: string) => actualRoles.includes(role)))
+  );
+}

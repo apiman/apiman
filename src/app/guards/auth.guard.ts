@@ -21,6 +21,7 @@ import { KeycloakHelperService } from '../services/keycloak-helper/keycloak-help
 import { PermissionsService } from '../services/permissions/permissions.service';
 import { ConfigService } from '../services/config/config.service';
 import { SnackbarService } from '../services/snackbar/snackbar.service';
+import { hasRequiredAuthRoles } from '../shared/utility';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,7 @@ export class AuthGuard extends KeycloakAuthGuard {
       });
     }
 
-    if (!this.hasRequiredRoles()) {
+    if (!hasRequiredAuthRoles(this.config.getBackendRoles(), this.roles)) {
       // TODO: change to error page
       this.snackbar.showErrorSnackBar('Not enough permission');
       return this.router.createUrlTree(['/home']);
@@ -56,20 +57,5 @@ export class AuthGuard extends KeycloakAuthGuard {
     await this.permissionsService.updateUserPermissions();
 
     return this.authenticated;
-  }
-
-  /**
-   * Checks if the user has all required roles, Apiman users and admins with the default roles also pass
-   * @returns True if the user has one of the configured roles or if the user is a full Apiman user (based on IDM default roles)
-   */
-  private hasRequiredRoles() {
-    const apimanAdminFallback: string[] = ['apiuser', 'apiadmin'];
-    const requiredRoles = this.config.getBackendRoles();
-
-    return (
-      requiredRoles.every((role: string) => this.roles.includes(role)) ||
-      (this.roles.includes('view-profile') &&
-        apimanAdminFallback.some((role: string) => this.roles.includes(role)))
-    );
   }
 }

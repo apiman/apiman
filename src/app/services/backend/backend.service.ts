@@ -47,6 +47,7 @@ import { IPolicyProbe } from '../../interfaces/IPolicy';
 import { switchMap } from 'rxjs/operators';
 import { KeycloakService } from 'keycloak-angular';
 import { IUrlPath } from '../../interfaces/IUrlPath';
+import { hasRequiredAuthRoles } from '../../shared/utility';
 
 @Injectable({
   providedIn: 'root'
@@ -498,7 +499,13 @@ export class BackendService {
   public generateUrlFromIUrlPath(path: IUrlPath): Observable<string> {
     return from(this.keycloakService.isLoggedIn()).pipe(
       switchMap((loggedIn: boolean) => {
-        if (loggedIn) {
+        if (
+          loggedIn &&
+          hasRequiredAuthRoles(
+            this.configService.getBackendRoles(),
+            this.keycloakService.getUserRoles()
+          )
+        ) {
           return of(this.generateUrlFromPath(path.loggedInUrlPath));
         }
         return of(this.generateUrlFromPath(path.urlPath));
