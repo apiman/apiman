@@ -144,7 +144,7 @@
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.36</version.org.slf4j>
-    <version.org.testcontainers>1.17.1</version.org.testcontainers>
+    <version.org.testcontainers>1.17.2</version.org.testcontainers>
     <version.io.apicurio>1.1.26</version.io.apicurio>
     <version.io.netty>4.1.74.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
