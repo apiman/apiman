@@ -80,7 +80,7 @@ public class OrganizationService implements DataAccessUtilMixin {
     private ApiManagerConfig config;
     private IStorage storage;
     private IStorageQuery query;
-    private IUserResource users;
+    private UserService userService;
     private IRoleResource roles;
     private ISecurityContext securityContext;
     private IGatewayLinkFactory gatewayLinkFactory;
@@ -94,7 +94,7 @@ public class OrganizationService implements DataAccessUtilMixin {
          ApiManagerConfig config,
          IStorage storage,
          IStorageQuery query,
-         IUserResource users,
+         UserService userService,
          IRoleResource roles,
          ISecurityContext securityContext,
          IGatewayLinkFactory gatewayLinkFactory,
@@ -103,7 +103,7 @@ public class OrganizationService implements DataAccessUtilMixin {
         this.config = config;
         this.storage = storage;
         this.query = query;
-        this.users = users;
+        this.userService = userService;
         this.roles = roles;
         this.securityContext = securityContext;
         this.gatewayLinkFactory = gatewayLinkFactory;
@@ -204,7 +204,7 @@ public class OrganizationService implements DataAccessUtilMixin {
             LOGGER.debug("Deleted Organization: " + organizationBean.getName()); //$NON-NLS-1$
         });
     }
-    
+
     public OrganizationBean getOrg(String organizationId) throws OrganizationNotFoundException {
         // No permission check is needed, because this would break All Organizations UI
         OrganizationBean organizationBean = tryAction(() -> getOrganizationFromStorage(organizationId));
@@ -229,7 +229,7 @@ public class OrganizationService implements DataAccessUtilMixin {
 
         LOGGER.debug(String.format("Updated organization %s: %s", orgForUpdate.getName(), orgForUpdate)); //$NON-NLS-1$
     }
-    
+
     public SearchResultsBean<AuditEntryBean> activity(String organizationId, int page, int pageSize)
         throws OrganizationNotFoundException, NotAuthorizedException {
         PagingBean paging = PagingBean.create(page, pageSize);
@@ -286,7 +286,7 @@ public class OrganizationService implements DataAccessUtilMixin {
 
         // Verify that the references are valid.
         getOrg(organizationId);
-        users.get(bean.getUserId());
+        userService.getUserById(bean.getUserId());
         for (String roleId : bean.getRoleIds()) {
             roles.get(roleId);
         }
@@ -313,7 +313,7 @@ public class OrganizationService implements DataAccessUtilMixin {
         NotAuthorizedException {
 
         getOrg(organizationId);
-        users.get(userId);
+        userService.getUserById(userId);
         roles.get(roleId);
 
         MembershipData auditData = new MembershipData();
@@ -331,7 +331,7 @@ public class OrganizationService implements DataAccessUtilMixin {
         RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
 
         getOrg(organizationId);
-        users.get(userId);
+        userService.getUserById(userId);
 
         MembershipData auditData = new MembershipData();
         auditData.setUserId(userId);
