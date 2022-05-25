@@ -176,6 +176,7 @@ function devPortalBusinessLogic(
   $scope.deleteImage = deleteApiImage;
   $scope.onDiscoverabilityChange = onDiscoverabilityChange;
   $scope.getDiscoverabilityDescription = getDiscoverabilityDescription;
+  $scope.getApiPlanSummaryBean = getApiPlanSummaryBean;
 
   // TUI Markdown editor. Will initialise
   let markdownEditor: Editor = initEditor();
@@ -381,10 +382,13 @@ function devPortalBusinessLogic(
   }
 
   function onDiscoverabilityChange(change): void {
-    const changedPlanSummary: ApiPlanSummaryBean = change.plan;
-    // change the real plan bean and not the summary (used for save)
-    let planToChange: ApiPlanBean = $scope.data.apiVersion.plans.find((plan: ApiPlanBean) => { return plan.planId === changedPlanSummary.planId})
-    planToChange.discoverability = change.level;
+    change.plan.discoverability = change.level;
+  }
+
+  function getApiPlanSummaryBean(plan: ApiPlanBean): ApiPlanSummaryBean {
+    return $scope.data.planSummaries.find((planSummary: ApiPlanSummaryBean) => {
+      return planSummary.planId === plan.planId;
+    })
   }
 
   function getDiscoverabilityDescription(discoverability: Discoverability): string {
