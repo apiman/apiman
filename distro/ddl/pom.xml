@@ -9,7 +9,7 @@
   <artifactId>apiman-distro-ddl</artifactId>
   <name>apiman-distro-ddl</name>
   <properties>
-    <version.org.postgresql.jdbc.driver>42.3.0</version.org.postgresql.jdbc.driver>
+    <version.org.postgresql.jdbc.driver>42.3.6</version.org.postgresql.jdbc.driver>
     <version.mysql.jdbc.driver>8.0.29</version.mysql.jdbc.driver>
     <version.com.oracle.driver>21.3.0.0</version.com.oracle.driver>
     <version.mssql.driver>9.4.0.jre11</version.mssql.driver>
