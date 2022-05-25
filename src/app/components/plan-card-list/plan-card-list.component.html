@@ -23,7 +23,8 @@
       <div class="card-header">
         <div class="card-header-title primary text-big1">
           <span
-            matTooltip="Discoverability: {{ plan.discoverability }}"
+            id="plan-card-{{ plan.planName }}-title"
+            matTooltip="Visibility: {{ plan.discoverability }}"
             matTooltipPosition="above"
             [matTooltipDisabled]="(loggedIn$ | async) === false"
             >{{ plan.planName }}</span

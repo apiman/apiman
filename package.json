@@ -9,7 +9,9 @@
     "test": "ng test",
     "lint": "ng lint && stylelint '**/*.scss'",
     "lint-fix": "ng lint --fix && stylelint --fix '**/*.scss'",
-    "build-production": "ng build --configuration production"
+    "build-production": "ng build --configuration production",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -56,7 +58,8 @@
     "@types/swagger-ui": "3.52.0",
     "@typescript-eslint/eslint-plugin": "5.21.0",
     "@typescript-eslint/parser": "5.21.0",
-    "cypress": "9.6.0",
+    "cypress": "9.7.0",
+    "cypress-real-events": "1.7.0",
     "eslint": "8.14.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",

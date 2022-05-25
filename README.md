@@ -29,6 +29,20 @@ npm run start
 docker build -t apiman/developer-portal:latest .
 ```
 
+### Cypress E2E Tests
+#### Prerequirements
+* Create the necessary users (find the credentials in cypress.json) in your IDM with the following roles:
+  * cypress.admin - apiadmin
+  * cypress.user1 - apiuser
+  * cypress.user2 - devportaluser
+* Adjust the following settings in cypress.json if needed:
+  * baseUrl -> this url should point to your running 'API Developer Portal'-App 
+  * env.apiman_endpoint -> this url should be the API Management REST API
+
+#### Run the tests
+* To open cypress and run the test manually in the Cypress Test Runner  `npm run cy:open` or use our provided run configuration (Jetbrains IntelliJ/WebStorm)
+* To run all tests automatically `npm run cy:run` or use our provided run configuration (Jetbrains IntelliJ/WebStorm)
+
 ## Screenshots
 ![Detail](./docu/detail.png)
 ![MY Clients 1](./docu/my-client1.png)

@@ -56,6 +56,7 @@
               matTooltip="{{ getClientTooltip(cliCon.value[0]) }}"
               matTooltipClass="multiline-tooltip"
               matTooltipShowDelay="300"
+              matTooltipHideDelay="300"
               [matTooltipDisabled]="organizationCount === 1">
               {{ formatClientContractTitle(cliCon.key) }}
             </h3>
@@ -158,7 +159,8 @@
                   class="primary title cursor-help"
                   matTooltip="{{ getApiTooltip(cliCon.value[0]) }}"
                   matTooltipClass="multiline-tooltip"
-                  matTooltipShowDelay="300">
+                  matTooltipShowDelay="300"
+                  matTooltipHideDelay="300">
                   {{ formatApiVersionPlanTitle(contract) }}
                 </h3>
               </div>

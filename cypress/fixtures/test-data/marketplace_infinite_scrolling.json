@@ -1,0 +1,4161 @@
+{
+  "Metadata" : {
+    "id" : 1653464198347,
+    "exportedOn" : "2022-05-25T07:36:38Z",
+    "apimanVersion" : "8.2.0-SNAPSHOT"
+  },
+  "Users" : [ ],
+  "Gateways" : [ ],
+  "Plugins" : [ ],
+  "Roles" : [ ],
+  "PolicyDefinitions" : [ ],
+  "Developers" : [ ],
+  "Blobs" : [ ],
+  "Orgs" : [ {
+    "OrganizationBean" : {
+      "id" : "CypressTestOrg1",
+      "name" : "CypressTestOrg1",
+      "createdBy" : "platform.admin",
+      "createdOn" : "2022-05-25T07:30:52Z",
+      "modifiedBy" : "platform.admin",
+      "modifiedOn" : "2022-05-25T07:30:52Z"
+    },
+    "Memberships" : [ {
+      "id" : 1014,
+      "userId" : "platform.admin",
+      "roleId" : "Editor",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-05-25T07:30:52Z"
+    }, {
+      "id" : 1015,
+      "userId" : "platform.admin",
+      "roleId" : "Organization-User-Manager",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-05-25T07:30:52Z"
+    } ],
+    "Plans" : [ {
+      "PlanBean" : {
+        "id" : "CypressTestPlan1",
+        "name" : "CypressTestPlan1",
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:31:04Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1017,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:31:04Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:31:04Z",
+          "lockedOn" : "2022-05-25T07:31:07Z"
+        },
+        "Policies" : [ ]
+      } ]
+    } ],
+    "Apis" : [ {
+      "ApiBean" : {
+        "id" : "CypressTestApi0",
+        "name" : "CypressTestApi0",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:37Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1021,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:37Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi1",
+        "name" : "CypressTestApi1",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:37Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1024,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "1",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:37Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi10",
+        "name" : "CypressTestApi10",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:38Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1051,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "10",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:38Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi11",
+        "name" : "CypressTestApi11",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:38Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1054,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "11",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:38Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi12",
+        "name" : "CypressTestApi12",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:38Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1057,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "12",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:38Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi13",
+        "name" : "CypressTestApi13",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:38Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1060,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "13",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:38Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi14",
+        "name" : "CypressTestApi14",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:38Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1063,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "14",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:38Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi15",
+        "name" : "CypressTestApi15",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:38Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1066,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "15",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:38Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi16",
+        "name" : "CypressTestApi16",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:39Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1069,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "16",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:39Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi17",
+        "name" : "CypressTestApi17",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:39Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1072,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "17",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:39Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi18",
+        "name" : "CypressTestApi18",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:39Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1075,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "18",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:39Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi19",
+        "name" : "CypressTestApi19",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:39Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1078,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "19",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:39Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi2",
+        "name" : "CypressTestApi2",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:37Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1027,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "2",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:37Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi20",
+        "name" : "CypressTestApi20",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:39Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1081,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "20",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:39Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi21",
+        "name" : "CypressTestApi21",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:39Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1084,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "21",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:39Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi22",
+        "name" : "CypressTestApi22",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:39Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1087,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "22",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:39Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi23",
+        "name" : "CypressTestApi23",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:40Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1090,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "23",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:40Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi24",
+        "name" : "CypressTestApi24",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:40Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1093,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "24",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:40Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi25",
+        "name" : "CypressTestApi25",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:40Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1096,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "25",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:40Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi26",
+        "name" : "CypressTestApi26",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:40Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1099,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "26",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:40Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi27",
+        "name" : "CypressTestApi27",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:40Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1102,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "27",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:40Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi28",
+        "name" : "CypressTestApi28",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:40Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1105,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "28",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:40Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi29",
+        "name" : "CypressTestApi29",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:40Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1108,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "29",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:40Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi3",
+        "name" : "CypressTestApi3",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:37Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1030,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "3",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:37Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi30",
+        "name" : "CypressTestApi30",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:40Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1111,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "30",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:40Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi31",
+        "name" : "CypressTestApi31",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:40Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1114,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "31",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:40Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi32",
+        "name" : "CypressTestApi32",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:41Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1117,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "32",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:41Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi33",
+        "name" : "CypressTestApi33",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:41Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1120,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "33",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:41Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi34",
+        "name" : "CypressTestApi34",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:41Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1123,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "34",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:41Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi35",
+        "name" : "CypressTestApi35",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:41Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1126,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "35",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:41Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi36",
+        "name" : "CypressTestApi36",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:41Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1129,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "36",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:41Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi37",
+        "name" : "CypressTestApi37",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:41Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1132,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "37",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:41Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi38",
+        "name" : "CypressTestApi38",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:41Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1135,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "38",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:41Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi39",
+        "name" : "CypressTestApi39",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:41Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1138,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "39",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:41Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi4",
+        "name" : "CypressTestApi4",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:37Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1033,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "4",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:37Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi40",
+        "name" : "CypressTestApi40",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:41Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1141,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "40",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:41Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi41",
+        "name" : "CypressTestApi41",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:42Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1144,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "41",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:42Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi42",
+        "name" : "CypressTestApi42",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:42Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1147,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "42",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:42Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi43",
+        "name" : "CypressTestApi43",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:42Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1150,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "43",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:42Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi44",
+        "name" : "CypressTestApi44",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:42Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1153,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "44",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:42Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi45",
+        "name" : "CypressTestApi45",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:42Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1156,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "45",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:42Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi46",
+        "name" : "CypressTestApi46",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:42Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1159,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "46",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:42Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi47",
+        "name" : "CypressTestApi47",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:42Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1162,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "47",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:42Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi48",
+        "name" : "CypressTestApi48",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:42Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1165,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "48",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:42Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi49",
+        "name" : "CypressTestApi49",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:42Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1168,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "49",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:42Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi5",
+        "name" : "CypressTestApi5",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:37Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1036,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "5",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:37Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi50",
+        "name" : "CypressTestApi50",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:42Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1171,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "50",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:42Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi51",
+        "name" : "CypressTestApi51",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:43Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1174,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "51",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:43Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi52",
+        "name" : "CypressTestApi52",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:43Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1177,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "52",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:43Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi53",
+        "name" : "CypressTestApi53",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:43Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1180,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "53",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:43Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi54",
+        "name" : "CypressTestApi54",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:43Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1183,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "54",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:43Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi55",
+        "name" : "CypressTestApi55",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:43Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1186,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "55",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:43Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi56",
+        "name" : "CypressTestApi56",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:43Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1189,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "56",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:43Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi57",
+        "name" : "CypressTestApi57",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:45Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1192,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "57",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:45Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:45Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi58",
+        "name" : "CypressTestApi58",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:47Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1195,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "58",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:47Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:47Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi59",
+        "name" : "CypressTestApi59",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:47Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1198,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "59",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:47Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:47Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi6",
+        "name" : "CypressTestApi6",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:37Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1039,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "6",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:37Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi60",
+        "name" : "CypressTestApi60",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:48Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1201,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "60",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:48Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi61",
+        "name" : "CypressTestApi61",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:48Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1204,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "61",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:48Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi62",
+        "name" : "CypressTestApi62",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:48Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1207,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "62",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:48Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi63",
+        "name" : "CypressTestApi63",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:48Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1210,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "63",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:48Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi64",
+        "name" : "CypressTestApi64",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:48Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1213,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "64",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:48Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi65",
+        "name" : "CypressTestApi65",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:48Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1216,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "65",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:48Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi66",
+        "name" : "CypressTestApi66",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:48Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1219,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "66",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:48Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi67",
+        "name" : "CypressTestApi67",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:48Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1222,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "67",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:48Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi68",
+        "name" : "CypressTestApi68",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:49Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1225,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "68",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:49Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi69",
+        "name" : "CypressTestApi69",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:49Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1228,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "69",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:49Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi7",
+        "name" : "CypressTestApi7",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:37Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1042,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "7",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:37Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi70",
+        "name" : "CypressTestApi70",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:49Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1231,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "70",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:49Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi71",
+        "name" : "CypressTestApi71",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:49Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1234,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "71",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:49Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi72",
+        "name" : "CypressTestApi72",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:49Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1237,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "72",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:49Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi73",
+        "name" : "CypressTestApi73",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:49Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1240,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "73",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:49Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi74",
+        "name" : "CypressTestApi74",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:49Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1243,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "74",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:49Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi75",
+        "name" : "CypressTestApi75",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:50Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1246,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "75",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi76",
+        "name" : "CypressTestApi76",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:50Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1249,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "76",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi77",
+        "name" : "CypressTestApi77",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:50Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1252,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "77",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi78",
+        "name" : "CypressTestApi78",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:50Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1255,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "78",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi79",
+        "name" : "CypressTestApi79",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:50Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1258,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "79",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi8",
+        "name" : "CypressTestApi8",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:38Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1045,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "8",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:38Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi80",
+        "name" : "CypressTestApi80",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:50Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1261,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "80",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi81",
+        "name" : "CypressTestApi81",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:50Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1264,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "81",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi82",
+        "name" : "CypressTestApi82",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:50Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1267,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "82",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi83",
+        "name" : "CypressTestApi83",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:50Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1270,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "83",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi84",
+        "name" : "CypressTestApi84",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:50Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1273,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "84",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi85",
+        "name" : "CypressTestApi85",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:51Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1276,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "85",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:51Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi86",
+        "name" : "CypressTestApi86",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:51Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1279,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "86",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:51Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi87",
+        "name" : "CypressTestApi87",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:51Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1282,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "87",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:51Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi88",
+        "name" : "CypressTestApi88",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:51Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1285,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "88",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:51Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi89",
+        "name" : "CypressTestApi89",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:51Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1288,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "89",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:51Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi9",
+        "name" : "CypressTestApi9",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:38Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1048,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "9",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:38Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi90",
+        "name" : "CypressTestApi90",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:51Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1291,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "90",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:51Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi91",
+        "name" : "CypressTestApi91",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:51Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1294,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "91",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:51Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi92",
+        "name" : "CypressTestApi92",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:51Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1297,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "92",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:51Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi93",
+        "name" : "CypressTestApi93",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:51Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1300,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "93",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:51Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi94",
+        "name" : "CypressTestApi94",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:51Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1303,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "94",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:52Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi95",
+        "name" : "CypressTestApi95",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:52Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1306,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "95",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:52Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi96",
+        "name" : "CypressTestApi96",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:52Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1309,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "96",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:52Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi97",
+        "name" : "CypressTestApi97",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:52Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1312,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "97",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:52Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi98",
+        "name" : "CypressTestApi98",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:52Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1315,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "98",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:52Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi99",
+        "name" : "CypressTestApi99",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T07:33:52Z"
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1318,
+          "status" : "Ready",
+          "endpoint" : "string",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "99",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T07:33:52Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "string",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    } ],
+    "Clients" : [ ],
+    "Audits" : [ ]
+  } ]
+}

@@ -16,16 +16,13 @@
 
 /// <reference types="cypress" />
 
-import { IApimanData } from '../../src/app/interfaces/ICommunication';
-
 describe('Testing the marketplace', () => {
   before(() => {
-    cy.fixture('apiman_data.json').then((apimanData: IApimanData) => {
-      cy.initApimanData(apimanData);
-    });
+    cy.cleanUp();
+    cy.initApimanData('test-data/apiman_data.json');
   });
 
-  after(() => {
+  beforeEach(() => {
     cy.retireApi('CypressTestOrg', 'TestApi1', '1.0');
     cy.deleteApi('CypressTestOrg', 'TestApi1');
     cy.retireApi('CypressTestOrg', 'TestApi2', '1.0');
@@ -64,5 +61,20 @@ describe('Testing the marketplace', () => {
     cy.get('#no-data-text')
       .should('be.visible')
       .and('include.text', 'No APIs were found');
+  });
+
+  it('Check infinite Scrolling', () => {
+    let fetchApiCount = 0;
+    cy.intercept('POST', '/search/apis', () => {
+      fetchApiCount += 1;
+    }).as('fetchApis');
+    cy.visit('/marketplace');
+    cy.should(() => {
+      expect(fetchApiCount, 'fetchApis call count').to.equal(1);
+    });
+    cy.scrollTo(0, 500);
+    cy.should(() => {
+      expect(fetchApiCount, 'fetchApis call count').to.equal(2);
+    });
   });
 });

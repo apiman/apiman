@@ -16,23 +16,10 @@
 
 /// <reference types="cypress" />
 
-import { IApimanData } from '../../src/app/interfaces/ICommunication';
-
 describe('Testing the home page', () => {
   before(() => {
-    cy.fixture('apiman_data.json').then((apimanData: IApimanData) => {
-      cy.initApimanData(apimanData);
-    });
-  });
-
-  after(() => {
-    cy.retireApi('CypressTestOrg', 'TestApi1', '1.0');
-    cy.deleteApi('CypressTestOrg', 'TestApi1');
-    cy.retireApi('CypressTestOrg', 'TestApi2', '1.0');
-    cy.deleteApi('CypressTestOrg', 'TestApi2');
-    cy.deleteOrg('CypressTestOrg');
-    cy.deleteOrg('cypress.user');
-    cy.deleteOrg('cypress.admin');
+    cy.cleanUp();
+    cy.initApimanData('test-data/apiman_data.json');
   });
 
   it('Check Hero Image and Title home', () => {

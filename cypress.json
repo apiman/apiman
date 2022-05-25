@@ -3,7 +3,15 @@
   "chromeWebSecurity": false,
   "watchForFileChanges": false,
   "baseUrl": "http://localhost:4200",
+  "viewportHeight": 1080,
+  "viewportWidth": 1920,
   "env": {
-    "apiman_endpoint": ""
+    "apiman_endpoint": "https://vagrantguest/pas/apiman",
+    "adminUser": "cypress.admin",
+    "adminPassword": "Demo123!",
+    "nonAdminUser": "cypress.user1",
+    "nonAdminPassword": "Demo123!",
+    "devportalUser": "cypress.user2",
+    "devportalPassword": "Demo123!"
   }
 }

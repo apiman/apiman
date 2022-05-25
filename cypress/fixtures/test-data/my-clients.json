@@ -1,0 +1,780 @@
+{
+  "Metadata" : {
+    "id" : 1653461747230,
+    "exportedOn" : "2022-05-25T06:55:47Z",
+    "apimanVersion" : "8.2.0-SNAPSHOT"
+  },
+  "Users" : [ {
+    "username" : "platform.admin",
+    "fullName" : "Platform Admin",
+    "email" : "internal-support@scheer-pas.com",
+    "joinedOn" : "2022-03-04T14:02:03Z",
+    "locale" : "de",
+    "notificationPreferences" : [ ],
+    "admin" : false
+  } ],
+  "Gateways" : [ {
+    "id" : "TheGateway",
+    "name" : "The Gateway",
+    "description" : "This is the default gateway.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "modifiedBy" : "admin",
+    "modifiedOn" : "2018-05-09T12:00:00Z",
+    "type" : "REST",
+    "configuration" : "{\"endpoint\":\"${apiman.gateway-endpoint:http://api-management-gateway:8081/}\",\"username\":\"${apiman.gateway-endpoint.username:platform.keycloak.user.admin}\",\"password\":\"${apiman.gateway-endpoint.password:F9YT#osqOz0PGZfb4$FD!uhatWOHm3XJ}\"}"
+  } ],
+  "Plugins" : [ {
+    "id" : 1003,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-apikey-policy",
+    "version" : "8.2.0-SNAPSHOT",
+    "name" : "API Key Policy Plugin",
+    "description" : "This plugin provides a policy that can help pass the API Key through to the back-end service.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "deleted" : false
+  }, {
+    "id" : 1004,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-jsonp-policy",
+    "version" : "8.2.0-SNAPSHOT",
+    "name" : "JSONP Policy Plugin",
+    "description" : "A plugin that contributes a policy that turns a standard RESTful endpoint into a JSONP compatible endpoint.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "deleted" : false
+  }, {
+    "id" : 1005,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-http-security-policy",
+    "version" : "8.2.0-SNAPSHOT",
+    "name" : "HTTP Security Policy Plugin",
+    "description" : "Security-related HTTP headers can be set which can help mitigate a range of common security vulnerabilities.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "deleted" : false
+  }, {
+    "id" : 1006,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-keycloak-oauth-policy",
+    "version" : "8.2.0-SNAPSHOT",
+    "name" : "Keycloak OAuth Policy Plugin",
+    "description" : "This plugin offers an OAuth2 policy which leverages the Keycloak authentication platform as the identity and access provider.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "deleted" : false
+  }, {
+    "id" : 1007,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-simple-header-policy",
+    "version" : "8.2.0-SNAPSHOT",
+    "name" : "HTTP Header Policy Plugin",
+    "description" : "Offers a simple policy that allows request headers to be added or stripped from the HTTP request (outgoing) or HTTP response (incoming).",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "deleted" : false
+  }, {
+    "id" : 1008,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-jwt-policy",
+    "version" : "8.2.0-SNAPSHOT",
+    "name" : "JWT Policy",
+    "description" : "Validating JWTs.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "deleted" : false
+  }, {
+    "id" : 1009,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-soap-authorization-policy",
+    "version" : "8.2.0-SNAPSHOT",
+    "name" : "SOAP Authorization Policy Plugin",
+    "description" : "An implementation of our out-of-the-box Authorization Policy Plugin, with the difference that this one accepts a single SOAPAction field in the request header.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "deleted" : false
+  }, {
+    "id" : 1010,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-cors-policy",
+    "version" : "8.2.0-SNAPSHOT",
+    "name" : "CORS Policy Plugin",
+    "description" : "This plugin implements CORS (Cross-origin resource sharing): A method of controlling access to resources outside of an originating domain.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-08-24T10:14:45Z",
+    "deleted" : false
+  }, {
+    "id" : 1011,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-header-allow-deny-policy",
+    "version" : "8.2.0-SNAPSHOT",
+    "name" : "Header Allow/Deny Policy Plugin",
+    "description" : "This plugin only permits requests matching specific header values.",
+    "createdBy" : "admin",
+    "createdOn" : "2020-04-23T06:07:34Z",
+    "deleted" : false
+  }, {
+    "id" : 1012,
+    "groupId" : "io.apiman.plugins",
+    "artifactId" : "apiman-plugins-timeout-policy",
+    "version" : "8.2.0-SNAPSHOT",
+    "name" : "Timeout Policy Plugin",
+    "description" : "This policy configures timeout for the back-end connection.",
+    "createdBy" : "admin",
+    "createdOn" : "2020-12-09T07:16:45Z",
+    "deleted" : false
+  } ],
+  "Roles" : [ {
+    "id" : "Editor",
+    "name" : "Editor",
+    "description" : "A user with this role has the permission to edit.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "autoGrant" : true,
+    "permissions" : [ "orgEdit", "planEdit", "planAdmin", "clientView", "clientEdit", "planView", "apiView", "apiAdmin", "orgView", "apiEdit", "clientAdmin" ]
+  }, {
+    "id" : "Organization-User-Manager",
+    "name" : "Organization-User-Manager",
+    "description" : "A user with this role can manage members of this organization.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "autoGrant" : true,
+    "permissions" : [ "orgEdit", "orgAdmin", "orgView" ]
+  }, {
+    "id" : "Viewer",
+    "name" : "Viewer",
+    "description" : "A user with this role can only view things within an organization.",
+    "createdBy" : "admin",
+    "createdOn" : "2018-05-09T12:00:00Z",
+    "autoGrant" : false,
+    "permissions" : [ "clientView", "planView", "apiView", "orgView" ]
+  } ],
+  "PolicyDefinitions" : [ {
+    "id" : "apikey-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-apikey-policy:8.2.0-SNAPSHOT:war/io.apiman.plugins.apikey_policy.ApiKeyPolicy",
+    "name" : "API Key Policy",
+    "description" : "A policy used to pass the apiman API Key through to the back-end service.",
+    "icon" : "mail-forward",
+    "templates" : [ ],
+    "pluginId" : 1003,
+    "formType" : "JsonSchema",
+    "form" : "schemas/apikey-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "AuthorizationPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.AuthorizationPolicy",
+    "name" : "Authorization Policy",
+    "description" : "Enables fine grained authorization to API resources based on authenticated user roles.",
+    "icon" : "users",
+    "templates" : [ {
+      "template" : "Appropriate authorization roles are required.  There are ${rules.size()} authorization rules defined."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "BASICAuthenticationPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
+    "name" : "BASIC Authentication Policy",
+    "description" : "Enables HTTP BASIC Authentication on an API.  Some configuration required.",
+    "icon" : "lock",
+    "templates" : [ {
+      "template" : "Access to the API is protected by BASIC Authentication through the '${realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end API via the '${forwardIdentityHttpHeader}' custom HTTP header.@end{}"
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "CachingResourcesPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.CachingResourcesPolicy",
+    "name" : "Caching Resources Policy",
+    "description" : "Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.",
+    "icon" : "hdd-o",
+    "templates" : [ {
+      "template" : "API responses will be cached for @{ttl} seconds."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "cors-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-cors-policy:8.2.0-SNAPSHOT:war/io.apiman.plugins.cors_policy.CorsPolicy",
+    "name" : "CORS Policy",
+    "description" : "CORS regulates access resource requests from outside of an originating domain. Configuration required.",
+    "icon" : "gavel",
+    "templates" : [ {
+      "template" : "Cross-origin requests from @if{allowOrigin.contains(\"*\")} any @else{} @{allowOrigin.size()} @end{} origin(s) will be permitted upon satisfying method, header and credential constraints. @if{errorOnCorsFailure} Denied requests will be terminated. @end{} Preflight requests will be cached for @{maxAge} delta seconds."
+    } ],
+    "pluginId" : 1010,
+    "formType" : "JsonSchema",
+    "form" : "schemas/cors-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "header-allow-deny-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-header-allow-deny-policy:8.2.0-SNAPSHOT:war/io.apiman.plugins.headerallowdeny.HeaderAllowDenyPolicy",
+    "name" : "Header Allow/Deny Policy",
+    "description" : "A policy that only permits requests matching specific header values.",
+    "icon" : "sliders",
+    "templates" : [ ],
+    "pluginId" : 1011,
+    "formType" : "JsonSchema",
+    "form" : "schemas/header-allow-deny-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "http-security-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-http-security-policy:8.2.0-SNAPSHOT:war/io.apiman.plugins.httpsecuritypolicy.HttpSecurityPolicy",
+    "name" : "HTTP Security Policy",
+    "description" : "Security-related HTTP headers can be set, such as HSTS, CSP and XSS protection.",
+    "icon" : "bullhorn",
+    "templates" : [ {
+      "template" : "HTTP security headers have been set."
+    } ],
+    "pluginId" : 1005,
+    "formType" : "JsonSchema",
+    "form" : "schemas/http-security-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "IgnoredResourcesPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy",
+    "name" : "Ignored Resources Policy",
+    "description" : "Requests satisfying the provided regular expression will be ignored.",
+    "icon" : "eye-slash",
+    "templates" : [ {
+      "template" : "Requests matching any of the ${rules.size()} regular expressions provided will receive a 404 error code."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "IPBlacklistPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
+    "name" : "IP Blocklist Policy",
+    "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
+    "icon" : "thumbs-down",
+    "templates" : [ {
+      "template" : "Requests that originate from the set of ${ipList.size()} configured IP address(es) will be denied access to the managed API."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "IPWhitelistPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
+    "name" : "IP Allowlist Policy",
+    "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
+    "icon" : "filter",
+    "templates" : [ {
+      "template" : "Only requests that originate from the set of ${ipList.size()} configured IP address(es) will be allowed to invoke the managed API."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "jsonp-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-jsonp-policy:8.2.0-SNAPSHOT:war/io.apiman.plugins.jsonp_policy.JsonpPolicy",
+    "name" : "JSONP Policy",
+    "description" : "Turns an endpoint into a JSONP compatible endpoint.",
+    "icon" : "bars",
+    "templates" : [ ],
+    "pluginId" : 1004,
+    "formType" : "JsonSchema",
+    "form" : "schemas/jsonp-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "jwt-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-jwt-policy:8.2.0-SNAPSHOT:war/io.apiman.plugins.jwt.JWTPolicy",
+    "name" : "JWT Policy",
+    "description" : "Generic JWT authentication policy.",
+    "icon" : "lock",
+    "templates" : [ {
+      "template" : "JWT authentication is @if{requireJWT} required @else{} enabled @end{}."
+    } ],
+    "pluginId" : 1008,
+    "formType" : "JsonSchema",
+    "form" : "schemas/jwt-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "keycloak-oauth-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-keycloak-oauth-policy:8.2.0-SNAPSHOT:war/io.apiman.plugins.keycloak_oauth_policy.KeycloakOauthPolicy",
+    "name" : "Keycloak OAuth Policy",
+    "description" : "A Keycloak specific OAuth policy to regulate access to APIs. Configuration required.",
+    "icon" : "lock",
+    "templates" : [ {
+      "template" : "Keycloak OAuth2 is @if{requireOauth} required @else{} enabled @end{} and @if{requireTransportSecurity} requires @else{} does not require @end{} transport security."
+    } ],
+    "pluginId" : 1006,
+    "formType" : "JsonSchema",
+    "form" : "schemas/keycloak-oauth-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "RateLimitingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
+    "name" : "Rate Limiting Policy",
+    "description" : "Enforces rate configurable request rate limits on an API.  This ensures that consumers can't overload an API with too many requests.",
+    "icon" : "sliders",
+    "templates" : [ {
+      "template" : "Consumers are limited to ${limit} requests per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "simple-header-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-simple-header-policy:8.2.0-SNAPSHOT:war/io.apiman.plugins.simpleheaderpolicy.SimpleHeaderPolicy",
+    "name" : "Simple Header Policy",
+    "description" : "Allows the granular addition and removal of headers.",
+    "icon" : "header",
+    "templates" : [ {
+      "template" : "@{addHeaders.size()} addition rules and @{stripHeaders.size()} deletion rules are active."
+    } ],
+    "pluginId" : 1007,
+    "formType" : "JsonSchema",
+    "form" : "schemas/simple-header-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "soap-authorization-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-soap-authorization-policy:8.2.0-SNAPSHOT:war/io.apiman.plugins.soap_authorization_policy.SoapAuthorizationPolicy",
+    "name" : "SOAP Authorization Policy",
+    "description" : "Enables fine grained authorization to API resources based on authenticated user roles. Allows a single SOAPAction in the header.",
+    "icon" : "code",
+    "templates" : [ {
+      "template" : "Appropriate authorization roles are required.  There are @{rules.size()} authorization rules defined."
+    } ],
+    "pluginId" : 1009,
+    "formType" : "JsonSchema",
+    "form" : "schemas/soap-authorization-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "timeout-policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-timeout-policy:8.2.0-SNAPSHOT:war/io.apiman.plugins.timeoutpolicy.TimeoutPolicy",
+    "name" : "Timeout Policy",
+    "description" : "Configures timeout for the back-end connection.",
+    "icon" : "bullhorn",
+    "templates" : [ {
+      "template" : "Timeout Connect : @{timeoutConnect} ms, Timeout Read :  @{timeoutRead} ms"
+    } ],
+    "pluginId" : 1012,
+    "formType" : "JsonSchema",
+    "form" : "schemas/timeout-policyDef.schema",
+    "deleted" : false
+  }, {
+    "id" : "TimeRestrictedAccessPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.TimeRestrictedAccessPolicy",
+    "name" : "Time Restricted Access Policy",
+    "description" : "Requests matching the specified regular expression and made within the specified time period will be ignored.",
+    "icon" : "clock-o",
+    "templates" : [ {
+      "template" : "Requests matching the regular expression and made outside the specified time period will receive a 423 error code."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "TransferQuotaPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.TransferQuotaPolicy",
+    "name" : "Transfer Quota Policy",
+    "description" : "Provides a way to limit the total number of bytes that can be transferred from (or to) an API.",
+    "icon" : "download",
+    "templates" : [ {
+      "template" : "Consumers are limited to transferring ${limit} bytes per ${granularity} per ${period}."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  }, {
+    "id" : "URLRewritingPolicy",
+    "policyImpl" : "class:io.apiman.gateway.engine.policies.URLRewritingPolicy",
+    "name" : "URL Rewriting Policy",
+    "description" : "Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway.",
+    "icon" : "pencil-square",
+    "templates" : [ {
+      "template" : "Requests and/or responses will be modified by finding all text matching regular expression '${fromRegex}' with '${toReplacement}'."
+    } ],
+    "formType" : "Default",
+    "deleted" : false
+  } ],
+  "Developers" : [ ],
+  "Blobs" : [ ],
+  "Orgs" : [ {
+    "OrganizationBean" : {
+      "id" : "CypressTestOrg",
+      "name" : "CypressTestOrg",
+      "createdBy" : "platform.admin",
+      "createdOn" : "2022-05-25T06:41:50Z",
+      "modifiedBy" : "platform.admin",
+      "modifiedOn" : "2022-05-25T06:41:50Z"
+    },
+    "Memberships" : [ {
+      "id" : 1014,
+      "userId" : "platform.admin",
+      "roleId" : "Editor",
+      "organizationId" : "CypressTestOrg",
+      "createdOn" : "2022-05-25T06:41:50Z"
+    }, {
+      "id" : 1015,
+      "userId" : "platform.admin",
+      "roleId" : "Organization-User-Manager",
+      "organizationId" : "CypressTestOrg",
+      "createdOn" : "2022-05-25T06:41:50Z"
+    } ],
+    "Plans" : [ {
+      "PlanBean" : {
+        "id" : "CypressTestPlan1",
+        "name" : "CypressTestPlan1",
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T06:42:06Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1017,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T06:42:06Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T06:43:43Z",
+          "lockedOn" : "2022-05-25T06:43:47Z"
+        },
+        "Policies" : [ {
+          "id" : 1019,
+          "type" : "Plan",
+          "organizationId" : "CypressTestOrg",
+          "entityId" : "CypressTestPlan1",
+          "entityVersion" : "1.0",
+          "name" : "Rate Limiting Policy",
+          "configuration" : "{\"limit\":20,\"granularity\":\"Client\",\"period\":\"Hour\"}",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T06:43:13Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T06:43:13Z",
+          "definition" : {
+            "id" : "RateLimitingPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 1
+        }, {
+          "id" : 1021,
+          "type" : "Plan",
+          "organizationId" : "CypressTestOrg",
+          "entityId" : "CypressTestPlan1",
+          "entityVersion" : "1.0",
+          "name" : "Transfer Quota Policy",
+          "configuration" : "{\"limit\":200,\"direction\":\"upload\",\"granularity\":\"Client\",\"period\":\"Hour\"}",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T06:43:43Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T06:43:43Z",
+          "definition" : {
+            "id" : "TransferQuotaPolicy",
+            "templates" : [ ],
+            "deleted" : false
+          },
+          "orderIndex" : 2
+        } ]
+      } ]
+    } ],
+    "Apis" : [ {
+      "ApiBean" : {
+        "id" : "CypressTestApi1",
+        "name" : "CypressTestApi1",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T06:44:05Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1025,
+          "status" : "Published",
+          "endpoint" : "http://petstore.swagger.io/v2",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "apiDefinition" : {
+            "id" : 1025,
+            "apiVersion" : {
+              "id" : 1025,
+              "api" : {
+                "organization" : {
+                  "id" : "CypressTestOrg",
+                  "name" : "CypressTestOrg",
+                  "createdBy" : "platform.admin",
+                  "createdOn" : "2022-05-25T06:41:50Z",
+                  "modifiedBy" : "platform.admin",
+                  "modifiedOn" : "2022-05-25T06:41:50Z"
+                },
+                "id" : "CypressTestApi1",
+                "name" : "CypressTestApi1",
+                "tags" : [ ],
+                "createdBy" : "platform.admin",
+                "createdOn" : "2022-05-25T06:44:05Z",
+                "numPublished" : 1
+              },
+              "status" : "Published",
+              "endpoint" : "http://petstore.swagger.io/v2",
+              "endpointType" : "rest",
+              "endpointContentType" : "json",
+              "endpointProperties" : { },
+              "gateways" : [ {
+                "gatewayId" : "TheGateway"
+              } ],
+              "publicAPI" : false,
+              "discoverability" : "ORG_MEMBERS",
+              "apiDefinition" : 1025,
+              "plans" : [ {
+                "planId" : "CypressTestPlan1",
+                "version" : "1.0",
+                "requiresApproval" : false,
+                "discoverability" : "PORTAL"
+              } ],
+              "version" : "1.0",
+              "createdBy" : "platform.admin",
+              "createdOn" : "2022-05-25T06:44:05Z",
+              "modifiedBy" : "platform.admin",
+              "modifiedOn" : "2022-05-25T06:45:01Z",
+              "publishedOn" : "2022-05-25T06:45:37Z",
+              "definitionType" : "SwaggerJSON",
+              "parsePayload" : false,
+              "disableKeysStrip" : false,
+              "definitionUrl" : "https://petstore.swagger.io/v2/swagger.json"
+            },
+            "data" : "eyJzd2FnZ2VyIjoiMi4wIiwiaW5mbyI6eyJkZXNjcmlwdGlvbiI6IlRoaXMgaXMgYSBzYW1wbGUgc2VydmVyIFBldHN0b3JlIHNlcnZlci4gIFlvdSBjYW4gZmluZCBvdXQgbW9yZSBhYm91dCBTd2FnZ2VyIGF0IFtodHRwOi8vc3dhZ2dlci5pb10oaHR0cDovL3N3YWdnZXIuaW8pIG9yIG9uIFtpcmMuZnJlZW5vZGUubmV0LCAjc3dhZ2dlcl0oaHR0cDovL3N3YWdnZXIuaW8vaXJjLykuICBGb3IgdGhpcyBzYW1wbGUsIHlvdSBjYW4gdXNlIHRoZSBhcGkga2V5IGBzcGVjaWFsLWtleWAgdG8gdGVzdCB0aGUgYXV0aG9yaXphdGlvbiBmaWx0ZXJzLiIsInZlcnNpb24iOiIxLjAuNiIsInRpdGxlIjoiU3dhZ2dlciBQZXRzdG9yZSIsInRlcm1zT2ZTZXJ2aWNlIjoiaHR0cDovL3N3YWdnZXIuaW8vdGVybXMvIiwiY29udGFjdCI6eyJlbWFpbCI6ImFwaXRlYW1Ac3dhZ2dlci5pbyJ9LCJsaWNlbnNlIjp7Im5hbWUiOiJBcGFjaGUgMi4wIiwidXJsIjoiaHR0cDovL3d3dy5hcGFjaGUub3JnL2xpY2Vuc2VzL0xJQ0VOU0UtMi4wLmh0bWwifX0sImhvc3QiOiJwZXRzdG9yZS5zd2FnZ2VyLmlvIiwiYmFzZVBhdGgiOiIvdjIiLCJ0YWdzIjpbeyJuYW1lIjoicGV0IiwiZGVzY3JpcHRpb24iOiJFdmVyeXRoaW5nIGFib3V0IHlvdXIgUGV0cyIsImV4dGVybmFsRG9jcyI6eyJkZXNjcmlwdGlvbiI6IkZpbmQgb3V0IG1vcmUiLCJ1cmwiOiJodHRwOi8vc3dhZ2dlci5pbyJ9fSx7Im5hbWUiOiJzdG9yZSIsImRlc2NyaXB0aW9uIjoiQWNjZXNzIHRvIFBldHN0b3JlIG9yZGVycyJ9LHsibmFtZSI6InVzZXIiLCJkZXNjcmlwdGlvbiI6Ik9wZXJhdGlvbnMgYWJvdXQgdXNlciIsImV4dGVybmFsRG9jcyI6eyJkZXNjcmlwdGlvbiI6IkZpbmQgb3V0IG1vcmUgYWJvdXQgb3VyIHN0b3JlIiwidXJsIjoiaHR0cDovL3N3YWdnZXIuaW8ifX1dLCJzY2hlbWVzIjpbImh0dHBzIiwiaHR0cCJdLCJwYXRocyI6eyIvcGV0L3twZXRJZH0vdXBsb2FkSW1hZ2UiOnsicG9zdCI6eyJ0YWdzIjpbInBldCJdLCJzdW1tYXJ5IjoidXBsb2FkcyBhbiBpbWFnZSIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJ1cGxvYWRGaWxlIiwiY29uc3VtZXMiOlsibXVsdGlwYXJ0L2Zvcm0tZGF0YSJdLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIl0sInBhcmFtZXRlcnMiOlt7Im5hbWUiOiJwZXRJZCIsImluIjoicGF0aCIsImRlc2NyaXB0aW9uIjoiSUQgb2YgcGV0IHRvIHVwZGF0ZSIsInJlcXVpcmVkIjp0cnVlLCJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDY0In0seyJuYW1lIjoiYWRkaXRpb25hbE1ldGFkYXRhIiwiaW4iOiJmb3JtRGF0YSIsImRlc2NyaXB0aW9uIjoiQWRkaXRpb25hbCBkYXRhIHRvIHBhc3MgdG8gc2VydmVyIiwicmVxdWlyZWQiOmZhbHNlLCJ0eXBlIjoic3RyaW5nIn0seyJuYW1lIjoiZmlsZSIsImluIjoiZm9ybURhdGEiLCJkZXNjcmlwdGlvbiI6ImZpbGUgdG8gdXBsb2FkIiwicmVxdWlyZWQiOmZhbHNlLCJ0eXBlIjoiZmlsZSJ9XSwicmVzcG9uc2VzIjp7IjIwMCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIiwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL0FwaVJlc3BvbnNlIn19fSwic2VjdXJpdHkiOlt7InBldHN0b3JlX2F1dGgiOlsid3JpdGU6cGV0cyIsInJlYWQ6cGV0cyJdfV19fSwiL3BldCI6eyJwb3N0Ijp7InRhZ3MiOlsicGV0Il0sInN1bW1hcnkiOiJBZGQgYSBuZXcgcGV0IHRvIHRoZSBzdG9yZSIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJhZGRQZXQiLCJjb25zdW1lcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3siaW4iOiJib2R5IiwibmFtZSI6ImJvZHkiLCJkZXNjcmlwdGlvbiI6IlBldCBvYmplY3QgdGhhdCBuZWVkcyB0byBiZSBhZGRlZCB0byB0aGUgc3RvcmUiLCJyZXF1aXJlZCI6dHJ1ZSwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL1BldCJ9fV0sInJlc3BvbnNlcyI6eyI0MDUiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIGlucHV0In19LCJzZWN1cml0eSI6W3sicGV0c3RvcmVfYXV0aCI6WyJ3cml0ZTpwZXRzIiwicmVhZDpwZXRzIl19XX0sInB1dCI6eyJ0YWdzIjpbInBldCJdLCJzdW1tYXJ5IjoiVXBkYXRlIGFuIGV4aXN0aW5nIHBldCIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJ1cGRhdGVQZXQiLCJjb25zdW1lcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3siaW4iOiJib2R5IiwibmFtZSI6ImJvZHkiLCJkZXNjcmlwdGlvbiI6IlBldCBvYmplY3QgdGhhdCBuZWVkcyB0byBiZSBhZGRlZCB0byB0aGUgc3RvcmUiLCJyZXF1aXJlZCI6dHJ1ZSwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL1BldCJ9fV0sInJlc3BvbnNlcyI6eyI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIElEIHN1cHBsaWVkIn0sIjQwNCI6eyJkZXNjcmlwdGlvbiI6IlBldCBub3QgZm91bmQifSwiNDA1Ijp7ImRlc2NyaXB0aW9uIjoiVmFsaWRhdGlvbiBleGNlcHRpb24ifX0sInNlY3VyaXR5IjpbeyJwZXRzdG9yZV9hdXRoIjpbIndyaXRlOnBldHMiLCJyZWFkOnBldHMiXX1dfX0sIi9wZXQvZmluZEJ5U3RhdHVzIjp7ImdldCI6eyJ0YWdzIjpbInBldCJdLCJzdW1tYXJ5IjoiRmluZHMgUGV0cyBieSBzdGF0dXMiLCJkZXNjcmlwdGlvbiI6Ik11bHRpcGxlIHN0YXR1cyB2YWx1ZXMgY2FuIGJlIHByb3ZpZGVkIHdpdGggY29tbWEgc2VwYXJhdGVkIHN0cmluZ3MiLCJvcGVyYXRpb25JZCI6ImZpbmRQZXRzQnlTdGF0dXMiLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOlt7Im5hbWUiOiJzdGF0dXMiLCJpbiI6InF1ZXJ5IiwiZGVzY3JpcHRpb24iOiJTdGF0dXMgdmFsdWVzIHRoYXQgbmVlZCB0byBiZSBjb25zaWRlcmVkIGZvciBmaWx0ZXIiLCJyZXF1aXJlZCI6dHJ1ZSwidHlwZSI6ImFycmF5IiwiaXRlbXMiOnsidHlwZSI6InN0cmluZyIsImVudW0iOlsiYXZhaWxhYmxlIiwicGVuZGluZyIsInNvbGQiXSwiZGVmYXVsdCI6ImF2YWlsYWJsZSJ9LCJjb2xsZWN0aW9uRm9ybWF0IjoibXVsdGkifV0sInJlc3BvbnNlcyI6eyIyMDAiOnsiZGVzY3JpcHRpb24iOiJzdWNjZXNzZnVsIG9wZXJhdGlvbiIsInNjaGVtYSI6eyJ0eXBlIjoiYXJyYXkiLCJpdGVtcyI6eyIkcmVmIjoiIy9kZWZpbml0aW9ucy9QZXQifX19LCI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIHN0YXR1cyB2YWx1ZSJ9fSwic2VjdXJpdHkiOlt7InBldHN0b3JlX2F1dGgiOlsid3JpdGU6cGV0cyIsInJlYWQ6cGV0cyJdfV19fSwiL3BldC9maW5kQnlUYWdzIjp7ImdldCI6eyJ0YWdzIjpbInBldCJdLCJzdW1tYXJ5IjoiRmluZHMgUGV0cyBieSB0YWdzIiwiZGVzY3JpcHRpb24iOiJNdWx0aXBsZSB0YWdzIGNhbiBiZSBwcm92aWRlZCB3aXRoIGNvbW1hIHNlcGFyYXRlZCBzdHJpbmdzLiBVc2UgdGFnMSwgdGFnMiwgdGFnMyBmb3IgdGVzdGluZy4iLCJvcGVyYXRpb25JZCI6ImZpbmRQZXRzQnlUYWdzIiwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiIsImFwcGxpY2F0aW9uL3htbCJdLCJwYXJhbWV0ZXJzIjpbeyJuYW1lIjoidGFncyIsImluIjoicXVlcnkiLCJkZXNjcmlwdGlvbiI6IlRhZ3MgdG8gZmlsdGVyIGJ5IiwicmVxdWlyZWQiOnRydWUsInR5cGUiOiJhcnJheSIsIml0ZW1zIjp7InR5cGUiOiJzdHJpbmcifSwiY29sbGVjdGlvbkZvcm1hdCI6Im11bHRpIn1dLCJyZXNwb25zZXMiOnsiMjAwIjp7ImRlc2NyaXB0aW9uIjoic3VjY2Vzc2Z1bCBvcGVyYXRpb24iLCJzY2hlbWEiOnsidHlwZSI6ImFycmF5IiwiaXRlbXMiOnsiJHJlZiI6IiMvZGVmaW5pdGlvbnMvUGV0In19fSwiNDAwIjp7ImRlc2NyaXB0aW9uIjoiSW52YWxpZCB0YWcgdmFsdWUifX0sInNlY3VyaXR5IjpbeyJwZXRzdG9yZV9hdXRoIjpbIndyaXRlOnBldHMiLCJyZWFkOnBldHMiXX1dLCJkZXByZWNhdGVkIjp0cnVlfX0sIi9wZXQve3BldElkfSI6eyJnZXQiOnsidGFncyI6WyJwZXQiXSwic3VtbWFyeSI6IkZpbmQgcGV0IGJ5IElEIiwiZGVzY3JpcHRpb24iOiJSZXR1cm5zIGEgc2luZ2xlIHBldCIsIm9wZXJhdGlvbklkIjoiZ2V0UGV0QnlJZCIsInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3sibmFtZSI6InBldElkIiwiaW4iOiJwYXRoIiwiZGVzY3JpcHRpb24iOiJJRCBvZiBwZXQgdG8gcmV0dXJuIiwicmVxdWlyZWQiOnRydWUsInR5cGUiOiJpbnRlZ2VyIiwiZm9ybWF0IjoiaW50NjQifV0sInJlc3BvbnNlcyI6eyIyMDAiOnsiZGVzY3JpcHRpb24iOiJzdWNjZXNzZnVsIG9wZXJhdGlvbiIsInNjaGVtYSI6eyIkcmVmIjoiIy9kZWZpbml0aW9ucy9QZXQifX0sIjQwMCI6eyJkZXNjcmlwdGlvbiI6IkludmFsaWQgSUQgc3VwcGxpZWQifSwiNDA0Ijp7ImRlc2NyaXB0aW9uIjoiUGV0IG5vdCBmb3VuZCJ9fSwic2VjdXJpdHkiOlt7ImFwaV9rZXkiOltdfV19LCJwb3N0Ijp7InRhZ3MiOlsicGV0Il0sInN1bW1hcnkiOiJVcGRhdGVzIGEgcGV0IGluIHRoZSBzdG9yZSB3aXRoIGZvcm0gZGF0YSIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJ1cGRhdGVQZXRXaXRoRm9ybSIsImNvbnN1bWVzIjpbImFwcGxpY2F0aW9uL3gtd3d3LWZvcm0tdXJsZW5jb2RlZCJdLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOlt7Im5hbWUiOiJwZXRJZCIsImluIjoicGF0aCIsImRlc2NyaXB0aW9uIjoiSUQgb2YgcGV0IHRoYXQgbmVlZHMgdG8gYmUgdXBkYXRlZCIsInJlcXVpcmVkIjp0cnVlLCJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDY0In0seyJuYW1lIjoibmFtZSIsImluIjoiZm9ybURhdGEiLCJkZXNjcmlwdGlvbiI6IlVwZGF0ZWQgbmFtZSBvZiB0aGUgcGV0IiwicmVxdWlyZWQiOmZhbHNlLCJ0eXBlIjoic3RyaW5nIn0seyJuYW1lIjoic3RhdHVzIiwiaW4iOiJmb3JtRGF0YSIsImRlc2NyaXB0aW9uIjoiVXBkYXRlZCBzdGF0dXMgb2YgdGhlIHBldCIsInJlcXVpcmVkIjpmYWxzZSwidHlwZSI6InN0cmluZyJ9XSwicmVzcG9uc2VzIjp7IjQwNSI6eyJkZXNjcmlwdGlvbiI6IkludmFsaWQgaW5wdXQifX0sInNlY3VyaXR5IjpbeyJwZXRzdG9yZV9hdXRoIjpbIndyaXRlOnBldHMiLCJyZWFkOnBldHMiXX1dfSwiZGVsZXRlIjp7InRhZ3MiOlsicGV0Il0sInN1bW1hcnkiOiJEZWxldGVzIGEgcGV0IiwiZGVzY3JpcHRpb24iOiIiLCJvcGVyYXRpb25JZCI6ImRlbGV0ZVBldCIsInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3sibmFtZSI6ImFwaV9rZXkiLCJpbiI6ImhlYWRlciIsInJlcXVpcmVkIjpmYWxzZSwidHlwZSI6InN0cmluZyJ9LHsibmFtZSI6InBldElkIiwiaW4iOiJwYXRoIiwiZGVzY3JpcHRpb24iOiJQZXQgaWQgdG8gZGVsZXRlIiwicmVxdWlyZWQiOnRydWUsInR5cGUiOiJpbnRlZ2VyIiwiZm9ybWF0IjoiaW50NjQifV0sInJlc3BvbnNlcyI6eyI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIElEIHN1cHBsaWVkIn0sIjQwNCI6eyJkZXNjcmlwdGlvbiI6IlBldCBub3QgZm91bmQifX0sInNlY3VyaXR5IjpbeyJwZXRzdG9yZV9hdXRoIjpbIndyaXRlOnBldHMiLCJyZWFkOnBldHMiXX1dfX0sIi9zdG9yZS9vcmRlciI6eyJwb3N0Ijp7InRhZ3MiOlsic3RvcmUiXSwic3VtbWFyeSI6IlBsYWNlIGFuIG9yZGVyIGZvciBhIHBldCIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJwbGFjZU9yZGVyIiwiY29uc3VtZXMiOlsiYXBwbGljYXRpb24vanNvbiJdLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOlt7ImluIjoiYm9keSIsIm5hbWUiOiJib2R5IiwiZGVzY3JpcHRpb24iOiJvcmRlciBwbGFjZWQgZm9yIHB1cmNoYXNpbmcgdGhlIHBldCIsInJlcXVpcmVkIjp0cnVlLCJzY2hlbWEiOnsiJHJlZiI6IiMvZGVmaW5pdGlvbnMvT3JkZXIifX1dLCJyZXNwb25zZXMiOnsiMjAwIjp7ImRlc2NyaXB0aW9uIjoic3VjY2Vzc2Z1bCBvcGVyYXRpb24iLCJzY2hlbWEiOnsiJHJlZiI6IiMvZGVmaW5pdGlvbnMvT3JkZXIifX0sIjQwMCI6eyJkZXNjcmlwdGlvbiI6IkludmFsaWQgT3JkZXIifX19fSwiL3N0b3JlL29yZGVyL3tvcmRlcklkfSI6eyJnZXQiOnsidGFncyI6WyJzdG9yZSJdLCJzdW1tYXJ5IjoiRmluZCBwdXJjaGFzZSBvcmRlciBieSBJRCIsImRlc2NyaXB0aW9uIjoiRm9yIHZhbGlkIHJlc3BvbnNlIHRyeSBpbnRlZ2VyIElEcyB3aXRoIHZhbHVlID49IDEgYW5kIDw9IDEwLiBPdGhlciB2YWx1ZXMgd2lsbCBnZW5lcmF0ZWQgZXhjZXB0aW9ucyIsIm9wZXJhdGlvbklkIjoiZ2V0T3JkZXJCeUlkIiwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiIsImFwcGxpY2F0aW9uL3htbCJdLCJwYXJhbWV0ZXJzIjpbeyJuYW1lIjoib3JkZXJJZCIsImluIjoicGF0aCIsImRlc2NyaXB0aW9uIjoiSUQgb2YgcGV0IHRoYXQgbmVlZHMgdG8gYmUgZmV0Y2hlZCIsInJlcXVpcmVkIjp0cnVlLCJ0eXBlIjoiaW50ZWdlciIsIm1heGltdW0iOjEwLCJtaW5pbXVtIjoxLCJmb3JtYXQiOiJpbnQ2NCJ9XSwicmVzcG9uc2VzIjp7IjIwMCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIiwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL09yZGVyIn19LCI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIElEIHN1cHBsaWVkIn0sIjQwNCI6eyJkZXNjcmlwdGlvbiI6Ik9yZGVyIG5vdCBmb3VuZCJ9fX0sImRlbGV0ZSI6eyJ0YWdzIjpbInN0b3JlIl0sInN1bW1hcnkiOiJEZWxldGUgcHVyY2hhc2Ugb3JkZXIgYnkgSUQiLCJkZXNjcmlwdGlvbiI6IkZvciB2YWxpZCByZXNwb25zZSB0cnkgaW50ZWdlciBJRHMgd2l0aCBwb3NpdGl2ZSBpbnRlZ2VyIHZhbHVlLiBOZWdhdGl2ZSBvciBub24taW50ZWdlciB2YWx1ZXMgd2lsbCBnZW5lcmF0ZSBBUEkgZXJyb3JzIiwib3BlcmF0aW9uSWQiOiJkZWxldGVPcmRlciIsInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3sibmFtZSI6Im9yZGVySWQiLCJpbiI6InBhdGgiLCJkZXNjcmlwdGlvbiI6IklEIG9mIHRoZSBvcmRlciB0aGF0IG5lZWRzIHRvIGJlIGRlbGV0ZWQiLCJyZXF1aXJlZCI6dHJ1ZSwidHlwZSI6ImludGVnZXIiLCJtaW5pbXVtIjoxLCJmb3JtYXQiOiJpbnQ2NCJ9XSwicmVzcG9uc2VzIjp7IjQwMCI6eyJkZXNjcmlwdGlvbiI6IkludmFsaWQgSUQgc3VwcGxpZWQifSwiNDA0Ijp7ImRlc2NyaXB0aW9uIjoiT3JkZXIgbm90IGZvdW5kIn19fX0sIi9zdG9yZS9pbnZlbnRvcnkiOnsiZ2V0Ijp7InRhZ3MiOlsic3RvcmUiXSwic3VtbWFyeSI6IlJldHVybnMgcGV0IGludmVudG9yaWVzIGJ5IHN0YXR1cyIsImRlc2NyaXB0aW9uIjoiUmV0dXJucyBhIG1hcCBvZiBzdGF0dXMgY29kZXMgdG8gcXVhbnRpdGllcyIsIm9wZXJhdGlvbklkIjoiZ2V0SW52ZW50b3J5IiwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiJdLCJwYXJhbWV0ZXJzIjpbXSwicmVzcG9uc2VzIjp7IjIwMCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIiwic2NoZW1hIjp7InR5cGUiOiJvYmplY3QiLCJhZGRpdGlvbmFsUHJvcGVydGllcyI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDMyIn19fX0sInNlY3VyaXR5IjpbeyJhcGlfa2V5IjpbXX1dfX0sIi91c2VyL2NyZWF0ZVdpdGhBcnJheSI6eyJwb3N0Ijp7InRhZ3MiOlsidXNlciJdLCJzdW1tYXJ5IjoiQ3JlYXRlcyBsaXN0IG9mIHVzZXJzIHdpdGggZ2l2ZW4gaW5wdXQgYXJyYXkiLCJkZXNjcmlwdGlvbiI6IiIsIm9wZXJhdGlvbklkIjoiY3JlYXRlVXNlcnNXaXRoQXJyYXlJbnB1dCIsImNvbnN1bWVzIjpbImFwcGxpY2F0aW9uL2pzb24iXSwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiIsImFwcGxpY2F0aW9uL3htbCJdLCJwYXJhbWV0ZXJzIjpbeyJpbiI6ImJvZHkiLCJuYW1lIjoiYm9keSIsImRlc2NyaXB0aW9uIjoiTGlzdCBvZiB1c2VyIG9iamVjdCIsInJlcXVpcmVkIjp0cnVlLCJzY2hlbWEiOnsidHlwZSI6ImFycmF5IiwiaXRlbXMiOnsiJHJlZiI6IiMvZGVmaW5pdGlvbnMvVXNlciJ9fX1dLCJyZXNwb25zZXMiOnsiZGVmYXVsdCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIn19fX0sIi91c2VyL2NyZWF0ZVdpdGhMaXN0Ijp7InBvc3QiOnsidGFncyI6WyJ1c2VyIl0sInN1bW1hcnkiOiJDcmVhdGVzIGxpc3Qgb2YgdXNlcnMgd2l0aCBnaXZlbiBpbnB1dCBhcnJheSIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJjcmVhdGVVc2Vyc1dpdGhMaXN0SW5wdXQiLCJjb25zdW1lcyI6WyJhcHBsaWNhdGlvbi9qc29uIl0sInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3siaW4iOiJib2R5IiwibmFtZSI6ImJvZHkiLCJkZXNjcmlwdGlvbiI6Ikxpc3Qgb2YgdXNlciBvYmplY3QiLCJyZXF1aXJlZCI6dHJ1ZSwic2NoZW1hIjp7InR5cGUiOiJhcnJheSIsIml0ZW1zIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL1VzZXIifX19XSwicmVzcG9uc2VzIjp7ImRlZmF1bHQiOnsiZGVzY3JpcHRpb24iOiJzdWNjZXNzZnVsIG9wZXJhdGlvbiJ9fX19LCIvdXNlci97dXNlcm5hbWV9Ijp7ImdldCI6eyJ0YWdzIjpbInVzZXIiXSwic3VtbWFyeSI6IkdldCB1c2VyIGJ5IHVzZXIgbmFtZSIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJnZXRVc2VyQnlOYW1lIiwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiIsImFwcGxpY2F0aW9uL3htbCJdLCJwYXJhbWV0ZXJzIjpbeyJuYW1lIjoidXNlcm5hbWUiLCJpbiI6InBhdGgiLCJkZXNjcmlwdGlvbiI6IlRoZSBuYW1lIHRoYXQgbmVlZHMgdG8gYmUgZmV0Y2hlZC4gVXNlIHVzZXIxIGZvciB0ZXN0aW5nLiAiLCJyZXF1aXJlZCI6dHJ1ZSwidHlwZSI6InN0cmluZyJ9XSwicmVzcG9uc2VzIjp7IjIwMCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIiwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL1VzZXIifX0sIjQwMCI6eyJkZXNjcmlwdGlvbiI6IkludmFsaWQgdXNlcm5hbWUgc3VwcGxpZWQifSwiNDA0Ijp7ImRlc2NyaXB0aW9uIjoiVXNlciBub3QgZm91bmQifX19LCJwdXQiOnsidGFncyI6WyJ1c2VyIl0sInN1bW1hcnkiOiJVcGRhdGVkIHVzZXIiLCJkZXNjcmlwdGlvbiI6IlRoaXMgY2FuIG9ubHkgYmUgZG9uZSBieSB0aGUgbG9nZ2VkIGluIHVzZXIuIiwib3BlcmF0aW9uSWQiOiJ1cGRhdGVVc2VyIiwiY29uc3VtZXMiOlsiYXBwbGljYXRpb24vanNvbiJdLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOlt7Im5hbWUiOiJ1c2VybmFtZSIsImluIjoicGF0aCIsImRlc2NyaXB0aW9uIjoibmFtZSB0aGF0IG5lZWQgdG8gYmUgdXBkYXRlZCIsInJlcXVpcmVkIjp0cnVlLCJ0eXBlIjoic3RyaW5nIn0seyJpbiI6ImJvZHkiLCJuYW1lIjoiYm9keSIsImRlc2NyaXB0aW9uIjoiVXBkYXRlZCB1c2VyIG9iamVjdCIsInJlcXVpcmVkIjp0cnVlLCJzY2hlbWEiOnsiJHJlZiI6IiMvZGVmaW5pdGlvbnMvVXNlciJ9fV0sInJlc3BvbnNlcyI6eyI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIHVzZXIgc3VwcGxpZWQifSwiNDA0Ijp7ImRlc2NyaXB0aW9uIjoiVXNlciBub3QgZm91bmQifX19LCJkZWxldGUiOnsidGFncyI6WyJ1c2VyIl0sInN1bW1hcnkiOiJEZWxldGUgdXNlciIsImRlc2NyaXB0aW9uIjoiVGhpcyBjYW4gb25seSBiZSBkb25lIGJ5IHRoZSBsb2dnZWQgaW4gdXNlci4iLCJvcGVyYXRpb25JZCI6ImRlbGV0ZVVzZXIiLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOlt7Im5hbWUiOiJ1c2VybmFtZSIsImluIjoicGF0aCIsImRlc2NyaXB0aW9uIjoiVGhlIG5hbWUgdGhhdCBuZWVkcyB0byBiZSBkZWxldGVkIiwicmVxdWlyZWQiOnRydWUsInR5cGUiOiJzdHJpbmcifV0sInJlc3BvbnNlcyI6eyI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIHVzZXJuYW1lIHN1cHBsaWVkIn0sIjQwNCI6eyJkZXNjcmlwdGlvbiI6IlVzZXIgbm90IGZvdW5kIn19fX0sIi91c2VyL2xvZ2luIjp7ImdldCI6eyJ0YWdzIjpbInVzZXIiXSwic3VtbWFyeSI6IkxvZ3MgdXNlciBpbnRvIHRoZSBzeXN0ZW0iLCJkZXNjcmlwdGlvbiI6IiIsIm9wZXJhdGlvbklkIjoibG9naW5Vc2VyIiwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiIsImFwcGxpY2F0aW9uL3htbCJdLCJwYXJhbWV0ZXJzIjpbeyJuYW1lIjoidXNlcm5hbWUiLCJpbiI6InF1ZXJ5IiwiZGVzY3JpcHRpb24iOiJUaGUgdXNlciBuYW1lIGZvciBsb2dpbiIsInJlcXVpcmVkIjp0cnVlLCJ0eXBlIjoic3RyaW5nIn0seyJuYW1lIjoicGFzc3dvcmQiLCJpbiI6InF1ZXJ5IiwiZGVzY3JpcHRpb24iOiJUaGUgcGFzc3dvcmQgZm9yIGxvZ2luIGluIGNsZWFyIHRleHQiLCJyZXF1aXJlZCI6dHJ1ZSwidHlwZSI6InN0cmluZyJ9XSwicmVzcG9uc2VzIjp7IjIwMCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIiwiaGVhZGVycyI6eyJYLUV4cGlyZXMtQWZ0ZXIiOnsidHlwZSI6InN0cmluZyIsImZvcm1hdCI6ImRhdGUtdGltZSIsImRlc2NyaXB0aW9uIjoiZGF0ZSBpbiBVVEMgd2hlbiB0b2tlbiBleHBpcmVzIn0sIlgtUmF0ZS1MaW1pdCI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDMyIiwiZGVzY3JpcHRpb24iOiJjYWxscyBwZXIgaG91ciBhbGxvd2VkIGJ5IHRoZSB1c2VyIn19LCJzY2hlbWEiOnsidHlwZSI6InN0cmluZyJ9fSwiNDAwIjp7ImRlc2NyaXB0aW9uIjoiSW52YWxpZCB1c2VybmFtZS9wYXNzd29yZCBzdXBwbGllZCJ9fX19LCIvdXNlci9sb2dvdXQiOnsiZ2V0Ijp7InRhZ3MiOlsidXNlciJdLCJzdW1tYXJ5IjoiTG9ncyBvdXQgY3VycmVudCBsb2dnZWQgaW4gdXNlciBzZXNzaW9uIiwiZGVzY3JpcHRpb24iOiIiLCJvcGVyYXRpb25JZCI6ImxvZ291dFVzZXIiLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOltdLCJyZXNwb25zZXMiOnsiZGVmYXVsdCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIn19fX0sIi91c2VyIjp7InBvc3QiOnsidGFncyI6WyJ1c2VyIl0sInN1bW1hcnkiOiJDcmVhdGUgdXNlciIsImRlc2NyaXB0aW9uIjoiVGhpcyBjYW4gb25seSBiZSBkb25lIGJ5IHRoZSBsb2dnZWQgaW4gdXNlci4iLCJvcGVyYXRpb25JZCI6ImNyZWF0ZVVzZXIiLCJjb25zdW1lcyI6WyJhcHBsaWNhdGlvbi9qc29uIl0sInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3siaW4iOiJib2R5IiwibmFtZSI6ImJvZHkiLCJkZXNjcmlwdGlvbiI6IkNyZWF0ZWQgdXNlciBvYmplY3QiLCJyZXF1aXJlZCI6dHJ1ZSwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL1VzZXIifX1dLCJyZXNwb25zZXMiOnsiZGVmYXVsdCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIn19fX19LCJzZWN1cml0eURlZmluaXRpb25zIjp7ImFwaV9rZXkiOnsidHlwZSI6ImFwaUtleSIsIm5hbWUiOiJhcGlfa2V5IiwiaW4iOiJoZWFkZXIifSwicGV0c3RvcmVfYXV0aCI6eyJ0eXBlIjoib2F1dGgyIiwiYXV0aG9yaXphdGlvblVybCI6Imh0dHBzOi8vcGV0c3RvcmUuc3dhZ2dlci5pby9vYXV0aC9hdXRob3JpemUiLCJmbG93IjoiaW1wbGljaXQiLCJzY29wZXMiOnsicmVhZDpwZXRzIjoicmVhZCB5b3VyIHBldHMiLCJ3cml0ZTpwZXRzIjoibW9kaWZ5IHBldHMgaW4geW91ciBhY2NvdW50In19fSwiZGVmaW5pdGlvbnMiOnsiQXBpUmVzcG9uc2UiOnsidHlwZSI6Im9iamVjdCIsInByb3BlcnRpZXMiOnsiY29kZSI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDMyIn0sInR5cGUiOnsidHlwZSI6InN0cmluZyJ9LCJtZXNzYWdlIjp7InR5cGUiOiJzdHJpbmcifX19LCJDYXRlZ29yeSI6eyJ0eXBlIjoib2JqZWN0IiwicHJvcGVydGllcyI6eyJpZCI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDY0In0sIm5hbWUiOnsidHlwZSI6InN0cmluZyJ9fSwieG1sIjp7Im5hbWUiOiJDYXRlZ29yeSJ9fSwiUGV0Ijp7InR5cGUiOiJvYmplY3QiLCJyZXF1aXJlZCI6WyJuYW1lIiwicGhvdG9VcmxzIl0sInByb3BlcnRpZXMiOnsiaWQiOnsidHlwZSI6ImludGVnZXIiLCJmb3JtYXQiOiJpbnQ2NCJ9LCJjYXRlZ29yeSI6eyIkcmVmIjoiIy9kZWZpbml0aW9ucy9DYXRlZ29yeSJ9LCJuYW1lIjp7InR5cGUiOiJzdHJpbmciLCJleGFtcGxlIjoiZG9nZ2llIn0sInBob3RvVXJscyI6eyJ0eXBlIjoiYXJyYXkiLCJ4bWwiOnsid3JhcHBlZCI6dHJ1ZX0sIml0ZW1zIjp7InR5cGUiOiJzdHJpbmciLCJ4bWwiOnsibmFtZSI6InBob3RvVXJsIn19fSwidGFncyI6eyJ0eXBlIjoiYXJyYXkiLCJ4bWwiOnsid3JhcHBlZCI6dHJ1ZX0sIml0ZW1zIjp7InhtbCI6eyJuYW1lIjoidGFnIn0sIiRyZWYiOiIjL2RlZmluaXRpb25zL1RhZyJ9fSwic3RhdHVzIjp7InR5cGUiOiJzdHJpbmciLCJkZXNjcmlwdGlvbiI6InBldCBzdGF0dXMgaW4gdGhlIHN0b3JlIiwiZW51bSI6WyJhdmFpbGFibGUiLCJwZW5kaW5nIiwic29sZCJdfX0sInhtbCI6eyJuYW1lIjoiUGV0In19LCJUYWciOnsidHlwZSI6Im9iamVjdCIsInByb3BlcnRpZXMiOnsiaWQiOnsidHlwZSI6ImludGVnZXIiLCJmb3JtYXQiOiJpbnQ2NCJ9LCJuYW1lIjp7InR5cGUiOiJzdHJpbmcifX0sInhtbCI6eyJuYW1lIjoiVGFnIn19LCJPcmRlciI6eyJ0eXBlIjoib2JqZWN0IiwicHJvcGVydGllcyI6eyJpZCI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDY0In0sInBldElkIjp7InR5cGUiOiJpbnRlZ2VyIiwiZm9ybWF0IjoiaW50NjQifSwicXVhbnRpdHkiOnsidHlwZSI6ImludGVnZXIiLCJmb3JtYXQiOiJpbnQzMiJ9LCJzaGlwRGF0ZSI6eyJ0eXBlIjoic3RyaW5nIiwiZm9ybWF0IjoiZGF0ZS10aW1lIn0sInN0YXR1cyI6eyJ0eXBlIjoic3RyaW5nIiwiZGVzY3JpcHRpb24iOiJPcmRlciBTdGF0dXMiLCJlbnVtIjpbInBsYWNlZCIsImFwcHJvdmVkIiwiZGVsaXZlcmVkIl19LCJjb21wbGV0ZSI6eyJ0eXBlIjoiYm9vbGVhbiJ9fSwieG1sIjp7Im5hbWUiOiJPcmRlciJ9fSwiVXNlciI6eyJ0eXBlIjoib2JqZWN0IiwicHJvcGVydGllcyI6eyJpZCI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDY0In0sInVzZXJuYW1lIjp7InR5cGUiOiJzdHJpbmcifSwiZmlyc3ROYW1lIjp7InR5cGUiOiJzdHJpbmcifSwibGFzdE5hbWUiOnsidHlwZSI6InN0cmluZyJ9LCJlbWFpbCI6eyJ0eXBlIjoic3RyaW5nIn0sInBhc3N3b3JkIjp7InR5cGUiOiJzdHJpbmcifSwicGhvbmUiOnsidHlwZSI6InN0cmluZyJ9LCJ1c2VyU3RhdHVzIjp7InR5cGUiOiJpbnRlZ2VyIiwiZm9ybWF0IjoiaW50MzIiLCJkZXNjcmlwdGlvbiI6IlVzZXIgU3RhdHVzIn19LCJ4bWwiOnsibmFtZSI6IlVzZXIifX19LCJleHRlcm5hbERvY3MiOnsiZGVzY3JpcHRpb24iOiJGaW5kIG91dCBtb3JlIGFib3V0IFN3YWdnZXIiLCJ1cmwiOiJodHRwOi8vc3dhZ2dlci5pbyJ9fQ=="
+          },
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T06:44:05Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T06:45:01Z",
+          "publishedOn" : "2022-05-25T06:45:37Z",
+          "definitionType" : "SwaggerJSON",
+          "parsePayload" : false,
+          "disableKeysStrip" : false,
+          "definitionUrl" : "https://petstore.swagger.io/v2/swagger.json"
+        },
+        "Policies" : [ ],
+        "ApiDefinition" : "eyJzd2FnZ2VyIjoiMi4wIiwiaW5mbyI6eyJkZXNjcmlwdGlvbiI6IlRoaXMgaXMgYSBzYW1wbGUgc2VydmVyIFBldHN0b3JlIHNlcnZlci4gIFlvdSBjYW4gZmluZCBvdXQgbW9yZSBhYm91dCBTd2FnZ2VyIGF0IFtodHRwOi8vc3dhZ2dlci5pb10oaHR0cDovL3N3YWdnZXIuaW8pIG9yIG9uIFtpcmMuZnJlZW5vZGUubmV0LCAjc3dhZ2dlcl0oaHR0cDovL3N3YWdnZXIuaW8vaXJjLykuICBGb3IgdGhpcyBzYW1wbGUsIHlvdSBjYW4gdXNlIHRoZSBhcGkga2V5IGBzcGVjaWFsLWtleWAgdG8gdGVzdCB0aGUgYXV0aG9yaXphdGlvbiBmaWx0ZXJzLiIsInZlcnNpb24iOiIxLjAuNiIsInRpdGxlIjoiU3dhZ2dlciBQZXRzdG9yZSIsInRlcm1zT2ZTZXJ2aWNlIjoiaHR0cDovL3N3YWdnZXIuaW8vdGVybXMvIiwiY29udGFjdCI6eyJlbWFpbCI6ImFwaXRlYW1Ac3dhZ2dlci5pbyJ9LCJsaWNlbnNlIjp7Im5hbWUiOiJBcGFjaGUgMi4wIiwidXJsIjoiaHR0cDovL3d3dy5hcGFjaGUub3JnL2xpY2Vuc2VzL0xJQ0VOU0UtMi4wLmh0bWwifX0sImhvc3QiOiJwZXRzdG9yZS5zd2FnZ2VyLmlvIiwiYmFzZVBhdGgiOiIvdjIiLCJ0YWdzIjpbeyJuYW1lIjoicGV0IiwiZGVzY3JpcHRpb24iOiJFdmVyeXRoaW5nIGFib3V0IHlvdXIgUGV0cyIsImV4dGVybmFsRG9jcyI6eyJkZXNjcmlwdGlvbiI6IkZpbmQgb3V0IG1vcmUiLCJ1cmwiOiJodHRwOi8vc3dhZ2dlci5pbyJ9fSx7Im5hbWUiOiJzdG9yZSIsImRlc2NyaXB0aW9uIjoiQWNjZXNzIHRvIFBldHN0b3JlIG9yZGVycyJ9LHsibmFtZSI6InVzZXIiLCJkZXNjcmlwdGlvbiI6Ik9wZXJhdGlvbnMgYWJvdXQgdXNlciIsImV4dGVybmFsRG9jcyI6eyJkZXNjcmlwdGlvbiI6IkZpbmQgb3V0IG1vcmUgYWJvdXQgb3VyIHN0b3JlIiwidXJsIjoiaHR0cDovL3N3YWdnZXIuaW8ifX1dLCJzY2hlbWVzIjpbImh0dHBzIiwiaHR0cCJdLCJwYXRocyI6eyIvcGV0L3twZXRJZH0vdXBsb2FkSW1hZ2UiOnsicG9zdCI6eyJ0YWdzIjpbInBldCJdLCJzdW1tYXJ5IjoidXBsb2FkcyBhbiBpbWFnZSIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJ1cGxvYWRGaWxlIiwiY29uc3VtZXMiOlsibXVsdGlwYXJ0L2Zvcm0tZGF0YSJdLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIl0sInBhcmFtZXRlcnMiOlt7Im5hbWUiOiJwZXRJZCIsImluIjoicGF0aCIsImRlc2NyaXB0aW9uIjoiSUQgb2YgcGV0IHRvIHVwZGF0ZSIsInJlcXVpcmVkIjp0cnVlLCJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDY0In0seyJuYW1lIjoiYWRkaXRpb25hbE1ldGFkYXRhIiwiaW4iOiJmb3JtRGF0YSIsImRlc2NyaXB0aW9uIjoiQWRkaXRpb25hbCBkYXRhIHRvIHBhc3MgdG8gc2VydmVyIiwicmVxdWlyZWQiOmZhbHNlLCJ0eXBlIjoic3RyaW5nIn0seyJuYW1lIjoiZmlsZSIsImluIjoiZm9ybURhdGEiLCJkZXNjcmlwdGlvbiI6ImZpbGUgdG8gdXBsb2FkIiwicmVxdWlyZWQiOmZhbHNlLCJ0eXBlIjoiZmlsZSJ9XSwicmVzcG9uc2VzIjp7IjIwMCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIiwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL0FwaVJlc3BvbnNlIn19fSwic2VjdXJpdHkiOlt7InBldHN0b3JlX2F1dGgiOlsid3JpdGU6cGV0cyIsInJlYWQ6cGV0cyJdfV19fSwiL3BldCI6eyJwb3N0Ijp7InRhZ3MiOlsicGV0Il0sInN1bW1hcnkiOiJBZGQgYSBuZXcgcGV0IHRvIHRoZSBzdG9yZSIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJhZGRQZXQiLCJjb25zdW1lcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3siaW4iOiJib2R5IiwibmFtZSI6ImJvZHkiLCJkZXNjcmlwdGlvbiI6IlBldCBvYmplY3QgdGhhdCBuZWVkcyB0byBiZSBhZGRlZCB0byB0aGUgc3RvcmUiLCJyZXF1aXJlZCI6dHJ1ZSwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL1BldCJ9fV0sInJlc3BvbnNlcyI6eyI0MDUiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIGlucHV0In19LCJzZWN1cml0eSI6W3sicGV0c3RvcmVfYXV0aCI6WyJ3cml0ZTpwZXRzIiwicmVhZDpwZXRzIl19XX0sInB1dCI6eyJ0YWdzIjpbInBldCJdLCJzdW1tYXJ5IjoiVXBkYXRlIGFuIGV4aXN0aW5nIHBldCIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJ1cGRhdGVQZXQiLCJjb25zdW1lcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3siaW4iOiJib2R5IiwibmFtZSI6ImJvZHkiLCJkZXNjcmlwdGlvbiI6IlBldCBvYmplY3QgdGhhdCBuZWVkcyB0byBiZSBhZGRlZCB0byB0aGUgc3RvcmUiLCJyZXF1aXJlZCI6dHJ1ZSwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL1BldCJ9fV0sInJlc3BvbnNlcyI6eyI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIElEIHN1cHBsaWVkIn0sIjQwNCI6eyJkZXNjcmlwdGlvbiI6IlBldCBub3QgZm91bmQifSwiNDA1Ijp7ImRlc2NyaXB0aW9uIjoiVmFsaWRhdGlvbiBleGNlcHRpb24ifX0sInNlY3VyaXR5IjpbeyJwZXRzdG9yZV9hdXRoIjpbIndyaXRlOnBldHMiLCJyZWFkOnBldHMiXX1dfX0sIi9wZXQvZmluZEJ5U3RhdHVzIjp7ImdldCI6eyJ0YWdzIjpbInBldCJdLCJzdW1tYXJ5IjoiRmluZHMgUGV0cyBieSBzdGF0dXMiLCJkZXNjcmlwdGlvbiI6Ik11bHRpcGxlIHN0YXR1cyB2YWx1ZXMgY2FuIGJlIHByb3ZpZGVkIHdpdGggY29tbWEgc2VwYXJhdGVkIHN0cmluZ3MiLCJvcGVyYXRpb25JZCI6ImZpbmRQZXRzQnlTdGF0dXMiLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOlt7Im5hbWUiOiJzdGF0dXMiLCJpbiI6InF1ZXJ5IiwiZGVzY3JpcHRpb24iOiJTdGF0dXMgdmFsdWVzIHRoYXQgbmVlZCB0byBiZSBjb25zaWRlcmVkIGZvciBmaWx0ZXIiLCJyZXF1aXJlZCI6dHJ1ZSwidHlwZSI6ImFycmF5IiwiaXRlbXMiOnsidHlwZSI6InN0cmluZyIsImVudW0iOlsiYXZhaWxhYmxlIiwicGVuZGluZyIsInNvbGQiXSwiZGVmYXVsdCI6ImF2YWlsYWJsZSJ9LCJjb2xsZWN0aW9uRm9ybWF0IjoibXVsdGkifV0sInJlc3BvbnNlcyI6eyIyMDAiOnsiZGVzY3JpcHRpb24iOiJzdWNjZXNzZnVsIG9wZXJhdGlvbiIsInNjaGVtYSI6eyJ0eXBlIjoiYXJyYXkiLCJpdGVtcyI6eyIkcmVmIjoiIy9kZWZpbml0aW9ucy9QZXQifX19LCI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIHN0YXR1cyB2YWx1ZSJ9fSwic2VjdXJpdHkiOlt7InBldHN0b3JlX2F1dGgiOlsid3JpdGU6cGV0cyIsInJlYWQ6cGV0cyJdfV19fSwiL3BldC9maW5kQnlUYWdzIjp7ImdldCI6eyJ0YWdzIjpbInBldCJdLCJzdW1tYXJ5IjoiRmluZHMgUGV0cyBieSB0YWdzIiwiZGVzY3JpcHRpb24iOiJNdWx0aXBsZSB0YWdzIGNhbiBiZSBwcm92aWRlZCB3aXRoIGNvbW1hIHNlcGFyYXRlZCBzdHJpbmdzLiBVc2UgdGFnMSwgdGFnMiwgdGFnMyBmb3IgdGVzdGluZy4iLCJvcGVyYXRpb25JZCI6ImZpbmRQZXRzQnlUYWdzIiwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiIsImFwcGxpY2F0aW9uL3htbCJdLCJwYXJhbWV0ZXJzIjpbeyJuYW1lIjoidGFncyIsImluIjoicXVlcnkiLCJkZXNjcmlwdGlvbiI6IlRhZ3MgdG8gZmlsdGVyIGJ5IiwicmVxdWlyZWQiOnRydWUsInR5cGUiOiJhcnJheSIsIml0ZW1zIjp7InR5cGUiOiJzdHJpbmcifSwiY29sbGVjdGlvbkZvcm1hdCI6Im11bHRpIn1dLCJyZXNwb25zZXMiOnsiMjAwIjp7ImRlc2NyaXB0aW9uIjoic3VjY2Vzc2Z1bCBvcGVyYXRpb24iLCJzY2hlbWEiOnsidHlwZSI6ImFycmF5IiwiaXRlbXMiOnsiJHJlZiI6IiMvZGVmaW5pdGlvbnMvUGV0In19fSwiNDAwIjp7ImRlc2NyaXB0aW9uIjoiSW52YWxpZCB0YWcgdmFsdWUifX0sInNlY3VyaXR5IjpbeyJwZXRzdG9yZV9hdXRoIjpbIndyaXRlOnBldHMiLCJyZWFkOnBldHMiXX1dLCJkZXByZWNhdGVkIjp0cnVlfX0sIi9wZXQve3BldElkfSI6eyJnZXQiOnsidGFncyI6WyJwZXQiXSwic3VtbWFyeSI6IkZpbmQgcGV0IGJ5IElEIiwiZGVzY3JpcHRpb24iOiJSZXR1cm5zIGEgc2luZ2xlIHBldCIsIm9wZXJhdGlvbklkIjoiZ2V0UGV0QnlJZCIsInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3sibmFtZSI6InBldElkIiwiaW4iOiJwYXRoIiwiZGVzY3JpcHRpb24iOiJJRCBvZiBwZXQgdG8gcmV0dXJuIiwicmVxdWlyZWQiOnRydWUsInR5cGUiOiJpbnRlZ2VyIiwiZm9ybWF0IjoiaW50NjQifV0sInJlc3BvbnNlcyI6eyIyMDAiOnsiZGVzY3JpcHRpb24iOiJzdWNjZXNzZnVsIG9wZXJhdGlvbiIsInNjaGVtYSI6eyIkcmVmIjoiIy9kZWZpbml0aW9ucy9QZXQifX0sIjQwMCI6eyJkZXNjcmlwdGlvbiI6IkludmFsaWQgSUQgc3VwcGxpZWQifSwiNDA0Ijp7ImRlc2NyaXB0aW9uIjoiUGV0IG5vdCBmb3VuZCJ9fSwic2VjdXJpdHkiOlt7ImFwaV9rZXkiOltdfV19LCJwb3N0Ijp7InRhZ3MiOlsicGV0Il0sInN1bW1hcnkiOiJVcGRhdGVzIGEgcGV0IGluIHRoZSBzdG9yZSB3aXRoIGZvcm0gZGF0YSIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJ1cGRhdGVQZXRXaXRoRm9ybSIsImNvbnN1bWVzIjpbImFwcGxpY2F0aW9uL3gtd3d3LWZvcm0tdXJsZW5jb2RlZCJdLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOlt7Im5hbWUiOiJwZXRJZCIsImluIjoicGF0aCIsImRlc2NyaXB0aW9uIjoiSUQgb2YgcGV0IHRoYXQgbmVlZHMgdG8gYmUgdXBkYXRlZCIsInJlcXVpcmVkIjp0cnVlLCJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDY0In0seyJuYW1lIjoibmFtZSIsImluIjoiZm9ybURhdGEiLCJkZXNjcmlwdGlvbiI6IlVwZGF0ZWQgbmFtZSBvZiB0aGUgcGV0IiwicmVxdWlyZWQiOmZhbHNlLCJ0eXBlIjoic3RyaW5nIn0seyJuYW1lIjoic3RhdHVzIiwiaW4iOiJmb3JtRGF0YSIsImRlc2NyaXB0aW9uIjoiVXBkYXRlZCBzdGF0dXMgb2YgdGhlIHBldCIsInJlcXVpcmVkIjpmYWxzZSwidHlwZSI6InN0cmluZyJ9XSwicmVzcG9uc2VzIjp7IjQwNSI6eyJkZXNjcmlwdGlvbiI6IkludmFsaWQgaW5wdXQifX0sInNlY3VyaXR5IjpbeyJwZXRzdG9yZV9hdXRoIjpbIndyaXRlOnBldHMiLCJyZWFkOnBldHMiXX1dfSwiZGVsZXRlIjp7InRhZ3MiOlsicGV0Il0sInN1bW1hcnkiOiJEZWxldGVzIGEgcGV0IiwiZGVzY3JpcHRpb24iOiIiLCJvcGVyYXRpb25JZCI6ImRlbGV0ZVBldCIsInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3sibmFtZSI6ImFwaV9rZXkiLCJpbiI6ImhlYWRlciIsInJlcXVpcmVkIjpmYWxzZSwidHlwZSI6InN0cmluZyJ9LHsibmFtZSI6InBldElkIiwiaW4iOiJwYXRoIiwiZGVzY3JpcHRpb24iOiJQZXQgaWQgdG8gZGVsZXRlIiwicmVxdWlyZWQiOnRydWUsInR5cGUiOiJpbnRlZ2VyIiwiZm9ybWF0IjoiaW50NjQifV0sInJlc3BvbnNlcyI6eyI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIElEIHN1cHBsaWVkIn0sIjQwNCI6eyJkZXNjcmlwdGlvbiI6IlBldCBub3QgZm91bmQifX0sInNlY3VyaXR5IjpbeyJwZXRzdG9yZV9hdXRoIjpbIndyaXRlOnBldHMiLCJyZWFkOnBldHMiXX1dfX0sIi9zdG9yZS9vcmRlciI6eyJwb3N0Ijp7InRhZ3MiOlsic3RvcmUiXSwic3VtbWFyeSI6IlBsYWNlIGFuIG9yZGVyIGZvciBhIHBldCIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJwbGFjZU9yZGVyIiwiY29uc3VtZXMiOlsiYXBwbGljYXRpb24vanNvbiJdLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOlt7ImluIjoiYm9keSIsIm5hbWUiOiJib2R5IiwiZGVzY3JpcHRpb24iOiJvcmRlciBwbGFjZWQgZm9yIHB1cmNoYXNpbmcgdGhlIHBldCIsInJlcXVpcmVkIjp0cnVlLCJzY2hlbWEiOnsiJHJlZiI6IiMvZGVmaW5pdGlvbnMvT3JkZXIifX1dLCJyZXNwb25zZXMiOnsiMjAwIjp7ImRlc2NyaXB0aW9uIjoic3VjY2Vzc2Z1bCBvcGVyYXRpb24iLCJzY2hlbWEiOnsiJHJlZiI6IiMvZGVmaW5pdGlvbnMvT3JkZXIifX0sIjQwMCI6eyJkZXNjcmlwdGlvbiI6IkludmFsaWQgT3JkZXIifX19fSwiL3N0b3JlL29yZGVyL3tvcmRlcklkfSI6eyJnZXQiOnsidGFncyI6WyJzdG9yZSJdLCJzdW1tYXJ5IjoiRmluZCBwdXJjaGFzZSBvcmRlciBieSBJRCIsImRlc2NyaXB0aW9uIjoiRm9yIHZhbGlkIHJlc3BvbnNlIHRyeSBpbnRlZ2VyIElEcyB3aXRoIHZhbHVlID49IDEgYW5kIDw9IDEwLiBPdGhlciB2YWx1ZXMgd2lsbCBnZW5lcmF0ZWQgZXhjZXB0aW9ucyIsIm9wZXJhdGlvbklkIjoiZ2V0T3JkZXJCeUlkIiwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiIsImFwcGxpY2F0aW9uL3htbCJdLCJwYXJhbWV0ZXJzIjpbeyJuYW1lIjoib3JkZXJJZCIsImluIjoicGF0aCIsImRlc2NyaXB0aW9uIjoiSUQgb2YgcGV0IHRoYXQgbmVlZHMgdG8gYmUgZmV0Y2hlZCIsInJlcXVpcmVkIjp0cnVlLCJ0eXBlIjoiaW50ZWdlciIsIm1heGltdW0iOjEwLCJtaW5pbXVtIjoxLCJmb3JtYXQiOiJpbnQ2NCJ9XSwicmVzcG9uc2VzIjp7IjIwMCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIiwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL09yZGVyIn19LCI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIElEIHN1cHBsaWVkIn0sIjQwNCI6eyJkZXNjcmlwdGlvbiI6Ik9yZGVyIG5vdCBmb3VuZCJ9fX0sImRlbGV0ZSI6eyJ0YWdzIjpbInN0b3JlIl0sInN1bW1hcnkiOiJEZWxldGUgcHVyY2hhc2Ugb3JkZXIgYnkgSUQiLCJkZXNjcmlwdGlvbiI6IkZvciB2YWxpZCByZXNwb25zZSB0cnkgaW50ZWdlciBJRHMgd2l0aCBwb3NpdGl2ZSBpbnRlZ2VyIHZhbHVlLiBOZWdhdGl2ZSBvciBub24taW50ZWdlciB2YWx1ZXMgd2lsbCBnZW5lcmF0ZSBBUEkgZXJyb3JzIiwib3BlcmF0aW9uSWQiOiJkZWxldGVPcmRlciIsInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3sibmFtZSI6Im9yZGVySWQiLCJpbiI6InBhdGgiLCJkZXNjcmlwdGlvbiI6IklEIG9mIHRoZSBvcmRlciB0aGF0IG5lZWRzIHRvIGJlIGRlbGV0ZWQiLCJyZXF1aXJlZCI6dHJ1ZSwidHlwZSI6ImludGVnZXIiLCJtaW5pbXVtIjoxLCJmb3JtYXQiOiJpbnQ2NCJ9XSwicmVzcG9uc2VzIjp7IjQwMCI6eyJkZXNjcmlwdGlvbiI6IkludmFsaWQgSUQgc3VwcGxpZWQifSwiNDA0Ijp7ImRlc2NyaXB0aW9uIjoiT3JkZXIgbm90IGZvdW5kIn19fX0sIi9zdG9yZS9pbnZlbnRvcnkiOnsiZ2V0Ijp7InRhZ3MiOlsic3RvcmUiXSwic3VtbWFyeSI6IlJldHVybnMgcGV0IGludmVudG9yaWVzIGJ5IHN0YXR1cyIsImRlc2NyaXB0aW9uIjoiUmV0dXJucyBhIG1hcCBvZiBzdGF0dXMgY29kZXMgdG8gcXVhbnRpdGllcyIsIm9wZXJhdGlvbklkIjoiZ2V0SW52ZW50b3J5IiwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiJdLCJwYXJhbWV0ZXJzIjpbXSwicmVzcG9uc2VzIjp7IjIwMCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIiwic2NoZW1hIjp7InR5cGUiOiJvYmplY3QiLCJhZGRpdGlvbmFsUHJvcGVydGllcyI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDMyIn19fX0sInNlY3VyaXR5IjpbeyJhcGlfa2V5IjpbXX1dfX0sIi91c2VyL2NyZWF0ZVdpdGhBcnJheSI6eyJwb3N0Ijp7InRhZ3MiOlsidXNlciJdLCJzdW1tYXJ5IjoiQ3JlYXRlcyBsaXN0IG9mIHVzZXJzIHdpdGggZ2l2ZW4gaW5wdXQgYXJyYXkiLCJkZXNjcmlwdGlvbiI6IiIsIm9wZXJhdGlvbklkIjoiY3JlYXRlVXNlcnNXaXRoQXJyYXlJbnB1dCIsImNvbnN1bWVzIjpbImFwcGxpY2F0aW9uL2pzb24iXSwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiIsImFwcGxpY2F0aW9uL3htbCJdLCJwYXJhbWV0ZXJzIjpbeyJpbiI6ImJvZHkiLCJuYW1lIjoiYm9keSIsImRlc2NyaXB0aW9uIjoiTGlzdCBvZiB1c2VyIG9iamVjdCIsInJlcXVpcmVkIjp0cnVlLCJzY2hlbWEiOnsidHlwZSI6ImFycmF5IiwiaXRlbXMiOnsiJHJlZiI6IiMvZGVmaW5pdGlvbnMvVXNlciJ9fX1dLCJyZXNwb25zZXMiOnsiZGVmYXVsdCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIn19fX0sIi91c2VyL2NyZWF0ZVdpdGhMaXN0Ijp7InBvc3QiOnsidGFncyI6WyJ1c2VyIl0sInN1bW1hcnkiOiJDcmVhdGVzIGxpc3Qgb2YgdXNlcnMgd2l0aCBnaXZlbiBpbnB1dCBhcnJheSIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJjcmVhdGVVc2Vyc1dpdGhMaXN0SW5wdXQiLCJjb25zdW1lcyI6WyJhcHBsaWNhdGlvbi9qc29uIl0sInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3siaW4iOiJib2R5IiwibmFtZSI6ImJvZHkiLCJkZXNjcmlwdGlvbiI6Ikxpc3Qgb2YgdXNlciBvYmplY3QiLCJyZXF1aXJlZCI6dHJ1ZSwic2NoZW1hIjp7InR5cGUiOiJhcnJheSIsIml0ZW1zIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL1VzZXIifX19XSwicmVzcG9uc2VzIjp7ImRlZmF1bHQiOnsiZGVzY3JpcHRpb24iOiJzdWNjZXNzZnVsIG9wZXJhdGlvbiJ9fX19LCIvdXNlci97dXNlcm5hbWV9Ijp7ImdldCI6eyJ0YWdzIjpbInVzZXIiXSwic3VtbWFyeSI6IkdldCB1c2VyIGJ5IHVzZXIgbmFtZSIsImRlc2NyaXB0aW9uIjoiIiwib3BlcmF0aW9uSWQiOiJnZXRVc2VyQnlOYW1lIiwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiIsImFwcGxpY2F0aW9uL3htbCJdLCJwYXJhbWV0ZXJzIjpbeyJuYW1lIjoidXNlcm5hbWUiLCJpbiI6InBhdGgiLCJkZXNjcmlwdGlvbiI6IlRoZSBuYW1lIHRoYXQgbmVlZHMgdG8gYmUgZmV0Y2hlZC4gVXNlIHVzZXIxIGZvciB0ZXN0aW5nLiAiLCJyZXF1aXJlZCI6dHJ1ZSwidHlwZSI6InN0cmluZyJ9XSwicmVzcG9uc2VzIjp7IjIwMCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIiwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL1VzZXIifX0sIjQwMCI6eyJkZXNjcmlwdGlvbiI6IkludmFsaWQgdXNlcm5hbWUgc3VwcGxpZWQifSwiNDA0Ijp7ImRlc2NyaXB0aW9uIjoiVXNlciBub3QgZm91bmQifX19LCJwdXQiOnsidGFncyI6WyJ1c2VyIl0sInN1bW1hcnkiOiJVcGRhdGVkIHVzZXIiLCJkZXNjcmlwdGlvbiI6IlRoaXMgY2FuIG9ubHkgYmUgZG9uZSBieSB0aGUgbG9nZ2VkIGluIHVzZXIuIiwib3BlcmF0aW9uSWQiOiJ1cGRhdGVVc2VyIiwiY29uc3VtZXMiOlsiYXBwbGljYXRpb24vanNvbiJdLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOlt7Im5hbWUiOiJ1c2VybmFtZSIsImluIjoicGF0aCIsImRlc2NyaXB0aW9uIjoibmFtZSB0aGF0IG5lZWQgdG8gYmUgdXBkYXRlZCIsInJlcXVpcmVkIjp0cnVlLCJ0eXBlIjoic3RyaW5nIn0seyJpbiI6ImJvZHkiLCJuYW1lIjoiYm9keSIsImRlc2NyaXB0aW9uIjoiVXBkYXRlZCB1c2VyIG9iamVjdCIsInJlcXVpcmVkIjp0cnVlLCJzY2hlbWEiOnsiJHJlZiI6IiMvZGVmaW5pdGlvbnMvVXNlciJ9fV0sInJlc3BvbnNlcyI6eyI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIHVzZXIgc3VwcGxpZWQifSwiNDA0Ijp7ImRlc2NyaXB0aW9uIjoiVXNlciBub3QgZm91bmQifX19LCJkZWxldGUiOnsidGFncyI6WyJ1c2VyIl0sInN1bW1hcnkiOiJEZWxldGUgdXNlciIsImRlc2NyaXB0aW9uIjoiVGhpcyBjYW4gb25seSBiZSBkb25lIGJ5IHRoZSBsb2dnZWQgaW4gdXNlci4iLCJvcGVyYXRpb25JZCI6ImRlbGV0ZVVzZXIiLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOlt7Im5hbWUiOiJ1c2VybmFtZSIsImluIjoicGF0aCIsImRlc2NyaXB0aW9uIjoiVGhlIG5hbWUgdGhhdCBuZWVkcyB0byBiZSBkZWxldGVkIiwicmVxdWlyZWQiOnRydWUsInR5cGUiOiJzdHJpbmcifV0sInJlc3BvbnNlcyI6eyI0MDAiOnsiZGVzY3JpcHRpb24iOiJJbnZhbGlkIHVzZXJuYW1lIHN1cHBsaWVkIn0sIjQwNCI6eyJkZXNjcmlwdGlvbiI6IlVzZXIgbm90IGZvdW5kIn19fX0sIi91c2VyL2xvZ2luIjp7ImdldCI6eyJ0YWdzIjpbInVzZXIiXSwic3VtbWFyeSI6IkxvZ3MgdXNlciBpbnRvIHRoZSBzeXN0ZW0iLCJkZXNjcmlwdGlvbiI6IiIsIm9wZXJhdGlvbklkIjoibG9naW5Vc2VyIiwicHJvZHVjZXMiOlsiYXBwbGljYXRpb24vanNvbiIsImFwcGxpY2F0aW9uL3htbCJdLCJwYXJhbWV0ZXJzIjpbeyJuYW1lIjoidXNlcm5hbWUiLCJpbiI6InF1ZXJ5IiwiZGVzY3JpcHRpb24iOiJUaGUgdXNlciBuYW1lIGZvciBsb2dpbiIsInJlcXVpcmVkIjp0cnVlLCJ0eXBlIjoic3RyaW5nIn0seyJuYW1lIjoicGFzc3dvcmQiLCJpbiI6InF1ZXJ5IiwiZGVzY3JpcHRpb24iOiJUaGUgcGFzc3dvcmQgZm9yIGxvZ2luIGluIGNsZWFyIHRleHQiLCJyZXF1aXJlZCI6dHJ1ZSwidHlwZSI6InN0cmluZyJ9XSwicmVzcG9uc2VzIjp7IjIwMCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIiwiaGVhZGVycyI6eyJYLUV4cGlyZXMtQWZ0ZXIiOnsidHlwZSI6InN0cmluZyIsImZvcm1hdCI6ImRhdGUtdGltZSIsImRlc2NyaXB0aW9uIjoiZGF0ZSBpbiBVVEMgd2hlbiB0b2tlbiBleHBpcmVzIn0sIlgtUmF0ZS1MaW1pdCI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDMyIiwiZGVzY3JpcHRpb24iOiJjYWxscyBwZXIgaG91ciBhbGxvd2VkIGJ5IHRoZSB1c2VyIn19LCJzY2hlbWEiOnsidHlwZSI6InN0cmluZyJ9fSwiNDAwIjp7ImRlc2NyaXB0aW9uIjoiSW52YWxpZCB1c2VybmFtZS9wYXNzd29yZCBzdXBwbGllZCJ9fX19LCIvdXNlci9sb2dvdXQiOnsiZ2V0Ijp7InRhZ3MiOlsidXNlciJdLCJzdW1tYXJ5IjoiTG9ncyBvdXQgY3VycmVudCBsb2dnZWQgaW4gdXNlciBzZXNzaW9uIiwiZGVzY3JpcHRpb24iOiIiLCJvcGVyYXRpb25JZCI6ImxvZ291dFVzZXIiLCJwcm9kdWNlcyI6WyJhcHBsaWNhdGlvbi9qc29uIiwiYXBwbGljYXRpb24veG1sIl0sInBhcmFtZXRlcnMiOltdLCJyZXNwb25zZXMiOnsiZGVmYXVsdCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIn19fX0sIi91c2VyIjp7InBvc3QiOnsidGFncyI6WyJ1c2VyIl0sInN1bW1hcnkiOiJDcmVhdGUgdXNlciIsImRlc2NyaXB0aW9uIjoiVGhpcyBjYW4gb25seSBiZSBkb25lIGJ5IHRoZSBsb2dnZWQgaW4gdXNlci4iLCJvcGVyYXRpb25JZCI6ImNyZWF0ZVVzZXIiLCJjb25zdW1lcyI6WyJhcHBsaWNhdGlvbi9qc29uIl0sInByb2R1Y2VzIjpbImFwcGxpY2F0aW9uL2pzb24iLCJhcHBsaWNhdGlvbi94bWwiXSwicGFyYW1ldGVycyI6W3siaW4iOiJib2R5IiwibmFtZSI6ImJvZHkiLCJkZXNjcmlwdGlvbiI6IkNyZWF0ZWQgdXNlciBvYmplY3QiLCJyZXF1aXJlZCI6dHJ1ZSwic2NoZW1hIjp7IiRyZWYiOiIjL2RlZmluaXRpb25zL1VzZXIifX1dLCJyZXNwb25zZXMiOnsiZGVmYXVsdCI6eyJkZXNjcmlwdGlvbiI6InN1Y2Nlc3NmdWwgb3BlcmF0aW9uIn19fX19LCJzZWN1cml0eURlZmluaXRpb25zIjp7ImFwaV9rZXkiOnsidHlwZSI6ImFwaUtleSIsIm5hbWUiOiJhcGlfa2V5IiwiaW4iOiJoZWFkZXIifSwicGV0c3RvcmVfYXV0aCI6eyJ0eXBlIjoib2F1dGgyIiwiYXV0aG9yaXphdGlvblVybCI6Imh0dHBzOi8vcGV0c3RvcmUuc3dhZ2dlci5pby9vYXV0aC9hdXRob3JpemUiLCJmbG93IjoiaW1wbGljaXQiLCJzY29wZXMiOnsicmVhZDpwZXRzIjoicmVhZCB5b3VyIHBldHMiLCJ3cml0ZTpwZXRzIjoibW9kaWZ5IHBldHMgaW4geW91ciBhY2NvdW50In19fSwiZGVmaW5pdGlvbnMiOnsiQXBpUmVzcG9uc2UiOnsidHlwZSI6Im9iamVjdCIsInByb3BlcnRpZXMiOnsiY29kZSI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDMyIn0sInR5cGUiOnsidHlwZSI6InN0cmluZyJ9LCJtZXNzYWdlIjp7InR5cGUiOiJzdHJpbmcifX19LCJDYXRlZ29yeSI6eyJ0eXBlIjoib2JqZWN0IiwicHJvcGVydGllcyI6eyJpZCI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDY0In0sIm5hbWUiOnsidHlwZSI6InN0cmluZyJ9fSwieG1sIjp7Im5hbWUiOiJDYXRlZ29yeSJ9fSwiUGV0Ijp7InR5cGUiOiJvYmplY3QiLCJyZXF1aXJlZCI6WyJuYW1lIiwicGhvdG9VcmxzIl0sInByb3BlcnRpZXMiOnsiaWQiOnsidHlwZSI6ImludGVnZXIiLCJmb3JtYXQiOiJpbnQ2NCJ9LCJjYXRlZ29yeSI6eyIkcmVmIjoiIy9kZWZpbml0aW9ucy9DYXRlZ29yeSJ9LCJuYW1lIjp7InR5cGUiOiJzdHJpbmciLCJleGFtcGxlIjoiZG9nZ2llIn0sInBob3RvVXJscyI6eyJ0eXBlIjoiYXJyYXkiLCJ4bWwiOnsid3JhcHBlZCI6dHJ1ZX0sIml0ZW1zIjp7InR5cGUiOiJzdHJpbmciLCJ4bWwiOnsibmFtZSI6InBob3RvVXJsIn19fSwidGFncyI6eyJ0eXBlIjoiYXJyYXkiLCJ4bWwiOnsid3JhcHBlZCI6dHJ1ZX0sIml0ZW1zIjp7InhtbCI6eyJuYW1lIjoidGFnIn0sIiRyZWYiOiIjL2RlZmluaXRpb25zL1RhZyJ9fSwic3RhdHVzIjp7InR5cGUiOiJzdHJpbmciLCJkZXNjcmlwdGlvbiI6InBldCBzdGF0dXMgaW4gdGhlIHN0b3JlIiwiZW51bSI6WyJhdmFpbGFibGUiLCJwZW5kaW5nIiwic29sZCJdfX0sInhtbCI6eyJuYW1lIjoiUGV0In19LCJUYWciOnsidHlwZSI6Im9iamVjdCIsInByb3BlcnRpZXMiOnsiaWQiOnsidHlwZSI6ImludGVnZXIiLCJmb3JtYXQiOiJpbnQ2NCJ9LCJuYW1lIjp7InR5cGUiOiJzdHJpbmcifX0sInhtbCI6eyJuYW1lIjoiVGFnIn19LCJPcmRlciI6eyJ0eXBlIjoib2JqZWN0IiwicHJvcGVydGllcyI6eyJpZCI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDY0In0sInBldElkIjp7InR5cGUiOiJpbnRlZ2VyIiwiZm9ybWF0IjoiaW50NjQifSwicXVhbnRpdHkiOnsidHlwZSI6ImludGVnZXIiLCJmb3JtYXQiOiJpbnQzMiJ9LCJzaGlwRGF0ZSI6eyJ0eXBlIjoic3RyaW5nIiwiZm9ybWF0IjoiZGF0ZS10aW1lIn0sInN0YXR1cyI6eyJ0eXBlIjoic3RyaW5nIiwiZGVzY3JpcHRpb24iOiJPcmRlciBTdGF0dXMiLCJlbnVtIjpbInBsYWNlZCIsImFwcHJvdmVkIiwiZGVsaXZlcmVkIl19LCJjb21wbGV0ZSI6eyJ0eXBlIjoiYm9vbGVhbiJ9fSwieG1sIjp7Im5hbWUiOiJPcmRlciJ9fSwiVXNlciI6eyJ0eXBlIjoib2JqZWN0IiwicHJvcGVydGllcyI6eyJpZCI6eyJ0eXBlIjoiaW50ZWdlciIsImZvcm1hdCI6ImludDY0In0sInVzZXJuYW1lIjp7InR5cGUiOiJzdHJpbmcifSwiZmlyc3ROYW1lIjp7InR5cGUiOiJzdHJpbmcifSwibGFzdE5hbWUiOnsidHlwZSI6InN0cmluZyJ9LCJlbWFpbCI6eyJ0eXBlIjoic3RyaW5nIn0sInBhc3N3b3JkIjp7InR5cGUiOiJzdHJpbmcifSwicGhvbmUiOnsidHlwZSI6InN0cmluZyJ9LCJ1c2VyU3RhdHVzIjp7InR5cGUiOiJpbnRlZ2VyIiwiZm9ybWF0IjoiaW50MzIiLCJkZXNjcmlwdGlvbiI6IlVzZXIgU3RhdHVzIn19LCJ4bWwiOnsibmFtZSI6IlVzZXIifX19LCJleHRlcm5hbERvY3MiOnsiZGVzY3JpcHRpb24iOiJGaW5kIG91dCBtb3JlIGFib3V0IFN3YWdnZXIiLCJ1cmwiOiJodHRwOi8vc3dhZ2dlci5pbyJ9fQ=="
+      } ]
+    } ],
+    "Clients" : [ {
+      "ClientBean" : {
+        "id" : "CypressTestClient1",
+        "name" : "CypressTestClient1",
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-05-25T06:46:24Z"
+      },
+      "Versions" : [ {
+        "ClientVersionBean" : {
+          "id" : 1033,
+          "status" : "Registered",
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T06:46:24Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-05-25T06:46:36Z",
+          "publishedOn" : "2022-05-25T06:46:44Z",
+          "apikey" : "55baa62d-f5dd-4e29-8451-44a270e87fde"
+        },
+        "Policies" : [ ],
+        "Contracts" : [ {
+          "id" : 1035,
+          "api" : {
+            "api" : {
+              "organization" : {
+                "id" : "CypressTestOrg"
+              },
+              "id" : "CypressTestApi1",
+              "tags" : [ ]
+            },
+            "endpointProperties" : { },
+            "publicAPI" : false,
+            "discoverability" : "ORG_MEMBERS",
+            "plans" : [ ],
+            "version" : "1.0",
+            "parsePayload" : false,
+            "disableKeysStrip" : false
+          },
+          "plan" : {
+            "plan" : {
+              "organization" : {
+                "id" : "CypressTestOrg"
+              },
+              "id" : "CypressTestPlan1"
+            },
+            "version" : "1.0"
+          },
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-05-25T06:46:36Z",
+          "status" : "Created"
+        } ]
+      } ]
+    } ],
+    "Audits" : [ {
+      "id" : 1013,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Organization",
+      "createdOn" : "2022-05-25T06:41:50Z",
+      "what" : "Create"
+    }, {
+      "id" : 1016,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Plan",
+      "entityId" : "CypressTestPlan1",
+      "createdOn" : "2022-05-25T06:42:06Z",
+      "what" : "Create"
+    }, {
+      "id" : 1018,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Plan",
+      "entityId" : "CypressTestPlan1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:42:06Z",
+      "what" : "Create"
+    }, {
+      "id" : 1020,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Plan",
+      "entityId" : "CypressTestPlan1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:43:13Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"RateLimitingPolicy\"}"
+    }, {
+      "id" : 1022,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Plan",
+      "entityId" : "CypressTestPlan1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:43:43Z",
+      "what" : "AddPolicy",
+      "data" : "{\"policyDefId\":\"TransferQuotaPolicy\"}"
+    }, {
+      "id" : 1023,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Plan",
+      "entityId" : "CypressTestPlan1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:43:47Z",
+      "what" : "Lock"
+    }, {
+      "id" : 1024,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "createdOn" : "2022-05-25T06:44:05Z",
+      "what" : "Create"
+    }, {
+      "id" : 1026,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:44:05Z",
+      "what" : "Create"
+    }, {
+      "id" : 1027,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:44:10Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://petstore.swagger.io/v2\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 1028,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:44:47Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"CypressTestPlan1:1.0\"}]}"
+    }, {
+      "id" : 1029,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:44:54Z",
+      "what" : "UpdateDefinition"
+    }, {
+      "id" : 1030,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:45:01Z",
+      "what" : "UpdateDefinition"
+    }, {
+      "id" : 1031,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:45:37Z",
+      "what" : "Publish"
+    }, {
+      "id" : 1032,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Client",
+      "entityId" : "CypressTestClient1",
+      "createdOn" : "2022-05-25T06:46:24Z",
+      "what" : "Create"
+    }, {
+      "id" : 1034,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Client",
+      "entityId" : "CypressTestClient1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:46:24Z",
+      "what" : "Create"
+    }, {
+      "id" : 1036,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Client",
+      "entityId" : "CypressTestClient1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:46:36Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"CypressTestOrg\",\"clientId\":\"CypressTestClient1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"CypressTestOrg\",\"apiId\":\"CypressTestApi1\",\"apiVersion\":\"1.0\",\"planId\":\"CypressTestPlan1\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1037,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:46:36Z",
+      "what" : "CreateContract",
+      "data" : "{\"clientOrgId\":\"CypressTestOrg\",\"clientId\":\"CypressTestClient1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"CypressTestOrg\",\"apiId\":\"CypressTestApi1\",\"apiVersion\":\"1.0\",\"planId\":\"CypressTestPlan1\",\"planVersion\":\"1.0\"}"
+    }, {
+      "id" : 1039,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg",
+      "entityType" : "Client",
+      "entityId" : "CypressTestClient1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-05-25T06:46:44Z",
+      "what" : "Register"
+    } ]
+  } ]
+}
