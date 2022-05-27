@@ -15,6 +15,8 @@
  */
 package io.apiman.common.plugin;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -33,7 +35,7 @@ import java.util.List;
  *
  * @author eric.wittmann@redhat.com
  */
-public class Plugin {
+public class Plugin implements Closeable, AutoCloseable {
     
     private PluginSpec spec;
     private PluginCoordinates coordinates;
@@ -114,4 +116,8 @@ public class Plugin {
         return this.loader.getPolicyDefinitionResources();
     }
 
+    @Override
+    public void close() throws IOException {
+        loader.close();
+    }
 }

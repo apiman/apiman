@@ -15,6 +15,19 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.plugin.Plugin;
+import io.apiman.common.plugin.PluginClassLoader;
+import io.apiman.common.plugin.PluginCoordinates;
+import io.apiman.common.plugin.PluginSpec;
+import io.apiman.common.plugin.PluginUtils;
+import io.apiman.gateway.engine.IPluginRegistry;
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.i18n.Messages;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,17 +54,6 @@ import java.util.concurrent.TimeoutException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import io.apiman.common.plugin.Plugin;
-import io.apiman.common.plugin.PluginClassLoader;
-import io.apiman.common.plugin.PluginCoordinates;
-import io.apiman.common.plugin.PluginSpec;
-import io.apiman.common.plugin.PluginUtils;
-import io.apiman.gateway.engine.IPluginRegistry;
-import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncResult;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.i18n.Messages;
-
 /**
  * A simple plugin registry that stores plugins in a temporary location.  This
  * implementation shouldn't really be used except for testing and perhaps getting
@@ -65,10 +67,11 @@ import io.apiman.gateway.engine.i18n.Messages;
  * @author eric.wittmann@redhat.com
  */
 public class DefaultPluginRegistry implements IPluginRegistry {
-    private File pluginsDir;
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(DefaultPluginRegistry.class);
+    private final File pluginsDir;
     private final Map<PluginCoordinates, Plugin> pluginCache = new HashMap<>();
-    private Map<PluginCoordinates, Throwable> errorCache = new HashMap<>();
-    private Set<URI> pluginRepositories;
+    private final Map<PluginCoordinates, Throwable> errorCache = new HashMap<>();
+    private final Set<URI> pluginRepositories;
 
     /**
      * Constructor.
@@ -176,6 +179,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                         try {
                             result.getResult().getLoader().close();
                         } catch (IOException e) {
+                            LOGGER.error(e);
                         }
                         result = AsyncResultImpl.create(pluginCache.get(coordinates));
                     } else {
@@ -313,8 +317,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             } else {
                 PluginSpec spec = PluginUtils.readPluginSpecFile(specFile);
                 Plugin plugin = new Plugin(spec, coordinates, pluginClassLoader);
-                // TODO use logger when available
-                System.out.println("Read apiman plugin: " + spec); //$NON-NLS-1$
+                LOGGER.info("Read apiman plugin: {0}", spec); //$NON-NLS-1$
                 return plugin;
             }
         } catch (Exception e) {
