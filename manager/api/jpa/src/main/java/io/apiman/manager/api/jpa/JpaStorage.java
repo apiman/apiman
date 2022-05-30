@@ -238,11 +238,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         getSession().getTransaction().rollback();
     }
 
-    @Override
-    public void initialize() {
-
-    }
-
     /**
      * {@inheritDoc}
      */
