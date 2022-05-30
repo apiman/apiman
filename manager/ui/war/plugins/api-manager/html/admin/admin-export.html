@@ -87,12 +87,16 @@
                     </div>
                   </div>
 
-                  <div style="float: left; width: 100%;" ng-show="importStatus == 'imported'">
-                    <span apiman-i18n-key="data-import-completed-msg">Data import completed.  Please check the response below for details:</span>
+                  <div style="float: left; width: 100%;" ng-show="importStatus == 'imported' || importStatus == 'error' ">
+                    <div class="alert alert-danger" ng-show="importStatus == 'error'" apiman-i18n-key="data-import-failed-msg">
+                      <span class="pficon pficon-error-circle-o"></span>
+                      Import failed. Please check the response below for error messages:
+                    </div>
+                    <div class="alert alert-info"  ng-show="importStatus == 'imported'" apiman-i18n-key="data-import-completed-msg">
+                      <span class="pficon pficon-info"></span>
+                      Data import completed.  Please check the response below for details:
+                    </div>
                     <pre style="width: 100%; max-height: 300px; margin-top: 15px; overflow: auto">{{ importResult }}</pre>
-                  </div>
-
-                  <div style="float: left; width: 100%;" ng-show="importStatus == 'error'">
                   </div>
                   
                 </div>
