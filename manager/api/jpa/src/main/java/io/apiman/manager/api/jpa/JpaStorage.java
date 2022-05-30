@@ -219,6 +219,30 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         super.create(plugin);
     }
 
+    @Override
+    public void beginTx() throws StorageException {
+        if (getSession().getTransaction().isActive()) {
+            //getSession().getTransaction().
+        } else {
+            getSession().beginTransaction();
+        }
+    }
+
+    @Override
+    public void commitTx() throws StorageException {
+        getSession().getTransaction().commit();
+    }
+
+    @Override
+    public void rollbackTx() {
+        getSession().getTransaction().rollback();
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
     /**
      * {@inheritDoc}
      */
