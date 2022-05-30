@@ -63,7 +63,9 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
             if (!tx.getRollbackOnly()) {
                 // em.flush();
                 System.out.println("commit");
-                tx.commit();
+                if (tx.isActive()) {
+                    tx.commit();
+                }
             } else {
                 tx.rollback();
             }
