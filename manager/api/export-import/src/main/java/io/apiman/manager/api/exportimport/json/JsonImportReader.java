@@ -142,7 +142,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                 }
             }
 
-            dispatcher.finish();
+            dispatcher.close();
         } catch (ImportNotNeededException t) {
             logger.info(t.getMessage());
             dispatcher.cancel();

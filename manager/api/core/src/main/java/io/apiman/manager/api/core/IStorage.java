@@ -55,8 +55,6 @@ import java.util.Set;
  */
 public interface IStorage {
 
-    public ThreadLocal<Boolean> isExclusive = ThreadLocal.withInitial(() -> false);
-
     /*
      * Transaction related methods
      */

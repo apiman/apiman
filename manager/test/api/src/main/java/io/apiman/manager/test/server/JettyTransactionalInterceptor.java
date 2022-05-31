@@ -31,10 +31,6 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
 
     @AroundInvoke
     public Object intercept(InvocationContext ic) throws Exception {
-        if (IStorage.isExclusive.get()) {
-            return ic.proceed();
-        }
-
         em = emf.getEntityManager();
         System.out.println("em=" + em.hashCode());
 
