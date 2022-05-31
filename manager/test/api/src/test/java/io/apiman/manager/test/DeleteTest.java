@@ -13,6 +13,5 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ManagerRestTester.class)
 @ManagerRestTestPlan("test-plans/delete-testPlan.xml")
-@Ignore
 public class DeleteTest {
 }
