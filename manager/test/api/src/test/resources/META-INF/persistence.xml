@@ -37,8 +37,8 @@
     <class>io.apiman.manager.api.jpa.model.outbox.OutboxEventEntity</class>
     <!--    <exclude-unlisted-classes>true</exclude-unlisted-classes>-->
     <properties>
-      <property name="hibernate.show_sql" value="true" />
-      <property name="hibernate.format_sql" value="true" />
+<!--      <property name="hibernate.show_sql" value="true" />-->
+<!--      <property name="hibernate.format_sql" value="true" />-->
       <property name="hibernate.id.new_generator_mappings" value="true" />
       <property name="hibernate.order_updates" value="true"/>
       <property name="hibernate.connection.autocommit" value="false"/>
