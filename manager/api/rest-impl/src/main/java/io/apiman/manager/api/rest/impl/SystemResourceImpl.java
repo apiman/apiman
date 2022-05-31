@@ -251,11 +251,11 @@ public class SystemResourceImpl implements ISystemResource {
                 // Make sure we call through a managed service as the other `Stream` takes us out the managed context
                 // which can mess with our CDI interceptors.
                 try {
-                    IStorage.isExclusive.set(true);
+                    // IStorage.isExclusive.set(true);
                     storage.beginTx();
                     importExportService.fullImport(importFile, logger);
                     storage.commitTx();
-                    IStorage.isExclusive.set(false);
+                    // IStorage.isExclusive.set(false);
 
                 } catch (Exception e) {
                     logger.error(e);
