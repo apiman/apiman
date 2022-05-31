@@ -1,8 +1,8 @@
 package io.apiman.manager.test.server;
 
+import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.EntityManagerFactoryAccessor;
-import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 
 import javax.annotation.Priority;
@@ -62,8 +62,8 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
         try {
             if (!tx.getRollbackOnly()) {
                 // em.flush();
-                System.out.println("commit");
                 if (tx.isActive()) {
+                    System.out.println("commit");
                     tx.commit();
                 }
             } else {

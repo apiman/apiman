@@ -3,6 +3,7 @@ package io.apiman.manager.test;
 import io.apiman.manager.test.junit.ManagerRestTestPlan;
 import io.apiman.manager.test.junit.ManagerRestTester;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /**

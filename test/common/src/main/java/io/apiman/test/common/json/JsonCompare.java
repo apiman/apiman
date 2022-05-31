@@ -186,7 +186,7 @@ public class JsonCompare {
             expectedS = jacksonParser.writeValueAsString(expectedJson);
             actualS = jacksonParser.writeValueAsString(actualJson);
             JSONAssert.assertEquals(expectedS, actualS, new WildcardComparator(JSONCompareMode.LENIENT));
-        } catch (JsonProcessingException | JSONException e1) {
+        } catch (AssertionError | JsonProcessingException | JSONException e1) {
             System.out.println("Expected: " + expectedS);
             System.out.println("Actual: " + actualS);
             throw new RuntimeException(e1);

@@ -111,7 +111,7 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
 
     private Map<String, IGatewayLink> gatewayLinkCache = new HashMap<>();
 
-    private MetadataBean currentMetadata = new MetadataBean();
+    private MetadataBean currentMetadata;
 
     private ApiVersionMapper apiVersionMapper = ApiVersionMapper.INSTANCE;
 
@@ -149,6 +149,8 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     public void start(String fileName) {
         logger.info("----------------------------"); //$NON-NLS-1$
         logger.info(Messages.i18n.format("StorageImportDispatcher.StartingImport") + fileName); //$NON-NLS-1$
+
+        currentMetadata = new MetadataBean();
         currentMetadata.setImportedOn(new Date());
         currentMetadata.setApimanVersionAtImport(version.getVersionString());
 

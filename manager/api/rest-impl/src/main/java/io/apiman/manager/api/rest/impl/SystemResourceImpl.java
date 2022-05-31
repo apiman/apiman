@@ -59,7 +59,7 @@ import org.apache.commons.lang3.BooleanUtils;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-@Transactional
+// @Transactional
 public class SystemResourceImpl implements ISystemResource {
     
     private IStorage storage;
