@@ -1,8 +1,8 @@
 package io.apiman.manager.test.server;
 
+import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.EntityManagerFactoryAccessor;
-import io.apiman.manager.api.rest.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.DataAccessUtilMixin;
 
 import javax.annotation.Priority;
@@ -31,6 +31,10 @@ public class JettyTransactionalInterceptor implements DataAccessUtilMixin {
 
     @AroundInvoke
     public Object intercept(InvocationContext ic) throws Exception {
+        if (IStorage.isExclusive.get()) {
+            return ic.proceed();
+        }
+
         em = emf.getEntityManager();
         System.out.println("em=" + em.hashCode());
 
