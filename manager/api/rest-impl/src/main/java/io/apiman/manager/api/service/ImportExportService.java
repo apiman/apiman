@@ -23,7 +23,7 @@ import org.apache.commons.io.IOUtils;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@Transactional
+// @Transactional
 @ApplicationScoped
 public class ImportExportService {
     private final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ImportExportService.class);
