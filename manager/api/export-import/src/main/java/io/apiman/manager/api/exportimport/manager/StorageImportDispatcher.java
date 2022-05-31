@@ -80,7 +80,7 @@ import javax.transaction.Transactional;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-@Transactional
+        //@Transactional
 public class StorageImportDispatcher implements IImportReaderDispatcher {
     private IApimanLogger logger = ApimanLoggerFactory.getLogger(StorageImportDispatcher.class);
 

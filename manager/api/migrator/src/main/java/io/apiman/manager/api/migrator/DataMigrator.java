@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author eric.wittmann@gmail.com
  */
 @Dependent
-@Transactional
+        //@Transactional
 public class DataMigrator implements IReaderHandler {
 
     private IApimanLogger logger = ApimanLoggerFactory.getLogger(DataMigrator.class);
