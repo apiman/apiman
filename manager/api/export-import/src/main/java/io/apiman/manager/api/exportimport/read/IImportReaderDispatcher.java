@@ -94,7 +94,7 @@ public interface IImportReaderDispatcher {
     void blob(ExportedBlobDto blob);
 
     // Called when the import is complete
-    void close();
+    void finish();
 
     // Called to perform a rollback of the storage
     void cancel();

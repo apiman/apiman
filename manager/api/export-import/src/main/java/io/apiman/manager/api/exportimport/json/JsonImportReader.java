@@ -52,7 +52,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -143,7 +142,7 @@ public class JsonImportReader extends AbstractJsonReader implements IImportReade
                 }
             }
 
-            dispatcher.close();
+            dispatcher.finish();
         } catch (ImportNotNeededException t) {
             logger.info(t.getMessage());
             dispatcher.cancel();

@@ -59,7 +59,7 @@ import static org.apache.commons.lang3.reflect.FieldUtils.getAllFields;
  */
 @Provider
 @ServerInterceptor
-@Transactional // TODO(msavy): Need this while we still return managed beans at the presentation layer, could consider removing when we go full DTO
+//@Transactional // TODO(msavy): Need this while we still return managed beans at the presentation layer, could consider removing when we go full DTO
 public class BlobResourceInterceptorProvider implements WriterInterceptor {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(BlobResourceInterceptorProvider.class);

@@ -550,10 +550,10 @@ public class StorageImportDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#close()
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#finish()
      */
     @Override
-    public void close() {
+    public void finish() {
         try {
             importContracts();
             publishApis();

@@ -213,10 +213,10 @@ public class LoggingDispatcher implements IImportReaderDispatcher {
     }
 
     /**
-     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#close()
+     * @see io.apiman.manager.api.exportimport.read.IImportReaderDispatcher#finish()
      */
     @Override
-    public void close() {
+    public void finish() {
         System.out.println("close");
     }
 
