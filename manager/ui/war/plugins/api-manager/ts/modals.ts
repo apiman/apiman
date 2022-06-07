@@ -82,11 +82,13 @@ _module.factory('Modals',
                     try {
                         switch (typeof(rpcdata)) {
                             case "string":
-                                message = JSON.parse(rpcdata).message;
+                                message = JSON.parse(rpcdata).message ?? message;
                                 break;
 
                             case "object":
-                                message = rpcdata.message;
+                                if (rpcdata.message){
+                                    message = rpcdata.message ?? message;
+                                }
                                 break;
 
                             default:
