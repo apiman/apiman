@@ -267,16 +267,13 @@ _module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration', '$q
                     Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/definition',
                     {organizationId: orgId, apiId: apiId, version: version});
             },
-            getApiDefinition: function(orgId, apiId, version, handler): Promise<string> {
+            getApiDefinition: function(orgId, apiId, version): Promise<string> {
                 var endpoint = formatEndpoint(
                     Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/definition',
                     { organizationId: orgId, apiId: apiId, version: version });
                 return $http({
                     method: 'GET',
                     url: endpoint,
-                    transformResponse: function(data) {
-                        return data;
-                    }
                 }).then(
                     ok => $q.resolve(ok.data),
                     failure => $q.reject(failure)
