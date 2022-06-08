@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="de">
+{#include header.include.html title='API Freigabe abgelehnt' /}
+
+{#include scheer/standard-body.include.html notificationHeader='API Freigabe abgelehnt' name=notification.recipient.fullName}
+{#notificationBody}
+
+<p>Ihre Anfrage zur Freigabe der API <code>{event.apiId}</code> Version <code>{event.apiVersion}</code> der Organisation <code>{event.apiOrgId}</code> wurde <strong>abgelehnt</strong>.</p>
+
+{#if event.rejectionReason}
+<p>Kommentar des Administrators:</p>
+<p>{event.rejectionReason}</p>
+{/if}
+
+<div class="container mt-5">
+  {#include footer.en.include.html /}
+</div>
+{/notificationBody}
+{/include}
+</html>

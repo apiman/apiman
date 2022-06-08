@@ -27,5 +27,10 @@ public enum ContractStatus {
     /**
      * Contract has been successfully created.
      */
-    Created
+    Created,
+
+    /**
+     * Contract has been rejected.
+     */
+    Rejected
 }

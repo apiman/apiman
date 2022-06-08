@@ -13,6 +13,40 @@ Content-Type: application/json
 
 {
 	"beans": [{
+        "category": "API_ADMINISTRATION",
+        "reason": "apiman.client.contract.approval.request",
+        "reasonMessage": "Signup request for API",
+        "status": "OPEN",
+        "recipient": {
+            "username": "admin",
+            "fullName": "Admin",
+            "email": "admin@example.org"
+        },
+        "source": "/apiman/notifications/contracts/approvals",
+        "payload": {
+            "headers": {
+                "source": "/apiman/events/contracts/created",
+                "type": "io.apiman.manager.api.beans.events.ContractCreatedEvent",
+                "subject": "approval-required",
+                "eventVersion": 1,
+                "otherProperties": {}
+            },
+            "user": {
+                "username": "bwayne",
+                "fullName": "Bruce Wayne",
+                "email": "bwayne@wayne-enterprises.com"
+            },
+            "clientOrgId": "Organization1",
+            "clientId": "Client2",
+            "clientVersion": "1.0",
+            "apiOrgId": "Organization1",
+            "apiId": "API1",
+            "apiVersion": "1.0",
+            "planId": "Plan1",
+            "planVersion": "1.0",
+            "approvalRequired": true
+        }
+    }, {
 		"category": "API_ADMINISTRATION",
 		"reason": "apiman.client.contract.approval.request",
 		"reasonMessage": "Signup request for API",
@@ -25,9 +59,9 @@ Content-Type: application/json
 		"source": "/apiman/notifications/contracts/approvals",
 		"payload": {
 			"headers": {
-				"source": "/apiman/events/contracts/approvals",
+				"source": "/apiman/events/contracts/created",
 				"type": "io.apiman.manager.api.beans.events.ContractCreatedEvent",
-				"subject": "request",
+				"subject": "approval-required",
 				"eventVersion": 1,
 				"otherProperties": {}
 			},
@@ -59,9 +93,9 @@ Content-Type: application/json
 		"source": "/apiman/notifications/contracts/approvals",
 		"payload": {
 			"headers": {
-				"source": "/apiman/events/contracts/approvals",
+				"source": "/apiman/events/contracts/created",
 				"type": "io.apiman.manager.api.beans.events.ContractCreatedEvent",
-				"subject": "request",
+				"subject": "approval-required",
 				"eventVersion": 1,
 				"otherProperties": {}
 			},
@@ -81,5 +115,5 @@ Content-Type: application/json
 			"approvalRequired": true
 		}
 	}],
-	"totalSize": 2
+	"totalSize": 3
 }

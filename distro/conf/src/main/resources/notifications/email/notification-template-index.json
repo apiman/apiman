@@ -17,6 +17,20 @@
       "html": "tpl/en/apiman.client.contract.approval.granted.html",
       "plain": "tpl/en/apiman.client.contract.approval.granted.txt",
       "category": "API_ADMINISTRATION"
+    },
+    "apiman.client.contract.approval.rejected": {
+      "subject": "Your request to sign up to API {event.apiId}/{event.apiVersion} has been rejected.",
+      "html": "tpl/en/apiman.client.contract.approval.rejected.html",
+      "plain": "tpl/en/apiman.client.contract.approval.rejected.txt",
+      "category": "API_ADMINISTRATION"
+    }
+  },
+  "de": {
+    "apiman.client.contract.approval.rejected": {
+      "subject": "API-Zugriff für {event.apiId}/{event.apiVersion} wurde abgelehnt.",
+      "html": "tpl/de/apiman.client.contract.approval.rejected.html",
+      "plain": "tpl/de/apiman.client.contract.approval.rejected.txt",
+      "category": "API_ADMINISTRATION"
     }
   }
 }

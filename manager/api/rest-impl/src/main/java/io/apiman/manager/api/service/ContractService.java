@@ -118,9 +118,7 @@ public class ContractService implements DataAccessUtilMixin {
 
         ContractBean contract = tryAction(() -> createContractInternal(organizationId, clientId, version, bean));
         LOGGER.debug("Created new contract {0}: {1}", contract.getId(), contract); //$NON-NLS-1$
-        if (contract.getStatus() == ContractStatus.AwaitingApproval) {
-            fireContractApprovalRequest(securityContext.getCurrentUser(), contract);
-        }
+        fireContractCreatedEvent(securityContext.getCurrentUser(), contract);
         return contract;
     }
 
@@ -446,16 +444,20 @@ public class ContractService implements DataAccessUtilMixin {
         }
     }
 
-    private void fireContractApprovalRequest(String requesterId, ContractBean contract) {
-        LOGGER.debug("Firing contract approval request from requester {0} on contract {1}", requesterId, contract);
-        UserDto requester = UserMapper.INSTANCE.toDto(tryAction(() -> storage.getUser(requesterId)));
+    private void fireContractCreatedEvent(String userId, ContractBean contract) {
+        LOGGER.debug("Firing contract create event from user {0} on contract {1}", userId, contract);
+        UserDto requester = UserMapper.INSTANCE.toDto(tryAction(() -> storage.getUser(userId)));
 
-        ApimanEventHeaders headers = ApimanEventHeaders
+        ApimanEventHeaders.Builder builder = ApimanEventHeaders
              .builder()
              .setId(UUID.randomUUID().toString())
-             .setSource(URI.create("/apiman/events/contracts/approvals"))
-             .setSubject("request")
-             .build();
+             .setSource(URI.create("/apiman/events/contracts/created"));
+
+        if (contract.getStatus() == ContractStatus.AwaitingApproval) {
+            builder.setSubject("approval-required");
+        } else {
+            builder.setSubject("created");
+        }
 
         PlanVersionBean plan = contract.getPlan();
         ClientVersionBean cvb = contract.getClient();
@@ -463,9 +465,9 @@ public class ContractService implements DataAccessUtilMixin {
         OrganizationBean orgA = avb.getApi().getOrganization();
         OrganizationBean orgC = cvb.getClient().getOrganization();
 
-        var approvalRequestEvent = ContractCreatedEvent
+        var contractCreatedEvent = ContractCreatedEvent
              .builder()
-             .setHeaders(headers)
+             .setHeaders(builder.build())
              .setUser(requester)
              .setClientOrgId(orgC.getId())
              .setClientId(cvb.getClient().getId())
@@ -476,10 +478,10 @@ public class ContractService implements DataAccessUtilMixin {
              .setContractId(String.valueOf(contract.getId()))
              .setPlanId(plan.getPlan().getId())
              .setPlanVersion(plan.getVersion())
-             .setApprovalRequired(true)
+             .setApprovalRequired(contract.getStatus() == ContractStatus.AwaitingApproval)
              .build();
 
-        LOGGER.debug("Sending approval request event {0}", approvalRequestEvent);
-        eventService.fireEvent(approvalRequestEvent);
+        LOGGER.debug("Sending contract created event {0}", contractCreatedEvent);
+        eventService.fireEvent(contractCreatedEvent);
     }
 }

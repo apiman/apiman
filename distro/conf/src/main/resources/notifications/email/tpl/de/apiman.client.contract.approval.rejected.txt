@@ -1,0 +1,9 @@
+Hi {notification.recipient.fullName},
+
+Ihre Anfrage zur Freigabe der API `{event.apiId}` Version `{event.apiVersion}` der Organisation `{event.apiOrgId}` wurde abgelehnt.
+
+{#if event.rejectionReason}
+Kommentar des Administrators: `{event.rejectionReason}`
+{/if}
+
+{#include footer.en.include.txt /}

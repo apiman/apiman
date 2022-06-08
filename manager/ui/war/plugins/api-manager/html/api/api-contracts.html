@@ -7,7 +7,7 @@
 
   <body>
   <div>
-    
+
     <div ng-include="headerInclude"></div>
     <div ng-controller="Apiman.ApiContractsController" class="page container-pf-nav-pf-vertical container-fluid" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/api-manager/html/api/api_bc.include'"></div>
@@ -35,15 +35,16 @@
                 <table class="table table-striped table-bordered table-hover" data-field="contracts">
                   <thead>
                   <tr>
-                    <th style="width: 70%" apiman-i18n-key="client-client" nowrap="nowrap">Client App</th>
-                    <th apiman-i18n-key="plan" nowrap="nowrap">Plan</th>
-                    <th apiman-i18n-key="created-on_capitalized" nowrap="nowrap">Created On</th>
+                    <th style="width: 70%" apiman-i18n-key="client-client">Client App</th>
+                    <th style="width: 10%" apiman-i18n-key="actions">Actions</th>
+                    <th style="width: 10%" apiman-i18n-key="plan">Plan</th>
+                    <th style="width: 10%" apiman-i18n-key="created-on_capitalized">Created On</th>
                   </tr>
                   </thead>
                   <tbody>
 
                   <tr ng-hide="contracts.length > 0">
-                    <td colspan="3">
+                    <td colspan="4">
                       <div class="apiman-no-content container-fluid">
                         <div class="row">
                           <div class="col-md-12">
@@ -62,19 +63,42 @@
                         <span class="emphasis">{{ contract.clientName }}</span>
                         <span apiman-i18n-skip>&#8680;</span>
                         <span>{{ contract.clientVersion }}</span>
+                        <div class="float-right">
+                          <!-- Approved label -->
+                          <span type="button"
+                            ng-show="contract.status === 'Created'"
+                            class="apiman-label apiman-label-success cursor-help"
+                            uib-tooltip="This contract is approved"
+                            tooltip-placement="bottom"
+                           >Approved</span>
+                          <!-- Rejected label -->
+                          <span type="button"
+                            ng-show="contract.status === 'Rejected'"
+                            class="apiman-label apiman-label-danger cursor-help"
+                            uib-tooltip="This contract will be deleted automatically"
+                            tooltip-placement="bottom"
+                          >Rejected</span>
+                        </div>
+                      </span>
+                    </td>
+                    <td>
+                      <div>
                         <!-- Approval button -->
                         <button type="button"
                                 ng-show="contract.status === 'AwaitingApproval'"
                                 apiman-permission="planAdmin"
-                                ng-click="approveContract(contract)"
-                                class="btn-sm btn-success"
-                                style="float: right">Approve</button>
-                        <!-- Approval button -->
+                                ng-click="approveRequest(contract)"
+                                class="btn btn-primary"
+                        >Approve</button>
+                        <!-- Reject button -->
                         <button type="button"
-                                ng-show="contract.status === 'Created'"
-                                class="apiman-label apiman-label-success"
-                                style="float: right">✅ Approved</button>
-                      </span>
+                                ng-show="contract.status === 'AwaitingApproval'"
+                                apiman-permission="planAdmin"
+                                ng-click="rejectRequest(contract)"
+                                class="btn btn-warning"
+                        >Reject</button>
+<!--                        <span ng-show="contract.status !== 'AwaitingApproval'">-</span>-->
+                      </div>
                     </td>
                     <td><span>{{ contract.planName }}</span></td>
                     <td><span>{{ contract.createdOn | date:'yyyy-MM-dd' }}</span></td>
@@ -92,6 +116,8 @@
         <!-- /Content -->
       </div>
     </div> <!-- /container-pf-nav-pf-vertical container-fluid -->
+
+    <div ng-include="'plugins/api-manager/html/modals/getValueModal.html'"></div>
   </div>
   </body>
 </html>

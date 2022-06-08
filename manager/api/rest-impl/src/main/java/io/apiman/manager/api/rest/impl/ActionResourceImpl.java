@@ -21,6 +21,7 @@ import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.actions.ActionBean;
 import io.apiman.manager.api.beans.actions.ContractActionDto;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.contracts.ContractStatus;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.core.IStorage;
@@ -108,7 +109,11 @@ public class ActionResourceImpl implements IActionResource, DataAccessUtilMixin 
         // Should be a planAdmin in the org the plan was defined in (usually same org as the API is in!).
         OrganizationBean planOrg = contract.getPlan().getPlan().getOrganization();
         securityContext.checkPermissions(PermissionType.planAdmin, planOrg.getId());
-        actionService.approveContract(action, securityContext.getCurrentUser());
+        if (action.getStatus() == ContractStatus.Rejected) {
+            actionService.rejectContract(action, securityContext.getCurrentUser());
+        } else {
+            actionService.approveContract(action, securityContext.getCurrentUser());
+        }
     }
 
     private void lockPlan(ActionBean action) throws ActionException, NotAuthorizedException {
