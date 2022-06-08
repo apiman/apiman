@@ -1,0 +1,11 @@
+POST /actions/contracts admin/admin
+Content-Type: application/json
+
+{
+    "contractId": ${client2contract1Id},
+    "status": "Rejected",
+    "autoPromote": false,
+    "rejectionReason": "You shall not PAS!"
+}
+----
+204

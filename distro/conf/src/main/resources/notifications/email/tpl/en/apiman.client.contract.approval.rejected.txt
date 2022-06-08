@@ -1,0 +1,9 @@
+Hi {notification.recipient.fullName},
+
+your request to sign up to `{event.apiId}` version `{event.apiVersion}` from organization `{event.apiOrgId}` has been rejected.
+
+{#if event.rejectionReason}
+Administrator comment: `{event.rejectionReason}`
+{/if}
+
+{#include footer.en.include.txt /}

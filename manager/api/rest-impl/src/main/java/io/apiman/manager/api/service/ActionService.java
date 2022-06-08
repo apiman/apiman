@@ -39,6 +39,7 @@ import io.apiman.manager.api.rest.exceptions.ActionException;
 import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.ClientVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.exceptions.InvalidContractStatusException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.i18n.Messages;
@@ -63,6 +64,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import com.google.common.collect.Streams;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Actions like publish, register, re-register, etc.
@@ -111,17 +113,27 @@ public class ActionService implements DataAccessUtilMixin {
     public ActionService() {
     }
 
-    public void approveContract(ContractActionDto action, String approverId) {
+    public void rejectContract(ContractActionDto action, String rejectorId) {
         // Must exist
-        ContractBean contract = tryAction(() -> storage.getContract(action.getContractId()));
-        if (contract == null) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("ContractDoesNotExist"));
-        }
+        ContractBean contract = getContractById(action.getContractId());
 
-        // Must be in AwaitingApproval state (no need to approve otherwise!)
-        if (contract.getStatus() != ContractStatus.AwaitingApproval) {
-            throw ExceptionFactory.invalidContractStatus(ContractStatus.AwaitingApproval, contract.getStatus());
-        }
+        // We probably need an optimised query :-).
+        ClientVersionBean cvb = contract.getClient();
+        ApiVersionBean avb = contract.getApi();
+        PlanVersionBean plan = contract.getPlan();
+        OrganizationBean orgA = avb.getApi().getOrganization();
+        OrganizationBean orgC = cvb.getClient().getOrganization();
+        UserBean rejector = tryAction(() -> storage.getUser(rejectorId));
+
+        contract.setStatus(ContractStatus.Rejected);
+
+        fireContractRejectedEvent(rejector, action.getRejectionReason(), contract, orgC, cvb, orgA, avb, plan);
+        contractService.deleteContract(orgC.getId(), cvb.getClient().getId(), cvb.getVersion(), contract.getId());
+        LOGGER.debug("{0} rejected a contract: {1} -> {2}", rejectorId, contract, action);
+    }
+
+    public void approveContract(ContractActionDto action, String approverId) {
+        ContractBean contract = getContractById(action.getContractId());
 
         // We probably need an optimised query :-).
         ClientVersionBean cvb = contract.getClient();
@@ -169,6 +181,51 @@ public class ActionService implements DataAccessUtilMixin {
         }
         //storage.flush();
         fireContractApprovedEvent(approver, contract, orgC, cvb, orgA, avb, plan);
+    }
+
+    @NotNull
+    private ContractBean getContractById(Long contractId) throws ActionException, InvalidContractStatusException {
+        // Must exist
+        ContractBean contract = tryAction(() -> storage.getContract(contractId));
+        if (contract == null) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ContractDoesNotExist"));
+        }
+
+        // Must be in AwaitingApproval state (no need to approve otherwise!)
+        if (contract.getStatus() != ContractStatus.AwaitingApproval) {
+            throw ExceptionFactory.invalidContractStatus(ContractStatus.AwaitingApproval, contract.getStatus());
+        }
+        return contract;
+    }
+
+    private void fireContractRejectedEvent(UserBean rejector, String rejectionReason, ContractBean contract, OrganizationBean orgC,
+                                           ClientVersionBean cvb, OrganizationBean orgA, ApiVersionBean avb, PlanVersionBean plan) {
+        ApimanEventHeaders headers = ApimanEventHeaders
+                .builder()
+                .setId(UUID.randomUUID().toString().substring(8))
+                .setSource(URI.create("/apiman/events/contracts/approvals"))
+                .setSubject("rejection")
+                .build();
+
+        var event = ContractApprovalEvent
+                .builder()
+                .setApprover(userMapper.toDto(rejector))
+                .setApproved(false)
+                .setRejectionReason(rejectionReason)
+                .setHeaders(headers)
+                .setClientOrgId(orgC.getId())
+                .setClientId(cvb.getClient().getId())
+                .setClientVersion(cvb.getVersion())
+                .setApiOrgId(orgA.getId())
+                .setApiId(avb.getApi().getId())
+                .setApiVersion(avb.getVersion())
+                .setContractId(String.valueOf(contract.getId()))
+                .setPlanId(plan.getPlan().getId())
+                .setPlanVersion(plan.getVersion())
+                .build();
+
+        LOGGER.debug("Sending contract rejected response event: {0}", event);
+        eventService.fireEvent(event);
     }
 
     private void fireContractApprovedEvent(UserBean approver, ContractBean contract, OrganizationBean orgC,

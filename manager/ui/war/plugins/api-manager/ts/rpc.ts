@@ -70,7 +70,23 @@ _module.factory('ContractService', ['$http', 'Configuration', '$q',
                     success => $q.resolve(success.data),
                     failure => $q.reject(failure)
                 );
-            }
+            },
+
+            rejectContract: (contractId: number, reason: string = ''): Promise<any> => {
+            return $http({
+                method: 'POST',
+                url: `${Configuration.api.endpoint}/actions/contracts`,
+                data: {
+                    contractId: contractId,
+                    status: 'Rejected',
+                    autoPromote: false,
+                    rejectionReason: reason
+                } as ContractAction
+            }).then(
+                success => $q.resolve(success.data),
+                failure => $q.reject(failure)
+            );
+        }
         }
     }]);
 

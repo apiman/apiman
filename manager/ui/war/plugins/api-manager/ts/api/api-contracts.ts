@@ -3,8 +3,8 @@ import angular = require("angular");
 import {ContractSummaryBean} from "../model/contract.model";
 
 _module.controller("Apiman.ApiContractsController",
-    ['$q', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'Configuration', 'ContractService',
-    function ($q, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, Configuration, ContractService) {
+    ['$q', '$scope', '$location', 'PageLifecycle', 'ApiEntityLoader', 'OrgSvcs', 'Logger', '$routeParams', 'Configuration', 'ContractService', '$uibModal',
+    function ($q, $scope, $location, PageLifecycle, ApiEntityLoader, OrgSvcs, Logger, $routeParams, Configuration, ContractService, $uibModal) {
         var params = $routeParams;
         $scope.organizationId = params.org;
         $scope.tab = 'contracts';
@@ -30,16 +30,66 @@ _module.controller("Apiman.ApiContractsController",
             })
         });
 
-        $scope.approveContract = (contract: ContractSummaryBean) => {
-            Logger.debug("Attempting to approve contract: {0}", contract);
-            ContractService.approveContract(contract.contractId).then(
-                (_) => {
-                    contract.status = 'Created';
-                },
-                (failure) => {
+        let handleApprovalError = function (err) {
+            if (err !== 'cancel') {
+                Logger.error('Error while approve/reject: {0}', err)
+            } else {
+                Logger.debug('Modal dismissed at: {0}', new Date());
+            }
+        }
 
+        $scope.approveRequest = (contract: ContractSummaryBean) => {
+            Logger.debug("Attempting to approve contract: {0}", contract);
+
+            const options = {
+                title: 'Confirm API Signup Request',
+                message: 'Do you really want to approve this API Signup request?'
+            };
+
+            let modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'confirmModal.html',
+                controller: 'ModalConfirmCtrl',
+                resolve: {
+                    options: function () {
+                        return options;
+                    }
                 }
-            )
+            });
+
+            modalInstance.result
+            .then(() => ContractService.approveContract(contract.contractId))
+            .then(() => contract.status = 'Created')
+            .catch((err) => handleApprovalError(err));
+        };
+
+        $scope.rejectRequest = (contract: ContractSummaryBean) => {
+            Logger.debug("Attempting to reject contract: {0}", contract);
+
+            const options = {
+                title: 'Reject API Signup Request',
+                message: 'Do you really want to reject this API Signup request?' +
+                    '\nRejected contracts will be automatically deleted.' +
+                    '\n\nYou can optionally pass a message to the user.',
+                label: 'Rejection Message',
+                initialValue: ''
+            };
+
+            let modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'getValueModal.html',
+                controller: 'ModalGetValueCtrl',
+                resolve: {
+                    options: function () {
+                        return options;
+                    }
+                }
+            });
+
+            modalInstance.result
+                .then((rejectionReason) => ContractService.rejectContract(contract.contractId, rejectionReason))
+                .then(() => contract.status = 'Rejected')
+                .catch((err) => handleApprovalError(err));
         };
 
         $scope.getNextPage = getNextPage;

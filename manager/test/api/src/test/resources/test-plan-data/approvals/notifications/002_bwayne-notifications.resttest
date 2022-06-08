@@ -13,6 +13,42 @@ Content-Type: application/json
 
 {
 	"beans": [{
+        "category": "API_ADMINISTRATION",
+        "reason": "apiman.client.contract.approval.rejected",
+        "reasonMessage": "Signup was rejected: You shall not PAS!",
+        "status": "OPEN",
+        "recipient": {
+            "username": "bwayne",
+            "fullName": "Bruce Wayne",
+            "email": "bwayne@wayne-enterprises.com"
+        },
+        "source": "/apiman/notifications/contracts/approvals",
+        "payload": {
+            "headers": {
+                "source": "/apiman/events/contracts/approvals",
+                "type": "io.apiman.manager.api.beans.events.ContractApprovalEvent",
+                "subject": "rejection",
+                "eventVersion": 1,
+                "otherProperties": {}
+            },
+            "approver": {
+                "username": "admin",
+                "fullName": "Admin",
+                "email": "admin@example.org"
+            },
+          "clientOrgId": "Organization1",
+          "clientId": "Client2",
+          "clientVersion": "1.0",
+          "apiOrgId": "Organization1",
+          "apiId": "API1",
+          "apiVersion": "1.0",
+          "contractId": "56",
+          "planId": "Plan1",
+          "planVersion": "1.0",
+          "approved": false,
+          "rejectionReason": "You shall not PAS!"
+        }
+    }, {
 		"category": "API_ADMINISTRATION",
 		"reason": "apiman.client.status_change",
 		"reasonMessage": "Client was published",
@@ -108,5 +144,5 @@ Content-Type: application/json
 			"rejectionReason": null
 		}
 	}],
-	"totalSize": 3
+	"totalSize": 4
 }

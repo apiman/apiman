@@ -8,7 +8,19 @@ import io.apiman.manager.api.beans.contracts.ContractStatus;
 public class ContractActionDto {
     private Long contractId;
     private ContractStatus status;
+    private String rejectionReason;
     private boolean autoPromote = false;
+
+    public ContractActionDto() {
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
 
     public Long getContractId() {
         return contractId;

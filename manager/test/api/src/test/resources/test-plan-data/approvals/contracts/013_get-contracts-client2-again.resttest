@@ -1,0 +1,7 @@
+GET /organizations/Organization1/clients/Client2/versions/1.0/contracts admin/admin
+
+----
+200
+Content-Type: application/json
+
+[]

@@ -2160,6 +2160,22 @@ html, body {height: 100%;}
   padding-right: 5vw;
 }
 
+.cursor-help, .cursor-help:hover {
+  cursor: help;
+}
+
+.float-right {
+  float: right;
+}
+
+.pre-white-space {
+  white-space: pre
+}
+
+#contracts-table {
+  white-space: nowrap;
+}
+
 /*Notifications*/
  .notification-main-body:hover {
    cursor: pointer;

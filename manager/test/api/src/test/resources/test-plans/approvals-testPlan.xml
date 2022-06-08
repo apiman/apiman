@@ -13,6 +13,9 @@
 
     <test name="Create Client 1">test-plan-data/approvals/create/002_create-client1.resttest</test>
     <test name="Create Client Version 1.0">test-plan-data/approvals/create/003_create-client-version-1.0.resttest</test>
+    <test name="Create Client 2">test-plan-data/approvals/create/018_create-client2.resttest</test>
+    <test name="Create Client Version 1.0">test-plan-data/approvals/create/019_create-client2-version-1.0.resttest</test>
+
     <test name="Create Plan 1">test-plan-data/approvals/create/004_create-plan1.resttest</test>
     <test name="Create Plan Version 1.0">test-plan-data/approvals/create/005_create-plan-version-1.0.resttest</test>
 
@@ -50,6 +53,9 @@
     <test name="Create Contract to API 2 (approval required)">test-plan-data/approvals/contracts/005_create-contract2.resttest</test>
     <test name="List Contracts for Client 1 [2]">test-plan-data/approvals/contracts/006_get-contracts.resttest</test>
 
+    <test name="Create Contract Client 2 to API 1 (approval required)">test-plan-data/approvals/contracts/010_create-contract-client2.resttest</test>
+    <test name="List Contracts for Client 2 [1]">test-plan-data/approvals/contracts/011_get-contracts-client2.resttest</test>
+
     <test name="Try to register client before approval(s) granted (should fail)">test-plan-data/approvals/contracts/006.5_try-to-register-client1-fail.resttest</test>
 
     <test name="Admin approves contract 1">test-plan-data/approvals/contracts/007_approve-contract1.resttest</test>
@@ -57,6 +63,9 @@
 
     <test name="Admin approves contract 2">test-plan-data/approvals/contracts/008_approve-contract2.resttest</test>
     <test name="Successfully register client1 (all approved)">test-plan-data/approvals/contracts/009_register-client1.resttest</test>
+
+    <test name="Admin rejects contract 1 with client 2">test-plan-data/approvals/contracts/012_reject-contract-client2.resttest</test>
+    <test name="List Contracts for Client 2 (should be 0)">test-plan-data/approvals/contracts/013_get-contracts-client2-again.resttest</test>
 
     <test name="Approver receives notification about contract signup request">test-plan-data/approvals/notifications/001_approver-notifications.resttest</test>
     <test name="User bwayne receives notifications about approvals">test-plan-data/approvals/notifications/002_bwayne-notifications.resttest</test>

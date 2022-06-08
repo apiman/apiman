@@ -10,11 +10,16 @@ Content-Type: application/json
 ----
 200
 Content-Type: application/json
-X-Total-Count: 3
-Total-Count: 3
+X-Total-Count: 4
+Total-Count: 4
 
 {
 	"beans": [{
+        "category": "API_ADMINISTRATION",
+        "reason": "apiman.client.contract.approval.rejected",
+        "reasonMessage": "Signup was rejected: You shall not PAS!",
+        "status": "USER_DISMISSED"
+    }, {
 		"category": "API_ADMINISTRATION",
 		"reason": "apiman.client.status_change",
 		"reasonMessage": "Client was published",
@@ -30,5 +35,5 @@ Total-Count: 3
 		"reasonMessage": "Signup was approved!",
 		"status": "USER_DISMISSED"
 	}],
-	"totalSize": 3
+	"totalSize": 4
 }
