@@ -266,8 +266,11 @@ export class PolicyService {
   }
 
   generateDataForRateLimit(policy: IPolicyExt): void {
-    const currentVal =
-      policy.probe.config.limit - policy.probe.status.remaining;
+    const currentVal = this.calcCurrentValue(
+      policy.probe.config.limit,
+      policy.probe.status.remaining
+    );
+
     policy.mainGaugeData.currentVal = currentVal;
     policy.mainGaugeData.dividendSuffix = '';
     policy.mainGaugeData.divisorSuffix = '';
@@ -279,8 +282,10 @@ export class PolicyService {
   }
 
   generateDataForQuota(policy: IPolicyExt): void {
-    const currentBytesValue =
-      policy.probe.config.limit - policy.probe.status.remaining;
+    const currentBytesValue = this.calcCurrentValue(
+      policy.probe.config.limit,
+      policy.probe.status.remaining
+    );
     const bytesLimitFormatted = formatBytesAsObject(policy.probe.config.limit);
 
     policy.mainGaugeData.currentVal =
@@ -453,5 +458,15 @@ export class PolicyService {
   private getDayCountForMonth() {
     const date = new Date();
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  }
+
+  /**
+   * Calculates the current value based on the limit and remaining value.
+   * Current value cannot be larger than the limit.
+   * @param limit the limit value
+   * @param remaining the remaining value, remaining will be -1 if limit is reached
+   */
+  private calcCurrentValue(limit: number, remaining: number): number {
+    return Math.min(limit - remaining, limit);
   }
 }
