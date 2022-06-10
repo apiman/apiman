@@ -34,6 +34,5 @@ export class AccountIdmComponent implements OnInit {
 
   ngOnInit() {
     this.keycloakToken = this.keycloakHelper.decodeCurrentKeyloakToken();
-    console.log(this.keycloakToken);
   }
 }

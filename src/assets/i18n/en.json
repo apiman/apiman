@@ -95,7 +95,7 @@
     "NO_CLIENTS_FOUND": "No clients were found",
     "FAILED_WHILE_FETCHING_CLIENTS": "Failed while fetching clients",
     "REMOVE_CLIENT_FAILED": "Failed while removing the client",
-    "NO_PROBES": "Failed while fetching the current policy data",
+    "NO_PROBES": "There is no policy data for the current API",
     "RETIRED_API": "This API is retired and can no longer be used.",
     "SELECT": "Select from available Clients",
     "CLIENT_TOOLTIP": "Client Organization: {{ client.client.organization.name }}\nClient Name (Version): {{ client.client.name }} ({{ client.version }})",

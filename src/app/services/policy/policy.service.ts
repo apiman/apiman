@@ -25,7 +25,7 @@ import {
 } from '../../interfaces/IPolicy';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { BackendService } from '../backend/backend.service';
-import { forkJoin, Observable, of } from 'rxjs';
+import { EMPTY, forkJoin, Observable, of } from 'rxjs';
 import { formatBytes, formatBytesAsObject } from '../../shared/utility';
 import { IContractExt } from '../../interfaces/IContractExt';
 import { TranslateService } from '@ngx-translate/core';
@@ -203,9 +203,18 @@ export class PolicyService {
 
   public getPolicyProbe(
     contract: IContractExt,
-    policy: IPolicy
-  ): Observable<IPolicyProbe[]> {
-    return this.backendService.getPolicyProbe(contract, policy);
+    policy: IPolicyExt
+  ): Observable<IPolicyProbe> {
+    if (contract.client.status === 'Registered') {
+      return this.backendService.getPolicyProbe(contract, policy).pipe(
+        switchMap((probes: IPolicyProbe[]) => {
+          // currently we only have one probe result
+          return of(probes[0]);
+        })
+      );
+    } else {
+      return EMPTY;
+    }
   }
 
   public getTranslationForPeriod(period: string): string {

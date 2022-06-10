@@ -248,8 +248,8 @@ export class MyAppsComponent implements OnInit {
             })
           )
           .subscribe({
-            next: (probes: IPolicyProbe[]) => {
-              policy.probe = probes[0];
+            next: (probe: IPolicyProbe) => {
+              policy.probe = probe;
               this.policyService.setGaugeDataForPolicy(policy);
             },
             complete: () => {
