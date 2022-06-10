@@ -78,8 +78,13 @@ public class EmailSender implements IEmailSender {
         email.setAuthenticator(new DefaultAuthenticator(emailConfiguration.getUsername(), emailConfiguration.getPassword()));
         email.getHeaders().putAll(headers);
 
-        if (emailConfiguration.getStartTLSMode() == StartTLSEnum.REQUIRED) {
-            email.setStartTLSRequired(true);
+        if (emailConfiguration.getStartTLSMode() == StartTLSEnum.REQUIRED || emailConfiguration.getStartTLSMode() == StartTLSEnum.OPTIONAL) {
+            email.setStartTLSEnabled(true);
+            if (emailConfiguration.getStartTLSMode() == StartTLSEnum.REQUIRED) {
+                // https://issues.apache.org/jira/browse/EMAIL-105
+                // mail.smtp.starttls.required in addition to mail.smtp.starttls.enable, to make the client disconnect if the server doesn't support STARTTLS.
+                email.setStartTLSRequired(true);
+            }
         } else if (emailConfiguration.getStartTLSMode() == StartTLSEnum.DISABLED) {
             email.setStartTLSRequired(false);
         }
