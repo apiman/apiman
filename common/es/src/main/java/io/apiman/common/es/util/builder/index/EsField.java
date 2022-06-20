@@ -15,16 +15,16 @@
  */
 package io.apiman.common.es.util.builder.index;
 
-import static io.apiman.common.es.util.EsConstants.ES_MAPPING_TYPE_KEYWORD;
-import static io.apiman.common.util.Preconditions.checkArgument;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import static io.apiman.common.es.util.EsConstants.ES_MAPPING_TYPE_KEYWORD;
+import static io.apiman.common.util.Preconditions.checkArgument;
+
 /**
- * An ES field
+ * <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.17/mapping-types.html">An Elasticsearch field</a>
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
