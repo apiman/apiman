@@ -14,7 +14,7 @@
     <version.com.oracle.driver>21.3.0.0</version.com.oracle.driver>
     <version.mssql.driver>9.4.0.jre11</version.mssql.driver>
 
-    <version.liquibase>4.9.1</version.liquibase>
+    <version.liquibase>4.12.0</version.liquibase>
 
     <!-- Just for Liquibase generation - likely do not need to change -->
     <version.liquibase-hibernate5>4.3.5</version.liquibase-hibernate5>
