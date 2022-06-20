@@ -1,124 +1,125 @@
 {
-  "properties" : {
-    "apiEnd" : {
-      "type" : "date"
+  "dynamic_templates": [],
+  "properties": {
+    "apiDuration": {
+      "type": "long"
     },
-    "clientVersion" : {
-      "type" : "keyword"
+    "apiEnd": {
+      "type": "date"
     },
-    "error" : {
-      "type" : "boolean"
+    "apiId": {
+      "type": "keyword"
     },
-    "responseCode" : {
-      "type" : "long"
+    "apiOrgId": {
+      "type": "keyword"
     },
-    "apiVersion" : {
-      "type" : "keyword"
+    "apiStart": {
+      "type": "date"
     },
-    "bytesDownloaded" : {
-      "type" : "long"
+    "apiVersion": {
+      "type": "keyword"
     },
-    "requestDuration" : {
-      "type" : "long"
+    "bytesDownloaded": {
+      "type": "long"
     },
-    "requestStart" : {
-      "type" : "date"
+    "bytesUploaded": {
+      "type": "long"
     },
-    "clientOrgId" : {
-      "type" : "keyword"
+    "clientId": {
+      "type": "keyword"
     },
-    "planId" : {
-      "type" : "keyword"
+    "clientOrgId": {
+      "type": "keyword"
     },
-    "apiId" : {
-      "type" : "keyword"
+    "clientVersion": {
+      "type": "keyword"
     },
-    "remoteAddr" : {
-      "type" : "ip"
+    "contractId": {
+      "type": "keyword"
     },
-    "bytesUploaded" : {
-      "type" : "long"
+    "error": {
+      "type": "boolean"
     },
-    "apiOrgId" : {
-      "type" : "keyword"
-    },
-    "clientId" : {
-      "type" : "keyword"
-    },
-    "failureCode" : {
-      "type" : "long"
-    },
-    "method" : {
-      "type" : "keyword"
-    },
-    "resource" : {
-      "type" : "text",
-      "fields" : {
-        "keyword" : {
-          "type" : "keyword",
-          "ignore_above" : 256
+    "errorMessage": {
+      "fields": {
+        "keyword": {
+          "ignore_above": 256,
+          "type": "keyword"
         }
-      }
+      },
+      "type": "text"
     },
-    "apiStart" : {
-      "type" : "date"
+    "failure": {
+      "type": "boolean"
     },
-    "errorMessage" : {
-      "type" : "text",
-      "fields" : {
-        "keyword" : {
-          "type" : "keyword",
-          "ignore_above" : 256
+    "failureCode": {
+      "type": "long"
+    },
+    "failureReason": {
+      "fields": {
+        "keyword": {
+          "ignore_above": 256,
+          "type": "keyword"
         }
-      }
+      },
+      "type": "text"
     },
-    "url" : {
-      "type" : "text",
-      "fields" : {
-        "keyword" : {
-          "type" : "keyword",
-          "ignore_above" : 256
+    "method": {
+      "type": "keyword"
+    },
+    "planId": {
+      "type": "keyword"
+    },
+    "remoteAddr": {
+      "type": "ip"
+    },
+    "requestDuration": {
+      "type": "long"
+    },
+    "requestEnd": {
+      "type": "date"
+    },
+    "requestStart": {
+      "type": "date"
+    },
+    "resource": {
+      "fields": {
+        "keyword": {
+          "ignore_above": 256,
+          "type": "keyword"
         }
-      }
+      },
+      "type": "text"
     },
-    "failure" : {
-      "type" : "boolean"
+    "responseCode": {
+      "type": "long"
     },
-    "apiDuration" : {
-      "type" : "long"
-    },
-    "failureReason" : {
-      "type" : "text",
-      "fields" : {
-        "keyword" : {
-          "type" : "keyword",
-          "ignore_above" : 256
+    "responseMessage": {
+      "fields": {
+        "keyword": {
+          "ignore_above": 256,
+          "type": "keyword"
         }
-      }
+      },
+      "type": "text"
     },
-    "contractId" : {
-      "type" : "keyword"
-    },
-    "requestEnd" : {
-      "type" : "date"
-    },
-    "responseMessage" : {
-      "type" : "text",
-      "fields" : {
-        "keyword" : {
-          "type" : "keyword",
-          "ignore_above" : 256
+    "url": {
+      "fields": {
+        "keyword": {
+          "ignore_above": 256,
+          "type": "keyword"
         }
-      }
+      },
+      "type": "text"
     },
-    "user" : {
-      "type" : "text",
-      "fields" : {
-        "keyword" : {
-          "type" : "keyword",
-          "ignore_above" : 256
+    "user": {
+      "fields": {
+        "keyword": {
+          "ignore_above": 256,
+          "type": "keyword"
         }
-      }
+      },
+      "type": "text"
     }
   }
 }

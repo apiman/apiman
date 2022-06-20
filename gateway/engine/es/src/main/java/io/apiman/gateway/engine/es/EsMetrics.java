@@ -64,9 +64,9 @@ import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER
 
 /**
  * An elasticsearch implementation of the {@link IMetrics} interface.
- *
+ * <p>
  * Can also dynamically capture headers and query parameters.
- * See available options in
+ * See available options in {@link EsMetricsClientOptionsParser}.
  *
  * @author eric.wittmann@redhat.com
  * @author marc@blackparrotlabs.io
