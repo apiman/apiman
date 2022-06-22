@@ -34,7 +34,6 @@ import io.apiman.manager.api.events.EventService;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
-import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.exceptions.ApiNotFoundException;
 import io.apiman.manager.api.rest.exceptions.ClientNotFoundException;
 import io.apiman.manager.api.rest.exceptions.ContractAlreadyExistsException;
@@ -85,16 +84,19 @@ public class ContractService implements DataAccessUtilMixin {
     private ISecurityContext securityContext;
     private IClientValidator clientValidator;
     private IGatewayLinkFactory gatewayLinkFactory;
+    private ActionService actionService;
+
 
     @Inject
     public ContractService(IStorage storage,
-           IStorageQuery query,
-           EventService eventService,
-           ClientAppService clientAppService,
-           PlanService planService,
-           ISecurityContext securityContext,
-           IClientValidator clientValidator,
-           IGatewayLinkFactory gatewayLinkFactory) {
+                           IStorageQuery query,
+                           EventService eventService,
+                           ClientAppService clientAppService,
+                           PlanService planService,
+                           ISecurityContext securityContext,
+                           IClientValidator clientValidator,
+                           IGatewayLinkFactory gatewayLinkFactory,
+                           ActionService actionService) {
         this.storage = storage;
         this.query = query;
         this.eventService = eventService;
@@ -103,6 +105,7 @@ public class ContractService implements DataAccessUtilMixin {
         this.securityContext = securityContext;
         this.clientValidator = clientValidator;
         this.gatewayLinkFactory = gatewayLinkFactory;
+        this.actionService = actionService;
     }
 
     public ContractService() {
@@ -263,8 +266,6 @@ public class ContractService implements DataAccessUtilMixin {
             throw new SystemErrorException(e);
         }
     }
-
-    private ActionService actionService;
 
     private void deleteContractsInternal(String organizationId, String clientId, String clientVersion, List<ContractBean> allContracts, List<ContractBean> contractsToDelete)
             throws Exception {
