@@ -408,9 +408,9 @@ public class ActionService implements DataAccessUtilMixin {
             Date modOn = versionBean.getModifiedOn();
             Date publishedOn = versionBean.getPublishedOn();
             int c = modOn.compareTo(publishedOn);
-            if (c <= 0) {
-                throw ExceptionFactory.actionException(Messages.i18n.format("ClientReRegisterNotRequired")); //$NON-NLS-1$
-            }
+            // if (c <= 0) {
+            //     throw ExceptionFactory.actionException(Messages.i18n.format("ClientReRegisterNotRequired")); //$NON-NLS-1$
+            // }
             isReregister = true;
         }
 
