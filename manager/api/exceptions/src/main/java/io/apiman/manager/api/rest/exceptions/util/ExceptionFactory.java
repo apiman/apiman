@@ -220,6 +220,10 @@ public final class ExceptionFactory {
         return new ApiVersionNotFoundException(Messages.i18n.format("ApiVersionDoesNotExist", apiId, version)); //$NON-NLS-1$
     }
 
+    public static ApiPlanNotFoundException apiPlanNotFoundException(String apiId, String apiVersion, String planId, String planVersion) {
+        return new ApiPlanNotFoundException(Messages.i18n.format("ApiVersionDoesNotExist", apiId, planId, planVersion)); //$NON-NLS-1$
+    }
+
     /**
      * Creates an exception from an API id and version.
      * @param apiId the API id

@@ -126,7 +126,6 @@ public interface IStorage {
     /*
      * Various get methods.  These are called by the REST layer to get stuff.
      */
-
     public OrganizationBean getOrganization(String id) throws StorageException;
     public ClientBean getClient(String organizationId, String id) throws StorageException;
     public ClientVersionBean getClientVersion(String organizationId, String clientId, String version) throws StorageException;

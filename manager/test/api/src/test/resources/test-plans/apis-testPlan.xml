@@ -65,6 +65,10 @@
     <test name="Update API Plans (error 500)">test-plan-data/apis/plans/012_update-version-1.0-plans-500.resttest</test>
     <test name="Get API Plans">test-plan-data/apis/plans/013_get-api-plans.resttest</test>
     <test name="Update API Plans with null version field (error 500)">test-plan-data/apis/plans/014_update-version-1.0-plans-null-500.resttest</test>
+    <test name="Set API Plans with order Plan1-Plan2">test-plan-data/apis/plans/015_update-api-plan-order.resttest</test>
+    <test name="Get API Plans (check order 1-2)">test-plan-data/apis/plans/016_get-api-plans-ordered.resttest</test>
+    <test name="Set API Plans with order Plan2-Plan1">test-plan-data/apis/plans/017_update-api-plan-reorder.resttest</test>
+    <test name="Get API Plans (check order 2-1)">test-plan-data/apis/plans/018_get-api-plans-reordered.resttest</test>
   </testGroup>
 
   <!-- Test API Policy management -->

@@ -114,7 +114,7 @@ a.ui-select-match-close:hover {
 .policy-grabber {
   background-image: url(../img/grabber.png);
   background-repeat: repeat-y;
-  cursor: move;
+  cursor: grab;
   width: 10px;
 }
 
@@ -2176,3 +2176,29 @@ img#devportal-api-logo {
   border-radius: 50%;
 }
 /*End Cropper*/
+
+/* Portal tab: API Plans drag & drop */
+.plan-grabber::before {
+  content: " ";
+  background-image: url(../img/grabber-square.svg);
+  background-size: 4px;
+  background-repeat: repeat;
+  cursor: grab;
+  width: 20px;
+  left: 0;
+  white-space: pre;
+  height: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.no-pointer-events > * {
+  pointer-events: none;
+}
+
+.apiman-border-dashed {
+  border: black dashed 2px;
+}
+/* End */

@@ -186,7 +186,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
      */
     @Override
     public void checkPermissions(PermissionType permission, String organizationId) throws NotAuthorizedException {
-        if (!hasPermission(permission, organizationId)){
+        if (!hasPermission(permission, organizationId)) {
             throw ExceptionFactory.notAuthorizedException();
         }
     }

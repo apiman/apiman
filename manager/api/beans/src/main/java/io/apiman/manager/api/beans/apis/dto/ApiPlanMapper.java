@@ -48,6 +48,7 @@ public interface ApiPlanMapper {
             @Mapping(source = "apb.version", target = "version"),
             @Mapping(source = "avb", target = "apiVersion"),
             @Mapping(source = "apb.discoverability", target = "discoverability"),
+            @Mapping(target = "orderIndex", ignore = true)
     })
     ApiPlanBean fromDto(UpdateApiPlanDto apb, ApiVersionBean avb);
 

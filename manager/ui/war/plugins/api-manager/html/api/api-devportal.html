@@ -46,18 +46,36 @@
           <div ng-show="data.apiVersion.plans.length > 0">
             <div class="title" apiman-i18n-key="available-plans">Attached Plans</div>
             <div>
-              <span apiman-i18n-key="available-plans-help">
-                Select which plans appear in the developer portal, and whether developers need approval before they can finalise their subscription.
-              </span>
+              <div apiman-i18n-key="available-plans-help">
+                <p>Select which plans appear in the developer portal, and whether developers need approval before they can finalise their subscription.</p>
+                <p>Plans can be visually ordered for API consumers by dragging them into your preferred position below.</p>
+              </div>
             </div>
             <div class="container-fluid container-cards-pf">
               <div class="row row-cards-pf"  style="display: flex;">
-                <div class="col-xs-6 col-sm-5 col-md-5 container-border" style="display: inline-flex; width: 27em;" ng-repeat="plan in data.apiVersion.plans">
-                  <div class="card-pf card-pf-accented card-pf-aggregate-status">
-                    <h2 class="card-pf-title">
-                      {{ getApiPlanSummaryBean(plan).planName }}
-                    </h2>
-                    <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
+                <div class="col-xs-6 col-sm-5 col-md-5 container-border"
+                     style="display: inline-flex; width: 27em;"
+                     ng-repeat="plan in data.apiVersion.plans"
+                >
+                  <div class="card-pf card-pf-accented card-pf-aggregate-status"
+                       id="api-plan-{{getApiPlanSummaryBean(plan).planId}}"
+                       data-apiman-index="{{$index}}"
+                       draggable="true"
+                       apiman-on-drag-start="onApiPlanDragStart($event, $elem, $index)"
+                       apiman-on-drag-enter="onApiPlanDragEnter($event, $elem, $index)"
+                       apiman-on-drag-leave="onApiPlanDragLeave($event, $elem, $index)"
+                       apiman-on-drag-over="onDragOver($event, $elem, $index)"
+                       apiman-on-drag-end="onApiPlanDragEnd($event, $elem, $index)"
+                       apiman-on-drop="onApiPlanDrop($event, $elem, $index)"
+                  >
+                    <div style="position:relative;">
+                      <div class="plan-grabber">
+                        <h2 class="card-pf-title">
+                          {{ getApiPlanSummaryBean(plan).planName }}
+                        </h2>
+                        <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
+                      </div>
+                    </div>
                     <div class="card-pf-body text-left">
                       <p class="card-text">{{ getApiPlanSummaryBean(plan).planDescription }}</p>
                       <div>

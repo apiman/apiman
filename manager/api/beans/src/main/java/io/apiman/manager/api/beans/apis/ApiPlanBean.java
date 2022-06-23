@@ -18,6 +18,7 @@ package io.apiman.manager.api.beans.apis;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.StringJoiner;
 import javax.persistence.Column;
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.hibernate.annotations.ColumnDefault;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Models a plan+version that is available for use with a particular API.  This
@@ -74,6 +76,11 @@ public class ApiPlanBean implements Serializable {
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'ORG_MEMBERS'")
     private DiscoverabilityLevel discoverability = DiscoverabilityLevel.ORG_MEMBERS;
+
+    @Column(name = "order_index", nullable = false)
+    @ColumnDefault("0")
+    @JsonIgnore
+    private Integer orderIndex = 0;
 
     /**
      * Constructor.
@@ -138,6 +145,19 @@ public class ApiPlanBean implements Serializable {
         return requiresApproval;
     }
 
+    /**
+     * Get the order of the API Plan to be displayed to the user
+     * @return the order
+     */
+    public int getOrderIndex() {
+        return orderIndex;
+    }
+
+    public ApiPlanBean setOrderIndex(int orderIndex) {
+        this.orderIndex = orderIndex;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -162,6 +182,7 @@ public class ApiPlanBean implements Serializable {
                 .add("version='" + version + "'")
                 .add("requiresApproval=" + requiresApproval)
                 .add("discoverability=" + discoverability)
+                .add("orderIndex=" + orderIndex)
                 .toString();
     }
 }

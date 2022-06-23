@@ -352,6 +352,112 @@ _module.directive('apimanAuditEntry',
         };
     }]);
 
+_module.directive('apimanOnDragStart', [
+    'Logger', '$parse',
+    function (Logger, $parse) {
+        return {
+            restrict: 'A',
+            scope: '&',
+            link: function ($scope, $elem, $attrs) {
+                $elem.on('dragstart', function(e) {
+                    //$elem.addClass('text-muted');
+                    const apimanOnDragStartHandler = $parse($attrs.apimanOnDragStart);
+                    apimanOnDragStartHandler($scope, { '$event': e, '$elem': $elem });
+                });
+            }
+        }
+    }
+]);
+
+_module.directive('apimanOnDragEnter', [
+    'Logger', '$parse',
+    function (Logger, $parse) {
+        return {
+            restrict: 'A',
+            scope: '&',
+            link: function ($scope, $elem, $attrs) {
+                $elem.on('dragenter', function(e) {
+                    const apimanOnDragEnterHandler = $parse($attrs.apimanOnDragEnter);
+                    apimanOnDragEnterHandler($scope, { '$event': e, '$elem': $elem });
+                });
+            }
+        }
+    }
+]);
+
+_module.directive('apimanOnDragLeave', [
+    'Logger', '$parse',
+    function (Logger, $parse) {
+        return {
+            restrict: 'A',
+            scope: '&',
+            link: function ($scope, $elem, $attrs) {
+                $elem.on('dragleave', function(e) {
+                    const apimanOnDragLeaveHandler = $parse($attrs.apimanOnDragLeave);
+                    apimanOnDragLeaveHandler($scope, { '$event': e, '$elem': $elem });
+                });
+            }
+        }
+    }
+]);
+
+_module.directive('apimanOnDragEnd', [
+    'Logger', '$parse',
+    function (Logger, $parse) {
+        return {
+            restrict: 'A',
+            scope: '&',
+            link: function ($scope, $elem, $attrs) {
+                $elem.on('dragend', function(e) {
+                    // $elem.removeClass('text-muted');
+                    const apimanOnDragEndHandler = $parse($attrs.apimanOnDragEnd);
+                    apimanOnDragEndHandler($scope, { '$event': e, '$elem': $elem });
+                });
+            }
+        }
+    }
+]);
+
+_module.directive('apimanOnDrop', [
+    'Logger', '$parse',
+    function (Logger, $parse) {
+        return {
+            restrict: 'A',
+            scope: '&',
+            link: function ($scope, $elem, $attrs) {
+                $elem.on('drop', function(e) {
+                    e.preventDefault();
+                    // $elem.removeClass('text-muted');
+                    // Logger.info("apimanOnDrop {0} - {1}", $elem, $attrs);
+                    const onDropHandler = $parse($attrs.apimanOnDrop);
+                    onDropHandler($scope, { '$event': e, '$elem': $elem });
+                });
+            }
+        }
+    }
+]);
+
+_module.directive('apimanOnDragOver', [
+    'Logger', '$parse',
+    function (Logger, $parse) {
+        return {
+            restrict: 'A',
+            scope: '&',
+            link: function ($scope, $elem, $attrs) {
+                $elem.on('dragover', function(e) {
+                    e.preventDefault();
+                    if (e.dataTransfer) {
+                        e.dataTransfer.effectAllowed = 'move';
+                    }
+                    const apimanOnDragOverHandler = $parse($attrs.apimanOnDragOver);
+                    apimanOnDragOverHandler($scope, { '$event': e, '$elem': $elem });
+                    return false;
+                });
+            }
+        }
+    }
+]);
+
 _module.directive('apimanDropText',
     ['Logger',
     (Logger) => {

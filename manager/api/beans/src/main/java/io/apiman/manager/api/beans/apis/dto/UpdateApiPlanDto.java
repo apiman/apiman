@@ -22,11 +22,14 @@ import java.util.StringJoiner;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * DTO for updating an {@link io.apiman.manager.api.beans.apis.ApiPlanBean}
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateApiPlanDto {
     @NotBlank
     private String planId;

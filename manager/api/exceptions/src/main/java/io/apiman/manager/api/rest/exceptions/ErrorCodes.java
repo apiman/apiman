@@ -96,13 +96,15 @@ public final class ErrorCodes {
     public static final int API_STATUS_ERROR                = 5004;
     public static final int API_DEFINITION_NOT_FOUND        = 5005;
     public static final int API_VERSION_ALREADY_EXISTS      = 5006;
+    public static final int API_PLAN_NOT_FOUND              = 5007;
 
     public static final String API_ALREADY_EXISTS_INFO      = null;
     public static final String API_NOT_FOUND_INFO           = null;
     public static final String API_VERSION_NOT_FOUND_INFO   = null;
     public static final String API_STATUS_ERROR_INFO        = null;
     public static final String API_DEFINITION_NOT_FOUND_INFO   = null;
-    public static final String API_VERSION_ALREADY_EXISTS_INFO      = null;
+    public static final String API_VERSION_ALREADY_EXISTS_INFO = null;
+   public static final String API_PLAN_NOT_FOUND_INFO          = null;
 
 
     //

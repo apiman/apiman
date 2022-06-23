@@ -2,9 +2,9 @@
 --  Update Database Script
 --  *********************************************************************
 --  Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
---  Ran at: 29/04/2022, 13:18
+--  Ran at: 23/06/2022, 10:33
 --  Against: apiman@offline:mysql?version=8&caseSensitive=true&catalog=apiman&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/mysql/databasechangelog.csv
---  Liquibase version: 4.6.2
+--  Liquibase version: 4.9.1
 --  *********************************************************************
 
 --  Changeset src/main/liquibase/current/000-apiman-manager-api.db.sequences.changelog.xml::1434723514712-1::apiman
@@ -505,4 +505,7 @@ FOR EACH ROW BEGIN
     DELETE FROM discoverability d WHERE d.id = CONCAT_WS(':', OLD.api_org_id, OLD.api_id, OLD.version);
 
 END;
+
+--  Changeset src/main/liquibase/current/20220623-explicit-api-plan-order.xml::1655976671166-6::msavy (generated)
+ALTER TABLE api_plans ADD order_index INT DEFAULT 0 NOT NULL;
 

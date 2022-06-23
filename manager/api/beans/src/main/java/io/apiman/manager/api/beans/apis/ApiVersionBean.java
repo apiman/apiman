@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -40,6 +41,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -116,7 +118,8 @@ public class ApiVersionBean implements Serializable, Cloneable {
     ApiDefinitionBean apiDefinition; // Deliberately no explicit getter/setter for this
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "apiVersion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ApiPlanBean> plans = new HashSet<>();
+    @OrderBy("orderIndex ASC")
+    private Set<ApiPlanBean> plans = new LinkedHashSet<>();
 
     @Column(updatable = false)
     private String version;
@@ -331,7 +334,7 @@ public class ApiVersionBean implements Serializable, Cloneable {
         //NB: https://hibernate.atlassian.net/browse/HHH-3799
         plans.forEach(p -> p.setApiVersion(this));
         if (this.plans == null) {
-            this.plans = plans;
+            this.plans = new LinkedHashSet<>(plans);
         }  else {
             this.plans.clear();
             this.plans.addAll(plans);

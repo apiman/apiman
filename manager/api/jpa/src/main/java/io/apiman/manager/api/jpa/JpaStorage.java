@@ -39,8 +39,8 @@ import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
 import io.apiman.manager.api.beans.idm.DiscoverabilityEntity;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
-import io.apiman.manager.api.beans.idm.PermissionConstraint;
 import io.apiman.manager.api.beans.idm.PermissionBean;
+import io.apiman.manager.api.beans.idm.PermissionConstraint;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleBean_;
@@ -91,6 +91,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -1277,22 +1278,22 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     // TODO(msavy): rewrite using projection
-    public List<ApiPlanSummaryBean> getApiVersionPlans(String organizationId, String apiId,
-            String version) throws StorageException {
-        List<ApiPlanSummaryBean> plans = new ArrayList<>();
-
+    public List<ApiPlanSummaryBean> getApiVersionPlans(String organizationId, String apiId, String version) throws StorageException {
         ApiVersionBean versionBean = getApiVersion(organizationId, apiId, version);
-        Set<ApiPlanBean> apiPlans = versionBean.getPlans();
+        List<ApiPlanBean> apiPlans = new ArrayList<>(versionBean.getPlans());
+        apiPlans.sort(Comparator.comparingInt(apb -> apb.getOrderIndex()));
+
+        List<ApiPlanSummaryBean> plans = new ArrayList<>(apiPlans.size());
         if (apiPlans != null) {
-            for (ApiPlanBean spb : apiPlans) {
-                PlanVersionBean planVersion = getPlanVersion(organizationId, spb.getPlanId(), spb.getVersion());
+            for (ApiPlanBean apb : apiPlans) {
+                PlanVersionBean planVersion = getPlanVersion(organizationId, apb.getPlanId(), apb.getVersion());
                 ApiPlanSummaryBean summary = new ApiPlanSummaryBean();
                 summary.setPlanId(planVersion.getPlan().getId());
                 summary.setPlanName(planVersion.getPlan().getName());
                 summary.setPlanDescription(planVersion.getPlan().getDescription());
-                summary.setVersion(spb.getVersion());
-                summary.setRequiresApproval(spb.getRequiresApproval());
-                summary.setDiscoverability(spb.getDiscoverability());
+                summary.setVersion(apb.getVersion());
+                summary.setRequiresApproval(apb.getRequiresApproval());
+                summary.setDiscoverability(apb.getDiscoverability());
                 plans.add(summary);
             }
         }

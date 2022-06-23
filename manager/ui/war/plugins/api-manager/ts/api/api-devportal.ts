@@ -29,6 +29,12 @@ import Cropper from "cropperjs/dist/cropper.esm";
 import "cropperjs/dist/cropper.css";
 import {remove as _remove} from "lodash-es";
 import angular = require("angular");
+import DragOverEvent = JQuery.DragOverEvent;
+import DragStartEvent = JQuery.DragStartEvent;
+import DropEvent = JQuery.DropEvent;
+import DragEndEvent = JQuery.DragEndEvent;
+import DragEnterEvent = JQuery.DragEnterEvent;
+import DragLeaveEvent = JQuery.DragLeaveEvent;
 // Use CommonJS syntax for tui stuff
 const toast = require("@toast-ui/editor");
 const codeSyntaxHighlight = require("@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all");
@@ -177,6 +183,12 @@ function devPortalBusinessLogic(
   $scope.onDiscoverabilityChange = onDiscoverabilityChange;
   $scope.getDiscoverabilityDescription = getDiscoverabilityDescription;
   $scope.getApiPlanSummaryBean = getApiPlanSummaryBean;
+  $scope.onApiPlanDragStart = onApiPlanDragStart;
+  $scope.onApiPlanDragEnter = onApiPlanDragEnter;
+  $scope.onApiPlanDragLeave = onApiPlanDragLeave;
+  $scope.onApiPlanDragOver = onApiPlanDragOver;
+  $scope.onApiPlanDragEnd = onApiPlanDragEnd;
+  $scope.onApiPlanDrop = onApiPlanDrop;
 
   // TUI Markdown editor. Will initialise
   let markdownEditor: Editor = initEditor();
@@ -410,7 +422,48 @@ function devPortalBusinessLogic(
       $scope.data.apiVersion.api.image = null;
       $scope.doSave();
     });
-  }  
+  }
+
+  function onApiPlanDragStart($event: DragStartEvent, $elem, $index: number) {
+    //$event.originalEvent.dataTransfer.dropEffect = 'link';
+    $event.originalEvent.dataTransfer.setData("text/apiman.plan.id+plain", String($index));
+    $elem.addClass('text-muted');
+    Logger.info("onApiPlanDragStart");
+  }
+
+  function onApiPlanDragEnter($event: DragEnterEvent, $elem, $index: number) {
+    $elem.addClass('apiman-border-dashed');
+    $elem.addClass('no-pointer-events');
+    Logger.info("onApiPlanDragEnter");
+  }
+
+  function onApiPlanDragLeave($event: DragLeaveEvent, $elem, $index: number) {
+    $elem.removeClass('apiman-border-dashed');
+    $elem.removeClass('no-pointer-events');
+    Logger.info("onApiPlanDragLeave");
+  }
+
+  function onApiPlanDragEnd($event, $elem, $index: number) {
+    $elem.removeClass('text-muted');
+    $elem.removeClass('apiman-border-dashed');
+    $elem.removeClass('no-pointer-events');
+    Logger.info("onApiPlanDragEnd");
+  }
+
+  function onApiPlanDragOver($event: DragOverEvent, $elem: JQLite, $index: number) {
+    return false;
+  }
+
+  function onApiPlanDrop($event: DropEvent, $elem, $index: number) {
+    const sourceIdx: number = Number($event.originalEvent.dataTransfer.getData("text/apiman.plan.id+plain"));
+    // Logger.info("sourceIdx = {0}, targetIdx = {1}", sourceIdx, $index);
+    // Reorder plans array using splice trick.
+    const plans: ApiPlanBean[] = this.data.apiVersion.plans;
+    plans.splice($index, 0, plans.splice(sourceIdx, 1)[0]);
+    // In some cases when we swap plan ordering the drag-end event is skipped and we end up with a locked element + dashed border classes
+    // To avoid that we remove them as a precaution after drop.
+    onApiPlanDragEnd($event, $elem, $index);
+  }
 }
 
 _module.controller("Apiman.DevPortalImageCropper",

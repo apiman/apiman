@@ -19,6 +19,7 @@ import io.apiman.manager.api.beans.apis.dto.UpdateApiPlanDto;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -46,7 +47,7 @@ public class UpdateApiVersionBean implements Serializable {
     private Boolean parsePayload;
     private Boolean publicAPI;
     private Boolean disableKeysStrip;
-    private @Valid Set<UpdateApiPlanDto> plans;
+    private @Valid LinkedHashSet<UpdateApiPlanDto> plans;
     private String extendedDescription;
     private DiscoverabilityLevel publicDiscoverability;
 
@@ -115,14 +116,14 @@ public class UpdateApiVersionBean implements Serializable {
     /**
      * @return the plans
      */
-    public Set<UpdateApiPlanDto> getPlans() {
+    public LinkedHashSet<UpdateApiPlanDto> getPlans() {
         return plans;
     }
 
     /**
      * @param plans the plans to set
      */
-    public void setPlans(Set<UpdateApiPlanDto> plans) {
+    public void setPlans(LinkedHashSet<UpdateApiPlanDto> plans) {
         this.plans = plans;
     }
 

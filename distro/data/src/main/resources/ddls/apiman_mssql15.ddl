@@ -655,3 +655,7 @@ GO
 END
 GO
 
+-- Changeset src/main/liquibase/current/20220623-explicit-api-plan-order.xml::1655976671166-6::msavy (generated)
+ALTER TABLE api_plans ADD order_index int CONSTRAINT DF_api_plans_order_index DEFAULT 0 NOT NULL
+GO
+

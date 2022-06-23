@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.apis.ApiVersionBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.idm.DiscoverabilityLevel;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.mapstruct.Mapper;
@@ -54,9 +55,9 @@ public interface ApiVersionMapper {
     })
     UpdateApiVersionBean toPublishedUpdateBean(UpdateApiVersionBean uvb);
 
-    Set<ApiPlanBeanDto> toDto(Set<ApiPlanBean> plans);
+    LinkedHashSet<ApiPlanBeanDto> toDto(Set<ApiPlanBean> plans);
 
-    Set<UpdateApiPlanDto> toDto2(Set<ApiPlanBean> plans);
+    LinkedHashSet<UpdateApiPlanDto> toDto2(Set<ApiPlanBean> plans);
 
     @Mappings({
             @Mapping(source = "discoverability", target = "discoverability"),

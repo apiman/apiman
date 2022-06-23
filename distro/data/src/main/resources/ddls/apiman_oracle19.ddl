@@ -2,9 +2,9 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 29/04/2022, 13:18
+-- Ran at: 23/06/2022, 10:33
 -- Against: apiman@offline:oracle?version=19&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/oracle/databasechangelog.csv
--- Liquibase version: 4.6.2
+-- Liquibase version: 4.9.1
 -- *********************************************************************
 
 -- Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-1::apiman (generated)
@@ -407,4 +407,7 @@ SELECT (av.api_org_id || ':' || av.api_id || ':' || av.version) AS id,
        NULL               AS plan_version,
        av.DISCOVERABILITY AS discoverability
 FROM API_VERSIONS av;
+
+-- Changeset src/main/liquibase/current/20220623-explicit-api-plan-order.xml::1655976671166-6::msavy (generated)
+ALTER TABLE api_plans ADD order_index INTEGER DEFAULT 0 NOT NULL;
 

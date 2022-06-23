@@ -34,7 +34,6 @@ public class ApiPlanBeanDto {
     private String version;
     private Boolean requiresApproval;
     private DiscoverabilityLevel discoverability;
-
     public ApiPlanBeanDto() {
     }
 

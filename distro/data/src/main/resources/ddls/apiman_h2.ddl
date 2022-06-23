@@ -2,9 +2,9 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: /Users/msavy/oss/apiman/apiman/distro/ddl/src/main/liquibase/master.xml
--- Ran at: 29/04/2022, 13:18
+-- Ran at: 23/06/2022, 10:33
 -- Against: sa@offline:h2?version=1.4.199&caseSensitive=true&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/h2/databasechangelog.csv
--- Liquibase version: 4.6.2
+-- Liquibase version: 4.9.1
 -- *********************************************************************
 
 -- Changeset src/main/liquibase/current/000-apiman-manager-api.db.sequences.changelog.xml::1434723514712-2::apiman (generated)
@@ -411,4 +411,7 @@ CREATE TRIGGER api_version_discoverability_insert_trigger AFTER INSERT ON api_ve
 CREATE TRIGGER api_version_discoverability_update_trigger AFTER UPDATE ON api_versions FOR EACH ROW CALL "io.apiman.manager.api.jpa.h2.ApiVersionDiscoverabilityTrigger";
 
 CREATE TRIGGER api_version_discoverability_delete_trigger AFTER DELETE ON api_versions FOR EACH ROW CALL "io.apiman.manager.api.jpa.h2.ApiVersionDiscoverabilityTrigger";
+
+-- Changeset src/main/liquibase/current/20220623-explicit-api-plan-order.xml::1655976671166-6::msavy (generated)
+ALTER TABLE api_plans ADD order_index INT DEFAULT 0 NOT NULL;
 

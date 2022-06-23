@@ -562,3 +562,7 @@ CREATE TRIGGER api_plan_discoverability_trigger AFTER INSERT OR UPDATE OR DELETE
 DROP TRIGGER IF EXISTS api_version_discoverability_trigger ON api_versions;
 CREATE TRIGGER api_version_discoverability_trigger AFTER INSERT OR UPDATE OR DELETE ON api_versions FOR EACH ROW EXECUTE PROCEDURE api_version_discoverability_trigger_func();
 -- End (postgres sometimes doesn't like the last line to be a trigger function, so this is just to pad it out).
+
+-- Changeset src/main/liquibase/current/20220623-explicit-api-plan-order.xml::1655976671166-6::msavy (generated)
+ALTER TABLE api_plans ADD order_index INTEGER DEFAULT 0 NOT NULL;
+

@@ -28,6 +28,7 @@ import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
 import io.apiman.manager.api.beans.apis.dto.ApiPlanBeanDto;
+import io.apiman.manager.api.beans.apis.dto.ApiPlanOrderDto;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
@@ -606,7 +607,6 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
             av.setPlans(filteredPlans);
             return av;
         }
-
     }
 
     @Override
@@ -738,6 +738,12 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
                            .filter(avp -> securityContext.getPermittedDiscoverabilities().contains(avp.getDiscoverability()))
                            .collect(Collectors.toList());
         }
+    }
+
+    @Override
+    public void reorderApiPlans(String organizationId, String apiId, String version, ApiPlanOrderDto apiPlanOrder) throws ApiVersionNotFoundException {
+        securityContext.checkPermissions(PermissionType.apiEdit, organizationId);
+        apiService.reorderApiPlans(organizationId, apiId, version, apiPlanOrder);
     }
 
     @Override

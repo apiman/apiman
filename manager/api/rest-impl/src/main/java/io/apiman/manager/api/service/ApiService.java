@@ -22,6 +22,8 @@ import io.apiman.manager.api.beans.apis.UpdateApiBean;
 import io.apiman.manager.api.beans.apis.UpdateApiVersionBean;
 import io.apiman.manager.api.beans.apis.dto.ApiBeanDto;
 import io.apiman.manager.api.beans.apis.dto.ApiPlanMapper;
+import io.apiman.manager.api.beans.apis.dto.ApiPlanOrderDto;
+import io.apiman.manager.api.beans.apis.dto.ApiPlanOrderEntryDto;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionBeanDto;
 import io.apiman.manager.api.beans.apis.dto.ApiVersionMapper;
 import io.apiman.manager.api.beans.apis.dto.KeyValueTagDto;
@@ -86,11 +88,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -130,6 +133,7 @@ public class ApiService implements DataAccessUtilMixin {
     private SchemaRewriterService schemaRewriterService;
     private final ApiVersionMapper apiVersionMapper = ApiVersionMapper.INSTANCE;
     private final ApiMapper apiMapper = ApiMapper.INSTANCE;
+    private final ApiPlanMapper apiPlanMapper = ApiPlanMapper.INSTANCE;
     private final KeyValueTagMapper tagMapper = KeyValueTagMapper.INSTANCE;
 
     @Inject
@@ -351,7 +355,9 @@ public class ApiService implements DataAccessUtilMixin {
                 updatedApi.setEndpointProperties(cloneSource.getEndpointProperties());
                 updatedApi.setGateways(cloneSource.getGateways());
                 if (newApiVersion.getPlans() == null) {
-                    Set<UpdateApiPlanDto> plans = ApiVersionMapper.INSTANCE.toDto2(cloneSource.getPlans());
+                    List<ApiPlanBean> sorted = new ArrayList<>(cloneSource.getPlans());
+                    sorted.sort(Comparator.comparingInt(ApiPlanBean::getOrderIndex));
+                    LinkedHashSet<UpdateApiPlanDto> plans = ApiVersionMapper.INSTANCE.toDto2(new LinkedHashSet<>(sorted));
                     updatedApi.setPlans(plans);
                 }
                 if (newApiVersion.getPublicAPI() == null) {
@@ -461,12 +467,15 @@ public class ApiService implements DataAccessUtilMixin {
         // Ensure all the plans are in the right status (locked)
         Set<ApiPlanBean> plans = newVersion.getPlans();
         if (plans != null) {
-            for (ApiPlanBean splanBean : plans) {
+            List<ApiPlanBean> copyOf = List.copyOf(plans);
+            for (int i = 0; i < copyOf.size(); i++) {
+                ApiPlanBean splanBean = copyOf.get(i);
+                splanBean.setOrderIndex(i);
                 String orgId = newVersion.getApi().getOrganization().getId();
                 PlanVersionBean pvb = storage.getPlanVersion(orgId, splanBean.getPlanId(), splanBean.getVersion());
                 if (pvb == null) {
                     throw new StorageException(
-                        Messages.i18n.format("PlanVersionDoesNotExist", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
+                            Messages.i18n.format("PlanVersionDoesNotExist", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
                 }
                 if (pvb.getStatus() != PlanStatus.Locked) {
                     throw new StorageException(Messages.i18n.format("PlanNotLocked", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
@@ -576,7 +585,7 @@ public class ApiService implements DataAccessUtilMixin {
             if (avb.isPublicAPI()) {
                 return updateApiVersionInternal(avb, update);
             } else {
-                Set<UpdateApiPlanDto> updatePlans = Optional.ofNullable(update.getPlans()).orElse(Collections.emptySet());
+                LinkedHashSet<UpdateApiPlanDto> updatePlans = Optional.ofNullable(update.getPlans()).orElse(new LinkedHashSet<>());
 
                 // TODO refactor with HTTP PATCH?
                 if (updatePlans.size() != avb.getPlans().size()) {
@@ -606,41 +615,20 @@ public class ApiService implements DataAccessUtilMixin {
         avb.setModifiedBy(securityContext.getCurrentUser());
         avb.setModifiedOn(new Date());
         EntityUpdatedData data = new EntityUpdatedData();
-        if (AuditUtils.valueChanged(avb.getPlans(), update.getPlans())) {
-            Set<ApiPlanBean> updateEntities = update.getPlans()
-                    .stream()
-                    .map(dto -> ApiPlanMapper.INSTANCE.fromDto(dto, avb))
-                    .collect(Collectors.toSet());
 
-            data.addChange("plans", AuditUtils.asString_ApiPlanBeans(avb.getPlans()), AuditUtils.asString_ApiPlanBeans(updateEntities)); //$NON-NLS-1$
-            if (update.getPlans() != null) {
-                // Work around: https://hibernate.atlassian.net/browse/HHH-3799
-                // Step 1: Set intersection
-                Set<UpdateApiPlanDto> existingAsDto = ApiPlanMapper.INSTANCE.toDto(avb.getPlans());
-                existingAsDto.retainAll(update.getPlans());
-
-                // Step 2: Upsert
-                Set<ApiPlanBean> mergedPlans = new HashSet<>();
-                for (ApiPlanBean updateApb : updateEntities) {
-                    existingAsDto.stream()
-                            .map(e -> ApiPlanMapper.INSTANCE.fromDto(e, avb))
-                            .filter(e -> e.equals(updateApb))
-                            .findAny()
-                            .ifPresentOrElse(
-                                    // Merge (existing element to be updated)
-                                    ep -> {
-                                        ApiPlanMapper.INSTANCE.merge(updateApb, ep);
-                                        mergedPlans.add(ep);
-                                    },
-                                    // Insert (new element)
-                                    () -> {
-                                        mergedPlans.add(updateApb);
-                                    }
-                            );
-                }
-                avb.setPlans(mergedPlans);
-                tryAction(() -> storage.merge(avb));
+        if (update.getPlans() != null) {
+            var changes = update.getPlans().stream().map(up -> apiPlanMapper.fromDto(up, avb)).collect(Collectors.toSet());
+            data.addChange("plans", AuditUtils.asString_ApiPlanBeans(avb.getPlans()), AuditUtils.asString_ApiPlanBeans(changes)); //$NON-NLS-1$
+            Set<ApiPlanBean> apb = new LinkedHashSet<>();
+            int i = 0;
+            for (UpdateApiPlanDto apbu : update.getPlans()) {
+                ApiPlanBean entity = apiPlanMapper.fromDto(apbu, avb);
+                entity.setOrderIndex(i);
+                apb.add(entity);
+                i++;
             }
+            avb.setPlans(apb);
+            storage.merge(avb);
         }
         if (AuditUtils.valueChanged(avb.getGateways(), update.getGateways())) {
             data.addChange("gateways", AuditUtils.asString_ApiGatewayBeans(avb.getGateways()), AuditUtils.asString_ApiGatewayBeans(update.getGateways())); //$NON-NLS-1$
@@ -951,6 +939,34 @@ public class ApiService implements DataAccessUtilMixin {
             avb.setModifiedOn(new Date());
             storage.updateApiVersion(avb);
         });
+    }
+
+    public void reorderApiPlans(String organizationId, String apiId, String version, ApiPlanOrderDto apiPlanOrder) {
+        ApiVersionBean avb = getApiVersionFromStorage(organizationId, apiId, version);
+        for (ApiPlanBean apb : avb.getPlans()) {
+            ApiPlanOrderEntryDto lookup = new ApiPlanOrderEntryDto()
+                                                  .setPlanId(apb.getPlanId())
+                                                  .setApiVersionId(apb.getApiVersion().getId())
+                                                  .setVersion(apb.getVersion());
+
+            ArrayList<ApiPlanOrderEntryDto> apiPlanOrderEntryDtos = new ArrayList<>(apiPlanOrder.getOrder());
+            boolean matches = false;
+            ApiPlanOrderEntryDto inner = null;
+            for (int i = 0; i < apiPlanOrderEntryDtos.size(); i++) {
+                inner = apiPlanOrderEntryDtos.get(i);
+                if (inner.equals(lookup)) {
+                    apb.setOrderIndex(i);
+                    matches = true;
+                    break;
+                }
+            }
+
+            if (!matches && inner != null) {
+                throw ExceptionFactory.apiPlanNotFoundException(apiId, version, inner.getPlanId(), inner.getVersion());
+            }
+
+        }
+        tryAction(() -> storage.updateApiVersion(avb));
     }
 
     public PolicyChainBean getApiPolicyChain(String organizationId, String apiId, String version,
