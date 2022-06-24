@@ -19,10 +19,32 @@ package io.apiman.manager.test.es;
 import io.apiman.common.es.util.AbstractClientFactory;
 import io.apiman.common.es.util.DefaultEsClientFactory;
 import io.apiman.gateway.engine.es.EsMetrics;
-import io.apiman.manager.api.beans.metrics.*;
+import io.apiman.manager.api.beans.metrics.ClientUsagePerApiBean;
+import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
+import io.apiman.manager.api.beans.metrics.ResponseStatsDataPoint;
+import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerClientBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
+import io.apiman.manager.api.beans.metrics.UsageDataPoint;
+import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
+import io.apiman.manager.api.beans.metrics.UsagePerClientBean;
+import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.core.metrics.MetricsAccessorHelper;
 import io.apiman.manager.api.es.EsMetricsAccessor;
 import io.apiman.test.common.es.EsTestUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
@@ -34,15 +56,14 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.*;
 
 /**
  * Tests the elasticsearch metrics accessor.
@@ -81,6 +102,10 @@ public class EsMetricsAccessorTest {
 
         client.indices().flush(new FlushRequest(APIMAN_METRICS_INDEX_NAME).force(true), RequestOptions.DEFAULT);
         DefaultEsClientFactory.clearClientCache();
+
+        try {
+            Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+        } catch (RuntimeException ignored) {}
     }
 
     private static RestHighLevelClient createEsClient() {
