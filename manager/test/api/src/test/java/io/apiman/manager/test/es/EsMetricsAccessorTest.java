@@ -111,7 +111,7 @@ public class EsMetricsAccessorTest {
     private static RestHighLevelClient createEsClient() {
         Map<String, String> config = new HashMap<>();
         config.put("client.protocol", "http");
-        config.put("client.host", node.getContainerIpAddress());
+        config.put("client.host", node.getHost());
         config.put("client.port", node.getFirstMappedPort().toString());
         config.put("client.initialize", "true");
         config.put("client.type", "es");
