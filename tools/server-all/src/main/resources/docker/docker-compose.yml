@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  keycloak:
+    container_name: keycloak_server_all
+    image: quay.io/keycloak/keycloak:${version.org.keycloak}-legacy # replaced during build, see in target
+    command:
+      - start-dev
+      - --import-realm
+    ports:
+      - "8081:8080"
+    environment:
+      - "KEYCLOAK_ADMIN=admin"
+      - "KEYCLOAK_ADMIN_PASSWORD=admin123!"
+      - "KEYCLOAK_FRONTEND_URL=http://localhost:8081"
+    volumes:
+      - ${PWD}/apiman-realm-for-keycloak.json:/opt/keycloak/data/import/apiman-realm-for-keycloak.json
