@@ -20,4 +20,4 @@ services:
       - "KEYCLOAK_FRONTEND_URL=http://localhost:8081"
     volumes:
       - ${PWD}/apiman-realm-for-keycloak.json:/opt/keycloak/data/import/apiman-realm-for-keycloak.json
-      - ${PWD}/apiman-keycloak-theme.jar:/opt/keycloak/data/import/apiman-keycloak-theme.jar
+      - ${PWD}/apiman-keycloak-theme.jar:/opt/keycloak/providers/apiman-keycloak-theme.jar
