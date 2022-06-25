@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
+  <id>overlay</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <!-- Keycloak Apiman theme Jar: https://www.keycloak.org/docs/latest/server_development/#deploying-themes -->
+    <dependencySet>
+      <outputDirectory>.</outputDirectory>
+      <includes>
+        <include>io.apiman:apiman-sso-keycloak-theme:jar</include>
+      </includes>
+      <outputFileNameMapping>apiman-keycloak-theme.jar</outputFileNameMapping>
+      <useProjectArtifact>true</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+  </dependencySets>
+</assembly>

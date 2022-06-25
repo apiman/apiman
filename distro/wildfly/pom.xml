@@ -59,22 +59,7 @@
       <version>${project.version}</version>
       <type>zip</type>
     </dependency>
-    <!-- Keycloak -->
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-server-overlay</artifactId>
-      <type>zip</type>
-      <exclusions>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-jboss-modules</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-server-feature-pack</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+    <!-- Keycloak adapter (this will be deprecated soon) -->
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-wildfly-adapter-dist</artifactId>
@@ -104,14 +89,6 @@
             </goals>
             <configuration>
               <artifactItems>
-                <artifactItem>
-                  <groupId>org.keycloak</groupId>
-                  <artifactId>keycloak-server-overlay</artifactId>
-                  <version>${version.org.keycloak}</version>
-                  <type>zip</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/keycloak</outputDirectory>
-                </artifactItem>
                 <artifactItem>
                   <groupId>org.keycloak</groupId>
                   <artifactId>keycloak-wildfly-adapter-dist</artifactId>

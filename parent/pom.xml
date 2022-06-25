@@ -56,6 +56,10 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
 
+    <!-- Supported platform versions -->
+    <version.org.wildfly.as>23.0.2.Final</version.org.wildfly.as>
+    <version.org.apache.tomcat>9.0.55</version.org.apache.tomcat>
+
     <!-- Plugin Versions -->
     <version.ant>1.10.11</version.ant>
     <version.antrun.plugin>1.7</version.antrun.plugin>
@@ -137,7 +141,7 @@
     <version.org.jboss.weld.weld>3.1.8.Final</version.org.jboss.weld.weld>
     <version.org.jdbi>3.28.0</version.org.jdbi>
     <version.org.jsoup>1.14.3</version.org.jsoup>
-    <version.org.keycloak>15.1.1</version.org.keycloak>
+    <version.org.keycloak>18.0.2</version.org.keycloak>
     <version.org.lz4.lz4-java>1.8.0</version.org.lz4.lz4-java>
     <version.org.mockito>3.12.1</version.org.mockito>
     <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
@@ -870,12 +874,6 @@
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-core</artifactId>
-        <version>${version.org.keycloak}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-server-overlay</artifactId>
-        <type>zip</type>
         <version>${version.org.keycloak}</version>
       </dependency>
       <dependency>

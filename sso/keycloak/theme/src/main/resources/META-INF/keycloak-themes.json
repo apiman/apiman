@@ -1,0 +1,6 @@
+{
+  "themes": [{
+    "name" : "apiman",
+    "types": [ "login" ]
+  }]
+}
