@@ -521,6 +521,18 @@
         <type>zip</type>
         <classifier>overlay</classifier>
       </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-sso-keycloak-theme</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-keycloak</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+        <classifier>overlay</classifier>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -675,6 +687,7 @@
     <module>gateway</module>
     <module>test</module>
     <module>migration-assistant</module>
+    <module>sso</module>
   </modules>
 
   <profiles>

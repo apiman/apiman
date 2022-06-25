@@ -6,13 +6,13 @@
 
     <parent>
         <groupId>io.apiman</groupId>
-        <artifactId>apiman-manager</artifactId>
+        <artifactId>apiman</artifactId>
         <version>3.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>apiman-manager-sso</artifactId>
-    <name>apiman-manager-sso</name>
+    <artifactId>apiman-sso</artifactId>
+    <name>apiman-sso</name>
     <packaging>pom</packaging>
     <description>
         Code to integrate into with single sign on (SSO) platforms, this allows certain events to be
@@ -23,7 +23,7 @@
     </description>
 
     <modules>
-        <!-- <module>keycloak</module> -->
+         <module>keycloak</module>
     </modules>
 
 </project>
