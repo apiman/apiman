@@ -3,7 +3,7 @@ version: "3.9"
 services:
   keycloak:
     container_name: keycloak_server_all
-    image: quay.io/keycloak/keycloak:${version.org.keycloak}-legacy # replaced during build, see in target
+    image: quay.io/keycloak/keycloak:${version.org.keycloak} # replaced during build, see in target
     command:
       - start-dev
       - --import-realm
