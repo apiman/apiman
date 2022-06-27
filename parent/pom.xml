@@ -169,7 +169,7 @@
     <!-- Sun and javax dependencies to maintain compatibility with Java 9+ module changes -->
     <version.com.sun.xml.ws>2.3.4</version.com.sun.xml.ws>
     <version.javax.json.javax.json-api>1.1.4</version.javax.json.javax.json-api>
-    <version.javax.xml.bind>2.3.3</version.javax.xml.bind>
+    <version.javax.xml.bind>4.0.0</version.javax.xml.bind>
     <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
     <version.javax.persistence-api>2.2</version.javax.persistence-api>
     <version.javax.enterprise.cdi-api>2.0.SP1</version.javax.enterprise.cdi-api>
