@@ -168,6 +168,12 @@
       <http-method-omission>OPTIONS</http-method-omission>
     </web-resource-collection>
     <web-resource-collection>
+      <web-resource-name>Healthcheck Endpoint (allow all to read)</web-resource-name>
+      <url-pattern>/system/status</url-pattern>
+      <http-method-omission>GET</http-method-omission>
+      <http-method-omission>OPTIONS</http-method-omission>
+    </web-resource-collection>
+    <web-resource-collection>
       <web-resource-name>Users</web-resource-name>
       <url-pattern>/users/*</url-pattern>
       <http-method-omission>OPTIONS</http-method-omission>
