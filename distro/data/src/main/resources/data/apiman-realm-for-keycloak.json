@@ -468,6 +468,7 @@
         ],
         "clientRoles": {
           "realm-management": [
+            "view-profile",
             "view-realm",
             "manage-clients",
             "manage-users"
@@ -710,11 +711,10 @@
         "clientAuthenticatorType": "client-secret",
         "secret": "password",
         "redirectUris": [
-          "http://localhost:8080/apiman/*",
-          "https://localhost:8443/apiman/*"
+          "*",
         ],
         "webOrigins": [
-          "+"
+          "*"
         ],
         "notBefore": 0,
         "bearerOnly": false,
@@ -771,7 +771,7 @@
         "clientAuthenticatorType": "client-secret",
         "secret": "password",
         "redirectUris": [
-          "https://localhost:8443/apiman-gateway-api/*"
+          "*"
         ],
         "webOrigins": [
           "*"
@@ -814,11 +814,10 @@
         "clientAuthenticatorType": "client-secret",
         "secret": "password",
         "redirectUris": [
-          "http://localhost:8080/apimanui/*",
-          "https://localhost:8443/apimanui/*"
+          "*"
         ],
         "webOrigins": [
-          "+"
+          "*"
         ],
         "notBefore": 0,
         "bearerOnly": false,
@@ -912,7 +911,7 @@
         "clientAuthenticatorType": "client-secret",
         "secret": "**********",
         "redirectUris": [
-          "https://localhost:8444/*"
+          "*"
         ],
         "webOrigins": [
           "*"
