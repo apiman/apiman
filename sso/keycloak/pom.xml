@@ -17,7 +17,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>extensions</module>
+        <!-- Sonatype release plugin doesn't like this module -->
+        <!-- <module>extensions</module> -->
         <module>theme</module>
     </modules>
 
