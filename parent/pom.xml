@@ -99,7 +99,7 @@
     <version.com.squareup.okhttp>2.7.5</version.com.squareup.okhttp>
     <version.com.squareup.okio>2.10.0</version.com.squareup.okio>
     <version.com.unboundid.unboundid-ldapsdk>6.0.4</version.com.unboundid.unboundid-ldapsdk>
-    <version.com.vladmihalcea.hibernate-types>2.14.0</version.com.vladmihalcea.hibernate-types>
+    <version.com.vladmihalcea.hibernate-types>2.16.3</version.com.vladmihalcea.hibernate-types>
     <version.commons-beanutils>1.9.4</version.commons-beanutils>
     <version.commons-codec>1.15</version.commons-codec>
     <version.commons-collections>4.4</version.commons-collections>
