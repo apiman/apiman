@@ -92,7 +92,7 @@ body:
       required: false
 
   - type: textarea
-    id: expected-behaviour
+    id: actual-behaviour
     attributes:
       label: Actual behaviour
       description: |
@@ -121,6 +121,7 @@ body:
       required: false
 
   - type: textarea
+    id: anything-else
     attributes:
       label: Anything else?
       description: |
