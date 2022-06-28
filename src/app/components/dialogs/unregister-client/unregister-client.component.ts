@@ -40,6 +40,10 @@ export class UnregisterClientComponent {
     private translator: TranslateService
   ) {}
 
+  /**
+   * This method deletes and optionally unregisters a client.
+   * If the client is in the "Registered" or in the "AwaitingApproval" state, we unregister the client before deletion.
+   */
   onUnregister(): void {
     const action: IAction = {
       type: 'unregisterClient',
@@ -48,20 +52,14 @@ export class UnregisterClientComponent {
       entityVersion: this.contract.client.version
     };
 
-    this.backend
-      .breakAllContracts(
-        action.organizationId,
-        action.entityId,
-        action.entityVersion
-      )
+    iif(
+      () =>
+        this.contract.client.status === 'Registered' ||
+        this.contract.client.status === 'AwaitingApproval',
+      this.backend.sendAction(action),
+      of(void 0)
+    )
       .pipe(
-        switchMap(() =>
-          iif(
-            () => this.contract.client.status === 'Registered',
-            this.backend.sendAction(action),
-            of(void 0)
-          )
-        ),
         switchMap(() =>
           this.backend.deleteClient(action.organizationId, action.entityId)
         ),
