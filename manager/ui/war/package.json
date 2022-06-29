@@ -34,7 +34,7 @@
     "@braintree/sanitize-url": "6.0.0"
   },
   "dependencies": {
-    "@json-editor/json-editor": "2.7.0",
+    "@json-editor/json-editor": "2.8.0",
     "@toast-ui/editor": "3.1.5",
     "@toast-ui/editor-plugin-code-syntax-highlight": "3.0.0",
     "@toast-ui/editor-plugin-color-syntax": "3.0.3",
