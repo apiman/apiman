@@ -1,0 +1,52 @@
+name: 💡 Feature Request
+description: Suggest new features or enhancements that you would like to see in Apiman
+labels:
+  - "T: Feature Request"
+  - "S: Triage"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the feature or enhancement at a high level.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      validations:
+        required: false
+      description: |
+        Provide a checklist that confirms when this feature or enhancement has been implemented successfully.
+        
+        This helps us to clearly understand the specifics of the enhancement or feature, and ensure all expectations have been addressed.     
+
+        Example:
+          - [ ] Can capture request and response headers
+          - [ ] Can capture query parameters
+          - [ ] Can use regular expressions to decide which header or query param to capture
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: |
+        Describe why the feature should be added. 
+      
+        Helpful answers include:
+        
+        * What were you trying/want to do that you are currently unable to do? 
+        * How the enhancement or feature would help you? 
+        * If the feature were implemented, what would it enable?
+    validations:
+      required: false
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Design ideas? Implementation ideas? Anything that will give us more context about the feature you are proposing!
+    validations:
+      required: false
