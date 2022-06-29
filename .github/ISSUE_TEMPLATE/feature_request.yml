@@ -16,8 +16,6 @@ body:
     id: acceptance-criteria
     attributes:
       label: Acceptance Criteria
-      validations:
-        required: false
       description: |
         Provide a checklist that confirms when this feature or enhancement has been implemented successfully.
         
@@ -27,7 +25,9 @@ body:
           - [ ] Can capture request and response headers
           - [ ] Can capture query parameters
           - [ ] Can use regular expressions to decide which header or query param to capture
-
+    validations:
+      required: false
+  
   - type: textarea
     id: motivation
     attributes:
