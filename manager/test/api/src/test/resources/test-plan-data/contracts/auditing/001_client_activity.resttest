@@ -20,10 +20,29 @@ Content-Type: application/json
       "entityType": "Client",
       "entityId": "Client1",
       "entityVersion": "1.0",
+      "what": "Register",
+      "data": null
+    },
+    {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Client",
+      "entityId": "Client1",
+      "entityVersion": "1.0",
       "what": "BreakContract",
       "data": "{\"clientOrgId\":\"Organization1\",\"clientId\":\"Client1\",\"clientVersion\":\"1.0\",\"apiOrgId\":\"Organization2\",\"apiId\":\"API2\",\"apiVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}"
     },
     {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Client",
+      "entityId": "Client1",
+      "entityVersion": "1.0",
+      "what": "Unregister",
+      "data": null
+    },
+    {
+      "id": 47,
       "who": "admin",
       "organizationId": "Organization1",
       "entityType": "Client",
@@ -87,5 +106,5 @@ Content-Type: application/json
       "data": null
     }
   ],
-  "totalSize": 9
+  "totalSize": 11
 }
