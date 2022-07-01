@@ -274,6 +274,11 @@ _module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration', '$q
                 return $http({
                     method: 'GET',
                     url: endpoint,
+                    transformResponse: function(data) {
+                        // overrides the default transformations to avoid deserialization of `application/json`
+                        // see: https://docs.angularjs.org/api/ng/service/$http#overriding-the-default-transformations-per-request
+                        return data;
+                    }
                 }).then(
                     ok => $q.resolve(ok.data),
                     failure => $q.reject(failure)

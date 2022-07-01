@@ -119,7 +119,7 @@ _module.controller('Apiman.ApiDefController',
 
         let loadDefinition = function () {
             ApiDefinitionSvcs.getApiDefinition(params.org, params.api, params.version).then(
-                function (definition) {
+                function (definition: string) {
                     $scope.apiDefinition = definition;
                     $scope.updatedApiDefinition = definition;
                 },
