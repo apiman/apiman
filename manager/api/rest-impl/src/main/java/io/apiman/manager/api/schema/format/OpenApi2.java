@@ -8,6 +8,7 @@ import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 
 import java.net.URI;
+import java.util.List;
 
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.openapi.v2.models.Oas20Document;
@@ -43,6 +44,7 @@ public class OpenApi2 implements OAIRewriter {
 
         // We can guarantee it's an OAS2.x doc (aka. Swagger v2).
         Oas20Document oas2 = (Oas20Document) schema;
+        oas2.schemes = List.of(apiEndpointUri.getScheme());
         if (apiEndpointUri.getPort() == -1) {
             oas2.host = apiEndpointUri.getHost();
         } else {
