@@ -79,7 +79,6 @@ public class ActionService implements DataAccessUtilMixin {
     private final UserMapper userMapper = UserMapper.INSTANCE;
     private IStorage storage;
     private ISecurityContext securityContext;
-    private ApiService apiService;
     private PlanService planService;
     private ContractService contractService;
     private IStorageQuery query;
@@ -91,7 +90,6 @@ public class ActionService implements DataAccessUtilMixin {
     @Inject
     public ActionService(IStorage storage,
          ISecurityContext securityContext,
-         ApiService apiService,
          PlanService planService,
          IStorageQuery query,
          ContractService contractService,
@@ -101,7 +99,6 @@ public class ActionService implements DataAccessUtilMixin {
          IGatewayLinkFactory gatewayLinkFactory) {
         this.storage = storage;
         this.securityContext = securityContext;
-        this.apiService = apiService;
         this.planService = planService;
         this.query = query;
         this.contractService = contractService;

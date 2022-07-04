@@ -32,7 +32,6 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
 import javax.servlet.DispatcherType;
@@ -112,10 +111,14 @@ public class ManagerApiTestServer {
     public void stop() throws Exception {
         server.stop();
         if (ds != null) {
+            // Drop everything from the in-memory DB in case a subsequent run re-uses this: could end up with unexpected DB state.
+            try (var conn = ds.getConnection()){
+                conn.prepareStatement("DROP ALL OBJECTS DELETE FILES").executeUpdate();
+                conn.commit();
+            };
             ds.close();
             InitialContext ctx = TestUtil.initialContext();
-            // ctx.unbind("java:comp/env/jdbc/ApiManagerDS"); 
-            ctx.unbind("java:/apiman/datasources/apiman-manager"); 
+            ctx.unbind("java:/apiman/datasources/apiman-manager");
         }
     }
 
@@ -184,7 +187,7 @@ public class ManagerApiTestServer {
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
         ds.setPassword("");
-        ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1");
+        ds.setUrl("jdbc:h2:mem:test-apiman-inmem;DB_CLOSE_DELAY=-1");
         // Use this for trace level JDBC logging
         // ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1;TRACE_LEVEL_SYSTEM_OUT=3");
         Connection connection = ds.getConnection();

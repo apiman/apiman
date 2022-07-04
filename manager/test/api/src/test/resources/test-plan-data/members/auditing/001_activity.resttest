@@ -17,7 +17,7 @@ Content-Type: application/json
         "entityVersion" : null,
         "organizationId" : "Organization1",
         "what" : "Revoke",
-        "who" : "admin"
+        "who" : "user1"
       },
       { "data" : "{\"userId\":\"user2\",\"roles\":[\"APIDeveloper\"]}",
         "entityId" : null,
@@ -25,9 +25,9 @@ Content-Type: application/json
         "entityVersion" : null,
         "organizationId" : "Organization1",
         "what" : "Grant",
-        "who" : "admin"
+        "who" : "user1"
       },
-      { "data" : "{\"userId\":\"user1\",\"roles\":[\"APIDeveloper\"]}",
+      { "data" : "{\"userId\":\"user1\",\"roles\":[\"OrganizationOwner\",\"APIDeveloper\"]}",
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,

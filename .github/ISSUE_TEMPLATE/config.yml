@@ -1,0 +1,6 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Discussions
+    url: https://github.com/apiman/apiman/discussions
+    about: Propose new ideas, provide feedback, or ask for help
+    

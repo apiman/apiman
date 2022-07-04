@@ -96,4 +96,12 @@ public class Predicates {
     public static Predicate<URI> isHttpOrHttps() {
         return uri -> "http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme());
     }
+
+    public static Predicate<Integer> intPercentage() {
+        return integer -> integer >= 0 && integer <= 100;
+    }
+
+    public static String intPercentageMsg() {
+        return "percentage must be an integer value from 0 - 100";
+    }
 }

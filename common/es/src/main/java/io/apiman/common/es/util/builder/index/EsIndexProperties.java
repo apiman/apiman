@@ -15,12 +15,19 @@
  */
 package io.apiman.common.es.util.builder.index;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.apiman.common.util.Preconditions;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * An ES properties map
@@ -32,8 +39,13 @@ public class EsIndexProperties implements AllowableIndexPropertyEntry, Allowable
     @JsonProperty("properties")
     private final Map<String, AllowableIndexPropertyEntry> propertiesMap;
 
+    @JsonProperty("dynamic_templates")
+    @JsonSerialize(using = EsDynamicTemplatesSerializer.class)
+    private final Map<String, EsDynamicTemplate> dynamicTemplatesMap;
+
     private EsIndexProperties(EsIndexPropertiesBuilder builder) {
         this.propertiesMap = builder.propertiesMap;
+        this.dynamicTemplatesMap = builder.dynamicTemplatesMap;
     }
 
     /**
@@ -41,6 +53,10 @@ public class EsIndexProperties implements AllowableIndexPropertyEntry, Allowable
      */
     public Map<String, AllowableIndexPropertyEntry> getPropertiesMap() {
         return propertiesMap;
+    }
+
+    public Map<String, EsDynamicTemplate> getDynamicTemplatesMap() {
+        return dynamicTemplatesMap;
     }
 
     /**
@@ -77,14 +93,19 @@ public class EsIndexProperties implements AllowableIndexPropertyEntry, Allowable
 
     @JsonPOJOBuilder(withPrefix = "set")
     public static final class EsIndexPropertiesBuilder {
-        private Map<String, AllowableIndexPropertyEntry> propertiesMap = new HashMap<>();
+        private final Map<String, AllowableIndexPropertyEntry> propertiesMap = new HashMap<>();
+        private final Map<String, EsDynamicTemplate> dynamicTemplatesMap = new HashMap<>();
 
         public EsIndexPropertiesBuilder() {
         }
 
-        public EsIndexPropertiesBuilder addProperty(String propName,
-            AllowableIndexPropertyEntry property) {
+        public EsIndexPropertiesBuilder addProperty(String propName, AllowableIndexPropertyEntry property) {
             propertiesMap.put(propName, property);
+            return this;
+        }
+
+        public EsIndexPropertiesBuilder addTemplate(String propName, EsDynamicTemplate template) {
+            dynamicTemplatesMap.put(propName, template);
             return this;
         }
 
@@ -92,9 +113,26 @@ public class EsIndexProperties implements AllowableIndexPropertyEntry, Allowable
          * Build and validate instance of {@link EsIndexProperties}
          * @return a new {@link EsIndexProperties} with the configuration provided in this builder
          */
-        public final EsIndexProperties build() {
+        public EsIndexProperties build() {
             Preconditions.checkArgument(propertiesMap.size() > 0, "Must add at least one property");
             return new EsIndexProperties(this);
+        }
+    }
+
+    public static class EsDynamicTemplatesSerializer extends JsonSerializer<Map<String, EsDynamicTemplate>> {
+
+        public EsDynamicTemplatesSerializer() {
+        }
+
+        @Override
+        public void serialize(Map<String, EsDynamicTemplate> templateMap, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            gen.writeStartArray(templateMap.size());
+            for (Map.Entry<String, EsDynamicTemplate> entry : templateMap.entrySet()) {
+                gen.writeStartObject();
+                gen.writeObjectField(entry.getKey(), entry.getValue());
+                gen.writeEndObject();
+            }
+            gen.writeEndArray();
         }
     }
 }

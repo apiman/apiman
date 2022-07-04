@@ -219,6 +219,23 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         super.create(plugin);
     }
 
+    @Override
+    public void beginTx() throws StorageException {
+        if (!getSession().getTransaction().isActive()) {
+            getSession().beginTransaction();
+        }
+    }
+
+    @Override
+    public void commitTx() throws StorageException {
+        getSession().getTransaction().commit();
+    }
+
+    @Override
+    public void rollbackTx() {
+        getSession().getTransaction().rollback();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -1141,13 +1158,12 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         try {
             EntityManager entityManager = getActiveEntityManager();
             String jpql = "SELECT v from ApiVersionBean v JOIN v.api s JOIN s.organization o WHERE o.id = :orgId AND s.id = :apiId AND v.version = :version";
-            return entityManager.createQuery(jpql, ApiVersionBean.class)
-                    .setParameter("orgId", orgId)
-                    .setParameter("apiId", apiId)
-                    .setParameter("version", apiVersion)
-                    .getSingleResult();
-        } catch (NoResultException nre) {
-            return null;
+            TypedQuery<ApiVersionBean> query = entityManager.createQuery(jpql, ApiVersionBean.class)
+                                                       .setParameter("orgId", orgId)
+                                                       .setParameter("apiId", apiId)
+                                                       .setParameter("version", apiVersion);
+            // Preserve historic null behaviour
+            return super.getOne(query).orElse(null);
         } catch (Throwable t) {
             throw new StorageException(t);
         }

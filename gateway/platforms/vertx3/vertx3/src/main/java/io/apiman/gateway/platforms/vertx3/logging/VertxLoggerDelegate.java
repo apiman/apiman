@@ -18,9 +18,12 @@ package io.apiman.gateway.platforms.vertx3.logging;
 
 import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
+import io.apiman.common.logging.annotations.ApimanLoggerFactory;
+
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
+@ApimanLoggerFactory("vertx")
 public class VertxLoggerDelegate implements IDelegateFactory {
 
     // For the Apiman logger system.

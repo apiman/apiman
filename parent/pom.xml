@@ -56,6 +56,10 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
 
+    <!-- Supported platform versions -->
+    <version.org.wildfly.as>23.0.2.Final</version.org.wildfly.as>
+    <version.org.apache.tomcat>9.0.55</version.org.apache.tomcat>
+
     <!-- Plugin Versions -->
     <version.ant>1.10.11</version.ant>
     <version.antrun.plugin>1.7</version.antrun.plugin>
@@ -87,7 +91,7 @@
 
     <!-- Dependency Versions -->
     <version.com.blazebit.blaze-persistence>1.6.6</version.com.blazebit.blaze-persistence>
-    <version.com.fasterxml.jackson>2.12.6</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.12.7</version.com.fasterxml.jackson>
     <version.com.github.ben-manes.caffeine>3.0.5</version.com.github.ben-manes.caffeine>
     <version.com.github.seancfoley.ipaddress>5.3.4</version.com.github.seancfoley.ipaddress>
     <version.com.h2database>1.4.199</version.com.h2database> <!-- Unclear why, but 1.4.200 seems to cause some random issues, including inability for DB viewers to parse the data -->
@@ -113,7 +117,7 @@
     <version.joda-time>2.10.14</version.joda-time>
     <version.junit>4.13.2</version.junit>
     <version.org.assertj>3.21.0</version.org.assertj>
-    <version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
+    <version.org.junit.jupiter>5.8.2</version.org.junit.jupiter>
     <version.org.apache.commons.commons-lang3>3.12.0</version.org.apache.commons.commons-lang3>
     <version.org.apache.directory.server>2.0.0.AM25</version.org.apache.directory.server>
     <version.org.apache.directory.api-all>2.1.0</version.org.apache.directory.api-all>
@@ -121,6 +125,7 @@
     <version.org.apache.httpcomponents.httpcore>4.4.14</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpasyncclient>4.1.4</version.org.apache.httpcomponents.httpasyncclient>
     <version.org.apache.logging.log4j>2.17.2</version.org.apache.logging.log4j>
+    <version.org.agrona>1.15.2</version.org.agrona>
     <version.org.eclipse.jetty>9.4.41.v20210516</version.org.eclipse.jetty>
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
     <version.org.elasticsearch>7.13.4</version.org.elasticsearch>
@@ -136,7 +141,7 @@
     <version.org.jboss.weld.weld>3.1.8.Final</version.org.jboss.weld.weld>
     <version.org.jdbi>3.28.0</version.org.jdbi>
     <version.org.jsoup>1.14.3</version.org.jsoup>
-    <version.org.keycloak>15.1.1</version.org.keycloak>
+    <version.org.keycloak>18.0.2</version.org.keycloak>
     <version.org.lz4.lz4-java>1.8.0</version.org.lz4.lz4-java>
     <version.org.mockito>3.12.1</version.org.mockito>
     <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
@@ -683,6 +688,11 @@
         <version>${version.org.apache.httpcomponents.httpasyncclient}</version>
       </dependency>
       <dependency>
+        <groupId>org.agrona</groupId>
+        <artifactId>agrona</artifactId>
+        <version>${version.org.agrona}</version>
+      </dependency>
+      <dependency>
         <groupId>com.squareup.okhttp</groupId>
         <artifactId>okhttp</artifactId>
         <version>${version.com.squareup.okhttp}</version>
@@ -864,12 +874,6 @@
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-core</artifactId>
-        <version>${version.org.keycloak}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-server-overlay</artifactId>
-        <type>zip</type>
         <version>${version.org.keycloak}</version>
       </dependency>
       <dependency>

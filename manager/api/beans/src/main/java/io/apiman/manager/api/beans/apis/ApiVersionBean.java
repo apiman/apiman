@@ -44,6 +44,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -111,6 +112,7 @@ public class ApiVersionBean implements Serializable, Cloneable {
     private DiscoverabilityLevel discoverability = DiscoverabilityLevel.ORG_MEMBERS;
 
     @OneToOne(mappedBy = "apiVersion", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     ApiDefinitionBean apiDefinition; // Deliberately no explicit getter/setter for this
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "apiVersion", cascade = CascadeType.ALL, orphanRemoval = true)

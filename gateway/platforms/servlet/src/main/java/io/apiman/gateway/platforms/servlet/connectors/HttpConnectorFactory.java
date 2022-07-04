@@ -115,10 +115,9 @@ public class HttpConnectorFactory implements IConnectorFactory {
             public IApiConnection connect(ApiRequest request,
                 IAsyncResultHandler<IApiConnectionResponse> handler) throws ConnectorException {
 
-                HttpApiConnection connection = new HttpApiConnection(okClient, request, api,
+                return new HttpApiConnection(okClient, request, api,
                     requiredAuthType, getSslStrategy(requiredAuthType), hasDataPolicy,
                     connectorConfig, handler);
-                return connection;
             }
         };
     }

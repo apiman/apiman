@@ -16,6 +16,7 @@
 package io.apiman.common.plugin;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,11 +40,11 @@ import org.apache.commons.io.IOUtils;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-public class PluginClassLoader extends ClassLoader {
+public class PluginClassLoader extends ClassLoader implements Closeable, AutoCloseable {
 
-    private ZipFile pluginArtifactZip;
+    private final ZipFile pluginArtifactZip;
     private List<ZipFile> dependencyZips;
-    private File workDir;
+    private final File workDir;
     private boolean closed;
 
     /**
@@ -289,7 +290,7 @@ public class PluginClassLoader extends ClassLoader {
 
         // Return the discovered resources as an Enumeration
         final Iterator<URL> iterator = resources.iterator();
-        return new Enumeration<URL>() {
+        return new Enumeration<>() {
             @Override
             public boolean hasMoreElements() {
                 return iterator.hasNext();
@@ -302,23 +303,15 @@ public class PluginClassLoader extends ClassLoader {
     }
 
     /**
-     * @see java.lang.Object#finalize()
-     */
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        close();
-    }
-
-    /**
      * Closes any resources the plugin classloader is holding open.
      * @throws IOException if an I/O error has occurred
      */
+    @Override
     public void close() throws IOException {
         if (closed) { return; }
         this.pluginArtifactZip.close();
         for (ZipFile zipFile : this.dependencyZips) {
-            zipFile.close();
+            IOUtils.closeQuietly(zipFile);
         }
         closed = true;
     }

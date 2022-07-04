@@ -37,10 +37,16 @@ public class EsIndexUtils {
     public static final EsIndexProperty BIN_PROP = EsIndexProperty.builder().setType(ES_MAPPING_TYPE_BINARY).build();
     public static final EsIndexProperty OBJECT_PROP = EsIndexProperty.builder().setType(ES_MAPPING_TYPE_OBJECT).build();
     public static final EsField KEYWORD_PROP = KeywordEntryEs.builder().build();
+    public static final EsIndexProperty TEXT_AND_KEYWORD_PROP_128 =
+            EsIndexProperty.builder()
+                    .setType(ES_MAPPING_TYPE_TEXT)
+                    .addField(ES_MAPPING_TYPE_KEYWORD,
+                            KeywordEntryEs.builder().setIgnoreAbove(128).build())
+                    .build();
     public static final EsIndexProperty TEXT_AND_KEYWORD_PROP_256 =
-        EsIndexProperty.builder()
-            .setType(ES_MAPPING_TYPE_TEXT)
-            .addField(ES_MAPPING_TYPE_KEYWORD,
-                KeywordEntryEs.builder().setIgnoreAbove(256).build())
-            .build();
+            EsIndexProperty.builder()
+                    .setType(ES_MAPPING_TYPE_TEXT)
+                    .addField(ES_MAPPING_TYPE_KEYWORD,
+                            KeywordEntryEs.builder().setIgnoreAbove(256).build())
+                    .build();
 }

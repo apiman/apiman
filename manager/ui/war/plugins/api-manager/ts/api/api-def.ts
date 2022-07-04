@@ -51,7 +51,7 @@ _module.controller('Apiman.ApiDefController',
             switch (definitionType) {
                 case 'SwaggerJSON':
                     try {
-                        $.parseJSON(data);
+                        JSON.parse(data);
                         return true;
                     } catch (error) {
                         return false;
@@ -87,7 +87,7 @@ _module.controller('Apiman.ApiDefController',
                     $scope.finishModification();
                 },
                 function (error) {
-                    Modals.rpcerror(error, null, null);
+                    Modals.rpcerror(error.data, null, null);
                     Logger.error("Error updating definition: {0}", error);
                     $scope.saveButton.state = 'error';
                 }
@@ -117,15 +117,15 @@ _module.controller('Apiman.ApiDefController',
 
         var pageData = ApiEntityLoader.getCommonData($scope, $location);
 
-        var loadDefinition = function () {
+        let loadDefinition = function () {
             ApiDefinitionSvcs.getApiDefinition(params.org, params.api, params.version).then(
-                function (definition) {
+                function (definition: string) {
                     $scope.apiDefinition = definition;
                     $scope.updatedApiDefinition = definition;
                 },
                 function (error) {
                     Modals.rpcerror(error, null, null);
-                    Logger.error("Error loading definition: {0}", error);
+                    Logger.error("Error loading definition: {0}", error.data.message);
                 });
         };
 
@@ -204,8 +204,8 @@ _module.controller('Apiman.ApiDefController',
                     $scope.finishModification();
                 },
                 function (error) {
-                    Modals.rpcerror(error, null, null);
-                    Logger.error("Error updating definition: {0}", error);
+                    Modals.rpcerror(error.data, null, null);
+                    Logger.error("Error updating definition: {0}", error.data.message);
                     $scope.saveButton.state = 'error';
                 }
             )

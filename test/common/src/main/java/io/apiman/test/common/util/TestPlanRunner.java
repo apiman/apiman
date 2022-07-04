@@ -190,6 +190,7 @@ public class TestPlanRunner {
             assertResponse(restTest, request.fetch());
         } catch (Error e) {
             logPlain("[ERROR] " + e.getMessage());
+            e.printStackTrace();
             throw e;
         } catch (ProtocolException e) {
             logPlain("[HTTP PROTOCOL EXCEPTION] " + e.getMessage());

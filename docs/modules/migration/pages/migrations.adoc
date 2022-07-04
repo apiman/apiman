@@ -3,6 +3,54 @@
 Notes for upgrading to newer versions of Apiman. 
 Unless stated otherwise, the instructions assume that you are upgrading sequentially version to version.
 
+== Migrating to 3.0.0.Final
+
+To migrate from Apiman 2.x to 3.0.0.Final, please use Apiman's export-import function.
+
+=== Breaking Changes
+==== Elasticsearch support removed for Apiman Manager backend storage
+
+[IMPORTANT]
+====
+This does *not* affect Apiman Metrics or any of the Apiman Gateway.
+====
+
+Elasticsearch is no longer supported as a primary datastore for the Apiman Manager. Only relational databases are supported.
+
+For a fuller explanation of why we made this decision, please refer to https://github.com/apiman/apiman/discussions/1365[_AEP 2: Drop Elasticsearch as Manager API database in Apiman 3 (keep for metrics, gateway, etc)_^].
+
+In your `apiman.properties`, you must now use JPA for the storage type:
+
+[source,properties]
+----
+apiman-manager.storage.type=jpa
+----
+
+Please refer to the documentation to see how you can configure Apiman to use your database of choice.
+
+To reiterate, this does not affect metrics or the Apiman Gateway registry, components, etc.
+
+==== Apiman WildFly quickstart overlays are no longer bundled with Keycloak
+
+Keycloak has deprecated the Keycloak server overlay, which allowed us to bundle Keycloak and Apiman in the same overlay.
+
+This is no longer supported by the Keycloak team, and hence we have been forced to follow suit to avoid shipping an insecure version of Keycloak.
+
+We have replaced this with a Docker Compose quickstart distribution that runs Keycloak as a standalone container.
+This should be equally convenient for users, whilst also being more secure and a better representation of a production setup.
+
+==== Apiman Docker all-in-one images are deprecated
+
+Historically, for quickstart purposes we shipped all components required for a simple Apiman deployment into the same container.
+
+Whilst convenient for a quick tryout, it causes significant issues with security and configuration, whilst making it awkward to transition to a full production setup.
+
+We have replaced this with a Docker Compose quickstart distribution comprised of individual components, each hosted in their own container.
+
+This also makes scaling Apiman easier out-of-the-box, as the gateway containers can be scaled independently of the manager.
+
+Please refer to the Apiman documentation for further information.
+
 == Migrating to 2.2.3.Final
 
 No special action should be required, although backing up is always recommended.

@@ -43,63 +43,60 @@
           </div>
           <!--/ Feature in Portal -->
           <!-- Attached plans -->
-          <div class="title" apiman-i18n-key="available-plans">Attached Plans</div>
-          <div>
-            <span apiman-i18n-key="available-plans-help">
-              Select which plans appear in the developer portal, and whether developers need approval before they can finalise their subscription.
-            </span>
-          </div>
-          <div class="apiman-divider-40"
-               ng-show="data.planSummaries.length === 0">
-            <div class="alert alert-warning">
-              <span class="pficon pficon-info"></span>
-              <span apiman-i18n-key="api-plans.no-locked-plans-found">No plans are attached to this API. Without plans, this API will not appear in the developer portal.</span>
+          <div ng-show="data.apiVersion.plans.length > 0">
+            <div class="title" apiman-i18n-key="available-plans">Attached Plans</div>
+            <div>
+              <span apiman-i18n-key="available-plans-help">
+                Select which plans appear in the developer portal, and whether developers need approval before they can finalise their subscription.
+              </span>
             </div>
-          </div>
-
-          <div class="container-fluid container-cards-pf">
-            <div class="row row-cards-pf"  style="display: flex;">
-              <div class="col-xs-6 col-sm-5 col-md-5 container-border" style="display: inline-flex; width: 27em;" ng-repeat="plan in data.planSummaries">
-                <div class="card-pf card-pf-accented card-pf-aggregate-status">
-                  <h2 class="card-pf-title">
-                    {{ plan.planName  }}
-                  </h2>
-                  <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
-                  <div class="card-pf-body text-left">
-                    <p class="card-text">{{ plan.planDescription }}</p>
-                    <div>
-                      <ul class="list-group list-group-flush">
-                        <li style="max-width: max-content !important;" class="list-group-item">&#9702;  Plan <strong>is available</strong> to: {{ getDiscoverabilityDescription(plan.discoverability) }}</li>
-                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.discoverability !== 'PORTAL'">&#9702; Plan is <strong>not visible</strong> in the developer portal to anonymous users, but is visible to users who are logged-in with the correct permissions.</li>
-                        <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.requiresApproval === true">&#9702; Developers <strong>require approval</strong> to complete sign up.</li>
-                        <li style="max-width: max-content !important;" class="list-group-item"  ng-show="!plan.requiresApproval">&#9702; Developers <strong>do not require approval</strong> to complete sign up.</li>
-                      </ul>
-                      <!-- Checkbox -- requires approval -->
-                      <div class="form-check px-4 pl-2">
-                        <input class="form-check-input" type="checkbox" ng-model="plan.requiresApproval" value="{{ plan.requiresApproval }}" id="requiresApproval-{{plan.planId}}">
-                        <label class="form-check-label" for="requiresApproval-{{plan.planId}}">
-                          Requires approval
-                        </label>
-                      </div>
-                      <hr/>
-                      <!-- Checkbox -- expose in portal -->
-                      <div class="form-check py-1 px-2">
-                        <apiman-discoverability-select
-                            on-discoverability-change="onDiscoverabilityChange"
-                            plan="plan"
-                            initial-value="plan.discoverability"
-                            class="w-100">
-                        </apiman-discoverability-select>
+            <div class="container-fluid container-cards-pf">
+              <div class="row row-cards-pf"  style="display: flex;">
+                <div class="col-xs-6 col-sm-5 col-md-5 container-border" style="display: inline-flex; width: 27em;" ng-repeat="plan in data.apiVersion.plans">
+                  <div class="card-pf card-pf-accented card-pf-aggregate-status">
+                    <h2 class="card-pf-title">
+                      {{ getApiPlanSummaryBean(plan).planName }}
+                    </h2>
+                    <h6 class="card-subtitle mb-2 text-muted">Version {{ plan.version }}</h6>
+                    <div class="card-pf-body text-left">
+                      <p class="card-text">{{ getApiPlanSummaryBean(plan).planDescription }}</p>
+                      <div>
+                        <ul class="list-group list-group-flush">
+                          <li style="max-width: max-content !important;" class="list-group-item">&#9702;  Plan <strong>is available</strong> to: {{ getDiscoverabilityDescription(plan.discoverability) }}</li>
+                          <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.discoverability !== 'PORTAL'">&#9702; Plan is <strong>not visible</strong> in the developer portal to anonymous users, but is visible to users who are logged-in with the correct permissions.</li>
+                          <li style="max-width: max-content !important;" class="list-group-item" ng-show="plan.requiresApproval === true">&#9702; Developers <strong>require approval</strong> to complete sign up.</li>
+                          <li style="max-width: max-content !important;" class="list-group-item"  ng-show="!plan.requiresApproval">&#9702; Developers <strong>do not require approval</strong> to complete sign up.</li>
+                        </ul>
+                        <!-- Checkbox -- requires approval -->
+                        <div class="form-check px-4 pl-2">
+                          <input class="form-check-input" type="checkbox" ng-model="plan.requiresApproval" value="{{ plan.requiresApproval }}" id="requiresApproval-{{plan.planId}}">
+                          <label class="form-check-label" for="requiresApproval-{{plan.planId}}">
+                            Requires approval
+                          </label>
+                        </div>
+                        <hr/>
+                        <!-- Checkbox -- expose in portal -->
+                        <div class="form-check py-1 px-2">
+                          <apiman-discoverability-select
+                                  on-discoverability-change="onDiscoverabilityChange"
+                                  plan="plan"
+                                  initial-value="plan.discoverability"
+                                  class="w-100">
+                          </apiman-discoverability-select>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- /row -->
-            <!-- /Attached plans -->
-            <hr />
+          </div>
+          <!-- /row -->
+          <!-- /Attached plans -->
+          <hr />
+          <div>
             <!-- Image cropper modal and/or image -->
+            <div class="title" apiman-i18n-key="logo">Logo</div>
             <div class="row row-cards-pf api-logo-container">
               <div class="col-xs-6 col-sm-5 col-md-5 container-border"  style="width: 27em;">
                 <div class="card-pf card-pf-accented card-pf-aggregate-status">

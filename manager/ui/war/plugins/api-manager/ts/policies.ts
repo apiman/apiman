@@ -44,7 +44,7 @@ _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
         function ($scope, Logger, PluginSvcs, EntityStatusSvc) {
             $scope.isEntityDisabled = EntityStatusSvc.isEntityDisabled;
 
-            var initEditor = function(schema) {
+            const initEditor = function(schema, readyF: () => void): void {
                 const holder = document.getElementById('json-editor-holder');
 
                 const editor = new JSONEditor(holder, {
@@ -77,6 +77,10 @@ _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
                     });
                 });
 
+                editor.on('ready', function() {
+                    readyF();
+                });
+
                 if ($scope.isEntityDisabled() === true) {
                     editor.disable();
                 }
@@ -84,14 +88,14 @@ _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
                 $scope.editor = editor;
             };
 
-            var destroyEditor = function() {
+            const destroyEditor = function() {
                 if ($scope.editor) {
                     $scope.editor.destroy();
                     $scope.editor = null;
                 }
             };
 
-            var loadSchema = function() {
+            const loadSchema = function() {
                 $scope.schemaState = 'loading';
 
                 var pluginId = $scope.selectedDef.pluginId;
@@ -100,9 +104,10 @@ _module.controller('Apiman.JsonSchemaPolicyConfigFormController',
                 PluginSvcs.getPolicyForm(pluginId, policyDefId).then(
                     (schema: string) => {
                         destroyEditor();
-                        initEditor(schema);
-                        $scope.editor.setValue($scope.config);
-                        $scope.schemaState = 'loaded';
+                        initEditor(schema, () => {
+                            $scope.editor.setValue($scope.config);
+                            $scope.schemaState = 'loaded';
+                        });
                     },
                     error => {
                         // TODO handle the error better here!

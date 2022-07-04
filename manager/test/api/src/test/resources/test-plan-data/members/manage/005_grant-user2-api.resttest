@@ -1,4 +1,4 @@
-POST /organizations/Organization1/roles admin/admin
+POST /organizations/Organization1/roles user1/user1
 Content-Type: application/json
 
 {

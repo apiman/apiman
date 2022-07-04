@@ -267,7 +267,7 @@ _module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration', '$q
                     Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/definition',
                     {organizationId: orgId, apiId: apiId, version: version});
             },
-            getApiDefinition: function(orgId, apiId, version, handler): Promise<string> {
+            getApiDefinition: function(orgId, apiId, version): Promise<string> {
                 var endpoint = formatEndpoint(
                     Configuration.api.endpoint + '/organizations/:organizationId/apis/:apiId/versions/:version/definition',
                     { organizationId: orgId, apiId: apiId, version: version });
@@ -275,6 +275,8 @@ _module.factory('ApiDefinitionSvcs', ['$resource', '$http', 'Configuration', '$q
                     method: 'GET',
                     url: endpoint,
                     transformResponse: function(data) {
+                        // overrides the default transformations to avoid deserialization of `application/json`
+                        // see: https://docs.angularjs.org/api/ng/service/$http#overriding-the-default-transformations-per-request
                         return data;
                     }
                 }).then(

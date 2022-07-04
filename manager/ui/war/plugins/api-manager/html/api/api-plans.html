@@ -77,10 +77,10 @@
           <table class="table table-striped table-bordered table-hover table-responsive" data-field="plans">
             <thead>
             <tr>
-              <th>Attach?</th>
+              <th>Attach</th>
               <th>Plan</th>
               <th>Plan Version</th>
-              <th>Require Approval?</th>
+              <th>Require Approval</th>
               <th>Discoverability</th>
             </tr>
             </thead>
@@ -119,8 +119,6 @@
                          data-field="checkbox"
                          type="checkbox"
                          ng-disabled="isEntityDisabled() || !plan.checked">
-                  <span ng-if="plan.requiresApproval">Required</span>
-                  <span ng-if="!plan.requiresApproval">Not required</span>
                 </label>
               </td>
               <td>

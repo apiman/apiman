@@ -39,6 +39,13 @@ _module.controller("Apiman.AdminExportImportController",
                 Logger.info('Import file successfully uploaded (and imported?).');
                 $scope.importResult = response.data;
                 $scope.importStatus = 'imported';
+                if (response.data.search(/^ERROR:/gm) === -1) {
+                  Logger.info("ok")
+                  $scope.importStatus = 'imported';
+                } else {
+                  Logger.error("Looks like import had errors :-(");
+                  $scope.importStatus = 'error';
+                }
               }, function (error) {
                 $scope.importError = error;
                 $scope.importStatus = 'error';
