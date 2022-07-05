@@ -43,7 +43,7 @@
     "angular-clipboard": "1.1.1",
     "angular-mocks": "1.8.2",
     "angular-resource": "1.8.2",
-    "angular-route": "1.8.2",
+    "angular-route": "1.8.3",
     "angular-sanitize": "1.8.3",
     "angular-schema-form": "0.8.12",
     "angular-scrollable-table": "1.1.2",
