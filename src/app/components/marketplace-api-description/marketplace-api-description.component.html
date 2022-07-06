@@ -87,6 +87,6 @@
 
   <!-- Public Endpoint -->
   <app-api-public-endpoint
-    *ngIf="api.publicAPI"
+    *ngIf="api.publicAPI && api.publicDiscoverability"
     [publicApiVersion]="api"></app-api-public-endpoint>
 </mat-expansion-panel>

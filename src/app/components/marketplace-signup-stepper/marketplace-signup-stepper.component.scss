@@ -14,20 +14,14 @@
  *  imitations under the License.
  */
 
-@media only screen and (max-width: 1279px) {
-  mat-stepper {
-    width: 100%;
-  }
-}
+mat-stepper {
+  width: 100%;
 
-@media only screen and (min-width: 1280px) {
-  mat-stepper {
+  @media screen and (min-width: 1920px) {
     width: 80%;
   }
-}
 
-@media only screen and (min-width: 1920px) {
-  mat-stepper {
+  @media screen and (min-width: 2560px) {
     width: 60%;
   }
 }
