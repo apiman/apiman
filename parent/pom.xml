@@ -61,7 +61,7 @@
     <version.org.apache.tomcat>9.0.55</version.org.apache.tomcat>
 
     <!-- Plugin Versions -->
-    <version.ant>1.10.11</version.ant>
+    <version.ant>1.10.12</version.ant>
     <version.antrun.plugin>1.7</version.antrun.plugin>
     <version.assembly.plugin>3.3.0</version.assembly.plugin>
     <version.buildhelper.plugin>3.3.0</version.buildhelper.plugin>
