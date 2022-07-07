@@ -3330,10 +3330,10 @@ next-tick@1, next-tick@^1.1.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.1.0.tgz#1836ee30ad56d67ef281b22bd199f709449b35eb"
   integrity sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==
 
-ng-file-upload@9.1.1:
-  version "9.1.1"
-  resolved "https://registry.yarnpkg.com/ng-file-upload/-/ng-file-upload-9.1.1.tgz#e0ed8ebef7c9e177ed5276ced2c5ff37c2d3c240"
-  integrity sha1-4O2OvvfJ4XftUnbO0sX/N8LTwkA=
+ng-file-upload@12.2.13:
+  version "12.2.13"
+  resolved "https://registry.yarnpkg.com/ng-file-upload/-/ng-file-upload-12.2.13.tgz#01800f3872e526f95310f8477e99e4f12d0d8d14"
+  integrity sha512-YFjxwmVcNssYc8hq8eCbtYSliPnrObozSZRC9yg4GoDtI0xGKUeHgEcOh+nsMF/9cTzMB/lQZAYdf29oyQgF0g==
 
 ng-sortable@1.2.2:
   version "1.2.2"
