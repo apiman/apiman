@@ -58,6 +58,10 @@
         "applicationRoles" : {
           "realm-management" : [ "realm-admin" ]
         },
+        "clientRoles" : {
+          "realm-management" : [ "realm-admin" ],
+          "account" : [ "view-profile" ]
+        },
         "groups" : [ "/API-Management-Administrators" ]
       },
       {
