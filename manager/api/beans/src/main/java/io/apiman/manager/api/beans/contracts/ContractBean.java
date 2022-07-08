@@ -199,6 +199,4 @@ public class ContractBean implements Serializable, Cloneable {
         return super.clone();
     }
 
-
-    
 }

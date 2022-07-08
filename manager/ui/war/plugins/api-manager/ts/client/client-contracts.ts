@@ -137,9 +137,6 @@ _module.controller('Apiman.ClientContractsController',
                         // No modifiedOn as the backend handles republish on break contract
                         // Keeps UI in clean state
                         // $scope.version.modifiedOn = Date.now();
-
-
-
                     }, PageLifecycle.handleError);
                 }, function () {
                     //console.log('Modal dismissed at: ' + new Date());
