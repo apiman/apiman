@@ -2,7 +2,7 @@
 <html lang="en">
 {#include header.include.html title='API Signup Approval Rejected' /}
 
-{#include scheer/standard-body.include.html notificationHeader='API Signup Approval Rejected!' name=notification.recipient.fullName}
+{#include standard-body.include.html notificationHeader='API Signup Approval Rejected!' name=notification.recipient.fullName}
 {#notificationBody}
 
 <p>your request to sign up to <code>{event.apiId}</code> version <code>{event.apiVersion}</code> from organization <code>{event.apiOrgId}</code> has been <strong>rejected</strong>.</p>
