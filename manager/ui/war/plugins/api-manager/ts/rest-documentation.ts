@@ -15,12 +15,24 @@ _module.controller("Apiman.ManagerRestApiDefController",
                 if (SwaggerUI) {
                     $scope.definitionStatus = 'loading';
                     let ui;
-                    let swaggerOptions = <any>{
+                    let swaggerOptions: SwaggerUI.SwaggerUIOptions = {
                         url: $scope.definitionUrl,
                         dom_id: "#swagger-ui-container",
                         validatorUrl: "https://online.swagger.io/validator",
                         layout: "BaseLayout",
-                        sorter : "alpha",
+                        operationsSorter: "alpha",
+                        tryItOutEnabled: true,
+                        supportedSubmitMethods: [
+                            'get',
+                            'put',
+                            'post',
+                            'delete',
+                            'options',
+                            'head',
+                            'patch',
+                            'trace'
+                        ],
+
 
                         requestInterceptor: function(request) {
                             // Send keycloak token
