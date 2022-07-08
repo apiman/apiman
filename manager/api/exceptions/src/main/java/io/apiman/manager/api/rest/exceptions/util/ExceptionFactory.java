@@ -22,15 +22,55 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.ContractStatus;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
-import io.apiman.manager.api.rest.exceptions.*;
+import io.apiman.manager.api.rest.exceptions.ActionException;
+import io.apiman.manager.api.rest.exceptions.ApiAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.ApiDefinitionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ApiNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ApiPlanNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ApiVersionAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.ApiVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ClientAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.ClientNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ClientVersionAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.ClientVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.ContractAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.ContractNotFoundException;
+import io.apiman.manager.api.rest.exceptions.DeveloperAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.DeveloperNotFoundException;
+import io.apiman.manager.api.rest.exceptions.EntityStillActiveException;
+import io.apiman.manager.api.rest.exceptions.GatewayAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.exceptions.InvalidApiStatusException;
+import io.apiman.manager.api.rest.exceptions.InvalidClientStatusException;
+import io.apiman.manager.api.rest.exceptions.InvalidContractStatusException;
+import io.apiman.manager.api.rest.exceptions.InvalidMetricCriteriaException;
+import io.apiman.manager.api.rest.exceptions.InvalidNameException;
+import io.apiman.manager.api.rest.exceptions.InvalidPlanStatusException;
+import io.apiman.manager.api.rest.exceptions.InvalidVersionException;
+import io.apiman.manager.api.rest.exceptions.MemberNotFoundException;
+import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.apiman.manager.api.rest.exceptions.OrganizationAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PlanAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PlanNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PlanVersionAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PluginAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PluginNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PluginResourceNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PolicyDefinitionAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.PolicyDefinitionInvalidException;
+import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
+import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
+import io.apiman.manager.api.rest.exceptions.RoleAlreadyExistsException;
+import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
+import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.exceptions.i18n.Messages;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import org.jetbrains.annotations.Contract;
 
 /**
  * Simple factory for creating REST exceptions.
@@ -221,7 +261,7 @@ public final class ExceptionFactory {
     }
 
     public static ApiPlanNotFoundException apiPlanNotFoundException(String apiId, String apiVersion, String planId, String planVersion) {
-        return new ApiPlanNotFoundException(Messages.i18n.format("ApiVersionDoesNotExist", apiId, planId, planVersion)); //$NON-NLS-1$
+        return new ApiPlanNotFoundException(Messages.i18n.format("ApiPlanDoesNotExist", apiId, apiVersion, planId, planVersion)); //$NON-NLS-1$
     }
 
     /**
