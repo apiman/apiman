@@ -198,5 +198,5 @@ public class ContractBean implements Serializable, Cloneable {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
-    
+
 }

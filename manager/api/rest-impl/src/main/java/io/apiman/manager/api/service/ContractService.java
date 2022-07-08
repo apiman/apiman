@@ -34,7 +34,6 @@ import io.apiman.manager.api.events.EventService;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
-import io.apiman.manager.api.rest.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.exceptions.ApiNotFoundException;
 import io.apiman.manager.api.rest.exceptions.ClientNotFoundException;
 import io.apiman.manager.api.rest.exceptions.ContractAlreadyExistsException;
@@ -85,16 +84,19 @@ public class ContractService implements DataAccessUtilMixin {
     private ISecurityContext securityContext;
     private IClientValidator clientValidator;
     private IGatewayLinkFactory gatewayLinkFactory;
+    private ActionService actionService;
+
 
     @Inject
     public ContractService(IStorage storage,
-           IStorageQuery query,
-           EventService eventService,
-           ClientAppService clientAppService,
-           PlanService planService,
-           ISecurityContext securityContext,
-           IClientValidator clientValidator,
-           IGatewayLinkFactory gatewayLinkFactory) {
+                           IStorageQuery query,
+                           EventService eventService,
+                           ClientAppService clientAppService,
+                           PlanService planService,
+                           ISecurityContext securityContext,
+                           IClientValidator clientValidator,
+                           IGatewayLinkFactory gatewayLinkFactory,
+                           ActionService actionService) {
         this.storage = storage;
         this.query = query;
         this.eventService = eventService;
@@ -103,6 +105,7 @@ public class ContractService implements DataAccessUtilMixin {
         this.securityContext = securityContext;
         this.clientValidator = clientValidator;
         this.gatewayLinkFactory = gatewayLinkFactory;
+        this.actionService = actionService;
     }
 
     public ContractService() {
@@ -236,6 +239,7 @@ public class ContractService implements DataAccessUtilMixin {
 
         ArrayList<ContractBean> contractsToDelete = Lists.newArrayList(tryAction(() -> storage.getAllContracts(organizationId, clientId, version)));
         try {
+            actionService.unregisterClient(organizationId, clientId, version);
             deleteContractsInternal(organizationId, clientId, version, contractsToDelete, contractsToDelete);
         } catch (Exception e) {
             throw new SystemErrorException(e);
@@ -250,13 +254,23 @@ public class ContractService implements DataAccessUtilMixin {
         try {
             ArrayList<ContractBean> allContracts = Lists.newArrayList(tryAction(() -> storage.getAllContracts(organizationId, clientId, version)));
             ContractBean contractToDelete = storage.getContract(contractId);
-            deleteContractsInternal(organizationId, clientId, version, allContracts, List.of(contractToDelete));
+            if (allContracts.size() <= 1) {
+                // If we are deleting the only/last contract, then we can unregister.
+                actionService.unregisterClient(organizationId, clientId, version);
+                deleteContractsInternal(organizationId, clientId, version, allContracts, List.of(contractToDelete));
+            } else {
+                // If we still have contracts left, we should re-register the existing client.
+                ClientStatus newStatus = deleteContractsInternal(organizationId, clientId, version, allContracts, List.of(contractToDelete));
+                if (newStatus == ClientStatus.Registered || newStatus == ClientStatus.AwaitingApproval) {
+                    actionService.registerClient(organizationId, clientId, version);
+                }
+            }
         } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }
 
-    private void deleteContractsInternal(String organizationId, String clientId, String clientVersion, List<ContractBean> allContracts, List<ContractBean> contractsToDelete)
+    private ClientStatus deleteContractsInternal(String organizationId, String clientId, String clientVersion, List<ContractBean> allContracts, List<ContractBean> contractsToDelete)
             throws Exception {
         Preconditions.checkArgument(allContracts.size() > 0, "Must have at least 1 contract if you want to delete");
         Preconditions.checkArgument(contractsToDelete.size() > 0, "Must nominate at least 1 contract to delete");
@@ -271,9 +285,9 @@ public class ContractService implements DataAccessUtilMixin {
             if (!contract.getClient().getVersion().equals(clientVersion)) {
                 throw ExceptionFactory.contractNotFoundException(contractId);
             }
-            if (contract.getClient().getStatus() == ClientStatus.Retired) {
-                throw ExceptionFactory.invalidClientStatusException();
-            }
+            // if (contract.getClient().getStatus() == ClientStatus.Retired) {
+            //     throw ExceptionFactory.invalidClientStatusException();
+            // }
             storage.deleteContract(contract);
             storage.createAuditEntry(AuditUtils.contractBrokenFromClient(contract, securityContext));
             storage.createAuditEntry(AuditUtils.contractBrokenToApi(contract, securityContext));
@@ -289,6 +303,7 @@ public class ContractService implements DataAccessUtilMixin {
         clientV.setStatus(newStatus);
         storage.updateClientVersion(clientV);
         LOGGER.debug("Deleted contract(s): {0}", contractsToDelete); //$NON-NLS-1$
+        return newStatus;
     }
 
     // TODO make properly optimised query for this

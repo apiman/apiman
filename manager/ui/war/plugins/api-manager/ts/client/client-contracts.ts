@@ -33,7 +33,7 @@ _module.controller('Apiman.ClientContractsController',
                     }, reject);
                 })
             });
-            
+
             function removeContractFromArray(contract, carray) {
                 var idx = -1;
                 for (var i = 0; i < carray.length; i++) {
@@ -46,7 +46,7 @@ _module.controller('Apiman.ClientContractsController',
                     carray.splice(idx, 1);
                 }
             };
-            
+
             $scope.filterContracts = function(value) {
                 Logger.debug('Called filterContracts!');
                 if (!value) {
@@ -61,19 +61,19 @@ _module.controller('Apiman.ClientContractsController',
                     $scope.filteredContracts = fc;
                 }
             };
-            
+
             $scope.breakAll = function(size) {
                 var options = {
                     title: 'Break All Contracts?',
                     message: 'Do you really want to break all contracts with all APIs?'
                 };
-    
+
                 $scope.animationsEnabled = true;
-    
+
                 $scope.toggleAnimation = function () {
                     $scope.animationsEnabled = !$scope.animationsEnabled;
                 };
-    
+
                 var modalInstance = $uibModal.open({
                     animation: $scope.animationsEnabled,
                     templateUrl: 'confirmModal.html',
@@ -85,33 +85,35 @@ _module.controller('Apiman.ClientContractsController',
                         }
                     }
                 });
-    
+
                 modalInstance.result.then(function () {
                     OrgSvcs.delete({ organizationId: params.org, entityType: 'clients', entityId: params.client, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'contracts' }, function() {
                         $scope.contracts = [];
                         $scope.filteredContracts = [];
+                        // Break all will put the client in retired state
+                        $scope.version.status = 'Retired'
                         $scope.version.modifiedOn = Date.now();
                     }, PageLifecycle.handleError);
                 }, function () {
                     //console.log('Modal dismissed at: ' + new Date());
                 });
             };
-            
+
             $scope.break = function(contract, size) {
                 Logger.debug('Called break() with {0}.', contract);
-    
-    
+
+
                 var options = {
                     title: 'Break Contract',
                     message: 'Do you really want to break this contract?'
                 };
-    
+
                 $scope.animationsEnabled = true;
-    
+
                 $scope.toggleAnimation = function () {
                     $scope.animationsEnabled = !$scope.animationsEnabled;
                 };
-    
+
                 var modalInstance = $uibModal.open({
                     animation: $scope.animationsEnabled,
                     templateUrl: 'confirmModal.html',
@@ -123,12 +125,18 @@ _module.controller('Apiman.ClientContractsController',
                         }
                     }
                 });
-    
+
                 modalInstance.result.then(function () {
                     OrgSvcs.delete({ organizationId: params.org, entityType: 'clients', entityId: params.client, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'contracts', policyId: contract.contractId }, function() {
                         removeContractFromArray(contract, $scope.contracts);
                         removeContractFromArray(contract, $scope.filteredContracts);
-                        $scope.version.modifiedOn = Date.now();
+
+                        // if there is at least one contract the client will stay registered
+                        $scope.version.status = $scope.contracts.length >= 1 ? 'Registered' : 'Retired';
+
+                        // No modifiedOn as the backend handles republish on break contract
+                        // Keeps UI in clean state
+                        // $scope.version.modifiedOn = Date.now();
                     }, PageLifecycle.handleError);
                 }, function () {
                     //console.log('Modal dismissed at: ' + new Date());
@@ -139,7 +147,7 @@ _module.controller('Apiman.ClientContractsController',
                 Logger.debug("Approving {0}", id);
                 ContractService.approveContract(id);
             };
-            
+
             PageLifecycle.loadPage('ClientContracts', 'clientView', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('client-contracts', [ $scope.client.name ]);
             });

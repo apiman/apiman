@@ -91,6 +91,11 @@ public class EntityValidator implements IApiValidator, IClientValidator {
         ClientStatus currentStatus = cvb.getStatus();
 
         boolean anyAwaitingApproval = contracts.stream().anyMatch(c -> c.getStatus() == ContractStatus.AwaitingApproval);
+
+        if (cvb.getStatus() == ClientStatus.Retired) {
+            return ClientStatus.Retired;
+        }
+
         if (anyAwaitingApproval) {
             return ClientStatus.AwaitingApproval;
         }
