@@ -168,7 +168,7 @@
                     <!-- Point Apiman auth to port 8081, where (hopefully) Keycloak is running from Docker -->
                     <echo file="${apiman.wildfly.home}/bin/standalone.conf" append="true"><![CDATA[
                       if [[ -z $APIMAN_AUTH_URL ]]; then
-                        APIMAN_AUTH_URL=http://localhost:8081/
+                        export APIMAN_AUTH_URL=http://localhost:8081/
                       fi
                       echo "*** Please ensure Keycloak is running and available at $APIMAN_AUTH_URL or set the environment variable APIMAN_AUTH_URL to your Keycloak instance ***"
                     ]]></echo>
