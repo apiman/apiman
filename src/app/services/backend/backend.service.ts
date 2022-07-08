@@ -27,6 +27,7 @@ import {
   IApiVersionSummary,
   IClient,
   IClientSummary,
+  IClientVersion,
   IClientVersionSummary,
   IContract,
   IContractSummary,
@@ -159,6 +160,15 @@ export class BackendService {
     );
   }
 
+  public getOrganization(organizationId: string): Observable<IOrganization> {
+    const path = `organizations/${organizationId}`;
+
+    return this.http.get(
+      this.generateUrlFromPath(path),
+      this.httpOptions
+    ) as Observable<IOrganization>;
+  }
+
   public getClientOrgs(): Observable<Array<IOrganizationSummary>> {
     const username = this.keycloakHelper.getUsername();
     const path = `users/${username}/clientorgs`;
@@ -232,7 +242,7 @@ export class BackendService {
     );
   }
 
-  public getClientVersions(
+  public getClientVersionSummaries(
     organizationId: string,
     clientId: string
   ): Observable<IClientVersionSummary[]> {
@@ -244,7 +254,20 @@ export class BackendService {
     );
   }
 
-  public getContracts(
+  public getClientVersion(
+    organizationId: string,
+    clientId: string,
+    clientVersion: string
+  ): Observable<IClientVersion> {
+    const path = `organizations/${organizationId}/clients/${clientId}/versions/${clientVersion}`;
+
+    return this.http.get<IClientVersion>(
+      this.generateUrlFromPath(path),
+      this.httpOptions
+    );
+  }
+
+  public getContractSummaries(
     organizationId: string,
     clientId: string,
     versionName: string
@@ -364,6 +387,15 @@ export class BackendService {
     const path = `organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/policies/${policyId}`;
 
     return this.http.get<IPolicy>(
+      this.generateUrlFromPath(path),
+      this.httpOptions
+    );
+  }
+
+  public getOrganizationSummaries(): Observable<IOrganizationSummary[]> {
+    const username = this.keycloakHelper.getUsername();
+    const path = `users/${username}/organizations`;
+    return this.http.get<IOrganizationSummary[]>(
       this.generateUrlFromPath(path),
       this.httpOptions
     );

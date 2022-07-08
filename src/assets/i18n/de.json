@@ -98,9 +98,10 @@
     "NO_PROBES": "Für diese API liegen keine Policy-Daten vor",
     "RETIRED_API": "Diese API kann nicht mehr verwendet werden.",
     "SELECT": "Aus vorhandenen Anwendungen auswählen",
-    "CLIENT_TOOLTIP": "Client Organization: {{ client.client.organization.name }}\nClient Name (Version): {{ client.client.name }} ({{ client.version }})",
+    "CLIENT_TOOLTIP": "Client Organization: {{ client.organization.name }}\nClient Name (Version): {{ client.name }} ({{ version }})",
     "API_TOOLTIP": "API Organization: {{ api.api.organization.name }}\nAPI Name (Version): {{ api.api.name }} ({{ api.version }})\nPlan Name (Version): {{ plan.plan.name }} ({{ plan.version }})",
-    "REGISTER": "Client registrieren"
+    "REGISTER": "Client registrieren",
+    "NO_CONTRACTS": "Für diesen Client wurden keine Verträge abgeschlossen"
   },
   "WIZARD": {
     "FIRST_STEP_LABEL": "Client auswählen/erstellen",

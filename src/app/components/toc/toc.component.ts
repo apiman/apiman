@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import {
   Input
 } from '@angular/core';
 import { ITocLink } from '../../interfaces/ITocLink';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-toc',
@@ -32,7 +31,7 @@ export class TocComponent implements AfterViewInit {
   @Input() links: ITocLink[] = [];
   linksInViewPort: ITocLink[] = [];
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     if (this.links.length > 0) {
@@ -50,23 +49,27 @@ export class TocComponent implements AfterViewInit {
   highlightActiveElement(): void {
     this.linksInViewPort = [];
 
-    this.links.forEach((link: ITocLink) => {
-      link.active = false;
-      this.checkIfLinkIsInViewPort(link);
-
-      link.subLinks?.forEach((subLink: ITocLink) => {
-        subLink.active = false;
-        this.checkIfLinkIsInViewPort(subLink);
-      });
-    });
+    this.getLinksInViewPort(this.links);
 
     if (this.linksInViewPort[0]) this.linksInViewPort[0].active = true;
   }
 
-  checkIfLinkIsInViewPort(link: ITocLink): void {
+  getLinksInViewPort(links: ITocLink[]): void {
+    links.forEach((link: ITocLink) => {
+      link.active = false;
+      if (this.checkIfLinkIsInViewPort(link)) {
+        this.linksInViewPort.push(link);
+      }
+      if (link.subLinks.length > 0) {
+        this.getLinksInViewPort(link.subLinks);
+      }
+    });
+  }
+
+  checkIfLinkIsInViewPort(link: ITocLink): boolean {
     const element: HTMLElement =
       document.getElementById(link.destination) ?? new HTMLElement();
-    if (this.isElementInViewport(element)) this.linksInViewPort.push(link);
+    return this.isElementInViewport(element);
   }
 
   isElementInViewport(el: HTMLElement): boolean {

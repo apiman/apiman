@@ -98,9 +98,10 @@
     "NO_PROBES": "There is no policy data for the current API",
     "RETIRED_API": "This API is retired and can no longer be used.",
     "SELECT": "Select from available Clients",
-    "CLIENT_TOOLTIP": "Client Organization: {{ client.client.organization.name }}\nClient Name (Version): {{ client.client.name }} ({{ client.version }})",
+    "CLIENT_TOOLTIP": "Client Organization: {{ client.organization.name }}\nClient Name (Version): {{ client.name }} ({{ version }})",
     "API_TOOLTIP": "API Organization: {{ api.api.organization.name }}\nAPI Name (Version): {{ api.api.name }} ({{ api.version }})\nPlan Name (Version): {{ plan.plan.name }} ({{ plan.version }})",
-    "REGISTER": "Register client"
+    "REGISTER": "Register client",
+    "NO_CONTRACTS": "No contracts have been made for this client"
   },
   "WIZARD": {
     "FIRST_STEP_LABEL": "Select/create Client",

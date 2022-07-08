@@ -23,30 +23,27 @@
     </li>
     <div data-simplebar data-simplebar-auto-hide="false">
       <div id="toc-client-list" class="content-wrapper">
-        <li
-          id="toc-client-{{ link.name.replaceAll(' ', '') }}"
-          *ngFor="let link of links">
-          <a (click)="scroll(link.destination)" class="pointer"
-            ><span [class.primary]="link.active">{{ link.name }}</span></a
-          >
-          <ul
-            id="toc-client-{{ link.name.replaceAll(' ', '') }}-api-list"
-            *ngIf="link.subLinks">
-            <li *ngFor="let subLink of link.subLinks">
-              <a
-                id="toc-client-{{ link.name.replaceAll(' ', '') }}-api-{{
-                  subLink.name.replaceAll(' ', '')
-                }}"
-                (click)="scroll(subLink.destination)"
-                class="pointer"
-                ><span [class.primary]="subLink.active">{{
-                  subLink.name
-                }}</span></a
-              >
-            </li>
-          </ul>
-        </li>
+        <ng-container
+          *ngTemplateOutlet="
+            Recursion;
+            context: { links: links }
+          "></ng-container>
       </div>
     </div>
   </ul>
 </div>
+
+<ng-template #Recursion let-links="links">
+  <li *ngFor="let link of links" id="{{ link.destination }}">
+    <a (click)="scroll(link.destination)" class="pointer"
+      ><span [class.primary]="link.active">{{ link.name }}</span></a
+    >
+    <ul *ngIf="link.subLinks.length > 0">
+      <ng-container
+        *ngTemplateOutlet="
+          Recursion;
+          context: { links: link.subLinks }
+        "></ng-container>
+    </ul>
+  </li>
+</ng-template>

@@ -17,10 +17,15 @@
 import { Injectable } from '@angular/core';
 import { PermissionsService } from '../permissions/permissions.service';
 import { BackendService } from '../backend/backend.service';
-import { EMPTY, Observable, of } from 'rxjs';
-import { IOrganization, IPermission } from '../../interfaces/ICommunication';
+import { EMPTY, forkJoin, Observable, of } from 'rxjs';
+import {
+  IClientVersion,
+  IOrganization,
+  IOrganizationSummary,
+  IPermission
+} from '../../interfaces/ICommunication';
 import { KeycloakHelperService } from '../keycloak-helper/keycloak-helper.service';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -63,5 +68,29 @@ export class OrganizationService {
         name: `clientEdit`
       } as IPermission)
       .some((orgId: string) => orgId.includes(username));
+  }
+
+  public getOrganizations(): Observable<IOrganizationSummary[]> {
+    return this.backendService.getOrganizationSummaries().pipe(
+      map((orgs: IOrganizationSummary[]) => {
+        return orgs.sort((a, b) => {
+          return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+        });
+      })
+    );
+  }
+
+  public getOrganizationsFromClientVersions(
+    clients: IClientVersion[]
+  ): Observable<IOrganization[]> {
+    return forkJoin(
+      [
+        ...new Set(
+          clients.map((client) => client.client.organization.id)
+        ).values()
+      ].map((orgId) => {
+        return this.backendService.getOrganization(orgId);
+      })
+    );
   }
 }

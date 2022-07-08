@@ -14,17 +14,19 @@
  *  imitations under the License.
  */
 
-import { IContract } from './ICommunication';
-import { IPolicyExt } from './IPolicy';
+import { TestBed } from '@angular/core/testing';
 
-/**
- * Extends the Contract interface
- * E.g. used for My-Apps component to keep the selected section of a client
- * Further it extends the contract object with policies
- */
-export interface IContractExt extends IContract {
-  managedEndpoint: string;
-  section: 'summary' | 'description' | 'use-api' | 'policies' | 'manage-api';
-  policies: IPolicyExt[];
-  docsAvailable: boolean;
-}
+import { ContractService } from './contract.service';
+
+describe('ContractService', () => {
+  let service: ContractService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(ContractService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

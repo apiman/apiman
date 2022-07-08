@@ -15,13 +15,13 @@
  */
 
 import { Component, EventEmitter } from '@angular/core';
-import { IContractExt } from '../../../interfaces/IContractExt';
 import { IAction } from '../../../interfaces/ICommunication';
 import { BackendService } from '../../../services/backend/backend.service';
 import { catchError, switchMap } from 'rxjs/operators';
 import { EMPTY, iif, of } from 'rxjs';
 import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
+import { IClientVersionExt } from '../../../interfaces/IClientVersionSummaryExt';
 
 @Component({
   selector: 'app-unregister-client',
@@ -29,7 +29,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./unregister-client.component.scss']
 })
 export class UnregisterClientComponent {
-  contract!: IContractExt;
+  extendedClientVersion!: IClientVersionExt;
   clientNameVersion = { value: '' };
 
   unregisterEmitter = new EventEmitter();
@@ -47,15 +47,15 @@ export class UnregisterClientComponent {
   onUnregister(): void {
     const action: IAction = {
       type: 'unregisterClient',
-      organizationId: this.contract.client.client.organization.id,
-      entityId: this.contract.client.client.id,
-      entityVersion: this.contract.client.version
+      organizationId: this.extendedClientVersion.client.organization.id,
+      entityId: this.extendedClientVersion.client.id,
+      entityVersion: this.extendedClientVersion.version
     };
 
     iif(
       () =>
-        this.contract.client.status === 'Registered' ||
-        this.contract.client.status === 'AwaitingApproval',
+        this.extendedClientVersion.status === 'Registered' ||
+        this.extendedClientVersion.status === 'AwaitingApproval',
       this.backend.sendAction(action),
       of(void 0)
     )

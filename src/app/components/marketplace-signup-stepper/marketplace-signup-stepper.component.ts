@@ -109,7 +109,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
     console.info(`Using client ${client.organizationId}/${client.name}`);
 
     this.backend
-      .getContracts(client.organizationId, client.id, '1.0')
+      .getContractSummaries(client.organizationId, client.id, '1.0')
       .subscribe({
         next: (contractSummaries: IContractSummary[]) => {
           if (
@@ -219,7 +219,7 @@ export class MarketplaceSignupStepperComponent implements OnInit {
 
   finish(): void {
     void this.router.navigate(['applications'], {
-      fragment: this.tocService.formatClientId(this.contract)
+      fragment: this.tocService.formatApiVersionPlanId(this.contract)
     });
   }
 

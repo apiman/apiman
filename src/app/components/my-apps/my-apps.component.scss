@@ -43,6 +43,11 @@
   grid-gap: 32px 0;
 }
 
+.no-contracts-msg {
+  display: grid;
+  justify-items: center;
+}
+
 .app-api-header-labels,
 .app-client-header-label {
   white-space: nowrap;
@@ -145,7 +150,11 @@
   cursor: help;
 }
 
+#search-input {
+  display: grid;
+  justify-items: center;
+}
+
 #search-form-field {
   width: 234px;
-  margin: 0 45%;
 }

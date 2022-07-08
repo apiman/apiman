@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 import { Injectable } from '@angular/core';
 import { IContractExt } from '../../interfaces/IContractExt';
+import { IClientVersion } from '../../interfaces/ICommunication';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,7 @@ export class TocService {
    */
   formatApiVersionPlanId(contract: IContractExt): string {
     return (
-      this.formatClientId(contract) +
+      this.formatClientId(contract.client) +
       '-' +
       contract.api.api.id +
       '-' +
@@ -38,10 +39,10 @@ export class TocService {
   }
 
   /**
-   * Schema Example: applications#SpringCorp.-1.0
-   * @param contract
+   * Schema Example: #platform.admin-new-client2-1.0
+   * @param clientVersion
    */
-  formatClientId(contract: IContractExt): string {
-    return contract.client.client.id + '-' + contract.client.version;
+  formatClientId(clientVersion: IClientVersion): string {
+    return `${clientVersion.client.organization.id}-${clientVersion.client.id}-${clientVersion.version}`;
   }
 }

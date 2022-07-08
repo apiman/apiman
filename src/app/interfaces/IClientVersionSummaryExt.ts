@@ -14,17 +14,13 @@
  *  imitations under the License.
  */
 
-import { IContract } from './ICommunication';
-import { IPolicyExt } from './IPolicy';
+import { IClientVersion } from './ICommunication';
 
 /**
- * Extends the Contract interface
- * E.g. used for My-Apps component to keep the selected section of a client
- * Further it extends the contract object with policies
+ * Extends the ClientVersionSummary interface with additional
+ * information about the client
  */
-export interface IContractExt extends IContract {
-  managedEndpoint: string;
-  section: 'summary' | 'description' | 'use-api' | 'policies' | 'manage-api';
-  policies: IPolicyExt[];
-  docsAvailable: boolean;
+export interface IClientVersionExt extends IClientVersion {
+  deletable: boolean;
+  registerable: boolean;
 }
