@@ -711,7 +711,7 @@
         "clientAuthenticatorType": "client-secret",
         "secret": "password",
         "redirectUris": [
-          "*",
+          "*"
         ],
         "webOrigins": [
           "*"
