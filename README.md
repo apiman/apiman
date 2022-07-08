@@ -12,7 +12,7 @@
 
 You can look at the Apiman [quickstarts on apiman.io](https://www.apiman.io).
 
-Or, you can build and run our 'server-all' quickstart try everything out.
+Or, you can build and run our 'server-all' quickstart to try everything out immediately.
 
 Here's what you need to do:
 
