@@ -6,7 +6,7 @@
 ## 📖 Requirements
 
 - Java 11+.
-- Build time with tests: Docker or an equivalent container engine. This is for running tests with [testcontainers].(https://www.testcontainers.org/supported_docker_environment/)). Naturally, if you're using an Apiman container, you'll need it for runtime too!
+- Build time with tests: Docker or an equivalent container engine. This is for running tests with [testcontainers](https://www.testcontainers.org/supported_docker_environment/)). Naturally, if you're using an Apiman container, you'll need it for runtime too!
 
 ## 🏃‍♂️ Quickstart
 
