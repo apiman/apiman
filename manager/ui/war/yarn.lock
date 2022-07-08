@@ -825,10 +825,10 @@ angular-animate@1.8.2:
   resolved "https://registry.yarnpkg.com/angular-animate/-/angular-animate-1.8.2.tgz#a3045e523ffb8d7fcbebd3cb68d1fdd474665ced"
   integrity sha512-Jbr9+grNMs9Kj57xuBU3Ju3NOPAjS1+g2UAwwDv7su1lt0/PLDy+9zEwDiu8C8xJceoTbmBNKiWGPJGBdCQLlA==
 
-angular-clipboard@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/angular-clipboard/-/angular-clipboard-1.1.1.tgz#89bbde60af27310bf34b49c4dc9ffacc95da95bb"
-  integrity sha1-ibveYK8nMQvzS0nE3J/6zJXalbs=
+angular-clipboard@1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/angular-clipboard/-/angular-clipboard-1.7.0.tgz#9621a6ce66eab1ea9549aa8bfb3b71352307554f"
+  integrity sha512-4/eg3zZw1MJpIsMc+mWzeVNyWBu8YWpXPTdmbgyPRp/6f0xB6I3XR2iC6Mb4mg/5E9q6exCd0sX2yiIsw+ZLJw==
 
 angular-mocks@1.8.2:
   version "1.8.2"
