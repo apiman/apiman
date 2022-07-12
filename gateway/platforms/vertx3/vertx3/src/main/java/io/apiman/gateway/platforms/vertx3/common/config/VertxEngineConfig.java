@@ -15,7 +15,10 @@
  */
 package io.apiman.gateway.platforms.vertx3.common.config;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.logging.IDelegateFactory;
+import io.apiman.common.logging.log4j2.Log4j2LoggerFactory;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -46,11 +49,7 @@ import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory;
 import io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
-import io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate;
-import io.vertx.core.json.JsonObject;
 
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,6 +61,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import io.vertx.core.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
 
@@ -105,7 +105,7 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String SSL_PATH = "path";
     private static final String VARIABLES = "variables";
 
-    private static final Logger logger = LoggerFactory.getLogger(VertxEngineConfig.class);
+    private static final IApimanLogger logger = ApimanLoggerFactory.getLogger(VertxEngineConfig.class);
 
     private final JsonObject config;
 
@@ -203,7 +203,7 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Class<? extends IDelegateFactory> getLoggerFactoryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GatewayConfigProperties.LOGGER_FACTORY_CLASS),
-                IDelegateFactory.class, pluginRegistry, VertxLoggerDelegate.class);
+                IDelegateFactory.class, pluginRegistry, Log4j2LoggerFactory.class);
     }
 
     @Override

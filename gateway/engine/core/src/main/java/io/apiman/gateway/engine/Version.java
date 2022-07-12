@@ -56,7 +56,7 @@ public class Version {
             this.versionDate = new Date().toString();
         } else {
             allProperties = new Properties();
-            try(InputStream is = url.openStream()){
+            try(InputStream is = url.openStream()) {
                 allProperties.load(is);
                 this.versionString = allProperties.getProperty("version", "Unknown");
                 this.versionDate = allProperties.getProperty("date", new Date().toString());

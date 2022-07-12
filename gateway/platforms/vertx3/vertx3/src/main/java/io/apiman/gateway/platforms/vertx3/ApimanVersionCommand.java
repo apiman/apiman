@@ -16,27 +16,28 @@
 
 package io.apiman.gateway.platforms.vertx3;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.Version;
+
 import io.vertx.core.cli.CLIException;
 import io.vertx.core.cli.annotations.Description;
 import io.vertx.core.cli.annotations.Name;
 import io.vertx.core.cli.annotations.Summary;
 import io.vertx.core.impl.launcher.commands.VersionCommand;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.spi.launcher.DefaultCommand;
 
 @Name("version")
 @Summary("Displays the version.")
-@Description("Prints the version of the apiman gateway.")
+@Description("Prints the version of the Apiman gateway.")
 @SuppressWarnings("nls")
 public class ApimanVersionCommand extends DefaultCommand {
-    private static final Logger log = LoggerFactory.getLogger(ApimanVersionCommand.class);
+    private final IApimanLogger log = ApimanLoggerFactory.getLogger(ApimanVersionCommand.class);
 
     @Override
     public void run() throws CLIException {
-        log.info("Apiman " + getApimanVersion());
-        log.info("Vert.x " + VersionCommand.getVersion());
+        log.info("Apiman {0}", getApimanVersion());
+        log.info("Vert.x {0}", VersionCommand.getVersion());
     }
 
     public static String getApimanVersion() {

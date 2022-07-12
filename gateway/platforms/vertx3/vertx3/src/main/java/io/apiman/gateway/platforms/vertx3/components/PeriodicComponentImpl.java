@@ -15,12 +15,13 @@
  */
 package io.apiman.gateway.platforms.vertx3.components;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.components.IPeriodicComponent;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 
@@ -30,8 +31,8 @@ import io.vertx.core.Vertx;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class PeriodicComponentImpl implements IPeriodicComponent {
-    private Vertx vertx;
-    private Map<Long, Long> timerMap = new LinkedHashMap<>();
+    private final Vertx vertx;
+    private final Map<Long, Long> timerMap = new LinkedHashMap<>();
     private long id = 0;
 
     /**

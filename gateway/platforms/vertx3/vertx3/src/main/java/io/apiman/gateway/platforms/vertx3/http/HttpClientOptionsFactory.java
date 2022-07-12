@@ -16,6 +16,9 @@
 package io.apiman.gateway.platforms.vertx3.http;
 
 import io.apiman.common.config.options.TLSOptions;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -36,7 +39,7 @@ import javax.net.ssl.SSLContext;
  */
 public class HttpClientOptionsFactory {
     private static final String[] EMPTY = new String[]{};
-    private static Logger log = LoggerFactory.getLogger(HttpClientOptionsFactory.class);
+    private static final IApimanLogger log = ApimanLoggerFactory.getLogger(HttpClientOptionsFactory.class);
 
     public static HttpClientOptions parseTlsOptions(TLSOptions tlsOptions, URI apiEndpoint) {
         HttpClientOptions clientOptions = new HttpClientOptions();

@@ -36,7 +36,7 @@ import java.util.Map;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class ExecuteBlockingComponentImpl implements IExecuteBlockingComponent {
-    private Vertx vertx;
+    private final Vertx vertx;
 
     public ExecuteBlockingComponentImpl(Vertx vertx, VertxEngineConfig engineConfig, Map<String, String> componentConfig) {
         this.vertx = vertx;

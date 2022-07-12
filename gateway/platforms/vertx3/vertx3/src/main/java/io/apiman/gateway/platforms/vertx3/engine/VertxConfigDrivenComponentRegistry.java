@@ -15,12 +15,13 @@
  */
 package io.apiman.gateway.platforms.vertx3.engine;
 
-import java.lang.reflect.Constructor;
-import java.util.Map;
-
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.impl.ConfigDrivenComponentRegistry;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
+
+import java.lang.reflect.Constructor;
+import java.util.Map;
+
 import io.vertx.core.Vertx;
 
 /**
@@ -33,8 +34,8 @@ import io.vertx.core.Vertx;
  */
 public class VertxConfigDrivenComponentRegistry extends ConfigDrivenComponentRegistry {
 
-    private VertxEngineConfig engineConfig;
-    private Vertx vertx;
+    private final VertxEngineConfig engineConfig;
+    private final Vertx vertx;
 
     public VertxConfigDrivenComponentRegistry(IPluginRegistry pluginRegistry, Vertx vertx, VertxEngineConfig engineConfig) {
         super(engineConfig, pluginRegistry);

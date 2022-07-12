@@ -18,15 +18,18 @@ package io.apiman.gateway.platforms.vertx3.api;
 
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 
+import javax.ws.rs.Path;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.Response;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class AbstractResource {
+public class ResourceHelper {
+    public ResourceHelper() {
+    }
 
-    protected void throwError(Throwable error) {
+    void throwError(Throwable error) {
         if (error instanceof RuntimeException) {
             throw (RuntimeException) error;
         } else {
@@ -34,7 +37,7 @@ public class AbstractResource {
         }
     }
 
-    protected <T> IAsyncResultHandler<T> handlerWithResult(AsyncResponse response) {
+    <T> IAsyncResultHandler<T> handlerWithResult(AsyncResponse response) {
         return result -> {
             if (result.isSuccess()) {
                 response.resume(Response.ok(result.getResult()).build());
@@ -44,7 +47,7 @@ public class AbstractResource {
         };
     }
 
-    protected <T> IAsyncResultHandler<T> handlerWithEmptyResult(AsyncResponse response) {
+    <T> IAsyncResultHandler<T> handlerWithEmptyResult(AsyncResponse response) {
         return result -> {
             if (result.isSuccess()) {
                 response.resume(Response.ok().build());
@@ -54,7 +57,7 @@ public class AbstractResource {
         };
     }
 
-    protected <T> IAsyncResultHandler<T> handlerWithEmptyResult() {
+    <T> IAsyncResultHandler<T> handlerWithEmptyResult() {
         return result -> {
             if (result.isSuccess()) {
                 // Do nothing

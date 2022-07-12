@@ -1,10 +1,10 @@
-{ // Example ElasticSearch based config
+{ // Example JDBC + Elastic based config
   "variables": {
     "apiman": {
       "es": {
         "protocol": "http",
         "host": "localhost",
-        "port": 9200,
+        "port": 19200,
         "username": null,
         "password": null,
         "timeout": 10000,
@@ -20,37 +20,25 @@
         //  "path": "/usr/src/apiman/apiman-distro-vertx/apiman.jks",
         //  "password": "secret"
         //}
+      },
+      "jdbc": {
+        "url": "jdbc:h2:mem:test?shutdown=true",
+        "driverClass": "${apiman.jdbc.driverClass}",
+        "maxPoolSize": "${apiman.jdbc.maxPoolSize}",
+        "user": "${apiman.jdbc.user}",
+        "password": "${apiman.jdbc.password}"
       }
     }
   },
 
   "registry": {
-    "class": "io.apiman.gateway.engine.es.PollCachingEsRegistry",
+    "class": "io.apiman.gateway.engine.jdbc.PollCachingJdbcRegistry",
     "config": {
-      "client": {
-        "type": "es",
-        "protocol": "${apiman.es.protocol}",
-        "host": "${apiman.es.host}",
-        "port": "${apiman.es.port}",
-        "initialize": true,
-        "pollingTime": "${apiman.es.pollingTime}",
-        "username": "${apiman.es.username}",
-        "password": "${apiman.es.password}",
-        "timeout": "${apiman.es.timeout}"//,
-        // only for https
-        //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
-        //"allowAnyHost": "${apiman.es.allowAnyHost}",
-        //"truststore": {
-        //  "path": "${apiman.es.truststore.path}",
-        //  "password": "${apiman.es.truststore.password}"
-        //},
-        //"keystore": {
-        //  "path": "${apiman.es.keystore.path.path}",
-        //  "password": "${apiman.es.keystore.path.password}"
-        //},
-        //"cache-polling-interval": 15
-        //"indexPrefix": ""
-      }
+      "url": "${apiman.jdbc.url}",
+      "driverClass": "${apiman.jdbc.driverClass}",
+      "maxPoolSize": "${apiman.jdbc.maxPoolSize}",
+      "user": "${apiman.jdbc.user}",
+      "password": "${apiman.jdbc.password}",
     }
   },
 

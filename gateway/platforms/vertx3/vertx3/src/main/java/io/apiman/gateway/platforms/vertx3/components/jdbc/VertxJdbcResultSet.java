@@ -16,13 +16,13 @@
 package io.apiman.gateway.platforms.vertx3.components.jdbc;
 
 import io.apiman.gateway.engine.components.jdbc.IJdbcResultSet;
-import io.vertx.core.json.JsonArray;
-import io.vertx.ext.sql.ResultSet;
 
 import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.List;
 
+import io.vertx.core.json.JsonArray;
+import io.vertx.ext.sql.ResultSet;
 import org.joda.time.DateTime;
 
 /**
@@ -30,9 +30,9 @@ import org.joda.time.DateTime;
 */
 public class VertxJdbcResultSet implements IJdbcResultSet {
 
-    private ResultSet resultSet;
+    private final ResultSet resultSet;
     private int row = -1;
-    private List<JsonArray> rows;
+    private final List<JsonArray> rows;
 
     public VertxJdbcResultSet(ResultSet resultSet) {
         this.resultSet = resultSet;

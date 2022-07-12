@@ -54,11 +54,13 @@ fi
 # Launch
 $JAVA $JAVA_OPTS \
     $APIMAN_GATEWAY_OPTS \
+    `# Lenient mode needed for rest.vertx library.` \
+    -Dio.vertx.web.router.setup.lenient=true \
     `# Explicitly tell Apiman to use log4j2` \
     -Dapiman.logger-delegate=log4j2 \
     `# Use Log4j2 by default.` \
     -Dlog4j.configurationFile="$DIRNAME/log4j2.xml" \
-    `# Set Vert.x's logger to use Log4j2 (NB: this is separate from apiman's policy/internal logging).` \
+    `# Set Vert.x's logger to use Log4j2 (NB: this is separate from apiman's policy/internal logging). TODO: this is deprecated upstream, we can remove at some point.` \
     -Dvertx.logger-delegate-factory-class-name=io.apiman.gateway.platforms.vertx3.logging.ApimanLog4j2LogDelegateFactory \
     `# Async Log4j2 logging using LMAX Disruptor.` \
     -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector \

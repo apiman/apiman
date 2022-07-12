@@ -15,21 +15,22 @@
  */
 package io.apiman.gateway.platforms.vertx3.components.jdbc;
 
-import static io.apiman.gateway.platforms.vertx3.helpers.HandlerHelpers.translateVoidHandlers;
-
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.jdbc.IJdbcConnection;
 import io.apiman.gateway.engine.components.jdbc.IJdbcResultSet;
+
 import io.vertx.core.json.JsonArray;
 import io.vertx.ext.sql.SQLConnection;
+
+import static io.apiman.gateway.platforms.vertx3.helpers.HandlerHelpers.translateVoidHandlers;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class VertxJdbcConnection implements IJdbcConnection {
 
-    private SQLConnection connection;
+    private final SQLConnection connection;
     private boolean closed;
 
     /**

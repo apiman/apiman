@@ -20,14 +20,14 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
 import io.apiman.gateway.engine.components.jdbc.IJdbcConnection;
 import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
+
+import java.util.Map.Entry;
+import javax.sql.DataSource;
+
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.jdbc.spi.impl.HikariCPDataSourceProvider;
-
-import java.util.Map.Entry;
-
-import javax.sql.DataSource;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -35,14 +35,14 @@ import javax.sql.DataSource;
 public class VertxJdbcClientImpl implements IJdbcClient {
     //TODO cache jdbcClients && json configs? LinkedHashMap + removeEldestEntry?
     //private static Map<>
-    private JDBCClient jdbcClient;
+    private final JDBCClient jdbcClient;
 
     public VertxJdbcClientImpl(Vertx vertx, String dsName, JdbcOptionsBean config) {
         jdbcClient = JDBCClient.createShared(vertx, parseConfig(config), dsName);
     }
 
     public VertxJdbcClientImpl(Vertx vertx, JdbcOptionsBean config) {
-        jdbcClient = JDBCClient.createNonShared(vertx, parseConfig(config));
+        jdbcClient = JDBCClient.create(vertx, parseConfig(config));
     }
 
     public VertxJdbcClientImpl(Vertx vertx, DataSource ds) {

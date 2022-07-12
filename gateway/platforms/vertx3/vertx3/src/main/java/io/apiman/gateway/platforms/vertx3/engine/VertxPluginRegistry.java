@@ -41,6 +41,7 @@ import java.util.Map;
 
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -50,6 +51,7 @@ import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
@@ -146,52 +148,60 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
     }
     
     private void tryDownloadingArtifact(HttpClient client, int port, URL artifactUrl, File pluginFile, Promise<File> promise) {
-        final HttpClientRequest request = client.get(port, artifactUrl.getHost(), artifactUrl.getPath(),
-            (Handler<HttpClientResponse>) response -> {
+        final Future<HttpClientRequest> requestF = client.request(HttpMethod.GET, port, artifactUrl.getHost(), artifactUrl.getPath());
 
-                response.exceptionHandler((Handler<Throwable>) promise::fail);
+        requestF.onSuccess(request -> {
+            // Add the Basic authentication if contained in URL
+            if (artifactUrl.getUserInfo() != null) {
+                String up = artifactUrl.getUserInfo();
+                request.putHeader(
+                        HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64.getEncoder().encodeToString(up.getBytes(StandardCharsets.ISO_8859_1))
+                );
+            }
 
-                // Body Handler. If RAM usage is too high we can change this to write chunks to disk.
-                response.bodyHandler((Handler<Buffer>) buffer -> {
-                    try {
-                        // Response status code for request [x] : y
-                        LOG.debug(Messages.format("VertxPluginRegistry.ResponseStatusCode",
+            request.exceptionHandler(promise::fail);
+
+            setupResponse(request.response(), artifactUrl, pluginFile, promise);
+
+            request.end();
+        });
+    }
+
+    private void setupResponse(Future<HttpClientResponse> responseF, URL artifactUrl, File pluginFile, Promise<File> promise) {
+        responseF.onFailure(promise::fail)
+                .onSuccess((HttpClientResponse response) -> {
+
+            response.exceptionHandler(promise::fail);
+
+            // Body Handler. If RAM usage is too high we can change this to write chunks to disk.
+            response.bodyHandler((Handler<Buffer>) buffer -> {
+                try {
+                    // Response status code for request [x] : y
+                    LOG.debug(Messages.format("VertxPluginRegistry.ResponseStatusCode",
                             response.request().absoluteURI(),
                             response.statusCode()));
 
-                        // If status code is bad, do not handle the buffer.
-                        if (!(response.statusCode() / 100 == 2)) {
-                            LOG.warn("Received a bad status code from remote server");
-                            promise.fail(new BadResponseCodeError("Server returned non-200 status code "
-                                + response.statusCode()));
-                            return;
-                        }
+                    // If status code is bad, do not handle the buffer.
+                    if (!(response.statusCode() / 100 == 2)) {
+                        LOG.warn("Received a bad status code from remote server");
+                        promise.fail(new BadResponseCodeError("Server returned non-200 status code "
+                                                                      + response.statusCode()));
+                        return;
+                    }
 
-                        Files.write(pluginFile.toPath(), buffer.getBytes(), StandardOpenOption.APPEND,
+                    Files.write(pluginFile.toPath(), buffer.getBytes(), StandardOpenOption.APPEND,
                             StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 
-                        LOG.debug("Successfully wrote artifact to {0} to {1}", artifactUrl, pluginFile);
+                    LOG.debug("Successfully wrote artifact to {0} to {1}", artifactUrl, pluginFile);
 
-                        promise.complete(pluginFile);
-                    } catch (IOException ioe) {
-                        LOG.error(ioe);
-                        promise.fail(ioe);
-                    }
-                });
+                    promise.complete(pluginFile);
+                } catch (IOException ioe) {
+                    LOG.error(ioe);
+                    promise.fail(ioe);
+                }
             });
-
-        // Add the Basic authentication if contained in URL
-        if (artifactUrl.getUserInfo() != null) {
-            String up = artifactUrl.getUserInfo();
-            request.putHeader(
-                HttpHeaders.AUTHORIZATION,
-                "Basic " + Base64.getEncoder().encodeToString(up.getBytes(StandardCharsets.ISO_8859_1))
-            );
-        }
-
-        request.exceptionHandler((Handler<Throwable>) promise::fail);
-
-        request.end();
+        });
     }
 
     private HttpClientOptions createVertxClientOptions(URI artifactUrl, boolean isTls) {

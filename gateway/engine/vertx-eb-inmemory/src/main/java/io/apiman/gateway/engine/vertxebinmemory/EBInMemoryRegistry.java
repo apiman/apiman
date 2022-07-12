@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.vertxebinmemory;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.AsyncInitialize;
@@ -26,12 +28,11 @@ import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxy;
 import io.apiman.gateway.engine.vertxebinmemory.apis.EBRegistryProxyHandler;
-import io.vertx.core.Vertx;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 import java.util.Map;
 import java.util.UUID;
+
+import io.vertx.core.Vertx;
 
 /**
  * In-memory implementation of the {@link IRegistry} using Vert.x 3's event bus to distribute the events to
@@ -46,11 +47,11 @@ import java.util.UUID;
 @SuppressWarnings("nls")
 public class EBInMemoryRegistry extends InMemoryRegistry
         implements EBRegistryProxyHandler, AsyncInitialize {
-    private Vertx vertx;
+    private final Vertx vertx;
     private EBRegistryProxy proxy;
     private final static String ADDRESS = "io.vertx.core.Vertx.registry.EBInMemoryRegistry.event"; //$NON-NLS-1$
-    private String registryUuid = UUID.randomUUID().toString();
-    private Logger log = LoggerFactory.getLogger(EBInMemoryRegistry.class);
+    private final String registryUuid = UUID.randomUUID().toString();
+    private final IApimanLogger log = ApimanLoggerFactory.getLogger(EBInMemoryRegistry.class);
 
     public EBInMemoryRegistry(Vertx vertx, IEngineConfig vxConfig, Map<String, String> options) {
         super();
@@ -143,11 +144,11 @@ public class EBInMemoryRegistry extends InMemoryRegistry
     }
 
     @Override
-    public Logger log() {
+    public IApimanLogger log() {
         return log;
     }
 
-    private EmptyHandler emptyHandler = new EmptyHandler();
+    private final EmptyHandler emptyHandler = new EmptyHandler();
 
     private class EmptyHandler implements IAsyncResultHandler<Void> {
 

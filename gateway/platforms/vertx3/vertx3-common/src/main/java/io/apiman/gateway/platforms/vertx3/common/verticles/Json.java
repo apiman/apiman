@@ -15,11 +15,12 @@
  */
 package io.apiman.gateway.platforms.vertx3.common.verticles;
 
-import io.vertx.core.json.DecodeException;
+import io.apiman.common.util.JsonUtil;
 
 import java.util.Collection;
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import io.vertx.core.json.DecodeException;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -27,7 +28,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 public class Json extends io.vertx.core.json.Json {
     public static <C extends Collection<? super T>, T> C decodeValue(String str, Class<C> collectionClazz, Class<T> targetClazz) throws DecodeException {
         try {
-            return mapper.readValue(str, TypeFactory.defaultInstance().constructCollectionType(collectionClazz, targetClazz));
+            return JsonUtil.getObjectMapper().readValue(str, TypeFactory.defaultInstance().constructCollectionType(collectionClazz, targetClazz));
         }
         catch (Exception e) {
             throw new DecodeException("Failed to decode:" + e.getMessage()); //$NON-NLS-1$
