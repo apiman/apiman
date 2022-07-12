@@ -186,6 +186,10 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
                     }
 
                     setupResponse(clientRequest.response());
+
+                    if (inboundFinished) {
+                        vxRequest.end();
+                    }
                 });
         return this;
     }
@@ -273,7 +277,9 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
     @Override
     public void end() {
-        clientRequest.end();
+        if (clientRequest != null) {
+            clientRequest.end();
+        }
         inboundFinished = true;
     }
 

@@ -16,19 +16,31 @@
 
 package io.apiman.gateway.platforms.vertx3.api;
 
-import io.vertx.codegen.annotations.Nullable;
-import io.vertx.core.Handler;
-import io.vertx.core.MultiMap;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.*;
-import io.vertx.core.net.NetSocket;
-import io.vertx.core.net.SocketAddress;
-import io.vertx.ext.web.RoutingContext;
-
 import java.util.Map;
+import java.util.Set;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 import javax.security.cert.X509Certificate;
+
+import io.netty.handler.codec.DecoderResult;
+import io.vertx.codegen.annotations.Nullable;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.Cookie;
+import io.vertx.core.http.HttpConnection;
+import io.vertx.core.http.HttpFrame;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServerFileUpload;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.http.HttpVersion;
+import io.vertx.core.http.ServerWebSocket;
+import io.vertx.core.http.StreamPriority;
+import io.vertx.core.net.NetSocket;
+import io.vertx.core.net.SocketAddress;
+import io.vertx.ext.web.RoutingContext;
 
 /**
 * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -60,11 +72,6 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     }
 
     @Override
-    public ServerWebSocket upgrade() {
-        return request.upgrade();
-    }
-
-    @Override
     public HttpServerRequest setExpectMultipart(boolean expect) {
         request.setExpectMultipart(expect);
         return this;
@@ -83,7 +90,7 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
 
     @Override
     public HttpServerRequest fetch(long l) {
-        return null;
+        return request.fetch(l);
     }
 
     @Override
@@ -94,11 +101,6 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     @Override
     public SocketAddress remoteAddress() {
         return request.remoteAddress();
-    }
-
-    @Override
-    public String rawMethod() {
-        return request.rawMethod();
     }
 
     @Override
@@ -128,11 +130,6 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     }
 
     @Override
-    public NetSocket netSocket() {
-        return request.netSocket();
-    }
-
-    @Override
     public HttpMethod method() {
         return request.method();
     }
@@ -144,7 +141,7 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
 
     @Override
     public SSLSession sslSession() {
-        return null;
+        return request.sslSession();
     }
 
     @Override
@@ -169,7 +166,7 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
 
     @Override
     public long bytesRead() {
-        return 0;
+        return request.bytesRead();
     }
 
     @Override
@@ -195,6 +192,16 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     }
 
     @Override
+    public HttpServerRequest setParamsCharset(String charset) {
+        return request.setParamsCharset(charset);
+    }
+
+    @Override
+    public String getParamsCharset() {
+        return request.getParamsCharset();
+    }
+
+    @Override
     public @Nullable String getHeader(String headerName) {
         return request.getHeader(headerName);
     }
@@ -202,6 +209,11 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     @Override
     public @Nullable String getFormAttribute(String attributeName) {
         return request.getFormAttribute(attributeName);
+    }
+
+    @Override
+    public Future<ServerWebSocket> toWebSocket() {
+        return request.toWebSocket();
     }
 
     @Override
@@ -234,12 +246,22 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
 
     @Override
     public HttpServerRequest streamPriorityHandler(Handler<StreamPriority> handler) {
-        return null;
+        return request.streamPriorityHandler(handler);
+    }
+
+    @Override
+    public DecoderResult decoderResult() {
+        return request.decoderResult();
     }
 
     @Override
     public @Nullable Cookie getCookie(String name) {
         return request.getCookie(name);
+    }
+
+    @Override
+    public @Nullable Cookie getCookie(String name, String domain, String path) {
+        return request.getCookie(name, domain, path);
     }
 
     @Override
@@ -253,8 +275,37 @@ public class Router2ResteasyRequestAdapter implements HttpServerRequest {
     }
 
     @Override
+    public Set<Cookie> cookies(String name) {
+        return request.cookies(name);
+    }
+
+    @Override
+    public Set<Cookie> cookies() {
+        return request.cookies();
+    }
+
+    @Override
     public String absoluteURI() {
         return request.absoluteURI();
+    }
+
+    @Override
+    public Future<Buffer> body() {
+        if (context.getBody() == null) {
+            return Future.succeededFuture(Buffer.buffer());
+        } else {
+            return Future.succeededFuture(context.getBody());
+        }
+    }
+
+    @Override
+    public Future<Void> end() {
+        return request.end();
+    }
+
+    @Override
+    public Future<NetSocket> toNetSocket() {
+        return request.toNetSocket();
     }
 
 }

@@ -21,21 +21,18 @@ import io.apiman.gateway.platforms.vertx3.api.OrgResourceImpl;
 import io.apiman.gateway.platforms.vertx3.api.RestExceptionMapper;
 import io.apiman.gateway.platforms.vertx3.api.Router2ResteasyRequestAdapter;
 import io.apiman.gateway.platforms.vertx3.api.SystemResourceImpl;
-import io.apiman.gateway.platforms.vertx3.api.auth.AuthFactory;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
+
 import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.AuthHandler;
 import io.vertx.ext.web.handler.BodyHandler;
-
 import org.jboss.resteasy.plugins.server.vertx.VertxRegistry;
 import org.jboss.resteasy.plugins.server.vertx.VertxRequestHandler;
 import org.jboss.resteasy.plugins.server.vertx.VertxResteasyDeployment;
-
 
 /**
  * API verticle provides the Gateway API RESTful API. Config is validated and pushed into the registry
@@ -49,17 +46,17 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
     public static final VerticleType VERTICLE_TYPE = VerticleType.API;
 
     @Override
-    public void start(Future<Void> startFuture) {
-        Future<Void> superFuture = Future.future();
-        Future<HttpServer> listenFuture = Future.future();
+    public void start(Promise<Void> startPromise) {
+        Promise<Void> superFuture = Promise.promise();
+        Promise<HttpServer> listenPromise = Promise.promise();
         super.start(superFuture);
 
-        CompositeFuture.all(superFuture, listenFuture)
-            .setHandler(compositeResult -> {
+        CompositeFuture.all(superFuture.future(), listenPromise.future())
+            .onComplete(compositeResult -> {
                 if (compositeResult.succeeded()) {
-                    startFuture.complete(null);
+                    startPromise.complete(null);
                 } else {
-                    startFuture.fail(compositeResult.cause());
+                    startPromise.fail(compositeResult.cause());
                 }
             });
 
@@ -77,21 +74,21 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
 
         VertxRequestHandler resteasyRh = new VertxRequestHandler(vertx, deployment);
 
-        Router router = Router.router(vertx)
-                    .exceptionHandler(error -> log.error(error.getMessage(), error));
+        Router router = Router.router(vertx);
+                                //.exceptionHandler(error -> log.error(error.getMessage(), error));
 
         // Ensure body handler is attached early so that if AuthHandler takes an external action
         // we don't end up losing the body (e.g OAuth2).
         router.route()
-            .handler(BodyHandler.create());
+                .handler(BodyHandler.create());
 
-        AuthHandler authHandler = AuthFactory.getAuth(vertx, router, apimanConfig);
+        // AuthHandler authHandler = AuthFactory.getAuth(vertx, router, apimanConfig);
 
-        router.route("/*")
-            .handler(authHandler);
+        // router.route("/*")
+        //         .handler(authHandler);
 
         router.route("/*") // We did the previous stuff, now we call into JaxRS.
-            .handler(context -> resteasyRh.handle(new Router2ResteasyRequestAdapter(context)));
+                .handler(context -> resteasyRh.handle(new Router2ResteasyRequestAdapter(context)));
 
         HttpServerOptions httpOptions = new HttpServerOptions();
 
@@ -113,10 +110,10 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
         }
 
         vertx.createHttpServer(httpOptions)
-            .requestHandler(router::accept)
+            .requestHandler(router)
             .listen(apimanConfig.getPort(VERTICLE_TYPE),
                     apimanConfig.getHostname(),
-                    listenFuture.completer());
+                    listenPromise);
     }
 
     private void addResources(VertxRegistry registry, Object...objs) {

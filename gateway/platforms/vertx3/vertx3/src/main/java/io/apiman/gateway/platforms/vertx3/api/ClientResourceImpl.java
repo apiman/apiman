@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response.Status;
  */
 public class ClientResourceImpl extends AbstractResource implements IClientResource {
 
-    private IRegistry registry;
+    private final IRegistry registry;
 
     public ClientResourceImpl(VertxEngineConfig apimanConfig, IEngine engine) {
         this.registry = engine.getRegistry();
