@@ -26,6 +26,18 @@
     }
   },
   "de": {
+    "apiman.client.contract.approval.request": {
+      "subject": "API-Zugriff für {event.apiOrgId}/{event.apiId}/{event.apiVersion} mit Plan {event.planId}/{event.planVersion} angefordert.",
+      "html": "tpl/de/apiman.client.contract.approval.request.html",
+      "plain": "tpl/de/apiman.client.contract.approval.request.txt",
+      "category": "API_ADMINISTRATION"
+    },
+    "apiman.client.contract.approval.granted": {
+      "subject": "API-Zugriff für {event.apiId}/{event.apiVersion} wurde freigegeben!",
+      "html": "tpl/de/apiman.client.contract.approval.granted.html",
+      "plain": "tpl/de/apiman.client.contract.approval.granted.txt",
+      "category": "API_ADMINISTRATION"
+    },
     "apiman.client.contract.approval.rejected": {
       "subject": "API-Zugriff für {event.apiId}/{event.apiVersion} wurde abgelehnt.",
       "html": "tpl/de/apiman.client.contract.approval.rejected.html",
