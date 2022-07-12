@@ -1,0 +1,25 @@
+Hi {notification.recipient.fullName},
+
+Ihre Anfrage für den Zugriff `{event.apiId}` Version `{event.apiVersion}` der Organisation `{event.apiOrgId}` wurde freigegeben.
+
+Sie finden Ihren API-Key ab sofort im API Developer Portal.
+
+## Informationen zum Client
+
+Mit folgendem Client haben Sie Zugriff auf `{event.apiId}` `{event.apiVersion}`:
+
+Organization: {event.clientOrgId}
+Name: {event.clientId}
+Version: {event.clientVersion}
+
+## Informationen zur API
+
+Auf folgende API haben Sie jetzt Zugriff:
+
+Organization: {event.apiOrgId}
+Name: {event.apiId}
+Version: {event.apiVersion}
+Plan: {event.planId}
+Plan Version: {event.planVersion}
+
+{#include footer.de.include.txt /}

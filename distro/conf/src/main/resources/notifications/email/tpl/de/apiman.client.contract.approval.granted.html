@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+{#include header.include.html title='API-Zugriff freigegeben' /}
+
+{#include standard-body.include.html notificationHeader='API-Zugriff freigegeben' name=notification.recipient.fullName}
+{#notificationBody}
+
+<p>Ihre Anfrage für den Zugriff auf <code>{event.apiId}</code> Version <code>{event.apiVersion}</code> der Organisation <code>{event.apiOrgId}</code> wurde <strong>freigegeben</strong>.</p>
+
+<p>Sie finden Ihren API-Key ab sofort im API Developer Portal.</p>
+
+<h5>Informationen zum Client</h5>
+<p>Mit folgendem Client haben Sie Zugriff auf {event.apiId} {event.apiVersion}:</p>
+<dl class="row">
+  <dt class="col-sm-3">Organisation</dt>
+  <dd class="col-sm-9">
+    {event.clientOrgId}
+  </dd>
+  <dt class="col-sm-3">Name</dt>
+  <dd class="col-sm-9">
+    {event.clientId}
+  </dd>
+  <dt class="col-sm-3">Version</dt>
+  <dd class="col-sm-9">
+    {event.clientVersion}
+  </dd>
+</dl>
+
+<h5>Informationen zur API</h5>
+<p>Auf folgende API haben Sie jetzt Zugriff:</p>
+<dl class="row">
+  <dt class="col-sm-3">Organisation</dt>
+  <dd class="col-sm-9">
+    {event.apiOrgId}
+  </dd>
+  <dt class="col-sm-3">Name</dt>
+  <dd class="col-sm-9">
+    {event.apiId}
+  </dd>
+  <dt class="col-sm-3">Version</dt>
+  <dd class="col-sm-9">
+    {event.apiVersion}
+  </dd>
+  <dt class="col-sm-3">Plan</dt>
+  <dd class="col-sm-9">
+    {event.planId}
+  </dd>
+  <dt class="col-sm-3">Plan Version</dt>
+  <dd class="col-sm-9">
+    {event.planVersion}
+  </dd>
+</dl>
+
+
+<div class="container mt-5">
+  {#include footer.de.include.html /}
+</div>
+{/notificationBody}
+{/include}
+</html>

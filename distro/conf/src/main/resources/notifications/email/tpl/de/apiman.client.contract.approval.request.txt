@@ -1,0 +1,42 @@
+Hi {notification.recipient.fullName},
+
+ein User hat Zugriff auf eine API angefordert. Bitte prüfen Sie die Freigabe
+
+## Informationen zum Nutzer
+
+Folgender Nutzer hat den Zugriff angefordert:
+
+Username: {event.user.username}
+Name: {event.user.fullName}
+Email: {event.user.email}
+{#if event.user.locale}
+Preferred locale: {event.user.locale}
+{/if}
+
+Wird der Zugriff erteilt, haben alle Mitglieder der `{event.clientOrgId}` Organisation mit Berechtigung `clientView` Zugriff auf den API-Key.
+
+## Informationen zum API
+
+Der Zugriff wurde angefordert für folgende API:
+
+Organization: {event.apiOrgId}
+Name: {event.apiId}
+Version: {event.apiVersion}
+Plan: {event.planId}
+Plan Version: {event.planVersion}
+
+## Informationen zum Client:
+
+Denken Sie daran, dass der Client einer anderen Organization zugeordnet sein kann als die API.
+
+Organization: {event.clientOrgId}
+Name: {event.clientId}
+Version: {event.clientVersion}
+
+## Zugriff auf die API erteilen
+
+Folgen Sie dem Link um die API-Zugriffe zu verwalten.
+
+{apiman-manager-ui-endpoint}/orgs/{event.apiOrgId}/apis/{event.apiId}/{event.apiVersion}/contracts
+
+{#include footer.de.include.txt /}

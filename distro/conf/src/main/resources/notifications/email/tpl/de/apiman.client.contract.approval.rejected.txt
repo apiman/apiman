@@ -6,4 +6,4 @@ Ihre Anfrage zur Freigabe der API `{event.apiId}` Version `{event.apiVersion}` d
 Kommentar des Administrators: `{event.rejectionReason}`
 {/if}
 
-{#include footer.en.include.txt /}
+{#include footer.de.include.txt /}
