@@ -10,8 +10,8 @@ Content-Type: application/json
 ----
 200
 Content-Type: application/json
-X-Total-Count: 4
-Total-Count: 4
+X-Total-Count: 7
+Total-Count: 7
 
 {
 	"beans": [{
@@ -34,6 +34,21 @@ Total-Count: 4
 		"reason": "apiman.client.contract.approval.granted",
 		"reasonMessage": "Signup was approved!",
 		"status": "USER_DISMISSED"
-	}],
-	"totalSize": 4
+	}, {
+        "category": "API_LIFECYCLE",
+        "reason": "apiman.client.contract.request.user",
+        "reasonMessage": "Signup for API",
+        "status": "USER_DISMISSED"
+    }, {
+        "category": "API_LIFECYCLE",
+        "reason": "apiman.client.contract.request.user",
+        "reasonMessage": "Signup for API",
+        "status": "USER_DISMISSED"
+    }, {
+        "category": "API_LIFECYCLE",
+        "reason": "apiman.client.contract.request.user",
+        "reasonMessage": "Signup for API",
+        "status": "USER_DISMISSED"
+    }],
+	"totalSize": 7
 }

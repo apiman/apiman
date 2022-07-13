@@ -23,6 +23,12 @@
       "html": "tpl/en/apiman.client.contract.approval.rejected.html",
       "plain": "tpl/en/apiman.client.contract.approval.rejected.txt",
       "category": "API_ADMINISTRATION"
+    },
+    "apiman.client.contract.request.user": {
+      "subject": "API signup approval request {event.apiOrgId}/{event.apiId}/{event.apiVersion} with plan {event.planId}/{event.planVersion}.",
+      "html": "tpl/en/apiman.client.contract.request.user.html",
+      "plain": "tpl/en/apiman.client.contract.request.user.txt",
+      "category": "API_ADMINISTRATION"
     }
   },
   "de": {
@@ -42,6 +48,12 @@
       "subject": "API-Zugriff für {event.apiId}/{event.apiVersion} wurde abgelehnt.",
       "html": "tpl/de/apiman.client.contract.approval.rejected.html",
       "plain": "tpl/de/apiman.client.contract.approval.rejected.txt",
+      "category": "API_ADMINISTRATION"
+    },
+    "apiman.client.contract.request.user": {
+      "subject": "API-Zugriff für {event.apiOrgId}/{event.apiId}/{event.apiVersion} mit Plan {event.planId}/{event.planVersion} angefordert.",
+      "html": "tpl/de/apiman.client.contract.request.user.html",
+      "plain": "tpl/de/apiman.client.contract.request.user.txt",
       "category": "API_ADMINISTRATION"
     }
   }

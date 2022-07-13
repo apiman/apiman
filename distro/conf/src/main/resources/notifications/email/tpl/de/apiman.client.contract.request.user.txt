@@ -1,0 +1,25 @@
+Hi {notification.recipient.fullName},
+
+Sie haben Zugriff auf eine API angefordert.
+Ihre Anfrage wird derzeit geprüft. Wir halten Sie über den Status auf dem Laufenden.
+
+
+## API Informationen
+
+Die API, die Sie angefordert haben:
+
+Organization: {event.apiOrgId}
+Name: {event.apiId}
+Version: {event.apiVersion}
+Plan: {event.planId}
+Plan Version: {event.planVersion}
+
+## Client Informationen
+
+Der Client, der für die Anfrage verwendet wurde:
+
+Organization: {event.clientOrgId}
+Name: {event.clientId}
+Version: {event.clientVersion}
+
+{#include de/footer.de.include.txt /}

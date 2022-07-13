@@ -85,6 +85,23 @@ class NotificationMapper {
       },
     ],
     [
+      "apiman.client.contract.request.user",
+      {
+        icon: "fa-info",
+        reason: "Your API signup",
+        messageResolver: (notification: ApimanNotification<any>): string => {
+          const notificationWithEvent: ApimanNotification<ContractApprovalEvent> = notification;
+          const event: ContractApprovalEvent = notificationWithEvent.payload;
+          return `Your request to sign up to API ${event.apiId} is pending approval`;
+        },
+        linkResolver: (notification: ApimanNotification<any>): string => {
+          const notificationWithEvent: ApimanNotification<ContractApprovalEvent> = notification;
+          const event: ContractApprovalEvent = notificationWithEvent.payload;
+          return `${ApimanGlobals.pluginName}/orgs/${event.clientOrgId}/clients/${event.clientId}/${event.clientVersion}/contracts`;
+        }
+      },
+    ],
+    [
       "apiman.client.status_change",
       {
         icon: "fa-info",
