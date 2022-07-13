@@ -162,7 +162,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
         String mbs = System.getProperty(GatewayConfigProperties.MAX_PAYLOAD_BUFFER_SIZE);
         if (mbs != null) {
-            maxPayloadBufferSize = new Long(mbs);
+            maxPayloadBufferSize = Long.parseLong(mbs);
         }
     }
 
@@ -225,8 +225,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
      */
     @Override
     public void execute() {
-
-        //load the api data based on request
+        // Load the api data based on request
         registry.getApi(request.getApiOrgId(), request.getApiId(), request.getApiVersion(),
                 (IAsyncResult<Api> apiResult) -> {
                     if (apiResult.isSuccess()) {
@@ -236,7 +235,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
                     }
                 });
 
-        //check if api disable key are enabled
+        // Check if api disable key are enabled
         if (api != null && !api.isKeysStrippingDisabled()) {
             // Strip apikey
             stripApiKey();
@@ -436,7 +435,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         // no longer be accurate.
         request.getHeaders().remove("Content-Length"); //$NON-NLS-1$
 
-        // Configure the api's max payload buffer size, if it's not already set.
+        // Configure the API's max payload buffer size, if it's not already set.
         if (api.getMaxPayloadBufferSize() <= 0) {
             api.setMaxPayloadBufferSize(maxPayloadBufferSize);
         }

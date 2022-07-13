@@ -157,8 +157,9 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
     public HttpConnector connect() {
         String endpoint = ApimanPathUtils.join(apiPath, destination + queryParams(apiRequest.getQueryParams()));
+        HttpMethod verb = HttpMethod.valueOf(apiRequest.getType());
         logger.debug("Connecting to {0} | ssl?: {1} port: {2} verb: {3} path: {4}",
-                apiHost, options.isSsl(), apiPort, HttpMethod.valueOf(apiRequest.getType()), endpoint);
+                apiHost, options.isSsl(), apiPort, verb, endpoint);
 
         client.request(HttpMethod.valueOf(apiRequest.getType()), apiPort, apiHost, endpoint)
                 .onFailure(exceptionHandler::handle)
@@ -168,7 +169,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
                     clientRequest.exceptionHandler(exceptionHandler);
 
-                    if (options.hasDataPolicy() || !apiRequest.getHeaders().containsKey("Content-Length")) {
+                    if (options.hasDataPolicy() || !apiRequest.getHeaders().containsKey("Content-Length") && verb != HttpMethod.GET) {
                         clientRequest.headers().remove("Content-Length");
                         clientRequest.setChunked(true);
                     }
