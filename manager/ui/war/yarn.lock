@@ -890,10 +890,10 @@ angular-sanitize@1.8.3, "angular-sanitize@>= 1.2":
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.8.3.tgz#51378e990e78c7ecc1fb31cd68655aff690a3bf1"
   integrity sha512-2rxdqzlUVafUeWOwvY/FtyWk1pFTyCtzreeiTytG9m4smpuAEKaIJAjYeVwWsoV+nlTOcgpwV4W1OCmR+BQbUg==
 
-angular-schema-form@0.8.12:
-  version "0.8.12"
-  resolved "https://registry.yarnpkg.com/angular-schema-form/-/angular-schema-form-0.8.12.tgz#4c7edcffe5e27a472d803527cd30592f18b9fc3d"
-  integrity sha1-TH7c/+XiekctgDUnzTBZLxi5/D0=
+angular-schema-form@0.8.13:
+  version "0.8.13"
+  resolved "https://registry.yarnpkg.com/angular-schema-form/-/angular-schema-form-0.8.13.tgz#90bbe2a90664d083da3dc1271f890a94be7d140f"
+  integrity sha512-KbpcabwBcfr+m/V8C8Uc81zmOCfz6K2I9florxKJJ9J0Oxb55/l6omfq5IvcOsJX6lTtfddWv1A8mFAwd/ujrw==
   dependencies:
     angular ">= 1.2"
     angular-sanitize ">= 1.2"
