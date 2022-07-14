@@ -1,0 +1,20 @@
+name: update Apiman release version
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - apiman-release-version
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+       
+      - name: Checkout Apiman Docker repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Update version in release flow
+        run: sed -i 's|APIMAN_RELEASE_VERSION=\S*|APIMAN_RELEASE_VERSION=${{ github.event.client_payload.release_version }}|' .github/workflows/docker-image.yml
