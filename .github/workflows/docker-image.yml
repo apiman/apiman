@@ -12,19 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'Apiman'
     env:
-      APIMAN_RELEASE_VERION: 2.2.3.Final
+      APIMAN_RELEASE_VERSION: 2.2.3.Final
     steps:
       - uses: actions/checkout@v3
       - name: Build the Docker images
         run: |
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/cli:latest cli
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/on-wildfly:latest on-wildfly
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/vertx-openshift:latest vertx-openshift
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/vertx-standalone:latest vertx-standalone
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/vertx-gateway:latest vertx-gateway
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/migration-assistant:latest migration-assistant
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/wildfly-manager:latest wildfly-manager
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/tomcat-manager:latest tomcat-manager
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/cli:latest cli
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/on-wildfly:latest on-wildfly
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/vertx-openshift:latest vertx-openshift
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/vertx-standalone:latest vertx-standalone
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/vertx-gateway:latest vertx-gateway
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/migration-assistant:latest migration-assistant
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/wildfly-manager:latest wildfly-manager
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/tomcat-manager:latest tomcat-manager
 
   publish-latest:
     name: Publish Docker Latest Images
@@ -32,19 +32,19 @@ jobs:
     if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
     needs: [ build-verify ]
     env:
-      APIMAN_RELEASE_VERION: 2.2.3.Final
+      APIMAN_RELEASE_VERSION: 2.2.3.Final
     steps:
       - uses: actions/checkout@v3
       - name: Build the Docker images
         run: |
           # apiman/on-wildfly:latest is build and pushed via main pipeline
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/cli:latest -t ghcr.io/apiman/cli:latest cli
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/vertx-openshift:latest -t ghcr.io/apiman/vertx-openshift:latest vertx-openshift
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/vertx-standalone:latest -t ghcr.io/apiman/vertx-standalone:latest vertx-standalone
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/vertx-gateway:latest -t ghcr.io/apiman/vertx-gateway:latest vertx-gateway
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/migration-assistant:latest -t ghcr.io/apiman/migration-assistant:latest migration-assistant
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/wildfly-manager:latest -t ghcr.io/apiman/wildfly-manager:latest wildfly-manager
-          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERION }}" -t apiman/tomcat-manager:latest -t ghcr.io/apiman/tomcat-manager:latest tomcat-manager
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/cli:latest -t ghcr.io/apiman/cli:latest cli
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/vertx-openshift:latest -t ghcr.io/apiman/vertx-openshift:latest vertx-openshift
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/vertx-standalone:latest -t ghcr.io/apiman/vertx-standalone:latest vertx-standalone
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/vertx-gateway:latest -t ghcr.io/apiman/vertx-gateway:latest vertx-gateway
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/migration-assistant:latest -t ghcr.io/apiman/migration-assistant:latest migration-assistant
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/wildfly-manager:latest -t ghcr.io/apiman/wildfly-manager:latest wildfly-manager
+          docker build --build-arg "APIMAN_VERSION=${{ env.APIMAN_RELEASE_VERSION }}" -t apiman/tomcat-manager:latest -t ghcr.io/apiman/tomcat-manager:latest tomcat-manager
 
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           # apiman/migration-assistant:latest is only pushed to ghcr.io
