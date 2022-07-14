@@ -76,16 +76,7 @@ jobs:
           git checkout master
           git branch --set-upstream-to=origin/master
           git pull
-      - name: Apiman Docker Code Checkout
-        run: |
-          mkdir docker
-          cd docker
-          git init
-          git remote add origin "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apiman/apiman-docker.git"
-          git fetch
-          git checkout master
-          git branch --set-upstream-to=origin/master
-          git pull
+
 #       - name: Apiman Deployer Code Checkout
 #         run: |
 #           mkdir deployer
@@ -210,7 +201,7 @@ jobs:
           asset_name: apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip.asc
           asset_content_type: application/octet-stream
           
-  
+
           # releases/apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip
       - name: Generate Release Notes
         run: cd apiman && gren release --token=${{ secrets.GITHUB_TOKEN }} --override
@@ -233,31 +224,6 @@ jobs:
         run: |
           cd plugins
           ./mvnw deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
-
-      # Build and push new Docker images
-      - name: Login to DockerHub Registry
-        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-      - name: Building Docker Images
-        run: |
-          cd docker
-          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" -t="apiman/on-wildfly" -t="apiman/on-wildfly:latest-release" -t="apiman/on-wildfly:${{ github.event.inputs.release-version }}" --rm on-wildfly/
-          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" -t="apiman/vertx-openshift" -t="apiman/vertx-openshift:latest-release" -t="apiman/vertx-openshift:${{ github.event.inputs.release-version }}" --rm vertx-openshift/
-          docker build --build-arg "APIMAN_VERSION=${{ github.event.inputs.release-version }}" -t="apiman/vertx-standalone" -t="apiman/vertx-standalone:latest-release" -t="apiman/vertx-standalone:${{ github.event.inputs.release-version }}" --rm vertx-standalone/
-      - name: Push The Tagged Docker Images
-        run: |
-          cd docker
-          docker push apiman/on-wildfly:latest
-          docker push apiman/vertx-openshift:latest
-          docker push apiman/vertx-standalone:latest
-          docker push apiman/on-wildfly:latest-release
-          docker push apiman/vertx-openshift:latest-release
-          docker push apiman/vertx-standalone:latest-release
-          docker push apiman/on-wildfly:latest-release
-          docker push apiman/vertx-openshift:latest-release
-          docker push apiman/vertx-standalone:latest-release
-          docker push apiman/on-wildfly:${{ github.event.inputs.release-version }}
-          docker push apiman/vertx-openshift:${{ github.event.inputs.release-version }}
-          docker push apiman/vertx-standalone:${{ github.event.inputs.release-version }}
 
       # Update project pom.xml files to next snapshot version and push to GH
       - name: Update Apiman Parent Next Snapshot Version ${{ github.event.inputs.snapshot-version }} in pom.xml
