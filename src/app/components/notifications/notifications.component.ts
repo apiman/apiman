@@ -204,6 +204,13 @@ export class NotificationsComponent implements OnInit {
     }) as string;
   }
 
+  public convertTooltipTimestamp(timestamp: string): string {
+    // format F => 8/6/2014, 1:07:04 PM
+    return DateTime.fromISO(timestamp).toFormat('F', {
+      locale: this.translator.currentLang
+    });
+  }
+
   public setActiveSection(section: notificationsSection): void {
     this.activeSection = section;
     if (section === notificationsSection.read) {

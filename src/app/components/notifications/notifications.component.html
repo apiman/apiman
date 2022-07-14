@@ -62,7 +62,10 @@
     <th mat-header-cell *matHeaderCellDef>
       {{ 'NOTIFICATION.COLUMN_TITLE.DATE' | translate }}
     </th>
-    <td mat-cell *matCellDef="let notification">
+    <td
+      mat-cell
+      *matCellDef="let notification"
+      [matTooltip]="convertTooltipTimestamp(notification.createdOn)">
       {{ convertTimestamp(notification.createdOn) }}
     </td>
   </ng-container>
