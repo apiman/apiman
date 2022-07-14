@@ -203,11 +203,12 @@
     },
     "MESSAGE": {
       "API": {
-        "SIGN_UP_APPROVED": "Ihre Registrierung für {{ payload.apiId }} in Ihrem Client {{ payload.clientId }} wurde genehmigt.",
-        "SIGN_UP_REJECTED": "Ihre Registrierung für {{ payload.apiId }} in Ihrem Client {{ payload.clientId }} wurde abgelehnt."
+        "SIGN_UP_APPROVED": "Ihre Registrierung für <code>{{ payload.apiId }}</code> in Ihrem Client <code>{{ payload.clientId }}</code> wurde genehmigt.",
+        "SIGN_UP_REJECTED": "Ihre Registrierung für <code>{{ payload.apiId }}</code> in Ihrem Client <code>{{ payload.clientId }}</code> wurde abgelehnt.",
+        "SIGN_UP_REQUESTED": "Ihre Registrierung für <code>{{ payload.apiId }}</code> in Ihrem Client <code>{{ payload.clientId }}</code> wird derzeit geprüft."
       },
       "CLIENT": {
-        "REGISTERED": "Ihr Client {{ payload.clientId }} wurde registriert."
+        "REGISTERED": "Ihr Client <code>{{ payload.clientId }}</code> wurde registriert."
       }
     },
     "STATUS": {

@@ -99,6 +99,10 @@ export class NotificationsComponent implements OnInit {
       [
         'apiman.client.status_change.registered',
         'NOTIFICATION.MESSAGE.CLIENT.REGISTERED'
+      ],
+      [
+        'apiman.client.contract.request.user',
+        'NOTIFICATION.MESSAGE.API.SIGN_UP_REQUESTED'
       ]
     ]);
 

@@ -115,8 +115,8 @@
     "TERMS_ERROR": "Please accept the service terms",
     "REDIRECT": "You will be redirected because of missing data",
     "SUCCESS": "A contract has been successfully created",
-    "API_KEY_PREVIEW": "You will be provided an API key after sign-up",
-    "API_ENDPOINT_PREVIEW": "You will be provided an endpoint after sign-up",
+    "API_KEY_PREVIEW": "You will be provided an API key after signup",
+    "API_ENDPOINT_PREVIEW": "You will be provided an endpoint after signup",
     "LICENSE_TYPE": "Licence Type",
     "POLICIES": "Policies",
     "CONTRACT_EXISTS": "There is already an contract for this API with the selected client"
@@ -203,11 +203,12 @@
     },
     "MESSAGE": {
       "API": {
-        "SIGN_UP_APPROVED": "Your API Sign-Up for {{ payload.apiId }} in your client {{ payload.clientId }} has been approved.",
-        "SIGN_UP_REJECTED": "Your API Sign-Up for {{ payload.apiId }} in your client {{ payload.clientId }} has been rejected."
+        "SIGN_UP_APPROVED": "Your API signup for <code>{{ payload.apiId }}</code> in your client <code>{{ payload.clientId }}</code> has been approved.",
+        "SIGN_UP_REJECTED": "Your API signup for <code>{{ payload.apiId }}</code> in your client <code>{{ payload.clientId }}</code> has been rejected.",
+        "SIGN_UP_REQUESTED": "Your API signup for <code>{{ payload.apiId }}</code> in your client <code>{{ payload.clientId }}</code> is pending approval."
       },
       "CLIENT": {
-        "REGISTERED": "Your Client {{payload.clientId}} has been registered."
+        "REGISTERED": "Your client <code>{{payload.clientId}}</code> has been registered."
       }
     },
     "STATUS": {
