@@ -200,7 +200,7 @@ export class NotificationsComponent implements OnInit {
 
   public convertTimestamp(timestamp: string): string {
     return DateTime.fromISO(timestamp).toRelative({
-      locale: this.configService.getLanguage()
+      locale: this.translator.currentLang
     }) as string;
   }
 
