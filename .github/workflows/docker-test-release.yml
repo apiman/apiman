@@ -1,0 +1,103 @@
+name: Docker Release CI
+
+on:
+  workflow_call:
+    inputs:
+      apiman-version:
+        type: string
+        required: true
+      push-to-repos:
+        type: boolean
+        required: true
+
+jobs:
+  build-and-push:
+    name: Publish Docker images based on the latest Apiman stable release ${{ inputs.apiman-version }}
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
+    # If you add a new Docker image, please add it here.
+    strategy:
+      matrix:
+        docker-images:
+          - description: Apiman Vert.x Gateway (Official Image)
+            name: vertx-gateway
+            path: ./vertx-gateway
+            build-args: |
+
+          - description: Apiman WildFly Manager (Official Image)
+            name: wildfly-manager
+            path: ./wildfly-manager
+
+          - description: Apiman Tomcat Manager (Official Image)
+            name: tomcat-manager
+            path: ./tomcat-manager
+
+          - description: Apiman Migration Assistant (Official Image)
+            name: migration-assistant
+            path: ./migration-assistant
+
+          - description: Apiman CLI (Community Image)
+            name: cli
+            path: ./cli
+
+          - description: Apiman WildFly All-In-One (Legacy)
+            name: on-wildfly
+            path: ./on-wildfly
+
+          - description: Apiman Vert.x OpenShift (Community Image)
+            name: vertx-openshift
+            path: ./vertx-openshift
+
+          - description: Apiman Vert.x Standalone (Community Image)
+            name: vertx-standalone
+            path: ./vertx-standalone
+
+    steps:
+      - name: Checkout Apiman Docker repo
+        uses: actions/checkout@v3
+
+      - name: Version information
+        run: |
+          echo "Apiman version: ${{ inputs.apiman-version }}"
+          echo "Push to repos: ${{ inputs.push-to-repos }}"
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Login to GitHub Container Registry (GHCR)
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # This step is only run if "push-to-repos" is false; i.e. workflow is build-only
+      - name: Build ${{ matrix.docker-images.description }} (${{ matrix.docker-images.name }})
+        if: ${{ !inputs.push-to-repos }}
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ matrix.docker-images.path }}
+          push: false
+          build-args: |
+            APIMAN_VERSION=${{ inputs.apiman-version }}
+            ${{ matrix.docker-images.build-args }}
+
+      # This step is only run if "push-to-repos" is true; i.e. workflow is build-only otherwise
+      # You can call this reusable flow multiple times, first for build, second for build & push.
+      - name: Build & Push ${{ matrix.docker-images.description }} (${{ matrix.docker-images.name }})
+        if: ${{ inputs.push-to-repos }}
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ matrix.docker-images.path }}
+          push: true
+          build-args: |
+            APIMAN_VERSION=${{ inputs.apiman-version }}
+            ${{ matrix.docker-images.build-args }}
+          tags: |
+            apiman/${{ matrix.docker-images.name }}:${{ inputs.apiman-version }}
+            apiman/${{ matrix.docker-images.name }}:latest-release
+            ghcr.io/apiman/${{ matrix.docker-images.name }}:${{ inputs.apiman-version }}     
+            ghcr.io/apiman/${{ matrix.docker-images.name }}:latest-release

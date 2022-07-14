@@ -1,0 +1,33 @@
+name: trigger snapshot from file
+on:
+  push:
+    paths:
+      - ".github/workflows/SNAPSHOT_VERSION"
+jobs:
+  read-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.read-version.outputs.version }}
+    steps:
+      - name: Checkout Apiman Docker repo
+        uses: actions/checkout@v3
+
+      - name: "Read snapshot version"
+        id: read-version
+        run: echo "::set-output name=version::$(cat .github/workflows/SNAPSHOT_VERSION)"
+
+  build:
+    needs: read-version
+    uses: apiman/apiman-docker/.github/workflows/docker-test-release.yml@master
+    secrets: inherit
+    with:
+      apiman-version: ${{ needs.read-version.outputs.version }}
+      push-to-repos: false
+
+  deploy:
+    needs: [read-version, build]
+    uses: apiman/apiman-docker/.github/workflows/docker-test-release.yml@master
+    secrets: inherit
+    with:
+      apiman-version: ${{ needs.read-version.outputs.version }}
+      push-to-repos: true

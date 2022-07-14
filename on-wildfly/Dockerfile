@@ -1,7 +1,8 @@
 # Use WildFly image as the base
-FROM quay.io/wildfly/wildfly:23.0.2.Final
+ARG WILDFLY_VERSION=23.0.2.Final
+FROM quay.io/wildfly/wildfly:${WILDFLY_VERSION}
 
-MAINTAINER Marc Savy <marc.savy@redhat.com>
+MAINTAINER Marc Savy <marc@blackparrotlabs.io>
 EXPOSE 8080 8443
 
 ARG APIMAN_VERSION

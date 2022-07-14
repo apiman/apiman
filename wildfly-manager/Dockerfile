@@ -1,5 +1,5 @@
 ARG WILDFLY_VERSION=23.0.2.Final
-FROM jboss/wildfly:${WILDFLY_VERSION}
+FROM quay.io/wildfly/wildfly:${WILDFLY_VERSION}
 
 ARG APIMAN_VERSION
 ARG APIMAN_DISTRO=https://github.com/Apiman/apiman/releases/download/$APIMAN_VERSION/apiman-distro-wildfly-$APIMAN_VERSION-overlay.zip
