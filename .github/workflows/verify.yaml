@@ -21,6 +21,10 @@ jobs:
     name: Verify Build
     runs-on: ubuntu-latest
     if: github.repository_owner == 'Apiman'
+    outputs:
+      apiman-version: ${{ steps.apiman-version-data.outputs.apiman-version }}
+      is-snapshot-version: ${{ steps.apiman-version-data.outputs.is-snapshot-version }}
+
     strategy:
       matrix:
         java: [ 11, 17 ]
@@ -40,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -50,6 +54,18 @@ jobs:
           distribution: adopt
           java-version: ${{ matrix.java }}
           cache: maven
+
+      - name: Get Apiman version
+        id: apiman-version-data
+        run: |
+          export APIMAN_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "::set-output name=apiman-version::$APIMAN_VERSION"
+          if [[ "$APIMAN_VERSION" =~ "SNAPSHOT" ]]
+          then
+            echo "::set-output name=is-snapshot-version::true"
+          else
+            echo "::set-output name=is-snapshot-version::false"
+          fi
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -108,15 +124,28 @@ jobs:
   publish-snapshots:
     name: Publish master snapshot artifacts
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/heads/') && github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
-    needs: [ build-verify ]
+    env:
+      APIMAN_VERSION: ${{ needs.build-verify.outputs.apiman-version }}
+      IS_SNAPSHOT_VERSION: ${{ needs.build-verify.outputs.is-snapshot-version }}
+
+    # Export if version contains "SNAPSHOT" only
+    if: ${{ needs.build-verify.outputs.is-snapshot-version }} && startsWith(github.ref, 'refs/heads/') && github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
+    needs: [ build-verify, e2e ]
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
+
+      - name: Tag/retag snapshot
+        run: |
+          echo "Version: $APIMAN_VERSION"
+          echo "Is Snapshot: $IS_SNAPSHOT_VERSION"
+          git config --global user.name "$GITHUB_ACTOR"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git tag -a -f -m "Snapshot tag: $APIMAN_VERSION" $APIMAN_VERSION 
+
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
@@ -133,7 +162,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
 
-      - name: 'Apiman Parent: Build and deploy POM/BOM & Deploy to OSSRH'
+      - name: 'Apiman Parent: Build and deploy POM/BOM & deploy to OSSRH Snapshots'
         run: |
           cd parent
           sh ../mvnw -B clean install
@@ -142,18 +171,22 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
-      - name: 'Apiman: Build and Publish Docker Images & Deploy OSSRH Snapshots'
+      - name: 'Apiman: Build and deploy main project to OSSRH Snapshots'
         run: |
-          ./mvnw -B clean package docker:build -P docker -DskipTests
-          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker push apiman/on-wildfly:latest
-
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
-          docker tag apiman/on-wildfly:latest ghcr.io/apiman/on-wildfly:latest
-          docker push ghcr.io/apiman/on-wildfly:latest
-
           ./mvnw -B deploy -DskipTests -Dmaven.test.skip=true
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create/update GitHub snapshot release ${{ env.APIMAN_VERSION }}
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.APIMAN_VERSION }}
+          name: ${{ env.APIMAN_VERSION }}
+          body: Snapshot ${{ env.APIMAN_VERSION }}. This is not a production-grade release!
+          prerelease: true
+          files: |
+            distro/wildfly/target/apiman-distro-wildfly-${{ env.APIMAN_VERSION }}-overlay.zip
+            distro/vertx/target/apiman-distro-vertx-${{ env.APIMAN_VERSION }}.zip
+            distro/tomcat/target/apiman-distro-tomcat-${{ env.APIMAN_VERSION-overlay }}.zip
