@@ -190,3 +190,10 @@ jobs:
             distro/wildfly/target/apiman-distro-wildfly-${{ env.APIMAN_VERSION }}-overlay.zip
             distro/vertx/target/apiman-distro-vertx-${{ env.APIMAN_VERSION }}.zip
             distro/tomcat/target/apiman-distro-tomcat-${{ env.APIMAN_VERSION }}-overlay.zip
+
+      - name: 'Send `apiman-snapshot-version` repository dispatch event to `apiman/apiman-docker`'
+        uses: peter-evans/repository-dispatch@v1.1.3
+        with:
+          token: ${{ secrets.REPO_DISPATCH_ACCESS_TOKEN }}
+          repository: apiman/apiman-docker
+          event-type: apiman-snapshot-version
