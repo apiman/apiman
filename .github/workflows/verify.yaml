@@ -197,3 +197,4 @@ jobs:
           token: ${{ secrets.REPO_DISPATCH_ACCESS_TOKEN }}
           repository: apiman/apiman-docker
           event-type: apiman-snapshot-version
+          client-payload: '{"snapshot-version": "${{ env.APIMAN_VERSION }}"}'
