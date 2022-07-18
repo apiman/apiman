@@ -23,6 +23,7 @@ jobs:
     with:
       apiman-version: ${{ needs.read-version.outputs.version }}
       push-to-repos: false
+      snapshot: true
 
   deploy:
     needs: [read-version, build]
@@ -31,3 +32,4 @@ jobs:
     with:
       apiman-version: ${{ needs.read-version.outputs.version }}
       push-to-repos: true
+      snapshot: true

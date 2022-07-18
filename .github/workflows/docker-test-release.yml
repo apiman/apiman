@@ -9,10 +9,13 @@ on:
       push-to-repos:
         type: boolean
         required: true
+      snapshot:
+        type: boolean
+        required: true
 
 jobs:
   build-and-push:
-    name: Publish Docker images based on the latest Apiman stable release ${{ inputs.apiman-version }}
+    name: Publish Docker images based on the Apiman ${{ inputs.apiman-version }}
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
     # If you add a new Docker image, please add it here.
@@ -60,6 +63,7 @@ jobs:
         run: |
           echo "Apiman version: ${{ inputs.apiman-version }}"
           echo "Push to repos: ${{ inputs.push-to-repos }}"
+          echo "Is snapshot: ${{ inputs.snapshot }}"
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -74,30 +78,27 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # This step is only run if "push-to-repos" is false; i.e. workflow is build-only
-      - name: Build ${{ matrix.docker-images.description }} (${{ matrix.docker-images.name }})
-        if: ${{ !inputs.push-to-repos }}
-        uses: docker/build-push-action@v3
-        with:
-          context: ${{ matrix.docker-images.path }}
-          push: false
-          build-args: |
-            APIMAN_VERSION=${{ inputs.apiman-version }}
-            ${{ matrix.docker-images.build-args }}
+      - name: Calculate Docker tags
+        env:
+          APIMAN_VERSION: ${{ inputs.apiman-version }}
+          IS_SNAPSHOT: ${{ inputs.snapshot }}
+          IMAGE_NAME: ${{ matrix.docker-images.name }}
+        # See https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+        run: |
+          DOCKER_TAGS=$(bash .github/workflows/support/calculate-docker-tags.sh)
+          echo Tags: "$DOCKER_TAGS"
+          echo 'DOCKER_TAGS<<EOF' >> $GITHUB_ENV
+          echo "$DOCKER_TAGS" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
 
-      # This step is only run if "push-to-repos" is true; i.e. workflow is build-only otherwise
       # You can call this reusable flow multiple times, first for build, second for build & push.
       - name: Build & Push ${{ matrix.docker-images.description }} (${{ matrix.docker-images.name }})
-        if: ${{ inputs.push-to-repos }}
+        if: ${{ inputs.push-to-repos }} &&
         uses: docker/build-push-action@v3
         with:
           context: ${{ matrix.docker-images.path }}
-          push: true
+          push: ${{ inputs.push-to-repos }}
           build-args: |
             APIMAN_VERSION=${{ inputs.apiman-version }}
             ${{ matrix.docker-images.build-args }}
-          tags: |
-            apiman/${{ matrix.docker-images.name }}:${{ inputs.apiman-version }}
-            apiman/${{ matrix.docker-images.name }}:latest-release
-            ghcr.io/apiman/${{ matrix.docker-images.name }}:${{ inputs.apiman-version }}     
-            ghcr.io/apiman/${{ matrix.docker-images.name }}:latest-release
+          tags: ${{ env.DOCKER_TAGS }}

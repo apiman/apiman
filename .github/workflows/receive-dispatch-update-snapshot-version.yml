@@ -1,0 +1,52 @@
+name: update Apiman snapshot version
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - apiman-snapshot-version
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      snapshot-version-changed: ${{ steps.check-version-change.outputs.snapshot-version-changed }}
+    steps:
+      - name: Checkout Apiman Docker repo
+        uses: actions/checkout@v3
+
+      - name: Default setup items
+        run: bash .github/workflows/support/setup.sh
+
+      - name: Update snapshot version in docker-release flow if changed
+        id: check-version-change
+        run: |
+          SNAPSHOT_VERSION_FILE=$(cat .github/workflows/SNAPSHOT_VERSION)
+          if [[ "$SNAPSHOT_VERSION_FILE" !=  "${{ github.event.client_payload.snapshot-version }}" ]] 
+          then
+            echo "Old version: $SNAPSHOT_VERSION_FILE - New version: ${{ github.event.client_payload.snapshot-version }}"
+            echo ${{ github.event.client_payload.snapshot-version }} > .github/workflows/SNAPSHOT_VERSION
+            echo ::set-output name=snapshot-version-changed::true
+          else
+            echo "Snapshot version was not changed"
+            echo ::set-output name=snapshot-version-changed::false
+          fi
+
+      - name: Commit release snapshot update to repository (if version changed)
+        uses: EndBug/add-and-commit@v7.2.1
+        if: ${{ needs.read-version.outputs.snapshot-version-changed }}
+        with:
+          author_name: apiman-ci
+          default_author: user_info
+          message: "chore(ci): update SNAPSHOT_VERSION to ${{ github.event.client_payload.snapshot-version }}"
+          add: .github/workflows --force
+
+  rebuild-same-version-snapshot:
+    name: Rebuild snapshot version when code has changed, but snapshot version *not* changed
+    needs: build
+    uses: apiman/apiman-docker/.github/workflows/docker-test-release.yml@master
+    if: ${{ needs.build.outputs.snapshot-version-changed == 'false' }}
+    secrets: inherit
+    with:
+      apiman-version: ${{ github.event.client_payload.snapshot-version }}
+      push-to-repos: true
+      snapshot: true
