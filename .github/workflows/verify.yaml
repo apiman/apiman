@@ -16,6 +16,10 @@ on:
       - 'CODE_OF_CONDUCT*'
     branches: [master, 2.x]
 
+defaults:
+  run:
+    shell: bash -ieo pipefail {0}
+
 jobs:
   build-verify:
     name: Verify Build
@@ -48,6 +52,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up `mvnd`
+        run: bash .github/workflows/support/set-mvn-location.sh
+
       - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v2
         with:
@@ -57,8 +64,9 @@ jobs:
 
       - name: Get Apiman version
         id: apiman-version-data
+        # Don't use mvnd for `help:evaluate` command, output is messed up.
         run: |
-          export APIMAN_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          export APIMAN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "::set-output name=apiman-version::$APIMAN_VERSION"
           if [[ "$APIMAN_VERSION" =~ "SNAPSHOT" ]]
           then
@@ -84,7 +92,7 @@ jobs:
         run: ./fastbuild.sh
 
       - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
-        run: ./mvnw test install -Dinvoker.skip -Dmaven.javadoc.skip=true -B ${{ matrix.integration-suite.command }}
+        run: mvnd test install -Dmaven.javadoc.skip=true ${{ matrix.integration-suite.command }}
 
       - name: Test Summary
         uses: test-summary/action@v1
@@ -100,6 +108,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: Set up `mvnd`
+        run: bash .github/workflows/support/set-mvn-location.sh
 
       - name: Set up JDK 11 (for deploying assets, docker builds, etc)
         uses: actions/setup-java@v2
@@ -138,6 +149,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up `mvnd`
+        run: bash .github/workflows/support/set-mvn-location.sh
+
       - name: Tag/retag snapshot
         run: |
           echo "Version: $APIMAN_VERSION"
@@ -165,15 +179,15 @@ jobs:
       - name: 'Apiman Parent: Build and deploy POM/BOM & deploy to OSSRH Snapshots'
         run: |
           cd parent
-          sh ../mvnw -B clean install
-          sh ../mvnw -B deploy
+          mvnd -B clean install
+          mvnd -B deploy
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
       - name: 'Apiman: Build and deploy main project to OSSRH Snapshots'
         run: |
-          ./mvnw -B deploy -DskipTests -Dmaven.test.skip=true
+          mvnd -B deploy -DskipTests -Dmaven.test.skip=true
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}

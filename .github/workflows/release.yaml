@@ -13,29 +13,41 @@ on:
         required: true
         default: 'master'
 
+defaults:
+  run:
+    shell: bash -ieo pipefail {0}
+
 jobs:
   release:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'Apiman'
     steps:
+      - name: Set up `mvnd`
+        run: bash .github/workflows/support/set-mvn-location.sh
+
       - name: Set up Node.js v10
         uses: actions/setup-node@v1
         with:
           node-version: 10
-      - name: Set up JDK 8
+
+      - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          java-version: '8'
+          java-version: '11'
           distribution: 'temurin'
+
       - name: Set up Gren
         run: npm install github-release-notes -g
+
       - name: Set up NPM CLI Login
         run: npm install -g npm-cli-login
+
       - name: Import GPG Key
         uses: crazy-max/ghaction-import-gpg@v1
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
       - name: Set up settings.xml
         run: |
           mkdir -p /home/runner/.m2
@@ -56,6 +68,7 @@ jobs:
           git checkout master
           git branch --set-upstream-to=origin/master
           git pull
+
       - name: Apiman Website Code Checkout
         run: |
           mkdir website
@@ -66,6 +79,7 @@ jobs:
           git checkout master
           git branch --set-upstream-to=origin/master
           git pull
+
       - name: Apiman Plugins Code Checkout
         run: |
           mkdir plugins
@@ -77,54 +91,92 @@ jobs:
           git branch --set-upstream-to=origin/master
           git pull
 
-#       - name: Apiman Deployer Code Checkout
-#         run: |
-#           mkdir deployer
-#           cd deployer
-#           git init
-#           git remote add origin "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apiman/apiman-deployer.git"
-#           git fetch
-#           git checkout master
-#           git branch --set-upstream-to=origin/master
-#           git pull
+      - name: Apiman Default API Catalog Code Checkout
+        run: |
+          git clone "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apiman/apiman-api-catalog.git"
+          cd apiman-api-catalog
+          git fetch
+          git checkout master
+          git branch --set-upstream-to=origin/master
+          git pull
+
+      - name: Apiman Default Plugin Registry Code Checkout
+        run: |
+          git clone "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apiman/apiman-plugin-registry.git"
+          cd apiman-plugin-registry
+          git fetch
+          git checkout master
+          git branch --set-upstream-to=origin/master
+          git pull
 
       # Update all project versions to the version # being released
       - name: Update Apiman *Parent* Release Version ${{ github.event.inputs.release-version }} in pom.xml
-        run: | 
+        run: |
           cd apiman/parent
-          ../mvnw -ntp clean install
-          ../mvnw -ntp versions:set -DnewVersion="${{ github.event.inputs.release-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
-          ../mvnw -ntp clean install
+          mvnd -ntp clean install
+          mvnd -ntp versions:set -DnewVersion="${{ github.event.inputs.release-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvnd -ntp clean install
+
       - name: Update Apiman Release Version ${{ github.event.inputs.release-version }} in pom.xml
         run: |
           cd apiman
-          ./mvnw -ntp -N versions:update-parent -DparentVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false
-          ./mvnw -ntp versions:set -DnewVersion="${{ github.event.inputs.release-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
-          ./mvnw -ntp clean install
+          mvnd -ntp -N versions:update-parent -DparentVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false
+          mvnd -ntp versions:set -DnewVersion="${{ github.event.inputs.release-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvnd -ntp clean install
+
       - name: Update Apiman Version in Plugins Project
         run: |
           cd plugins
           sed -i  "s/<version.apiman>.*<\/version.apiman>/<version.apiman>${{ github.event.inputs.release-version }}<\/version.apiman>/g" pom.xml
+
       - name: Update Apiman Plugins Release Version ${{ github.event.inputs.release-version }} in pom.xml
         run: |
           cd plugins
-          ./mvnw -ntp -N versions:update-parent -DparentVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false
-          ./mvnw -ntp versions:set -DnewVersion="${{ github.event.inputs.release-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
-          ./mvnw -ntp clean install
-          
+          mvnd -ntp -N versions:update-parent -DparentVersion="[${{ github.event.inputs.release-version }}]" -DgenerateBackupPoms=false
+          mvnd -ntp versions:set -DnewVersion="${{ github.event.inputs.release-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvnd -ntp clean install
+
+      - name: Commit changes for Apiman Plugin Registry
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release-version }}
+          DEV_VERSION: ${{ github.event.inputs.snapshot-version }}
+        run: |
+          cd apiman-plugin-registry
+          bash release.sh
+
+      - name: Commit changes for Apiman API Catalog
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release-version }}
+          DEV_VERSION: ${{ github.event.inputs.snapshot-version }}
+        run: |
+          cd apiman-api-catalog
+          bash release.sh
+
+      - name: Update Registry and Catalog links in Apiman
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release-version }}
+          DEV_VERSION: ${{ github.event.inputs.snapshot-version }}
+        run: |
+          find . -name "*.properties" -exec sed -i "s|apiman-manager.api-catalog.catalog-url=https://cdn.jsdelivr.net/gh/apiman/apiman-api-catalog@master/catalog.json|apiman-manager.api-catalog.catalog-url=https://cdn.jsdelivr.net/gh/apiman/apiman-api-catalog@$RELEASE_VERSION/catalog.json|" {} \;
+          find . -name "*.properties" -exec sed -i "s|apiman-manager.plugins.registries=https://cdn.jsdelivr.net/gh/apiman/apiman-plugin-registry@master/registry.json|apiman-manager.plugins.registries=https://cdn.jsdelivr.net/gh/apiman/apiman-plugin-registry@$RELEASE_VERSION/registry.json|" {} \;
+
       # Commit changes back to GitHub
       - name: Commit Changes for Apiman Release Version ${{ github.event.inputs.release-version }}
         run: |
           cd apiman
           git add .
           git commit -m "Automated commit for Release Version: ${{ github.event.inputs.release-version }}"
-          git push
+          git tag -f -a -m "Tagging release ${{ github.event.inputs.release-version }}" ${{ github.event.inputs.release-version }}
+          git push --atomic master ${{ github.event.inputs.release-version }} 
+
       - name: Commit Changes for Apiman Plugins Release Version ${{ github.event.inputs.release-version }}
         run: |
           cd plugins
           git add .
           git commit -m "Automated commit for Release Version: ${{ github.event.inputs.release-version }}"
-          git push
+          git tag -f -a -m "Tagging release ${{ github.event.inputs.release-version }}" ${{ github.event.inputs.release-version }}
+          git push --atomic master ${{ github.event.inputs.release-version }} 
+
 
       # Create GitHub "release" with attached assets
       - name: Signing and Archiving the Quickstart ZIPs
@@ -137,70 +189,21 @@ jobs:
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apiman-distro-wildfly-${{ github.event.inputs.release-version }}-overlay.zip
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apiman-distro-vertx-${{ github.event.inputs.release-version }}.zip
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip
+
       - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.event.inputs.release-version }} 
-          release_name: ${{ github.event.inputs.release-version }}
-      - name: Upload WildFly Overlay Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs object, which include a `upload_url` 
-          asset_path: /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-wildfly-${{ github.event.inputs.release-version }}-overlay.zip
-          asset_name: apiman-distro-wildfly-${{ github.event.inputs.release-version }}-overlay.zip
-          asset_content_type: application/zip
-      - name: Upload WildFly Overlay Asset (asc)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url` 
-          asset_path: /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-wildfly-${{ github.event.inputs.release-version }}-overlay.zip.asc
-          asset_name: apiman-distro-wildfly-${{ github.event.inputs.release-version }}-overlay.zip.asc
-          asset_content_type: application/octet-stream
-      - name: Upload Vert.x Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs object, which include a `upload_url` 
-          asset_path: /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-vertx-${{ github.event.inputs.release-version }}.zip
-          asset_name: apiman-distro-vertx-${{ github.event.inputs.release-version }}.zip
-          asset_content_type: application/zip
-      - name: Upload Vert.x Asset (asc)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url` 
-          asset_path: /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-vertx-${{ github.event.inputs.release-version }}.zip.asc
-          asset_name: apiman-distro-vertx-${{ github.event.inputs.release-version }}.zip.asc
-          asset_content_type: application/octet-stream
-          
-      - name: Upload Tomcat Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs object, which include a `upload_url` 
-          asset_path: /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip
-          asset_name: apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip
-          asset_content_type: application/zip
-      - name: Upload Tomcat Asset (asc)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url` 
-          asset_path: /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip.asc
-          asset_name: apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip.asc
-          asset_content_type: application/octet-stream
-          
+          tag_name: ${{ github.event.inputs.release-version }}
+          name: ${{ github.event.inputs.release-version }}
+          prerelease: false
+          files: |
+            /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-wildfly-${{ github.event.inputs.release-version }}-overlay.zip
+            /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-wildfly-${{ github.event.inputs.release-version }}-overlay.zip.asc
+            /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-vertx-${{ github.event.inputs.release-version }}.zip
+            /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-vertx-${{ github.event.inputs.release-version }}.zip.asc
+            /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip
+            /home/runner/work/apiman/apiman/apiman/releases/apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip.asc
 
           # releases/apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip
       - name: Generate Release Notes
@@ -210,41 +213,44 @@ jobs:
       - name: Deploy Apiman to Maven Central
         run: |
           cd apiman
-          ./mvnw deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
+          mvnd deploy --batch-mode -DskipTests -Prelease --settings /home/runner/.m2/settings.xml
           cd parent
-          ../mvnw deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
-      # Tag and release Apiman Plugins
-      - name: Tag and Release Apiman Plugins
-        run: |
-          cd plugins
-          git tag -a -m "Tagging release ${{ github.event.inputs.release-version }}" ${{ github.event.inputs.release-version }}
-          git push origin ${{ github.event.inputs.release-version }}
+          mvnd deploy --batch-mode -DskipTests -Prelease --settings /home/runner/.m2/settings.xml
+
       # Deploy Apiman Plugins to Maven Central
       - name: Deploy Apiman Plugins to Maven Central
         run: |
           cd plugins
-          ./mvnw deploy --batch-mode -DskipTests -T2C -Prelease --settings /home/runner/.m2/settings.xml
+          mvnd deploy --batch-mode -DskipTests -Prelease --settings /home/runner/.m2/settings.xml
 
       # Update project pom.xml files to next snapshot version and push to GH
       - name: Update Apiman Parent Next Snapshot Version ${{ github.event.inputs.snapshot-version }} in pom.xml
-        run: | 
+        run: |
           cd apiman/parent
-          ../mvnw -ntp versions:set -DnewVersion="${{ github.event.inputs.snapshot-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvnd -ntp versions:set -DnewVersion="${{ github.event.inputs.snapshot-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
+
       - name: Update Apiman Next Snapshot Version ${{ github.event.inputs.snapshot-version }} in pom.xml
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release-version }}
         run: |
           cd apiman
-          ./mvnw -ntp versions:set -DnewVersion="${{ github.event.inputs.snapshot-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
-          ./mvnw -ntp versions:update-parent -DparentVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DallowSnapshots=true
+          mvnd -ntp versions:set -DnewVersion="${{ github.event.inputs.snapshot-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvnd -ntp versions:update-parent -DparentVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DallowSnapshots=true
+          find . -name "*.properties" -exec sed -i "s|apiman-manager.api-catalog.catalog-url=https://cdn.jsdelivr.net/gh/apiman/apiman-api-catalog@$RELEASE_VERSION/catalog.json|apiman-manager.api-catalog.catalog-url=https://cdn.jsdelivr.net/gh/apiman/apiman-api-catalog@master/catalog.json|" {} \;
+          find . -name "*.properties" -exec sed -i "s|apiman-manager.plugins.registries=https://cdn.jsdelivr.net/gh/apiman/apiman-plugin-registry@$RELEASE_VERSION/registry.json|apiman-manager.plugins.registries=https://cdn.jsdelivr.net/gh/apiman/apiman-plugin-registry@master/registry.json|" {} \;
+
       - name: Update Apiman Plugins Next Snapshot Version ${{ github.event.inputs.snapshot-version }} in pom.xml
         run: |
           cd plugins
-          ./mvnw -ntp versions:set -DnewVersion="${{ github.event.inputs.snapshot-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
-          ./mvnw -ntp versions:update-parent -DparentVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DallowSnapshots=true
+          mvnd -ntp versions:set -DnewVersion="${{ github.event.inputs.snapshot-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvnd -ntp versions:update-parent -DparentVersion="[${{ github.event.inputs.snapshot-version }}]" -DgenerateBackupPoms=false -DallowSnapshots=true
+
       - name: Commit Changes for Apiman Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
         run: |
           cd apiman
           git commit -am "Automated commit for Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
           git push
+
       - name: Commit Changes for Apiman Plugins Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
         run: |
           cd plugins
