@@ -2,6 +2,8 @@
 ARG WILDFLY_VERSION=23.0.2.Final
 FROM quay.io/wildfly/wildfly:${WILDFLY_VERSION}
 
+ARG APIMAN_VERSION
+
 LABEL org.opencontainers.image.authors="marc@blackparrotlabs.io"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.url="https://www.apiman.io"
@@ -11,8 +13,6 @@ LABEL org.opencontainers.image.documentation="https://github.com/apiman/apiman-d
 LABEL org.opencontainers.image.version=$APIMAN_VERSION
 
 EXPOSE 8080 8443
-
-ARG APIMAN_VERSION
 
 RUN cd $HOME/wildfly \
  && curl -L https://github.com/Apiman/apiman/releases/download/$APIMAN_VERSION/apiman-distro-wildfly-$APIMAN_VERSION-overlay.zip | bsdtar -xvf-
