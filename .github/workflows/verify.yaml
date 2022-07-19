@@ -140,7 +140,7 @@ jobs:
       IS_SNAPSHOT_VERSION: ${{ needs.build-verify.outputs.is-snapshot-version }}
 
     # Export if version contains "SNAPSHOT" only
-    if: ${{ needs.build-verify.outputs.is-snapshot-version }} && startsWith(github.ref, 'refs/heads/') && github.ref == 'refs/heads/master' && github.repository_owner == 'Apiman'
+    if: ${{ needs.build-verify.outputs.is-snapshot-version == 'true' }} && github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
     needs: [ build-verify, e2e ]
 
     steps:
