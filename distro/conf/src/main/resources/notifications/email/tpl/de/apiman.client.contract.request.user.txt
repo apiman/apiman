@@ -22,4 +22,4 @@ Organization: {event.clientOrgId}
 Name: {event.clientId}
 Version: {event.clientVersion}
 
-{#include de/footer.de.include.txt /}
+{#include footer.de.include.txt /}

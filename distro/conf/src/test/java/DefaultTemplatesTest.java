@@ -265,4 +265,121 @@ public class DefaultTemplatesTest {
                 EmailNotificationDispatcher.createDefaultTemplateMap(notificationDto, CONFIG)
         );
     }
+
+    @Test
+    public void contract_request_user() throws IOException {
+        UserDto appDeveloper = new UserDto()
+                .setFullName("John Smith Appdev")
+                .setUsername("JohnSmith123")
+                .setEmail("foo@apiman.io")
+                .setLocale(Locale.ENGLISH);
+
+        ContractCreatedEvent contractCreated = ContractCreatedEvent
+                .builder()
+                .setHeaders(ApimanEventHeaders.builder()
+                        .setId("Event123")
+                        .setSource(URI.create("https://example.org"))
+                        .setSubject("Hello")
+                        .setEventVersion(1L)
+                        .setTime(OffsetDateTime.now())
+                        .setType("X")
+                        .build())
+                .setApiOrgId("ApiOrg")
+                .setApiId("CoolApi")
+                .setApiVersion("1.0")
+                .setClientOrgId("MobileKompany")
+                .setClientId("MobileApp")
+                .setClientVersion("2.0")
+                .setContractId("1234")
+                .setPlanId("Gold")
+                .setPlanVersion("1.3")
+                .setApprovalRequired(true)
+                .setUser(appDeveloper)
+                .build();
+
+        NotificationDto<IVersionedApimanEvent> notificationDto = new NotificationDto<>()
+                .setId(123L)
+                .setCategory(NotificationCategory.API_LIFECYCLE)
+                .setReason("whatever")
+                .setReasonMessage("hi")
+                .setStatus(NotificationStatus.OPEN)
+                .setCreatedOn(OffsetDateTime.now())
+                .setModifiedOn(OffsetDateTime.now())
+                .setRecipient(appDeveloper)
+                .setSource("adsadsaad")
+                .setPayload(contractCreated);
+
+        QuteTemplateEngine engine = new QuteTemplateEngine(CONFIG);
+        engine.applyTemplate(
+                Files.readString(CONFIG.getConfigDirectory().resolve("notifications/email/tpl/en/apiman.client.contract.request.user.txt")),
+                EmailNotificationDispatcher.createDefaultTemplateMap(notificationDto, CONFIG)
+        );
+
+        engine.applyTemplate(
+                Files.readString(CONFIG.getConfigDirectory().resolve("notifications/email/tpl/en/apiman.client.contract.request.user.html")),
+                EmailNotificationDispatcher.createDefaultTemplateMap(notificationDto, CONFIG)
+        );
+    }
+
+    @Test
+    public void contract_approval_response_rejected() throws IOException {
+        UserDto recipient = new UserDto()
+                .setFullName("John Smith Appdev")
+                .setUsername("JohnSmith123")
+                .setEmail("foo@apiman.io")
+                .setLocale(Locale.ENGLISH);
+
+        UserDto approver = new UserDto()
+                .setFullName("David Approver")
+                .setUsername("ApproverPerson")
+                .setEmail("approver@apiman.io")
+                .setLocale(Locale.ENGLISH);
+
+        ContractApprovalEvent approvalEvent = ContractApprovalEvent
+                .builder()
+                .setHeaders(ApimanEventHeaders.builder()
+                        .setId("Event123")
+                        .setSource(URI.create("https://example.org"))
+                        .setSubject("Hello")
+                        .setEventVersion(1L)
+                        .setTime(OffsetDateTime.now())
+                        .setType("X")
+                        .build())
+                .setApiOrgId("ApiOrg")
+                .setApiId("CoolApi")
+                .setApiVersion("1.0")
+                .setClientOrgId("MobileKompany")
+                .setClientId("MobileApp")
+                .setClientVersion("2.0")
+                .setContractId("1234")
+                .setPlanId("Gold")
+                .setPlanVersion("1.3")
+                .setApprover(approver)
+                .setApproved(false)
+                .setRejectionReason("You shall not PAS")
+                .build();
+
+        NotificationDto<IVersionedApimanEvent> notificationDto = new NotificationDto<>()
+                .setId(123L)
+                .setCategory(NotificationCategory.API_ADMINISTRATION)
+                .setReason("whatever")
+                .setReasonMessage("hi")
+                .setStatus(NotificationStatus.OPEN)
+                .setCreatedOn(OffsetDateTime.now())
+                .setModifiedOn(OffsetDateTime.now())
+                .setRecipient(recipient)
+                .setSource("adsadsaad")
+                .setPayload(approvalEvent);
+
+        QuteTemplateEngine engine = new QuteTemplateEngine(CONFIG);
+        engine.applyTemplate(
+                Files.readString(CONFIG.getConfigDirectory().resolve("notifications/email/tpl/en/apiman.client.contract.approval.rejected.txt")),
+                EmailNotificationDispatcher.createDefaultTemplateMap(notificationDto, CONFIG)
+        );
+
+        engine.applyTemplate(
+                Files.readString(CONFIG.getConfigDirectory().resolve("notifications/email/tpl/en/apiman.client.contract.approval.rejected.html")),
+                EmailNotificationDispatcher.createDefaultTemplateMap(notificationDto, CONFIG)
+        );
+    }
 }
