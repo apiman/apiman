@@ -44,6 +44,13 @@
           *ngIf="(organizations$ | async)!.length > 1"
           class="primary"
           id="{{ org.id }}">
+          <mat-icon
+            inline="true"
+            class="org-icon"
+            matTooltip="{{ 'COMMON.ORGANIZATION' | translate }}"
+            matTooltipPosition="above"
+            >security</mat-icon
+          >
           {{ org.name }}
         </h1>
         <ng-container *ngFor="let client of clients$ | async">
