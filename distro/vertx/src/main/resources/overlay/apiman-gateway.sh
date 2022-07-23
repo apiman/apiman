@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Convenience script to launch apiman's Vert.x gateway with sensible
+# Convenience script to launch Apiman's Vert.x gateway with sensible
 # default behaviour.
 #
 # To pass additional Java options with $APIMAN_GATEWAY_OPTS.
