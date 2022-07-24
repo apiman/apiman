@@ -6,7 +6,7 @@
 --  Against: apiman@offline:mysql?version=8&caseSensitive=true&catalog=apiman&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/mysql/databasechangelog.csv
 --  Liquibase version: 4.9.1
 --  *********************************************************************
-
+SET default_storage_engine=INNODB;
 --  Changeset src/main/liquibase/current/000-apiman-manager-api.db.sequences.changelog.xml::1434723514712-1::apiman
 CREATE TABLE hibernate_sequence (next_val bigint(20) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -19,7 +19,7 @@ CREATE TABLE client_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NU
 CREATE TABLE clients (id VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, name VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-3::apiman (generated)
-CREATE TABLE auditlog (id BIGINT NOT NULL, created_on timestamp NOT NULL, data LONGTEXT NULL, entity_id VARCHAR(255) NULL, entity_type VARCHAR(255) NOT NULL, entity_version VARCHAR(255) NULL, organization_id VARCHAR(255) NOT NULL, what VARCHAR(255) NOT NULL, who VARCHAR(255) NOT NULL);
+CREATE TABLE auditlog (id BIGINT NOT NULL, created_on timestamp NOT NULL, data LONGTEXT NULL, entity_id VARCHAR(255) NULL, entity_type VARCHAR(255) NOT NULL, entity_version VARCHAR(255) NULL, organization_id VARCHAR(255) NOT NULL, what VARCHAR(255) NOT NULL, who VARCHAR(255) NOT NULL) ROW_FORMAT=COMPRESSED;
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-4::apiman (generated)
 CREATE TABLE contracts (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, clientv_id BIGINT NULL, planv_id BIGINT NULL, apiv_id BIGINT NULL);
@@ -378,7 +378,7 @@ ALTER TABLE api_plans ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS' NUL
 ALTER TABLE api_versions ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS' NULL;
 
 --  Changeset src/main/liquibase/current/20220330-discoverability.xml::1646489262610-4::msavy (generated)
-CREATE TABLE discoverability (id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NULL, api_id VARCHAR(255) NULL, api_version VARCHAR(255) NULL, plan_id VARCHAR(255) NULL, plan_version VARCHAR(255) NULL, discoverability VARCHAR(255) NULL, CONSTRAINT discoverabilityPK PRIMARY KEY (id));
+CREATE TABLE discoverability (id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NULL, api_id VARCHAR(255) NULL, api_version VARCHAR(255) NULL, plan_id VARCHAR(255) NULL, plan_version VARCHAR(255) NULL, discoverability VARCHAR(255) NULL, CONSTRAINT discoverabilityPK PRIMARY KEY (id)) ROW_FORMAT=COMPRESSED;
 
 CREATE INDEX api_plan_discoverability_index ON discoverability(org_id, api_id, api_version, plan_id, plan_version);
 

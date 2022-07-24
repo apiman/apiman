@@ -1,4 +1,4 @@
-
+SET default_storage_engine=INNODB;
 CREATE TABLE gw_apis (org_id VARCHAR(255) NOT NULL, id VARCHAR(255) NOT NULL, version VARCHAR(255) NOT NULL, bean LONGTEXT NOT NULL);
 ALTER TABLE gw_apis ADD PRIMARY KEY (org_id, id, version);
 
