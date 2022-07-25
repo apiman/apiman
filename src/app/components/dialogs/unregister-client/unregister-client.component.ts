@@ -14,14 +14,10 @@
  *  imitations under the License.
  */
 
-import { Component, EventEmitter } from '@angular/core';
-import { IAction } from '../../../interfaces/ICommunication';
-import { BackendService } from '../../../services/backend/backend.service';
-import { catchError, switchMap } from 'rxjs/operators';
-import { EMPTY, iif, of } from 'rxjs';
-import { SnackbarService } from '../../../services/snackbar/snackbar.service';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, Inject } from '@angular/core';
 import { IClientVersionExt } from '../../../interfaces/IClientVersionSummaryExt';
+import { ClientService } from '../../../services/client/client.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-unregister-client',
@@ -29,50 +25,22 @@ import { IClientVersionExt } from '../../../interfaces/IClientVersionSummaryExt'
   styleUrls: ['./unregister-client.component.scss']
 })
 export class UnregisterClientComponent {
-  extendedClientVersion!: IClientVersionExt;
-  clientNameVersion = { value: '' };
-
-  unregisterEmitter = new EventEmitter();
+  clientVersion: IClientVersionExt;
+  translations = { client: '' };
 
   constructor(
-    private backend: BackendService,
-    private snackbarService: SnackbarService,
-    private translator: TranslateService
-  ) {}
+    private clientService: ClientService,
+    public dialogRef: MatDialogRef<UnregisterClientComponent>,
+    @Inject(MAT_DIALOG_DATA)
+    public data: { clientVersion: IClientVersionExt; clientName: string }
+  ) {
+    this.clientVersion = data.clientVersion;
+    this.translations.client = data.clientName;
+  }
 
-  /**
-   * This method deletes and optionally unregisters a client.
-   * If the client is in the "Registered" or in the "AwaitingApproval" state, we unregister the client before deletion.
-   */
   onUnregister(): void {
-    const action: IAction = {
-      type: 'unregisterClient',
-      organizationId: this.extendedClientVersion.client.organization.id,
-      entityId: this.extendedClientVersion.client.id,
-      entityVersion: this.extendedClientVersion.version
-    };
-
-    iif(
-      () =>
-        this.extendedClientVersion.status === 'Registered' ||
-        this.extendedClientVersion.status === 'AwaitingApproval',
-      this.backend.sendAction(action),
-      of(void 0)
-    )
-      .pipe(
-        switchMap(() =>
-          this.backend.deleteClient(action.organizationId, action.entityId)
-        ),
-        catchError((err) => {
-          console.error('Deleting client failed: ', err);
-          this.snackbarService.showErrorSnackBar(
-            this.translator.instant('CLIENTS.DELETE_CLIENT_FAILED') as string
-          );
-          return EMPTY;
-        })
-      )
-      .subscribe(() => {
-        this.unregisterEmitter.emit();
-      });
+    this.clientService
+      .deleteClient(this.clientVersion)
+      .subscribe(() => this.dialogRef.close(true));
   }
 }

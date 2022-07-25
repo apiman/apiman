@@ -178,7 +178,7 @@
   "DIALOGS": {
     "DELETE_CLIENT": {
       "TITLE":"Client löschen",
-      "DELETE_SURE": "Sind Sie sicher, dass Sie den Client <b>{{value}}</b> und all seine Verträge <span class='warn'>löschen</span> möchten?",
+      "DELETE_SURE": "Sind Sie sicher, dass Sie den Client <b>{{client}}</b> und all seine Verträge <span class='warn'>löschen</span> möchten?",
       "DELETE_BTN": "Client löschen"
     },
     "DELETE_CONTRACT": {

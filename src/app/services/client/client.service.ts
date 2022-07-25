@@ -17,7 +17,7 @@
 import { Injectable } from '@angular/core';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
+import { EMPTY, forkJoin, iif, Observable, of, throwError } from 'rxjs';
 import { BackendService } from '../backend/backend.service';
 import {
   IAction,
@@ -28,6 +28,8 @@ import {
 } from '../../interfaces/ICommunication';
 import { PermissionsService } from '../permissions/permissions.service';
 import { IClientVersionExt } from '../../interfaces/IClientVersionSummaryExt';
+import { SnackbarService } from '../snackbar/snackbar.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +37,9 @@ import { IClientVersionExt } from '../../interfaces/IClientVersionSummaryExt';
 export class ClientService {
   constructor(
     private backend: BackendService,
-    private permissionsService: PermissionsService
+    private permissionsService: PermissionsService,
+    private snackbarService: SnackbarService,
+    private translator: TranslateService
   ) {}
 
   /**
@@ -78,9 +82,8 @@ export class ClientService {
       this.permissionsService.getAllowedOrganizations({
         name: 'clientAdmin'
       } as IPermission);
-    return (
-      clientVersion.status !== 'Retired' &&
-      clientAdminOrganizations.includes(clientVersion.client.organization.id)
+    return clientAdminOrganizations.includes(
+      clientVersion.client.organization.id
     );
   }
 
@@ -169,5 +172,39 @@ export class ClientService {
         registerable: this.isRegisterable(clientVersion)
       } as IClientVersionExt;
     });
+  }
+
+  /**
+   * This method deletes and optionally unregisters a client.
+   * If the client is in the "Registered" or in the "AwaitingApproval" state, we unregister the client before deletion.
+   */
+  public deleteClient(
+    extendedClientVersion: IClientVersionExt | IClientVersion
+  ): Observable<void> {
+    const action: IAction = {
+      type: 'unregisterClient',
+      organizationId: extendedClientVersion.client.organization.id,
+      entityId: extendedClientVersion.client.id,
+      entityVersion: extendedClientVersion.version
+    };
+
+    return iif(
+      () =>
+        extendedClientVersion.status === 'Registered' ||
+        extendedClientVersion.status === 'AwaitingApproval',
+      this.backend.sendAction(action),
+      of(void 0)
+    ).pipe(
+      switchMap(() =>
+        this.backend.deleteClient(action.organizationId, action.entityId)
+      ),
+      catchError((err) => {
+        console.error('Deleting client failed: ', err);
+        this.snackbarService.showErrorSnackBar(
+          this.translator.instant('CLIENTS.DELETE_CLIENT_FAILED') as string
+        );
+        return EMPTY;
+      })
+    );
   }
 }

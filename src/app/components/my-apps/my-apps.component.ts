@@ -345,19 +345,18 @@ export class MyAppsComponent implements OnInit {
       .subscribe();
   }
 
-  clientHasContracts(clientVersionId: number): boolean {
-    let hasContracts = false;
+  contractCount(clientVersionId: number): number {
+    let count = 0;
     this.contracts$
       .pipe(
         tap((contracts: IContractExt[]) => {
-          hasContracts =
-            contracts.filter((contract) => {
-              return contract.client.id === clientVersionId;
-            }).length > 0;
+          count = contracts.filter((contract) => {
+            return contract.client.id === clientVersionId;
+          }).length;
         })
       )
       .subscribe();
-    return hasContracts;
+    return count;
   }
 
   formatApiVersionPlanTitle(contract: IContractExt): string {
@@ -381,20 +380,20 @@ export class MyAppsComponent implements OnInit {
 
   unregister(extendedClientVersion: IClientVersionExt): void {
     const dialogRef = this.dialog.open(UnregisterClientComponent, {
+      data: {
+        clientVersion: extendedClientVersion,
+        clientName: this.formatClientContractTitle(extendedClientVersion)
+      },
       autoFocus: false
     });
-    dialogRef.componentInstance.extendedClientVersion = extendedClientVersion;
-    dialogRef.componentInstance.clientNameVersion = {
-      value: this.formatClientContractTitle(extendedClientVersion)
-    };
 
-    dialogRef.componentInstance.unregisterEmitter.subscribe(() => {
-      this.snackbarService.showPrimarySnackBar(
-        this.translator.instant('CLIENTS.CLIENT_DELETED') as string
-      );
-      this.fetchData();
-
-      dialogRef.close();
+    dialogRef.afterClosed().subscribe((clientDeleted) => {
+      if (clientDeleted) {
+        this.snackbarService.showPrimarySnackBar(
+          this.translator.instant('CLIENTS.CLIENT_DELETED') as string
+        );
+        this.fetchData();
+      }
     });
   }
 

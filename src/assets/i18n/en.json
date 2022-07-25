@@ -178,7 +178,7 @@
   "DIALOGS": {
     "DELETE_CLIENT": {
       "TITLE":"Delete Client",
-      "DELETE_SURE": "Are you sure you want to <span class='warn'>delete</span> the client <b>{{value}}</b> and all of its contracts?",
+      "DELETE_SURE": "Are you sure you want to <span class='warn'>delete</span> the client <b>{{client}}</b> and all of its contracts?",
       "DELETE_BTN": "Delete Client"
     },
     "DELETE_CONTRACT": {
