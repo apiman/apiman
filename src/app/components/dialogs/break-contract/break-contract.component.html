@@ -15,12 +15,12 @@
   -->
 
 <h3 mat-dialog-title>
-  {{ 'DIALOGS.DELETE_CLIENT.TITLE' | translate }}
+  {{ 'DIALOGS.DELETE_CONTRACT.TITLE' | translate }}
 </h3>
 <mat-dialog-content>
   <span
     [innerHTML]="
-      'DIALOGS.DELETE_CLIENT.DELETE_SURE' | translate: clientNameVersion
+      'DIALOGS.DELETE_CONTRACT.DELETE_SURE' | translate: translations
     "></span>
 </mat-dialog-content>
 
@@ -28,7 +28,7 @@
   <button mat-flat-button mat-dialog-close color="accent">
     {{ 'COMMON.CANCEL' | translate }}
   </button>
-  <button mat-flat-button (click)="onUnregister()" color="warn">
-    {{ 'DIALOGS.DELETE_CLIENT.DELETE_BTN' | translate }}
+  <button mat-flat-button (click)="breakContract()" color="warn">
+    {{ 'DIALOGS.DELETE_CONTRACT.DELETE_BTN' | translate }}
   </button>
 </mat-dialog-actions>

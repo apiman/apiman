@@ -54,6 +54,7 @@ import { ClientService } from '../../services/client/client.service';
 import { IClientVersionExt } from '../../interfaces/IClientVersionSummaryExt';
 import { ContractService } from '../../services/contract/contract.service';
 import { OrganizationService } from '../../services/org/organization.service';
+import { BreakContractComponent } from '../dialogs/break-contract/break-contract.component';
 
 @Component({
   selector: 'app-my-apps',
@@ -389,11 +390,27 @@ export class MyAppsComponent implements OnInit {
 
     dialogRef.componentInstance.unregisterEmitter.subscribe(() => {
       this.snackbarService.showPrimarySnackBar(
-        this.translator.instant('CLIENTS.CLIENT_REMOVED') as string
+        this.translator.instant('CLIENTS.CLIENT_DELETED') as string
       );
       this.fetchData();
 
       dialogRef.close();
+    });
+  }
+
+  breakContract(contract: IContractExt): void {
+    const dialogRef = this.dialog.open(BreakContractComponent, {
+      data: { contract: contract },
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe((contractDeleted: boolean) => {
+      if (contractDeleted) {
+        this.snackbarService.showPrimarySnackBar(
+          this.translator.instant('CLIENTS.CONTRACT_DELETED') as string
+        );
+        this.fetchData();
+      }
     });
   }
 

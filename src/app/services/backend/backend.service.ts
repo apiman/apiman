@@ -494,6 +494,20 @@ export class BackendService {
     );
   }
 
+  public breakContract(
+    organizationId: string,
+    clientId: string,
+    clientVersion: string,
+    contractId: number
+  ): Observable<void> {
+    const path = `organizations/${organizationId}/clients/${clientId}/versions/${clientVersion}/contracts/${contractId}`;
+
+    return this.http.delete<void>(
+      this.generateUrlFromPath(path),
+      this.httpOptions
+    );
+  }
+
   public deleteClient(
     organizationId: string,
     clientId: string

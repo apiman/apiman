@@ -86,8 +86,10 @@
     "UNSUB_FROM_API": "Unsubscribe from API",
     "UNSUB_FROM_THIS_API": "Unsubscribe from this API",
     "UNSUB": "Unsubscribe",
-    "CLIENT_REMOVED": "The client and its related contracts have been removed",
+    "CLIENT_DELETED": "The client and its related contracts have been deleted",
+    "CONTRACT_DELETED": "The contract has been deleted",
     "REMOVE_CLIENT_TOOLTIP": "Remove client",
+    "REMOVE_CONTRACT_TOOLTIP": "Break contract",
     "USED": "used",
     "RESETS_AT": "Resets at",
     "RESETS_EVERY_SECOND": "Resets every second",
@@ -95,7 +97,8 @@
     "CLIENTS_AND_APIS": "Clients and APIs",
     "NO_CLIENTS_FOUND": "No clients were found",
     "FAILED_WHILE_FETCHING_CLIENTS": "Failed while fetching clients",
-    "REMOVE_CLIENT_FAILED": "Failed while removing the client",
+    "DELETE_CLIENT_FAILED": "Failed while removing the client",
+    "DELETE_CONTRACT_FAILED": "Failed while removing the contract",
     "NO_PROBES": "There is no policy data for the current API",
     "RETIRED_API": "This API is retired and can no longer be used.",
     "SELECT": "Select from available Clients",
@@ -173,9 +176,16 @@
     }
   },
   "DIALOGS": {
-    "REMOVE_TITLE": "Remove Client",
-    "REMOVE_SURE": "Are you sure you want to <span class='warn'>remove</span> the client <b>{{value}}</b> and all of its contracts?",
-    "REMOVE_BTN": "Remove"
+    "DELETE_CLIENT": {
+      "TITLE":"Delete Client",
+      "DELETE_SURE": "Are you sure you want to <span class='warn'>delete</span> the client <b>{{value}}</b> and all of its contracts?",
+      "DELETE_BTN": "Delete Client"
+    },
+    "DELETE_CONTRACT": {
+      "TITLE":"Delete Contract",
+      "DELETE_SURE": "Are you sure you want to <span class='warn'>delete</span> the contract between <b>{{client}}</b> and <b>{{api}}</b>?",
+      "DELETE_BTN": "Delete Contract"
+    }
   },
   "API_DETAILS": {
     "PLANS": "Plans",

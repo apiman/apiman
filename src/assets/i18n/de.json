@@ -86,8 +86,10 @@
     "UNSUB_FROM_API": "Von der API abmelden",
     "UNSUB_FROM_THIS_API": "Von dieser API abmelden",
     "UNSUB": "Abmelden",
-    "CLIENT_REMOVED": "Der Client und die zugehörigen Verträge wurden entfernt",
+    "CLIENT_DELETED": "Der Client und die zugehörigen Verträge wurden entfernt",
+    "CONTRACT_DELETED": "Der Vertrag wurde entfernt",
     "REMOVE_CLIENT_TOOLTIP": "Client entfernen",
+    "REMOVE_CONTRACT_TOOLTIP": "Vertrag entfernen",
     "USED": "verbraucht",
     "RESETS_AT": "Wird zurückgesetzt am",
     "RESETS_EVERY_SECOND": "Wird jede Sekunde zurückgesetzt",
@@ -95,7 +97,8 @@
     "CLIENTS_AND_APIS": "Clients und APIs",
     "NO_CLIENTS_FOUND": "Es wurden keine Clients gefunden",
     "FAILED_WHILE_FETCHING_CLIENTS": "Fehler beim Laden der Clients",
-    "REMOVE_CLIENT_FAILED": "Fehler beim Löschen des Client",
+    "DELETE_CLIENT_FAILED": "Fehler beim Löschen des Client",
+    "DELETE_CONTRACT_FAILED": "Fehler beim Löschen des Vertrags",
     "NO_PROBES": "Für diese API liegen keine Policy-Daten vor",
     "RETIRED_API": "Diese API kann nicht mehr verwendet werden.",
     "SELECT": "Aus vorhandenen Anwendungen auswählen",
@@ -173,9 +176,16 @@
     }
   },
   "DIALOGS": {
-    "REMOVE_TITLE": "Client löschen",
-    "REMOVE_SURE": "Sind Sie sicher, dass Sie den Client <b>{{value}}</b> und all seine Verträge <span class='warn'>löschen</span> möchten?",
-    "REMOVE_BTN": "Löschen"
+    "DELETE_CLIENT": {
+      "TITLE":"Client löschen",
+      "DELETE_SURE": "Sind Sie sicher, dass Sie den Client <b>{{value}}</b> und all seine Verträge <span class='warn'>löschen</span> möchten?",
+      "DELETE_BTN": "Client löschen"
+    },
+    "DELETE_CONTRACT": {
+      "TITLE": "Vertrag löschen",
+      "DELETE_SURE": "Sind Sie sicher, dass Sie den Vertrag zwischen <b>{{client}}</b> und <b>{{api}}</b> <span class='warn'>löschen</span> möchten?",
+      "DELETE_BTN": "Vertrag löschen"
+    }
   },
   "API_DETAILS": {
     "PLANS": "Pläne",

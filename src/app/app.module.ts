@@ -69,6 +69,7 @@ import { AccountIdmComponent } from './components/account-idm/account-idm.compon
 import { AccountOrganizationPermissionsComponent } from './components/account-organization-permissions/account-organization-permissions.component';
 import { ApiPublicEndpointComponent } from './components/api-public-endpoint/api-public-endpoint.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { BreakContractComponent } from './components/dialogs/break-contract/break-contract.component';
 
 export function initializeApp(
   configService: ConfigService,
@@ -110,6 +111,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     ApiPublicEndpointComponent,
     ApiStatusTagComponent,
     AppComponent,
+    BreakContractComponent,
     FooterComponent,
     GaugeChartComponent,
     HeaderComponent,

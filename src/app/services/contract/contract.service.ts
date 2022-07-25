@@ -16,16 +16,18 @@
 
 import { Injectable } from '@angular/core';
 import { BackendService } from '../backend/backend.service';
-import { forkJoin, Observable, switchMap } from 'rxjs';
+import { EMPTY, forkJoin, Observable, switchMap } from 'rxjs';
 import {
   IClientVersion,
   IContract,
   IContractSummary
 } from '../../interfaces/ICommunication';
-import { defaultIfEmpty, map } from 'rxjs/operators';
+import { catchError, defaultIfEmpty, map } from 'rxjs/operators';
 import { IContractExt } from '../../interfaces/IContractExt';
 import { ApiService } from '../api/api.service';
 import { PolicyService } from '../policy/policy.service';
+import { SnackbarService } from '../snackbar/snackbar.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +36,9 @@ export class ContractService {
   constructor(
     private backendService: BackendService,
     private apiService: ApiService,
-    private policyService: PolicyService
+    private policyService: PolicyService,
+    private snackbarService: SnackbarService,
+    private translator: TranslateService
   ) {}
 
   public getContractSummaries(
@@ -133,5 +137,24 @@ export class ContractService {
         return this.getExtendedContracts(contracts);
       })
     );
+  }
+
+  public breakContract(contract: IContractExt | IContract): Observable<void> {
+    return this.backendService
+      .breakContract(
+        contract.client.client.organization.id,
+        contract.client.client.id,
+        contract.client.version,
+        contract.id
+      )
+      .pipe(
+        catchError((err) => {
+          console.error('Deleting contract failed: ', err);
+          this.snackbarService.showErrorSnackBar(
+            this.translator.instant('CLIENTS.DELETE_CONTRACT_FAILED') as string
+          );
+          return EMPTY;
+        })
+      );
   }
 }
