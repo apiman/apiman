@@ -1,3 +1,19 @@
+<!--
+  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
 <mat-accordion class="headers-align">
   <mat-expansion-panel>
     <mat-expansion-panel-header>
@@ -10,23 +26,32 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
 
-    <div
-      class="api-management-permission"
-      *ngFor="
-        let apiManagementPermission of apiManagementPermissions | keyvalue
-      ">
-      <label class="default-label">{{ apiManagementPermission.key }}</label>
-      <mat-list dense>
-        <span
-          mat-list-item
-          *ngFor="
-            let permission of apiManagementPermission.value;
-            last as isLast
-          ">
-          {{ permission }}
-          <span *ngIf="!isLast">&nbsp;|&nbsp;</span>
-        </span>
-      </mat-list>
-    </div>
+    <ng-container
+      *ngIf="apiManagementPermissions.size >= 1; else noPermissions">
+      <div
+        class="api-management-permission"
+        *ngFor="
+          let apiManagementPermission of apiManagementPermissions | keyvalue
+        ">
+        <label class="default-label">{{ apiManagementPermission.key }}</label>
+        <mat-list dense>
+          <span
+            mat-list-item
+            *ngFor="
+              let permission of apiManagementPermission.value;
+              last as isLast
+            ">
+            {{ permission }}
+            <span *ngIf="!isLast">&nbsp;|&nbsp;</span>
+          </span>
+        </mat-list>
+      </div>
+    </ng-container>
+    <ng-template #noPermissions>
+      <app-no-data
+        text="{{
+          'ACCOUNT.API_MANAGEMENT.NO_PERMISSIONS' | translate
+        }}"></app-no-data>
+    </ng-template>
   </mat-expansion-panel>
 </mat-accordion>

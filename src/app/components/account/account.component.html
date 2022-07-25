@@ -71,8 +71,8 @@
         <label class="default-label">{{
           'ACCOUNT.USER_ENTITY.LOCALE' | translate
         }}</label>
-        <ng-container *ngIf="apimanAccount$ | async as apimanAccount"
-          ><div>{{ apimanAccount.locale }}</div></ng-container
+        <ng-container *ngIf="keycloakToken.locale"
+          ><div>{{ keycloakToken.locale }}</div></ng-container
         >
       </div>
     </mat-card-content>
@@ -89,7 +89,7 @@
 
   <br />
 
-  <app-account-idm></app-account-idm>
+  <app-account-idm [keycloakToken]="keycloakToken"></app-account-idm>
 
   <br />
 

@@ -24,6 +24,7 @@ import { AccountComponent } from './components/account/account.component';
 import { MyAppsComponent } from './components/my-apps/my-apps.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotificationsComponent } from './components/notifications/notifications.component';
+import { LoginGuard } from './guards/login.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -38,7 +39,7 @@ const routes: Routes = [
     component: MarketplaceSignupStepperComponent,
     canActivate: [AuthGuard]
   },
-  { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
+  { path: 'account', component: AccountComponent, canActivate: [LoginGuard] },
   {
     path: 'applications',
     component: MyAppsComponent,

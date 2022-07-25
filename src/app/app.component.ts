@@ -28,6 +28,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ICurrentUser } from './interfaces/ICommunication';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ConfigService } from './services/config/config.service';
+import { hasRequiredAuthRoles } from './shared/utility';
 
 @Component({
   selector: 'app-root',
@@ -66,7 +67,13 @@ export class AppComponent implements OnInit {
     from(this.keycloak.isLoggedIn())
       .pipe(
         switchMap((isLoggedIn: boolean) => {
-          if (isLoggedIn) {
+          if (
+            isLoggedIn &&
+            hasRequiredAuthRoles(
+              this.config.getBackendRoles(),
+              this.keycloak.getUserRoles()
+            )
+          ) {
             return this.getUserLanguage();
           } else {
             return of(this.translate.getBrowserLang());

@@ -14,16 +14,19 @@
  *  imitations under the License.
  */
 
-import { Component, Input } from '@angular/core';
-import { KeycloakTokenParsed } from 'keycloak-js';
+import { TestBed } from '@angular/core/testing';
 
-@Component({
-  selector: 'app-account-idm',
-  templateUrl: './account-idm.component.html',
-  styleUrls: ['./account-idm.component.scss']
-})
-export class AccountIdmComponent {
-  @Input() keycloakToken: KeycloakTokenParsed = {};
+import { LoginGuard } from './login.guard';
 
-  constructor() {}
-}
+describe('LoginGuard', () => {
+  let guard: LoginGuard;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    guard = TestBed.inject(LoginGuard);
+  });
+
+  it('should be created', () => {
+    expect(guard).toBeTruthy();
+  });
+});

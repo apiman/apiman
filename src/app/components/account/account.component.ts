@@ -18,7 +18,7 @@ import { Component, OnInit } from '@angular/core';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import { KeycloakHelperService } from '../../services/keycloak-helper/keycloak-helper.service';
-import { KeycloakProfile } from 'keycloak-js';
+import { KeycloakProfile, KeycloakTokenParsed } from 'keycloak-js';
 import { BackendService } from '../../services/backend/backend.service';
 import { ICurrentUser } from '../../interfaces/ICommunication';
 import { from, Observable, of } from 'rxjs';
@@ -30,6 +30,7 @@ import { from, Observable, of } from 'rxjs';
 })
 export class AccountComponent implements OnInit {
   public userProfile$: Observable<KeycloakProfile | null> = of({});
+  public keycloakToken: KeycloakTokenParsed = {};
   public accountUrl = '';
   public apimanAccount$: Observable<ICurrentUser> = of({} as ICurrentUser);
 
@@ -45,6 +46,7 @@ export class AccountComponent implements OnInit {
     this.accountUrl = this.keycloakHelper.getKeycloakAccountUrl();
     this.userProfile$ = from(this.keycloakHelper.getUserProfile());
     this.apimanAccount$ = this.backendService.getCurrentUser();
+    this.keycloakToken = this.keycloakHelper.decodeCurrentKeyloakToken();
   }
 
   private setUpHero() {

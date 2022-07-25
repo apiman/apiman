@@ -16,7 +16,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { from, Observable, of } from 'rxjs';
+import { EMPTY, from, Observable, of } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import {
   IAction,
@@ -431,10 +431,10 @@ export class BackendService {
   }
 
   public putNotifications(
-    userName: string,
     notificationId: number
   ): Observable<HttpResponse<string>> {
-    const path = `users/${userName}/notifications`;
+    const username = this.keycloakHelper.getUsername();
+    const path = `users/${username}/notifications`;
     const body = {
       notificationIds: [notificationId],
       status: 'USER_DISMISSED'
@@ -449,10 +449,10 @@ export class BackendService {
   }
 
   public postNotifications(
-    userName: string,
     searchCriteria: ISearchCriteria
   ): Observable<ISearchResultsNotifications> {
-    const path = `users/${userName}/notifications`;
+    const username = this.keycloakHelper.getUsername();
+    const path = `users/${username}/notifications`;
 
     return this.http.post(
       this.generateUrlFromPath(path),
@@ -461,15 +461,24 @@ export class BackendService {
     ) as Observable<ISearchResultsNotifications>;
   }
 
-  public headNotifications(userName: string): Observable<HttpResponse<string>> {
-    const path = `users/${userName}/notifications`;
+  public headNotifications(): Observable<HttpResponse<string>> {
+    const username = this.keycloakHelper.getUsername();
 
-    return this.http.head(this.generateUrlFromPath(path), {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      }),
-      observe: 'response'
-    }) as Observable<HttpResponse<string>>;
+    const path: IUrlPath = {
+      urlPath: ``,
+      loggedInUrlPath: `users/${username}/notifications`
+    };
+
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.head(url, {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+          }),
+          observe: 'response'
+        }) as Observable<HttpResponse<string>>;
+      })
+    );
   }
 
   public breakAllContracts(
@@ -511,11 +520,15 @@ export class BackendService {
   }
 
   public getCurrentUser(): Observable<ICurrentUser> {
-    const path = 'users/currentuser/info';
+    const path: IUrlPath = {
+      urlPath: ``,
+      loggedInUrlPath: `users/currentuser/info`
+    };
 
-    return this.http.get<ICurrentUser>(
-      this.generateUrlFromPath(path),
-      this.httpOptions
+    return this.generateUrlFromIUrlPath(path).pipe(
+      switchMap((url) => {
+        return this.http.get<ICurrentUser>(url, this.httpOptions);
+      })
     );
   }
 
@@ -540,7 +553,11 @@ export class BackendService {
         ) {
           return of(this.generateUrlFromPath(path.loggedInUrlPath));
         }
-        return of(this.generateUrlFromPath(path.urlPath));
+        if (path.urlPath) {
+          return of(this.generateUrlFromPath(path.urlPath));
+        } else {
+          return EMPTY;
+        }
       })
     );
   }
