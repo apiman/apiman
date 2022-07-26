@@ -39,6 +39,8 @@
         be set via the logging subsystem in this standalone.xml file. -->
         <property name="apiman.logger-delegate" value="jboss-logging"/>
         <property name="hibernate.types.print.banner" value="false"/>
+        <property name="apiman.hibernate.dialect" value="${env.APIMAN_DB_DRIVER, apiman.db.driver: h2}"/>
+        <property name="apiman-gateway.initializers.jdbc.datasource.type" value="${env.APIMAN_DB_DRIVER, apiman.db.driver: h2}"/>
     </system-properties>
     <management>
         <security-realms>

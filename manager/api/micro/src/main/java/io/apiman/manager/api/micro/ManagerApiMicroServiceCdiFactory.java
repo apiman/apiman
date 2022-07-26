@@ -209,6 +209,7 @@ public class ManagerApiMicroServiceCdiFactory {
             if (config.isInitializeStorageJPA()) {
                 JpaStorageInitializer initializer = new JpaStorageInitializer(config.getHibernateDataSource(), config.getHibernateDialect());
                 initializer.initialize();
+                config.setHibernateDialect(initializer.getResolvedDialect());
             }
         }
 

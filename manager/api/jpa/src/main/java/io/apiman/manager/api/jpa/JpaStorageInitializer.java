@@ -61,39 +61,46 @@ import org.jdbi.v3.core.Jdbi;
 public class JpaStorageInitializer {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JpaStorageInitializer.class);
-    private static final Map<String, String> DB_TYPE_MAP = new HashMap<>();
+    public static final Map<String, NamePair> DB_TYPE_MAP = new HashMap<>();
+
     static {
-        DB_TYPE_MAP.put(ApimanH2Dialect.class.getName(), "h2");
-        DB_TYPE_MAP.put(H2Dialect.class.getName(), "h2");
+        DB_TYPE_MAP.put("h2", NamePair.of("h2", ApimanH2Dialect.class.getName()));
+        DB_TYPE_MAP.put(H2Dialect.class.getName(), NamePair.of("h2", H2Dialect.class.getName()));
+        DB_TYPE_MAP.put(ApimanH2Dialect.class.getName(), NamePair.of("h2", ApimanH2Dialect.class.getName()));
 
-        DB_TYPE_MAP.put("io.apiman.manager.api.jpa.ApimanMySQL5Dialect",  "mysql8"); // compatibility but might need to drop this
-        DB_TYPE_MAP.put(ApimanMySQL8Dialect.class.getName(),  "mysql8"); // Hmm
-        DB_TYPE_MAP.put(MySQLDialect.class.getName(), "mysql8");
-        DB_TYPE_MAP.put(MySQL8Dialect.class.getName(), "mysql8");
+        DB_TYPE_MAP.put("mysql8",  NamePair.of("mysql8", ApimanMySQL8Dialect.class.getName()));
+        DB_TYPE_MAP.put("io.apiman.manager.api.jpa.ApimanMySQL5Dialect", NamePair.of("mysql8",  ApimanMySQL8Dialect.class.getName())); // compatibility but might need to drop this
+        DB_TYPE_MAP.put(ApimanMySQL8Dialect.class.getName(),  NamePair.of("mysql8", ApimanMySQL8Dialect.class.getName())); // Hmm
+        DB_TYPE_MAP.put(MySQLDialect.class.getName(), NamePair.of("mysql8", MySQLDialect.class.getName()));
+        DB_TYPE_MAP.put(MySQL8Dialect.class.getName(), NamePair.of("mysql8", MySQL8Dialect.class.getName()));
 
-        DB_TYPE_MAP.put(ApimanOracle19Dialect.class.getName(),  "oracle19");
-        DB_TYPE_MAP.put(OracleDialect.class.getName(), "oracle19");
-        DB_TYPE_MAP.put(Oracle8iDialect.class.getName(), "oracle19");
-        DB_TYPE_MAP.put(Oracle9iDialect.class.getName(), "oracle19");
+        DB_TYPE_MAP.put("oracle19",  NamePair.of("oracle19", ApimanOracle19Dialect.class.getName()));
+        DB_TYPE_MAP.put(ApimanOracle19Dialect.class.getName(),  NamePair.of("oracle19", ApimanOracle19Dialect.class.getName()));
+        DB_TYPE_MAP.put(OracleDialect.class.getName(),  NamePair.of("oracle19", OracleDialect.class.getName()));
+        DB_TYPE_MAP.put(Oracle8iDialect.class.getName(),  NamePair.of("oracle19", Oracle8iDialect.class.getName()));
+        DB_TYPE_MAP.put(Oracle9iDialect.class.getName(),  NamePair.of("oracle19", Oracle9iDialect.class.getName()));
 
-        DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(),  "postgresql9");
-        DB_TYPE_MAP.put(PostgreSQLDialect.class.getName(), "postgresql9");
-        DB_TYPE_MAP.put(PostgreSQL81Dialect.class.getName(), "postgresql9");
-        DB_TYPE_MAP.put(PostgreSQL82Dialect.class.getName(), "postgresql9");
-        DB_TYPE_MAP.put(PostgreSQL9Dialect.class.getName(), "postgresql9");
-        DB_TYPE_MAP.put(PostgreSQL91Dialect.class.getName(), "postgresql9");
-        DB_TYPE_MAP.put(PostgreSQL92Dialect.class.getName(), "postgresql9");
-        DB_TYPE_MAP.put(PostgreSQL93Dialect.class.getName(), "postgresql9");
-        DB_TYPE_MAP.put(PostgreSQL94Dialect.class.getName(), "postgresql9");
-        DB_TYPE_MAP.put(PostgreSQL95Dialect.class.getName(), "postgresql9");
+        DB_TYPE_MAP.put("postgresql9",  NamePair.of("postgresql9", ApimanPostgreSQLDialect.class.getName()));
+        DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(),  NamePair.of("postgresql9",ApimanPostgreSQLDialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQLDialect.class.getName(), NamePair.of("postgresql9", PostgreSQLDialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL81Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL81Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL82Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL82Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL9Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL9Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL91Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL91Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL92Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL92Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL93Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL93Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL94Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL94Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL95Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL95Dialect.class.getName()));
 
-        DB_TYPE_MAP.put(SQLServerDialect.class.getName(), "mssql15");
-        DB_TYPE_MAP.put(SQLServer2012Dialect.class.getName(), "mssql15");
+        DB_TYPE_MAP.put("mssql15", NamePair.of(SQLServerDialect.class.getName(), "mssql15"));
+        DB_TYPE_MAP.put(SQLServerDialect.class.getName(), NamePair.of("mssql15", SQLServerDialect.class.getName()));
+        DB_TYPE_MAP.put(SQLServer2012Dialect.class.getName(), NamePair.of("mssql15", SQLServer2012Dialect.class.getName()));
 
     }
     
     private final DataSource ds;
-    private final String dbType;
+    //private final String dbType;
+    private final NamePair namePair;
 
     /**
      * Constructor.
@@ -104,10 +111,27 @@ public class JpaStorageInitializer {
         }
         ds = lookupDS(dsJndiLocation);
 
-        dbType = DB_TYPE_MAP.get(hibernateDialect);
-        if (dbType == null) {
+        this.namePair = DB_TYPE_MAP.get(hibernateDialect);
+        if (namePair == null) {
             throw new RuntimeException("Unknown hibernate dialect configured: " + hibernateDialect); 
         }
+    }
+
+    public static String lookupFqdn(String apimanDialect) {
+        var pair = DB_TYPE_MAP.get(apimanDialect);
+        if (pair != null) {
+            return pair.fqdn;
+        } else {
+            return apimanDialect;
+        }
+    }
+
+    public String getSimpleName() {
+        return namePair.simpleName;
+    }
+
+    public String getResolvedDialect() {
+        return namePair.fqdn;
     }
 
     /**
@@ -157,8 +181,8 @@ public class JpaStorageInitializer {
         }
 
         ClassLoader cl = JpaStorageInitializer.class.getClassLoader();
-        URL resource = cl.getResource("ddls/apiman_" + dbType + ".ddl");
-        Objects.requireNonNull(resource, "No DDL for: " + dbType + ". Verify that the name is correct.");
+        URL resource = cl.getResource("ddls/apiman_" + namePair.simpleName + ".ddl");
+        Objects.requireNonNull(resource, "No DDL for: " + namePair.simpleName + ". Verify that the name is correct.");
         try {
             try (InputStream is = resource.openStream()) {
                 LOGGER.info("=======================================");
@@ -180,6 +204,18 @@ public class JpaStorageInitializer {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public static final class NamePair {
+        public String simpleName;
+        public String fqdn;
+
+        static NamePair of(String simpleName, String fqdn) {
+            var np = new NamePair();
+            np.simpleName = simpleName;
+            np.fqdn = fqdn;
+            return np;
+        }
     }
 
 }
