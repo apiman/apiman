@@ -158,7 +158,7 @@ public class JpaStorageInitializer {
 
         ClassLoader cl = JpaStorageInitializer.class.getClassLoader();
         URL resource = cl.getResource("ddls/apiman_" + dbType + ".ddl");
-        Objects.requireNonNull(resource, "DDLs are missing");
+        Objects.requireNonNull(resource, "No DDL for: " + dbType + ". Verify that the name is correct.");
         try {
             try (InputStream is = resource.openStream()) {
                 LOGGER.info("=======================================");

@@ -518,6 +518,3 @@ CREATE TRIGGER delete_apiversion_from_discoverability AFTER DELETE ON api_versio
 END;
 
 -- ~~~DELIMITER~~~
-
---  Changeset src/main/liquibase/current/20220623-explicit-api-plan-order.xml::1655976671166-6::msavy (generated)
-ALTER TABLE api_plans ADD order_index INT DEFAULT 0 NOT NULL;

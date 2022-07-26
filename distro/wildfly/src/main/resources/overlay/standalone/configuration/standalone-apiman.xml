@@ -559,28 +559,28 @@
         <!-- Apiman's Keycloak client adapter configuration. -->
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
             <secure-deployment name="apiman.war">
-                <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
-                <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
+                <realm>${apiman.auth.realm, env.APIMAN_AUTH_REALM:apiman}</realm>
+                <auth-server-url>${apiman.auth.url, env.APIMAN_AUTH_URL:/auth}</auth-server-url>
                 <resource>apiman</resource>
-                <credential name="secret">${env.APIMAN_AUTH_APIMAN_SECRET:password}</credential>
+                <credential name="secret">${apiman.auth.api.secret, env.APIMAN_AUTH_API_SECRET:password}</credential>
                 <disable-trust-manager>true</disable-trust-manager>
                 <bearer-only>true</bearer-only>
                 <enable-basic-auth>true</enable-basic-auth>
                 <principal-attribute>preferred_username</principal-attribute>
             </secure-deployment>
             <secure-deployment name="apimanui.war">
-                <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
-                <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
+                <realm>${apiman.auth.realm, env.APIMAN_AUTH_REALM:apiman}</realm>
+                <auth-server-url>${apiman.auth.url, env.APIMAN_AUTH_URL:/auth}</auth-server-url>
                 <resource>apimanui</resource>
-                <credential name="secret">${env.APIMAN_AUTH_APIMANUI_SECRET:password}</credential>
+                <credential name="secret">${apiman.auth.ui.secret, env.APIMAN_AUTH_UI_SECRET:password}</credential>
                 <disable-trust-manager>true</disable-trust-manager>
                 <principal-attribute>preferred_username</principal-attribute>
             </secure-deployment>
             <secure-deployment name="apiman-gateway-api.war">
-                <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
-                <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
+                <realm>${apiman.auth.realm, env.APIMAN_AUTH_REALM:apiman}</realm>
+                <auth-server-url>${apiman.auth.url, env.APIMAN_AUTH_URL:/auth}</auth-server-url>
                 <resource>apiman-gateway-api</resource>
-                <credential name="secret">${env.APIMAN_AUTH_GATEWAY_SECRET:password}</credential>
+                <credential name="secret">${apiman.auth.gateway.secret, env.APIMAN_AUTH_GATEWAY_SECRET:password}</credential>
                 <disable-trust-manager>true</disable-trust-manager>
                 <bearer-only>true</bearer-only>
                 <enable-basic-auth>true</enable-basic-auth>
