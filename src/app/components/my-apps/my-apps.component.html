@@ -107,132 +107,136 @@
                 </span>
               </div>
             </div>
-            <ng-container *ngFor="let contract of contracts$ | async">
-              <ng-container *ngIf="!clientHasContracts(client.id)"
-                ><app-no-data
-                  class="dp-center no-contracts-msg"
-                  [text]="'CLIENTS.NO_CONTRACTS' | translate"
-                  [textClass]="'text-big3'"></app-no-data
-              ></ng-container>
-
-              <div
-                *ngIf="contract.client.id === client.id"
-                id="{{ contract.api.api.id }}"
-                class="app-api">
-                <!-- Menu for the API -->
-                <div class="app-api-menu">
-                  <div class="app-api-menu-entry">
-                    <span
-                      id="api-menu-summary"
-                      (click)="setSection(contract, 'summary')"
-                      [ngClass]="{ primary: contract.section === 'summary' }">
-                      {{ 'CLIENTS.SUMMARY' | translate }}
-                    </span>
-                  </div>
-                  <div class="app-api-menu-entry">
-                    <span
-                      id="api-menu-description"
-                      (click)="setSection(contract, 'description')"
-                      [ngClass]="{
-                        primary: contract.section === 'description'
-                      }">
-                      {{ 'CLIENTS.DESCRIPTION' | translate }}
-                    </span>
-                  </div>
-                  <ng-container *ngIf="contract!.api.status !== 'Retired'">
+            <ng-container
+              *ngIf="clientHasContracts(client.id); else noContracts">
+              <ng-container *ngFor="let contract of contracts$ | async">
+                <div
+                  *ngIf="contract.client.id === client.id"
+                  id="{{ contract.api.api.id }}"
+                  class="app-api">
+                  <!-- Menu for the API -->
+                  <div class="app-api-menu">
                     <div class="app-api-menu-entry">
                       <span
-                        id="api-menu-use-api"
-                        (click)="setSection(contract, 'use-api')"
-                        [ngClass]="{ primary: contract.section === 'use-api' }">
-                        {{ 'CLIENTS.USE_API' | translate }}
+                        id="api-menu-summary"
+                        (click)="setSection(contract, 'summary')"
+                        [ngClass]="{ primary: contract.section === 'summary' }">
+                        {{ 'CLIENTS.SUMMARY' | translate }}
                       </span>
                     </div>
-                    <div
-                      class="app-api-menu-entry"
-                      *ngIf="contract.policies.length > 0">
+                    <div class="app-api-menu-entry">
                       <span
-                        id="api-menu-policies"
-                        (click)="setSection(contract, 'policies')"
+                        id="api-menu-description"
+                        (click)="setSection(contract, 'description')"
                         [ngClass]="{
-                          primary: contract.section === 'policies'
+                          primary: contract.section === 'description'
                         }">
-                        {{ 'CLIENTS.POLICIES' | translate }}
+                        {{ 'CLIENTS.DESCRIPTION' | translate }}
                       </span>
                     </div>
-                  </ng-container>
-                  <div>
-                    <!--            TODO Add this later -->
-                    <!--            <span-->
-                    <!--              (click)="setSection(contract, 'manage-api')"-->
-                    <!--              [ngClass]="{ primary: contract.section === 'manage-api' }">-->
-                    <!--              {{ "CLIENTS.MANAGE_API" | translate }}-->
-                    <!--            </span>-->
+                    <ng-container *ngIf="contract!.api.status !== 'Retired'">
+                      <div class="app-api-menu-entry">
+                        <span
+                          id="api-menu-use-api"
+                          (click)="setSection(contract, 'use-api')"
+                          [ngClass]="{
+                            primary: contract.section === 'use-api'
+                          }">
+                          {{ 'CLIENTS.USE_API' | translate }}
+                        </span>
+                      </div>
+                      <div
+                        class="app-api-menu-entry"
+                        *ngIf="contract.policies.length > 0">
+                        <span
+                          id="api-menu-policies"
+                          (click)="setSection(contract, 'policies')"
+                          [ngClass]="{
+                            primary: contract.section === 'policies'
+                          }">
+                          {{ 'CLIENTS.POLICIES' | translate }}
+                        </span>
+                      </div>
+                    </ng-container>
+                    <div>
+                      <!--            TODO Add this later -->
+                      <!--            <span-->
+                      <!--              (click)="setSection(contract, 'manage-api')"-->
+                      <!--              [ngClass]="{ primary: contract.section === 'manage-api' }">-->
+                      <!--              {{ "CLIENTS.MANAGE_API" | translate }}-->
+                      <!--            </span>-->
+                    </div>
                   </div>
-                </div>
 
-                <!-- Menu Section Content -->
-                <div class="app-api-content mat-elevation-z2">
-                  <div class="app-api-header">
-                    <app-img-or-icon-selector
-                      class="app-api-header-icon-wrapper"
-                      [imgUrl]="contract.api.api.image"
-                      [dimension]="'44'">
-                    </app-img-or-icon-selector>
-                    <div
-                      class="app-api-header-title"
-                      [id]="tocService.formatApiVersionPlanId(contract)">
-                      <h3
-                        class="primary title cursor-help"
-                        matTooltip="{{ getApiTooltip(contract) }}"
-                        matTooltipClass="multiline-tooltip"
-                        matTooltipShowDelay="300"
-                        matTooltipHideDelay="300">
-                        {{ formatApiVersionPlanTitle(contract) }}
-                      </h3>
+                  <!-- Menu Section Content -->
+                  <div class="app-api-content mat-elevation-z2">
+                    <div class="app-api-header">
+                      <app-img-or-icon-selector
+                        class="app-api-header-icon-wrapper"
+                        [imgUrl]="contract.api.api.image"
+                        [dimension]="'44'">
+                      </app-img-or-icon-selector>
+                      <div
+                        class="app-api-header-title"
+                        [id]="tocService.formatApiVersionPlanId(contract)">
+                        <h3
+                          class="primary title cursor-help"
+                          matTooltip="{{ getApiTooltip(contract) }}"
+                          matTooltipClass="multiline-tooltip"
+                          matTooltipShowDelay="300"
+                          matTooltipHideDelay="300">
+                          {{ formatApiVersionPlanTitle(contract) }}
+                        </h3>
+                      </div>
+                      <div class="app-api-header-labels">
+                        <span
+                          matTooltip="API Status"
+                          [style]="
+                            'background-color: ' +
+                            getColorForLabel(contract.api.status)
+                          ">
+                          {{ contract.api.status }}
+                        </span>
+                        <!--              THIS WILL BE ADDED LATER -->
+                        <!--              <span-->
+                        <!--                matTooltip="Client Status"-->
+                        <!--                [style]="'background-color: ' + getColorForLabel(contract.client.status)">-->
+                        <!--                {{ contract.client.status }}-->
+                        <!--              </span>-->
+                      </div>
                     </div>
-                    <div class="app-api-header-labels">
-                      <span
-                        matTooltip="API Status"
-                        [style]="
-                          'background-color: ' +
-                          getColorForLabel(contract.api.status)
-                        ">
-                        {{ contract.api.status }}
-                      </span>
-                      <!--              THIS WILL BE ADDED LATER -->
-                      <!--              <span-->
-                      <!--                matTooltip="Client Status"-->
-                      <!--                [style]="'background-color: ' + getColorForLabel(contract.client.status)">-->
-                      <!--                {{ contract.client.status }}-->
-                      <!--              </span>-->
+                    <div class="api-section">
+                      <app-my-apps-summary
+                        *ngIf="contract.section === 'summary'"
+                        [contract]="contract"
+                        (sectionChangedEmitter)="
+                          onSetSection($event)
+                        "></app-my-apps-summary>
+                      <app-api-markdown-description
+                        *ngIf="contract.section === 'description'"
+                        [markdownText]="
+                          contract.api.extendedDescription
+                        "></app-api-markdown-description>
+                      <app-my-apps-use-api
+                        *ngIf="contract.section === 'use-api'"
+                        [contract]="contract"></app-my-apps-use-api>
+                      <app-my-apps-policies
+                        *ngIf="contract.section === 'policies'"
+                        [contract]="contract"></app-my-apps-policies>
+                      <app-my-apps-manage-api
+                        *ngIf="contract.section === 'manage-api'"
+                        [api]="contract"></app-my-apps-manage-api>
                     </div>
-                  </div>
-                  <div class="api-section">
-                    <app-my-apps-summary
-                      *ngIf="contract.section === 'summary'"
-                      [contract]="contract"
-                      (sectionChangedEmitter)="
-                        onSetSection($event)
-                      "></app-my-apps-summary>
-                    <app-api-markdown-description
-                      *ngIf="contract.section === 'description'"
-                      [markdownText]="
-                        contract.api.extendedDescription
-                      "></app-api-markdown-description>
-                    <app-my-apps-use-api
-                      *ngIf="contract.section === 'use-api'"
-                      [contract]="contract"></app-my-apps-use-api>
-                    <app-my-apps-policies
-                      *ngIf="contract.section === 'policies'"
-                      [contract]="contract"></app-my-apps-policies>
-                    <app-my-apps-manage-api
-                      *ngIf="contract.section === 'manage-api'"
-                      [api]="contract"></app-my-apps-manage-api>
                   </div>
                 </div>
-              </div>
+              </ng-container>
             </ng-container>
+            <ng-template #noContracts>
+              <app-no-data
+                class="dp-center no-contracts-msg"
+                [text]="'CLIENTS.NO_CONTRACTS' | translate"
+                [textClass]="'text-big3'"></app-no-data
+            ></ng-template>
           </mat-card>
         </ng-container>
       </ng-container>
