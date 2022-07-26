@@ -1,4 +1,5 @@
 -- ApiPlan
+-- ~~~SEPARATOR~~~--
 CREATE TRIGGER insert_apiplan_into_discoverability
     ON api_plans AFTER INSERT
     AS
@@ -28,6 +29,8 @@ BEGIN
     FROM Api_Version_CTE, inserted;
 END;
 
+-- ~~~SEPARATOR~~~--
+
 CREATE TRIGGER update_apiplan_into_discoverability
     ON api_plans AFTER UPDATE
     AS
@@ -55,6 +58,8 @@ BEGIN
     );
 END;
 
+-- ~~~SEPARATOR~~~--
+
 CREATE TRIGGER api_plan_discoverability_trigger_delete
     ON api_plans AFTER DELETE
     AS
@@ -76,6 +81,8 @@ BEGIN
         deleted.version
     );
 END;
+
+-- ~~~SEPARATOR~~~--
     
 -- ApiVersion
 CREATE TRIGGER insert_apiversion_into_discoverability
@@ -94,6 +101,8 @@ BEGIN
     FROM inserted
 END;
 
+-- ~~~SEPARATOR~~~--
+
 CREATE TRIGGER update_apiversion_into_discoverability
     ON api_versions AFTER INSERT
     AS
@@ -108,6 +117,8 @@ BEGIN
     FROM inserted
     WHERE id = CONCAT_WS(':', inserted.api_org_id, inserted.api_id, inserted.version);
 END;
+
+-- ~~~SEPARATOR~~~--
 
 CREATE TRIGGER delete_apiversion_from_discoverability
     ON api_versions AFTER DELETE

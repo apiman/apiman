@@ -65,18 +65,41 @@ public class DdlParser {
         String line;
         StringBuilder builder = new StringBuilder();
         boolean isInMultiLineStatement = false;
+
+        boolean withinBlock = false;
+        boolean startNewBlockNext = false;
+
         while ( (line = reader.readLine()) != null) {
-            if (line.startsWith("--")) {
-                continue;
-            }
-            if (line.trim().isEmpty()) {
-                continue;
-            }
-            if (line.endsWith("'") || line.endsWith("(") || line.endsWith("$$")) {
-                isInMultiLineStatement = true;
-            }
-            if (line.startsWith("'") || line.startsWith(")") || line.startsWith("$$")) {
-                isInMultiLineStatement = false;
+            if (line.equals("--~~~SEPARATOR~~~--")) {
+                if (withinBlock) {
+                    startNewBlockNext = true;
+                    isInMultiLineStatement = false;
+                    continue;
+                }
+                if (!withinBlock) {
+                    withinBlock = true;
+                    startNewBlockNext = false;
+                    isInMultiLineStatement = true;
+                    continue;
+                }
+                if (startNewBlockNext) {
+                    withinBlock = false;
+                    isInMultiLineStatement = true;
+                    continue;
+                }
+            } else {
+                if (line.startsWith("--")) {
+                    continue;
+                }
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+                if (line.endsWith("'") || line.endsWith("(") || line.endsWith("$$")) {
+                    isInMultiLineStatement = true;
+                }
+                if (line.startsWith("'") || line.startsWith(")") || line.startsWith("$$")) {
+                    isInMultiLineStatement = false;
+                }
             }
             builder.append(line);
             builder.append("\n");
@@ -105,6 +128,5 @@ public class DdlParser {
             System.out.println(line);
         }
     }
-
 
 }

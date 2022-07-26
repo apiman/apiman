@@ -1,5 +1,5 @@
 
-
+-- ~~~SEPARATOR~~~--
 -- API Plans
 CREATE TRIGGER insert_apiplan_into_discoverability AFTER INSERT ON api_plans
 FOR EACH ROW BEGIN
@@ -28,6 +28,8 @@ FOR EACH ROW BEGIN
     FROM Api_Version_CTE;
 END;
 
+-- ~~~SEPARATOR~~~--
+
 CREATE TRIGGER update_apiplan_into_discoverability AFTER UPDATE ON api_plans
 FOR EACH ROW BEGIN
     WITH Api_Version_CTE (api_org_id, api_id, api_version)
@@ -52,8 +54,10 @@ FOR EACH ROW BEGIN
     );
 END;
 
+-- ~~~SEPARATOR~~~--
+
 CREATE TRIGGER api_plan_discoverability_trigger_delete AFTER DELETE ON api_plans
-FOR EACH ROW
+FOR EACH ROW BEGIN
     WITH Api_Version_CTE (api_org_id, api_id, api_version)
     AS
     (
@@ -72,6 +76,8 @@ FOR EACH ROW
     );
 END;
 
+-- ~~~SEPARATOR~~~--
+
 -- API Versions
 CREATE TRIGGER insert_apiversion_into_discoverability AFTER INSERT ON api_versions
 FOR EACH ROW BEGIN
@@ -87,6 +93,8 @@ FOR EACH ROW BEGIN
     );    
 END;
 
+-- ~~~SEPARATOR~~~--
+
 CREATE TRIGGER update_apiversion_into_discoverability AFTER UPDATE ON api_versions
 FOR EACH ROW BEGIN
     UPDATE discoverability
@@ -98,6 +106,8 @@ FOR EACH ROW BEGIN
         discoverability = NEW.discoverability
     WHERE id = CONCAT_WS(':', NEW.api_org_id, NEW.api_id, NEW.version);
 END;
+
+-- ~~~SEPARATOR~~~--
 
 CREATE TRIGGER delete_apiversion_from_discoverability AFTER DELETE ON api_versions
 FOR EACH ROW BEGIN
