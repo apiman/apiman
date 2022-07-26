@@ -388,33 +388,34 @@ CREATE INDEX api_version_discoverability_index ON discoverability(org_id, api_id
 --  A hand-rolled materialized view that synchronises changes to 'discoverability' on `api_plans` and `api_versions` to `discoverability`
 --              This enables very efficient search without performing multiple joins, plus avoids significantly complicating queries by having to
 --              reference all different locations that `discoverability` can be set.
---  
+--
 --              Plausibly we may need to add additional location(s) in future such as `organization`, which should be mostly copy-and-paste.
---  
+--
 --              A nice alternative to this would be CDC with something like Debezium, but that requires the DB to have been set up properly (sometimes
 --              including special plugins), which makes the deployment more complicated and difficult.
---  
+--
 --              Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
 --              materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
+-- ~~~DELIMITER~~~
 -- API Plans
 CREATE TRIGGER insert_apiplan_into_discoverability AFTER INSERT ON api_plans
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     INSERT INTO discoverability(id, org_id, api_id, api_version, plan_id, plan_version, discoverability)
     WITH Api_Version_CTE (api_org_id, api_id, api_version)
-    AS
-    (
-        SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
-        FROM api_versions av
-        WHERE av.id = NEW.api_version_id
-    )
+             AS
+             (
+                 SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+                 FROM api_versions av
+                 WHERE av.id = NEW.api_version_id
+             )
     SELECT
         CONCAT_WS(':',
-            Api_Version_CTE.api_org_id,
-            Api_Version_CTE.api_id,
-            Api_Version_CTE.api_version,
-            NEW.plan_id,
-            NEW.version
-        ),
+                  Api_Version_CTE.api_org_id,
+                  Api_Version_CTE.api_id,
+                  Api_Version_CTE.api_version,
+                  NEW.plan_id,
+                  NEW.version
+            ),
         Api_Version_CTE.api_org_id,
         Api_Version_CTE.api_id,
         Api_Version_CTE.api_version,
@@ -422,16 +423,19 @@ FOR EACH ROW BEGIN
         NEW.version,
         NEW.discoverability
     FROM Api_Version_CTE;
+
 END;
 
+-- ~~~DELIMITER~~~
+
 CREATE TRIGGER update_apiplan_into_discoverability AFTER UPDATE ON api_plans
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     WITH Api_Version_CTE (api_org_id, api_id, api_version)
-    AS (
-         SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
-         FROM api_versions av
-         WHERE av.id = NEW.api_version_id
-    )
+             AS (
+            SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+            FROM api_versions av
+            WHERE av.id = NEW.api_version_id
+        )
     UPDATE discoverability
     SET org_id = Api_Version_CTE.api_org_id,
         api_id = Api_Version_CTE.api_id,
@@ -440,51 +444,60 @@ FOR EACH ROW BEGIN
         plan_version = NEW.version,
         discoverability = NEW.discoverability
     WHERE id = CONCAT_WS(':',
-        Api_Version_CTE.api_org_id,
-        Api_Version_CTE.api_id,
-        Api_Version_CTE.api_version,
-        NEW.plan_id,
-        NEW.version
-    );
+                         Api_Version_CTE.api_org_id,
+                         Api_Version_CTE.api_id,
+                         Api_Version_CTE.api_version,
+                         NEW.plan_id,
+                         NEW.version
+        );
+
 END;
 
+-- ~~~DELIMITER~~~
+
 CREATE TRIGGER api_plan_discoverability_trigger_delete AFTER DELETE ON api_plans
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     WITH Api_Version_CTE (api_org_id, api_id, api_version)
-    AS
-    (
-        SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
-        FROM api_versions av
-        WHERE av.id = OLD.api_version_id
-    )
+             AS
+             (
+                 SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+                 FROM api_versions av
+                 WHERE av.id = OLD.api_version_id
+             )
     DELETE FROM discoverability
-    USING Api_Version_CTE, discoverability
+        USING Api_Version_CTE, discoverability
     WHERE discoverability.id = CONCAT_WS(':',
-        Api_Version_CTE.api_org_id,
-        Api_Version_CTE.api_id,
-        Api_Version_CTE.api_version,
-        OLD.plan_id,
-        OLD.version
-    );
+                                         Api_Version_CTE.api_org_id,
+                                         Api_Version_CTE.api_id,
+                                         Api_Version_CTE.api_version,
+                                         OLD.plan_id,
+                                         OLD.version
+        );
+
 END;
+
+-- ~~~DELIMITER~~~
 
 -- API Versions
 CREATE TRIGGER insert_apiversion_into_discoverability AFTER INSERT ON api_versions
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     INSERT INTO discoverability(id, org_id, api_id, api_version, plan_id, plan_version, discoverability)
     VALUES (
-        CONCAT_WS(':', NEW.api_org_id, NEW.api_id, NEW.version),
-        NEW.api_org_id,
-        NEW.api_id,
-        NEW.version,
-        NULL,
-        NULL,
-        NEW.discoverability
-    );
+               CONCAT_WS(':', NEW.api_org_id, NEW.api_id, NEW.version),
+               NEW.api_org_id,
+               NEW.api_id,
+               NEW.version,
+               NULL,
+               NULL,
+               NEW.discoverability
+           );
+
 END;
 
+-- ~~~DELIMITER~~~
+
 CREATE TRIGGER update_apiversion_into_discoverability AFTER UPDATE ON api_versions
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     UPDATE discoverability
     SET org_id = NEW.api_org_id,
         api_id = NEW.api_id,
@@ -493,13 +506,18 @@ FOR EACH ROW BEGIN
         plan_version = NULL,
         discoverability = NEW.discoverability
     WHERE id = CONCAT_WS(':', NEW.api_org_id, NEW.api_id, NEW.version);
+
 END;
 
+-- ~~~DELIMITER~~~
+
 CREATE TRIGGER delete_apiversion_from_discoverability AFTER DELETE ON api_versions
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     DELETE FROM discoverability d WHERE d.id = CONCAT_WS(':', OLD.api_org_id, OLD.api_id, OLD.version);
+
 END;
+
+-- ~~~DELIMITER~~~
 
 --  Changeset src/main/liquibase/current/20220623-explicit-api-plan-order.xml::1655976671166-6::msavy (generated)
 ALTER TABLE api_plans ADD order_index INT DEFAULT 0 NOT NULL;
-

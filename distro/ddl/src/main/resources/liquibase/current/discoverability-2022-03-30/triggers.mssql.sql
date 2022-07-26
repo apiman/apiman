@@ -83,7 +83,7 @@ BEGIN
 END;
 
 -- ~~~DELIMITER~~~
-    
+
 -- ApiVersion
 CREATE TRIGGER insert_apiversion_into_discoverability
     ON api_versions AFTER INSERT
@@ -128,3 +128,5 @@ BEGIN
     FROM discoverability d, deleted
     WHERE d.id = CONCAT_WS(':', deleted.api_org_id, deleted.api_id, deleted.version);
 END;
+
+-- ~~~DELIMITER~~~

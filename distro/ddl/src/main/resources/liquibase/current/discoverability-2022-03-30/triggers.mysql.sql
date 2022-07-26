@@ -113,3 +113,5 @@ CREATE TRIGGER delete_apiversion_from_discoverability AFTER DELETE ON api_versio
 FOR EACH ROW BEGIN
     DELETE FROM discoverability d WHERE d.id = CONCAT_WS(':', OLD.api_org_id, OLD.api_id, OLD.version);
 END;
+
+-- ~~~DELIMITER~~~
