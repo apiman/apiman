@@ -31,7 +31,6 @@ import { PolicyService } from '../../services/policy/policy.service';
 import {
   catchError,
   debounceTime,
-  defaultIfEmpty,
   map,
   retry,
   shareReplay,
@@ -39,7 +38,6 @@ import {
   tap
 } from 'rxjs/operators';
 import { EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
-import { flatArray } from '../../shared/utility';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { ApiService } from '../../services/api/api.service';
 import { ITocLink } from '../../interfaces/ITocLink';
@@ -48,7 +46,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UnregisterClientComponent } from '../dialogs/unregister-client/unregister-client.component';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ConfigService } from '../../services/config/config.service';
-import { IPolicyExt } from '../../interfaces/IPolicy';
+import { IPolicyExt, IPolicyProbe } from '../../interfaces/IPolicy';
 import { PermissionsService } from '../../services/permissions/permissions.service';
 import { ClientService } from '../../services/client/client.service';
 import { IClientVersionExt } from '../../interfaces/IClientVersionSummaryExt';
@@ -129,11 +127,15 @@ export class MyAppsComponent implements OnInit {
           return EMPTY;
         })
       )
-      .subscribe(() => {
-        this.fetchPolicyProbes();
-        this.copyData();
-        this.stopMainRequest();
-        this.generateTocLinks();
+      .subscribe({
+        next: () => {
+          this.fetchPolicyProbes();
+        },
+        complete: () => {
+          this.stopMainRequest();
+          this.copyData();
+          this.generateTocLinks();
+        }
       });
   }
 
@@ -143,32 +145,34 @@ export class MyAppsComponent implements OnInit {
     this.contracts$ = this.allContracts$;
   }
 
+  // TODO: Remove nested subscriptions if possible
   private fetchPolicyProbes() {
     this.allContracts$
       .pipe(
         switchMap((contracts: IContractExt[]) => {
-          return forkJoin(
-            flatArray(
-              contracts.map((contract: IContractExt) => {
-                return contract.policies.map((policy: IPolicyExt) => {
-                  return this.policyService
-                    .getPolicyProbe(contract, policy)
-                    .pipe(
-                      retry(2),
-                      catchError((err) => {
-                        console.warn(err);
-                        return EMPTY;
-                      }),
-                      tap((policyProbe) => {
-                        policy.probe = policyProbe;
-                        this.policyService.setGaugeDataForPolicy(policy);
-                        policy.probeRequestFinished = true;
-                      })
-                    );
+          contracts.forEach((contract: IContractExt) => {
+            contract.policies.forEach((policy: IPolicyExt) => {
+              this.policyService
+                .getPolicyProbe(contract, policy)
+                .pipe(
+                  retry(2),
+                  catchError((err) => {
+                    console.warn(err);
+                    return EMPTY;
+                  })
+                )
+                .subscribe({
+                  next: (probe: IPolicyProbe) => {
+                    policy.probe = probe;
+                    this.policyService.setGaugeDataForPolicy(policy);
+                  },
+                  complete: () => {
+                    policy.probeRequestFinished = true;
+                  }
                 });
-              })
-            ) as Observable<IPolicyExt>[]
-          ).pipe(defaultIfEmpty([]));
+            });
+          });
+          return EMPTY;
         })
       )
       .subscribe();

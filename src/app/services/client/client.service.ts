@@ -15,7 +15,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, defaultIfEmpty, map, switchMap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { EMPTY, forkJoin, iif, Observable, of, throwError } from 'rxjs';
 import { BackendService } from '../backend/backend.service';
@@ -95,7 +95,8 @@ export class ClientService {
       map((nestedClientSummaries: IClientSummary[][]) => {
         const clientSummaries = nestedClientSummaries.flat();
         return this.getUniqueClients(clientSummaries);
-      })
+      }),
+      defaultIfEmpty([])
     );
   }
 
@@ -123,6 +124,7 @@ export class ClientService {
         );
       })
     ).pipe(
+      defaultIfEmpty([]),
       map((nestedClientVersionSummaries: IClientVersionSummary[][]) => {
         return nestedClientVersionSummaries.flat();
       })
@@ -145,7 +147,7 @@ export class ClientService {
               );
             }
           )
-        );
+        ).pipe(defaultIfEmpty([]));
       })
     );
   }

@@ -77,7 +77,7 @@ export class ContractService {
           contractSummary.contractId
         );
       })
-    );
+    ).pipe(defaultIfEmpty([]));
   }
 
   public getExtendedContracts(
@@ -122,7 +122,8 @@ export class ContractService {
             .toLowerCase()
             .localeCompare(b.api.api.name.toLowerCase());
         });
-      })
+      }),
+      defaultIfEmpty([])
     );
   }
 

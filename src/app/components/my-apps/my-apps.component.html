@@ -261,8 +261,8 @@
 </ng-container>
 <div
   *ngIf="
-    (contractsLoaded && ((contracts$ | async) || []).length === 0) ||
-    (contractsFiltered && ((contracts$ | async) || []).length === 0)
+    (contractsLoaded && ((clients$ | async) || []).length === 0) ||
+    (contractsFiltered && ((clients$ | async) || []).length === 0)
   "
   class="dp-center">
   <app-no-data
