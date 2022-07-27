@@ -19,7 +19,7 @@ CREATE TABLE client_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NU
 CREATE TABLE clients (id VARCHAR(150) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, name VARCHAR(255) NOT NULL, organization_id VARCHAR(150) NOT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-3::apiman (generated)
-CREATE TABLE auditlog (id BIGINT NOT NULL, created_on timestamp NOT NULL, data LONGTEXT NULL, entity_id VARCHAR(150) NULL, entity_type VARCHAR(255) NOT NULL, entity_version VARCHAR(150) NULL, organization_id VARCHAR(150) NOT NULL, what VARCHAR(255) NOT NULL, who VARCHAR(255) NOT NULL) ROW_FORMAT=COMPRESSED;
+CREATE TABLE auditlog (id BIGINT NOT NULL, created_on timestamp NOT NULL, data LONGTEXT NULL, entity_id VARCHAR(150) NULL, entity_type VARCHAR(255) NOT NULL, entity_version VARCHAR(150) NULL, organization_id VARCHAR(150) NOT NULL, what VARCHAR(255) NOT NULL, who VARCHAR(255) NOT NULL) ROW_FORMAT=DYNAMIC;
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-4::apiman (generated)
 CREATE TABLE contracts (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, clientv_id BIGINT NULL, planv_id BIGINT NULL, apiv_id BIGINT NULL);
@@ -378,7 +378,7 @@ ALTER TABLE api_plans ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS' NUL
 ALTER TABLE api_versions ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS' NULL;
 
 --  Changeset src/main/liquibase/current/20220330-discoverability.xml::1646489262610-4::msavy (generated)
-CREATE TABLE discoverability (id VARCHAR(255) NOT NULL, org_id VARCHAR(150) NULL, api_id VARCHAR(150) NULL, api_version VARCHAR(150) NULL, plan_id VARCHAR(150) NULL, plan_version VARCHAR(150) NULL, discoverability VARCHAR(255) NULL, CONSTRAINT discoverabilityPK PRIMARY KEY (id)) ROW_FORMAT=COMPRESSED;
+CREATE TABLE discoverability (id VARCHAR(255) NOT NULL, org_id VARCHAR(150) NULL, api_id VARCHAR(150) NULL, api_version VARCHAR(150) NULL, plan_id VARCHAR(150) NULL, plan_version VARCHAR(150) NULL, discoverability VARCHAR(255) NULL, CONSTRAINT discoverabilityPK PRIMARY KEY (id));
 
 CREATE INDEX api_plan_discoverability_index ON discoverability(org_id, api_id, api_version, plan_id, plan_version);
 
@@ -396,7 +396,7 @@ CREATE INDEX api_version_discoverability_index ON discoverability(org_id, api_id
 --
 --              Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
 --              materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
--- ~~~DELIMITER~~~
+/** DELIMITER-START **/
 -- API Plans
 CREATE TRIGGER insert_apiplan_into_discoverability AFTER INSERT ON api_plans
     FOR EACH ROW BEGIN
@@ -426,7 +426,8 @@ CREATE TRIGGER insert_apiplan_into_discoverability AFTER INSERT ON api_plans
 
 END;
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 CREATE TRIGGER update_apiplan_into_discoverability AFTER UPDATE ON api_plans
     FOR EACH ROW BEGIN
@@ -453,7 +454,8 @@ CREATE TRIGGER update_apiplan_into_discoverability AFTER UPDATE ON api_plans
 
 END;
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 CREATE TRIGGER api_plan_discoverability_trigger_delete AFTER DELETE ON api_plans
     FOR EACH ROW BEGIN
@@ -476,7 +478,8 @@ CREATE TRIGGER api_plan_discoverability_trigger_delete AFTER DELETE ON api_plans
 
 END;
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 -- API Versions
 CREATE TRIGGER insert_apiversion_into_discoverability AFTER INSERT ON api_versions
@@ -494,7 +497,8 @@ CREATE TRIGGER insert_apiversion_into_discoverability AFTER INSERT ON api_versio
 
 END;
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 CREATE TRIGGER update_apiversion_into_discoverability AFTER UPDATE ON api_versions
     FOR EACH ROW BEGIN
@@ -509,7 +513,8 @@ CREATE TRIGGER update_apiversion_into_discoverability AFTER UPDATE ON api_versio
 
 END;
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 CREATE TRIGGER delete_apiversion_from_discoverability AFTER DELETE ON api_versions
     FOR EACH ROW BEGIN
@@ -517,4 +522,4 @@ CREATE TRIGGER delete_apiversion_from_discoverability AFTER DELETE ON api_versio
 
 END;
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/

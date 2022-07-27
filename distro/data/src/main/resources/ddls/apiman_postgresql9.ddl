@@ -582,7 +582,7 @@ ALTER TABLE api_plans ADD order_index INTEGER DEFAULT 0 NOT NULL;
 -- Only a trigger function can be attached to a trigger, so we need this as an intermediary before we're allowed to call onto the the generic function we want
 -- Reminder: To work around DdlParser.java limitations, multiline functions should have $$ as last characters of FIRST line and first characters of LAST line.
 
--- ~~~DELIMITER~~~
+/** DELIMITER-START **/
 -- ApiPlan
 ---- Insert
 CREATE OR REPLACE PROCEDURE upsert_apiplan_into_discoverability(api_plans) AS $$
@@ -620,7 +620,8 @@ FROM Api_Version_CTE
 
 $$ LANGUAGE SQL;
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 ---- Delete
 CREATE OR REPLACE PROCEDURE delete_apiplan_from_discoverability(api_plans) AS $$
@@ -643,7 +644,9 @@ WHERE d.id = CONCAT_WS(':',
 
 $$ LANGUAGE SQL;
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
+
 -- ApiVersion
 ---- Insert
 CREATE OR REPLACE PROCEDURE upsert_apiversion_into_discoverability(api_versions) AS $$
@@ -667,7 +670,8 @@ CREATE OR REPLACE PROCEDURE upsert_apiversion_into_discoverability(api_versions)
                                       )
                                       $$ LANGUAGE SQL;
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 ---- Delete
 CREATE OR REPLACE PROCEDURE delete_apiversion_from_discoverability(api_versions) AS $$
@@ -675,7 +679,8 @@ DELETE FROM discoverability d WHERE d.id = CONCAT_WS(':', $1.api_org_id, $1.api_
 
 $$ LANGUAGE SQL;
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 -- API Plans
 CREATE OR REPLACE FUNCTION api_plan_discoverability_trigger_func() RETURNS TRIGGER LANGUAGE plpgsql AS $$
@@ -698,7 +703,8 @@ END;
 
 $$;
 
---~~~DELIMITER~~~--
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 -- API Versions
 CREATE OR REPLACE FUNCTION api_version_discoverability_trigger_func() RETURNS TRIGGER LANGUAGE plpgsql AS $$
@@ -721,7 +727,7 @@ END;
 
 $$;
 
---~~~DELIMITER~~~--
+/** DELIMITER-END **/
 
 -- Triggers
 --- Api Plans

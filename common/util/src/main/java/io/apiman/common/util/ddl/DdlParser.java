@@ -65,36 +65,28 @@ public class DdlParser {
         BufferedReader reader = new BufferedReader(new InputStreamReader(ddlStream, StandardCharsets.UTF_8));
         String line;
         StringBuilder builder = new StringBuilder();
+
+        boolean delimBlock = false;
         boolean isInMultiLineStatement = false;
 
-        boolean withinBlock = false;
-        boolean startNewBlockNext = false;
+        while ((line = reader.readLine()) != null) {
+            if (line.startsWith("--")) {
+                continue;
+            }
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+            if (line.equals("/** DELIMITER-START **/")) {
+                delimBlock = true;
+                isInMultiLineStatement = true;
+                continue;
+            } else if (line.equals("/** DELIMITER-END **/")) {
+                delimBlock = false;
+                isInMultiLineStatement = false;
+                line = "";
+            }
 
-        while ( (line = reader.readLine()) != null) {
-            if (line.equals("-- ~~~DELIMITER~~~")) {
-                if (withinBlock) {
-                    startNewBlockNext = true;
-                    isInMultiLineStatement = false;
-                    continue;
-                }
-                if (!withinBlock) {
-                    withinBlock = true;
-                    startNewBlockNext = false;
-                    isInMultiLineStatement = true;
-                    continue;
-                }
-                if (startNewBlockNext) {
-                    withinBlock = false;
-                    isInMultiLineStatement = true;
-                    continue;
-                }
-            } else {
-                if (line.startsWith("--")) {
-                    continue;
-                }
-                if (line.trim().isEmpty()) {
-                    continue;
-                }
+            if (!delimBlock) {
                 if (line.endsWith("'") || line.endsWith("(") || line.endsWith("$$")) {
                     isInMultiLineStatement = true;
                 }
@@ -102,6 +94,7 @@ public class DdlParser {
                     isInMultiLineStatement = false;
                 }
             }
+
             builder.append(line);
             builder.append("\n");
 

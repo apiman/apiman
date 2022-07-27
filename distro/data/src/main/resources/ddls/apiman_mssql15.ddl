@@ -520,7 +520,8 @@ GO
 --             Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
 --             materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
 -- ApiPlan
--- ~~~DELIMITER~~~
+
+/** DELIMITER-START **/
 CREATE TRIGGER insert_apiplan_into_discoverability
     ON api_plans AFTER INSERT
     AS
@@ -553,7 +554,8 @@ GO
 END
 GO
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 CREATE TRIGGER update_apiplan_into_discoverability
     ON api_plans AFTER UPDATE
@@ -585,7 +587,8 @@ GO
 END
 GO
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 CREATE TRIGGER api_plan_discoverability_trigger_delete
     ON api_plans AFTER DELETE
@@ -612,7 +615,8 @@ GO
 END
 GO
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 -- ApiVersion
 CREATE TRIGGER insert_apiversion_into_discoverability
@@ -632,7 +636,8 @@ FROM inserted
 END
 GO
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 CREATE TRIGGER update_apiversion_into_discoverability
     ON api_versions AFTER INSERT
@@ -652,7 +657,8 @@ GO
 END
 GO
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 CREATE TRIGGER delete_apiversion_from_discoverability
     ON api_versions AFTER DELETE
@@ -666,4 +672,4 @@ GO
 END
 GO
 
--- ~~~DELIMITER~~~
+/** DELIMITER-END **/

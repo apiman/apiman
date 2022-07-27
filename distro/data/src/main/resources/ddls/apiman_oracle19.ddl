@@ -384,6 +384,8 @@ ALTER TABLE api_versions ADD discoverability VARCHAR2(255) DEFAULT 'ORG_MEMBERS'
 -- 
 --             Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
 --             materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
+
+/** DELIMITER-START **/
 CREATE MATERIALIZED VIEW Discoverability
     BUILD IMMEDIATE -- Build the MV immediately
     REFRESH FORCE -- Refresh using fast if possible, otherwise use full refresh
@@ -407,6 +409,8 @@ SELECT (av.api_org_id || ':' || av.api_id || ':' || av.version) AS id,
        NULL               AS plan_version,
        av.DISCOVERABILITY AS discoverability
 FROM API_VERSIONS av;
+
+/** DELIMITER-END **/
 
 -- Changeset src/main/liquibase/current/20220623-explicit-api-plan-order.xml::1655976671166-6::msavy (generated)
 ALTER TABLE api_plans ADD order_index INTEGER DEFAULT 0 NOT NULL;
