@@ -73,26 +73,34 @@ public class IndexedDiscoverabilities {
          * We need to ensure that the highest discoverability level wins.
          */
         for (DiscoverabilityDto discoverabilityDto : mapper.toDto(discoverabilityEntities)) {
-            discoverabilityIndex.compute(
-                    createApiLookupKey(discoverabilityDto),
-                    (k, v) -> {
-                        if (v == null) {
-                            return discoverabilityDto;
-                        } else {
-                            int compare = v.getDiscoverability().compareTo(discoverabilityDto.getDiscoverability());
-                            if (compare > 0) {
-                                return discoverabilityDto;
-                            } else {
-                                return v;
-                            }
-                        }
-                    }
-            );
+            insertIntoIndex(createApiLookupKey(discoverabilityDto), discoverabilityDto);
+
             // If it's a public API, it could be that it has no attached plans.
             if (discoverabilityDto.getPlanId() != null && discoverabilityDto.getPlanVersion() != null) {
-                discoverabilityIndex.put(createPlanLookupKey(discoverabilityDto), discoverabilityDto);
+                insertIntoIndex(createPlanLookupKey(discoverabilityDto), discoverabilityDto);
             }
         }
+    }
+
+    private void insertIntoIndex(String lookupKey, DiscoverabilityDto discoverabilityDto) {
+        discoverabilityIndex.compute(
+                lookupKey,
+                (k, existingVal) -> {
+                    if (existingVal == null) {
+                        // If no existing entry, then just set this new entry.
+                        return discoverabilityDto;
+                    } else {
+                        // Otherwise, keep the *most visible* discoverability entry
+                        // For example, if existing entry is ORG_MEMBERS and new entry is PORTAL, then PORTAL entry will supplant existing entry.
+                        int compare = existingVal.getDiscoverability().compareTo(discoverabilityDto.getDiscoverability());
+                        if (compare > 0) {
+                            return discoverabilityDto;
+                        } else {
+                            return existingVal;
+                        }
+                    }
+                }
+        );
     }
 
     public @NotNull SortedMap<String, DiscoverabilityDto> getAll(String orgId) {
