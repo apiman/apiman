@@ -9,7 +9,7 @@
   <artifactId>apiman-distro-ddl</artifactId>
   <name>apiman-distro-ddl</name>
   <properties>
-    <version.liquibase>4.9.1</version.liquibase>
+    <version.liquibase>4.14.0</version.liquibase>
 
     <!-- Just for Liquibase generation - likely do not need to change -->
     <version.liquibase-hibernate5>4.3.5</version.liquibase-hibernate5>
