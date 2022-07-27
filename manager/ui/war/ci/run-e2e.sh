@@ -18,7 +18,7 @@ cleanup () {
 trap cleanup ERR EXIT
 
 # Start docker container from latest local docker to give us a backend. Daemon mode, so will need to clean up later.
-docker-compose up -d
+docker-compose --project-name="apiman-ci-testing" up  -d
 
 # We need to figure out when the backend is actually available, so we use this handy 'wait-on' status utility.
 # Check out `waitOnConfig.js` for username and password injection.

@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -89,6 +90,7 @@ public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayIn
         
         ClassLoader cl = JdbcInitializer.class.getClassLoader();
         URL resource = cl.getResource("ddls/apiman-gateway_" + dbType + ".ddl");
+        Objects.requireNonNull(resource, "No DDL found for database type: '" + dbType + "'");
         try (InputStream is = resource.openStream()) {
             System.out.println("=======================================");
             System.out.println("Initializing apiman Gateway database.");
