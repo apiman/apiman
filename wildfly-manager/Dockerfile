@@ -21,7 +21,6 @@ ADD $APIMAN_DISTRO /tmp/apiman-overlay.zip
 USER root
 WORKDIR $JBOSS_HOME
 RUN unzip -o /tmp/apiman-overlay.zip && \
-    rm $JBOSS_HOME/standalone/deployments/apiman-gateway-ds.xml && \
     rm $JBOSS_HOME/standalone/deployments/apiman-gateway.war && \
     rm $JBOSS_HOME/standalone/deployments/apiman-gateway-api.war && \
     chown -R jboss:jboss $JBOSS_HOME && chmod -R g+rw $JBOSS_HOME
