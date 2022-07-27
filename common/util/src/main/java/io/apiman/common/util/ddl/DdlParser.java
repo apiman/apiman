@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,23 +62,39 @@ public class DdlParser {
     @SuppressWarnings("nls")
     public List<String> parse(InputStream ddlStream) throws IOException {
         List<String> rval = new LinkedList<>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(ddlStream, "UTF-8"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ddlStream, StandardCharsets.UTF_8));
         String line;
         StringBuilder builder = new StringBuilder();
+
+        boolean delimBlock = false;
         boolean isInMultiLineStatement = false;
-        while ( (line = reader.readLine()) != null) {
+
+        while ((line = reader.readLine()) != null) {
             if (line.startsWith("--")) {
                 continue;
             }
             if (line.trim().isEmpty()) {
                 continue;
             }
-            if (line.endsWith("'") || line.endsWith("(") || line.endsWith("$$")) {
+            if (line.equals("/** DELIMITER-START **/")) {
+                delimBlock = true;
                 isInMultiLineStatement = true;
-            }
-            if (line.startsWith("'") || line.startsWith(")") || line.startsWith("$$")) {
+                continue;
+            } else if (line.equals("/** DELIMITER-END **/")) {
+                delimBlock = false;
                 isInMultiLineStatement = false;
+                line = "";
             }
+
+            if (!delimBlock) {
+                if (line.endsWith("'") || line.endsWith("(") || line.endsWith("$$")) {
+                    isInMultiLineStatement = true;
+                }
+                if (line.startsWith("'") || line.startsWith(")") || line.startsWith("$$")) {
+                    isInMultiLineStatement = false;
+                }
+            }
+
             builder.append(line);
             builder.append("\n");
 
@@ -105,6 +122,5 @@ public class DdlParser {
             System.out.println(line);
         }
     }
-
 
 }

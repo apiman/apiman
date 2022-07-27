@@ -89,6 +89,12 @@
     <version.shade.plugin>3.2.4</version.shade.plugin>
     <version.apache.maven.maven-artifact>3.8.4</version.apache.maven.maven-artifact>
 
+    <!-- DBs -->
+    <version.org.postgresql.jdbc.driver>42.3.3</version.org.postgresql.jdbc.driver>
+    <version.mysql.jdbc.driver>8.0.29</version.mysql.jdbc.driver>
+    <version.com.oracle.driver>21.3.0.0</version.com.oracle.driver>
+    <version.mssql.driver>9.4.0.jre11</version.mssql.driver>
+
     <!-- Dependency Versions -->
     <version.com.blazebit.blaze-persistence>1.6.6</version.com.blazebit.blaze-persistence>
     <version.com.fasterxml.jackson>2.12.7</version.com.fasterxml.jackson>
@@ -277,6 +283,28 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- DB drivers -->
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${version.org.postgresql.jdbc.driver}</version>
+      </dependency>
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>${version.mysql.jdbc.driver}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.oracle.database.jdbc</groupId>
+        <artifactId>ojdbc11</artifactId>
+        <version>${version.com.oracle.driver}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.microsoft.sqlserver</groupId>
+        <artifactId>mssql-jdbc</artifactId>
+        <version>${version.mssql.driver}</version>
+      </dependency>
+
       <!-- Apiman wider family -->
       <dependency>
         <groupId>io.apicurio</groupId>

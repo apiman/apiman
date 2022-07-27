@@ -39,6 +39,8 @@
         be set via the logging subsystem in this standalone.xml file. -->
         <property name="apiman.logger-delegate" value="jboss-logging"/>
         <property name="hibernate.types.print.banner" value="false"/>
+        <property name="apiman.hibernate.dialect" value="${env.APIMAN_DB_DRIVER, apiman.db.driver:h2}"/>
+        <property name="apiman-gateway.initializers.jdbc.datasource.type" value="${env.APIMAN_DB_DRIVER, apiman.db.driver:h2}"/>
     </system-properties>
     <management>
         <security-realms>
@@ -164,22 +166,29 @@
                         <password>sa</password>
                     </security>
                 </datasource>
-                <datasource jndi-name="java:jboss/datasources/KeycloakDS" pool-name="KeycloakDS" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:h2:${jboss.server.data.dir}/h2/keycloak;AUTO_SERVER=TRUE</connection-url>
-                    <driver>h2</driver>
+                <datasource jndi-name="java:/apiman/datasources/apiman-manager" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
+                    <connection-url>${apiman.db.url, env.APIMAN_DB_URL:jdbc:h2:${jboss.server.data.dir}/h2/apiman-manager-api;AUTO_SERVER=TRUE}</connection-url>
+                    <driver>${apiman.db.driver, env.APIMAN_DB_DRIVER:h2}</driver>
                     <security>
-                        <user-name>sa</user-name>
-                        <password>sa</password>
+                        <user-name>${apiman.db.username, env.APIMAN_DB_USERNAME:sa}</user-name>
+                        <password>${apiman.db.password, env.APIMAN_DB_PASSWORD:sa}</password>
                     </security>
                 </datasource>
-                <datasource jndi-name="java:/apiman/datasources/apiman-manager" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:h2:${jboss.server.data.dir}/h2/apiman-manager-api;AUTO_SERVER=TRUE</connection-url>
-                    <driver>h2</driver>
+                <datasource jndi-name="java:/apiman/datasources/apiman-gateway" pool-name="apiman-gateway" enabled="true" use-java-context="true">
+                    <connection-url>${apiman.db.url, env.APIMAN_DB_URL:jdbc:h2:${jboss.server.data.dir}/h2/apiman-gateway;MVCC=true}</connection-url>
+                    <driver>${apiman.db.driver, env.APIMAN_DB_DRIVER:h2}</driver>
                     <security>
-                        <user-name>sa</user-name>
+                        <user-name>${apiman.db.username, env.APIMAN_DB_USERNAME:sa}</user-name>
+                        <password>${apiman.db.password, env.APIMAN_DB_PASSWORD:sa}</password>
                     </security>
                 </datasource>
                 <drivers>
+                    <driver name="postgresql9" module="org.postgres">
+                        <driver-class>org.postgresql.Driver</driver-class>
+                    </driver>
+                    <driver name="mysql8" module="com.mysql">
+                        <driver-class>com.mysql.cj.jdbc.Driver</driver-class>
+                    </driver>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
                     </driver>
@@ -552,28 +561,28 @@
         <!-- Apiman's Keycloak client adapter configuration. -->
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
             <secure-deployment name="apiman.war">
-                <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
-                <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
+                <realm>${apiman.auth.realm, env.APIMAN_AUTH_REALM:apiman}</realm>
+                <auth-server-url>${apiman.auth.url, env.APIMAN_AUTH_URL:/auth}</auth-server-url>
                 <resource>apiman</resource>
-                <credential name="secret">password</credential>
+                <credential name="secret">${apiman.auth.api.secret, env.APIMAN_AUTH_API_SECRET:password}</credential>
                 <disable-trust-manager>true</disable-trust-manager>
                 <bearer-only>true</bearer-only>
                 <enable-basic-auth>true</enable-basic-auth>
                 <principal-attribute>preferred_username</principal-attribute>
             </secure-deployment>
             <secure-deployment name="apimanui.war">
-                <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
-                <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
+                <realm>${apiman.auth.realm, env.APIMAN_AUTH_REALM:apiman}</realm>
+                <auth-server-url>${apiman.auth.url, env.APIMAN_AUTH_URL:/auth}</auth-server-url>
                 <resource>apimanui</resource>
-                <credential name="secret">password</credential>
+                <credential name="secret">${apiman.auth.ui.secret, env.APIMAN_AUTH_UI_SECRET:password}</credential>
                 <disable-trust-manager>true</disable-trust-manager>
                 <principal-attribute>preferred_username</principal-attribute>
             </secure-deployment>
             <secure-deployment name="apiman-gateway-api.war">
-                <realm>${env.APIMAN_AUTH_REALM:apiman}</realm>
-                <auth-server-url>${env.APIMAN_AUTH_URL:/auth}</auth-server-url>
+                <realm>${apiman.auth.realm, env.APIMAN_AUTH_REALM:apiman}</realm>
+                <auth-server-url>${apiman.auth.url, env.APIMAN_AUTH_URL:/auth}</auth-server-url>
                 <resource>apiman-gateway-api</resource>
-                <credential name="secret">password</credential>
+                <credential name="secret">${apiman.auth.gateway.secret, env.APIMAN_AUTH_GATEWAY_SECRET:password}</credential>
                 <disable-trust-manager>true</disable-trust-manager>
                 <bearer-only>true</bearer-only>
                 <enable-basic-auth>true</enable-basic-auth>

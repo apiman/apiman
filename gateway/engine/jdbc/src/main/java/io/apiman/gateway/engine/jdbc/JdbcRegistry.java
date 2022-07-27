@@ -57,7 +57,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Example:
  *
  *     apiman-gateway.registry=io.apiman.gateway.engine.jdbc.JdbcRegistry
- *     apiman-gateway.registry.datasource.jndi-location=java:jboss/datasources/apiman-gateway
+ *     apiman-gateway.registry.datasource.jndi-location=java:/apiman/datasources/apiman-gateway
  *
  * @author ewittman
  */

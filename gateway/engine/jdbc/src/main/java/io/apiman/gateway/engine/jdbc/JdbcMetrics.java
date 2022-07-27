@@ -39,7 +39,7 @@ import org.apache.commons.dbutils.QueryRunner;
  * Example:
  * 
  *     apiman-gateway.metrics=io.apiman.gateway.engine.jdbc.JdbcRegistry
- *     apiman-gateway.metrics.datasource.jndi-location=java:jboss/datasources/apiman-gateway
+ *     apiman-gateway.metrics.datasource.jndi-location=java:/apiman/datasources/apiman-gateway
  * 
  * @author ewittman
  */

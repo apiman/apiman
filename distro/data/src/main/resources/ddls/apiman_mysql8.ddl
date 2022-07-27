@@ -6,20 +6,20 @@
 --  Against: apiman@offline:mysql?version=8&caseSensitive=true&catalog=apiman&changeLogFile=/Users/msavy/oss/apiman/apiman/distro/ddl/target/changelog/mysql/databasechangelog.csv
 --  Liquibase version: 4.9.1
 --  *********************************************************************
-
+SET default_storage_engine=INNODB;
 --  Changeset src/main/liquibase/current/000-apiman-manager-api.db.sequences.changelog.xml::1434723514712-1::apiman
 CREATE TABLE hibernate_sequence (next_val bigint(20) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO hibernate_sequence VALUES (999);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-1::apiman (generated)
-CREATE TABLE client_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, published_on timestamp NULL, retired_on timestamp NULL, status VARCHAR(255) NOT NULL, version VARCHAR(255) NOT NULL, client_id VARCHAR(255) NULL, client_org_id VARCHAR(255) NULL, apikey VARCHAR(255) NOT NULL);
+CREATE TABLE client_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, published_on timestamp NULL, retired_on timestamp NULL, status VARCHAR(255) NOT NULL, version VARCHAR(150) NOT NULL, client_id VARCHAR(255) NULL, client_org_id VARCHAR(150) NULL, apikey VARCHAR(255) NOT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-2::apiman (generated)
-CREATE TABLE clients (id VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, name VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL);
+CREATE TABLE clients (id VARCHAR(150) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, name VARCHAR(255) NOT NULL, organization_id VARCHAR(150) NOT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-3::apiman (generated)
-CREATE TABLE auditlog (id BIGINT NOT NULL, created_on timestamp NOT NULL, data LONGTEXT NULL, entity_id VARCHAR(255) NULL, entity_type VARCHAR(255) NOT NULL, entity_version VARCHAR(255) NULL, organization_id VARCHAR(255) NOT NULL, what VARCHAR(255) NOT NULL, who VARCHAR(255) NOT NULL);
+CREATE TABLE auditlog (id BIGINT NOT NULL, created_on timestamp NOT NULL, data LONGTEXT NULL, entity_id VARCHAR(150) NULL, entity_type VARCHAR(255) NOT NULL, entity_version VARCHAR(150) NULL, organization_id VARCHAR(150) NOT NULL, what VARCHAR(255) NOT NULL, who VARCHAR(255) NOT NULL) ROW_FORMAT=DYNAMIC;
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-4::apiman (generated)
 CREATE TABLE contracts (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, clientv_id BIGINT NULL, planv_id BIGINT NULL, apiv_id BIGINT NULL);
@@ -31,10 +31,10 @@ CREATE TABLE endpoint_properties (api_version_id BIGINT NOT NULL, value VARCHAR(
 CREATE TABLE gateways (id VARCHAR(255) NOT NULL, configuration LONGTEXT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-7::apiman (generated)
-CREATE TABLE memberships (id BIGINT NOT NULL, created_on timestamp NULL, org_id VARCHAR(255) NULL, role_id VARCHAR(255) NULL, user_id VARCHAR(255) NULL);
+CREATE TABLE memberships (id BIGINT NOT NULL, created_on timestamp NULL, org_id VARCHAR(150) NULL, role_id VARCHAR(255) NULL, user_id VARCHAR(255) NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-8::apiman (generated)
-CREATE TABLE organizations (id VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, name VARCHAR(255) NOT NULL);
+CREATE TABLE organizations (id VARCHAR(150) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, name VARCHAR(255) NOT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-9::apiman (generated)
 CREATE TABLE pd_templates (policydef_id VARCHAR(255) NOT NULL, language VARCHAR(255) NULL, template VARCHAR(2048) NULL);
@@ -43,16 +43,16 @@ CREATE TABLE pd_templates (policydef_id VARCHAR(255) NOT NULL, language VARCHAR(
 CREATE TABLE permissions (role_id VARCHAR(255) NOT NULL, permissions INT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-11::apiman (generated)
-CREATE TABLE plan_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, locked_on timestamp NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, status VARCHAR(255) NOT NULL, version VARCHAR(255) NOT NULL, plan_id VARCHAR(255) NULL, plan_org_id VARCHAR(255) NULL);
+CREATE TABLE plan_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, locked_on timestamp NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, status VARCHAR(255) NOT NULL, version VARCHAR(150) NOT NULL, plan_id VARCHAR(150) NULL, plan_org_id VARCHAR(150) NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-12::apiman (generated)
-CREATE TABLE plans (id VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, name VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL);
+CREATE TABLE plans (id VARCHAR(150) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, name VARCHAR(255) NOT NULL, organization_id VARCHAR(150) NOT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-13::apiman (generated)
 CREATE TABLE plugins (id BIGINT NOT NULL, artifact_id VARCHAR(255) NOT NULL, classifier VARCHAR(255) NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, group_id VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(255) NULL, version VARCHAR(255) NOT NULL, deleted BIT(1) NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-14::apiman (generated)
-CREATE TABLE policies (id BIGINT NOT NULL, configuration LONGTEXT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, entity_id VARCHAR(255) NOT NULL, entity_version VARCHAR(255) NOT NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, name VARCHAR(255) NOT NULL, order_index INT NOT NULL, organization_id VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, definition_id VARCHAR(255) NOT NULL);
+CREATE TABLE policies (id BIGINT NOT NULL, configuration LONGTEXT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, entity_id VARCHAR(150) NOT NULL, entity_version VARCHAR(150) NOT NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, name VARCHAR(255) NOT NULL, order_index INT NOT NULL, organization_id VARCHAR(150) NOT NULL, type VARCHAR(255) NOT NULL, definition_id VARCHAR(255) NOT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-15::apiman (generated)
 CREATE TABLE policydefs (id VARCHAR(255) NOT NULL, `description` VARCHAR(512) NOT NULL, form VARCHAR(255) NULL, form_type VARCHAR(255) NULL, icon VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, plugin_id BIGINT NULL, policy_impl VARCHAR(255) NOT NULL, deleted BIT(1) NULL);
@@ -64,16 +64,16 @@ CREATE TABLE roles (id VARCHAR(255) NOT NULL, auto_grant BIT(1) NULL, created_by
 CREATE TABLE api_defs (id BIGINT NOT NULL, data LONGBLOB NULL, api_version_id BIGINT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-18::apiman (generated)
-CREATE TABLE api_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, definition_type VARCHAR(255) NULL, endpoint VARCHAR(255) NULL, endpoint_type VARCHAR(255) NULL, endpoint_ct VARCHAR(255) NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, public_api BIT(1) NOT NULL, parse_payload BIT(1) NULL, strip_keys BIT(1) NULL, published_on timestamp NULL, retired_on timestamp NULL, status VARCHAR(255) NOT NULL, version VARCHAR(255) NULL, api_id VARCHAR(255) NULL, api_org_id VARCHAR(255) NULL, definition_url VARCHAR(255) NULL);
+CREATE TABLE api_versions (id BIGINT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, definition_type VARCHAR(255) NULL, endpoint VARCHAR(255) NULL, endpoint_type VARCHAR(255) NULL, endpoint_ct VARCHAR(255) NULL, modified_by VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, public_api BIT(1) NOT NULL, parse_payload BIT(1) NULL, strip_keys BIT(1) NULL, published_on timestamp NULL, retired_on timestamp NULL, status VARCHAR(255) NOT NULL, version VARCHAR(150) NULL, api_id VARCHAR(150) NULL, api_org_id VARCHAR(150) NULL, definition_url VARCHAR(255) NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-19::apiman (generated)
-CREATE TABLE apis (id VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, name VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL, num_published INT NULL);
+CREATE TABLE apis (id VARCHAR(255) NOT NULL, created_by VARCHAR(255) NOT NULL, created_on timestamp NOT NULL, `description` VARCHAR(512) NULL, name VARCHAR(255) NOT NULL, organization_id VARCHAR(150) NOT NULL, num_published INT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-20::apiman (generated)
 CREATE TABLE api_gateways (api_version_id BIGINT NOT NULL, gateway_id VARCHAR(255) NOT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-21::apiman (generated)
-CREATE TABLE api_plans (api_version_id BIGINT NOT NULL, plan_id VARCHAR(255) NOT NULL, version VARCHAR(255) NOT NULL);
+CREATE TABLE api_plans (api_version_id BIGINT NOT NULL, plan_id VARCHAR(150) NOT NULL, version VARCHAR(150) NOT NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-22::apiman (generated)
 CREATE TABLE users (username VARCHAR(255) NOT NULL, email VARCHAR(255) NULL, full_name VARCHAR(255) NULL, joined_on timestamp NULL);
@@ -82,7 +82,7 @@ CREATE TABLE users (username VARCHAR(255) NOT NULL, email VARCHAR(255) NULL, ful
 CREATE TABLE downloads (id VARCHAR(255) NOT NULL, type VARCHAR(255) NULL, `path` VARCHAR(255) NULL, expires timestamp NULL);
 
 --  Changeset src/main/liquibase/current/010-apiman-manager-api.db.tables.changelog.xml::1436469846462-24::apiman (generated)
-CREATE TABLE metadata (id BIGINT NOT NULL, exported_on timestamp NULL, imported_on timestamp NULL, apiman_version VARCHAR(255) NULL, apiman_version_at_import VARCHAR(255) NULL, success BIT(1) NULL);
+CREATE TABLE metadata (id BIGINT NOT NULL, exported_on timestamp NULL, imported_on timestamp NULL, apiman_version VARCHAR(150) NULL, apiman_version_at_import VARCHAR(255) NULL, success BIT(1) NULL);
 
 --  Changeset src/main/liquibase/current/100-apiman-manager-api.db.constraints.changelog.xml::1436469846462-23::apiman (generated)
 ALTER TABLE endpoint_properties ADD PRIMARY KEY (api_version_id, name);
@@ -271,7 +271,7 @@ CREATE INDEX IDX_FK_contracts_s ON contracts(apiv_id);
 CREATE INDEX IDX_FK_contracts_a ON contracts(clientv_id);
 
 --  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-6::msavy marc@blackparrotlabs.io (generated)
-CREATE TABLE developer_mappings (developer_id VARCHAR(255) NOT NULL, client_id VARCHAR(255) NOT NULL, organization_id VARCHAR(255) NOT NULL, CONSTRAINT PK_DEVELOPER_MAPPINGS PRIMARY KEY (developer_id, client_id, organization_id));
+CREATE TABLE developer_mappings (developer_id VARCHAR(255) NOT NULL, client_id VARCHAR(255) NOT NULL, organization_id VARCHAR(150) NOT NULL, CONSTRAINT PK_DEVELOPER_MAPPINGS PRIMARY KEY (developer_id, client_id, organization_id));
 
 --  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::dev-portal-2-initial-changeset-7::msavy marc@blackparrotlabs.io (generated)
 CREATE TABLE developers (id VARCHAR(255) NOT NULL, CONSTRAINT developersPK PRIMARY KEY (id));
@@ -331,10 +331,10 @@ ALTER TABLE developer_mappings ADD CONSTRAINT FKhl2dwc4m0kvisedxfb9crceqd FOREIG
 CREATE TABLE kv_tags (id BIGINT AUTO_INCREMENT NOT NULL, `key` VARCHAR(255) NOT NULL, value VARCHAR(255) NULL, CONSTRAINT kv_tagsPK PRIMARY KEY (id));
 
 --  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633441143380-5::msavy (generated)
-CREATE TABLE api_tag (api_id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NOT NULL, tag_id BIGINT NOT NULL, CONSTRAINT PK_API_TAG PRIMARY KEY (api_id, org_id, tag_id));
+CREATE TABLE api_tag (api_id VARCHAR(150) NOT NULL, org_id VARCHAR(150) NOT NULL, tag_id BIGINT NOT NULL, CONSTRAINT PK_API_TAG PRIMARY KEY (api_id, org_id, tag_id));
 
 --  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-6::msavy (generated)
-CREATE TABLE blob_store (id VARCHAR(255) NOT NULL, mrblobby BLOB NOT NULL, created_on timestamp NOT NULL, hash BIGINT NOT NULL, mime_type VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, name VARCHAR(255) NOT NULL, ref_count INT NOT NULL, CONSTRAINT blob_storePK PRIMARY KEY (id));
+CREATE TABLE blob_store (id VARCHAR(255) NOT NULL, mrblobby LONGBLOB NOT NULL, created_on timestamp NOT NULL, hash BIGINT NOT NULL, mime_type VARCHAR(255) NOT NULL, modified_on timestamp NOT NULL, name VARCHAR(255) NOT NULL, ref_count INT NOT NULL, CONSTRAINT blob_storePK PRIMARY KEY (id));
 
 --  Changeset src/main/liquibase/current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml::1633542267834-7::msavy (generated)
 CREATE TABLE outbox (id BIGINT AUTO_INCREMENT NOT NULL, event_version BIGINT NOT NULL, payload JSON NOT NULL, source VARCHAR(255) NOT NULL, subject VARCHAR(255) NOT NULL, time timestamp NOT NULL, type VARCHAR(255) NOT NULL, CONSTRAINT outboxPK PRIMARY KEY (id));
@@ -378,7 +378,7 @@ ALTER TABLE api_plans ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS' NUL
 ALTER TABLE api_versions ADD discoverability VARCHAR(255) DEFAULT 'ORG_MEMBERS' NULL;
 
 --  Changeset src/main/liquibase/current/20220330-discoverability.xml::1646489262610-4::msavy (generated)
-CREATE TABLE discoverability (id VARCHAR(255) NOT NULL, org_id VARCHAR(255) NULL, api_id VARCHAR(255) NULL, api_version VARCHAR(255) NULL, plan_id VARCHAR(255) NULL, plan_version VARCHAR(255) NULL, discoverability VARCHAR(255) NULL, CONSTRAINT discoverabilityPK PRIMARY KEY (id));
+CREATE TABLE discoverability (id VARCHAR(255) NOT NULL, org_id VARCHAR(150) NULL, api_id VARCHAR(150) NULL, api_version VARCHAR(150) NULL, plan_id VARCHAR(150) NULL, plan_version VARCHAR(150) NULL, discoverability VARCHAR(255) NULL, CONSTRAINT discoverabilityPK PRIMARY KEY (id));
 
 CREATE INDEX api_plan_discoverability_index ON discoverability(org_id, api_id, api_version, plan_id, plan_version);
 
@@ -388,33 +388,34 @@ CREATE INDEX api_version_discoverability_index ON discoverability(org_id, api_id
 --  A hand-rolled materialized view that synchronises changes to 'discoverability' on `api_plans` and `api_versions` to `discoverability`
 --              This enables very efficient search without performing multiple joins, plus avoids significantly complicating queries by having to
 --              reference all different locations that `discoverability` can be set.
---  
+--
 --              Plausibly we may need to add additional location(s) in future such as `organization`, which should be mostly copy-and-paste.
---  
+--
 --              A nice alternative to this would be CDC with something like Debezium, but that requires the DB to have been set up properly (sometimes
 --              including special plugins), which makes the deployment more complicated and difficult.
---  
+--
 --              Materialized views were considered, but these have extremely variable functionality on different DBs. For example, on Postgres all
 --              materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
+/** DELIMITER-START **/
 -- API Plans
 CREATE TRIGGER insert_apiplan_into_discoverability AFTER INSERT ON api_plans
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     INSERT INTO discoverability(id, org_id, api_id, api_version, plan_id, plan_version, discoverability)
     WITH Api_Version_CTE (api_org_id, api_id, api_version)
-    AS
-    (
-        SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
-        FROM api_versions av
-        WHERE av.id = NEW.api_version_id
-    )
+             AS
+             (
+                 SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+                 FROM api_versions av
+                 WHERE av.id = NEW.api_version_id
+             )
     SELECT
         CONCAT_WS(':',
-            Api_Version_CTE.api_org_id,
-            Api_Version_CTE.api_id,
-            Api_Version_CTE.api_version,
-            NEW.plan_id,
-            NEW.version
-        ),
+                  Api_Version_CTE.api_org_id,
+                  Api_Version_CTE.api_id,
+                  Api_Version_CTE.api_version,
+                  NEW.plan_id,
+                  NEW.version
+            ),
         Api_Version_CTE.api_org_id,
         Api_Version_CTE.api_id,
         Api_Version_CTE.api_version,
@@ -425,14 +426,17 @@ FOR EACH ROW BEGIN
 
 END;
 
+/** DELIMITER-END **/
+/** DELIMITER-START **/
+
 CREATE TRIGGER update_apiplan_into_discoverability AFTER UPDATE ON api_plans
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     WITH Api_Version_CTE (api_org_id, api_id, api_version)
-    AS (
-         SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
-         FROM api_versions av
-         WHERE av.id = NEW.api_version_id
-    )
+             AS (
+            SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+            FROM api_versions av
+            WHERE av.id = NEW.api_version_id
+        )
     UPDATE discoverability
     SET org_id = Api_Version_CTE.api_org_id,
         api_id = Api_Version_CTE.api_id,
@@ -441,54 +445,63 @@ FOR EACH ROW BEGIN
         plan_version = NEW.version,
         discoverability = NEW.discoverability
     WHERE id = CONCAT_WS(':',
-        Api_Version_CTE.api_org_id,
-        Api_Version_CTE.api_id,
-        Api_Version_CTE.api_version,
-        NEW.plan_id,
-        NEW.version
-    );
+                         Api_Version_CTE.api_org_id,
+                         Api_Version_CTE.api_id,
+                         Api_Version_CTE.api_version,
+                         NEW.plan_id,
+                         NEW.version
+        );
 
 END;
+
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 CREATE TRIGGER api_plan_discoverability_trigger_delete AFTER DELETE ON api_plans
-FOR EACH ROW
+    FOR EACH ROW BEGIN
     WITH Api_Version_CTE (api_org_id, api_id, api_version)
-    AS
-    (
-        SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
-        FROM api_versions av
-        WHERE av.id = OLD.api_version_id
-    )
+             AS
+             (
+                 SELECT av.api_org_id AS api_org_id, av.api_id AS api_id, av.version AS api_version
+                 FROM api_versions av
+                 WHERE av.id = OLD.api_version_id
+             )
     DELETE FROM discoverability
-    USING Api_Version_CTE, discoverability
+        USING Api_Version_CTE, discoverability
     WHERE discoverability.id = CONCAT_WS(':',
-        Api_Version_CTE.api_org_id,
-        Api_Version_CTE.api_id,
-        Api_Version_CTE.api_version,
-        OLD.plan_id,
-        OLD.version
-    );
+                                         Api_Version_CTE.api_org_id,
+                                         Api_Version_CTE.api_id,
+                                         Api_Version_CTE.api_version,
+                                         OLD.plan_id,
+                                         OLD.version
+        );
 
 END;
+
+/** DELIMITER-END **/
+/** DELIMITER-START **/
 
 -- API Versions
 CREATE TRIGGER insert_apiversion_into_discoverability AFTER INSERT ON api_versions
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     INSERT INTO discoverability(id, org_id, api_id, api_version, plan_id, plan_version, discoverability)
     VALUES (
-        CONCAT_WS(':', NEW.api_org_id, NEW.api_id, NEW.version),
-        NEW.api_org_id,
-        NEW.api_id,
-        NEW.version,
-        NULL,
-        NULL,
-        NEW.discoverability
-    );
+               CONCAT_WS(':', NEW.api_org_id, NEW.api_id, NEW.version),
+               NEW.api_org_id,
+               NEW.api_id,
+               NEW.version,
+               NULL,
+               NULL,
+               NEW.discoverability
+           );
 
 END;
 
+/** DELIMITER-END **/
+/** DELIMITER-START **/
+
 CREATE TRIGGER update_apiversion_into_discoverability AFTER UPDATE ON api_versions
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     UPDATE discoverability
     SET org_id = NEW.api_org_id,
         api_id = NEW.api_id,
@@ -500,12 +513,16 @@ FOR EACH ROW BEGIN
 
 END;
 
+/** DELIMITER-END **/
+/** DELIMITER-START **/
+
 CREATE TRIGGER delete_apiversion_from_discoverability AFTER DELETE ON api_versions
-FOR EACH ROW BEGIN
+    FOR EACH ROW BEGIN
     DELETE FROM discoverability d WHERE d.id = CONCAT_WS(':', OLD.api_org_id, OLD.api_id, OLD.version);
 
 END;
 
+/** DELIMITER-END **/
+
 --  Changeset src/main/liquibase/current/20220623-explicit-api-plan-order.xml::1655976671166-6::msavy (generated)
 ALTER TABLE api_plans ADD order_index INT DEFAULT 0 NOT NULL;
-

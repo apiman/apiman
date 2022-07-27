@@ -6,6 +6,47 @@
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
+    <!-- JDBC Drivers -->
+    <dependencySet>
+      <outputDirectory>modules/org/postgres/main</outputDirectory>
+      <includes>
+        <include>org.postgresql:postgresql:jar</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+
+    <dependencySet>
+      <outputDirectory>modules/com/mysql/main</outputDirectory>
+      <includes>
+        <include>mysql:mysql-connector-java:jar</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+
+<!--    <dependencySet>-->
+<!--      <outputDirectory>standalone/deployments</outputDirectory>-->
+<!--      <includes>-->
+<!--        <include>com.oracle.database.jdbc:ojdbc11:jar</include>-->
+<!--        <include>com.microsoft.sqlserver:mssql-jdbc:jar</include>-->
+<!--      </includes>-->
+<!--      <useProjectArtifact>false</useProjectArtifact>-->
+<!--      <useProjectAttachments>false</useProjectAttachments>-->
+<!--      <useTransitiveDependencies>false</useTransitiveDependencies>-->
+<!--      <useTransitiveFiltering>false</useTransitiveFiltering>-->
+<!--      <directoryMode>0755</directoryMode>-->
+<!--      <fileMode>0755</fileMode>-->
+<!--    </dependencySet>-->
+
     <!-- apiman-manager -->
     <dependencySet>
       <outputDirectory>standalone/deployments</outputDirectory>
@@ -123,12 +164,24 @@
     </dependencySet>
   </dependencySets>
   <fileSets>
+    <!-- Filter module defs -->
+    <fileSet>
+      <directory>src/main/resources/overlay/modules</directory>
+      <outputDirectory>modules</outputDirectory>
+      <filtered>true</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
+    <!-- Don't filter everything else as can end up filtering stuff we don't want -->
     <fileSet>
       <directory>src/main/resources/overlay</directory>
       <outputDirectory></outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
+      <excludes>
+        <exclude>src/main/resources/overlay/modules</exclude>
+      </excludes>
     </fileSet>
     <fileSet>
       <directory>target/keycloak/modules</directory>

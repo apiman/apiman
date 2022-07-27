@@ -2,7 +2,7 @@ version: "3.9"
 services:
     reverse-proxy:
         image: traefik:v2.5
-        container_name: traefik
+     #   container_name: traefik
         command: --providers.docker --entrypoints.http.address=:8080 --log.level=DEBUG
         ports:
         - "8877:8080"
@@ -10,7 +10,7 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock
 
     keycloak:
-        container_name: keycloak
+      #  container_name: keycloak
         image:
             quay.io/keycloak/keycloak:17.0.0-legacy
         environment:
@@ -31,7 +31,7 @@ services:
             - traefik.http.services.keycloak-service.loadbalancer.server.port=8080
 
     apiman:
-        container_name: apiman
+       # container_name: apiman
         image: ${APIMAN_IMAGE_ID}
         # ports:
         #     - "8085:8080"

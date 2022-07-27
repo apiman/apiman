@@ -193,6 +193,10 @@ public abstract class ApiManagerConfig {
         return config.getString(APIMAN_MANAGER_HIBERNATE_DIALECT, null);
     }
 
+    public void setHibernateDialect(String newValue) {
+        config.setProperty(APIMAN_MANAGER_HIBERNATE_DIALECT, newValue);
+    }
+
     /**
      * @return the configured storage type
      */
