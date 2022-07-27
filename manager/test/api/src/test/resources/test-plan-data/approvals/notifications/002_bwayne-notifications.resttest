@@ -42,7 +42,6 @@ Content-Type: application/json
           "apiOrgId": "Organization1",
           "apiId": "API1",
           "apiVersion": "1.0",
-          "contractId": "56",
           "planId": "Plan1",
           "planVersion": "1.0",
           "approved": false,
@@ -143,6 +142,109 @@ Content-Type: application/json
 			"approved": true,
 			"rejectionReason": null
 		}
-	}],
-	"totalSize": 4
+	}, {
+        "category": "API_LIFECYCLE",
+        "reason": "apiman.client.contract.request.user",
+        "reasonMessage": "Signup for API",
+        "status": "OPEN",
+        "recipient": {
+            "username": "bwayne",
+            "fullName": "Bruce Wayne",
+            "email": "bwayne@wayne-enterprises.com"
+        },
+        "source": "/apiman/notifications/contracts/approvals",
+        "payload": {
+            "headers": {
+                "source": "/apiman/events/contracts/created",
+                "type": "io.apiman.manager.api.beans.events.ContractCreatedEvent",
+                "subject": "approval-required",
+                "eventVersion": 1,
+                "otherProperties": {}
+            },
+            "user": {
+                "username": "bwayne",
+                "fullName": "Bruce Wayne",
+                "email": "bwayne@wayne-enterprises.com"
+            },
+            "clientOrgId": "Organization1",
+            "clientId": "Client2",
+            "clientVersion": "1.0",
+            "apiOrgId": "Organization1",
+            "apiId": "API1",
+            "apiVersion": "1.0",
+            "planId": "Plan1",
+            "planVersion": "1.0",
+            "approvalRequired": true
+        }
+    }, {
+        "category": "API_LIFECYCLE",
+        "reason": "apiman.client.contract.request.user",
+        "reasonMessage": "Signup for API",
+        "status": "OPEN",
+        "recipient": {
+            "username": "bwayne",
+            "fullName": "Bruce Wayne",
+            "email": "bwayne@wayne-enterprises.com"
+        },
+        "source": "/apiman/notifications/contracts/approvals",
+        "payload": {
+            "headers": {
+                "source": "/apiman/events/contracts/created",
+                "type": "io.apiman.manager.api.beans.events.ContractCreatedEvent",
+                "subject": "approval-required",
+                "eventVersion": 1,
+                "otherProperties": {}
+            },
+            "user": {
+                "username": "bwayne",
+                "fullName": "Bruce Wayne",
+                "email": "bwayne@wayne-enterprises.com"
+            },
+            "clientOrgId": "Organization1",
+            "clientId": "Client1",
+            "clientVersion": "1.0",
+            "apiOrgId": "Organization2",
+            "apiId": "API2",
+            "apiVersion": "1.5",
+            "planId": "PlanA",
+            "planVersion": "2.0",
+            "approvalRequired": true
+       }
+    }, {
+        "category": "API_LIFECYCLE",
+        "reason": "apiman.client.contract.request.user",
+        "reasonMessage": "Signup for API",
+        "status": "OPEN",
+        "recipient": {
+            "username": "bwayne",
+            "fullName": "Bruce Wayne",
+            "email": "bwayne@wayne-enterprises.com"
+        },
+        "source": "/apiman/notifications/contracts/approvals",
+        "payload": {
+            "headers": {
+                "source": "/apiman/events/contracts/created",
+                "type": "io.apiman.manager.api.beans.events.ContractCreatedEvent",
+                "subject": "approval-required",
+                "eventVersion": 1,
+                "otherProperties": {}
+            },
+            "user": {
+                "username": "bwayne",
+                "fullName": "Bruce Wayne",
+                "email": "bwayne@wayne-enterprises.com"
+            },
+            "clientOrgId": "Organization1",
+            "clientId": "Client1",
+            "clientVersion": "1.0",
+            "apiOrgId": "Organization1",
+            "apiId": "API1",
+            "apiVersion": "1.0",
+            "planId": "Plan1",
+            "planVersion": "1.0",
+            "approvalRequired": true
+        }
+    }],
+	"totalSize": 7
 }
+

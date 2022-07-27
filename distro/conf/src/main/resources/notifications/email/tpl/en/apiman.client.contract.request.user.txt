@@ -1,0 +1,24 @@
+Hi {notification.recipient.fullName},
+
+your API signup request is currently pending approval.
+You will receive further emails on status changes.
+
+## API Information
+
+The API you want to subscribe to:
+
+Organization: {event.apiOrgId}
+Name: {event.apiId}
+Version: {event.apiVersion}
+Plan: {event.planId}
+Plan Version: {event.planVersion}
+
+## Client Information
+
+The client you used for the subscription:
+
+Organization: {event.clientOrgId}
+Name: {event.clientId}
+Version: {event.clientVersion}
+
+{#include footer.en.include.txt /}

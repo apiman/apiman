@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+{#include header.include.html title='API Signup Request' /}
+
+{#include standard-body.include.html notificationHeader='API Signup Request' name=notification.recipient.fullName}
+{#notificationBody}
+<p>your API signup request is currently pending approval.</p>
+<p>You will receive further emails on status changes.</p>
+
+
+<h5>API Information</h5>
+<p>The API you want to subscribe to:</p>
+<dl class="row">
+  <dt class="col-sm-3">Organization</dt>
+  <dd class="col-sm-9">
+    {event.apiOrgId}
+  </dd>
+  <dt class="col-sm-3">Name</dt>
+  <dd class="col-sm-9">
+    {event.apiId}
+  </dd>
+  <dt class="col-sm-3">Version</dt>
+  <dd class="col-sm-9">
+    {event.apiVersion}
+  </dd>
+  <dt class="col-sm-3">Plan</dt>
+  <dd class="col-sm-9">
+    {event.planId}
+  </dd>
+  <dt class="col-sm-3">Plan Version</dt>
+  <dd class="col-sm-9">
+    {event.planVersion}
+  </dd>
+</dl>
+
+<h5>Client Information</h5>
+<p>The client you used for the subscription:</p>
+<dl class="row">
+  <dt class="col-sm-3">Organization</dt>
+  <dd class="col-sm-9">
+    {event.clientOrgId}
+  </dd>
+  <dt class="col-sm-3">Name</dt>
+  <dd class="col-sm-9">
+    {event.clientId}
+  </dd>
+  <dt class="col-sm-3">Version</dt>
+  <dd class="col-sm-9">
+    {event.clientVersion}
+  </dd>
+</dl>
+
+<div class="container mt-5">
+  {#include footer.en.include.html /}
+</div>
+{/notificationBody}
+{/include}
+</html>
