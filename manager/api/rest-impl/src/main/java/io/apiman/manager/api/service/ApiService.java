@@ -243,7 +243,7 @@ public class ApiService implements DataAccessUtilMixin {
             return apiMapper.toDto(newApi);
         });
     }
-    
+
     public ApiBeanDto getApi(String organizationId, String apiId)
         throws ApiNotFoundException, NotAuthorizedException {
         return apiMapper.toDto(getApiFromStorage(organizationId, apiId));
@@ -263,13 +263,13 @@ public class ApiService implements DataAccessUtilMixin {
         }
         return apiBean;
     }
-    
+
     public SearchResultsBean<AuditEntryBean> getApiActivity(String organizationId, String apiId,
         int page, int pageSize) throws ApiNotFoundException, NotAuthorizedException {
         final PagingBean paging = PagingBean.create(page, pageSize);
         return tryAction(() -> query.auditEntity(organizationId, apiId, null, ApiBean.class, paging));
     }
-    
+
     public List<ApiSummaryBean> listApis(String organizationId) throws OrganizationNotFoundException {
         // make sure the org exists
         organizationService.getOrg(organizationId);
@@ -314,7 +314,7 @@ public class ApiService implements DataAccessUtilMixin {
             storage.createAuditEntry(AuditUtils.apiUpdated(apiForUpdate, auditData, securityContext));
         });
     }
-    
+
     public ApiVersionBeanDto createApiVersion(String organizationId, String apiId,
                                               NewApiVersionBean newApiVersion) throws ApiNotFoundException, NotAuthorizedException,
         InvalidVersionException, ApiVersionAlreadyExistsException {
@@ -485,13 +485,14 @@ public class ApiService implements DataAccessUtilMixin {
 
         storage.createApiVersion(newVersion);
 
-        if (bean.getDefinitionUrl() != null) {
+        String definitionUrl = bean.getDefinitionUrl();
+        if (definitionUrl != null && !definitionUrl.trim().isBlank()) {
             InputStream definition = null;
             try {
-                definition = new URL(bean.getDefinitionUrl()).openStream();
+                definition = new URL(definitionUrl).openStream();
                 storage.updateApiDefinition(newVersion, definition);
             } catch (Exception e) {
-                LOGGER.error("Unable to store API definition from: " + bean.getDefinitionUrl(), e); //$NON-NLS-1$
+                LOGGER.error(e, "Unable to store API definition from: {0}", definitionUrl); //$NON-NLS-1$
                 // Set definition type silently to None
                 newVersion.setDefinitionType(ApiDefinitionType.None);
                 storage.updateApiVersion(newVersion);
@@ -503,13 +504,13 @@ public class ApiService implements DataAccessUtilMixin {
         storage.createAuditEntry(AuditUtils.apiVersionCreated(newVersion, securityContext));
         return newVersion;
     }
-    
+
     public ApiVersionBeanDto getApiVersion(String organizationId, String apiId, String version)
         throws ApiVersionNotFoundException {
         ApiVersionBean avb = tryAction(() -> getApiVersionFromStorage(organizationId, apiId, version));
         return apiVersionMapper.toDto(avb);
     }
-    
+
     public ApiVersionStatusBean getApiVersionStatus(String organizationId, String apiId,
         String version) throws ApiVersionNotFoundException, NotAuthorizedException {
         ApiVersionBean versionBean = getApiVersionFromStorage(organizationId, apiId, version);
@@ -566,7 +567,7 @@ public class ApiService implements DataAccessUtilMixin {
         rval.setManagedEndpoint(endpoint.getEndpoint());
         return rval;
     }
-    
+
     public SearchResultsBean<AuditEntryBean> getApiVersionActivity(String organizationId, String apiId, String version, int page, int pageSize)
             throws ApiVersionNotFoundException, NotAuthorizedException {
         PagingBean paging = PagingBean.create(page, pageSize);
@@ -772,7 +773,7 @@ public class ApiService implements DataAccessUtilMixin {
         getApi(organizationId, apiId);
         return tryAction(() -> query.getApiVersions(organizationId, apiId));
     }
-    
+
     public List<ApiPlanSummaryBean> getApiVersionPlans(String organizationId, String apiId,
         String version) throws ApiVersionNotFoundException, NotAuthorizedException {
         getApiVersion(organizationId, apiId, version);
@@ -816,7 +817,7 @@ public class ApiService implements DataAccessUtilMixin {
 
         return policyService.getPolicy(PolicyType.Api, organizationId, apiId, version, policyId);
     }
-    
+
     public void updateApiPolicy(String organizationId, String apiId, String version,
         long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
         ApiVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
@@ -879,7 +880,7 @@ public class ApiService implements DataAccessUtilMixin {
             LOGGER.debug("Deleted API {0} policy: {1}", apiId, policy); //$NON-NLS-1$
         });
     }
-    
+
     public void deleteApiDefinition(String organizationId, String apiId, String version)
         throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException {
 
