@@ -2,15 +2,7 @@
 # yarn lockfile v1
 
 
-"@babel/runtime-corejs3@^7.11.2":
-  version "7.17.9"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.17.9.tgz#3d02d0161f0fbf3ada8e88159375af97690f4055"
-  integrity sha512-WxYHHUWF2uZ7Hp1K+D1xQgbgkGUfA+5UPOegEXGt2Y5SMog/rYCVaifLZDbw8UkNXozEqqrZTy6bglL7xTaCOw==
-  dependencies:
-    core-js-pure "^3.20.2"
-    regenerator-runtime "^0.13.4"
-
-"@babel/runtime-corejs3@^7.16.8":
+"@babel/runtime-corejs3@^7.11.2", "@babel/runtime-corejs3@^7.16.8":
   version "7.18.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.18.0.tgz#eed03023c5226b1e2b2ba32b8b6af5cb0518a6c7"
   integrity sha512-G5FaGZOWORq9zthDjIrjib5XlcddeqLbIiDO3YQsut6j7aGf76xn0umUC/pA6+nApk3hQJF4JzLzg5PCl6ewJg==
@@ -4463,10 +4455,10 @@ swagger-client@^3.18.5:
     traverse "~0.6.6"
     url "~0.11.0"
 
-swagger-ui@4.11.1:
-  version "4.11.1"
-  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-4.11.1.tgz#9fae75f650d2e033b85b1864602e279635e35c6b"
-  integrity sha512-+Yc9qdIvDGoEsQMXQig4b8sYgvB3gU2IZH+ZTZBsIgK8NsQWkuMRIXd0CqsFKd8lm0ui2BqhSxRnIOIGihASUg==
+swagger-ui@4.13.0:
+  version "4.13.0"
+  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-4.13.0.tgz#0991b931b701c3c5a15af2e68b41a4d88516e468"
+  integrity sha512-anpsAEVpWczGM9cnlt2Y/un9HnWq0fUhEEj04usK5ynpDStFJa42f/aXv2EADe8ymHrpdm32uxaEQedh0snBmA==
   dependencies:
     "@babel/runtime-corejs3" "^7.16.8"
     "@braintree/sanitize-url" "=6.0.0"
