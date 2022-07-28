@@ -67,7 +67,7 @@
         "ApiVersionBean" : {
           "id" : 1021,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -90,7 +90,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -108,7 +107,7 @@
         "ApiVersionBean" : {
           "id" : 1024,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -131,7 +130,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -149,7 +147,7 @@
         "ApiVersionBean" : {
           "id" : 1051,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -172,7 +170,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -190,7 +187,7 @@
         "ApiVersionBean" : {
           "id" : 1054,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -213,7 +210,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -231,7 +227,7 @@
         "ApiVersionBean" : {
           "id" : 1057,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -254,7 +250,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -272,7 +267,7 @@
         "ApiVersionBean" : {
           "id" : 1060,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -295,7 +290,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -313,7 +307,7 @@
         "ApiVersionBean" : {
           "id" : 1063,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -336,7 +330,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -354,7 +347,7 @@
         "ApiVersionBean" : {
           "id" : 1066,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -377,7 +370,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -395,7 +387,7 @@
         "ApiVersionBean" : {
           "id" : 1069,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -418,7 +410,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -436,7 +427,7 @@
         "ApiVersionBean" : {
           "id" : 1072,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -459,7 +450,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -477,7 +467,7 @@
         "ApiVersionBean" : {
           "id" : 1075,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -500,7 +490,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -518,7 +507,7 @@
         "ApiVersionBean" : {
           "id" : 1078,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -541,7 +530,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -559,7 +547,7 @@
         "ApiVersionBean" : {
           "id" : 1027,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -582,7 +570,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -600,7 +587,7 @@
         "ApiVersionBean" : {
           "id" : 1081,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -623,7 +610,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -641,7 +627,7 @@
         "ApiVersionBean" : {
           "id" : 1084,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -664,7 +650,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -682,7 +667,7 @@
         "ApiVersionBean" : {
           "id" : 1087,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -705,7 +690,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -723,7 +707,7 @@
         "ApiVersionBean" : {
           "id" : 1090,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -746,7 +730,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -764,7 +747,7 @@
         "ApiVersionBean" : {
           "id" : 1093,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -787,7 +770,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -805,7 +787,7 @@
         "ApiVersionBean" : {
           "id" : 1096,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -828,7 +810,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -846,7 +827,7 @@
         "ApiVersionBean" : {
           "id" : 1099,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -869,7 +850,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -887,7 +867,7 @@
         "ApiVersionBean" : {
           "id" : 1102,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -910,7 +890,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -928,7 +907,7 @@
         "ApiVersionBean" : {
           "id" : 1105,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -951,7 +930,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -969,7 +947,7 @@
         "ApiVersionBean" : {
           "id" : 1108,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -992,7 +970,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1010,7 +987,7 @@
         "ApiVersionBean" : {
           "id" : 1030,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1033,7 +1010,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1051,7 +1027,7 @@
         "ApiVersionBean" : {
           "id" : 1111,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1074,7 +1050,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1092,7 +1067,7 @@
         "ApiVersionBean" : {
           "id" : 1114,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1115,7 +1090,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1133,7 +1107,7 @@
         "ApiVersionBean" : {
           "id" : 1117,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1156,7 +1130,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1174,7 +1147,7 @@
         "ApiVersionBean" : {
           "id" : 1120,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1197,7 +1170,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1215,7 +1187,7 @@
         "ApiVersionBean" : {
           "id" : 1123,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1238,7 +1210,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1256,7 +1227,7 @@
         "ApiVersionBean" : {
           "id" : 1126,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1279,7 +1250,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1297,7 +1267,7 @@
         "ApiVersionBean" : {
           "id" : 1129,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1320,7 +1290,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1338,7 +1307,7 @@
         "ApiVersionBean" : {
           "id" : 1132,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1361,7 +1330,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1379,7 +1347,7 @@
         "ApiVersionBean" : {
           "id" : 1135,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1402,7 +1370,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1420,7 +1387,7 @@
         "ApiVersionBean" : {
           "id" : 1138,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1443,7 +1410,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1461,7 +1427,7 @@
         "ApiVersionBean" : {
           "id" : 1033,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1484,7 +1450,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1502,7 +1467,7 @@
         "ApiVersionBean" : {
           "id" : 1141,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1525,7 +1490,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1543,7 +1507,7 @@
         "ApiVersionBean" : {
           "id" : 1144,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1566,7 +1530,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1584,7 +1547,7 @@
         "ApiVersionBean" : {
           "id" : 1147,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1607,7 +1570,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1625,7 +1587,7 @@
         "ApiVersionBean" : {
           "id" : 1150,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1648,7 +1610,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1666,7 +1627,7 @@
         "ApiVersionBean" : {
           "id" : 1153,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1689,7 +1650,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1707,7 +1667,7 @@
         "ApiVersionBean" : {
           "id" : 1156,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1730,7 +1690,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1748,7 +1707,7 @@
         "ApiVersionBean" : {
           "id" : 1159,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1771,7 +1730,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1789,7 +1747,7 @@
         "ApiVersionBean" : {
           "id" : 1162,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1812,7 +1770,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1830,7 +1787,7 @@
         "ApiVersionBean" : {
           "id" : 1165,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1853,7 +1810,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1871,7 +1827,7 @@
         "ApiVersionBean" : {
           "id" : 1168,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1894,7 +1850,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1912,7 +1867,7 @@
         "ApiVersionBean" : {
           "id" : 1036,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1935,7 +1890,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1953,7 +1907,7 @@
         "ApiVersionBean" : {
           "id" : 1171,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -1976,7 +1930,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1994,7 +1947,7 @@
         "ApiVersionBean" : {
           "id" : 1174,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2017,7 +1970,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2035,7 +1987,7 @@
         "ApiVersionBean" : {
           "id" : 1177,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2058,7 +2010,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2076,7 +2027,7 @@
         "ApiVersionBean" : {
           "id" : 1180,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2099,7 +2050,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2117,7 +2067,7 @@
         "ApiVersionBean" : {
           "id" : 1183,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2140,7 +2090,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2158,7 +2107,7 @@
         "ApiVersionBean" : {
           "id" : 1186,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2181,7 +2130,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2199,7 +2147,7 @@
         "ApiVersionBean" : {
           "id" : 1189,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2222,7 +2170,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2240,7 +2187,7 @@
         "ApiVersionBean" : {
           "id" : 1192,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2263,7 +2210,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2281,7 +2227,7 @@
         "ApiVersionBean" : {
           "id" : 1195,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2304,7 +2250,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2322,7 +2267,7 @@
         "ApiVersionBean" : {
           "id" : 1198,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2345,7 +2290,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2363,7 +2307,7 @@
         "ApiVersionBean" : {
           "id" : 1039,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2386,7 +2330,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2404,7 +2347,7 @@
         "ApiVersionBean" : {
           "id" : 1201,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2427,7 +2370,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2445,7 +2387,7 @@
         "ApiVersionBean" : {
           "id" : 1204,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2468,7 +2410,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2486,7 +2427,7 @@
         "ApiVersionBean" : {
           "id" : 1207,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2509,7 +2450,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2527,7 +2467,7 @@
         "ApiVersionBean" : {
           "id" : 1210,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2550,7 +2490,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2568,7 +2507,7 @@
         "ApiVersionBean" : {
           "id" : 1213,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2591,7 +2530,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2609,7 +2547,7 @@
         "ApiVersionBean" : {
           "id" : 1216,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2632,7 +2570,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2650,7 +2587,7 @@
         "ApiVersionBean" : {
           "id" : 1219,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2673,7 +2610,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2691,7 +2627,7 @@
         "ApiVersionBean" : {
           "id" : 1222,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2714,7 +2650,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2732,7 +2667,7 @@
         "ApiVersionBean" : {
           "id" : 1225,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2755,7 +2690,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2773,7 +2707,7 @@
         "ApiVersionBean" : {
           "id" : 1228,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2796,7 +2730,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2814,7 +2747,7 @@
         "ApiVersionBean" : {
           "id" : 1042,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2837,7 +2770,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2855,7 +2787,7 @@
         "ApiVersionBean" : {
           "id" : 1231,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2878,7 +2810,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2896,7 +2827,7 @@
         "ApiVersionBean" : {
           "id" : 1234,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2919,7 +2850,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2937,7 +2867,7 @@
         "ApiVersionBean" : {
           "id" : 1237,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -2960,7 +2890,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2978,7 +2907,7 @@
         "ApiVersionBean" : {
           "id" : 1240,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3001,7 +2930,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3019,7 +2947,7 @@
         "ApiVersionBean" : {
           "id" : 1243,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3042,7 +2970,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3060,7 +2987,7 @@
         "ApiVersionBean" : {
           "id" : 1246,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3083,7 +3010,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3101,7 +3027,7 @@
         "ApiVersionBean" : {
           "id" : 1249,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3124,7 +3050,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3142,7 +3067,7 @@
         "ApiVersionBean" : {
           "id" : 1252,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3165,7 +3090,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3183,7 +3107,7 @@
         "ApiVersionBean" : {
           "id" : 1255,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3206,7 +3130,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3224,7 +3147,7 @@
         "ApiVersionBean" : {
           "id" : 1258,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3247,7 +3170,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3265,7 +3187,7 @@
         "ApiVersionBean" : {
           "id" : 1045,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3288,7 +3210,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3306,7 +3227,7 @@
         "ApiVersionBean" : {
           "id" : 1261,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3329,7 +3250,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3347,7 +3267,7 @@
         "ApiVersionBean" : {
           "id" : 1264,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3370,7 +3290,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3388,7 +3307,7 @@
         "ApiVersionBean" : {
           "id" : 1267,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3411,7 +3330,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3429,7 +3347,7 @@
         "ApiVersionBean" : {
           "id" : 1270,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3452,7 +3370,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3470,7 +3387,7 @@
         "ApiVersionBean" : {
           "id" : 1273,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3493,7 +3410,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3511,7 +3427,7 @@
         "ApiVersionBean" : {
           "id" : 1276,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3534,7 +3450,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3552,7 +3467,7 @@
         "ApiVersionBean" : {
           "id" : 1279,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3575,7 +3490,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3593,7 +3507,7 @@
         "ApiVersionBean" : {
           "id" : 1282,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3616,7 +3530,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3634,7 +3547,7 @@
         "ApiVersionBean" : {
           "id" : 1285,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3657,7 +3570,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3675,7 +3587,7 @@
         "ApiVersionBean" : {
           "id" : 1288,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3698,7 +3610,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3716,7 +3627,7 @@
         "ApiVersionBean" : {
           "id" : 1048,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3739,7 +3650,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3757,7 +3667,7 @@
         "ApiVersionBean" : {
           "id" : 1291,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3780,7 +3690,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3798,7 +3707,7 @@
         "ApiVersionBean" : {
           "id" : 1294,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3821,7 +3730,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3839,7 +3747,7 @@
         "ApiVersionBean" : {
           "id" : 1297,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3862,7 +3770,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3880,7 +3787,7 @@
         "ApiVersionBean" : {
           "id" : 1300,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3903,7 +3810,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3921,7 +3827,7 @@
         "ApiVersionBean" : {
           "id" : 1303,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3944,7 +3850,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3962,7 +3867,7 @@
         "ApiVersionBean" : {
           "id" : 1306,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -3985,7 +3890,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -4003,7 +3907,7 @@
         "ApiVersionBean" : {
           "id" : 1309,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -4026,7 +3930,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -4044,7 +3947,7 @@
         "ApiVersionBean" : {
           "id" : 1312,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -4067,7 +3970,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -4085,7 +3987,7 @@
         "ApiVersionBean" : {
           "id" : 1315,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -4108,7 +4010,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -4126,7 +4027,7 @@
         "ApiVersionBean" : {
           "id" : 1318,
           "status" : "Ready",
-          "endpoint" : "string",
+          "endpoint" : "http://petstore.swagger.io/v2",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
@@ -4149,7 +4050,6 @@
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
-          "definitionUrl" : "string",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
