@@ -44,8 +44,8 @@ public class ApiDefinitionBean implements Serializable {
 
     @Id
     private long id;
-    @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="api_version_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "api_version_id")
     private ApiVersionBean apiVersion;
 
     @Column(name = "data")

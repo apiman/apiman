@@ -37,6 +37,10 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-cdi</artifactId>
+    </dependency>
 
     <!-- Spec Libs -->
     <dependency>
@@ -110,6 +114,25 @@
 
   <build>
     <plugins>
+      <!-- Pull in Liquibase definitions from /distro/ddl into our resources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <version>${version.remote.resources.plugin}</version>
+        <configuration>
+          <resourceBundles>
+            <resourceBundle>io.apiman:apiman-distro-ddl:${project.version}</resourceBundle>
+          </resourceBundles>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

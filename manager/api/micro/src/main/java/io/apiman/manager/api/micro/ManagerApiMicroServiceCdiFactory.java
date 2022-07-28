@@ -206,11 +206,11 @@ public class ManagerApiMicroServiceCdiFactory {
     private static JpaStorage initJpaStorage(ApiManagerConfig config, JpaStorage jpaStorage) {
         if (sJpaStorage == null) {
             sJpaStorage = jpaStorage;
-            if (config.isInitializeStorageJPA()) {
-                JpaStorageInitializer initializer = new JpaStorageInitializer(config.getHibernateDataSource(), config.getHibernateDialect());
-                initializer.initialize();
-                config.setHibernateDialect(initializer.getResolvedDialect());
-            }
+            //if (config.isInitializeStorageJPA()) {
+            //    JpaStorageInitializer initializer = new JpaStorageInitializer(config.getHibernateDataSource(), config.getHibernateDialect());
+            //    initializer.initialize();
+            //    config.setHibernateDialect(initializer.getResolvedDialect());
+            //}
         }
 
         return sJpaStorage;

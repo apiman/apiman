@@ -2,10 +2,10 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <changeSet author="msavy (generated)" id="1647015740776-8">
         <addColumn tableName="api_plans">
-            <column name="discoverability" type="VARCHAR(255)" defaultValue="ORG_MEMBERS"/>
+            <column name="discoverability" type="VARCHAR(50)" defaultValue="ORG_MEMBERS"/>
         </addColumn>
         <addColumn tableName="api_versions">
-            <column name="discoverability" type="VARCHAR(255)" defaultValue="ORG_MEMBERS"/>
+            <column name="discoverability" type="VARCHAR(50)" defaultValue="ORG_MEMBERS"/>
         </addColumn>
     </changeSet>
 
@@ -14,12 +14,12 @@
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="discoverabilityPK"/>
             </column>
-            <column name="org_id" type="VARCHAR(255)"/>
-            <column name="api_id" type="VARCHAR(255)"/>
-            <column name="api_version" type="VARCHAR(255)"/>
-            <column name="plan_id" type="VARCHAR(255)"/>
-            <column name="plan_version" type="VARCHAR(255)"/>
-            <column name="discoverability" type="VARCHAR(255)"/>
+            <column name="org_id" type="VARCHAR(${apiman_varchar})"/>
+            <column name="api_id" type="VARCHAR(${apiman_varchar})"/>
+            <column name="api_version" type="VARCHAR(${apiman_varchar})"/>
+            <column name="plan_id" type="VARCHAR(${apiman_varchar})"/>
+            <column name="plan_version" type="VARCHAR(${apiman_varchar})"/>
+            <column name="discoverability" type="VARCHAR(50)"/>
         </createTable>
         <createIndex tableName="discoverability" indexName="api_plan_discoverability_index">
             <column name="org_id"/>
@@ -41,7 +41,7 @@
             This enables very efficient search without performing multiple joins, plus avoids significantly complicating queries by having to
             reference all different locations that `discoverability` can be set.
 
-            Plausibly we may need to add additional location(s) in future such as `organization`, which should be mostly copy-and-paste.
+            Plausibly, we may need to add additional location(s) in future such as `organization`, which should be mostly copy-and-paste.
 
             A nice alternative to this would be CDC with something like Debezium, but that requires the DB to have been set up properly (sometimes
             including special plugins), which makes the deployment more complicated and difficult.
@@ -50,10 +50,10 @@
             materialized views must be manually updated using a special SQL command. There is no baked-in commit or time-based refresh.
         </comment>
         <!-- H2 uses Java triggers, ensure they are available on the classpath (you may need to battle with your module system) -->
-        <sqlFile dbms="h2" path="liquibase/current/discoverability-2022-03-30/triggers.h2.sql"/>
-        <sqlFile dbms="postgresql" path="liquibase/current/discoverability-2022-03-30/triggers.postgres.sql"/>
-        <sqlFile dbms="oracle" path="liquibase/current/discoverability-2022-03-30/triggers.oracle.sql"/>
-        <sqlFile dbms="mariadb,mysql" path="liquibase/current/discoverability-2022-03-30/triggers.mysql.sql"/>
-        <sqlFile dbms="mssql" path="liquibase/current/discoverability-2022-03-30/triggers.mssql.sql"/>
+        <sqlFile dbms="h2" path="discoverability-2022-03-30/triggers.h2.sql" relativeToChangelogFile="true" splitStatements="true" endDelimiter=";" stripComments="true"/>
+        <sqlFile dbms="postgresql" path="discoverability-2022-03-30/triggers.postgres.sql" relativeToChangelogFile="true" splitStatements="true" endDelimiter="/" stripComments="true"/>
+        <sqlFile dbms="oracle" path="discoverability-2022-03-30/triggers.oracle.sql" relativeToChangelogFile="true" splitStatements="false" stripComments="true"/>
+        <sqlFile dbms="mariadb,mysql" path="discoverability-2022-03-30/triggers.mysql.sql" relativeToChangelogFile="true" splitStatements="true" endDelimiter="/" stripComments="true"/>
+        <sqlFile dbms="mssql" path="discoverability-2022-03-30/triggers.mssql.sql" relativeToChangelogFile="true" splitStatements="true" endDelimiter="/" stripComments="true"/>
     </changeSet>
 </databaseChangeLog>

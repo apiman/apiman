@@ -2,7 +2,6 @@
 -- Only a trigger function can be attached to a trigger, so we need this as an intermediary before we're allowed to call onto the the generic function we want
 -- Reminder: To work around DdlParser.java limitations, multiline functions should have $$ as last characters of FIRST line and first characters of LAST line.
 
--- ~~~DELIMITER~~~
 -- ApiPlan
 ---- Insert
 CREATE OR REPLACE PROCEDURE upsert_apiplan_into_discoverability(api_plans) AS $$
@@ -38,9 +37,7 @@ CREATE OR REPLACE PROCEDURE upsert_apiplan_into_discoverability(api_plans) AS $$
         $1.discoverability
     );
 $$ LANGUAGE SQL;
-
--- ~~~DELIMITER~~~
-
+/
 ---- Delete
 CREATE OR REPLACE PROCEDURE delete_apiplan_from_discoverability(api_plans) AS $$
     WITH Api_Version_CTE (api_org_id, api_id, api_version)
@@ -60,8 +57,7 @@ CREATE OR REPLACE PROCEDURE delete_apiplan_from_discoverability(api_plans) AS $$
         $1.version
     );
 $$ LANGUAGE SQL;
-
--- ~~~DELIMITER~~~
+/
 -- ApiVersion
 ---- Insert
 CREATE OR REPLACE PROCEDURE upsert_apiversion_into_discoverability(api_versions) AS $$
@@ -84,16 +80,12 @@ CREATE OR REPLACE PROCEDURE upsert_apiversion_into_discoverability(api_versions)
          $1.discoverability
     )
 $$ LANGUAGE SQL;
-
--- ~~~DELIMITER~~~
-
+/
 ---- Delete
 CREATE OR REPLACE PROCEDURE delete_apiversion_from_discoverability(api_versions) AS $$
     DELETE FROM discoverability d WHERE d.id = CONCAT_WS(':', $1.api_org_id, $1.api_id, $1.version);
 $$ LANGUAGE SQL;
-
--- ~~~DELIMITER~~~
-
+/
 -- API Plans
 CREATE OR REPLACE FUNCTION api_plan_discoverability_trigger_func() RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
@@ -108,9 +100,7 @@ BEGIN
     RETURN NULL;
 END;
 $$;
-
---~~~DELIMITER~~~--
-
+/
 -- API Versions
 CREATE OR REPLACE FUNCTION api_version_discoverability_trigger_func() RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
@@ -125,16 +115,17 @@ BEGIN
     RETURN NULL;
 END;
 $$;
-
---~~~DELIMITER~~~--
-
+/
 -- Triggers
 --- Api Plans
 
 DROP TRIGGER IF EXISTS api_plan_discoverability_trigger ON api_plans;
+/
 CREATE TRIGGER api_plan_discoverability_trigger AFTER INSERT OR UPDATE OR DELETE ON api_plans FOR EACH ROW EXECUTE PROCEDURE api_plan_discoverability_trigger_func();
-
+/
 --- Api Versions
 DROP TRIGGER IF EXISTS api_version_discoverability_trigger ON api_versions;
+/
 CREATE TRIGGER api_version_discoverability_trigger AFTER INSERT OR UPDATE OR DELETE ON api_versions FOR EACH ROW EXECUTE PROCEDURE api_version_discoverability_trigger_func();
+/
 -- End (postgres sometimes doesn't like the last line to be a trigger function, so this is just to pad it out).

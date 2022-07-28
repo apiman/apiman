@@ -22,11 +22,11 @@
             <column name="status" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="version" type="VARCHAR(255)">
+            <column name="version" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
-            <column name="client_id" type="VARCHAR(255)"/>
-            <column name="client_org_id" type="VARCHAR(255)"/>
+            <column name="client_id" type="VARCHAR(${apiman_varchar})"/>
+            <column name="client_org_id" type="VARCHAR(${apiman_varchar})"/>
             <column name="apikey" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -34,7 +34,7 @@
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-2">
         <createTable tableName="clients">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="created_by" type="VARCHAR(255)">
@@ -44,10 +44,10 @@
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)"/>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="organization_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -61,12 +61,12 @@
                 <constraints nullable="false"/>
             </column>
             <column name="data" type="CLOB"/>
-            <column name="entity_id" type="VARCHAR(255)"/>
+            <column name="entity_id" type="VARCHAR(${apiman_varchar})"/>
             <column name="entity_type" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="entity_version" type="VARCHAR(255)"/>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="entity_version" type="VARCHAR(${apiman_varchar})"/>
+            <column name="organization_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="what" type="VARCHAR(255)">
@@ -106,7 +106,7 @@
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-6">
         <createTable tableName="gateways">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="configuration" type="CLOB">
@@ -128,7 +128,7 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(255)">
+            <column name="type" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -139,14 +139,14 @@
                 <constraints nullable="false"/>
             </column>
             <column name="created_on" type="TIMESTAMP"/>
-            <column name="org_id" type="VARCHAR(255)"/>
-            <column name="role_id" type="VARCHAR(255)"/>
-            <column name="user_id" type="VARCHAR(255)"/>
+            <column name="org_id" type="VARCHAR(${apiman_varchar})"/>
+            <column name="role_id" type="VARCHAR(${apiman_varchar})"/>
+            <column name="user_id" type="VARCHAR(${apiman_varchar})"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-8">
         <createTable tableName="organizations">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="created_by" type="VARCHAR(255)">
@@ -169,7 +169,7 @@
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-9">
         <createTable tableName="pd_templates">
-            <column name="policydef_id" type="VARCHAR(255)">
+            <column name="policydef_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="language" type="VARCHAR(255)"/>
@@ -178,7 +178,7 @@
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-10">
         <createTable tableName="permissions">
-            <column name="role_id" type="VARCHAR(255)">
+            <column name="role_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="permissions" type="INT"/>
@@ -202,19 +202,19 @@
             <column name="modified_on" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="VARCHAR(255)">
+            <column name="status" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="version" type="VARCHAR(255)">
+            <column name="version" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
-            <column name="plan_id" type="VARCHAR(255)"/>
-            <column name="plan_org_id" type="VARCHAR(255)"/>
+            <column name="plan_id" type="VARCHAR(${apiman_varchar})"/>
+            <column name="plan_org_id" type="VARCHAR(${apiman_varchar})"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-12">
         <createTable tableName="plans">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="created_by" type="VARCHAR(255)">
@@ -224,10 +224,10 @@
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)"/>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="organization_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -273,10 +273,10 @@
             <column name="created_on" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="entity_id" type="VARCHAR(255)">
+            <column name="entity_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
-            <column name="entity_version" type="VARCHAR(255)">
+            <column name="entity_version" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="modified_by" type="VARCHAR(255)">
@@ -291,20 +291,20 @@
             <column name="order_index" type="INT">
                 <constraints nullable="false"/>
             </column>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="organization_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(255)">
+            <column name="type" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="definition_id" type="VARCHAR(255)">
+            <column name="definition_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-15">
         <createTable tableName="policydefs">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)">
@@ -346,7 +346,7 @@
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="data" type="LONGBLOB"/>
+            <column name="data" type="${blob.type}"/>
             <column name="api_version_id" type="BIGINT"/>
         </createTable>
     </changeSet>
@@ -378,18 +378,18 @@
             <column name="strip_keys" type="BOOLEAN"/>
             <column name="published_on" type="TIMESTAMP"/>
             <column name="retired_on" type="TIMESTAMP"/>
-            <column name="status" type="VARCHAR(255)">
+            <column name="status" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="version" type="VARCHAR(255)"/>
-            <column name="api_id" type="VARCHAR(255)"/>
-            <column name="api_org_id" type="VARCHAR(255)"/>
-            <column name="definition_url" type="VARCHAR(255)"/>
+            <column name="version" type="VARCHAR(${apiman_varchar})"/>
+            <column name="api_id" type="VARCHAR(${apiman_varchar})"/>
+            <column name="api_org_id" type="VARCHAR(${apiman_varchar})"/>
+            <column name="definition_url" type="VARCHAR(${apiman_varchar})"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-19">
         <createTable tableName="apis">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="created_by" type="VARCHAR(255)">
@@ -402,7 +402,7 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="organization_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
             <column name="num_published" type="INTEGER" />
@@ -423,10 +423,10 @@
             <column name="api_version_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="plan_id" type="VARCHAR(255)">
+            <column name="plan_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
-            <column name="version" type="VARCHAR(255)">
+            <column name="version" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -458,7 +458,7 @@
             </column>
             <column name="exported_on" type="TIMESTAMP"/>
             <column name="imported_on" type="TIMESTAMP"/>
-            <column name="apiman_version" type="VARCHAR(255)"/>
+            <column name="apiman_version" type="VARCHAR(${apiman_varchar})"/>
             <column name="apiman_version_at_import" type="VARCHAR(255)"/>
             <column name="success" type="BOOLEAN"/>
         </createTable>

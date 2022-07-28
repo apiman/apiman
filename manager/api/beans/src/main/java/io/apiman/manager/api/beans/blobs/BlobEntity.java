@@ -64,7 +64,7 @@ public class BlobEntity {
     private OffsetDateTime modifiedOn;
 
     @Lob
-    @Column(name = "mrblobby", nullable = false)
+    @Column(name = "mrblobby", nullable = false, length = Integer.MAX_VALUE)
     @NotNull
     private Blob blob;
 
