@@ -16,8 +16,6 @@
 
 /// <reference types="cypress" />
 
-import { beforeEach } from 'mocha';
-
 describe('Testing the visibility on home page', () => {
   before(() => {
     cy.cleanUp();
@@ -30,12 +28,10 @@ describe('Testing the visibility on home page', () => {
   });
 
   it('Check APIs anonymous', () => {
-    cy.visit('/home');
     cy.get('mat-card.api-card').should('have.length', 2);
   });
 
   it('Check APIs devportal user', () => {
-    cy.visit('/home');
     cy.login(
       Cypress.env('devportalUser') as string,
       Cypress.env('devportalPassword') as string
@@ -44,8 +40,6 @@ describe('Testing the visibility on home page', () => {
   });
 
   it('Check APIs platform user', () => {
-    cy.visit('/home');
-    cy.logout();
     cy.login(
       Cypress.env('nonAdminUser') as string,
       Cypress.env('nonAdminPassword') as string
@@ -55,8 +49,6 @@ describe('Testing the visibility on home page', () => {
   });
 
   it('Check APIs org member', () => {
-    cy.visit('/home');
-    cy.logout();
     cy.login(
       Cypress.env('adminUser') as string,
       Cypress.env('adminPassword') as string

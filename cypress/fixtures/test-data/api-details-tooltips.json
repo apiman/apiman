@@ -34,7 +34,7 @@
       "createdOn" : "2022-06-01T12:40:53Z"
     }, {
       "id" : 1051,
-      "userId" : "cypress.user1",
+      "userId" : "cypress.user",
       "roleId" : "Viewer",
       "organizationId" : "CypressTestOrg1",
       "createdOn" : "2022-06-01T13:00:30Z"

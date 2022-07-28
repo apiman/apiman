@@ -71,7 +71,7 @@
                   matTooltipClass="multiline-tooltip"
                   matTooltipShowDelay="300"
                   matTooltipHideDelay="300"
-                  [matTooltipDisabled]="organizationCount === 1">
+                  [matTooltipDisabled]="organizationCount <= 1">
                   {{ formatClientContractTitle(client) }}
                 </h3>
                 {{ client.client.description }}

@@ -34,13 +34,13 @@ describe('Testing tooltips on my clients', () => {
     );
     cy.visit('/applications');
 
-    cy.get('#CypressTestClient1-1\\.0').within(() => {
+    cy.get('#CypressTestOrg1-CypressTestClient1-1\\.0').within(() => {
       cy.get('.content-text > h3').realHover();
     });
     cy.get('.mat-tooltip').should('not.exist');
     cy.get('#CypressTestApi1').within(() => {
       cy.get(
-        '#CypressTestClient1-1\\.0-CypressTestApi1-1\\.0 > h3'
+        '#CypressTestOrg1-CypressTestClient1-1\\.0-CypressTestApi1-1\\.0 > h3'
       ).realHover();
     });
     cy.get('.mat-tooltip')
@@ -59,7 +59,7 @@ describe('Testing tooltips on my clients', () => {
     cy.visit('/applications');
 
     // first org/client/api
-    cy.get('#CypressTestClient1-1\\.0').within(() => {
+    cy.get('#CypressTestOrg1-CypressTestClient1-1\\.0').within(() => {
       cy.get('.content-text > h3').realHover();
     });
     cy.get('.mat-tooltip')
@@ -69,7 +69,7 @@ describe('Testing tooltips on my clients', () => {
       .and('include.text', 'CypressTestClient1 (1.0)');
     cy.get('#CypressTestApi1').within(() => {
       cy.get(
-        '#CypressTestClient1-1\\.0-CypressTestApi1-1\\.0 > h3'
+        '#CypressTestOrg1-CypressTestClient1-1\\.0-CypressTestApi1-1\\.0 > h3'
       ).realHover();
     });
     cy.get('.mat-tooltip')
@@ -80,7 +80,7 @@ describe('Testing tooltips on my clients', () => {
       .and('include.text', 'CypressTestPlan1 (1.0)');
 
     // second org/client/api
-    cy.get('#CypressTestClient2-1\\.0').within(() => {
+    cy.get('#CypressTestOrg2-CypressTestClient2-1\\.0').within(() => {
       cy.get('.content-text > h3').realHover();
     });
     cy.get('.mat-tooltip')
@@ -90,7 +90,7 @@ describe('Testing tooltips on my clients', () => {
       .and('include.text', 'CypressTestClient1 (1.0)');
     cy.get('#CypressTestApi2').within(() => {
       cy.get(
-        '#CypressTestClient2-1\\.0-CypressTestApi2-1\\.0 > h3'
+        '#CypressTestOrg2-CypressTestClient2-1\\.0-CypressTestApi2-1\\.0 > h3'
       ).realHover();
     });
     cy.get('.mat-tooltip')

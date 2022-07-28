@@ -18,8 +18,8 @@
 
 describe('Testing the visibility on api-details', () => {
   before(() => {
-    cy.cleanUp();
-    cy.initApimanData('test-data/visibility.json');
+    // cy.cleanUp();
+    // cy.initApimanData('test-data/visibility.json');
   });
 
   beforeEach(() => {
@@ -31,21 +31,17 @@ describe('Testing the visibility on api-details', () => {
     // Public API
     // Version 1.0 - Expose in Portal
     // Version 2.0 - Full Platform Member
-    cy.visit('/api-details/CypressTestOrg/CypressTestApi1');
-    cy.get('mat-expansion-panel.mat-expanded')
-      .find('.plan-card')
-      .should('have.length', 1);
-    cy.get('mat-expansion-panal').should('have.length', 1);
+    cy.visit('/api-details/CypressTestOrg1/CypressTestApi1');
+    cy.get('mat-expansion-panel').should('have.length', 1);
 
     // Private API (Plans with all visibilities)
-    cy.visit('/api-details/CypressTestOrg/CypressTestApi2');
-    cy.get('mat-expansion-panel.mat-expanded')
+    cy.visit('/api-details/CypressTestOrg1/CypressTestApi2');
+    cy.get('#CypressTestApi2-1\\.0')
       .find('.plan-card')
       .should('have.length', 1);
   });
 
   it('Check API details devportal user', () => {
-    cy.visit('/home');
     cy.login(
       Cypress.env('devportalUser') as string,
       Cypress.env('devportalPassword') as string
@@ -54,22 +50,18 @@ describe('Testing the visibility on api-details', () => {
     // Public API
     // Version 1.0 - Expose in Portal
     // Version 2.0 - Full Platform Member
-    cy.visit('/api-details/CypressTestOrg/CypressTestApi1');
-    cy.get('mat-expansion-panel.mat-expanded')
-      .find('.plan-card')
-      .should('have.length', 1);
-    cy.get('mat-expansion-panal').should('have.length', 1);
+    cy.visit('/api-details/CypressTestOrg1/CypressTestApi1');
+    cy.get('mat-expansion-panel').should('have.length', 1);
 
     // Private API (Plans with all visibilities)
-    cy.visit('/api-details/CypressTestOrg/CypressTestApi2');
-    cy.get('mat-expansion-panel.mat-expanded')
+    cy.visit('/api-details/CypressTestOrg1/CypressTestApi2');
+    cy.get('#CypressTestApi2-1\\.0')
       .find('.plan-card')
       .should('have.length', 1);
   });
 
   it('Check API details platform user', () => {
     cy.visit('/home');
-    cy.logout();
     cy.login(
       Cypress.env('nonAdminUser') as string,
       Cypress.env('nonAdminPassword') as string
@@ -78,19 +70,18 @@ describe('Testing the visibility on api-details', () => {
     // Public API
     // Version 1.0 - Expose in Portal
     // Version 2.0 - Full Platform Member
-    cy.visit('/api-details/CypressTestOrg/CypressTestApi1');
+    cy.visit('/api-details/CypressTestOrg1/CypressTestApi1');
     cy.get('mat-expansion-panel').should('have.length', 2);
 
     // Private API (Plans with all visibilities)
-    cy.visit('/api-details/CypressTestOrg/CypressTestApi2');
-    cy.get('mat-expansion-panel.mat-expanded')
+    cy.visit('/api-details/CypressTestOrg1/CypressTestApi2');
+    cy.get('#CypressTestApi2-1\\.0')
       .find('.plan-card')
       .should('have.length', 2);
   });
 
   it('Check APIs org member', () => {
     cy.visit('/home');
-    cy.logout();
     cy.login(
       Cypress.env('adminUser') as string,
       Cypress.env('adminPassword') as string
@@ -99,12 +90,13 @@ describe('Testing the visibility on api-details', () => {
     // Public API
     // Version 1.0 - Expose in Portal
     // Version 2.0 - Full Platform Member
-    cy.visit('/api-details/CypressTestOrg/CypressTestApi1');
-    cy.get('mat-expansion-panel').should('have.length', 2);
+    // Version 2.0 - Org Member
+    cy.visit('/api-details/CypressTestOrg1/CypressTestApi1');
+    cy.get('mat-expansion-panel').should('have.length', 3);
 
     // Private API (Plans with all visibilities)
-    cy.visit('/api-details/CypressTestOrg/CypressTestApi2');
-    cy.get('mat-expansion-panel.mat-expanded')
+    cy.visit('/api-details/CypressTestOrg1/CypressTestApi2');
+    cy.get('#CypressTestApi2-1\\.0')
       .find('.plan-card')
       .should('have.length', 3);
   });

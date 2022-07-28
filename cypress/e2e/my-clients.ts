@@ -16,12 +16,12 @@
 
 /// <reference types="cypress" />
 
-describe('Testing the api-details page', () => {
+describe.skip('Testing the api-details page', () => {
   before(() => {
     cy.cleanUp();
     cy.initApimanData('test-data/my_clients.json');
     cy.visit('/applications');
-    cy.login(
+    cy.typeLogin(
       Cypress.env('nonAdminUser') as string,
       Cypress.env('nonAdminPassword') as string
     );

@@ -37,6 +37,7 @@
         <mat-divider></mat-divider>
         <mat-card-actions class="right">
           <button
+            id="next-btn-step-1"
             mat-raised-button
             color="primary"
             (click)="nextAfterClientSelect(stepper)">
@@ -68,6 +69,7 @@
             {{ 'COMMON.BACK' | translate }}
           </button>
           <button
+            id="next-btn-step-2"
             mat-raised-button
             matStepperNext
             color="primary"

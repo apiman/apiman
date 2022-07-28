@@ -14,7 +14,10 @@
   ~  imitations under the License.
   -->
 
-<mat-expansion-panel [expanded]="isLatest" xmlns="http://www.w3.org/1999/html">
+<mat-expansion-panel
+  id="{{ api.api.name }}-{{ api.version }}"
+  [expanded]="isLatest"
+  xmlns="http://www.w3.org/1999/html">
   <mat-expansion-panel-header>
     <mat-panel-title>
       <app-api-status-tag

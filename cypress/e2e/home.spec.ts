@@ -31,7 +31,7 @@ describe('Testing the home page', () => {
 
   it('Check Navigation Bar', () => {
     cy.visit('/home');
-    cy.get('.navigation-links').should('have.length', 4);
+    cy.get('.navigation-links').should('have.length', 3);
     cy.get('#navbar-link-router-home').should('have.class', 'primary');
   });
 

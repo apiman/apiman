@@ -146,17 +146,17 @@ Cypress.Commands.add('typeLogin', (username, password) => {
 });
 
 Cypress.Commands.add('logout', () => {
-  cy.get('#hero-logout-btn').click();
+  cy.get('#hero-logout-btn').click({ force: true });
 });
 
 Cypress.Commands.add('login', (username, password) => {
-  cy.get('#hero-login-btn').click();
+  cy.get('#hero-login-btn').click({ force: true });
   cy.typeLogin(username, password);
 });
 
 Cypress.Commands.add('typeSearch', (searchTerm) => {
   cy.get('#search-input').clear().type(searchTerm);
-  cy.waitUntilLoaded(['@postRequests', '@getRequests']);
+  cy.waitUntilLoaded(['@getRequests']);
 });
 
 Cypress.Commands.add('navigateToApiDetails', (apiId) => {
@@ -364,6 +364,6 @@ Cypress.Commands.add('cleanUp', () => {
   cy.deleteOrgRecursive('CypressTestOrg1');
   cy.deleteOrgRecursive('CypressTestOrg2');
   cy.deleteOrgRecursive('cypress.admin');
-  cy.deleteOrgRecursive('cypress.user1');
+  cy.deleteOrgRecursive('cypress.user');
   cy.deleteOrgRecursive('cypress.user2');
 });

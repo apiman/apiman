@@ -35,7 +35,7 @@ describe('Testing the api-details page', () => {
 
     cy.visit('/applications');
 
-    cy.get('#CypressTestClient1-1\\.0').within(() => {
+    cy.get('#CypressTestOrg1-CypressTestClient1-1\\.0').within(() => {
       cy.get('#client-status-label').should('include.text', 'Ready');
       cy.get('#client-register-btn').should('not.exist');
     });
@@ -49,7 +49,7 @@ describe('Testing the api-details page', () => {
 
     cy.visit('/applications');
 
-    cy.get('#CypressTestClient1-1\\.0').within(() => {
+    cy.get('#CypressTestOrg1-CypressTestClient1-1\\.0').within(() => {
       cy.get('#client-register-btn').should('exist').and('be.visible');
       cy.get('#client-status-label').should('include.text', 'Ready');
       cy.get('#client-register-btn').click();

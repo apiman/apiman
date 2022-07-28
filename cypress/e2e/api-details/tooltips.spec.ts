@@ -20,6 +20,8 @@ import { Discoverability } from '../../../src/app/interfaces/ICommunication';
 
 describe('Testing tooltips on api-details page', () => {
   before(() => {
+    cy.visit('/home');
+    cy.tryLogout();
     cy.cleanUp();
     cy.initApimanData('test-data/api-details-tooltips.json');
   });

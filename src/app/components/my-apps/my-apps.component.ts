@@ -111,10 +111,15 @@ export class MyAppsComponent implements OnInit {
           this.allClients$ = of(clients);
           this.allOrganizations$ = this.orgService
             .getOrganizationsFromClientVersions(clients)
-            .pipe(shareReplay());
-          return this.allOrganizations$;
+            .pipe(
+              tap((orgs: IOrganization[]) => {
+                this.organizationCount = orgs.length;
+                console.log(this.organizationCount);
+              }),
+              shareReplay()
+            );
+          return this.allClients$;
         }),
-        switchMap(() => this.allClients$),
         switchMap((extendedClientVersions: IClientVersionExt[]) => {
           this.allContracts$ = this.contractService
             .getExtendedContractsFromClients(extendedClientVersions)

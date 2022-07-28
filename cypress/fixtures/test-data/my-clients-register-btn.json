@@ -34,13 +34,13 @@
       "createdOn" : "2022-05-25T07:02:05Z"
     }, {
       "id" : 1033,
-      "userId" : "cypress.user1",
+      "userId" : "cypress.user",
       "roleId" : "Viewer",
       "organizationId" : "CypressTestOrg1",
       "createdOn" : "2022-05-25T07:11:08Z"
     }, {
       "id" : 1034,
-      "userId" : "cypress.user1",
+      "userId" : "cypress.user",
       "roleId" : "Editor",
       "organizationId" : "CypressTestOrg1",
       "createdOn" : "2022-05-25T07:11:08Z"

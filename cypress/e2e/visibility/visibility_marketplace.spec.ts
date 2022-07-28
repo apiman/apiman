@@ -16,8 +16,6 @@
 
 /// <reference types="cypress" />
 
-import { beforeEach } from 'mocha';
-
 describe('Testing the visibility on marketplace', () => {
   before(() => {
     cy.cleanUp();
@@ -60,6 +58,6 @@ describe('Testing the visibility on marketplace', () => {
     );
     cy.visit('/marketplace');
 
-    cy.get('mat-card.api-card').should('have.length', 9);
+    cy.get('mat-card.api-card').should('have.length', 10);
   });
 });

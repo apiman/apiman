@@ -13,8 +13,8 @@
     "notificationPreferences" : [ ],
     "admin" : false
   }, {
-    "username" : "cypress.user1",
-    "fullName" : "cypress.user1",
+    "username" : "cypress.user",
+    "fullName" : "cypress.user",
     "email" : "",
     "joinedOn" : "2022-05-24T08:20:48Z",
     "locale" : "en",

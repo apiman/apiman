@@ -22,6 +22,11 @@ describe('Testing the api-signup', () => {
     cy.initApimanData('test-data/apiman_data.json');
   });
 
+  beforeEach(() => {
+    cy.visit('/home');
+    cy.tryLogout();
+  });
+
   it('Check api sign-up process as admin', () => {
     cy.intercept('POST', '**/clients').as('postClients');
     cy.intercept('GET', '**/clientorgs').as('getClientOrgs');
@@ -34,16 +39,16 @@ describe('Testing the api-signup', () => {
       .find('#sign-up-btn')
       .should('exist')
       .click();
-    cy.typeLogin('cypress.admin', 'Demo123$');
+    cy.typeLogin('cypress.admin', 'Demo123!');
     cy.get('#client-input').clear().type('TestClient1');
     cy.get('#register-client-btn').click({ force: true });
     cy.wait(['@postClients', '@getClientOrgs', '@getEditableClients']);
-    cy.get('#next-step-btn').click();
+    cy.get('#next-btn-step-1').click();
     cy.get('#terms-and-conditions-checkbox')
       .find('input')
       .click({ force: true });
     cy.get('#privacy-policy-checkbox').find('input').click({ force: true });
-    cy.get('#next-step-btn').click({ force: true });
+    cy.get('#next-btn-step-2').click({ force: true });
     cy.get('#confirm-btn').click({ force: true });
     cy.get('.mat-snack-bar-container').should(
       'include.text',
@@ -53,17 +58,21 @@ describe('Testing the api-signup', () => {
     cy.url().should('include', '/applications');
   });
 
-  it('Delete admin client', () => {
-    cy.request(
-      'DELETE',
-      'https://vagrantguest/pas/apiman/organizations/cypress.admin/clients/TestClient1/versions/1.0/contracts'
-    );
-    cy.request(
-      'DELETE',
-      'https://vagrantguest/pas/apiman/organizations/cypress.admin/clients/TestClient1'
-    );
-    cy.get('#hero-logout-btn').click({ force: true });
-  });
+  // it('Delete admin client', () => {
+  //   cy.request(
+  //     'DELETE',
+  //
+  //     (Cypress.env('apiman_endpoint') as string) +
+  //       '/organizations/cypress.admin/clients/TestClient1/versions/1.0/contracts'
+  //   );
+  //   cy.request(
+  //     'DELETE',
+  //
+  //     (Cypress.env('apiman_endpoint') as string) +
+  //       '/organizations/cypress.admin/clients/TestClient1'
+  //   );
+  //   cy.get('#hero-logout-btn').click({ force: true });
+  // });
 
   it('Check api sign-up process as non admin', () => {
     cy.intercept('POST', '**/clients').as('postClients');
@@ -77,16 +86,16 @@ describe('Testing the api-signup', () => {
       .find('#sign-up-btn')
       .should('exist')
       .click();
-    cy.typeLogin('cypress.user', 'Demo123$');
+    cy.typeLogin('cypress.user', 'Demo123!');
     cy.get('#client-input').clear().type('TestClient2');
     cy.get('#register-client-btn').click({ force: true });
     cy.wait(['@postClients', '@getClientOrgs', '@getEditableClients']);
-    cy.get('#next-step-btn').click();
+    cy.get('#next-btn-step-1').click();
     cy.get('#terms-and-conditions-checkbox')
       .find('input')
       .click({ force: true });
     cy.get('#privacy-policy-checkbox').find('input').click({ force: true });
-    cy.get('#next-step-btn').click({ force: true });
+    cy.get('#next-btn-step-2').click({ force: true });
     cy.get('#confirm-btn').click({ force: true });
     cy.get('.mat-snack-bar-container').should(
       'include.text',
@@ -95,15 +104,18 @@ describe('Testing the api-signup', () => {
     cy.url().should('include', '/approval');
   });
 
-  it('Delete user client', () => {
-    cy.request(
-      'DELETE',
-      'https://vagrantguest/pas/apiman/organizations/cypress.user/clients/TestClient2/versions/1.0/contracts'
-    );
-    cy.request(
-      'DELETE',
-      'https://vagrantguest/pas/apiman/organizations/cypress.user/clients/TestClient2'
-    );
-    cy.get('#hero-logout-btn').click({ force: true });
-  });
+  // it('Delete user client', () => {
+  //   cy.request(
+  //     'DELETE',
+  //
+  //     (Cypress.env('apiman_endpoint') as string) +
+  //       '/organizations/cypress.user/clients/TestClient2/versions/1.0/contracts'
+  //   );
+  //   cy.request(
+  //     'DELETE',
+  //
+  //     (Cypress.env('apiman_endpoint') as string) +
+  //       '/organizations/cypress.user/clients/TestClient2'
+  //   );
+  // });
 });

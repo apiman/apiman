@@ -33,7 +33,7 @@ docker build -t apiman/developer-portal:latest .
 #### Prerequirements
 * Create the necessary users (find the credentials in cypress.json) in your IDM with the following roles:
   * cypress.admin - apiadmin
-  * cypress.user1 - apiuser
+  * cypress.user - apiuser
   * cypress.user2 - devportaluser
 * Adjust the following settings in cypress.json if needed:
   * baseUrl -> this url should point to your running 'API Developer Portal'-App 

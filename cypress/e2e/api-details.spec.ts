@@ -31,7 +31,7 @@ describe('Testing the api-details page', () => {
 
   it('Check Navigation Bar', () => {
     cy.get('.navigation-links')
-      .should('have.length', 4)
+      .should('have.length', 3)
       .and('not.have.class', 'primary');
   });
 

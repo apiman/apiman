@@ -34,7 +34,7 @@
       "createdOn" : "2022-06-01T09:59:36Z"
     }, {
       "id" : 1059,
-      "userId" : "cypress.user1",
+      "userId" : "cypress.user",
       "roleId" : "Viewer",
       "organizationId" : "CypressTestOrg1",
       "createdOn" : "2022-06-01T10:04:32Z"
@@ -184,7 +184,7 @@
       "createdOn" : "2022-06-01T10:01:08Z"
     }, {
       "id" : 1063,
-      "userId" : "cypress.user1",
+      "userId" : "cypress.user",
       "roleId" : "Viewer",
       "organizationId" : "CypressTestOrg2",
       "createdOn" : "2022-06-01T10:04:53Z"
