@@ -31,11 +31,13 @@ import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.INewUserBootstrapper;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
 import io.apiman.manager.api.es.EsMetricsAccessor;
+import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 
@@ -76,9 +78,22 @@ public class ManagerApiMicroServiceCdiFactory {
         }
     }
 
+    @Produces
+    @ApplicationScoped
+    public static IStorage provideStorage(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage, IPluginRegistry pluginRegistry) {
+        return jpaStorage;
+    }
+
+
     @Produces @ApplicationScoped
     public static ISecurityContext provideSecurityContext(@New DefaultSecurityContext defaultSC) {
         return defaultSC;
+    }
+
+    @Produces @ApplicationScoped
+    public static IStorageQuery provideStorageQuery(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage,
+                                                    IPluginRegistry pluginRegistry) {
+        return jpaStorage;
     }
 
     @Produces @ApplicationScoped

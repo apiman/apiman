@@ -38,7 +38,6 @@ import liquibase.resource.ResourceAccessor;
  *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-@Dependent
 public class LiquibaseProducer  {
 
     @Inject

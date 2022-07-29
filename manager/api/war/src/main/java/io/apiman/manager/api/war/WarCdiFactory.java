@@ -29,10 +29,13 @@ import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.INewUserBootstrapper;
 import io.apiman.manager.api.core.IPluginRegistry;
+import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
 import io.apiman.manager.api.es.EsMetricsAccessor;
+import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
@@ -85,6 +88,20 @@ public class WarCdiFactory {
         } else {
             throw new RuntimeException("Unknown security context type: " + config.getSecurityContextType()); //$NON-NLS-1$
         }
+    }
+
+    // TODO(msavy): now we don't need to support multiple backends we can likely remove all this.
+    //  However, interfaces and impls are in different modules, so will require a fair bit of surgery.
+    @Produces @ApplicationScoped
+    public static IStorage provideStorage(WarApiManagerConfig config, @New JpaStorage jpaStorage, IPluginRegistry pluginRegistry) {
+        return jpaStorage;
+    }
+
+    // TODO(msavy): now we don't need to support multiple backends we can likely remove all this.
+    //  However, interfaces and impls are in different modules, so will require a fair bit of surgery.
+    @Produces @ApplicationScoped
+    public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage, IStorage storage, IPluginRegistry pluginRegistry) {
+        return jpaStorage;
     }
 
     @Produces @ApplicationScoped
