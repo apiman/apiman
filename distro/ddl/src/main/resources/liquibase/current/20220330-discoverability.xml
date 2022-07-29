@@ -2,10 +2,10 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <changeSet author="msavy (generated)" id="1647015740776-8">
         <addColumn tableName="api_plans">
-            <column name="discoverability" type="VARCHAR(50)" defaultValue="ORG_MEMBERS"/>
+            <column name="discoverability" type="VARCHAR(255)" defaultValue="ORG_MEMBERS"/>
         </addColumn>
         <addColumn tableName="api_versions">
-            <column name="discoverability" type="VARCHAR(50)" defaultValue="ORG_MEMBERS"/>
+            <column name="discoverability" type="VARCHAR(255)" defaultValue="ORG_MEMBERS"/>
         </addColumn>
     </changeSet>
 
@@ -19,7 +19,7 @@
             <column name="api_version" type="VARCHAR(${apiman_varchar})"/>
             <column name="plan_id" type="VARCHAR(${apiman_varchar})"/>
             <column name="plan_version" type="VARCHAR(${apiman_varchar})"/>
-            <column name="discoverability" type="VARCHAR(50)"/>
+            <column name="discoverability" type="VARCHAR(255)"/>
         </createTable>
         <createIndex tableName="discoverability" indexName="api_plan_discoverability_index">
             <column name="org_id"/>

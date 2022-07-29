@@ -128,7 +128,7 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(50)">
+            <column name="type" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -202,7 +202,7 @@
             <column name="modified_on" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="VARCHAR(50)">
+            <column name="status" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="version" type="VARCHAR(${apiman_varchar})">
@@ -294,7 +294,7 @@
             <column name="organization_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(50)">
+            <column name="type" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="definition_id" type="VARCHAR(${apiman_varchar})">
@@ -378,7 +378,7 @@
             <column name="strip_keys" type="BOOLEAN"/>
             <column name="published_on" type="TIMESTAMP"/>
             <column name="retired_on" type="TIMESTAMP"/>
-            <column name="status" type="VARCHAR(50)">
+            <column name="status" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="version" type="VARCHAR(${apiman_varchar})"/>
