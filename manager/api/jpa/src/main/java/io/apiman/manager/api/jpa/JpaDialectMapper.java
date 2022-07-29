@@ -18,21 +18,12 @@ package io.apiman.manager.api.jpa;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-import io.apiman.common.util.ddl.DdlParser;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.MySQL8Dialect;
 import org.hibernate.dialect.MySQLDialect;
@@ -50,7 +41,6 @@ import org.hibernate.dialect.PostgreSQL9Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServer2012Dialect;
 import org.hibernate.dialect.SQLServerDialect;
-import org.jdbi.v3.core.Jdbi;
 
 /**
  * Initializes the database by installing the appropriate DDL for the database in
@@ -58,9 +48,9 @@ import org.jdbi.v3.core.Jdbi;
  * @author eric.wittmann@gmail.com
  */
 // TODO(msavy): let's replace this with the liquibase DB initialiser + migrator
-public class JpaStorageInitializer {
+public class JpaDialectMapper {
 
-    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JpaStorageInitializer.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(JpaDialectMapper.class);
     public static final Map<String, NamePair> DB_TYPE_MAP = new HashMap<>();
 
     static {
@@ -99,13 +89,12 @@ public class JpaStorageInitializer {
     }
     
     private final DataSource ds;
-    //private final String dbType;
     private final NamePair namePair;
 
     /**
      * Constructor.
      */
-    public JpaStorageInitializer(String dsJndiLocation, String hibernateDialect) {
+    public JpaDialectMapper(String dsJndiLocation, String hibernateDialect) {
         if (dsJndiLocation == null) {
             throw new RuntimeException("Missing datasource JNDI location from JPA storage configuration."); 
         }
@@ -138,7 +127,7 @@ public class JpaStorageInitializer {
      * Lookup the datasource in JNDI.
      * @param dsJndiLocation
      */
-    private static DataSource lookupDS(String dsJndiLocation) {
+    public static DataSource lookupDS(String dsJndiLocation) {
         DataSource ds;
         try {
             InitialContext ctx = new InitialContext();
@@ -153,60 +142,7 @@ public class JpaStorageInitializer {
         return ds;
     }
 
-    /**
-     * Called to initialize the database.
-     */
-    @SuppressWarnings("nls")
-    public void initialize() {
-        QueryRunner run = new QueryRunner(ds);
-        Boolean isInitialized;
-        
-        try {
-            isInitialized = run.query("SELECT * FROM apis", new ResultSetHandler<Boolean>() {
-                @Override
-                public Boolean handle(ResultSet rs) throws SQLException {
-                    return true;
-                }
-            });
-        } catch (SQLException e) {
-            LOGGER.trace("Is initialised error: {0}", e);
-            isInitialized = false;
-        }
-        
-        if (isInitialized) {
-            LOGGER.info("============================================");
-            LOGGER.info("Apiman Manager database already initialized.");
-            LOGGER.info("============================================");
-            return;
-        }
-
-        ClassLoader cl = JpaStorageInitializer.class.getClassLoader();
-        URL resource = cl.getResource("ddls/apiman_" + namePair.simpleName + ".ddl");
-        Objects.requireNonNull(resource, "No DDL for: " + namePair.simpleName + ". Verify that the name is correct.");
-        try {
-            try (InputStream is = resource.openStream()) {
-                LOGGER.info("=======================================");
-                LOGGER.info("Initializing Apiman Manager database. "  + resource.getPath());
-                DdlParser ddlParser = new DdlParser();
-                List<String> statements = ddlParser.parse(is);
-                Jdbi jdbi = Jdbi.create(ds);
-                for (String sql : statements) {
-                    LOGGER.info(sql);
-                    jdbi.useHandle(h -> {
-                        h.getConnection().setAutoCommit(false);
-                        h.createUpdate(sql).execute();
-                        h.commit();
-                    });
-                }
-                LOGGER.info("=======================================");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    public static final class NamePair {
+    private static final class NamePair {
         public String simpleName;
         public String fqdn;
 

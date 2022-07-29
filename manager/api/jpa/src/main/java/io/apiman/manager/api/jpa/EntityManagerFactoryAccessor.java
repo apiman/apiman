@@ -73,7 +73,7 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         }
         String apimanDialect = System.getProperty("apiman.hibernate.dialect", s);
         // Lets users provide shortcut names. If it's not on the list, the original dialect name bounces back.
-        String dialect =  JpaStorageInitializer.lookupFqdn(apimanDialect);
+        String dialect =  JpaDialectMapper.lookupFqdn(apimanDialect);
         properties.put("hibernate.hbm2ddl.auto", autoValue);
         properties.put("hibernate.dialect", dialect);
 
