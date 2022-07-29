@@ -25,10 +25,10 @@
       <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-api-beans</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.apiman</groupId>
-      <artifactId>apiman-manager-api-jpa</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>io.apiman</groupId>-->
+<!--      <artifactId>apiman-manager-api-jpa</artifactId>-->
+<!--    </dependency>-->
   </dependencies>
   <build>
     <plugins>
