@@ -19,6 +19,7 @@ package io.apiman.manager.api.jpa;
 import io.apiman.manager.api.core.config.ApiManagerConfig;
 
 import java.sql.SQLException;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
@@ -33,8 +34,11 @@ import liquibase.resource.ResourceAccessor;
 /**
  * Sets up Liquibase patch applicator
  *
+ * liquibase.should.run=false
+ *
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
+@Dependent
 public class LiquibaseProducer  {
 
     @Inject

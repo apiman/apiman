@@ -27,6 +27,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-data</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-distro-ddl</artifactId>
+    </dependency>
 
     <!-- SQL builder -->
     <dependency>
