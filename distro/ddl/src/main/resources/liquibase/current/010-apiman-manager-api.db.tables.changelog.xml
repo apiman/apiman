@@ -93,7 +93,8 @@
             <column name="apiv_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1436469846462-5">
+    <!-- h2 doesn't upcase field with name of "value" -->
+    <changeSet author="apiman (generated)" id="1436469846462-5" dbms="!h2">
         <createTable tableName="endpoint_properties">
             <column name="api_version_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -104,6 +105,18 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-5-h2" dbms="h2">
+        <createTable tableName="endpoint_properties">
+            <column name="api_version_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!-- end -->
     <changeSet author="apiman (generated)" id="1436469846462-6">
         <createTable tableName="gateways">
             <column name="id" type="VARCHAR(${apiman_varchar})">
