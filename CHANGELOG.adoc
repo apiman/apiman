@@ -1,0 +1,181 @@
+= Changelog
+
+All notable changes to Apiman will be documented here, as of Apiman 3.0.0.Final.
+
+== 3.0.0.Final
+
+=== Thanks
+
+A huge thanks to every company that has sponsored Apiman's main developer via consulting, support, sponsoring features, or other means. Without financial support, Apiman open source will not continue to be developed.
+
+Particular thanks go to the team at https://www.scheer-pas.com[Scheer PAS^] who have sponsored a considerable amount of the work that has gone into the 3.x release.
+
+=== Added
+
+* [manager-api] **Events**: versioned events are now emitted inside Apiman for a number of important business actions. These are consumed internally within Apiman, but are also inserted into a **https://microservices.io/patterns/data/transactional-outbox.html[transactional outbox^]** inside the database using the https://cloudevents.io/[CloudEvents format^]. You can use CDC software, such as https://debezium.io/[Debezium^] to integrate Apiman's events into your messaging platform of choice, such as Apache Kafka. A wide variety of rich business functionality can be enabled via this integration. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [manager-api] **Notifications**: notifications for important events are now generated and sent to the appropriate user(s) and/or group(s). This is driven by the event system. For example, when an API requires approval, all users with the `apiEditor` permission will receive an in-browser notification and email notification. In-browser notifications can be seen by pressing the bell in the top-right corner of the screen. Notifications can be disabled entirely in `apiman.properties`. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [manager-api] **Email notifications and templates**: a fully templated and i18n-friendly email notification system, which is driven by the events subsystems. This can easily be customised by the user to change the look-and-feel or text. Email notifications are disabled by default in `apiman.properties`. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [manager-api] **API signup approvals**: an API version can be offered via different plans. You can now choose to require that a user receive explicit approval before being allowed access to the API. Appropriate notifications (including emails, if enabled), are sent to all relevant parties for signup, approval, rejection, etc. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [distro] **Docker compose quickstart distro**: provides an out-of-the-box full platform deployment of Apiman, broken down into its components in a way that is more representative of a real-world deployment. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [manager-api] **User locale**: where possible, the user's preferred locale is now stored in their Apiman profile any async events that require it, such as emails. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [manager-api] **Implicit permissions system (discoverability)**: an implicit read permissions system that layers on top of the explicit permissions systems that already exist in Apiman. It allows API providers to expose specific APIs to consumers who are **not** members of their organisation. For example, if you have an API that you want non-members to be able to consume, this feature addresses your needs. For more, see https://github.com/apiman/apiman/discussions/1952[Apiman Discoverability]. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [manager-api] **Developer portal API**: designed specifically for our https://www.github.com/apiman/apiman-developer-portal[Apiman Developer Portal^], this API allows anonymous access to certain Apiman APIs for browsing, with increased access for logged-in users. Various extensions to the data model for newer features.  By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [ui] **Developer portal manager UI**: a new tab called in the Apiman Manager UI which is available when creating an API. This enables the API provider to decide various portal-related settings, plan ordering, which plans are visible to which users, markdown documentation for developers, API logo, etc. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [ui] **Developer portal UI**: an entirely new user interface for Apiman, dedicated to API consumers. The portal provides a focussed, slipstreamed, and customisable/skinnable experience, without all the noise of the main UI's advanced features. The https://github.com/apiman/apiman-developer-portal[devportal repository is current separate^], please refer to their changes independently. This is different from the previous developer portal that you may have seen with Apiman 2.x. A considerable amount of work has gone into this project, and huge credit goes to the sponsors and contributors.
+
+
+* [gateway-core] **Policy probes**: allows policies to expose their internal state to the Apiman Manager for interrogation. For example, "what is the current rate limit status for X?". Even custom policies can implement this new functionality. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [metrics-es] Elasticsearch metrics can optionally **collect custom request headers, response headers, and query parameters**, according to regular expressions provided by the user. The Elasticsearch schema will be https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic-templates.html[extended dynamically^]. This feature required a change to the core of Apiman, but was done in a backwards compatible way. Other metrics implementations should be able to make use of this change (sponsorship welcome). By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [manager-api-jpa]: **Apiman Manager automatic database migrations (from 3.0.0.Final onwards)**: Liquibase SQL/DDL migrations have been refactored, with the Liquibase CDI Migrator integrated into the project directly. This stores which migrations have been run before, and applies only the latest SQL migrations for the Apiman Manager SQL backend, so a full export-import for every new Apiman version should not be needed any more. It can be disabled, if you prefer. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [distro]: **Standalone docker images**: standardised and supported standalone images for Apiman that will be useful for users planning to use Apiman in a real-world deployment. By https://github.com/volkflo[Florian Volk (@volkflo)^].
+
+
+* [ui] **Quick navigation sidebar**: on the left-hand side of the Apiman Manager UI there is now a multi-tiered sidebar to navigate quickly to various areas of the Apiman Manager UI. By https://github.com/volkflo[Florian Volk (@volkflo)^] and https://github.com/bastiangem[Bastian Gembalczyk (@BastianGem)^].
+
+
+* [logging]: **Apiman logger** is now used everywhere; it can be accessed statically from anywhere (including Apiman policy plugins), via `ApimanLoggerFactory.getLogger(YourClazz.class)`. The previous approach tried to be very flexible, but ended up mostly being inconvenient and clumsy. An appropriate logger implementation is selected for each platform Apiman ships on, rather than leaving it for the user. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [build]: introduced the **Apiman Parent BOM** (`io.apiman:apiman-parent:<version>`). This contains managed versions of all Apiman Maven dependencies, which may be useful for plugin authors. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [config]: **Better config parsing for Apiman's components** (e.g. when reading from `apiman.properties`). Not rolled out everywhere, but provides a more unified experience with much better error messages and type validation. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [build]: `**fastbuild.sh**` script to build apiman as fast as possible in parallel using `mvnd` or `mvnw`. It skips test and javadoc. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [policies]: blocklist/allowlist (fka. blacklist/whitelist) add support for IPv6, CIDR, ranges, etc. By https://github.com/msavy[Marc Savy (@msavy)^] in https://github.com/apiman/apiman/pull/2027
+
+
+* [manager-api]: support OpenAPI v3 endpoint replacement. By https://github.com/msavy[Marc Savy (@msavy)^] in https://github.com/apiman/apiman/pull/2053
+
+
+* [gateway-engine-core]: thread-safe batched non-blocking metrics consumer. This is useful if you are creating a metrics implementation, and you want it to have good performance. By https://github.com/msavy[Marc Savy (@msavy)^] in https://github.com/apiman/apiman/pull/2126
+
+
+* [metrics-influxdb]: add support for Influx 1.x, including use of an authorization token. By https://github.com/msavy[Marc Savy (@msavy)^] in https://github.com/apiman/apiman/pull/2127
+
+
+* [manager-api]: add column order index for Api Plans so users can explicitly order plans in UI. By https://github.com/msavy[Marc Savy (@msavy)^] in https://github.com/apiman/apiman/pull/2159
+
+
+* [manager-api]: add rejection to contract approval workflow. By https://github.com/volkflo[Florian Volk (@volkflo)^] in https://github.com/apiman/apiman/pull/2175
+
+
+* [policies]: performance and memory optimisations for caching policy, blocklist/blacklist policy, and allowlist/whitelisting policy. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+=== Changed
+
+* [ui]: Lazy load API DevPortal page using `$ocLazyLoad`, this avoids the Apiman Manager UI initial download being larger. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+* [build]: Java 11+ is the minimum supported version to compile and run Apiman.
+
+
+* [distro]: Apiman Docker images now published to both GHCR (GitHub Packages) and DockerHub. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [build]: Apiman Docker images have been refactored to accept `--build-arg`s for most variables, such as Apiman's version, JDBC driver versions, etc.  By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [build]: Bumped Keycloak to 16.0.2. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [ui]: Upgraded Apiman Manager UI to latest AngularJS. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [ui]: Refactored Apiman Manager UI build system to use https://webpack.js.org/[Webpack 5^]. Although this was a considerable investment of time and effort, it enabled us to make the build smaller, with a much better developer experience, whilst eliminating some bugs associated with our old approach. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [ui]: Major refactor of Apiman Manager UI to bring most deps up to date: Angular 1.8, Typescript 4.4.x, JQuery, Lodash, etc. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [manager-api]: Where possible, transactions are now controlled via annotations. Currently, this uses a custom CDI interceptor, but we'll likely use container-managed TX in the future (likely by reducing to a single Apiman Manager platform). By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [metrics-es]: If the Elasticsearch metrics buffer is completely full then metrics records will be dropped. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [distro]: Bump the Apiman WildFly distro to WildFly 23.0.2.Final. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [policies]: Rename policies: 'blacklist' -> 'blocklist', and 'whitelist' -> 'allowlist'. If you have an existing policy with the old names, it will continue to work without issue. By https://github.com/msavy[Marc Savy (@msavy)^] in https://github.com/apiman/apiman/pull/2040
+
+
+* [ui]: Update swagger-ui to v4. By https://github.com/volkflo[Florian Volk (@volkflo)^] in https://github.com/apiman/apiman/pull/2066
+
+* [manager-api]: Refactor Apiman Manager code to have service layers, so that business logic is not in presentation layer. This will likely be a multiphase process, and ideally we will move towards DDD-style code over time. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+=== Removed
+
+* [distro]: **Apiman is no longer distributed with the Keycloak Server Overlay**, as this has been discontinued by the Keycloak team. You will need to point Apiman to a Keycloak server that is run separately (see the Docker Compose distro for examples). By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [distro]: Apiman Manager API **no longer supports Elasticsearch as a backend store**, this is now RDBMS/SQL only. We still maintain full support for Elasticsearch for metrics/analytics. Consequently, we have removed `ESStorage` and associated code. See: https://github.com/apiman/apiman/discussions/1365[AEP 2: Drop Elasticsearch as Manager API database in Apiman 3 (keep for metrics, gateway, etc)^]. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [distro]: Java 8 is no longer supported in the community project.
+
+=== Fixed
+
+* [ui]: Fixed a wide variety of glitches afflicting the Apiman Manager UI. By https://github.com/msavy[Marc Savy (@msavy)^], https://github.com/volkflo[Florian Volk (@volkflo)^].
+
+
+* [manager-api-war]: handle comma-separated lists properly in `apiman.properties`. By https://github.com/msavy[Marc Savy (@msavy)^] in https://github.com/apiman/apiman/pull/2012
+
+
+* [common-es]: work around ES index creation race condition. By https://github.com/msavy[Marc Savy (@msavy)^] in https://github.com/apiman/apiman/pull/2037
+
+
+* [ui]: browser back button on "all"-pages. By https://github.com/volkflo[Florian Volk (@volkflo)^] in https://github.com/apiman/apiman/pull/2005
+
+
+* [manager-api]: client republish and/or unregister when breaking contracts. By https://github.com/msavy[Marc Savy (@msavy)^] in https://github.com/apiman/apiman/pull/2123
+
+
+* [manager-api]: ensures `RestExceptionMapper` actually prints stack trace. By https://github.com/msavy[Marc Savy (@msavy)^]
+
+
+* [gateway-engine-policies]: check for null request path in URLRewritingPolicy. By https://github.com/msavy[Marc Savy (@msavy)^]
+
+
+* [ui]: add local time to time-restricted-access-policy. By https://github.com/volkflo[Florian Volk (@volkflo)^]
+
+
+* [ui]: temporarily disable source maps for production to avoid bloating code. By https://github.com/msavy[Marc Savy (@msavy)^]
+
+
+* [ui]: Ensure modals have correct constructor signature to avoid minification/mangling breaking everything. By https://github.com/msavy[Marc Savy (@msavy)^]
+
+
+* [manager-api-jpa]: include API version in query fetching API definition. By https://github.com/msavy[Marc Savy (@msavy)^]
+
+
+* [manager-api]: PolicyDefinitionTemplate missing `#equals` and `#hashCode` By https://github.com/msavy[Marc Savy (@msavy)^]
+
+**Full Changelog**: https://github.com/apiman/apiman/compare/2.2.3.Final...3.0.0.Final
