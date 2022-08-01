@@ -283,6 +283,14 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>io.apiman</groupId>
+        <artifactId>apiman-distro-keycloak</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+        <classifier>overlay</classifier>
+      </dependency>
+
       <!-- DB drivers -->
       <dependency>
         <groupId>org.postgresql</groupId>
