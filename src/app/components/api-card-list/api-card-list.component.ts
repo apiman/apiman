@@ -69,7 +69,7 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
    */
   private initScrollEventListener() {
     fromEvent(window, 'scroll')
-      .pipe(throttleTime(200))
+      .pipe(throttleTime(333), debounceTime(250))
       .subscribe(() => {
         const scrollPosition = window.scrollY;
         const windowSize = window.innerHeight;
@@ -87,6 +87,11 @@ export class ApiCardListComponent implements OnInit, OnDestroy {
     this.apis = [];
     this.searchTerm = '';
     this.initSearchDebounce();
+    this.fetchApis(true);
+  }
+
+  public resetSearch() {
+    this.searchTerm = '';
     this.fetchApis(true);
   }
 
