@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+  <!--
+    MySQL has strict 3k limits on length of indexes, and each char is 4 bytes.
+    We break this in several places with multiple standard 255 length fields.
+    To get around this in the most compatible way, we'll reduce the field length for MySQL/MariaDB to 150
+  -->
+  <property name="apiman_varchar" value="150" dbms="mysql,mariadb"/>
+  <property name="apiman_varchar" value="255" dbms="!mysql,!mariadb"/>
+  <property name="clob.type" value="longtext" dbms="mysql"/>
+  <property name="blob.type" value="oid" dbms="postgresql"/>
+  <property name="blob.type" value="longblob" dbms="!postgresql"/>
+  <property name="timestamp.type" value="datetime" dbms="mysql"/>
+  <include file="current/000-apiman-manager-api.db.sequences.changelog.xml" relativeToChangelogFile="true"/>
+  <include file="current/010-apiman-manager-api.db.tables.changelog.xml" relativeToChangelogFile="true"/>
+  <include file="current/050-apiman-manager-api.db.data.changelog.xml" relativeToChangelogFile="true"/>
+  <include file="current/100-apiman-manager-api.db.constraints.changelog.xml" relativeToChangelogFile="true"/>
+  <include file="current/110-apiman-manager-api.db.unique.constraints.changelog.xml" relativeToChangelogFile="true"/>
+  <include file="current/200-apiman-manager-api.db.indexes.changelog.xml" relativeToChangelogFile="true"/>
+  <include file="current/201-add-json-type.changelog.xml" relativeToChangelogFile="true"/>
+  <include file="current/201-postgres-add-bool-function.xml" relativeToChangelogFile="true"/>
+  <include file="current/20211002-154432-apiman3-dev-portal-2-initial.changelog.xml" relativeToChangelogFile="true"/>
+  <include file="current/20211206-add-locale-to-user-profile.xml" relativeToChangelogFile="true"/>
+  <include file="current/20220228-rework-notification-filtering.xml" relativeToChangelogFile="true"/>
+  <include file="current/20220330-discoverability.xml" relativeToChangelogFile="true"/>
+  <include file="current/20220623-explicit-api-plan-order.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

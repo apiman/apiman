@@ -5,10 +5,10 @@
             <column name="developer_id" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="client_id" type="VARCHAR(255)">
+            <column name="client_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="organization_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
         </createTable>
@@ -135,7 +135,7 @@
         <addForeignKeyConstraint baseColumnNames="developer_id" baseTableName="developer_mappings" constraintName="FKhl2dwc4m0kvisedxfb9crceqd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="developers" validate="true"/>
     </changeSet>
     <!-- tagging bits -->
-    <changeSet author="msavy (generated)" id="1633441143380-4">
+    <changeSet author="msavy (generated)" id="1633441143380-4" dbms="!h2">
         <createTable tableName="kv_tags">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="kv_tagsPK"/>
@@ -148,12 +148,26 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="msavy (generated)" id="1633441143380-4-h2" dbms="h2">
+        <createTable tableName="kv_tags">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="kv_tagsPK"/>
+            </column>
+            <column name="KEY" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!-- -->
     <changeSet author="msavy (generated)" id="1633441143380-5">
         <createTable tableName="api_tag">
-            <column name="api_id" type="VARCHAR(255)">
+            <column name="api_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="org_id" type="VARCHAR(255)">
+            <column name="org_id" type="VARCHAR(${apiman_varchar})">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="tag_id" type="BIGINT">
@@ -167,7 +181,7 @@
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="blob_storePK"/>
             </column>
-            <column name="mrblobby" type="BLOB">
+            <column name="mrblobby" type="${blob.type}">
                 <constraints nullable="false"/>
             </column>
             <column name="created_on" type="TIMESTAMP">

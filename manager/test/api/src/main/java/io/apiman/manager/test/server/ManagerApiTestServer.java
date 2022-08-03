@@ -134,6 +134,7 @@ public class ManagerApiTestServer {
      */
     protected void preStart() throws Exception {
         if (ManagerTestUtils.getTestType() == TestType.jpa) {
+            TestUtil.setProperty("liquibase.should.run", "false");
             TestUtil.setProperty("hibernate.hbm2ddl.import_files", "import.sql");
             TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
             TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");
@@ -151,8 +152,6 @@ public class ManagerApiTestServer {
 
             try {
                 InitialContext ctx = TestUtil.initialContext();
-                // TestUtil.ensureCtx(ctx, "java:/comp/env");
-                // TestUtil.ensureCtx(ctx, "java:/comp/env/jdbc");
                 TestUtil.ensureCtx(ctx, "java:/apiman");
                 TestUtil.ensureCtx(ctx, "java:/apiman/datasources");
                 String dbOutputPath = System.getProperty("apiman.test.h2-output-dir", null);
@@ -169,7 +168,6 @@ public class ManagerApiTestServer {
                         h.commit();
                     });
                 } catch (Exception e) {}
-                // ctx.bind("java:/comp/env/jdbc/ApiManagerDS", ds);
                 ctx.bind("java:/apiman/datasources/apiman-manager", ds);
             } catch (NameAlreadyBoundException nbe) {
                 nbe.printStackTrace();
@@ -189,7 +187,6 @@ public class ManagerApiTestServer {
         ds.setPassword("");
         ds.setUrl("jdbc:h2:mem:test-apiman-inmem;DB_CLOSE_DELAY=-1");
         // Use this for trace level JDBC logging
-        // ds.setUrl("jdbc:h2:mem:test-" + ThreadLocalRandom.current().nextInt() + ";DB_CLOSE_DELAY=-1;TRACE_LEVEL_SYSTEM_OUT=3");
         Connection connection = ds.getConnection();
         connection.close();
         System.out.println("DataSource created and bound to JNDI.");

@@ -27,6 +27,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-data</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-distro-ddl</artifactId>
+    </dependency>
 
     <!-- SQL builder -->
     <dependency>
@@ -36,6 +40,10 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-cdi</artifactId>
     </dependency>
 
     <!-- Spec Libs -->
@@ -110,6 +118,25 @@
 
   <build>
     <plugins>
+<!--      &lt;!&ndash; Pull in Liquibase definitions from /distro/ddl into our resources &ndash;&gt;-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-remote-resources-plugin</artifactId>-->
+<!--        <version>${version.remote.resources.plugin}</version>-->
+<!--        <configuration>-->
+<!--          <resourceBundles>-->
+<!--            <resourceBundle>io.apiman:apiman-distro-ddl:${project.version}</resourceBundle>-->
+<!--          </resourceBundles>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <goals>-->
+<!--              <goal>process</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

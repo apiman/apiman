@@ -33,13 +33,11 @@ import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
-import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
 import io.apiman.manager.api.es.EsMetricsAccessor;
 import io.apiman.manager.api.jpa.JpaStorage;
-import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 
@@ -59,7 +57,6 @@ import javax.inject.Named;
 public class ManagerApiMicroServiceCdiFactory {
 
     private static IEsClientFactory sStorageESClientFactory;
-    private static JpaStorage sJpaStorage;
 
     @Produces @ApplicationScoped
     public static INewUserBootstrapper provideNewUserBootstrapper(ManagerApiMicroServiceConfig config, IPluginRegistry pluginRegistry) {
@@ -84,18 +81,7 @@ public class ManagerApiMicroServiceCdiFactory {
     @Produces
     @ApplicationScoped
     public static IStorage provideStorage(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage, IPluginRegistry pluginRegistry) {
-        IStorage storage;
-        if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
-            storage = initJpaStorage(config, jpaStorage);
-        } else {
-            try {
-                storage = createCustomComponent(IStorage.class, config.getStorageType(),
-                        config.getStorageProperties(), pluginRegistry);
-            } catch (Throwable t) {
-                throw new RuntimeException("Error or unknown storage type: " + config.getStorageType(), t); //$NON-NLS-1$
-            }
-        }
-        return storage;
+        return jpaStorage;
     }
 
 
@@ -107,16 +93,7 @@ public class ManagerApiMicroServiceCdiFactory {
     @Produces @ApplicationScoped
     public static IStorageQuery provideStorageQuery(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage,
                                                     IPluginRegistry pluginRegistry) {
-        if ("jpa".equals(config.getStorageQueryType())) { //$NON-NLS-1$
-            return initJpaStorage(config, jpaStorage);
-        } else {
-            try {
-                return createCustomComponent(IStorageQuery.class, config.getStorageQueryType(),
-                        config.getStorageQueryProperties(), pluginRegistry);
-            } catch (Throwable t) {
-                throw new RuntimeException("Error or unknown storage query type: " + config.getStorageType(), t); //$NON-NLS-1$
-            }
-        }
+        return jpaStorage;
     }
 
     @Produces @ApplicationScoped
@@ -195,25 +172,6 @@ public class ManagerApiMicroServiceCdiFactory {
             }
         }
         return sStorageESClientFactory;
-    }
-
-    /**
-     * Initializes the JPA storage (if required).  This basically amounts to installing
-     * the DDL in the database.  This is optional and disabled by default.
-     * @param config
-     * @param jpaStorage
-     */
-    private static JpaStorage initJpaStorage(ApiManagerConfig config, JpaStorage jpaStorage) {
-        if (sJpaStorage == null) {
-            sJpaStorage = jpaStorage;
-            if (config.isInitializeStorageJPA()) {
-                JpaStorageInitializer initializer = new JpaStorageInitializer(config.getHibernateDataSource(), config.getHibernateDialect());
-                initializer.initialize();
-                config.setHibernateDialect(initializer.getResolvedDialect());
-            }
-        }
-
-        return sJpaStorage;
     }
 
     /**

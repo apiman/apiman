@@ -88,12 +88,14 @@
     <version.git-commit-id.plugin>2.2.1</version.git-commit-id.plugin>
     <version.shade.plugin>3.2.4</version.shade.plugin>
     <version.apache.maven.maven-artifact>3.8.4</version.apache.maven.maven-artifact>
+    <version.remote.resources.plugin>3.0.0</version.remote.resources.plugin>
 
     <!-- DBs -->
     <version.org.postgresql.jdbc.driver>42.3.3</version.org.postgresql.jdbc.driver>
     <version.mysql.jdbc.driver>8.0.30</version.mysql.jdbc.driver>
     <version.com.oracle.driver>21.3.0.0</version.com.oracle.driver>
     <version.mssql.driver>9.4.0.jre11</version.mssql.driver>
+    <version.org.liquibase>4.9.1</version.org.liquibase>
 
     <!-- Dependency Versions -->
     <version.com.blazebit.blaze-persistence>1.6.6</version.com.blazebit.blaze-persistence>
@@ -933,6 +935,16 @@
         <version>${version.org.keycloak}</version>
       </dependency>
       <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-core</artifactId>
+        <version>${version.org.liquibase}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-cdi</artifactId>
+        <version>${version.org.liquibase}</version>
+      </dependency>
+      <dependency>
         <groupId>org.lz4</groupId>
         <artifactId>lz4-java</artifactId>
         <version>${version.org.lz4.lz4-java}</version>
@@ -1158,6 +1170,11 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>${version.remote.resources.plugin}</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>

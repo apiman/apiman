@@ -33,12 +33,6 @@
         <module>data</module>
         <module>conf</module>
         <module>keycloak</module>
-      </modules>
-    </profile>
-    <!-- Don't generate DDL by default anymore -->
-    <profile>
-      <id>ddl</id>
-      <modules>
         <module>ddl</module>
       </modules>
     </profile>

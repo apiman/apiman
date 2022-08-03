@@ -24,7 +24,6 @@ import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.common.util.crypt.CurrentDataEncrypter;
 import io.apiman.common.util.crypt.IDataEncrypter;
-import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.core.IApiCatalog;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IMetricsAccessor;
@@ -33,13 +32,10 @@ import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
-import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.crypt.DefaultDataEncrypter;
-import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
 import io.apiman.manager.api.es.EsMetricsAccessor;
 import io.apiman.manager.api.jpa.JpaStorage;
-import io.apiman.manager.api.jpa.JpaStorageInitializer;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
@@ -62,7 +58,6 @@ import javax.inject.Named;
 public class WarCdiFactory {
 
     private static IEsClientFactory sStorageEsClientFactory;
-    private static JpaStorage sJpaStorage;
 
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {}
 
@@ -95,35 +90,18 @@ public class WarCdiFactory {
         }
     }
 
+    // TODO(msavy): now we don't need to support multiple backends we can likely remove all this.
+    //  However, interfaces and impls are in different modules, so will require a fair bit of surgery.
     @Produces @ApplicationScoped
     public static IStorage provideStorage(WarApiManagerConfig config, @New JpaStorage jpaStorage, IPluginRegistry pluginRegistry) {
-        IStorage storage;
-        if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
-            storage = initJpaStorage(config, jpaStorage);
-        } else {
-            try {
-                storage = createCustomComponent(IStorage.class, config.getStorageType(), config.getStorageProperties(), pluginRegistry);
-            } catch (Throwable t) {
-                throw new RuntimeException("Error or unknown storage type: " + config.getStorageType(), t); //$NON-NLS-1$
-            }
-        }
-        return storage;
+        return jpaStorage;
     }
 
+    // TODO(msavy): now we don't need to support multiple backends we can likely remove all this.
+    //  However, interfaces and impls are in different modules, so will require a fair bit of surgery.
     @Produces @ApplicationScoped
     public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage, IStorage storage, IPluginRegistry pluginRegistry) {
-        if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
-            return initJpaStorage(config, jpaStorage);
-        } else if (storage instanceof IStorageQuery) {
-            return (IStorageQuery) storage;
-        } else {
-            try {
-                return createCustomComponent(IStorageQuery.class, config.getStorageQueryType(),
-                        config.getStorageQueryProperties(), pluginRegistry);
-            } catch (Throwable t) {
-                throw new RuntimeException("Error or unknown storage query type: " + config.getStorageType(), t); //$NON-NLS-1$
-            }
-        }
+        return jpaStorage;
     }
 
     @Produces @ApplicationScoped
@@ -206,23 +184,6 @@ public class WarCdiFactory {
             }
         }
         return sStorageEsClientFactory;
-    }
-
-    /**
-     * Initializes the JPA storage (if required).  This basically amounts to installing
-     * the DDL in the database.  This is optional and disabled by default.
-     * @param config
-     * @param jpaStorage
-     */
-    private static JpaStorage initJpaStorage(ApiManagerConfig config, JpaStorage jpaStorage) {
-        if (sJpaStorage == null) {
-            sJpaStorage = jpaStorage;
-            if (config.isInitializeStorageJPA()) {
-                JpaStorageInitializer initializer = new JpaStorageInitializer(config.getHibernateDataSource(), config.getHibernateDialect());
-                initializer.initialize();
-            }
-        }
-        return sJpaStorage;
     }
 
     /**

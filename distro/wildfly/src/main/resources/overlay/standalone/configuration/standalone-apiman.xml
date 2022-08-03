@@ -167,7 +167,7 @@
                     </security>
                 </datasource>
                 <datasource jndi-name="java:/apiman/datasources/apiman-manager" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
-                    <connection-url>${apiman.db.url, env.APIMAN_DB_URL:jdbc:h2:${jboss.server.data.dir}/h2/apiman-manager-api;AUTO_SERVER=TRUE}</connection-url>
+                    <connection-url>${apiman.db.url, env.APIMAN_DB_URL:jdbc:h2:${jboss.server.data.dir}/h2/apiman-manager-api;AUTO_SERVER=TRUE;DATABASE_TO_UPPER=TRUE}</connection-url>
                     <driver>${apiman.db.driver, env.APIMAN_DB_DRIVER:h2}</driver>
                     <security>
                         <user-name>${apiman.db.username, env.APIMAN_DB_USERNAME:sa}</user-name>
@@ -175,7 +175,7 @@
                     </security>
                 </datasource>
                 <datasource jndi-name="java:/apiman/datasources/apiman-gateway" pool-name="apiman-gateway" enabled="true" use-java-context="true">
-                    <connection-url>${apiman.db.url, env.APIMAN_DB_URL:jdbc:h2:${jboss.server.data.dir}/h2/apiman-gateway;MVCC=true}</connection-url>
+                    <connection-url>${apiman.db.url, env.APIMAN_DB_URL:jdbc:h2:${jboss.server.data.dir}/h2/apiman-gateway;MVCC=true;DATABASE_TO_UPPER=TRUE}</connection-url>
                     <driver>${apiman.db.driver, env.APIMAN_DB_DRIVER:h2}</driver>
                     <security>
                         <user-name>${apiman.db.username, env.APIMAN_DB_USERNAME:sa}</user-name>
