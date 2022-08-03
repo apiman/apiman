@@ -151,7 +151,7 @@ services:
     restart: always
 
   elasticsearch:
-    image: elasticsearch:7.13.4
+    image: elasticsearch:7.17.5
     #ports:
     #  - '${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}'
     environment:
