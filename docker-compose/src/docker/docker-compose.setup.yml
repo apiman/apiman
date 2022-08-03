@@ -1,0 +1,8 @@
+version: '3.9'
+services:
+  init:
+    image: jbangdev/jbang-action
+    working_dir: "/ws"
+    command: setup.java
+    volumes:
+      - "$PWD:/ws"

@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.apiman</groupId>
+    <artifactId>apiman-docker</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>apiman-distro-docker-compose</artifactId>
+  <name>apiman-distro-docker-compose</name>
+  <dependencies>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-distro-keycloak</artifactId>
+      <type>zip</type>
+      <classifier>overlay</classifier>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/docker</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>overlay</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <attach>true</attach>
+              <descriptors>
+                <descriptor>src/main/assembly/assembly.xml</descriptor>
+              </descriptors>
+              <archiverConfig>
+                <defaultDirectoryMode>0755</defaultDirectoryMode>
+              </archiverConfig>
+              <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
+              <finalName>apiman-docker-compose-${project.version}</finalName>
+              <!-- Avoid a filename like <finalName>-zip.zip, instead we want <finalName>.zip -->
+              <appendAssemblyId>false</appendAssemblyId>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

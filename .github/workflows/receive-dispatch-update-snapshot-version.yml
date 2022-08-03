@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      snapshot-version: ${{ github.event.client_payload.snapshot-version }}
     outputs:
       snapshot-version-changed: ${{ steps.check-version-change.outputs.snapshot-version-changed }}
     steps:
@@ -21,23 +23,29 @@ jobs:
         id: check-version-change
         run: |
           SNAPSHOT_VERSION_FILE=$(cat .github/workflows/SNAPSHOT_VERSION)
-          if [[ "$SNAPSHOT_VERSION_FILE" !=  "${{ github.event.client_payload.snapshot-version }}" ]] 
+          if [[ "$SNAPSHOT_VERSION_FILE" !=  "${{ env.snapshot-version }}" ]] 
           then
-            echo "Old version: $SNAPSHOT_VERSION_FILE - New version: ${{ github.event.client_payload.snapshot-version }}"
-            echo ${{ github.event.client_payload.snapshot-version }} > .github/workflows/SNAPSHOT_VERSION
+            echo "Old version: $SNAPSHOT_VERSION_FILE - New version: ${{ env.snapshot-version }}"
+            echo ${{ env.snapshot-version }} > .github/workflows/SNAPSHOT_VERSION
             echo ::set-output name=snapshot-version-changed::true
           else
             echo "Snapshot version was not changed"
             echo ::set-output name=snapshot-version-changed::false
           fi
 
+      - name: Update Maven versions, including parent (if version changed)
+        if: needs.read-version.outputs.snapshot-version-changed == 'true'
+        run: |
+          mvnd -ntp -N versions:update-parent -DparentVersion="[${{ env.snapshot-version }}]" -DgenerateBackupPoms=false
+          mvnd -ntp versions:set -DnewVersion="${{ env.snapshot-version }}" -DgenerateBackupPoms=false -DprocessAllModules=true          
+
       - name: Commit release snapshot update to repository (if version changed)
         uses: EndBug/add-and-commit@v7.2.1
-        if: ${{ needs.read-version.outputs.snapshot-version-changed }}
+        if: needs.read-version.outputs.snapshot-version-changed == 'true'
         with:
           author_name: apiman-ci
           default_author: user_info
-          message: "chore(ci): update SNAPSHOT_VERSION to ${{ github.event.client_payload.snapshot-version }}"
+          message: "chore(ci): update SNAPSHOT_VERSION to ${{ env.snapshot-version }}"
           add: .github/workflows --force
 
   rebuild-same-version-snapshot:

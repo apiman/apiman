@@ -17,9 +17,6 @@ jobs:
       - name: Update release version in docker-release flow
         run: echo ${{ github.event.client_payload.release-version }} > .github/workflows/RELEASE_VERSION
 
-      - name: Tag release
-        run: git tag -a -m "Apiman Docker ${{ github.event.client_payload.release-version }}" ${{ github.event.client_payload.release-version }}
-
       - name: Commit release version update to repository
         uses: EndBug/add-and-commit@v7.2.1
         with:
@@ -27,13 +24,3 @@ jobs:
           default_author: user_info
           message: "chore(ci): update RELEASE_VERSION to ${{ github.event.client_payload.release-version }}"
           add: .github/workflows --force
-
-      - name: Create GitHub release ${{ github.event.client_payload.release-version }}
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.event.client_payload.release-version }}
-          name: ${{ github.event.client_payload.release-version }}
-          body: |
-            Apiman Docker release for Apiman version ${{ github.event.client_payload.release-version }}.
-            
-            To access the images associated with this build, please look on Apiman's DockerHub or our GHCR registry (GitHub Packages).   
