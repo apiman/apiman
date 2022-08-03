@@ -13,7 +13,7 @@ Apiman Docker repo: https://www.github.com/apiman/apiman-docker
 === 3 step TL;DR
 
 . `docker-compose -f docker-compose.setup.yml up`
-. `docker-compose -f up`
+. `docker-compose up`
 . http://apiman.local.gd:8080/apimanui
 
 === Quickstart
