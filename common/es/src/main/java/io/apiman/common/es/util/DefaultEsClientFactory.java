@@ -160,7 +160,7 @@ public class DefaultEsClientFactory extends AbstractClientFactory implements IEs
             // TODO(msavy): merge together with TLSOptions?
             final boolean allowSelfSigned = config.getBool(keys("client.allowSelfSigned", "client.trust.certificate"), false);
             final boolean allowAnyHost = config.getBool(keys("client.allowAnyHost", "client.trust.host"), false);
-            final boolean trustAll = config.getBool(keys("client.trustAll"), false);
+            final boolean trustAll = config.getBool(keys("client.trustAll", "client.trust-all"), false);
 
             Path clientKeystorePath = config.getPath(
                 keys("client.keystore.path", "client.keystore"),
