@@ -8,7 +8,7 @@
   </parent>
 
   <properties>
-    <version.org.passay>1.6.1</version.org.passay>
+    <version.org.passay>1.6.2</version.org.passay>
   </properties>
 
   <artifactId>apiman-docker</artifactId>
