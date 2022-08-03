@@ -1,7 +1,8 @@
 Hi {notification.recipient.fullName},
 
-your API signup request is currently pending approval.
-You will receive further emails on status changes.
+Your API signup request is currently pending approval.
+
+You will receive further emails when the status of your application changes.
 
 ## API Information
 
