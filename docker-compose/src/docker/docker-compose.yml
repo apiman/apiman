@@ -3,8 +3,6 @@ version: '3.9'
 services:
   apiman-manager:
     image: apiman/wildfly-manager:${project.version}
-    # ports:
-    #   - '8443:8080'
     depends_on:
       - postgres
       - keycloak
