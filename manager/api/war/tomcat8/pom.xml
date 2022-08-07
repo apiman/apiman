@@ -46,6 +46,14 @@
       <artifactId>apiman-manager-api-rest-impl</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-logging-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-logging-log4j2</artifactId>
+    </dependency>
 
     <!-- Weld -->
     <dependency>
@@ -123,24 +131,6 @@
           <artifactId>jsr311-api</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <!-- Logging provider -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-common-logging-log4j2</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jcl</artifactId>
     </dependency>
 
     <!-- Spec libs -->

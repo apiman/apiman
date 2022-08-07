@@ -22,12 +22,12 @@
   </filter-mapping>
 
   <servlet>
-    <servlet-name>AngularServlet</servlet-name>
+    <servlet-name>AngularServletMainUi</servlet-name>
     <servlet-class>io.apiman.manager.ui.server.servlets.AngularServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>AngularServlet</servlet-name>
+    <servlet-name>AngularServletMainUi</servlet-name>
     <url-pattern>/api-manager/*</url-pattern>
   </servlet-mapping>
 
@@ -87,7 +87,7 @@
   </security-constraint>
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>${env.APIMAN_AUTH_REALM:apiman}</realm-name>
+    <realm-name>${apiman.auth.realm,env.APIMAN_AUTH_REALM:apiman}</realm-name>
   </login-config>
   <security-role>
     <role-name>apiuser</role-name>

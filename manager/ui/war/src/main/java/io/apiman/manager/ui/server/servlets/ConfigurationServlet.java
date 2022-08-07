@@ -15,20 +15,6 @@
  */
 package io.apiman.manager.ui.server.servlets;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.IOUtils;
-
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.apiman.manager.ui.server.UIVersion;
 import io.apiman.manager.ui.server.auth.ITokenGenerator;
 import io.apiman.manager.ui.server.beans.ApiAuthConfigurationBean;
@@ -39,6 +25,19 @@ import io.apiman.manager.ui.server.beans.BasicAuthCredentialsBean;
 import io.apiman.manager.ui.server.beans.ConfigurationBean;
 import io.apiman.manager.ui.server.beans.UiConfigurationBean;
 import io.apiman.manager.ui.server.beans.UserConfigurationBean;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Generates the initial configuration JSON used by the UI when it first loads
@@ -75,7 +74,7 @@ public class ConfigurationServlet extends AbstractUIServlet {
 
         JsonGenerator g = null;
         try {
-            response.getOutputStream().write("window.APIMAN_CONFIG_DATA = ".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+            response.getOutputStream().write("window.APIMAN_CONFIG_DATA = ".getBytes(StandardCharsets.UTF_8)); //$NON-NLS-1$
             JsonFactory f = new JsonFactory();
             g = f.createGenerator(response.getOutputStream(), JsonEncoding.UTF8);
             ObjectMapper mapper = new ObjectMapper();
@@ -152,7 +151,7 @@ public class ConfigurationServlet extends AbstractUIServlet {
             g.writeObject(configBean);
 
             g.flush();
-            response.getOutputStream().write(";".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+            response.getOutputStream().write(";".getBytes(StandardCharsets.UTF_8)); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (Exception e) {
             throw new ServletException(e);
         } finally {

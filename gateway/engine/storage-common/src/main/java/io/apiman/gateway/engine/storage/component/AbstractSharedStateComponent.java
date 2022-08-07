@@ -15,12 +15,12 @@
  */
 package io.apiman.gateway.engine.storage.component;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.storage.store.IBackingStoreProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.util.Objects.isNull;
 
@@ -30,7 +30,7 @@ import static java.util.Objects.isNull;
  * @author Pete Cornish
  */
 public abstract class AbstractSharedStateComponent extends AbstractStorageComponent implements ISharedStateComponent {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSharedStateComponent.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(AbstractSharedStateComponent.class);
     private static final String STORE_NAME = "shared-state"; //$NON-NLS-1$
 
     /**
@@ -58,8 +58,8 @@ public abstract class AbstractSharedStateComponent extends AbstractStorageCompon
                 handler.handle(AsyncResultImpl.create(rval));
 
             } catch (Exception e) {
-                LOGGER.error("Error reading from shared state with namespace: {} and key: {}",
-                        namespace, propertyName, e);
+                LOGGER.error(e, "Error reading from shared state with namespace: {} and key: {}",
+                        namespace, propertyName);
 
                 handler.handle(AsyncResultImpl.create(e));
             }
@@ -80,8 +80,8 @@ public abstract class AbstractSharedStateComponent extends AbstractStorageCompon
             handler.handle(AsyncResultImpl.create((Void) null));
 
         } catch (Exception e) {
-            LOGGER.error("Error writing to shared state with namespace: {} and key: {}",
-                    namespace, propertyName, e);
+            LOGGER.error(e, "Error writing to shared state with namespace: {} and key: {}",
+                    namespace, propertyName);
 
             handler.handle(AsyncResultImpl.create(e));
         }
@@ -98,8 +98,8 @@ public abstract class AbstractSharedStateComponent extends AbstractStorageCompon
             handler.handle(AsyncResultImpl.create((Void) null));
 
         } catch (Exception e) {
-            LOGGER.error("Error removing entry from shared state with namespace: {} and key: {}",
-                    namespace, propertyName, e);
+            LOGGER.error(e, "Error removing entry from shared state with namespace: {} and key: {}",
+                    namespace, propertyName);
 
             handler.handle(AsyncResultImpl.create(e));
         }

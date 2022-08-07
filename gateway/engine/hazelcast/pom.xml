@@ -19,6 +19,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-storage-common</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-logging-core</artifactId>
+    </dependency>
 
     <!-- Third Party Dependencies -->
     <dependency>
@@ -30,10 +34,6 @@
         issues can occur.
        -->
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
     </dependency>
 
     <!-- Test only -->

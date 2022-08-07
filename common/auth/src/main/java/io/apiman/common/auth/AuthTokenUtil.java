@@ -15,6 +15,9 @@
  */
 package io.apiman.common.auth;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+
 import java.util.Date;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -24,8 +27,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A simple class to generate and consume authentication tokens.  This is a very
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AuthTokenUtil {
     
-    private static Logger logger = LoggerFactory.getLogger(AuthTokenUtil.class);
+    private static final IApimanLogger logger = ApimanLoggerFactory.getLogger(AuthTokenUtil.class);
     private static final ObjectMapper mapper = new ObjectMapper();
     private static ISharedSecretSource sharedSecretSource;
     static {

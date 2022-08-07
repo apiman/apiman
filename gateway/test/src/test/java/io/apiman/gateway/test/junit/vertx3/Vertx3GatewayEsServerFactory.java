@@ -1,11 +1,12 @@
 package io.apiman.gateway.test.junit.vertx3;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.test.common.es.EsTestUtil;
 import io.apiman.test.common.resttest.IGatewayTestServer;
 import io.apiman.test.common.resttest.IGatewayTestServerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
 /**
@@ -13,7 +14,7 @@ import org.testcontainers.elasticsearch.ElasticsearchContainer;
  */
 public class Vertx3GatewayEsServerFactory implements IGatewayTestServerFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(Vertx3GatewayEsServerFactory.class);
+    private static final IApimanLogger logger = ApimanLoggerFactory.getLogger(Vertx3GatewayEsServerFactory.class);
 
     @Override
     public IGatewayTestServer createGatewayTestServer() {

@@ -15,11 +15,11 @@
  */
 package io.apiman.manager.api.jpa;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Some utility methods for JPA support.
@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class JpaUtil {
 
-    private static Logger logger = LoggerFactory.getLogger(JpaUtil.class);
+    private static final IApimanLogger logger = ApimanLoggerFactory.getLogger(JpaUtil.class);
 
     private JpaUtil() {
     }
