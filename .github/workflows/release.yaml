@@ -64,7 +64,7 @@ jobs:
           git config --global user.name "apiman-ci"
           git config --global user.email "ci.apiman@gmail.com"
           git remote add origin "https://apiman-ci:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
-          git fetch
+          git fetch --recurse-submodules
           git checkout master
           git branch --set-upstream-to=origin/master
           git pull

@@ -39,6 +39,11 @@
     <!-- Apiman WildFly WAR deps -->
     <dependency>
       <groupId>io.apiman</groupId>
+      <artifactId>apiman-developer-portal</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-api-war-wildfly8</artifactId>
       <type>war</type>
     </dependency>

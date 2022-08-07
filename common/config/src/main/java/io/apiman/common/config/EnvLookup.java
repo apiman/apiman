@@ -15,6 +15,8 @@
  */
 package io.apiman.common.config;
 
+import java.util.List;
+
 import org.apache.commons.lang.text.StrLookup;
 
 /**
@@ -29,12 +31,19 @@ public class EnvLookup extends StrLookup {
      */
     @Override
     public String lookup(String key) {
-        String value = System.getenv(key);
-        if (value == null) {
-            return ""; //$NON-NLS-1$
-        } else {
-            return value;
+        // Emulates Microprofile prop -> env lookup
+        for (String s : synonyms(key)) {
+            if (s != null) {
+                return s;
+            }
         }
+        return "";
+    }
+
+    private List<String> synonyms(String key) {
+        String dotToUnderscore = key.replace(".", "_").replace("-", "_");
+        String upperCase = dotToUnderscore.toUpperCase();
+        return List.of(System.getenv(dotToUnderscore), System.getenv(upperCase));
     }
 
 }

@@ -41,6 +41,7 @@
         <property name="hibernate.types.print.banner" value="false"/>
         <property name="apiman.hibernate.dialect" value="${env.APIMAN_DB_DRIVER, apiman.db.driver:h2}"/>
         <property name="apiman-gateway.initializers.jdbc.datasource.type" value="${env.APIMAN_DB_DRIVER, apiman.db.driver:h2}"/>
+        <property name="apiman.auth.realm" value="${env.APIMAN_AUTH_REALM, apiman.auth.realm:apiman}"/>
     </system-properties>
     <management>
         <security-realms>

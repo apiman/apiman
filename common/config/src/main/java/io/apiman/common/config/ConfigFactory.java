@@ -34,8 +34,9 @@ public class ConfigFactory {
     private ConfigFactory() {
     }
 
-    public static final CompositeConfiguration createConfig() {
+    public static CompositeConfiguration createConfig() {
         CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
+        compositeConfiguration.addConfiguration(new EnvConfigurationWithSynonyms());
         compositeConfiguration.addConfiguration(new SystemPropertiesConfiguration());
         compositeConfiguration.addConfiguration(ConfigFileConfiguration.create("apiman.properties", "apiman.config.url")); //$NON-NLS-1$ //$NON-NLS-2$
         return compositeConfiguration;

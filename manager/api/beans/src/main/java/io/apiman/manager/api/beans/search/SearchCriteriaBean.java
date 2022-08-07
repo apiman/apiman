@@ -18,6 +18,7 @@ package io.apiman.manager.api.beans.search;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Generic search criteria used when searching for beans.
@@ -178,4 +179,12 @@ public class SearchCriteriaBean implements Serializable {
         }
     }
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", SearchCriteriaBean.class.getSimpleName() + "[", "]")
+                       .add("filters=" + filters)
+                       .add("orderBy=" + orderBy)
+                       .add("paging=" + paging)
+                       .toString();
+    }
 }

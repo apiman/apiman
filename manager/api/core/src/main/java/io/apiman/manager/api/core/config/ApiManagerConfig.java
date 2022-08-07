@@ -85,7 +85,7 @@ public abstract class ApiManagerConfig {
     /* -------------------------------------------------------
      * Endpoint-related
      * ------------------------------------------------------- */
-    public static final String APIMAN_MANAGER_UI_ENDPOINT = "apiman-manager.ui.endpoint";
+    public static final String APIMAN_MANAGER_UI_ENDPOINT = "apiman-manager-ui.endpoint"; // TODO(msavy): same key is in UIConfig
 
     private final Configuration config;
 

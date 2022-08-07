@@ -2,7 +2,7 @@ name: Trigger rebuild and redeployment of Apiman docs website
 
 on:
   push:
-    branches: [ 2.x ] # Put all branches we want to track docs for here.
+    branches: [ master, 2.x ] # Put all branches we want to track docs for here.
     paths:
       - 'docs/**'
   workflow_dispatch:

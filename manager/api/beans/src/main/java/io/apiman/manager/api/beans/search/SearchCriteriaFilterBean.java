@@ -16,6 +16,7 @@
 package io.apiman.manager.api.beans.search;
 
 import java.io.Serializable;
+import java.util.StringJoiner;
 
 /**
  * Represents a single filter or search criteria.  This is used when searching
@@ -125,4 +126,12 @@ public class SearchCriteriaFilterBean implements Serializable {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", SearchCriteriaFilterBean.class.getSimpleName() + "[", "]")
+                       .add("name='" + name + "'")
+                       .add("value='" + value + "'")
+                       .add("operator=" + operator)
+                       .toString();
+    }
 }

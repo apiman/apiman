@@ -49,7 +49,7 @@ public abstract class AbstractOptions {
     protected abstract void parse(Map<String, String> options);
 
     protected static String getVar(Map<String, String> optionsMap, String varName) {
-        if(optionsMap.get(varName) == null || optionsMap.get(varName).isEmpty()) {
+        if (optionsMap.get(varName) == null || optionsMap.get(varName).isEmpty()) {
             return null;
         }
         return optionsMap.get(varName);
