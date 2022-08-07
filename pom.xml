@@ -116,11 +116,6 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-common-logging-slf4j</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-common-net</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -232,6 +227,12 @@
         <artifactId>apiman-manager-api-war-jetty8</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-developer-portal</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -688,6 +689,7 @@
     <module>test</module>
     <module>migration-assistant</module>
     <module>sso</module>
+    <module>developer-portal</module>
   </modules>
 
   <profiles>

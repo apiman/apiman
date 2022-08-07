@@ -21,8 +21,8 @@
       <artifactId>commons-codec</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-logging-core</artifactId>
     </dependency>
   </dependencies>
 

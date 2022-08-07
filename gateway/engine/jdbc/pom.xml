@@ -27,7 +27,11 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-data</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-logging-core</artifactId>
+    </dependency>
+    
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-dbutils</groupId>
@@ -61,11 +65,6 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

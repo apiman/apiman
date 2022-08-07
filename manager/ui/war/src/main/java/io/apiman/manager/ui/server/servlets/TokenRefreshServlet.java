@@ -15,19 +15,17 @@
  */
 package io.apiman.manager.ui.server.servlets;
 
-import java.io.IOException;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.manager.ui.server.auth.ITokenGenerator;
+import io.apiman.manager.ui.server.beans.BearerTokenCredentialsBean;
 
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.apiman.manager.ui.server.auth.ITokenGenerator;
-import io.apiman.manager.ui.server.beans.BearerTokenCredentialsBean;
 
 /**
  * The token refresh servlet - provides a JSON REST endpoint that the UI
@@ -40,7 +38,7 @@ import io.apiman.manager.ui.server.beans.BearerTokenCredentialsBean;
 public class TokenRefreshServlet extends AbstractUIServlet {
 
     private static final long serialVersionUID = 7721708152826837757L;
-    private static Logger logger = LoggerFactory.getLogger(TokenRefreshServlet.class);
+    private static final IApimanLogger logger = ApimanLoggerFactory.getLogger(TokenRefreshServlet.class);
     
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)

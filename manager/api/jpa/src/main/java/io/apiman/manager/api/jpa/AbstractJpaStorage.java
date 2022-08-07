@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.jpa;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.search.OrderByBean;
@@ -44,8 +46,6 @@ import com.blazebit.persistence.PagedList;
 import com.blazebit.persistence.PaginatedCriteriaBuilder;
 import org.hibernate.Session;
 import org.jdbi.v3.core.Jdbi;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A base class that JPA storage impls can extend.
@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractJpaStorage {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJpaStorage.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(AbstractJpaStorage.class);
 
     @Inject
     private EntityManagerFactoryAccessor emf;

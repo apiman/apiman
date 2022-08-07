@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.test.junit;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.test.junit.GatewayRestTester.TestInfo;
 import io.apiman.test.common.plan.TestGroupType;
 import io.apiman.test.common.plan.TestPlan;
@@ -36,13 +36,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A junit test runner that fires up an API Gateway and makes it ready for use
@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("nls")
 public class GatewayRestTester extends ParentRunner<TestInfo> {
 
-    private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
+    private static final IApimanLogger logger = ApimanLoggerFactory.getLogger(TestPlanRunner.class);
 
     private static IGatewayTestServer gatewayServer;
 

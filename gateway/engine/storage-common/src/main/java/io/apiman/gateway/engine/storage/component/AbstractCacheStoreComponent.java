@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.storage.component;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -25,11 +27,10 @@ import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.storage.model.CacheEntry;
 import io.apiman.gateway.engine.storage.store.IBackingStoreProvider;
-import org.apache.commons.codec.binary.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+
+import org.apache.commons.codec.binary.Base64;
 
 import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
@@ -39,7 +40,7 @@ import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER
  * @author Pete Cornish
  */
 public abstract class AbstractCacheStoreComponent extends AbstractStorageComponent implements ICacheStoreComponent {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCacheStoreComponent.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(AbstractCacheStoreComponent.class);
     private static final String STORE_NAME = "cache"; //$NON-NLS-1$
 
     private IBufferFactoryComponent bufferFactory;
@@ -70,7 +71,7 @@ public abstract class AbstractCacheStoreComponent extends AbstractStorageCompone
         try {
             getStore().put(cacheKey, entry, timeToLive);
         } catch (Throwable e) {
-            LOGGER.error("Error writing cache entry with key: {}", cacheKey, e);
+            LOGGER.error(e, "Error writing cache entry with key: {}", cacheKey);
         }
     }
 
@@ -112,7 +113,7 @@ public abstract class AbstractCacheStoreComponent extends AbstractStorageCompone
                     try {
                         getStore().put(cacheKey, entry, timeToLive);
                     } catch (Throwable e) {
-                        LOGGER.error("Error writing binary cache entry with key: {}", cacheKey, e);
+                        LOGGER.error(e, "Error writing binary cache entry with key: {}", cacheKey);
                     }
                 }
                 finished = true;
@@ -132,7 +133,7 @@ public abstract class AbstractCacheStoreComponent extends AbstractStorageCompone
                     @SuppressWarnings("unchecked") final T head = JSON_MAPPER.readValue(cacheEntry.getHead(), type);
                     handler.handle(AsyncResultImpl.create(head));
                 } catch (Exception e) {
-                    LOGGER.error("Error reading cache entry with key: {}", cacheKey, e);
+                    LOGGER.error(e, "Error reading cache entry with key: {}", cacheKey);
                     handler.handle(AsyncResultImpl.create((T) null));
                 }
             } else {
@@ -212,7 +213,7 @@ public abstract class AbstractCacheStoreComponent extends AbstractStorageCompone
                 };
                 handler.handle(AsyncResultImpl.create(rval));
             } catch (Throwable e) {
-                LOGGER.error("Error reading binary cache entry with key: {}", cacheKey, e);
+                LOGGER.error(e, "Error reading binary cache entry with key: {}", cacheKey);
                 handler.handle(AsyncResultImpl.create((ISignalReadStream<T>) null));
             }
         } catch (Throwable e) {
