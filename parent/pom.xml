@@ -155,7 +155,7 @@
     <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
     <version.org.mvel>2.4.12.Final</version.org.mvel>
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
-    <version.org.reflections>0.9.11</version.org.reflections>
+    <version.io.github.classgraph>4.8.149</version.io.github.classgraph>
     <version.org.slf4j>1.7.36</version.org.slf4j>
     <version.org.testcontainers>1.17.3</version.org.testcontainers>
     <version.io.apicurio>1.1.26</version.io.apicurio>
@@ -578,11 +578,6 @@
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${version.org.slf4j}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
         <version>${version.org.slf4j}</version>
       </dependency>
@@ -955,9 +950,9 @@
         <version>${version.com.jcbai}</version>
       </dependency>
       <dependency>
-        <groupId>org.reflections</groupId>
-        <artifactId>reflections</artifactId>
-        <version>${version.org.reflections}</version>
+        <groupId>io.github.classgraph</groupId>
+        <artifactId>classgraph</artifactId>
+        <version>${version.io.github.classgraph}</version>
       </dependency>
       <dependency>
         <groupId>com.github.seancfoley</groupId>

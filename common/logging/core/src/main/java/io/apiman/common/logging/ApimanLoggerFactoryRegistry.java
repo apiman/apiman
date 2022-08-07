@@ -20,9 +20,11 @@ import io.apiman.common.logging.impl.SoutDelegateFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-import org.reflections.Reflections;
+import io.github.classgraph.AnnotationInfo;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 /**
  * Registry of Apiman Logger Factories.
@@ -48,17 +50,20 @@ public class ApimanLoggerFactoryRegistry {
     }
 
     private static void resolveAllImplementations() {
-        Reflections reflection = new Reflections("io.apiman.common.logging");
-        Set<Class<?>> loggerFactories = reflection.getTypesAnnotatedWith(ApimanLoggerFactory.class);
-
-        for (Class<?> loggerFactory : loggerFactories) {
-            try {
-                IDelegateFactory instance = (IDelegateFactory) loggerFactory.newInstance();
-                String name = loggerFactory.getAnnotation(ApimanLoggerFactory.class).value();
-                DELEGATE_FACTORY_MAP.put(name, instance);
-                // System.err.println("Logger registered: " + name);
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException(e);
+        try (ScanResult scanResult = new ClassGraph()
+                                             .enableAnnotationInfo()
+                                             .enableClassInfo()
+                                             .acceptPackages("io.apiman.common.logging")
+                                             .scan()) {
+            for (ClassInfo loggerFactoryKlazz : scanResult.getClassesWithAnnotation(ApimanLoggerFactory.class)) {
+                AnnotationInfo loggerFactoryAnno = loggerFactoryKlazz.getAnnotationInfo(ApimanLoggerFactory.class);
+                // Only have 1 required param.
+                String name = (String) loggerFactoryAnno.getParameterValues().get(0).getValue();
+                try {
+                    DELEGATE_FACTORY_MAP.put(name, (IDelegateFactory) loggerFactoryKlazz.loadClass().newInstance());
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
