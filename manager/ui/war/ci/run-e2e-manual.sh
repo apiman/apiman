@@ -11,7 +11,7 @@ APIMAN_IMAGE_ID="apiman/on-wildfly:$(git rev-parse HEAD)"
 
 cleanup () {
    echo "Cleaning up Docker compose..."
-   docker-compose down -v --remove-orphans
+   docker-compose --project-name="apiman-ci-testing" down -v --remove-orphans
 }
 
 trap cleanup ERR EXIT
@@ -24,4 +24,4 @@ docker-compose --project-name="apiman-ci-testing" up  -d
 # Check out `waitOnConfig.js` for username and password injection.
 yarn run wait-on -v -d 15000 -t 300000 -c waitOnConfig.js "http://$HOSTNAME:8877/apiman/system/status"
 
-yarn cy:open --config baseUrl="http://$HOSTNAME:8877/apimanui/,retries=3,defaultCommandTimeout=10000"
+yarn cy:open --config baseUrl="http://$HOSTNAME:8877/,retries=3,defaultCommandTimeout=10000"
