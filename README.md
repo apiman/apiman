@@ -17,6 +17,9 @@ Or, you can build and run our 'server-all' quickstart to try everything out imme
 Here's what you need to do:
 
 ```bash
+echo "Cloning Apiman"
+git clone --recurse-submodules https://github.com/apiman/apiman.git && cd apiman
+
 echo "Building Apiman"
 ./fastbuild.sh
 
@@ -24,8 +27,7 @@ echo "Starting a Keycloak container with a demo Apiman realm"
 cd tools/server-all/target/docker
 docker compose up -d
 
-echo "Starting Apiman"
-cd ../
+echo "Starting Apiman WildFly Quickstart" && cd ../
 ./wildfly-dev-server/bin/standalone.sh
 ```
 
@@ -38,7 +40,9 @@ You can log into the Keycloak admin console via http://localhost:8081/admin (sam
 
 This quickstart seeds a bunch of content into apiman. This is not strictly necessary, but it does populate the API Manager with some data so that it doesn't feel so lonely the first time you log in.
 
-You're welcome. Please don't use default users and passwords in production.
+There's also a handy echo service available at http://localhost:8080/services/echo - it's useful for demos. You're welcome!
+
+⚠️ Please don't use Apiman's default usernames, passwords, keys, certificates, etc., in production.
 
 ## ⚒️ Build Apiman
 
@@ -47,6 +51,7 @@ You're welcome. Please don't use default users and passwords in production.
 The easiest way to build quickly (without tests) is to run our [fastbuild script](https://github.com/apiman/apiman/blob/master/fastbuild.sh). It's in the root of the project. If you have [mvnd](https://github.com/apache/maven-mvnd/) the build will be faster.
 
 ```shell
+git clone --recurse-submodules https://github.com/apiman/apiman.git && cd apiman
 ./fastbuild.sh 
 ```
 
