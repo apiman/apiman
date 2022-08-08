@@ -12,7 +12,7 @@ APIMAN_IMAGE_ID="apiman/on-wildfly:$(git rev-parse HEAD)"
 
 cleanup () {
    echo "Cleaning up Docker compose..."
-   docker-compose down -v --remove-orphans
+   docker-compose --project-name="apiman-ci-testing" down -v --remove-orphans
 }
 
 trap cleanup ERR EXIT
