@@ -24,6 +24,11 @@
       <artifactId>apiman-manager-ui-war</artifactId>
       <type>war</type>
     </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-logging-jboss</artifactId>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>

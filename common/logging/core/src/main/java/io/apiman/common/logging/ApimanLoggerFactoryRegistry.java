@@ -61,7 +61,11 @@ public class ApimanLoggerFactoryRegistry {
                 String name = (String) loggerFactoryAnno.getParameterValues().get(0).getValue();
                 try {
                     DELEGATE_FACTORY_MAP.put(name, (IDelegateFactory) loggerFactoryKlazz.loadClass().newInstance());
-                } catch (InstantiationException | IllegalAccessException e) {
+                } catch (ClassCastException cce) {
+                    // Might be some evil classloading reasons that this won't work, so let's just ignore those errors.
+                    // System.err.println("Class cast error (likely classloader voodoo)");
+                    // cce.printStackTrace();
+                }  catch (InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
             }
