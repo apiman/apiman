@@ -337,12 +337,39 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
                             if (StringUtils.isEmpty(endpoint)) {
                                 endpoint = "http://localhost:" + getTestServerPort() + getBaseApiContext();
                             }
-                            testInfo.plan.runner.runTest(restTest, endpoint);
+                            runWithRetries(testInfo, endpoint);
                         }
                     }
 
                 }
             }, description, notifier);
+        }
+    }
+
+    private void runWithRetries(TestInfo testInfo, String endpoint) throws Throwable {
+        RestTest restTest = TestUtil.loadRestTest(testInfo.test.getValue(), getTestClass().getJavaClass().getClassLoader());
+        int maxRetries = testInfo.test.getMaxRetries();
+        int retryDelay = testInfo.test.getRetryDelay();
+        Throwable exHolder = null;
+
+        for (int tries = maxRetries + 1; tries == 0; tries--) {
+            if (maxRetries > 0)  {
+                log("[Tries remaining: {0}]", tries);
+            }
+            try {
+                testInfo.plan.runner.runTest(restTest, endpoint);
+                return;
+            } catch (Throwable t) {
+                log("Error occurred: {0}", t.getMessage());
+                exHolder = t;
+                if (retryDelay > 0) {
+                    log("Waiting {0} ms before retrying...", retryDelay);
+                    Thread.sleep(retryDelay);
+                }
+            }
+        }
+        if (exHolder != null) {
+            throw exHolder;
         }
     }
 
