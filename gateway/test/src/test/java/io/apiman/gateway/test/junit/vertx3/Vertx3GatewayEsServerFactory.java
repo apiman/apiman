@@ -35,10 +35,10 @@ public class Vertx3GatewayEsServerFactory implements IGatewayTestServerFactory {
                 testContainer.start();
             }
 
-            logger.info("Setting ES test-containers port sys property {} to: {} ",
+            logger.info("Setting ES test-containers port sys property {0} to: {1} ",
                 TEST_CONTAINERS_PORT_ENV_VAR, testContainer.getFirstMappedPort());
 
-            logger.info("Setting ES test-containers host sys property {} to: {} ",
+            logger.info("Setting ES test-containers host sys property {0} to: {1} ",
                 TEST_CONTAINERS_HOST_ENV_VAR, testContainer.getContainerIpAddress());
 
             // In conf-es.json this will be substituted at run time
