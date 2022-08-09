@@ -352,7 +352,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         int retryDelay = testInfo.test.getRetryDelay();
         Throwable exHolder = null;
 
-        for (int tries = maxRetries + 1; tries == 0; tries--) {
+        for (int tries = maxRetries; tries >= 0; tries--) {
             if (maxRetries > 0)  {
                 log("[Tries remaining: {0}]", tries);
             }
