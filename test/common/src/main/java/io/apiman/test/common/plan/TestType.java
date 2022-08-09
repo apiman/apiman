@@ -8,7 +8,12 @@
 
 package io.apiman.test.common.plan;
 
-import javax.xml.bind.annotation.*;
+import java.util.StringJoiner;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 
 
 /**
@@ -46,6 +51,10 @@ public class TestType {
     private Integer delay;
     @XmlAttribute(name = "skipStorage")
     private String skipStorage;
+    @XmlAttribute(name = "maxRetries")
+    private int maxRetries;
+    @XmlAttribute(name = "retryDelay")
+    private int retryDelay = 1_000;
 
     /**
      * Gets the value of the value property.
@@ -157,4 +166,34 @@ public class TestType {
         this.delay = delay;
     }
 
+    public int getMaxRetries() {
+        return maxRetries;
+    }
+
+    public TestType setMaxRetries(int maxRetries) {
+        this.maxRetries = maxRetries;
+        return this;
+    }
+
+    public int getRetryDelay() {
+        return retryDelay;
+    }
+
+    public TestType setRetryDelay(int retryDelay) {
+        this.retryDelay = retryDelay;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", TestType.class.getSimpleName() + "[", "]")
+                       .add("value='" + value + "'")
+                       .add("name='" + name + "'")
+                       .add("endpoint='" + endpoint + "'")
+                       .add("delay=" + delay)
+                       .add("skipStorage='" + skipStorage + "'")
+                       .add("maxRetries=" + maxRetries)
+                       .add("retryDelay=" + retryDelay)
+                       .toString();
+    }
 }

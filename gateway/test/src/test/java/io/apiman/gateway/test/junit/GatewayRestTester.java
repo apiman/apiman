@@ -234,14 +234,10 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
                 Integer delay = testInfo.test.getDelay();
 
                 if (delay != null) {
-                    try { Thread.sleep(delay); } catch (InterruptedException e) { }
+                    try { Thread.sleep(delay); } catch (InterruptedException ignored) { }
                 }
                 if (rtPath != null && !rtPath.trim().isEmpty()) {
-                    RestTest restTest = TestUtil.loadRestTest(testInfo.test.getValue(), getTestClass().getJavaClass().getClassLoader());
-                    String endpoint = null;
-                    if (endpoint == null) {
-                        endpoint = testInfo.test.getEndpoint();
-                    }
+                    String endpoint = testInfo.test.getEndpoint();
                     if (endpoint == null) {
                         endpoint = testInfo.group.getEndpoint();
                     }
@@ -254,12 +250,38 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
                     if (endpoint == null) {
                         endpoint = gatewayServer.getGatewayEndpoint();
                     }
-
-                    testInfo.plan.runner.runTest(restTest, endpoint);
+                    runWithRetries(testInfo, endpoint);
                     gatewayServer.next(endpoint);
                 }
             }
         }, description, notifier);
+    }
+
+    private void runWithRetries(TestInfo testInfo, String endpoint) throws Throwable {
+        RestTest restTest = TestUtil.loadRestTest(testInfo.test.getValue(), getTestClass().getJavaClass().getClassLoader());
+        int maxRetries = testInfo.test.getMaxRetries();
+        int retryDelay = testInfo.test.getRetryDelay();
+        Throwable exHolder = null;
+
+        for (int tries = maxRetries; tries >= 0; tries--) {
+            if (maxRetries > 0)  {
+                log("[Tries remaining: {0}]", tries);
+            }
+            try {
+                testInfo.plan.runner.runTest(restTest, endpoint);
+                return;
+            } catch (Throwable t) {
+                log("Error occurred: {0}", t.getMessage());
+                exHolder = t;
+                if (retryDelay > 0) {
+                    log("Waiting {0} ms before retrying...", retryDelay);
+                    Thread.sleep(retryDelay);
+                }
+            }
+        }
+        if (exHolder != null) {
+            throw exHolder;
+        }
     }
 
     /**

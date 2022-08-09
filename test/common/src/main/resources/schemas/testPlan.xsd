@@ -48,6 +48,12 @@
         <xsd:attribute name="endpoint" type="xsd:string" use="optional" />
         <xsd:attribute name="delay" type="xsd:integer" use="optional" />
         <xsd:attribute name="skipStorage" type="xsd:string" use="optional" />
+        <!--
+        For assertions against stuff that might be async such as notifications, let client retry a few times to let backend catch up.
+        Beware, this might have side effects if the endpoint is not idempotent.
+        -->
+        <xsd:attribute name="maxRetries" type="xsd:positiveInteger" default="0"/>
+        <xsd:attribute name="retryDelay" type="xsd:positiveInteger" default="1000"/>
       </xsd:extension>
     </xsd:simpleContent>
   </xsd:complexType>
