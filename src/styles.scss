@@ -311,3 +311,9 @@ a {
   font-size: 12px;
   color: var(--acccent-contrast-60);
 }
+
+.cdk-global-scrollblock {
+  position: initial;
+  width: initial;
+  overflow: hidden;
+}
