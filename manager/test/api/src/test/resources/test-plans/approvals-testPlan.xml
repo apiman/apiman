@@ -67,11 +67,11 @@
     <test name="Admin rejects contract 1 with client 2">test-plan-data/approvals/contracts/012_reject-contract-client2.resttest</test>
     <test name="List Contracts for Client 2 (should be 0)">test-plan-data/approvals/contracts/013_get-contracts-client2-again.resttest</test>
 
-    <test name="Approver receives notification about contract signup request" maxRetries="5" retryDelay="2000">test-plan-data/approvals/notifications/001_approver-notifications.resttest</test>
+    <test name="Approver receives notification about contract signup request" delay="5000" maxRetries="5" retryDelay="2000">test-plan-data/approvals/notifications/001_approver-notifications.resttest</test>
     <test name="User bwayne receives notifications about approvals" maxRetries="5" retryDelay="2000">test-plan-data/approvals/notifications/002_bwayne-notifications.resttest</test>
 
-    <test name="bwayne mark all notifications read" delay="2000">test-plan-data/approvals/notifications/003_bwayne-mark-all-read.resttest</test>
-    <test name="bwayne list notifications (all read)" maxRetries="5" retryDelay="2000">test-plan-data/approvals/notifications/004_bwayne-list-notifications-all-read.resttest</test>
+    <test name="bwayne mark all notifications read" delay="5000">test-plan-data/approvals/notifications/003_bwayne-mark-all-read.resttest</test>
+    <test name="bwayne list notifications (all read)" delay="5000" maxRetries="5" retryDelay="2000">test-plan-data/approvals/notifications/004_bwayne-list-notifications-all-read.resttest</test>
     <test name="bwayne list unread notifications (empty)" maxRetries="5" retryDelay="2000">test-plan-data/approvals/notifications/005_bwayne-list-unread-notifications-empty.resttest</test>
 
     <test name="bwayne count all notifications" maxRetries="5" retryDelay="2000">test-plan-data/approvals/notifications/006_bwayne-count-all-notifications.resttest</test>
