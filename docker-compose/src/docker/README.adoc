@@ -30,6 +30,7 @@ These are also copied into `.env`, where they can be injected into Apiman, etc.
 * Start docker compose: `docker-compose up` or `docker compose up`
 * Location of services:
 ** Apiman Manager UI: `http://apiman.local.gd:8080/apimanui`
+** Apiman Developer Portal: `http://apiman.local.gd:8080/portal`
 ** Apiman Manager API: `http://apiman.local.gd:8080/apiman`
 ** Apiman Gateway: `http://gateway.local.gd:8080`
 ** Keycloak Admin: `http://auth.local.gd:8080/admin`

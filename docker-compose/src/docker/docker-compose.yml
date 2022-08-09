@@ -29,6 +29,7 @@ services:
       # General Apiman config
       - "ALLOW_ANY_HOST=${SELF_SIGNED}"
       - "APIMAN_MANAGER_UI_ENDPOINT=${APIMAN_MANAGER_UI_ENDPOINT}"
+      - "APIMAN_MANAGER_API_ENDPOINT=${APIMAN_MANAGER_API_ENDPOINT}"
     volumes:
       - type: bind
         source: "$PWD/data/apiman.properties"
@@ -46,7 +47,7 @@ services:
       # - traefik.http.routers.apimanui-router.tls=true
       - traefik.http.routers.apimanui-router.entrypoints=http
       - traefik.http.routers.apimanui-router.rule=Host(`apiman.${APIMAN_HOSTNAME}`)
-      - traefik.http.routers.apimanui-router.rule=PathPrefix(`/apiman`, `/apimanui`)
+      - traefik.http.routers.apimanui-router.rule=PathPrefix(`/apiman`, `/apimanui`, `/portal`)
       - traefik.http.routers.apimanui-router.service=apimanui-service
       - traefik.http.services.apimanui-service.loadbalancer.server.port=8080
 
