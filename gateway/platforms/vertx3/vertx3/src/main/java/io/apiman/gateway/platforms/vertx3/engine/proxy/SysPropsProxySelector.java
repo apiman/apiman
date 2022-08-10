@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.platforms.vertx3.engine.proxy;
 
+import io.vertx.core.net.ProxyType;
+
 import java.net.URI;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -55,6 +57,19 @@ public class SysPropsProxySelector {
             return socksProxy.getProxy(resourceUri.getHost());
         }
         return Optional.empty();
+    }
+
+    public ProxyType translateProxyType(HttpProxy proxy) {
+        switch(proxy.getProxyType()) {
+            case HTTP:
+                return ProxyType.HTTP;
+            case SOCKS4:
+                return ProxyType.SOCKS4;
+            case SOCKS5:
+                return ProxyType.SOCKS5;
+            default:
+                throw new IllegalStateException("Unexpected value: " + proxy.getProxyType());
+        }
     }
 
     @Override
