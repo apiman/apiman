@@ -143,6 +143,10 @@
       <groupId>io.apicurio</groupId>
       <artifactId>apicurio-data-models</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.github.classgraph</groupId>
+      <artifactId>classgraph</artifactId>
+    </dependency>
     <!-- Swagger -->
     <dependency>
       <groupId>io.swagger</groupId>
