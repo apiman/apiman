@@ -230,7 +230,18 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-developer-portal</artifactId>
+        <artifactId>apiman-distro-wildfly8-portal</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-portal-ui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-portal-war-wildfly</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
@@ -689,7 +700,7 @@
     <module>test</module>
     <module>migration-assistant</module>
     <module>sso</module>
-    <module>developer-portal</module>
+    <module>portal</module>
   </modules>
 
   <profiles>

@@ -1,4 +1,4 @@
-[submodule "developer-portal"]
-	path = developer-portal
+[submodule "portal/ui"]	
+	path = portal/ui
 	url = https://github.com/apiman/apiman-developer-portal
 	branch = various-work-for-release
