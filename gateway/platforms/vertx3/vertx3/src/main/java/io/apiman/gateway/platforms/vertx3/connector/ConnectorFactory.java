@@ -25,6 +25,7 @@ import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.platforms.vertx3.engine.proxy.SysPropsProxySelector;
 import io.apiman.gateway.platforms.vertx3.http.HttpClientOptionsFactory;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
@@ -44,6 +45,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class ConnectorFactory implements IConnectorFactory {
 
+    private final SysPropsProxySelector sysPropsProxySelector = new SysPropsProxySelector();
     private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
     static {
         SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
@@ -68,6 +70,9 @@ public class ConnectorFactory implements IConnectorFactory {
                                 .setIdleTimeout(opts.getIdleTimeout())
                                 .setKeepAlive(opts.isKeepAlive())
                                 .setTryUseCompression(opts.isTryUseCompression());
+
+                        sysPropsProxySelector.setProxyOptions(opts.getUri(), vxClientOptions);
+                        
                         return vertx.createHttpClient(vxClientOptions);
                     }
                 });
