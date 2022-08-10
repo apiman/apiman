@@ -39,7 +39,7 @@
     <!-- Apiman WildFly WAR deps -->
     <dependency>
       <groupId>io.apiman</groupId>
-      <artifactId>apiman-developer-portal</artifactId>
+      <artifactId>apiman-portal-war-wildfly</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
@@ -81,6 +81,10 @@
       <artifactId>apiman-distro-tools</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-portal-ui</artifactId>
     </dependency>
     <!-- Keycloak adapter (this will be deprecated soon) -->
     <dependency>

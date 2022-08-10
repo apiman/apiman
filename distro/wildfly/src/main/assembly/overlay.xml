@@ -61,20 +61,6 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
-    <!-- apiman portal -->
-    <dependencySet>
-      <outputDirectory>standalone/deployments</outputDirectory>
-      <includes>
-        <include>*:apiman-developer-portal:war</include>
-      </includes>
-      <outputFileNameMapping>portal.war</outputFileNameMapping>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-    </dependencySet>
     <!-- apiman -->
     <dependencySet>
       <outputDirectory>standalone/deployments</outputDirectory>
@@ -175,6 +161,33 @@
           <exclude>/META-INF/**</exclude>
         </excludes>
       </unpackOptions>
+    </dependencySet>
+    <!-- Apiman portal -->
+    <dependencySet>
+      <outputDirectory>standalone/deployments</outputDirectory>
+      <includes>
+        <include>*:apiman-portal-war-wildfly:war</include>
+      </includes>
+      <outputFileNameMapping>apiman-developer-portal-wildfly.war</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>standalone/configuration/portal</outputDirectory>
+      <includes>
+        <include>*:apiman-portal-ui:jar</include>
+      </includes>
+      <unpack>true</unpack>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
     </dependencySet>
   </dependencySets>
   <fileSets>

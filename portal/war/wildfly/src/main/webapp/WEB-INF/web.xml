@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                        http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+      version="4.0">
+
+  <filter>
+    <filter-name>splitter</filter-name>
+    <filter-class>io.apiman.portal.SplitterFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>splitter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>AngularServletMainUi</servlet-name>
+    <servlet-class>io.apiman.portal.AngularServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AngularServletMainUi</servlet-name>
+    <url-pattern>/spa/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>default</servlet-name>
+    <servlet-class>io.undertow.servlet.handlers.DefaultServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>portal</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>dist</web-resource-name>
+      <url-pattern>/dist/*</url-pattern>
+    </web-resource-collection>
+  </security-constraint>
+</web-app>

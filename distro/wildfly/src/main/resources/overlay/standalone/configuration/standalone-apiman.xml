@@ -538,6 +538,7 @@
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
                     <http-invoker security-realm="ApplicationRealm"/>
+<!--                    <location name="/portal-assets" handler="portal-handler"/>-->
                 </host>
             </server>
             <servlet-container name="default">
@@ -545,6 +546,7 @@
                 <websockets/>
             </servlet-container>
             <handlers>
+<!--                <file name="portal-handler" path="${jboss.home.dir}/portal-assets"/>-->
                 <file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>
             </handlers>
         </subsystem>
