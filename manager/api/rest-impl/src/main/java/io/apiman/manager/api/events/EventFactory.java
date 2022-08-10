@@ -7,7 +7,6 @@ import io.apiman.manager.api.beans.events.ApimanEvent;
 import io.apiman.manager.api.beans.events.IVersionedApimanEvent;
 
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.StringJoiner;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -16,8 +15,10 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import org.apache.commons.lang3.StringUtils;
-import org.reflections.Reflections;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
@@ -37,13 +38,22 @@ public class EventFactory {
     }
 
     private void findEvents() {
-        Reflections reflections = new Reflections("io.apiman.manager.api");
-        Set<Class<? extends IVersionedApimanEvent>> eventKlazzes = reflections.getSubTypesOf(IVersionedApimanEvent.class);
-        for (Class<? extends IVersionedApimanEvent> klazz : eventKlazzes) {
-            String name = calculateName(klazz);
-            ApimanEvent metadata = getAnnotation(klazz);
-            klazzez.put(name, new ClazzAndMetadata(metadata, klazz));
-            LOGGER.debug("Calculated name for {0} as {1}", klazz, name);
+        try (ScanResult scanResult = new ClassGraph()
+                                             .enableAnnotationInfo()
+                                             .enableClassInfo()
+                                             .acceptPackages("io.apiman.manager.api")
+                                             .scan()) {
+            for (ClassInfo klazzInfo : scanResult.getClassesImplementing(IVersionedApimanEvent.class)) {
+                try {
+                    Class<IVersionedApimanEvent> klazz = (Class<IVersionedApimanEvent>) klazzInfo.loadClass();
+                    String name = calculateName(klazz);
+                    ApimanEvent metadata = getAnnotation(klazz);
+                    klazzez.put(name, new ClazzAndMetadata(metadata, klazz));
+                    LOGGER.debug("Calculated name for {0} as {1}", klazz, name);
+                } catch (Throwable t) {
+                    LOGGER.warn("Ignoring exception during event class load: {0}", t);
+                }
+            }
         }
     }
 
