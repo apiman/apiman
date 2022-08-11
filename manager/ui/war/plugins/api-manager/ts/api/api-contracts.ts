@@ -30,9 +30,10 @@ _module.controller("Apiman.ApiContractsController",
             })
         });
 
-        let handleApprovalError = function (err) {
+        let handleError = function (err) {
             if (err !== 'cancel') {
                 Logger.error('Error while approve/reject: {0}', err)
+                PageLifecycle.handleError(err);
             } else {
                 Logger.debug('Modal dismissed at: {0}', new Date());
             }
@@ -60,7 +61,7 @@ _module.controller("Apiman.ApiContractsController",
             modalInstance.result
             .then(() => ContractService.approveContract(contract.contractId))
             .then(() => contract.status = 'Created')
-            .catch((err) => handleApprovalError(err));
+            .catch((err) => handleError(err));
         };
 
         $scope.rejectRequest = (contract: ContractSummaryBean) => {
@@ -89,7 +90,7 @@ _module.controller("Apiman.ApiContractsController",
             modalInstance.result
                 .then((rejectionReason) => ContractService.rejectContract(contract.contractId, rejectionReason))
                 .then(() => contract.status = 'Rejected')
-                .catch((err) => handleApprovalError(err));
+                .catch((err) => handleError(err));
         };
 
         $scope.getNextPage = getNextPage;
