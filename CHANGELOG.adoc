@@ -41,7 +41,6 @@ Particular thanks go to the team at https://www.scheer-pas.com[Scheer PAS^] who 
 
 * [ui] **Developer portal UI**: an entirely new user interface for Apiman, dedicated to API consumers. The portal provides a focussed, slipstreamed, and customisable/skinnable experience, without all the noise of the main UI's advanced features. The https://github.com/apiman/apiman-developer-portal[devportal repository is current separate^], please refer to their changes independently. This is different from the previous developer portal that you may have seen with Apiman 2.x. A considerable amount of work has gone into this project, and huge credit goes to the sponsors and contributors.
 
-
 * [gateway-core] **Policy probes**: allows policies to expose their internal state to the Apiman Manager for interrogation. For example, "what is the current rate limit status for X?". Even custom policies can implement this new functionality. By https://github.com/msavy[Marc Savy (@msavy)^].
 
 
@@ -64,6 +63,9 @@ Particular thanks go to the team at https://www.scheer-pas.com[Scheer PAS^] who 
 
 
 * [config]: **Better config parsing for Apiman's components** (e.g. when reading from `apiman.properties`). Not rolled out everywhere, but provides a more unified experience with much better error messages and type validation. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+
+* [distro-wildfly]: **Developer portal added to the WildFly Quickstart distro**. The portal can be accessed at `http://localhost:8080/portal`, and you can customise the portal by editing its various configuration options in `standalone/configuration/portal/assets/`. By https://github.com/msavy[Marc Savy (@msavy)^].
 
 
 * [build]: `**fastbuild.sh**` script to build apiman as fast as possible in parallel using `mvnd` or `mvnw`. It skips test and javadoc. By https://github.com/msavy[Marc Savy (@msavy)^].
