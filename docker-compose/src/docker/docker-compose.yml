@@ -261,7 +261,7 @@ services:
       - traefik.http.services.mailserver-service.loadbalancer.server.port=1080
 
   reverse-proxy:
-    image: traefik:v2.8.1
+    image: traefik:v2.8.3
     command:
       - --entrypoints.http.address=:8080
       - --entrypoints.https.address=:8443
