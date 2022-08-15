@@ -37,7 +37,7 @@
     "@json-editor/json-editor": "2.7.0",
     "@toast-ui/editor": "3.1.5",
     "@toast-ui/editor-plugin-code-syntax-highlight": "3.0.0",
-    "@toast-ui/editor-plugin-color-syntax": "3.0.3",
+    "@toast-ui/editor-plugin-color-syntax": "3.1.0",
     "angular": "1.8.2",
     "angular-animate": "1.8.2",
     "angular-clipboard": "1.1.1",

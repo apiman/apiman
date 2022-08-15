@@ -153,10 +153,10 @@
   dependencies:
     prismjs "^1.23.0"
 
-"@toast-ui/editor-plugin-color-syntax@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@toast-ui/editor-plugin-color-syntax/-/editor-plugin-color-syntax-3.0.3.tgz#190acf64e710e105b3b2a8b8af53a83e80607d2d"
-  integrity sha512-5R7OOjN3voMjeKC09wSxLqnK/GYaCNLiWVxscMPqideYzWK+asEcNEyHH2HBPheVC/1YKqIEle1AxWFHTwDpnw==
+"@toast-ui/editor-plugin-color-syntax@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/editor-plugin-color-syntax/-/editor-plugin-color-syntax-3.1.0.tgz#afbaabe7fe315bf6b6c3d9a62564878d0a365549"
+  integrity sha512-UVKfMBPV+3snSaJn9RUKGbxJbgi92D2t68ow8wAjGezvMp1ht4UVETrvomdTGr+RYhXSeH3JvSwN9nmQqw0qzA==
   dependencies:
     tui-color-picker "^2.2.6"
 
