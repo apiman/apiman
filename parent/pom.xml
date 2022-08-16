@@ -63,7 +63,7 @@
     <!-- Plugin Versions -->
     <version.ant>1.10.11</version.ant>
     <version.antrun.plugin>1.7</version.antrun.plugin>
-    <version.assembly.plugin>3.3.0</version.assembly.plugin>
+    <version.assembly.plugin>3.4.2</version.assembly.plugin>
     <version.buildhelper.plugin>3.3.0</version.buildhelper.plugin>
     <version.buildnumber.plugin>1.4</version.buildnumber.plugin>
     <version.clean.plugin>3.1.0</version.clean.plugin>
