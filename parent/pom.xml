@@ -98,7 +98,7 @@
     <version.org.liquibase>4.9.1</version.org.liquibase>
 
     <!-- Dependency Versions -->
-    <version.com.blazebit.blaze-persistence>1.6.6</version.com.blazebit.blaze-persistence>
+    <version.com.blazebit.blaze-persistence>1.6.7</version.com.blazebit.blaze-persistence>
     <version.com.fasterxml.jackson>2.12.7</version.com.fasterxml.jackson>
     <version.com.github.ben-manes.caffeine>3.1.1</version.com.github.ben-manes.caffeine>
     <version.com.github.seancfoley.ipaddress>5.3.4</version.com.github.seancfoley.ipaddress>
