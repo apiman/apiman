@@ -12,6 +12,8 @@ Apiman Docker repo: https://www.github.com/apiman/apiman-docker
 
 === 3 step TL;DR
 
+TIP: If using Windows, set the working directory variable with `set PWD=%CD%` before running the steps below.
+
 . `docker-compose -f docker-compose.setup.yml up`
 . `docker-compose up`
 . http://apiman.local.gd:8080/apimanui
