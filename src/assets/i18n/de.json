@@ -65,7 +65,8 @@
     },
     "API_MANAGEMENT": {
       "TITLE": "Scheer PAS API Management",
-      "NO_PERMISSIONS": "Sie haben derzeit keine API Management Berechtigungen"
+      "NO_PERMISSIONS": "Sie haben derzeit keine API Management Berechtigungen",
+      "VERSION": "Version"
     }
   },
   "CLIENTS": {

@@ -53,5 +53,12 @@
           'ACCOUNT.API_MANAGEMENT.NO_PERMISSIONS' | translate
         }}"></app-no-data>
     </ng-template>
+    <div>
+      <hr />
+      <p id="app-info-header">
+        {{ 'ACCOUNT.API_MANAGEMENT.VERSION' | translate }}
+      </p>
+      <p id="app-info-version">{{ version }}</p>
+    </div>
   </mat-expansion-panel>
 </mat-accordion>

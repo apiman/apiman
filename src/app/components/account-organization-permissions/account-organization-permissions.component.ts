@@ -16,7 +16,7 @@
 
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ICurrentUser } from 'src/app/interfaces/ICommunication';
-
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-account-organization-permissions',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +25,7 @@ import { ICurrentUser } from 'src/app/interfaces/ICommunication';
 })
 export class AccountOrganizationPermissionsComponent {
   public apiManagementPermissions: Map<string, Array<string>>;
+  public version = environment.version;
 
   constructor() {
     this.apiManagementPermissions = new Map();

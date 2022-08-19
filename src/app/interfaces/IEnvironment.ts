@@ -1,11 +1,11 @@
-/*!
+/*
  * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,15 +14,8 @@
  *  imitations under the License.
  */
 
-ul {
-  padding-right: 10px;
-  width: 100%;
-}
-
-.api-management-permission {
-  margin-bottom: 20px;
-}
-
-#app-info-header {
-  font-size: 1.1rem;
+export interface IEnvironment {
+  production: boolean;
+  configFilePath: string;
+  version: string;
 }

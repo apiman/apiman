@@ -14,7 +14,11 @@
  *  imitations under the License.
  */
 
-export const environment = {
+import { IEnvironment } from '../app/interfaces/IEnvironment';
+import packageJson from './../../package.json';
+
+export const environment: IEnvironment = {
   production: true,
-  configFilePath: 'assets/config.json5'
+  configFilePath: 'assets/config.json5',
+  version: packageJson.version
 };

@@ -18,9 +18,13 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
+import { IEnvironment } from '../app/interfaces/IEnvironment';
+import packageJson from './../../package.json';
+
+export const environment: IEnvironment = {
   production: false,
-  configFilePath: 'assets/local-config.json5'
+  configFilePath: 'assets/local-config.json5',
+  version: packageJson.version
 };
 
 /*
