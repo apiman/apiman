@@ -29,12 +29,12 @@ export class ApiDocumentationButtonsComponent implements OnInit {
   @Input() apiVersion?: IApiVersion;
   @Input() contract?: IContract;
 
-  clientId: null | number = null;
   tryItOut: null | boolean = null;
   publicApi = false;
   orgId = '';
   apiId = '';
   apiVersionNumber = '';
+  contractId: null | number = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -44,11 +44,11 @@ export class ApiDocumentationButtonsComponent implements OnInit {
       this.orgId = this.contract.api.api.organization.id;
       this.apiId = this.contract.api.api.id;
       this.apiVersionNumber = this.contract.api.version;
-      this.clientId = this.contract.id;
+      this.contractId = this.contract.id;
 
-      localStorage.setItem(
-        `APIMAN_DEVPORTAL-${this.orgId}-${this.apiId}-${this.apiVersionNumber}-${this.contract.id}`,
-        this.contract.client.apikey
+      sessionStorage.setItem(
+        `APIMAN_DEVPORTAL-${this.contract.id}`,
+        JSON.stringify(this.contract)
       );
     }
     if (this.apiVersion) {

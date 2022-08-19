@@ -19,9 +19,10 @@ import { CommonModule } from '@angular/common';
 
 import { SwaggerRoutingModule } from './swagger-routing.module';
 import { SwaggerComponent } from './swagger.component';
+import { MaterialModule } from '../../material.module';
 
 @NgModule({
   declarations: [SwaggerComponent],
-  imports: [CommonModule, SwaggerRoutingModule]
+  imports: [CommonModule, SwaggerRoutingModule, MaterialModule]
 })
 export class SwaggerModule {}

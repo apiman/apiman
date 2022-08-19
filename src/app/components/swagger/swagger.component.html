@@ -14,4 +14,18 @@
   ~  imitations under the License.
   -->
 
-<div id="swagger-editor"></div>
+<mat-card id="swagger-ui-container">
+  <mat-card-title id="swagger-ui-title"
+    >{{ apiId }} ({{ apiVersion }})</mat-card-title
+  >
+  <ng-container *ngIf="contract">
+    <mat-card-subtitle id="swagger-ui-subtitle"
+      >{{ contract.client.client.name }} ({{ contract.client.version }}) -
+      {{ contract.plan.plan.name }} ({{
+        contract.plan.version
+      }})</mat-card-subtitle
+    >
+  </ng-container>
+  <hr />
+  <div id="swagger-editor"></div>
+</mat-card>

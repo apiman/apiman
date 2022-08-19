@@ -317,3 +317,13 @@ a {
   width: initial;
   overflow: hidden;
 }
+
+// Overwrite some swagger css properties
+// We have to use the global css file and the !important property, otherwise it won't work
+.wrapper {
+  max-width: none !important;
+}
+
+.info {
+  margin: 0 !important;
+}

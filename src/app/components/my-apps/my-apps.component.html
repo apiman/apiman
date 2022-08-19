@@ -37,7 +37,7 @@
   </mat-form-field>
 </div>
 <ng-container *ngIf="contractsLoaded && ((clients$ | async) || []).length > 0">
-  <div class="wrapper">
+  <div class="clients-wrapper">
     <div id="contracts" class="first">
       <ng-container *ngFor="let org of organizations$ | async">
         <h1

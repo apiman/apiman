@@ -23,6 +23,7 @@ import SwaggerUI from 'swagger-ui';
 import { KeycloakHelperService } from '../../services/keycloak-helper/keycloak-helper.service';
 import { KeycloakService } from 'keycloak-angular';
 import { IUrlPath } from '../../interfaces/IUrlPath';
+import { IContract } from '../../interfaces/ICommunication';
 
 @Component({
   selector: 'app-swagger',
@@ -34,6 +35,10 @@ export class SwaggerComponent implements OnInit {
   endpoint = '';
   isPublicApi = false;
   isTryEnabled = false;
+  contract: IContract = {} as IContract;
+  apiId = '';
+  apiVersion = '';
+  apiKey = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -50,15 +55,18 @@ export class SwaggerComponent implements OnInit {
    * Load the swagger definition and display it with the swagger ui bundle library on component initialization
    */
   async ngOnInit(): Promise<void> {
-    const { organizationId, apiId, apiVersion, apiKey } = this.getRouteParams();
+    const { organizationId, apiId, apiVersion } = this.getRouteParams();
     const urls: IUrlPath = {
       urlPath: `${this.endpoint}/devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`,
       loggedInUrlPath: `${this.endpoint}/devportal/protected/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`
     };
 
+    this.apiId = apiId;
+    this.apiVersion = apiVersion;
+
     this.heroService.setUpHero({
       title: this.translator.instant('COMMON.API_DOCS') as string,
-      subtitle: `${apiId} - ${apiVersion}`
+      subtitle: ``
     });
 
     let definitionUrl = urls.urlPath;
@@ -76,14 +84,14 @@ export class SwaggerComponent implements OnInit {
       supportedSubmitMethods: this.getSupportedMethods(),
       requestInterceptor: (request: SwaggerUI.Request) => {
         this.setAuthorizationHeader(request);
-        this.setApiKeyHeader(apiKey, request);
+        this.setApiKeyHeader(this.apiKey, request);
         return request;
       },
       responseInterceptor: (response: SwaggerUI.Response) => {
         return response;
       },
       onComplete: () => {
-        swaggerUI.preauthorizeApiKey(this.apiKeyHeader, apiKey);
+        swaggerUI.preauthorizeApiKey(this.apiKeyHeader, this.apiKey);
       }
     };
 
@@ -123,10 +131,16 @@ export class SwaggerComponent implements OnInit {
     const organizationId = this.route.snapshot.paramMap.get('orgId') ?? '';
     const apiId: string = this.route.snapshot.paramMap.get('apiId') ?? '';
     const apiVersion = this.route.snapshot.paramMap.get('apiVersion') ?? '';
-    const clientId = this.route.snapshot.queryParamMap.get('clientId') ?? '';
-    const apiKey = localStorage.getItem(
-      `APIMAN_DEVPORTAL-${organizationId}-${apiId}-${apiVersion}-${clientId}`
-    );
+    const contractId =
+      this.route.snapshot.queryParamMap.get('contractId') ?? '';
+
+    this.contract = JSON.parse(
+      sessionStorage.getItem(`APIMAN_DEVPORTAL-${contractId}`) as string
+    ) as IContract;
+
+    if (contractId && this.contract.id) {
+      this.apiKey = this.contract.client.apikey;
+    }
 
     this.isPublicApi = JSON.parse(
       this.route.snapshot.queryParamMap.get('publicApi') ?? 'false'
@@ -136,7 +150,7 @@ export class SwaggerComponent implements OnInit {
       this.route.snapshot.queryParamMap.get('try') ?? 'false'
     ) as boolean;
 
-    return { organizationId, apiId, apiVersion, apiKey };
+    return { organizationId, apiId, apiVersion };
   }
 
   private getSupportedMethods(): SwaggerUI.SupportedHTTPMethods[] {
