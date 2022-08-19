@@ -214,7 +214,7 @@ function devPortalBusinessLogic(
     const options: EditorOptions = {
       el: document.querySelector("#editor"),
       height: "500px",
-      initialEditType: "wysiwyg",
+      initialEditType: "markdown",
       previewStyle: "tab",
       usageStatistics: false,
       autofocus: false,
