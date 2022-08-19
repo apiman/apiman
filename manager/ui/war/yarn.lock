@@ -146,10 +146,10 @@
   resolved "https://registry.yarnpkg.com/@sideway/pinpoint/-/pinpoint-2.0.0.tgz#cff8ffadc372ad29fd3f78277aeb29e632cc70df"
   integrity sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==
 
-"@toast-ui/editor-plugin-code-syntax-highlight@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@toast-ui/editor-plugin-code-syntax-highlight/-/editor-plugin-code-syntax-highlight-3.0.0.tgz#a82a7b75f12386280be7efdc7c6f5bf5b48744f3"
-  integrity sha512-62XB3IcFgvRxVZzj2kTeQao0xACotv/mD6jScSDkWac2V0jkCsTh0kZRG4TSW5bGdKvx4xz3YjFm7gWgw1I/Aw==
+"@toast-ui/editor-plugin-code-syntax-highlight@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/editor-plugin-code-syntax-highlight/-/editor-plugin-code-syntax-highlight-3.1.0.tgz#3a8b537e03ec495bde8a25d2571a1c28caaa0a4b"
+  integrity sha512-OgX5pZiTnHREoTTXDAFu1k6RzEspGOxeJNRlt/Lnoi1GvLbIpUTTbBcls9becpXT/Qdls++8G3r5C60cVdellA==
   dependencies:
     prismjs "^1.23.0"
 
