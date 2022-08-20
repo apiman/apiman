@@ -1,27 +1,36 @@
-name: Docker PR CI
+name: Docker Pull Request CI
 
 on:
   pull_request:
 
 jobs:
-  build:
+  read-version:
     runs-on: ubuntu-latest
+    outputs:
+      snapshot-version: ${{ steps.check-version-change.outputs.snapshot-version }}
+      release-version: ${{ steps.check-version-change.outputs.snapshot-version }}
     steps:
       - name: "Get release and snapshot versions..."
         run: |
           echo "{release_version=$(cat .github/workflows/RELEASE_VERSION)}" >> $GITHUB_ENV
           echo "{snapshot_version=$(cat .github/workflows/SNAPSHOT_VERSION)}" >> $GITHUB_ENV
 
-      - name: "Build & verify PR against Apiman release ${{ env.release_version }}"
-        uses: apiman/apiman-docker/.github/workflows/docker-test-release.yml@master
-        with:
-          apiman-version: ${{ env.release_version }}
-          push-to-repos: false
-          snapshot: false
-          
-      - name: "Build & verify PR against Apiman snapshot ${{ env.snapshot_version }}"
-        uses: apiman/apiman-docker/.github/workflows/docker-test-release.yml@master
-        with:
-          apiman-version: ${{ env.snapshot_version }}
-          push-to-repos: false
-          snapshot: true
+  build-against-release:
+    needs: read-version
+    uses: apiman/apiman-docker/.github/workflows/docker-test-release.yml@master
+    secrets: inherit
+    with:
+      apiman-version: ${{ needs.read-version.outputs.release-version }}
+      push-to-repos: false
+      snapshot: false
+
+  build-against-snapshot:
+    needs: read-version
+    uses: apiman/apiman-docker/.github/workflows/docker-test-release.yml@master
+    secrets: inherit
+    with:
+      apiman-version: ${{ needs.read-version.outputs.snapshot-version }}
+      push-to-repos: false
+      snapshot: true
+
+
