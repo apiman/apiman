@@ -99,6 +99,8 @@
     "FAILED_WHILE_FETCHING_CLIENTS": "Failed while fetching clients",
     "DELETE_CLIENT_FAILED": "Failed while removing the client",
     "DELETE_CONTRACT_FAILED": "Failed while removing the contract",
+    "REGISTER_CLIENT_FAILED": "Failed while registering the client",
+    "REGISTER_CLIENT_SUCCEED": "The client {{ clientName }} ({{ clientVersion }}) has been successfully registered",
     "NO_PROBES": "There is no policy data for the current API",
     "RETIRED_API": "This API is retired and can no longer be used.",
     "SELECT": "Select from available Clients",

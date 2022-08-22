@@ -99,6 +99,8 @@
     "FAILED_WHILE_FETCHING_CLIENTS": "Fehler beim Laden der Clients",
     "DELETE_CLIENT_FAILED": "Fehler beim Löschen des Client",
     "DELETE_CONTRACT_FAILED": "Fehler beim Löschen des Vertrags",
+    "REGISTER_CLIENT_FAILED": "Fehler beim Registrieren des Client",
+    "REGISTER_CLIENT_SUCCEED": "Der  Client {{ clientName }} ({{ clientVersion }}) wurde erfolgreich registriert",
     "NO_PROBES": "Für diese API liegen keine Policy-Daten vor",
     "RETIRED_API": "Diese API kann nicht mehr verwendet werden.",
     "SELECT": "Aus vorhandenen Anwendungen auswählen",

@@ -53,6 +53,7 @@ import { IClientVersionExt } from '../../interfaces/IClientVersionSummaryExt';
 import { ContractService } from '../../services/contract/contract.service';
 import { OrganizationService } from '../../services/org/organization.service';
 import { BreakContractComponent } from '../dialogs/break-contract/break-contract.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-my-apps',
@@ -379,11 +380,26 @@ export class MyAppsComponent implements OnInit {
       entityId: extendedClientVersion.client.id,
       entityVersion: extendedClientVersion.version
     };
-    this.clientService.registerClient(action).subscribe(() => {
-      console.info(
-        `Client ${action.organizationId}/${action.entityId}/${action.entityVersion} successfully registered`
-      );
-      extendedClientVersion.status = 'Registered';
+    this.clientService.registerClient(action).subscribe({
+      next: () => {
+        this.snackbarService.showPrimarySnackBar(
+          this.translator.instant('CLIENTS.REGISTER_CLIENT_SUCCEED', {
+            clientName: action.entityId,
+            clientVersion: action.entityVersion
+          }) as string
+        );
+        console.info(
+          `Client ${action.organizationId}/${action.entityId}/${action.entityVersion} successfully registered`
+        );
+        extendedClientVersion.registerable = false;
+        extendedClientVersion.status = 'Registered';
+      },
+      error: (err: HttpErrorResponse) => {
+        this.snackbarService.showErrorSnackBar(
+          this.translator.instant('CLIENTS.REGISTER_CLIENT_FAILED') as string,
+          err
+        );
+      }
     });
   }
 
