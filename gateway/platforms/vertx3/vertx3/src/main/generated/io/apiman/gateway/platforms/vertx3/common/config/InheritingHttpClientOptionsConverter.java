@@ -2,18 +2,29 @@ package io.apiman.gateway.platforms.vertx3.common.config;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.impl.JsonUtil;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 
 /**
- * Converter for {@link io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpClientOptions}.
+ * Converter and mapper for {@link io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpClientOptions}.
  * NOTE: This class has been automatically generated from the {@link io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpClientOptions} original class using Vert.x codegen.
  */
 public class InheritingHttpClientOptionsConverter {
 
+
+  private static final Base64.Decoder BASE64_DECODER = JsonUtil.BASE64_DECODER;
+  private static final Base64.Encoder BASE64_ENCODER = JsonUtil.BASE64_ENCODER;
+
   public static void fromJson(Iterable<java.util.Map.Entry<String, Object>> json, InheritingHttpClientOptions obj) {
     for (java.util.Map.Entry<String, Object> member : json) {
       switch (member.getKey()) {
+        case "activityLogDataFormat":
+          if (member.getValue() instanceof String) {
+            obj.setActivityLogDataFormat(io.netty.handler.logging.ByteBufFormat.valueOf((String)member.getValue()));
+          }
+          break;
         case "alpnVersions":
           if (member.getValue() instanceof JsonArray) {
             java.util.ArrayList<io.vertx.core.http.HttpVersion> list =  new java.util.ArrayList<>();
@@ -41,7 +52,7 @@ public class InheritingHttpClientOptionsConverter {
           if (member.getValue() instanceof JsonArray) {
             ((Iterable<Object>)member.getValue()).forEach( item -> {
               if (item instanceof String)
-                obj.addCrlValue(io.vertx.core.buffer.Buffer.buffer(java.util.Base64.getDecoder().decode((String)item)));
+                obj.addCrlValue(io.vertx.core.buffer.Buffer.buffer(BASE64_DECODER.decode((String)item)));
             });
           }
           break;
@@ -120,12 +131,12 @@ public class InheritingHttpClientOptionsConverter {
           break;
         case "initialSettings":
           if (member.getValue() instanceof JsonObject) {
-            obj.setInitialSettings(new io.vertx.core.http.Http2Settings((JsonObject)member.getValue()));
+            obj.setInitialSettings(new io.vertx.core.http.Http2Settings((io.vertx.core.json.JsonObject)member.getValue()));
           }
           break;
         case "jdkSslEngineOptions":
           if (member.getValue() instanceof JsonObject) {
-            obj.setJdkSslEngineOptions(new io.vertx.core.net.JdkSSLEngineOptions((JsonObject)member.getValue()));
+            obj.setJdkSslEngineOptions(new io.vertx.core.net.JdkSSLEngineOptions((io.vertx.core.json.JsonObject)member.getValue()));
           }
           break;
         case "keepAlive":
@@ -140,7 +151,7 @@ public class InheritingHttpClientOptionsConverter {
           break;
         case "keyStoreOptions":
           if (member.getValue() instanceof JsonObject) {
-            obj.setKeyStoreOptions(new io.vertx.core.net.JksOptions((JsonObject)member.getValue()));
+            obj.setKeyStoreOptions(new io.vertx.core.net.JksOptions((io.vertx.core.json.JsonObject)member.getValue()));
           }
           break;
         case "localAddress":
@@ -193,14 +204,9 @@ public class InheritingHttpClientOptionsConverter {
             obj.setMaxWebSocketMessageSize(((Number)member.getValue()).intValue());
           }
           break;
-        case "maxWebsocketFrameSize":
+        case "maxWebSockets":
           if (member.getValue() instanceof Number) {
-            obj.setMaxWebsocketFrameSize(((Number)member.getValue()).intValue());
-          }
-          break;
-        case "maxWebsocketMessageSize":
-          if (member.getValue() instanceof Number) {
-            obj.setMaxWebsocketMessageSize(((Number)member.getValue()).intValue());
+            obj.setMaxWebSockets(((Number)member.getValue()).intValue());
           }
           break;
         case "metricsName":
@@ -208,29 +214,44 @@ public class InheritingHttpClientOptionsConverter {
             obj.setMetricsName((String)member.getValue());
           }
           break;
+        case "name":
+          if (member.getValue() instanceof String) {
+            obj.setName((String)member.getValue());
+          }
+          break;
+        case "nonProxyHosts":
+          if (member.getValue() instanceof JsonArray) {
+            java.util.ArrayList<java.lang.String> list =  new java.util.ArrayList<>();
+            ((Iterable<Object>)member.getValue()).forEach( item -> {
+              if (item instanceof String)
+                list.add((String)item);
+            });
+            obj.setNonProxyHosts(list);
+          }
+          break;
         case "openSslEngineOptions":
           if (member.getValue() instanceof JsonObject) {
-            obj.setOpenSslEngineOptions(new io.vertx.core.net.OpenSSLEngineOptions((JsonObject)member.getValue()));
+            obj.setOpenSslEngineOptions(new io.vertx.core.net.OpenSSLEngineOptions((io.vertx.core.json.JsonObject)member.getValue()));
           }
           break;
         case "pemKeyCertOptions":
           if (member.getValue() instanceof JsonObject) {
-            obj.setPemKeyCertOptions(new io.vertx.core.net.PemKeyCertOptions((JsonObject)member.getValue()));
+            obj.setPemKeyCertOptions(new io.vertx.core.net.PemKeyCertOptions((io.vertx.core.json.JsonObject)member.getValue()));
           }
           break;
         case "pemTrustOptions":
           if (member.getValue() instanceof JsonObject) {
-            obj.setPemTrustOptions(new io.vertx.core.net.PemTrustOptions((JsonObject)member.getValue()));
+            obj.setPemTrustOptions(new io.vertx.core.net.PemTrustOptions((io.vertx.core.json.JsonObject)member.getValue()));
           }
           break;
         case "pfxKeyCertOptions":
           if (member.getValue() instanceof JsonObject) {
-            obj.setPfxKeyCertOptions(new io.vertx.core.net.PfxOptions((JsonObject)member.getValue()));
+            obj.setPfxKeyCertOptions(new io.vertx.core.net.PfxOptions((io.vertx.core.json.JsonObject)member.getValue()));
           }
           break;
         case "pfxTrustOptions":
           if (member.getValue() instanceof JsonObject) {
-            obj.setPfxTrustOptions(new io.vertx.core.net.PfxOptions((JsonObject)member.getValue()));
+            obj.setPfxTrustOptions(new io.vertx.core.net.PfxOptions((io.vertx.core.json.JsonObject)member.getValue()));
           }
           break;
         case "pipelining":
@@ -248,6 +269,11 @@ public class InheritingHttpClientOptionsConverter {
             obj.setPoolCleanerPeriod(((Number)member.getValue()).intValue());
           }
           break;
+        case "poolEventLoopSize":
+          if (member.getValue() instanceof Number) {
+            obj.setPoolEventLoopSize(((Number)member.getValue()).intValue());
+          }
+          break;
         case "protocolVersion":
           if (member.getValue() instanceof String) {
             obj.setProtocolVersion(io.vertx.core.http.HttpVersion.valueOf((String)member.getValue()));
@@ -255,7 +281,12 @@ public class InheritingHttpClientOptionsConverter {
           break;
         case "proxyOptions":
           if (member.getValue() instanceof JsonObject) {
-            obj.setProxyOptions(new io.vertx.core.net.ProxyOptions((JsonObject)member.getValue()));
+            obj.setProxyOptions(new io.vertx.core.net.ProxyOptions((io.vertx.core.json.JsonObject)member.getValue()));
+          }
+          break;
+        case "readIdleTimeout":
+          if (member.getValue() instanceof Number) {
+            obj.setReadIdleTimeout(((Number)member.getValue()).intValue());
           }
           break;
         case "receiveBufferSize":
@@ -281,6 +312,11 @@ public class InheritingHttpClientOptionsConverter {
         case "sendUnmaskedFrames":
           if (member.getValue() instanceof Boolean) {
             obj.setSendUnmaskedFrames((Boolean)member.getValue());
+          }
+          break;
+        case "shared":
+          if (member.getValue() instanceof Boolean) {
+            obj.setShared((Boolean)member.getValue());
           }
           break;
         case "soLinger":
@@ -328,6 +364,16 @@ public class InheritingHttpClientOptionsConverter {
             obj.setTcpQuickAck((Boolean)member.getValue());
           }
           break;
+        case "tcpUserTimeout":
+          if (member.getValue() instanceof Number) {
+            obj.setTcpUserTimeout(((Number)member.getValue()).intValue());
+          }
+          break;
+        case "tracingPolicy":
+          if (member.getValue() instanceof String) {
+            obj.setTracingPolicy(io.vertx.core.tracing.TracingPolicy.valueOf((String)member.getValue()));
+          }
+          break;
         case "trafficClass":
           if (member.getValue() instanceof Number) {
             obj.setTrafficClass(((Number)member.getValue()).intValue());
@@ -340,7 +386,7 @@ public class InheritingHttpClientOptionsConverter {
           break;
         case "trustStoreOptions":
           if (member.getValue() instanceof JsonObject) {
-            obj.setTrustStoreOptions(new io.vertx.core.net.JksOptions((JsonObject)member.getValue()));
+            obj.setTrustStoreOptions(new io.vertx.core.net.JksOptions((io.vertx.core.json.JsonObject)member.getValue()));
           }
           break;
         case "tryUseCompression":
@@ -353,33 +399,16 @@ public class InheritingHttpClientOptionsConverter {
             obj.setTryUsePerFrameWebSocketCompression((Boolean)member.getValue());
           }
           break;
-        case "tryUsePerFrameWebsocketCompression":
-          if (member.getValue() instanceof Boolean) {
-            obj.setTryUsePerFrameWebsocketCompression((Boolean)member.getValue());
-          }
-          break;
         case "tryUsePerMessageWebSocketCompression":
           if (member.getValue() instanceof Boolean) {
             obj.setTryUsePerMessageWebSocketCompression((Boolean)member.getValue());
           }
           break;
-        case "tryUsePerMessageWebsocketCompression":
-          if (member.getValue() instanceof Boolean) {
-            obj.setTryUsePerMessageWebsocketCompression((Boolean)member.getValue());
-          }
-          break;
         case "tryWebSocketDeflateFrameCompression":
-          break;
-        case "tryWebsocketDeflateFrameCompression":
           break;
         case "useAlpn":
           if (member.getValue() instanceof Boolean) {
             obj.setUseAlpn((Boolean)member.getValue());
-          }
-          break;
-        case "usePooledBuffers":
-          if (member.getValue() instanceof Boolean) {
-            obj.setUsePooledBuffers((Boolean)member.getValue());
           }
           break;
         case "verifyHost":
@@ -407,19 +436,9 @@ public class InheritingHttpClientOptionsConverter {
             obj.setWebSocketCompressionRequestServerNoContext((Boolean)member.getValue());
           }
           break;
-        case "websocketCompressionAllowClientNoContext":
-          if (member.getValue() instanceof Boolean) {
-            obj.setWebsocketCompressionAllowClientNoContext((Boolean)member.getValue());
-          }
-          break;
-        case "websocketCompressionLevel":
+        case "writeIdleTimeout":
           if (member.getValue() instanceof Number) {
-            obj.setWebsocketCompressionLevel(((Number)member.getValue()).intValue());
-          }
-          break;
-        case "websocketCompressionRequestServerNoContext":
-          if (member.getValue() instanceof Boolean) {
-            obj.setWebsocketCompressionRequestServerNoContext((Boolean)member.getValue());
+            obj.setWriteIdleTimeout(((Number)member.getValue()).intValue());
           }
           break;
       }
@@ -431,6 +450,9 @@ public class InheritingHttpClientOptionsConverter {
   }
 
   public static void toJson(InheritingHttpClientOptions obj, java.util.Map<String, Object> json) {
+    if (obj.getActivityLogDataFormat() != null) {
+      json.put("activityLogDataFormat", obj.getActivityLogDataFormat().name());
+    }
     if (obj.getAlpnVersions() != null) {
       JsonArray array = new JsonArray();
       obj.getAlpnVersions().forEach(item -> array.add(item.name()));
@@ -444,7 +466,7 @@ public class InheritingHttpClientOptionsConverter {
     }
     if (obj.getCrlValues() != null) {
       JsonArray array = new JsonArray();
-      obj.getCrlValues().forEach(item -> array.add(java.util.Base64.getEncoder().encodeToString(item.getBytes())));
+      obj.getCrlValues().forEach(item -> array.add(BASE64_ENCODER.encodeToString(item.getBytes())));
       json.put("crlValues", array);
     }
     json.put("decoderInitialBufferSize", obj.getDecoderInitialBufferSize());
@@ -495,10 +517,17 @@ public class InheritingHttpClientOptionsConverter {
     json.put("maxWaitQueueSize", obj.getMaxWaitQueueSize());
     json.put("maxWebSocketFrameSize", obj.getMaxWebSocketFrameSize());
     json.put("maxWebSocketMessageSize", obj.getMaxWebSocketMessageSize());
-    json.put("maxWebsocketFrameSize", obj.getMaxWebsocketFrameSize());
-    json.put("maxWebsocketMessageSize", obj.getMaxWebsocketMessageSize());
+    json.put("maxWebSockets", obj.getMaxWebSockets());
     if (obj.getMetricsName() != null) {
       json.put("metricsName", obj.getMetricsName());
+    }
+    if (obj.getName() != null) {
+      json.put("name", obj.getName());
+    }
+    if (obj.getNonProxyHosts() != null) {
+      JsonArray array = new JsonArray();
+      obj.getNonProxyHosts().forEach(item -> array.add(item));
+      json.put("nonProxyHosts", array);
     }
     if (obj.getOpenSslEngineOptions() != null) {
       json.put("openSslEngineOptions", obj.getOpenSslEngineOptions().toJson());
@@ -518,17 +547,20 @@ public class InheritingHttpClientOptionsConverter {
     json.put("pipelining", obj.isPipelining());
     json.put("pipeliningLimit", obj.getPipeliningLimit());
     json.put("poolCleanerPeriod", obj.getPoolCleanerPeriod());
+    json.put("poolEventLoopSize", obj.getPoolEventLoopSize());
     if (obj.getProtocolVersion() != null) {
       json.put("protocolVersion", obj.getProtocolVersion().name());
     }
     if (obj.getProxyOptions() != null) {
       json.put("proxyOptions", obj.getProxyOptions().toJson());
     }
+    json.put("readIdleTimeout", obj.getReadIdleTimeout());
     json.put("receiveBufferSize", obj.getReceiveBufferSize());
     json.put("reuseAddress", obj.isReuseAddress());
     json.put("reusePort", obj.isReusePort());
     json.put("sendBufferSize", obj.getSendBufferSize());
     json.put("sendUnmaskedFrames", obj.isSendUnmaskedFrames());
+    json.put("shared", obj.isShared());
     json.put("soLinger", obj.getSoLinger());
     json.put("ssl", obj.isSsl());
     json.put("sslHandshakeTimeout", obj.getSslHandshakeTimeout());
@@ -540,6 +572,10 @@ public class InheritingHttpClientOptionsConverter {
     json.put("tcpKeepAlive", obj.isTcpKeepAlive());
     json.put("tcpNoDelay", obj.isTcpNoDelay());
     json.put("tcpQuickAck", obj.isTcpQuickAck());
+    json.put("tcpUserTimeout", obj.getTcpUserTimeout());
+    if (obj.getTracingPolicy() != null) {
+      json.put("tracingPolicy", obj.getTracingPolicy().name());
+    }
     json.put("trafficClass", obj.getTrafficClass());
     json.put("trustAll", obj.isTrustAll());
     if (obj.getTrustStoreOptions() != null) {
@@ -547,18 +583,13 @@ public class InheritingHttpClientOptionsConverter {
     }
     json.put("tryUseCompression", obj.isTryUseCompression());
     json.put("tryUsePerMessageWebSocketCompression", obj.getTryUsePerMessageWebSocketCompression());
-    json.put("tryUsePerMessageWebsocketCompression", obj.getTryUsePerMessageWebsocketCompression());
     json.put("tryWebSocketDeflateFrameCompression", obj.getTryWebSocketDeflateFrameCompression());
-    json.put("tryWebsocketDeflateFrameCompression", obj.getTryWebsocketDeflateFrameCompression());
     json.put("useAlpn", obj.isUseAlpn());
-    json.put("usePooledBuffers", obj.isUsePooledBuffers());
     json.put("verifyHost", obj.isVerifyHost());
     json.put("webSocketClosingTimeout", obj.getWebSocketClosingTimeout());
     json.put("webSocketCompressionAllowClientNoContext", obj.getWebSocketCompressionAllowClientNoContext());
     json.put("webSocketCompressionLevel", obj.getWebSocketCompressionLevel());
     json.put("webSocketCompressionRequestServerNoContext", obj.getWebSocketCompressionRequestServerNoContext());
-    json.put("websocketCompressionAllowClientNoContext", obj.getWebsocketCompressionAllowClientNoContext());
-    json.put("websocketCompressionLevel", obj.getWebsocketCompressionLevel());
-    json.put("websocketCompressionRequestServerNoContext", obj.getWebsocketCompressionRequestServerNoContext());
+    json.put("writeIdleTimeout", obj.getWriteIdleTimeout());
   }
 }

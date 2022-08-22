@@ -16,6 +16,8 @@
 package io.apiman.gateway.platforms.vertx3.connector;
 
 import io.apiman.common.config.options.BasicAuthOptions;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.Basic;
 import io.apiman.gateway.engine.IApiConnection;
@@ -38,11 +40,12 @@ import io.apiman.gateway.platforms.vertx3.http.HttpApiFactory;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map.Entry;
 
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
@@ -51,9 +54,6 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.http.RequestOptions;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 /**
  * A Vert.x-based HTTP connector; implementing both {@link ISignalReadStream} and {@link ISignalWriteStream}.
@@ -66,7 +66,7 @@ import io.vertx.core.logging.LoggerFactory;
  */
 @SuppressWarnings("nls")
 class HttpConnector implements IApiConnectionResponse, IApiConnection {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final IApimanLogger logger = ApimanLoggerFactory.getLogger(this.getClass());
     private final ApiRequest apiRequest;
     private ApiResponse apiResponse;
 
@@ -157,59 +157,67 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
 
     public HttpConnector connect() {
         String endpoint = ApimanPathUtils.join(apiPath, destination + queryParams(apiRequest.getQueryParams()));
+        HttpMethod verb = HttpMethod.valueOf(apiRequest.getType());
         logger.debug("Connecting to {0} | ssl?: {1} port: {2} verb: {3} path: {4}",
-                apiHost, options.isSsl(), apiPort, HttpMethod.valueOf(apiRequest.getType()), endpoint);
+                apiHost, options.isSsl(), apiPort, verb, endpoint);
 
-        clientRequest = client.request(HttpMethod.valueOf(apiRequest.getType()),
-                apiPort,
-                apiHost,
-                endpoint,
-                (HttpClientResponse vxClientResponse) -> {
-                    clientResponse = vxClientResponse;
+        client.request(HttpMethod.valueOf(apiRequest.getType()), apiPort, apiHost, endpoint)
+                .onFailure(exceptionHandler::handle)
+                .onSuccess(vxRequest -> {
+                    this.clientRequest = vxRequest;
+                    clientRequest.setTimeout(options.getRequestTimeout());
 
-                    // Pause until we're given permission to xfer the response.
-                    vxClientResponse.pause();
+                    clientRequest.exceptionHandler(exceptionHandler);
 
-                    apiResponse = HttpApiFactory.buildResponse(vxClientResponse, connectorConfig.getSuppressedResponseHeaders());
+                    if (options.hasDataPolicy() || !apiRequest.getHeaders().containsKey("Content-Length") && verb != HttpMethod.GET) {
+                        clientRequest.headers().remove("Content-Length");
+                        clientRequest.setChunked(true);
+                    }
 
-                    vxClientResponse.handler((Handler<Buffer>) chunk -> {
-                        bodyHandler.handle(new VertxApimanBuffer(chunk));
-                    });
+                    for (Entry<String, String> e : apiRequest.getHeaders()) {
+                        if (!connectorConfig.getSuppressedRequestHeaders().contains(e.getKey())) {
+                            clientRequest.headers().add(e.getKey(), e.getValue());
+                        }
+                    }
 
-                    vxClientResponse.endHandler((Handler<Void>) v -> {
-                        endHandler.handle((Void) null);
-                    });
+                    addMandatoryRequestHeaders(clientRequest.headers());
 
-                    vxClientResponse.exceptionHandler(exceptionHandler);
+                    if (options.getRequiredAuthType() == RequiredAuthType.BASIC) {
+                        clientRequest.putHeader("Authorization", Basic.encode(basicOptions.getUsername(), basicOptions.getPassword()));
+                    }
 
-                    // The response is only ever returned when vxClientResponse is valid.
-                    resultHandler.handle(AsyncResultImpl
-                            .create((IApiConnectionResponse) HttpConnector.this));
+                    setupResponse(clientRequest.response());
+
+                    if (inboundFinished) {
+                        vxRequest.end();
+                    }
+                });
+        return this;
+    }
+
+    private void setupResponse(Future<HttpClientResponse> responseF) {
+        responseF.onFailure(exceptionHandler)
+            .onSuccess(vxClientResponse -> {
+                clientResponse = vxClientResponse;
+
+                // Pause until we're given permission to xfer the response.
+                vxClientResponse.pause();
+
+                apiResponse = HttpApiFactory.buildResponse(vxClientResponse, connectorConfig.getSuppressedResponseHeaders());
+
+                vxClientResponse.handler((Handler<Buffer>) chunk -> {
+                    bodyHandler.handle(new VertxApimanBuffer(chunk));
                 });
 
-        clientRequest.setTimeout(options.getRequestTimeout());
+                vxClientResponse.endHandler((Handler<Void>) v -> {
+                    endHandler.handle((Void) null);
+                });
 
-        clientRequest.exceptionHandler(exceptionHandler);
+                vxClientResponse.exceptionHandler(exceptionHandler);
 
-        if (options.hasDataPolicy() || !apiRequest.getHeaders().containsKey("Content-Length")) {
-            clientRequest.headers().remove("Content-Length");
-            clientRequest.setChunked(true);
-        }
-
-        apiRequest.getHeaders()
-            .forEach(e -> {
-                if (!connectorConfig.getSuppressedRequestHeaders().contains(e.getKey())) {
-                    clientRequest.headers().add(e.getKey(), e.getValue());
-                }
+                // The response is only ever returned when vxClientResponse is valid.
+                resultHandler.handle(AsyncResultImpl.create((IApiConnectionResponse) HttpConnector.this));
             });
-
-        addMandatoryRequestHeaders(clientRequest.headers());
-
-        if (options.getRequiredAuthType() == RequiredAuthType.BASIC) {
-            clientRequest.putHeader("Authorization", Basic.encode(basicOptions.getUsername(), basicOptions.getPassword()));
-        }
-
-        return this;
     }
 
     private void addMandatoryRequestHeaders(MultiMap headers) {
@@ -264,16 +272,15 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
                 clientRequest.drainHandler(drainHandler::handle);
             }
         } else {
-            throw new IllegalArgumentException(
-                Messages.format("HttpConnector.WrongBufferType",
-                    chunk.getNativeBuffer().getClass().getCanonicalName())
-            );
+            throw new IllegalArgumentException(Messages.format("HttpConnector.WrongBufferType", chunk.getNativeBuffer().getClass().getCanonicalName()));
         }
     }
 
     @Override
     public void end() {
-        clientRequest.end();
+        if (clientRequest != null) {
+            clientRequest.end();
+        }
         inboundFinished = true;
     }
 
@@ -305,18 +312,14 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         StringBuilder sb = new StringBuilder(queryParams.size() * 2 * 10);
         String joiner = "?";
 
-        try {
-            for (Entry<String, String> entry : queryParams) {
-                sb.append(joiner);
-                sb.append(entry.getKey());
-                if (entry.getValue() != null) {
-                    sb.append("=");
-                    sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-                }
-                joiner = "&";
+        for (Entry<String, String> entry : queryParams) {
+            sb.append(joiner);
+            sb.append(entry.getKey());
+            if (entry.getValue() != null) {
+                sb.append("=");
+                sb.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
             }
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            joiner = "&";
         }
         return sb.toString();
     }
@@ -325,7 +328,7 @@ class HttpConnector implements IApiConnectionResponse, IApiConnection {
         @Override
         public void handle(Throwable error) {
             ConnectorException ce = ErrorHandler.handleConnectionError(error);
-            logger.error("Connection Error: " + error.getMessage(), error);
+            logger.error(error, "Connection Error: {0}", error.getMessage());
 
             resultHandler.handle(AsyncResultImpl.create(ce));
         }

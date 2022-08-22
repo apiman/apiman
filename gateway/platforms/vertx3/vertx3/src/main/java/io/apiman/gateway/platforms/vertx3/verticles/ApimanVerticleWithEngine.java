@@ -20,9 +20,10 @@ import io.apiman.gateway.engine.IPolicyErrorWriter;
 import io.apiman.gateway.engine.IPolicyFailureWriter;
 import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
 import io.apiman.gateway.platforms.vertx3.engine.VertxConfigDrivenEngineFactory;
-import io.vertx.core.Future;
 
 import java.util.Map;
+
+import io.vertx.core.Promise;
 
 /**
  * A base for those verticles that require an instantiated engine.
@@ -36,14 +37,14 @@ public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
     protected IPolicyErrorWriter policyErrorWriter;
 
     @Override
-    public void start(Future<Void> startFuture) {
-        super.start(startFuture);
+    public void start(Promise<Void> startPromise) {
+        super.start(startPromise);
         engine = new VertxConfigDrivenEngineFactory(vertx, getEngineConfig())
                 .setResultHandler(result -> {
                     if (result.isSuccess()) {
-                        startFuture.complete();
+                        startPromise.complete();
                     } else {
-                        startFuture.fail(result.getError());
+                        startPromise.fail(result.getError());
                     }
                 }).createEngine();
 

@@ -20,18 +20,18 @@ import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
 import io.apiman.gateway.engine.components.jdbc.JdbcOptionsBean;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.components.jdbc.VertxJdbcClientImpl;
-import io.vertx.core.Vertx;
 
 import java.util.Map;
-
 import javax.sql.DataSource;
+
+import io.vertx.core.Vertx;
 
 /**
 * @author Marc Savy {@literal <msavy@redhat.com>}
 */
 public class JdbcClientComponentImpl implements IJdbcComponent {
 
-    private Vertx vertx;
+    private final Vertx vertx;
 
     public JdbcClientComponentImpl(Vertx vertx, VertxEngineConfig engineConfig, Map<String, String> componentConfig) {
         this.vertx = vertx;

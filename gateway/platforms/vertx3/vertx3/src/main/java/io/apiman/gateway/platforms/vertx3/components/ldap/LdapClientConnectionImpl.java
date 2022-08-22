@@ -23,15 +23,16 @@ import io.apiman.gateway.engine.components.ldap.LdapConfigBean;
 import io.apiman.gateway.engine.components.ldap.LdapSearchScope;
 import io.apiman.gateway.engine.components.ldap.result.LdapException;
 import io.apiman.gateway.engine.impl.DefaultLdapClientConnection;
-import io.vertx.core.Vertx;
 
 import javax.net.ssl.SSLSocketFactory;
+
+import io.vertx.core.Vertx;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class LdapClientConnectionImpl extends DefaultLdapClientConnection {
-    private Vertx vertx;
+    private final Vertx vertx;
 
     public LdapClientConnectionImpl(Vertx vertx, LdapConfigBean config, SSLSocketFactory socketFactory) {
         super(config, socketFactory);

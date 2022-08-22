@@ -21,6 +21,7 @@ import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
 import io.apiman.gateway.platforms.vertx3.http.HttpApiFactory;
 import io.apiman.gateway.platforms.vertx3.http.HttpPolicyAdapter;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JdkSSLEngineOptions;
@@ -35,8 +36,8 @@ public class HttpsGatewayVerticle extends ApimanVerticleWithEngine {
     static final VerticleType VERTICLE_TYPE = VerticleType.HTTPS;
 
     @Override
-    public void start(Future<Void> startFuture) {
-        super.start(startFuture);
+    public void start(Promise<Void> startPromise) {
+        super.start(startPromise);
 
         HttpApiFactory.init(engine.getApiRequestPathParser());
 

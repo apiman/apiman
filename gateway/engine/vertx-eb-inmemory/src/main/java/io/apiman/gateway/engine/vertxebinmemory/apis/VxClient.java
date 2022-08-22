@@ -25,9 +25,9 @@ import io.vertx.core.json.Json;
  */
 @SuppressWarnings("nls")
 public class VxClient implements Head {
-    private Client client;
-    private String action;
-    private String uuid;
+    private final Client client;
+    private final String action;
+    private final String uuid;
 
     public VxClient(Client app, String action, String uuid) {
         this.client = app;

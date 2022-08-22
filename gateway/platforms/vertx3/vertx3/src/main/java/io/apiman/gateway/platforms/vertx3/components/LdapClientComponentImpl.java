@@ -25,17 +25,18 @@ import io.apiman.gateway.engine.impl.DefaultLdapClientConnection;
 import io.apiman.gateway.engine.impl.DefaultLdapComponent;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.components.ldap.LdapClientConnectionImpl;
-import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
 
 import java.util.Map;
+
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class LdapClientComponentImpl extends DefaultLdapComponent {
 
-    private Vertx vertx;
+    private final Vertx vertx;
 
     public LdapClientComponentImpl(Vertx vertx, VertxEngineConfig engineConfig, Map<String, String> componentConfig) {
         this.vertx = vertx;

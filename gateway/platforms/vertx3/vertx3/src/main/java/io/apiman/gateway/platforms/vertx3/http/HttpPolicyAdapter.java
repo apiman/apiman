@@ -15,18 +15,24 @@
  */
 package io.apiman.gateway.platforms.vertx3.http;
 
-import io.apiman.gateway.engine.*;
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+import io.apiman.gateway.engine.IApiClientResponse;
+import io.apiman.gateway.engine.IApiRequestExecutor;
+import io.apiman.gateway.engine.IEngine;
+import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.IPolicyErrorWriter;
+import io.apiman.gateway.engine.IPolicyFailureWriter;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
+
+import java.util.HashSet;
+
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-
-import java.util.HashSet;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
@@ -37,9 +43,9 @@ public class HttpPolicyAdapter {
     private final IPolicyFailureWriter policyFailureWriter;
     private final IPolicyErrorWriter policyErrorWriter;
     private final IEngine engine;
-    private final Logger log = LoggerFactory.getLogger(HttpPolicyAdapter.class);
+    private final IApimanLogger log = ApimanLoggerFactory.getLogger(HttpPolicyAdapter.class);
     private final boolean isTls;
-    private HashSet<String> allowedCorsOrigins;
+    private final HashSet<String> allowedCorsOrigins;
 
     public HttpPolicyAdapter(HttpServerRequest req,
                       IPolicyFailureWriter policyFailureWriter,

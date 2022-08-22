@@ -16,25 +16,24 @@
 
 package io.apiman.gateway.platforms.vertx3.components.ldap;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ldap.ILdapSearchEntry;
 import io.apiman.gateway.engine.components.ldap.LdapSearchScope;
 import io.apiman.gateway.engine.impl.DefaultLdapSearchImpl;
-import io.vertx.core.Vertx;
 
 import java.util.List;
 
 import com.unboundid.ldap.sdk.LDAPConnection;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.Vertx;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class LdapSearchImpl extends DefaultLdapSearchImpl {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LdapSearchImpl.class);
+    private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(LdapSearchImpl.class);
     private final Vertx vertx;
 
     public LdapSearchImpl(Vertx vertx, String searchDn, String filter, LdapSearchScope scope, LDAPConnection connection) {
@@ -45,9 +44,7 @@ public class LdapSearchImpl extends DefaultLdapSearchImpl {
     @Override
     public void search(IAsyncResultHandler<List<ILdapSearchEntry>> result) {
         vertx.<List<ILdapSearchEntry>>executeBlocking(blocking -> {
-            if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("Blocking search request starting");
-            }
+            LOGGER.trace("Blocking search request starting");
             // Send the result through into the result section.
             super.search(superResult -> {
                 if (superResult.isSuccess()) {
@@ -58,9 +55,7 @@ public class LdapSearchImpl extends DefaultLdapSearchImpl {
                 }
             });
         }, blockingResult -> {
-            if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("Blocking search request completed: {}", blockingResult);
-            }
+            LOGGER.trace("Blocking search request completed: {0}", blockingResult);
             if (blockingResult.succeeded()) {
                 result.handle(AsyncResultImpl.create(blockingResult.result()));
             } else {

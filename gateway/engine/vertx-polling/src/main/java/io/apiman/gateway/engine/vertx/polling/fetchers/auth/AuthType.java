@@ -26,7 +26,7 @@ import java.util.Arrays;
 public enum AuthType {
     NONE(new NoneAuth()),
     BASIC(new BasicAuth()),
-    OAUTH2(new OAuth2()),
+    // OAUTH2(new OAuth2()),
     KEYCLOAKOAUTH2(new KeycloakOAuth2());
 
     private Authenticator auth;

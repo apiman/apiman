@@ -15,8 +15,11 @@
  */
 package io.apiman.gateway.platforms.vertx3.components;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
@@ -24,6 +27,14 @@ import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -35,9 +46,6 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.net.JdkSSLEngineOptions;
 
-import java.net.URI;
-import java.util.Map;
-
 /**
  * A Vert.x based implementation of {@link IHttpClientComponent}. Ensure that
  * {@link IHttpClientRequest#end()} is called after writing is finished, or your data may never be sent, and
@@ -47,9 +55,9 @@ import java.util.Map;
  */
 public class HttpClientComponentImpl implements IHttpClientComponent {
 
-    private HttpClient sslClient;
-    private HttpClient plainClient;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final HttpClient sslClient;
+    private final HttpClient plainClient;
+    private final IApimanLogger logger = ApimanLoggerFactory.getLogger(this.getClass());
 
     public HttpClientComponentImpl(Vertx vertx, VertxEngineConfig engineConfig, Map<String, String> componentConfig) {
         HttpClientOptions sslOptions = new HttpClientOptions()
@@ -66,8 +74,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
     }
 
     @Override
-    public IHttpClientRequest request(String endpoint, HttpMethod method,
-            IAsyncResultHandler<IHttpClientResponse> responseHandler) {
+    public IHttpClientRequest request(String endpoint, HttpMethod method, IAsyncResultHandler<IHttpClientResponse> responseHandler) {
 
         URI pEndpoint = URI.create(endpoint);
         int port = pEndpoint.getPort();
@@ -89,20 +96,8 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         	port = 80;
         }
 
-        HttpClientRequest request = client.request(convertMethod(method),
-                port,
-                pEndpoint.getHost(),
-                pathAndQuery,
-                new HttpClientResponseImpl(responseHandler));
-
-        request.setChunked(true);
-
-        request.exceptionHandler(exception -> {
-            logger.error("Exception in HttpClientRequestImpl: {0}", exception); //$NON-NLS-1$
-        	responseHandler.handle(AsyncResultImpl.create(exception));
-        });
-
-        return new HttpClientRequestImpl(request);
+        Future<HttpClientRequest> requestF = client.request(convertMethod(method), port, pEndpoint.getHost(), pathAndQuery);
+        return new HttpClientRequestImpl(requestF, responseHandler);
     }
 
     private String getPathAndQuery(URI pEndpoint) {
@@ -114,7 +109,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 
         private HttpClientResponse response;
         private Buffer body;
-		private IAsyncResultHandler<IHttpClientResponse> responseHandler;
+		private final IAsyncResultHandler<IHttpClientResponse> responseHandler;
 	    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
         HttpClientResponseImpl(IAsyncResultHandler<IHttpClientResponse> responseHandler) {
@@ -174,17 +169,46 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
     }
 
     class HttpClientRequestImpl implements IHttpClientRequest {
-
         private boolean finished = false;
         private HttpClientRequest request;
+        private int timeout;
+        private HeaderMap headerMap;
+        private ArrayList<Buffer> requestBuffer;
 
-        public HttpClientRequestImpl(HttpClientRequest request) {
-            this.request = request;
+        HttpClientRequestImpl(Future<HttpClientRequest> requestF, IAsyncResultHandler<IHttpClientResponse> clientResponseHandler) {
+            requestF.onFailure(exception -> {
+                logger.error("Exception in HttpClientRequestImpl: {0}", exception); //$NON-NLS-1$
+                clientResponseHandler.handle(AsyncResultImpl.create(exception));
+            }).onSuccess(request -> {
+                this.request = request;
+                request.setChunked(true);
+                if (timeout > 0) {
+                    request.setTimeout(timeout);
+                }
+                if (headerMap != null) {
+                    for (Entry<String, String> pair : headerMap) {
+                        addHeader(pair.getKey(), pair.getValue());
+                    }
+                }
+                if (requestBuffer != null) {
+                    requestBuffer.forEach(this::write);
+                }
+                if (finished) {
+                    request.end();
+                }
+                request.response()
+                        .onFailure(exception -> clientResponseHandler.handle(AsyncResultImpl.create(exception)))
+                        .onSuccess(new HttpClientResponseImpl(clientResponseHandler));
+            });
         }
 
         @Override
         public void setConnectTimeout(int timeout) {
-            request.setTimeout(timeout);
+            if (request != null) {
+                request.setTimeout(timeout);
+            } else {
+                this.timeout = timeout;
+            }
         }
 
         @Override
@@ -194,35 +218,78 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
 
         @Override
         public void addHeader(String headerName, String headerValue) {
-            request.putHeader(headerName, headerValue);
+            Objects.requireNonNull(headerName, "Header name must not be null");
+            if (request != null) {
+                request.putHeader(headerName, headerValue);
+            } else {
+                if (this.headerMap == null) {
+                    this.headerMap = new HeaderMap();
+                }
+                this.headerMap.add(headerName, headerValue);
+            }
         }
 
         @Override
         public void removeHeader(String headerName) {
-            request.headers().remove(headerName);
+            Objects.requireNonNull(headerName, "Header name must not be null");
+            if (request != null) {
+                request.headers().remove(headerName);
+            } else {
+                if (this.headerMap != null) {
+                    this.headerMap.remove(headerName);
+                }
+            }
         }
 
         @Override
         public void write(IApimanBuffer buffer) {
         	checkFinished();
-        	request.write(getNativeBuffer(buffer));
+            if (request != null) {
+        	    request.write(getNativeBuffer(buffer));
+            } else {
+                if (this.requestBuffer == null) {
+                    this.requestBuffer = new ArrayList<>();
+                }
+                this.requestBuffer.add(getNativeBuffer(buffer));
+            }
         }
 
 		@Override
         public void write(byte[] data) {
             checkFinished();
-            request.write(Buffer.buffer(data));
+            if (request != null) {
+                request.write(Buffer.buffer(data));
+            } else {
+                if (this.requestBuffer == null) {
+                    this.requestBuffer = new ArrayList<>();
+                }
+                this.requestBuffer.add(Buffer.buffer(data));
+            }
         }
 
         @Override
         public void write(String body, String charsetName) {
             checkFinished();
-            request.write(Buffer.buffer(body, charsetName));
+            if (request != null) {
+                request.write(Buffer.buffer(body, charsetName));
+            } else {
+                if (this.requestBuffer == null) {
+                    this.requestBuffer = new ArrayList<>();
+                }
+                this.requestBuffer.add(Buffer.buffer(body, charsetName));
+            }
+        }
+
+        private void write(Buffer buff) {
+            checkFinished();
+            request.write(buff);
         }
 
         @Override
         public void end() {
-            request.end();
+            if (request != null) {
+                request.end();
+            }
             finished = true;
         }
 
@@ -244,24 +311,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
     }
 
     private io.vertx.core.http.HttpMethod convertMethod(HttpMethod method) {
-    	switch(method) {
-		case DELETE:
-			return io.vertx.core.http.HttpMethod.DELETE;
-		case GET:
-			return io.vertx.core.http.HttpMethod.GET;
-		case HEAD:
-			return io.vertx.core.http.HttpMethod.HEAD;
-		case OPTIONS:
-			return io.vertx.core.http.HttpMethod.OPTIONS;
-		case POST:
-			return io.vertx.core.http.HttpMethod.POST;
-		case PUT:
-			return io.vertx.core.http.HttpMethod.PUT;
-		case TRACE:
-			return io.vertx.core.http.HttpMethod.TRACE;
-		default:
-            return io.vertx.core.http.HttpMethod.OTHER;
-    	}
+        return io.vertx.core.http.HttpMethod.valueOf(method.name());
     }
 
 }

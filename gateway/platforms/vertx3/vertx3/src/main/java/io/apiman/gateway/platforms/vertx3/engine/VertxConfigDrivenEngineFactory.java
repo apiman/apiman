@@ -22,10 +22,11 @@ import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory;
-import io.vertx.core.Vertx;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
+
+import io.vertx.core.Vertx;
 
 /**
  * A configuration driven engine specifically for Vert.x
@@ -35,8 +36,8 @@ import java.util.Map;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
-    private Vertx vertx;
-    private VertxEngineConfig vxConfig;
+    private final Vertx vertx;
+    private final VertxEngineConfig vxConfig;
 
     public VertxConfigDrivenEngineFactory(Vertx vertx, VertxEngineConfig config) {
         super(config);

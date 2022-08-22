@@ -26,9 +26,9 @@ import io.vertx.core.json.Json;
 @SuppressWarnings("nls")
 public class VxApi implements Head {
 
-    private Api api;
-    private String action;
-    private String uuid;
+    private final Api api;
+    private final String action;
+    private final String uuid;
 
     public VxApi(Api api, String action, String uuid) {
         this.api = api;

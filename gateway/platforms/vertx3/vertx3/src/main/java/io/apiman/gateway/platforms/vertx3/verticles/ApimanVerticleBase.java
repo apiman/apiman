@@ -15,18 +15,19 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
-import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
+
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Promise;
+import io.vertx.core.http.HttpServerOptions;
 /**
  * Standard base for all apiman verticles.
  *
@@ -37,11 +38,11 @@ public abstract class ApimanVerticleBase extends AbstractVerticle {
 
     protected VertxEngineConfig apimanConfig;
     protected String uuid = SimpleStringUtils.join(".", UUID.randomUUID().toString(), verticleType().name());
-    protected Logger log = LoggerFactory.getLogger(this.getClass());
+    protected IApimanLogger log = ApimanLoggerFactory.getLogger(this.getClass());
     protected HashSet<String> allowedCorsOrigins = new HashSet<>();
 
     @Override
-    public void start(Future<Void> startFuture) {
+    public void start(Promise<Void> startPromise) {
         apimanConfig = getEngineConfig();
         log.info("Starting verticle: {0}. UUID: {1}.", verticleType(), uuid);
         setAllowedCorsOrigins();
@@ -65,7 +66,7 @@ public abstract class ApimanVerticleBase extends AbstractVerticle {
         return uuid;
     }
 
-    protected Logger getLogger() {
+    protected IApimanLogger getLogger() {
         return log;
     }
 

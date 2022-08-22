@@ -15,16 +15,17 @@
  */
 package io.apiman.gateway.engine.vertxebinmemory.apis;
 
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
+
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
 
 /**
  * Listens for registry events on the event bus. Ignores self-generated events. These arrive as a simple JSON
@@ -88,7 +89,7 @@ public interface EBRegistryProxyHandler {
         });
 
         consumer.exceptionHandler(ex -> {
-            log().error("[{0}] An exception occurred: {1}", uuid(), ex);
+            log().error(ex, "[{0}] An exception occurred: {1}", uuid());
             ex.printStackTrace();
         });
     }
@@ -103,7 +104,7 @@ public interface EBRegistryProxyHandler {
     void retireApi(Api api);
     void registerClient(Client app);
     void unregisterClient(Client app);
-    Logger log();
+    IApimanLogger log();
 
     // If *we* sent the message, we shouldn't also digest it, else we'll end in a cycle.
     default boolean shouldIgnore(String uuid) {

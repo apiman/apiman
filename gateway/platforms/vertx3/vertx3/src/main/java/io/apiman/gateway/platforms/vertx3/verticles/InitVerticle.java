@@ -15,18 +15,19 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.Version;
-import io.apiman.gateway.platforms.vertx3.ApimanVersionCommand;
 import io.apiman.gateway.platforms.vertx3.common.verticles.VerticleType;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
-import io.vertx.core.impl.launcher.commands.VersionCommand;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.impl.launcher.commands.VersionCommand;
 
 /**
  * Initialiser verticle
@@ -35,11 +36,11 @@ import java.util.List;
  */
 @SuppressWarnings("nls")
 public class InitVerticle extends ApimanVerticleBase {
-    private Logger log = LoggerFactory.getLogger(InitVerticle.class);
+    private final IApimanLogger log = ApimanLoggerFactory.getLogger(InitVerticle.class);
     private DeploymentOptions base;
 
     @Override
-    public void start(Future<Void> start) {
+    public void start(Promise<Void> start) {
         super.start(start);
         base = new DeploymentOptions().setConfig(config());
 
@@ -50,14 +51,13 @@ public class InitVerticle extends ApimanVerticleBase {
         deploy(HttpGatewayVerticle.class.getCanonicalName(), HttpGatewayVerticle.VERTICLE_TYPE, deployList);
         deploy(HttpsGatewayVerticle.class.getCanonicalName(), HttpsGatewayVerticle.VERTICLE_TYPE, deployList);
 
-        CompositeFuture.all(deployList).setHandler(compositeResult -> {
+        CompositeFuture.all(deployList).onComplete(compositeResult -> {
             if (compositeResult.failed()) {
                 compositeResult.cause().printStackTrace();
-                log.fatal("Failed to deploy verticles: " + compositeResult.cause().getMessage());
+                log.warn("Failed to deploy verticles: {0}", compositeResult.cause().getMessage());
                 start.fail(compositeResult.cause());
             } else {
-                log.info("Apiman Version: {0}", ApimanVersionCommand.getApimanVersion());
-                if (log.isDebugEnabled()) log.debug("Git commit info: {0}", Version.get().getVerbose());
+                log.info("Apiman Version: {0}", Version.get().getVerbose());
                 log.info("Vert.x Version: {0}", VersionCommand.getVersion());
 
                 log.info("Successfully deployed all verticles");
@@ -78,11 +78,11 @@ public class InitVerticle extends ApimanVerticleBase {
         DeploymentOptions deploymentOptions = new DeploymentOptions(base)
                 .setInstances(apimanConfig.getVerticleCount(verticleType));
         // Future for this deployment.
-        Future<String> future = Future.future();
+        Promise<String> promise = Promise.promise();
         // Do deployment
-        vertx.deployVerticle(canonicalName, deploymentOptions, future.completer());
+        vertx.deployVerticle(canonicalName, deploymentOptions, promise);
         // Set the future associated with the deployment so #all can wait for it.
-        deployList.add(future);
+        deployList.add(promise.future());
     }
 
     @Override

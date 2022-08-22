@@ -16,21 +16,22 @@
 
 package io.apiman.gateway.engine.vertx.polling.fetchers.auth;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
+
+import java.util.Map;
+import java.util.Objects;
+
 import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.auth.oauth2.AccessToken;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
 import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
-
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Authenticator for Keycloak OAuth2.
@@ -49,7 +50,7 @@ import java.util.Objects;
 @SuppressWarnings("nls")
 public class KeycloakOAuth2 extends AbstractOAuth2Base implements Authenticator {
 
-    private Logger log = LoggerFactory.getLogger(KeycloakOAuth2.class);
+    private final IApimanLogger log = ApimanLoggerFactory.getLogger(KeycloakOAuth2.class);
 
     public KeycloakOAuth2() {
     }
@@ -74,17 +75,17 @@ public class KeycloakOAuth2 extends AbstractOAuth2Base implements Authenticator 
 
         OAuth2Auth oauth2 = KeycloakAuth.create(vertx,  flowType, mapToJson(config));
 
-        oauth2.getToken(params, tokenResult -> {
-            if (tokenResult.succeeded()) {
-                log.debug("OAuth2 Keycloak exchange succeeded.");
-                AccessToken token = tokenResult.result();
-                headerMap.set("Authorization", "Bearer " + token.principal().getString("access_token"));
-                resultHandler.handle(Future.succeededFuture());
-            } else {
-                log.error("Access Token Error: {0}.", tokenResult.cause().getMessage());
-                resultHandler.handle(Future.failedFuture(tokenResult.cause()));
-            }
-          });
+        // oauth2.getToken(params, tokenResult -> {
+        //     if (tokenResult.succeeded()) {
+        //         log.debug("OAuth2 Keycloak exchange succeeded.");
+        //         AccessToken token = tokenResult.result();
+        //         headerMap.set("Authorization", "Bearer " + token.principal().getString("access_token"));
+        //         resultHandler.handle(Future.succeededFuture());
+        //     } else {
+        //         log.error("Access Token Error: {0}.", tokenResult.cause().getMessage());
+        //         resultHandler.handle(Future.failedFuture(tokenResult.cause()));
+        //     }
+        //   });
         return this;
     }
 

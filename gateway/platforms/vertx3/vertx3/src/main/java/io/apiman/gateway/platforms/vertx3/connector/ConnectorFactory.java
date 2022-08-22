@@ -15,9 +15,6 @@
  */
 package io.apiman.gateway.platforms.vertx3.connector;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.IApiConnector;
 import io.apiman.gateway.engine.IConnectorConfig;
@@ -26,9 +23,6 @@ import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.platforms.vertx3.http.HttpClientOptionsFactory;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,6 +30,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 
 /**
  * Create Vert.x connectors to the enable apiman to connect to a backend API.
@@ -50,10 +51,10 @@ public class ConnectorFactory implements IConnectorFactory {
         SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
     }
 
-    private Vertx vertx;
-    private TLSOptions tlsOptions;
-    private Map<String, String> config;
-    private LoadingCache<ApimanHttpConnectorOptions, HttpClient> clientCache = CacheBuilder.newBuilder()
+    private final Vertx vertx;
+    private final TLSOptions tlsOptions;
+    private final Map<String, String> config;
+    private final LoadingCache<ApimanHttpConnectorOptions, HttpClient> clientCache = CacheBuilder.newBuilder()
                 // TODO make this tuneable.
                 .maximumSize(2000)
                 // Close any evicted connections.

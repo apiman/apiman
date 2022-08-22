@@ -26,17 +26,8 @@ import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertx.polling.exceptions.UnsupportedProtocolException;
 import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
-import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.ResourceFetcher;
 import io.apiman.gateway.platforms.vertx3.common.verticles.Json;
-import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.impl.Arguments;
-import io.vertx.core.json.DecodeException;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 import java.net.URI;
 import java.util.ArrayDeque;
@@ -49,6 +40,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.impl.Arguments;
+import io.vertx.core.json.DecodeException;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -203,9 +202,11 @@ public class URILoadingRegistry extends InMemoryRegistry implements AsyncInitial
             String scheme = uri.getScheme() == null ? "file" : uri.getScheme().toLowerCase();
             switch (scheme) {
             case "http":
-                return new HttpResourceFetcher(vertx, uri, config, false);
+                return null;
+                //return new HttpResourceFetcher(vertx, uri, config, false);
             case "https":
-                return new HttpResourceFetcher(vertx, uri, config, true);
+                return null;
+                //return new HttpResourceFetcher(vertx, uri, config, true);
             case "file":
                 return new FileResourceFetcher(vertx, uri, config);
             default:

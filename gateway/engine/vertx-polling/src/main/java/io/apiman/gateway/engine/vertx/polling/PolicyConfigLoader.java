@@ -20,9 +20,13 @@ import io.apiman.gateway.engine.beans.Api;
 import io.apiman.gateway.engine.beans.Client;
 import io.apiman.gateway.engine.vertx.polling.exceptions.UnsupportedProtocolException;
 import io.apiman.gateway.engine.vertx.polling.fetchers.FileResourceFetcher;
-import io.apiman.gateway.engine.vertx.polling.fetchers.HttpResourceFetcher;
 import io.apiman.gateway.engine.vertx.polling.fetchers.ResourceFetcher;
 import io.apiman.gateway.platforms.vertx3.common.verticles.Json;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -32,11 +36,6 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -126,9 +125,11 @@ public class PolicyConfigLoader {
         String scheme = uri.getScheme() == null ? "file" : uri.getScheme().toLowerCase();
         switch (scheme) {
         case "http":
-            return new HttpResourceFetcher(vertx, uri, config, false);
+            return null; // TODO
+            //return new HttpResourceFetcher(vertx, uri, config, false);
         case "https":
-            return new HttpResourceFetcher(vertx, uri, config, true);
+            return null; // TODO
+            //return new HttpResourceFetcher(vertx, uri, config, true);
         case "file":
             return new FileResourceFetcher(vertx, uri, config);
         default:

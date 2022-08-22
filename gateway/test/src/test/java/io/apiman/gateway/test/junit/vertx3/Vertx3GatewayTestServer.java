@@ -15,19 +15,20 @@
  */
 package io.apiman.gateway.test.junit.vertx3;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.verticles.InitVerticle;
 import io.apiman.test.common.echo.EchoServer;
 import io.apiman.test.common.resttest.IGatewayTestServer;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.CountDownLatch;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * A Vert.x 3 version of the gateway test server
@@ -41,13 +42,13 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
     protected static final int GW_PORT = 8082;
     protected static final int ECHO_PORT = 7654;
 
-    private EchoServer echoServer = new EchoServer(ECHO_PORT);
+    private final EchoServer echoServer = new EchoServer(ECHO_PORT);
     private CountDownLatch startLatch;
     private CountDownLatch stopLatch;
     private Resetter resetter;
     private Vertx vertx;
     private JsonObject vertxConf;
-    private boolean clustered;
+    private final boolean clustered;
 
     public Vertx3GatewayTestServer(boolean clustered) {
         this.clustered = clustered;
@@ -79,7 +80,10 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
         try {
             if (clustered) {
                 CountDownLatch clusteredStart = new CountDownLatch(1);
-                Vertx.clusteredVertx(new VertxOptions().setClustered(clustered).setClusterHost("localhost").setBlockedThreadCheckInterval(9999999), result -> {
+                // For debugging/testing, set long blocked thread check interval.
+                var vxOptions = new VertxOptions();//.setBlockedThreadCheckInterval(TimeUnit.HOURS.toMillis(1));
+                vxOptions.getEventBusOptions().setHost("localhost");
+                Vertx.clusteredVertx(vxOptions, result -> {
                     if (result.succeeded()) {
                         System.out.println("**** Clustered Vert.x started up successfully! ****");
                         this.vertx = result.result();
