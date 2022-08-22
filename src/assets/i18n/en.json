@@ -45,13 +45,13 @@
     "SUBTITLE": "Administrate User Settings",
     "USER_ENTITY": {
       "USERNAME": "Username",
-      "FIRSTNAME": "Firstname",
-      "LASTNAME": "Lastname",
+      "FIRSTNAME": "First Name",
+      "LASTNAME": "Last Name",
       "EMAIL": "E-Mail",
       "PASSWORD": "Password",
       "LOCALE": "Language"
     },
-    "EDIT_EXTERNAL_BTN": "Edit external",
+    "EDIT_EXTERNAL_BTN": "Edit User Preferences",
     "IDENTITY_MANAGEMENT": {
       "TITLE": "Identity Management",
       "IDM_ENTITY": {
