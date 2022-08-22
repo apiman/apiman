@@ -95,7 +95,7 @@
     <version.mysql.jdbc.driver>8.0.30</version.mysql.jdbc.driver>
     <version.com.oracle.driver>21.3.0.0</version.com.oracle.driver>
     <version.mssql.driver>9.4.0.jre11</version.mssql.driver>
-    <version.org.liquibase>4.9.1</version.org.liquibase>
+    <version.org.liquibase>4.15.0</version.org.liquibase>
 
     <!-- Dependency Versions -->
     <version.com.blazebit.blaze-persistence>1.6.6</version.com.blazebit.blaze-persistence>
