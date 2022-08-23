@@ -6,6 +6,3 @@ prerelease: true
 start_page: ROOT:index.adoc
 nav:
   - modules/ROOT/nav.adoc
-asciidoc:
-  attributes:
-    apiman-release-version: 3.0.0-SNAPSHOT
