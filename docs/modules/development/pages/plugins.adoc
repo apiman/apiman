@@ -18,24 +18,25 @@ In addition to the standard layout of a Java Web Archive, an Apiman plugin must 
 META-INF/apiman/plugin.json
 ----
 
-This 'plugin.json' file contains the basic meta-data that describes the plugin, and should be of the following format:
+This `plugin.json` file contains the basic meta-data that describes the plugin, and should be of the following format:
 
 [source,json]
 ----
 {
-  "frameworkVersion" : 1.0,
-  "name" : "Plugin Name",
-  "description" : "A plugin description goes here.",
-  "version" : "3.1.9"
+  "frameworkVersion" : 1.0, // <1>
+  "name" : "Plugin Name", // <2>
+  "description" : "A plugin description goes here.", // <3>
+  "version" : "3.1.9" // <4>
 }
 ----
 
-* *frameworkVersion*: Indicates the apiman plugin framework version this plugin is compatible with - this should simply be 1.0 for now (reserved for future use)
-* *name*: The name of the plugin.
-* *description*: The description of the plugin.
-* *version*: The plugin version.
+<1> *frameworkVersion*: Indicates the apiman plugin framework version this plugin is compatible with - this should simply be 1.0 for now (reserved for future use)
 
-If this 'plugin.json' file is missing from the plugin archive, then the plugin will fail to load.
+<2> *name*: The name of the plugin.
+<3> *description*: The description of the plugin.
+<4> *version*: The plugin version.
+
+If this `plugin.json` file is missing from the plugin archive, then the plugin will fail to load.
 
 [#_using_maven_to_create_a_plugin]
 == Using Maven to Create a Plugin
@@ -49,7 +50,7 @@ Note that you can use the following simple plugin as a reference if you prefer:
 
 https://github.com/apiman/apiman-plugins/tree/{apiman-version-release}/noop-policy
 
-In order to create an apiman plugin using maven, simply create a new maven project and set its 'packaging' type to *war*.
+In order to create an apiman plugin using maven, simply create a new maven project and set its `packaging` type to `*war*`.
 
 [source,xml]
 ----
@@ -82,8 +83,16 @@ Artifact::
 Version::
     {apiman-version-release}
 
-Finally, we recommend that you put your `plugin.json` file in the following location
-in your Maven project:
+[source,xml,subs=attributes+]
+----
+<parent>
+  <groupId>io.apiman</groupId>
+  <artifactId>apiman-parent</artifactId>
+  <version>{apiman-version-release}</version>
+</parent>
+----
+
+Finally, we recommend that you put your `plugin.json` file in the following location in your Maven project:
 
 [source]
 ----
@@ -115,6 +124,7 @@ Of course, any resources in that location are not automatically included in the 
 ----
 
 This markup will ensure that resources in the *src/main/apiman* folder will be included in the correct location in the WAR.
+
 Also, note that resource filtering is enabled, which will make it easier to maintain your *plugin.json* file:
 
 [source,json]
@@ -177,7 +187,7 @@ This is the bread and butter of the API Gateway; its primary purpose.
 
 For each request, the API Gateway creates a chain of policies that must be executed before proxying the request to the back-end API implementation.
 
-Each of the policies in that chain is an implementation of the 'IPolicy' interface.
+Each of the policies in that chain is an implementation of the `IPolicy` interface.
 
 ==== Standard IPolicy
 
@@ -360,7 +370,7 @@ The following components are available:
 | Description
 
 | `IPolicyFailureFactoryComponent`
-| Used to create a policy failure that is needed to call 'doFailure' on the policy chain (indicating that the policy failed).
+| Used to create a policy failure that is needed to call `doFailure` on the policy chain (indicating that the policy failed).
 
 | `ISharedStateComponent`
 | Used to share state information across the conversation boundary.
@@ -462,7 +472,7 @@ Since the same policy implementation instance is used for all requests, unique c
 This configuration is created in the API Manager user interface when adding the policy to a Plan, API, or Client App.
 
 Policy configuration takes the form of string data that is ultimately included when  publishing an API to the API Gateway.
-That string data is parsed into a Java object via the 'parseConfiguration' on the `*IPolicy*` interface and then passed to the policy during execution.
+That string data is parsed into a Java object via the `parseConfiguration` on the `*IPolicy*` interface and then passed to the policy during execution.
 
 The string data is created in the API Manager user interface, either by interacting with a Policy Configuration Form contributed by the plugin, or (if no form is included in the plugin) by a default configuration form (a simple text area).
 
@@ -521,9 +531,9 @@ The following example illustrates a policy contributed from a plugin, its JSON S
 
 [TIP]
 ====
-The templates 'language' field will support other languages in the future, but for now is null (i.e. single-language only).
+The template's `language` field will support other languages in the future, but for now is null (i.e. single-language only).
 
-The template field itself is https://github.com/mvel/mvel[MVEL] (Orb tag syntax), and displays in the UI after a plugin has been selected by a user.
+The template field itself is https://github.com/mvel/mvel[MVEL^] (Orb tag syntax), and displays in the UI after a plugin has been selected by a user.
 ====
 
 .META-INF/apiman/policyDefs/schemas/my-policy.schema
@@ -675,7 +685,7 @@ Once you have followed the instructions above to create your custom policy, refe
 === Import the Framework (Maven Dependency)
 
 The first thing you will need is to include the appropriate maven dependencies in your project's `pom.xml` file.
-There is a single additional dependency that you will need (make sure to import it using the 'test' maven scope):
+There is a single additional dependency that you will need (make sure to import it using the `test` maven scope):
 
 [source,xml,subs=attributes+]
 ----
@@ -996,7 +1006,7 @@ It might look something like this:
 apiman-gateway.registry=plugin:org.example.apiman-plugins:plugin-mongodb:1.0.0.Final/org.example.apiman.plugins.MongoDbRegistry
 ----
 
-Finally, the set of properties prefixed with `apiman-gateway.registry` will be processed and passed to your *MongoDbRegistry* class's *Map* constructor if one is provided.
+Finally, the set of properties prefixed with `apiman-gateway.registry` will be processed and passed to your `*MongoDbRegistry*` class's `*Map*` constructor if one is provided.
 The map that is passed to the constructor will contain the following:
 
 [source,properties]
