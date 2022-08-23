@@ -1,4 +1,4 @@
-/*!
+/*
  * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,13 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  imitations under the License.
  */
+.swagger-ui .wrapper {
+  max-width: none !important;
+}
 
-@import "~prismjs/themes/prism.css";
-
-#markdown-container {
-  max-height: 50vh;
-  padding-left: 1%;
-  padding-right: 1%;
-  border: 1px solid rgb(0 0 0 / 20%);
-  background: rgb(0 0 0 / 2%);
+.swagger-ui .info {
+  margin: 0 !important;
 }

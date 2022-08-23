@@ -43,13 +43,11 @@
               "src/themes/default.scss",
               "node_modules/swagger-ui/dist/swagger-ui.css",
               "node_modules/simplebar/dist/simplebar.min.css",
-              "node_modules/prismjs/themes/prism.css",
               "node_modules/material-icons/iconfont/filled.css"
             ],
             "scripts": [
               "node_modules/marked/marked.min.js",
-              "node_modules/simplebar/dist/simplebar.min.js",
-              "node_modules/prismjs/prism.js"
+              "node_modules/simplebar/dist/simplebar.min.js"
             ]
           },
           "configurations": {
