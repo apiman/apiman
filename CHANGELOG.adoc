@@ -133,6 +133,8 @@ Particular thanks go to the team at https://www.scheer-pas.com[Scheer PAS^] who 
 
 * [manager-api]: Refactor Apiman Manager code to have service layers, so that business logic is not in presentation layer. This will likely be a multiphase process, and ideally we will move towards DDD-style code over time. By https://github.com/msavy[Marc Savy (@msavy)^].
 
+* [manager-jpa]: Remove most uses of JPA Criteria API and replace with https://persistence.blazebit.com/[Blaze-Persistence^]. This is a modern reinterpretation of the Criteria API concept that is usable by mere human beings such as Apiman's maintainer. https://github.com/Blazebit/blaze-persistence/issues/1436[Thanks to Christian Beikov for his assistance^] in fixing a show-stopper bug that Apiman exposed in Hibernate when using Blaze-Persistence. By https://github.com/msavy[Marc Savy (@msavy)^].
+
 === Removed
 
 * [distro]: **Apiman is no longer distributed with the Keycloak Server Overlay**, as this has been discontinued by the Keycloak team. You will need to point Apiman to a Keycloak server that is run separately (see the Docker Compose distro for examples). By https://github.com/msavy[Marc Savy (@msavy)^].
