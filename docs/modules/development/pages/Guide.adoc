@@ -1,16 +1,19 @@
-= apiman - Developer Guide
+= Apiman Developer Guide
+Marc Savy <marc@blackparrotlabs.io>, Eric Wittmann <eric.wittmann@redhat.com>
 :doctype: book
 
 == Introduction
-Are you interested in contributing to the development of apiman?Maybe you want to embed the
-project in your own solution?In either case this is the guide for you.
+
+Are you interested in contributing to the development of Apiman?
+Maybe you want to embed the project in your own solution?
+In either case, this is the guide for you.
 
 [#_developer_resources]
 == Developer Resources
+
 This section describes a number of resources that are useful if you wish to contribute
-code to apiman.It is likely also a good starting point for those wishing to provide
-functionality by implementing a plugin, although more information about plugins can
-be found in the 'Plugins' section.
+code to Apiman.
+It is likely also a good starting point for those wishing to provide functionality by implementing a plugin, although more information about plugins can be found in the 'Plugins' section.
 
 include::Resources.adoc[]
 
@@ -42,26 +45,3 @@ servlet that embeds the apiman Policy Engine.All requests to the API Gateway WAR
 assumed to be intended for managed APIs previously published to it.
 
 
-[#_plugins]
-== Plugins
-The easiest way to extend the functionality of apiman is by implementing an apiman
-plugin.This section details how this is done and what functionality can be
-extended or provided.
-
-include::Plugins.adoc[]
-
-
-[#_gateway_implementations]
-== Gateway Implementations
-At the heart of any apiman gateway implementation is the flexible, lightweight
-apiman-core.The core serves to execute policies upon the traffic passing through
-it, determining whether a given conversation should continue or not.
-
-A set of simple, asynchronous interfaces are provided which an implementor should
-fulfill using the platform's native functionality to allow apiman to interact with
-its various components and services.
-
-include::Gateway.adoc[]
-
-
-:numbered!:
