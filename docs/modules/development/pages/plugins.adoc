@@ -139,7 +139,7 @@ This is useful when running Apiman during development, but is unlikely to be ava
 If the plugin cannot be found locally, Apiman will attempt to download it from a remote repository such as Maven Central.
 
 TIP: You can configure additional remote repositories when you set up apiman.
-Please refer to the xref:installation-guide::[Installation Guide] for details.
+Please refer to the xref:3.0.0-SNAPSHOT@installation-guide:ROOT:[Installation Guide] for details.
 
 This all means that when testing your plugin locally, you can simply use maven to install
 it into your local .m2 directory and then ask apiman to load it.  In production, the
