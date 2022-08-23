@@ -1,0 +1,109 @@
+= Apiman Developer Guide
+Marc Savy <marc@blackparrotlabs.io>, Eric Wittmann <eric.wittmann@redhat.com>
+:doctype: book
+
+== Introduction
+
+Are you interested in contributing to the development of Apiman?
+Maybe you want to embed the project in your own solution?
+In either case, this is the guide for you.
+
+[#_developer_resources]
+== Developer Resources
+
+This section describes a number of resources that are useful if you wish to contribute
+code to Apiman.
+
+It is likely also a good starting point for those wishing to provide functionality by implementing a plugin, although more information about plugins can be found in the 'Plugins' section.
+
+== Architecture
+
+The basic architecture of apiman is fairly straightforward.
+There are several WARs that make up the default Apiman installation.
+
+These include:
+
+* API Manager REST back-end (JAX-RS WAR)
+* API Manager UI (AngularJS WAR)
+* API Portal UI (Angular WAR)
+* API Gateway Config (JAX-RS WAR)
+* API Gateway (Servlet WAR)
+
+The API Manager REST back-end WAR is responsible for exposing a set of REST endpoints that make up the API Manager REST interface.
+
+The API Manager UI uses this REST API directly when the user manages the various entities in the data model.
+
+The API Manager UI is a client-only AngularJS application.
+Aside from authentication related activities, this WAR only contains HTML, JavaScript, and CSS.
+The UI uses the browser to make direct, authenticated calls to the REST endpoints exposed by the API Manager REST back-end WAR.
+
+The API Gateway Config exposes the standard apiman Gateway REST API so that the API Gateway can be remotely configured.
+This is the REST API that the API Manager uses whenever a user publishes an API or registers a Client App.
+It is responsible for configuring the API Gateway's embedded Policy Engine.
+
+The API Gateway is the primary runtime component of apiman and is implemented as a servlet that embeds the apiman Policy Engine.
+
+All requests to the API Gateway WAR are assumed to be intended for managed APIs previously published to it.
+
+== Source Code
+
+* The Apiman source code is located in GitHub here: https://github.com/apiman/apiman
+
+* Source code for the Apiman policies can be found here: https://github.com/apiman/apiman-plugins
+
+* Source code for the Apiman project website is here: https://github.com/apiman/apiman.github.io
+
+* The official Apiman docker files are currently here: https://github.com/apiman/apiman-docker
+
+* Source code for the Apiman Developer Portal can be found here: https://github.com/apiman/apiman-developer-portal
+
+== Issue Tracking
+
+* Apiman uses https://www.github.com/apiman/apiman/issues[GitHub issues for tracking].
+
+* You can ask questions https://www.github.com/apiman/apiman/discussions[on GitHub discussions]
+
+== Development Tools
+
+We're rather IDE agnostic, so contributors should feel free to use whatever tools they feel most comfortable with.
+
+At the time of this writing, the core Apiman developers mostly use IntelliJ IDEA.
+
+== Building the Project
+
+TIP: A fast build script is available in the root of the project: `./fastbuild.sh`.
+It skips tests, Javadoc, etc.
+
+Building Apiman should be a simple matter of doing a standard Maven build:
+
+[source,bash,subs=attributes+]
+----
+./mvnw clean install
+----
+
+This will do a full build of Apiman and execute all unit tests.
+However, the result will not include a ready-to-run version of Apiman.
+For that, you may want to try the following:
+
+[source,bash,subs=attributes+]
+----
+./mvnw clean install -Pinstall-all-wildfly
+----
+
+This command will do a full apiman build, but will also download WildFly and install Apiman into it.
+The result will be a fully configured installation of Apiman running in WildFly.
+
+The location of this WildFly install will be here:
+
+[source,bash,subs=attributes+]
+----
+apiman/tools/server-all/target/wildfly-{wildfly-version}/
+----
+
+At this point you can test Apiman by simply running WildFly from the above location using a command something like this:
+
+[source,bash,subs=attributes+]
+----
+./bin/standalone.sh -b 0.0.0.0
+----
+
