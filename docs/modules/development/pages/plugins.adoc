@@ -1,23 +1,23 @@
-= Creating a Plugin
+== Apiman Plugins
 
-An apiman plugin is basically a java web archive (WAR) with a little bit of extra
-sauce.
-This approach makes it very easy to build using maven, and should be quite
-familiar to most Java developers.  Because a plugin consists of some resources files,
-compiled java classes, front-end resource such as HTML and javascript, and dependencies
-in the form of JARs, the WAR format is a natural choice.
+The easiest way to extend the functionality of apiman is by implementing an apiman  plugin.
+This section details how this is done and what functionality can be extended or provided.
+
+An Apiman plugin is basically a Java web archive (WAR) with a bit of extra sauce.
+This approach makes it very easy to build using Maven, and should be quite familiar to most Java developers.
+
+Because a plugin consists of some resources files, compiled Java classes, front-end resource such as HTML and Javascript, and dependencies in the form of JARs, the WAR format is a natural choice.
 
 == The Plugin Specification File
-In addition to the standard layout of a Java Web Archive, an apiman plugin must contain
-the following plugin specification file (which contains information about the plugin):
+
+In addition to the standard layout of a Java Web Archive, an Apiman plugin must contain  the following plugin specification file (which contains information about the plugin):
 
 [source]
 ----
 META-INF/apiman/plugin.json
 ----
 
-This 'plugin.json' file contains the basic meta-data that describes the plugin, and
-should be of the following format:
+This 'plugin.json' file contains the basic meta-data that describes the plugin, and should be of the following format:
 
 [source,json]
 ----
@@ -34,25 +34,27 @@ should be of the following format:
 * *description*: The description of the plugin.
 * *version*: The plugin version.
 
-If this 'plugin.json' file is missing from the plugin archive, then the plugin will
-fail to load.
+If this 'plugin.json' file is missing from the plugin archive, then the plugin will fail to load.
 
 == Using Maven to Create a Plugin
-One benefit of using WAR as the format of an apiman plugin is that plugins can easily
-be created using Maven.  This section will describe how this can be done.  Note that
-you can use the following simple plugin as a reference if you prefer:
 
-https://github.com/apiman/apiman-plugins/tree/master/noop-policy
+One benefit of using WAR as the format of an Apiman plugin is that plugins can easily
+be created using Maven.
 
-In order to create an apiman plugin using maven, simply create a new maven project
-and set its 'packaging' type to *war*.
+This section will describe how this can be done.
+
+Note that you can use the following simple plugin as a reference if you prefer:
+
+https://github.com/apiman/apiman-plugins/tree/{apiman-release-version}/noop-policy
+
+In order to create an apiman plugin using maven, simply create a new maven project and set its 'packaging' type to *war*.
 
 [source,xml]
 ----
 <packaging>war</packaging>
 ----
 
-Next, obviously feel free to include any dependencies you might need:
+Include any dependencies you might need:
 
 [source,xml]
 ----
@@ -66,19 +68,27 @@ Next, obviously feel free to include any dependencies you might need:
 </dependencies>
 ----
 
-You'll want to make any apiman dependencies provided so that there aren't any classloading
+You'll want to make any Apiman dependencies provided so that there aren't any classloading
 conflicts when executing your code.
 
-Finally, we recommend that you put your plugin.json file in the following location
-in your maven project:
+To make life easier, you can use the `apiman-parent` Maven Parent, which holds the managed versions of dependencies that Apiman uses, which makes it easier to align things:
+
+Group::
+    io.apiman
+Artifact::
+    apiman-parent
+Version::
+    {apiman-release-version}
+
+Finally, we recommend that you put your `plugin.json` file in the following location
+in your Maven project:
 
 [source]
 ----
 src/main/apiman
 ----
 
-Of course, any resoures in that location are not automatially included in the final
-WAR, so you should add the following markup to your pom.xml:
+Of course, any resources in that location are not automatically included in the final WAR, so you should add the following markup to your `pom.xml`:
 
 [source,xml]
 ----
@@ -102,9 +112,8 @@ WAR, so you should add the following markup to your pom.xml:
 </build>
 ----
 
-This markup will ensure that resources in the *src/main/apiman* folder will be included
-in the correct location in the WAR.  Also note that resource filtering is enabled,
-which will make it easier to maintain your *plugin.json* file:
+This markup will ensure that resources in the *src/main/apiman* folder will be included in the correct location in the WAR.
+Also, note that resource filtering is enabled, which will make it easier to maintain your *plugin.json* file:
 
 [source,json]
 ----
@@ -116,22 +125,21 @@ which will make it easier to maintain your *plugin.json* file:
 }
 ----
 
-Note that the 'version' of the plugin is set to *${project.version}*, which will get
-automatically changed to the version of your maven project at build time.
+Note that the `version` of the plugin is set to `*${project.version}*`, which will automatically be changed to the version of your Maven project at build time.
 
 === Making Your Plugin Available to apiman
-Plugins are identified by their Maven coordinates (groupId, artifactId, version,
-classifier, type).  Note that the classifier and type are optional.  If the type is
-not specified when loading a plugin, apiman will assume 'war'.
 
-When loading a plugin for use, apiman will first check for the plugin in the local
-user's .m2 directory.  This is useful when running apiman during development, but
-is unlikely to be available in a production environment.  If the plugin cannot be
-found locally, apiman will attempt to download it from a remote repository such as
-Maven Central.
+Plugins are identified by their Maven coordinates (`groupId`, `artifactId`, `version`,
+`classifier`, `type`).
+The classifier and type are optional.
+If the type is not specified when loading a plugin, Apiman will assume 'war'.
+
+When loading a plugin for use, Apiman will first check for the plugin in the local user's `.m2` directory.
+This is useful when running Apiman during development, but is unlikely to be available in a production environment.
+If the plugin cannot be found locally, Apiman will attempt to download it from a remote repository such as Maven Central.
 
 TIP: You can configure additional remote repositories when you set up apiman.
-Please refer to the Installation Guide for details.
+Please refer to the xref:installation-guide::[Installation Guide^] for details.
 
 This all means that when testing your plugin locally, you can simply use maven to install
 it into your local .m2 directory and then ask apiman to load it.  In production, the

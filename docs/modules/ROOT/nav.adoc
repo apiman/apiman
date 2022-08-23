@@ -3,5 +3,6 @@
 * xref:development:Guide.adoc[Development Guide]
 ** xref:development:Guide.adoc#_developer_resources[Developer Resources]
 ** xref:development:Guide.adoc#_plugins[Apiman Plugins]
-** xref:development:Guide.adoc#_gateway_implementations[Gateway Implementations]
+
+** xref:development:gateway.adoc[Apiman Gateway Implementation Guide]
 
