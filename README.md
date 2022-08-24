@@ -14,12 +14,12 @@
 
 * Create a copy of the `src/assets/config.json5` called `src/assets/local-config.json5`
 * Adapt the `endpoint` and `auth.url` to match you apiman and keycloak setup
-* Execute `npm ci && npm run start` or use our provided run configuration (Jetbrains IntelliJ/WebStorm)
+* Execute `npm install && npm run start` or use our provided run configuration (Jetbrains IntelliJ/WebStorm)
 
 #### Linux / Windows
 ```bash
 cp src/assets/config.json5 src/assets/local-config.json5
-npm ci
+npm install
 npm run start
 ```
 

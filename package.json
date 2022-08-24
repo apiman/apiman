@@ -11,7 +11,8 @@
     "lint-fix": "ng lint --fix && stylelint --fix '**/*.scss'",
     "build-production": "ng build --configuration production",
     "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "prepare": "husky install"
   },
   "private": true,
   "dependencies": {
@@ -64,6 +65,7 @@
     "eslint": "8.20.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
+    "husky": "8.0.1",
     "jasmine-core": "4.2.0",
     "karma": "6.4.0",
     "karma-chrome-launcher": "3.1.1",
