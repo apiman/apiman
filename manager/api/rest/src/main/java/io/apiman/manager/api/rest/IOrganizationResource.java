@@ -567,7 +567,13 @@ public interface IOrganizationResource {
             throws ClientNotFoundException, ContractNotFoundException, NotAuthorizedException;
 
     /**
-     * Probe a specific contract's policy state
+     * Use this endpoint to probe a specific API contract's policy state
+     * @Summary Probe a policy associated with a contract
+     * @param organizationId The Organization ID.
+     * @param clientId The Client ID.
+     * @param version The Client version.
+     * @param rawPayload The probe payload (refer to the documentation of the probe you want to use for the correct JSON format).
+     * @return A policy probe response
      */
     @PermitAll
     @POST
@@ -582,7 +588,7 @@ public interface IOrganizationResource {
 
     /**
      * Use this endpoint to get a list of all Contracts for an Client.
-     * @summary List All Contracts for an Client
+     * @summary List All Contracts for a Client
      * @param organizationId The Organization ID.
      * @param clientId The Client ID.
      * @param version The Client version.
