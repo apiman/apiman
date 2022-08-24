@@ -164,10 +164,9 @@ This all means that when testing your plugin locally, you can simply use Maven t
 
 === Contributing a Policy
 
-Now that you know how to create an apiman plugin, you might be wondering what you can actually do with it!
+Now that you know how to create an Apiman plugin, you might be wondering what you can actually do with it!
 
-The most important purpose of a plugin is to provide additional *Policies* that can be used when configuring Plans, APIs, and Client Apps in
-Apiman.
+The most important purpose of a plugin is to provide additional *Policies* that can be used when configuring Plans, APIs, and Client Apps in Apiman.
 
 Although Apiman comes with a set of useful built-in policies, it is often  necessary for users to provide their own custom policies.
 The best way to do that is to create a plugin that provides such policies.
@@ -627,7 +626,7 @@ public class MyPolicy extends AbstractMappedPolicy<MyConfigBean> {
   }
 
   @Override
-  protected Class<MyConfigBean> getConfigurationClass() {
+  public Class<MyConfigBean> getConfigurationClass() {
     return MyConfigBean.class;
   }
 
@@ -646,10 +645,160 @@ public class MyPolicy extends AbstractMappedPolicy<MyConfigBean> {
 }
 ----
 
+==== Policy Probes
+:gh-ticket-improve-probes: https://github.com/apiman/apiman/discussions/2277
+
+[.MaintainerMessage]
+****
+The _Police Probes_ feature was  added in Apiman 3.
+
+We need your feedback {gh-ticket-improve-probes}[so we can evolve and improve this feature^].
+
+Is it a good idea or a bad idea? What could we do better?
+****
+
+A _policy probe_ allows a policy to optionally expose its internal state to be queried by the Apiman Manager.
+Policy implementors decide exactly how their probe(s) work.
+
+The policy probes feature is an attempt to solve use-cases that require some important state within a policy.
+
+For example:
+
+* What is the current rate limit status for ClientA?
+
+* When does ClientB's quota reset?
+
+===== Implementation
+
+Probes are simple to implement:
+
+* Implement the `io.apiman.gateway.engine.policy.IPolicyProbe` interface on your policy class.
+
+* Define probe request. This must implement `IPolicyProbeRequest`.
+
+* Define a probe response. This must implement `IPolicyProbeResponse`.
+
+As an example, we'll use Apiman's inbuilt `RateLimitingPolicy`.
+
+.RateLimitingPolicy.java
+[source,java]
+----
+public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
+     implements IPolicyProbe<RateLimitingConfig, RateLimitingProbeConfig> {  // <1>
+    // Omitted bits
+
+    @Override
+    public Class<RateLimitingProbeConfig> getProbeRequestClass() { // <2>
+        return RateLimitingProbeConfig.class;
+    }
+
+    @Override
+    public void probe( // <3>
+        RateLimitingProbeConfig probeRequest, // <4>
+        RateLimitingConfig policyConfig, // <5>
+        ProbeContext probeContext, // <6>
+        IPolicyContext context,  // <7>
+        IAsyncResultHandler<IPolicyProbeResponse> resultHandler) { // <8>
+        // Probe business logic
+    }
+
+}
+----
+<1> Implement `IPolicyProbe`
+** First parameter is the existing policy config class
+** Second parameter is the probe's configuration class (must implement `IPolicyProbeRequest`)
+<2> Implement `getProbeRequestClass` to return probe configuration class. This is needed as Java does not have reified generics (yet).
+<3> The `probe` method to provide your probe(s). The value is returned asynchronously.
+<4> Probe request configuration instance (i.e. requested probe information).
+<5> Policy configuration
+<6> Probe context, allowing some useful data such as `apiKey`, `ApiContract`, `Api`, etc.
+<7> Policy context, allowing access to components, etc.
+<8> Result handler to return the result of your probe. Must implement `IPolicyProbeResponse`.
+
+A common pattern to implement a policy probe is to re-use the policy's standard business logic, but ensure it is a non-mutating action.
+
+For example, in the rate limiting policy, we trigger the rate limiter function, but increment the counter by zero.
+This lets us interrogate the current rate limiting state without actually consuming any of the user's limit/quota:
+
+[source,java]
+----
+@Override
+public void probe(RateLimitingProbeConfig probeRequest, RateLimitingConfig policyConfig, ProbeContext probeContext, IPolicyContext context, IAsyncResultHandler<IPolicyProbeResponse> resultHandler) {
+    String bucketId = bucketFactory.bucketId(probeRequest, probeContext, policyConfig);
+    IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class); // <1>
+    // Ask for rate limit, but don't actually decrement the counter.
+    rateLimiter.accept(bucketId, bucketFactory.getPeriod(policyConfig), policyConfig.getLimit(), 0, rateLimResult -> { // <2>
+        RateLimitResponse remaining = rateLimResult.getResult();
+        var probeResult = new RateLimitingProbeResponse() // <3>
+                .setStatus(remaining)
+                .setConfig(policyConfig);
+        resultHandler.handle(AsyncResultImpl.create(probeResult)); // <4>
+    });
+}
+----
+<1> Get the rate limiting component.
+<2> Increment the rate limit by zero to get the current rate limit state without consuming quota/limit.
+<3> Build probe response (implements `IPolicyProbeResponse`).
+<4> Dispatch probe response asynchronously.
+
+===== Querying probe
+
+You can issue a probe query via the Apiman Manager's probes API.
+Currently, this only works if a contract is involved (i.e. has an API key; it does not work for 'public APIs' presently).
+
+The probes endpoint is (yes, sorry, it's a tad long):
+
+[source]
+----
+/organizations/{organizationId}/clients/{clientId}/versions/{version}/contracts/{contractId}/policies/{policyId}
+----
+. **organizationId**: Apiman Organization ID.
+. **clientId**: Apiman Client ID.
+. **version**: Client version.
+. **contractId**: Contract the probe pertains to.
+. **policyId**: Policy you want to probe.
+
+The Apiman Manager passes the probe through to the Apiman policy, after ensuing you have the correct permissions.
+
+It is the responsibility of the requester to ensure the probe payload is valid for the policy type they are probing, otherwise it will be rejected and/or return nonsense.
+
+You need to know the format of the probe a priori, which is passed as a `POST` body; usually this is JSON.
+If there is demand, we could to provide a schema mechanism to allow generation of documentation over probes, so the format of the probe is easier to understand ({gh-ticket-improve-probes}[let us know^]).
+
+.`RateLimitingProbeConfig` (policy probe request payload).
+[source,json]
+----
+{
+  "user": "foo",
+  "apiKey": "1234562342343-2343243-23432423",
+  "callerIp": "1.2.3.4"
+}
+----
+
+.`RateLimitingProbeResponse` (policy probe response payload).
+[source,json]
+----
+{
+  "RateLimitingProbeResponse": {
+    "config": {
+      "limit": 5,
+      "granularity": "Client",
+      "period": "Hour"
+    },
+    "status": {
+      "accepted": true,
+      "remaining": 1
+    },
+    "probeType": "RateLimitingProbeResponse"
+  }
+}
+----
+
 ==== JSON Schema Policy Configuration SDK
 
 If you are creating a non-trivial JSON Schema (more than just a couple of simple fields)
 it can be difficult to get it right without a few iterations.
+
 For this reason, we have created a simple "SDK" to help you create your JSON Schema quickly.
 
 The SDK can be found in the Apiman GitHub repository at the following location:
