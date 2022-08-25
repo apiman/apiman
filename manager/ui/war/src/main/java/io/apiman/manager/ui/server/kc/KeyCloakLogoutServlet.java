@@ -16,21 +16,24 @@
 package io.apiman.manager.ui.server.kc;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.keycloak.adapters.KeycloakDeployment;
+import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
+
 /**
  * Used to log the user out of apiman when keycloak is the auth provider.
  *
  * @author eric.wittmann@redhat.com
+ * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class KeyCloakLogoutServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1095811654448544162L;
-    
+
     /**
      * Constructor.
      */
@@ -38,16 +41,28 @@ public class KeyCloakLogoutServlet extends HttpServlet {
     }
 
     /**
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * In setups where the Keycloak backend URL is different to the frontend URL, Keycloak's Java adapter currently
+     * (incorrectly, AFAICT?) uses the frontend URL for logging out.
+     * <p>
+     * For example, this means it won't actually log out in situations where the internal Docker network has a different
+     * name to the external network.
+     * <p>
+     * We work around this by forcing the backend URL with a delegate. It's not pretty...
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        req.logout();
+        forceBackendLogout(req);
         if (req.getSession() != null && !req.getSession().isNew()) {
             req.getSession().invalidate();
         }
         resp.sendRedirect("/apimanui"); //$NON-NLS-1$
     }
 
+    // Evil, don't look!
+    private void forceBackendLogout(HttpServletRequest req) {
+        RefreshableKeycloakSecurityContext session = (RefreshableKeycloakSecurityContext) req.getAttribute("org.keycloak.KeycloakSecurityContext");
+        KeycloakDeployment deployment = new DeploymentWithLogoutViaBackend(session.getDeployment());
+        session.logout(deployment);
+    }
 }

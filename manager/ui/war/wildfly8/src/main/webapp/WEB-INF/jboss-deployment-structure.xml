@@ -1,5 +1,10 @@
 <jboss-deployment-structure>
   <deployment>
+    <dependencies>
+      <module name="org.keycloak.keycloak-wildfly-adapter"/>
+      <module name="org.keycloak.keycloak-adapter-core"/>
+      <module name="org.keycloak.keycloak-wildfly-subsystem"/>
+    </dependencies>
     <exclusions>
       <module name="org.apache.log4j" />
       <module name="org.apache.logging.log4j.api" />
