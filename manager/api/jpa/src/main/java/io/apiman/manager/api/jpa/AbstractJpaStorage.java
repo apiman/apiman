@@ -44,6 +44,7 @@ import com.blazebit.persistence.CriteriaBuilder;
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.PagedList;
 import com.blazebit.persistence.PaginatedCriteriaBuilder;
+import com.blazebit.persistence.Path;
 import org.hibernate.Session;
 import org.jdbi.v3.core.Jdbi;
 
@@ -301,10 +302,10 @@ public abstract class AbstractJpaStorage {
         List<SearchCriteriaFilterBean> filters = criteria.getFilters();
         if (filters != null && !filters.isEmpty()) {
             for (SearchCriteriaFilterBean filter : filters) {
+                Path path = cb.getPath(filter.getName());
+                Class<?> pathKlazz = path.getJavaType();
                 final String name = cb.getPath(filter.getName()).getPath();
                 if (filter.getOperator() == SearchCriteriaFilterOperator.eq) {
-                    com.blazebit.persistence.Path path = cb.getPath(filter.getName());
-                    Class<?> pathKlazz = path.getJavaType();
                     if (pathKlazz.isEnum()) {
                         cb = cb.where(name).eq(Enum.valueOf((Class) pathKlazz, filter.getValue()));
                     } else {
@@ -313,15 +314,15 @@ public abstract class AbstractJpaStorage {
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.bool_eq) {
                     cb = cb.where(name).eq(Boolean.valueOf(filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.gt) {
-                    cb = cb.where(name).gt(Long.valueOf(filter.getValue()));
+                    cb = cb.where(name).gt(numberValueOf(pathKlazz, filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.gte) {
-                    cb = cb.where(name).ge(Long.valueOf(filter.getValue()));
+                    cb = cb.where(name).ge(numberValueOf(pathKlazz, filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.lt) {
-                    cb = cb.where(name).lt(Long.valueOf(filter.getValue()));
+                    cb = cb.where(name).lt(numberValueOf(pathKlazz, filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.lte) {
-                    cb = cb.where(name).le(Long.valueOf(filter.getValue()));
+                    cb = cb.where(name).le(numberValueOf(pathKlazz, filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.neq) {
-                    cb = cb.where(name).notEq(Long.valueOf(filter.getValue()));
+                    cb = cb.where(name).notEq(numberValueOf(pathKlazz, filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.like) {
                     cb = cb.where(name).like(false).value(filter.getValue().toUpperCase().replace('*', '%')).noEscape();
                 }
@@ -338,6 +339,19 @@ public abstract class AbstractJpaStorage {
         }
 
         return cb;
+    }
+
+    private Number numberValueOf(Class<?> klazz, String value) {
+        if (klazz.equals(long.class) || klazz.equals(Long.class)) {
+            return Long.valueOf(value);
+        }
+        else if (klazz.equals(int.class) || klazz.equals(Integer.class)) {
+            return Integer.valueOf(value);
+        }
+        else if (klazz.equals(byte.class) || klazz.equals(Byte.class)) {
+            return Byte.valueOf(value);
+        }
+        throw new IllegalArgumentException("This method accepts only Integer/int, Long/long, or Byte/byte");
     }
 
     @SuppressWarnings("unchecked")

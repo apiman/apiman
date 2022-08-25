@@ -1,0 +1,20 @@
+POST /search/apis admin/admin
+Content-Type: application/json
+
+{
+  "filters": [
+    {
+      "name": "numPublished",
+      "value": "0",
+      "operator": "gt"
+    }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "beans":[],
+  "totalSize":0
+}
