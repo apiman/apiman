@@ -182,4 +182,8 @@ Particular thanks go to the team at https://www.scheer-pas.com[Scheer PAS^] who 
 
 * [manager-api]: PolicyDefinitionTemplate missing `#equals` and `#hashCode` By https://github.com/msavy[Marc Savy (@msavy)^]
 
+
+* [manager-api-jpa]: parse stringified numeric filter value into same data type as target field. By https://github.com/msavy[Marc Savy (@msavy)^] in https://github.com/apiman/apiman/pull/2284
+
+
 **Full Changelog**: https://github.com/apiman/apiman/compare/2.2.3.Final...3.0.0.Final
