@@ -50,6 +50,7 @@
     <test name="Query Api By Name Lowercase">test-plan-data/searching/queries/apis/010_query-by-name-lower.resttest</test>
     <test name="Query Api By Name Mixedcase">test-plan-data/searching/queries/apis/011_query-by-name-mixed.resttest</test>
     <test name="Query Api By Name Special">test-plan-data/searching/queries/apis/012_query-by-name-special.resttest</test>
+    <test name="Query integer field with numeric gt comparison (Issue 2283)">test-plan-data/searching/queries/apis/013_query-integer-field-issue-2283.resttest</test>
     <!-- Misc -->
     <test name="Query API Catalogs">test-plan-data/searching/queries/misc/001_query-api-catalog.resttest</test>
     <test name="List API Catalog Namespaces">test-plan-data/searching/queries/misc/002_query-api-namespaces.resttest</test>
