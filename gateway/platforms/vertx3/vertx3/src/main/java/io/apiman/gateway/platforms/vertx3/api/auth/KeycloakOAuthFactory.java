@@ -19,10 +19,19 @@ package io.apiman.gateway.platforms.vertx3.api.auth;
 import io.apiman.common.util.Basic;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.verticles.ApiVerticle;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -30,20 +39,15 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.oauth2.AccessToken;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
+import io.vertx.ext.auth.oauth2.OAuth2ClientOptions;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
 import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.AuthHandler;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
-
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.http.client.utils.URIBuilder;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -97,27 +101,28 @@ public class KeycloakOAuthFactory {
                         .put("username", username)
                         .put("password", password);
 
-                HttpClientOptions sslOptions = getHttpClientOptionsForKeycloak(authConfig);
-
-                OAuth2Auth oauth2 = KeycloakAuth.create(vertx, flowType, authConfig, sslOptions);
-                oauth2.authenticate(params, tokenResult -> {
-                    if (tokenResult.succeeded()) {
-                        log.debug("OAuth2 Keycloak exchange succeeded.");
-                        AccessToken token = (AccessToken) tokenResult.result();
-                        token.isAuthorised(role, res -> {
-                            if (res.result()) {
-                                context.next();
-                            } else {
-                                String message = MessageFormat.format("User {0} does not have required role: {1}.", username, role);
-                                log.error(message);
-                                handle403(context, "insufficient_scope", message);
-                            }
-                        });
-                    } else {
-                        String message = tokenResult.cause().getMessage();
-                        log.error("Access Token Error: {0}.", message);
-                        handle401(context, "invalid_token", message);
-                    }
+                OAuth2ClientOptions options = buildClientOptions(authConfig);
+                KeycloakAuth.discover(vertx, options, (AsyncResult<OAuth2Auth> result) -> {
+                    var oauth2 = result.result();
+                    oauth2.authenticate(params, tokenResult -> {
+                        if (tokenResult.succeeded()) {
+                            log.debug("OAuth2 Keycloak exchange succeeded.");
+                            AccessToken token = (AccessToken) tokenResult.result();
+                            token.isAuthorised(role, res -> {
+                                if (res.result()) {
+                                    context.next();
+                                } else {
+                                    String message = MessageFormat.format("User {0} does not have required role: {1}.", username, role);
+                                    log.error(message);
+                                    handle403(context, "insufficient_scope", message);
+                                }
+                            });
+                        } else {
+                            String message = tokenResult.cause().getMessage();
+                            log.error("Access Token Error: {0}.", message);
+                            handle401(context, "invalid_token", message);
+                        }
+                    });
                 });
             }
 
@@ -156,9 +161,42 @@ public class KeycloakOAuthFactory {
         };
     }
 
-    private static HttpClientOptions getHttpClientOptionsForKeycloak(JsonObject config) {
-        HttpClientOptions options = new HttpClientOptions();
+    private static OAuth2FlowType toEnum(String flowType) {
+        return EnumUtils.getEnum(OAuth2FlowType.class, flowType.toUpperCase());
+    }
 
+    private static OAuth2ClientOptions buildClientOptions(JsonObject config) {
+        OAuth2ClientOptions options = new OAuth2ClientOptions();
+        String authServer = config.getString("auth-server-url");
+        String realmName = config.getString("realm");
+        String clientId = config.getString("resource");
+
+        Objects.requireNonNull(authServer, "Must provide auth-server-url");
+        Objects.requireNonNull(realmName, "Must provide realm");
+        Objects.requireNonNull(clientId, "Must provide resource (also known as Client ID)");
+
+        URI uri;
+        try {
+            uri = new URIBuilder(authServer)
+                          .setPathSegments(List.of("realms", realmName))
+                          .build();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        options.setFlow(OAuth2FlowType.PASSWORD);
+        options.setSite(uri.toString());
+        options.setClientID(clientId);
+
+        if (config.containsKey("credentials") && config.getJsonObject("credentials").containsKey("secret")) {
+            options.setClientSecret(config.getJsonObject("credentials").getString("secret"));
+        }
+
+        if (config.containsKey("public-client") && config.getBoolean("public-client", false)) {
+            options.setUseBasicAuthorizationHeader(true);
+        }
+
+        // HTTP Client Options
         if (config.containsKey("ssl-required")) {
             if (!config.getString("ssl-required").toLowerCase().equals("none")) {
                 options.setSsl(true);
@@ -188,11 +226,8 @@ public class KeycloakOAuthFactory {
             options.setTrustStoreOptions(new JksOptions().setPath(config.getString("client-keystore")).setPassword(
                     config.getString("client-keystore-password")));
         }
-        return options;
-    }
 
-    private static OAuth2FlowType toEnum(String flowType) {
-        return EnumUtils.getEnum(OAuth2FlowType.class, flowType.toUpperCase());
+        return options;
     }
 
 }
