@@ -14,7 +14,7 @@ Historically, a Keycloak server was bundled with the Apiman WildFly overlay; thi
 
 * [Bootstrap Keycloak with the demonstration Apiman realm definition](https://www.keycloak.org/server/importExport) in `data/apiman-realm-for-keycloak.json`.
 
-* Set the `APIMAN_AUTH_URL` environment variable to point to the running Keycloak instance; for example `export APIMAN_AUTH_URL=http://localhost:8081/auth`.
+* Set the `APIMAN_AUTH_URL` environment variable to point to the running Keycloak instance; for example `export APIMAN_AUTH_URL=http://localhost:5/auth`.
 
 You can modify details such as secrets, trust manager settings, etc, in `standalone/configuration/standalone-apiman.xml`. 
 Look for the Keycloak subsystem `<subsystem xmlns="urn:jboss:domain:keycloak:1.1">...</subsystem>`.

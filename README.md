@@ -37,7 +37,7 @@ Once Apiman has started up, and if all went well, you can point your browser to 
 * Username: `admin`
 * Password: `admin123!`
 
-You can log into the Keycloak admin console via http://localhost:8081/admin (same credentials as above).
+You can log into the Keycloak admin console via http://localhost:8085/admin (same credentials as above).
 
 This quickstart seeds a bunch of content into apiman. This is not strictly necessary, but it does populate the API Manager with some data so that it doesn't feel so lonely the first time you log in.
 
