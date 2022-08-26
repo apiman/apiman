@@ -15,7 +15,6 @@ LABEL org.opencontainers.image.version=$APIMAN_VERSION
 
 EXPOSE 8080 8443
 
-ADD https://jdbc.postgresql.org/download/postgresql-$POSTGRES_VERSION.jar $JBOSS_HOME/standalone/deployments
 ADD $APIMAN_DISTRO /tmp/apiman-overlay.zip
 
 USER root
