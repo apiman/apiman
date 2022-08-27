@@ -93,7 +93,7 @@ jobs:
 
       # You can call this reusable flow multiple times, first for build, second for build & push.
       - name: Build & Push ${{ matrix.docker-images.description }} (${{ matrix.docker-images.name }})
-        if: inputs.push-to-repos == 'true'
+        if: inputs.push-to-repos == true
         uses: docker/build-push-action@v3
         with:
           context: ${{ matrix.docker-images.path }}
