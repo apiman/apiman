@@ -104,6 +104,9 @@ public class SplitterFilter implements Filter {
             if (!config.containsKey("apiman-manager-ui.api.endpoint")) {
                 System.setProperty("apiman-manager-ui.api.endpoint", defaultApiEndpoint);
             }
+            if (!config.containsKey("apiman.auth.public.url")) {
+                System.setProperty("apiman.auth.public.url", config.getString("apiman.auth.url"));
+            }
             String str = FileUtils.readFileToString(resourceRoot.resolve(path).toFile(), StandardCharsets.UTF_8);
             return config.getSubstitutor().replace(str);
         } catch (IOException e) {
