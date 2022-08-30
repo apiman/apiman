@@ -78,6 +78,7 @@ services:
         -Dapiman.auth.gateway.secret=${KEYCLOAK_GATEWAY_SECRET}
         -DallowSelfSigned=${SELF_SIGNED}
         -DallowAnyHost=${SELF_SIGNED}
+        -Dapiman-manager-ui.api.endpoint=${APIMAN_MANAGER_API_ENDPOINT}
         -Dapiman.public-endpoint=${APIMAN_GATEWAY_PUBLIC_ENDPOINT}
         -DcachingPolicy.maxCacheSize=${MAX_CACHE_SIZE_IN_MB}
         -Dapiman.gateway-allowedProtocols=${TLS_ALLOWED_PROTOCOLS:-}
@@ -95,8 +96,8 @@ services:
         -Dapiman.gateway.client-truststore.password=${GATEWAY_CLIENT_TRUSTSTORE_PASSWORD}
         -Dapiman.gateway.backend-keystore=${GATEWAY_BACKEND_KEYSTORE}
         -Dapiman.gateway.backend-keystore.password=${GATEWAY_BACKEND_KEYSTORE_PASSWORD}
-        -Dapiman.gateway.backend-truststore=${GATEWAY_BACKEND_KEYSTORE}
-        -Dapiman.gateway.backend-truststore.password=${GATEWAY_BACKEND_KEYSTORE_PASSWORD}
+        -Dapiman.gateway.backend-truststore=${GATEWAY_BACKEND_TRUSTSTORE}
+        -Dapiman.gateway.backend-truststore.password=${GATEWAY_BACKEND_TRUSTSTORE_PASSWORD}
     volumes:
       - type: bind
         source: "$PWD/data/conf-es.json"
