@@ -69,15 +69,10 @@ public class SplitterFilter implements Filter {
         String path = trim(req.getRequestURI().substring(req.getContextPath().length()));
         // Would be better if we can put all the assets (other than index) under dist, so we can return real 404s
         // Currently this breaks the loading of the config file, though...
-        // if (!path.startsWith("/dist")) {
-        //     chain.doFilter(request, response);
-        // } else {
-        //     request.getRequestDispatcher("/spa/index.html").forward(request, response);
-        // }
         if (resourceExists(path) && !path.isBlank()) {
             // If file exists, serve it up.
             if (path.endsWith(".json5") || path.endsWith(".json")) {
-                String newResponse = configCache.computeIfAbsent(path, this::parseAndSubstitute);
+                String newResponse = configCache.computeIfAbsent(path, key -> parseAndSubstitute(request, key));
                 response.setContentType("application/json");
                 response.setContentLength(newResponse.length());
                 response.getWriter().write(newResponse);
@@ -87,11 +82,6 @@ public class SplitterFilter implements Filter {
             }
         } else {
             // Else, send the spa index.
-            // String index = FileUtils.readFileToString(resourceRoot.resolve("index.html").toFile(), StandardCharsets.UTF_8);
-            // response.setContentLength(index.length());
-            // response.setContentType("text/html; charset=UTF-8");
-            // response.getWriter().write(index);
-            // response.flushBuffer();
             req.getRequestDispatcher("/index.html").forward(req, response);
         }
     }
@@ -100,8 +90,20 @@ public class SplitterFilter implements Filter {
         return path.startsWith("/") ? path.substring(1) : path;
     }
 
-    private String parseAndSubstitute(String path) {
+    private String parseAndSubstitute(ServletRequest request, String path) {
         try {
+            /*
+              TODO(msavy): hacky... We should make UIConfig accessible here without pulling all of the world in. Issue apiman/apiman#2289
+
+              If the user does not set `apiman-manager-ui.api.endpoint`, then we calculate a reasonable expected URL from request, and set it as
+              system property `apiman-manager-ui.api.endpoint` so that the subsequent find-and-replace resolves something useful.
+
+              This needs to be calculated as localhost is often wrong (and we do it this way for the main UI).
+            */
+            String defaultApiEndpoint = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/apiman";
+            if (!config.containsKey("apiman-manager-ui.api.endpoint")) {
+                System.setProperty("apiman-manager-ui.api.endpoint", defaultApiEndpoint);
+            }
             String str = FileUtils.readFileToString(resourceRoot.resolve(path).toFile(), StandardCharsets.UTF_8);
             return config.getSubstitutor().replace(str);
         } catch (IOException e) {
