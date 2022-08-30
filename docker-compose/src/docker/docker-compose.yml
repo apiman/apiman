@@ -51,7 +51,7 @@ services:
       - traefik.http.routers.apimanui-router.service=apimanui-service
       - traefik.http.services.apimanui-service.loadbalancer.server.port=8080
 
-    restart: always
+    restart: unless-stopped
     healthcheck:
       # Double $$ sign in health-check predicate is to escape first $ in docker-compose syntax (prevent expansion here).
       test: curl -s -f http://apiman-manager:8080/apiman/system/status &>/dev/null; if [[ $$? == 0 ]]; then echo 0; else echo 1; fi
@@ -73,24 +73,30 @@ services:
         -Dapiman.es.username=
         -Dapiman.es.password=
         -Dapiman.es.timeout=10000
-        -Dapiman.truststore-password=${TRUSTSTORE_KEYSTORE_PASSWORD}
-        -Dapiman.public-endpoint=${APIMAN_GATEWAY_PUBLIC_ENDPOINT}
-        -Dkeycloak.auth.url=${KEYCLOAK_URL}
-        -Dkeycloak.realm=${KEYCLOAK_REALM}
+        -Dapiman.auth.url=${KEYCLOAK_URL}
+        -Dapiman.auth.realm=${KEYCLOAK_REALM}
+        -Dapiman.auth.gateway.secret=${KEYCLOAK_GATEWAY_SECRET}
         -DallowSelfSigned=${SELF_SIGNED}
         -DallowAnyHost=${SELF_SIGNED}
-        -Dkeycloak.realm-public-key=${KEYCLOAK_REALM_PUBLIC_KEY}
-        -Dkeycloak.gateway.secret=${KEYCLOAK_GATEWAY_SECRET}
+        -Dapiman.public-endpoint=${APIMAN_GATEWAY_PUBLIC_ENDPOINT}
         -DcachingPolicy.maxCacheSize=${MAX_CACHE_SIZE_IN_MB}
         -Dapiman.gateway-allowedProtocols=${TLS_ALLOWED_PROTOCOLS:-}
-        -Dapiman.gateway-backend-keystore=${KEYSTORE_TRUSTSTORE_PATH:-}${GATEWAY_BACKEND_KEYSTORE:-}
-        -Dapiman.gateway-backend-truststore=${KEYSTORE_TRUSTSTORE_PATH:-}${GATEWAY_BACKEND_TRUSTSTORE:-}
-        -Dapiman.gateway-client-keystore=${KEYSTORE_TRUSTSTORE_PATH:-}${GATEWAY_CLIENT_KEYSTORE:-}
-        -Dapiman.gateway-client-truststore=${KEYSTORE_TRUSTSTORE_PATH:-}${GATEWAY_CLIENT_TRUSTSTORE:-}
-        -Dapiman.gateway-es-keystore=${KEYSTORE_TRUSTSTORE_PATH:-}${GATEWAY_ES_KEYSTORE:-}
-        -Dapiman.gateway-es-truststore=${KEYSTORE_TRUSTSTORE_PATH:-}${GATEWAY_ES_TRUSTSTORE:-}
-        -Dapiman.gateway-keycloak-keystore=${KEYSTORE_TRUSTSTORE_PATH:-}${GATEWAY_KEYCLOAK_KEYSTORE:-}
-        -Dapiman.gateway-keycloak-truststore=${KEYSTORE_TRUSTSTORE_PATH:-}${GATEWAY_KEYCLOAK_TRUSTSTORE:-}
+        -Dapiman.es.keystore=${GATEWAY_ES_KEYSTORE}
+        -Dapiman.es.keystore.password=${GATEWAY_ES_KEYSTORE_PASSWORD}
+        -Dapiman.es.truststore=${GATEWAY_ES_TRUSTSTORE}
+        -Dapiman.es.truststore.password=${GATEWAY_ES_TRUSTSTORE_PASSWORD}
+        -Dapiman.keycloak.keystore=${GATEWAY_KEYCLOAK_KEYSTORE}
+        -Dapiman.keycloak.keystore.password=${GATEWAY_KEYCLOAK_KEYSTORE_PASSWORD}
+        -Dapiman.keycloak.truststore=${GATEWAY_KEYCLOAK_TRUSTSTORE}
+        -Dapiman.keycloak.truststore.password=${GATEWAY_KEYCLOAK_TRUSTSTORE_PASSWORD}
+        -Dapiman.gateway.client-keystore=${GATEWAY_CLIENT_KEYSTORE}
+        -Dapiman.gateway.client-keystore.password=${GATEWAY_CLIENT_KEYSTORE_PASSWORD}
+        -Dapiman.gateway.client-truststore=${GATEWAY_CLIENT_TRUSTSTORE}
+        -Dapiman.gateway.client-truststore.password=${GATEWAY_CLIENT_TRUSTSTORE_PASSWORD}
+        -Dapiman.gateway.backend-keystore=${GATEWAY_BACKEND_KEYSTORE}
+        -Dapiman.gateway.backend-keystore.password=${GATEWAY_BACKEND_KEYSTORE_PASSWORD}
+        -Dapiman.gateway.backend-truststore=${GATEWAY_BACKEND_KEYSTORE}
+        -Dapiman.gateway.backend-truststore.password=${GATEWAY_BACKEND_KEYSTORE_PASSWORD}
     volumes:
       - type: bind
         source: "$PWD/data/conf-es.json"
@@ -105,6 +111,7 @@ services:
         max-size: "10m"
         max-file: "10"
         mode: non-blocking
+    restart: unless-stopped
     labels:
       # - traefik.http.routers.gateway-router.tls=true
       - traefik.http.routers.gateway-router.entrypoints=http
@@ -116,7 +123,6 @@ services:
       # - traefik.http.routers.gateway-management-router.rule=Host(`gateway-management.${APIMAN_HOSTNAME}`)
       # - traefik.http.routers.gateway-management-router.service=gateway-management-service
       # - traefik.http.services.gateway-management-service.loadbalancer.server.port=8081
-    restart: always
 
   postgres:
     image: postgres:14.5
@@ -142,13 +148,13 @@ services:
         max-size: "10m"
         max-file: "10"
         mode: non-blocking
+    restart: unless-stopped
     #labels:
     #  - traefik.http.routers.postgres-router.tls=true
     #  - traefik.http.routers.postgres-router.entrypoints=https
     #  - traefik.http.routers.postgres-router.rule=Host(`postgres.${APIMAN_HOSTNAME}`)
     #  - traefik.http.routers.postgres-router.service=postgres-service
     #  - traefik.http.services.postgres-service.loadbalancer.server.port=5432
-    restart: always
 
   elasticsearch:
     image: elasticsearch:7.17.6
@@ -179,12 +185,12 @@ services:
         max-size: "10m"
         max-file: "10"
         mode: non-blocking
-    restart: always
     healthcheck:
       test: curl -s http://elasticsearch:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
       interval: 30s
       timeout: 10s
       retries: 5
+    restart: unless-stopped
     labels:
       - traefik.http.routers.elasticsearch-router.tls=true
       - traefik.http.routers.elasticsearch-router.entrypoints=https
@@ -218,7 +224,9 @@ services:
       - 'KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USERNAME}'
       - 'KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}'
       # Keycloak networking config
-      - 'KC_HOSTNAME=auth.${APIMAN_HOSTNAME}'
+      #- 'KC_HOSTNAME=auth.${APIMAN_HOSTNAME}'
+      - 'KC_HOSTNAME_STRICT=false'
+      - 'KC_HTTP_ENABLED=true'
       - 'KC_HTTP_PORT=8080'
       - 'KC_HOSTNAME_PORT=8080'
       - 'KC_PROXY=edge'
@@ -244,16 +252,17 @@ services:
         max-size: "10m"
         max-file: "10"
         mode: non-blocking
+    restart: unless-stopped
     labels:
       #- traefik.http.routers.keycloak-router.tls=true
       - traefik.http.routers.keycloak-router.entrypoints=http
       - traefik.http.routers.keycloak-router.rule=Host(`auth.${APIMAN_HOSTNAME}`)
       - traefik.http.routers.keycloak-router.service=keycloak-service
       - traefik.http.services.keycloak-service.loadbalancer.server.port=8080
-    restart: always
 
   mock-mail-server:
     image: maildev/maildev:2.0.5
+    restart: unless-stopped
     labels:
       - traefik.http.routers.mailserver-router.entrypoints=http
       - traefik.http.routers.mailserver-router.rule=Host(`mail.${APIMAN_HOSTNAME}`)
@@ -278,6 +287,7 @@ services:
     #  - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
     #  # middleware redirect
     #  - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
 volumes:
   ui_logs:
     driver: local

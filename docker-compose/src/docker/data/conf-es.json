@@ -20,16 +20,16 @@
         // only for https
         "allowSelfSigned": "${allowSelfSigned:-true}}",
         "allowAnyHost": "${allowAnyHost:-true}}"
-//        "truststore": {
-//          "path": "${apiman.gateway-es-truststore:-/opt/java/openjdk/lib/security/cacerts}",
-//          "password": "${apiman.truststore-password:-changeit}"
-//        },
-//        "keystore": {
-//          "path": "${apiman.gateway-es-keystore:-/opt/java/openjdk/lib/security/cacerts}",
-//          "password": "${apiman.truststore-password:-changeit}"
-//        }
-//        "cache-polling-interval": 15
-//        "indexPrefix": ""
+        // "truststore": {
+        //   "path": "${apiman.es.truststore:-/opt/java/openjdk/lib/security/cacerts}",
+        //   "password": "${apiman.truststore.password:-changeit}"
+        // },
+        // "keystore": {
+        //   "path": "${apiman.es.keystore:-/opt/java/openjdk/lib/security/cacerts}",
+        //   "password": "${apiman.keystore.password:-changeit}"
+        // }
+        // "cache-polling-interval": 15
+        // "indexPrefix": ""
       }
     }
   },
@@ -37,16 +37,16 @@
   // Gateway error writer
   // A "trace" version of the error writer - comment out/remove this to suppress stack traces
   // in the JSON/XML payload returned by the gateway when an error occurs.
-  //  "writers": {
-  //    "error": {
-  //      "class": "io.apiman.gateway.engine.impl.TracePolicyErrorWriter",
-  //      "config": {}
-  //    }//,
-  // "policy-failure": {
-  //   "class": "",
-  //   "config": {}
-  // }
-  //  },
+  "writers": {
+    "error": {
+      "class": "io.apiman.gateway.engine.impl.TracePolicyErrorWriter",
+      "config": {}
+    }
+    // "policy-failure": {
+    //   "class": "",
+    //   "config": {}
+    // }
+  },
 
   "encrypter": {
     "class": "io.apiman.gateway.engine.impl.DefaultDataEncrypter",
@@ -56,8 +56,8 @@
   "plugin-registry": {
     "class": "io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry",
     "config": {
-      //"pluginRepositories":["https://url.to.maven.repo"],
-      //"pluginsDir": "/path/to/your/plugin_dir"
+      // "pluginRepositories":["https://url.to.maven.repo"],
+      // "pluginsDir": "/path/to/your/plugin_dir"
     }
   },
 
@@ -79,14 +79,14 @@
         //"allowAnyHost": "${allowAnyHost:-true}",
 
         // Trust store contains certificate(s) trusted by gateway.
-        //"trustStore": "${apiman.gateway-backend-truststore:-/opt/java/openjdk/lib/security/cacerts}",
-        //"trustStorePassword": "${apiman.truststore-password:-changeit}",
+        //"trustStore": "${apiman.gateway.backend-truststore:-/opt/java/openjdk/lib/security/cacerts}",
+        //"trustStorePassword": "${apiman.gateway.backend-truststore.password:-changeit}",
 
         // Key store contains gateway's keys (including private components: keep it safe).
-        //"keyStore": "${apiman.gateway-backend-keystore:-/opt/java/openjdk/lib/security/cacerts}",
-        //"keyStorePassword": "${apiman.truststore-password:-changeit}"
+        //"keyStore": "${apiman.gateway.backend-keystore:-/opt/java/openjdk/lib/security/cacerts}",
+        //"keyStorePassword": "${apiman.gateway.backend-keystore.password:-changeit}"
 
-        // By default all keys can be used (will try all). If alias list provided, will only attempt to use listed keys.
+        // By default, all keys can be used (will try all). If alias list provided, will only attempt to use listed keys.
         // "keyAliases": "mykey,myotherkey",
 
         // Allowed TLS/SSL protocols and ciphers suites as CSV. Availability will vary depending on your JVM impl.
@@ -127,14 +127,14 @@
         // only for https
         "allowSelfSigned": "${allowSelfSigned:-false}}",
         "allowAnyHost": "${allowAnyHost:-false}}"
-//        "truststore": {
-//          "path": "${apiman.gateway-es-truststore:-/opt/java/openjdk/lib/security/cacerts}",
-//          "password": "${apiman.truststore-password:-changeit}"
-//        },
-//        "keystore": {
-//          "path": "${apiman.gateway-es-keystore:-/opt/java/openjdk/lib/security/cacerts}",
-//          "password": "${apiman.truststore-password:-changeit}"
-//        }
+        // "truststore": {
+        //   "path": "${apiman.es.truststore:-/opt/java/openjdk/lib/security/cacerts}",
+        //   "password": "${apiman.truststore.password:-changeit}"
+        // },
+        // "keystore": {
+        //   "path": "${apiman.es.keystore:-/opt/java/openjdk/lib/security/cacerts}",
+        //   "password": "${apiman.keystore.password:-changeit}"
+        // }
       },
       // You can collect custom headers into Elasticsearch!
       "custom": {
@@ -166,12 +166,12 @@
           "allowSelfSigned": "${allowSelfSigned:-false}}",
           "allowAnyHost": "${allowAnyHost:-false}}"
           //"truststore": {
-          //  "path": "${apiman.gateway-es-truststore:-/opt/java/openjdk/lib/security/cacerts}",
-          //  "password": "${apiman.truststore-password:-changeit}"
+          //  "path": "${apiman.es.truststore:-/opt/java/openjdk/lib/security/cacerts}",
+          //  "password": "${apiman.truststore.password:-changeit}"
           //},
           //"keystore": {
-          //  "path": "${apiman.gateway-es-keystore:-/opt/java/openjdk/lib/security/cacerts}",
-          //  "password": "${apiman.truststore-password:-changeit}"
+          //  "path": "${apiman.es.keystore:-/opt/java/openjdk/lib/security/cacerts}",
+          //  "password": "${apiman.truststore.password:-changeit}"
           //}
         }
       }
@@ -195,12 +195,12 @@
           "allowSelfSigned": "${allowSelfSigned:-false}}",
           "allowAnyHost": "${allowAnyHost:-false}}"
           //"truststore": {
-          //  "path": "${apiman.gateway-es-truststore:-/opt/java/openjdk/lib/security/cacerts}",
-          //  "password": "${apiman.truststore-password:-changeit}"
+          //  "path": "${apiman.es.truststore:-/opt/java/openjdk/lib/security/cacerts}",
+          //  "password": "${apiman.truststore.password:-changeit}"
           //},
           //"keystore": {
-          //  "path": "${apiman.gateway-es-keystore:-/opt/java/openjdk/lib/security/cacerts}",
-          //  "password": "${apiman.truststore-password:-changeit}"
+          //  "path": "${apiman.es.keystore:-/opt/java/openjdk/lib/security/cacerts}",
+          //  "password": "${apiman.truststore.password:-changeit}"
           //}
         }
       }
@@ -263,67 +263,65 @@
 
   // You can force a particular endpoint to be reported here (e.g.
   // if you have some clustered setup with exotic DNS setup)
-  "publicEndpoint": "${apiman.public-endpoint}",
+  "publicEndpoint": "${apiman.gateway.public-endpoint}",
 
   // Verticle configuration
   // Port - The port a given verticle listens on (where relevant)
   // Count - Number of given verticle type launched, or "auto" for automatic.
   "verticles": {
     "http": {
-      "port": "${verticles.http.port:-8080}",
-      "count": "${verticles.http.count:-auto}"
+      "port": "${apiman.gateway.http.port:-8080}",
+      "count": "${apiman.gateway.http.count:-auto}"
     },
     // Configure the following SSL section to enable SSL/TLS.
     "https": {
-      "port": "${verticles.https.port:-8443}",
-      "count": "${verticles.https.count:-0}"
+      "port": "${apiman.gateway.https.port:-8443}",
+      "count": "${apiman.gateway.https.count:-0}"
     },
     // The Gateway API; this will be the port to set in the UI.
     // e.g. http://localhost:8081 or https://gateway.machine:8081
     // Configure the following SSL section to enable SSL/TLS.
     "api": {
-      "protocol": "${verticles.api.protocol:-http}",
-      "port": 8081,
+      "protocol": "${apiman.gateway-api.protocol:-http}",
+      "port": "${apiman.gateway-api.port:-8081}",
       "count": 1
     }
   },
 
   // SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
-//  "ssl": {
-//    "keystore": {
-//      "path": "${apiman.gateway-client-keystore:-/your/keystore/here}",
-//      "password": "${apiman.truststore-password:-changeit}"
-//    },
-//    "truststore": {
-//      "path": "${apiman.gateway-client-truststore:-/opt/java/openjdk/lib/security/cacerts}",
-//      "password": "${apiman.truststore-password:-changeit}"
-//    },
-//    "allowedProtocols": "${apiman.gateway-allowedProtocols}"
-//  },
+  //  "ssl": {
+  //    "keystore": {
+  //      "path": "${apiman.gateway.client-keystore:-/your/keystore/here}",
+  //      "password": "${apiman.gateway.client-keystore.password:-changeit}"
+  //    },
+  //    "truststore": {
+  //      "path": "${apiman.gateway.client-truststore:-/opt/java/openjdk/lib/security/cacerts}",
+  //      "password": "${apiman.gateway.client-truststore.password:-changeit}"
+  //    },
+  //    "allowedProtocols": "${apiman.gateway.allowedProtocols}"
+  //  },
 
-  // Gateway API Authentication. See documentation for further possibilities..
+  // Gateway API Authentication. See documentation for further possibilities.
   "auth": {
     "type": "keycloak",
     "config": {
       "flowType": "PASSWORD",
       "requiredRole": "realm:apipublisher",
-      // Paste and overwrite your Keycloak config here.
-      "realm": "${keycloak.realm:-apiman}",
-      "realm-public-key": "${keycloak.realm-public-key}",
-      "auth-server-url": "${keycloak.auth.url}",
-      "ssl-required": "external",
-      "disable-trust-manager": true,
-      "allow-any-hostname" : "${allowAnyHost:-true}",
+      // Override with System Properties, or paste and overwrite your Client Keycloak config here.
+      "auth-server-url": "${apiman.auth.url:-http://localhost:8085}", // Location of your keycloak server.
+      "realm": "${apiman.auth.realm:-apiman}",
       "resource": "apiman-gateway-api",
-      // A limitation in the current OAuth2 implementation means a credentials section is required
-      // even if your client is not set to "confidential". Leave this dummy section if you're using non-confidential.
       "credentials": {
-        "secret": "${keycloak.gateway.secret}"
+        "secret": "${apiman.auth.gateway.secret:-password}"
       },
-      "truststore": "${apiman.gateway-keycloak-truststore:-/opt/java/openjdk/lib/security/cacerts}",
-      "truststore-password": "${apiman.truststore-password:-changeit}"
-//      "client-keystore": "${apiman.gateway-keycloak-keystore:-/your/keystore/here}",
-//      "client-keystore-password": "${apiman.truststore-password:-changeit}"
+      // End paste here
+      // "truststore": "${apiman.keycloak.truststore:-/opt/java/openjdk/lib/security/cacerts}",
+      // "truststore-password": "${apiman.keycloak.truststore.password:-changeit}"
+      // "client-keystore": "${apiman.keycloak.keystore:-/your/keystore/here}",
+      // "client-keystore-password": "${apiman.keycloak.keystore.password:-changeit}"
+      "ssl-required": "none",
+      "disable-trust-manager": true,
+      "allow-any-hostname" : true
     }
   },
 
