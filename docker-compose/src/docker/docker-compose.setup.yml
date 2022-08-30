@@ -4,5 +4,6 @@ services:
     image: jbangdev/jbang-action
     working_dir: "/ws"
     command: setup.java
+    restart: "no"
     volumes:
       - "$PWD:/ws"

@@ -8,7 +8,8 @@ services:
       - keycloak
     environment:
       # Keycloak SSO config
-      - "APIMAN_AUTH_URL=${KEYCLOAK_URL}"
+      - "APIMAN_AUTH_URL=${KEYCLOAK_PRIVATE_ENDPOINT}"
+      - "APIMAN_AUTH_PUBLIC_URL=${KEYCLOAK_PUBLIC_ENDPOINT}"
       - "APIMAN_AUTH_REALM=${KEYCLOAK_REALM}"
       - "APIMAN_AUTH_API_SECRET=${KEYCLOAK_APIMAN_API_SECRET}"
       - "APIMAN_AUTH_UI_SECRET=${KEYCLOAK_APIMAN_UI_SECRET}"
@@ -58,9 +59,6 @@ services:
 
   apiman-gateway:
     image: apiman/vertx-gateway:${project.version}
-    # ports:
-    #   - '${APIMAN_GATEWAY_PORT}:${APIMAN_GATEWAY_PORT}'
-    #   - '${APIMAN_GATEWAY_MANAGEMENT_PORT}:8081'
     depends_on:
       elasticsearch:
           condition: service_healthy
@@ -73,12 +71,11 @@ services:
         -Dapiman.es.username=
         -Dapiman.es.password=
         -Dapiman.es.timeout=10000
-        -Dapiman.auth.url=${KEYCLOAK_URL}
+        -Dapiman.auth.url=${KEYCLOAK_PRIVATE_ENDPOINT}
         -Dapiman.auth.realm=${KEYCLOAK_REALM}
         -Dapiman.auth.gateway.secret=${KEYCLOAK_GATEWAY_SECRET}
         -DallowSelfSigned=${SELF_SIGNED}
         -DallowAnyHost=${SELF_SIGNED}
-        -Dapiman-manager-ui.api.endpoint=${APIMAN_MANAGER_API_ENDPOINT}
         -Dapiman.public-endpoint=${APIMAN_GATEWAY_PUBLIC_ENDPOINT}
         -DcachingPolicy.maxCacheSize=${MAX_CACHE_SIZE_IN_MB}
         -Dapiman.gateway-allowedProtocols=${TLS_ALLOWED_PROTOCOLS:-}
@@ -206,8 +203,6 @@ services:
     entrypoint: [ '/bin/bash', '-c' ]
     # ./bin/kc.sh build => build and deploy custom themes, providers, etc.
     # ./bin/kc.sh start-dev --import-realm => import Apiman realm, if not already imported.
-    # ports:
-    #   - "8080:8080"
     command:
       - |
         cd /opt/keycloak
