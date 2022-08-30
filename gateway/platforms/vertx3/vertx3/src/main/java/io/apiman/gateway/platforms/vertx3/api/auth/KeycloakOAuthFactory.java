@@ -103,26 +103,31 @@ public class KeycloakOAuthFactory {
 
                 OAuth2ClientOptions options = buildClientOptions(authConfig);
                 KeycloakAuth.discover(vertx, options, (AsyncResult<OAuth2Auth> result) -> {
-                    var oauth2 = result.result();
-                    oauth2.authenticate(params, tokenResult -> {
-                        if (tokenResult.succeeded()) {
-                            log.debug("OAuth2 Keycloak exchange succeeded.");
-                            AccessToken token = (AccessToken) tokenResult.result();
-                            token.isAuthorised(role, res -> {
-                                if (res.result()) {
-                                    context.next();
-                                } else {
-                                    String message = MessageFormat.format("User {0} does not have required role: {1}.", username, role);
-                                    log.error(message);
-                                    handle403(context, "insufficient_scope", message);
-                                }
-                            });
-                        } else {
-                            String message = tokenResult.cause().getMessage();
-                            log.error("Access Token Error: {0}.", message);
-                            handle401(context, "invalid_token", message);
-                        }
-                    });
+                    if (result.succeeded()) {
+                        OAuth2Auth oauth2 = result.result();
+                        oauth2.authenticate(params, tokenResult -> {
+                            if (tokenResult.succeeded()) {
+                                log.debug("OAuth2 Keycloak exchange succeeded.");
+                                AccessToken token = (AccessToken) tokenResult.result();
+                                token.isAuthorised(role, res -> {
+                                    if (res.result()) {
+                                        context.next();
+                                    } else {
+                                        String message = MessageFormat.format("User {0} does not have required role: {1}.", username, role);
+                                        log.error(message);
+                                        handle403(context, "insufficient_scope", message);
+                                    }
+                                });
+                            } else {
+                                String message = tokenResult.cause().getMessage();
+                                log.error("Access Token Error: {0}.", message);
+                                handle401(context, "invalid_token", message);
+                            }
+                        });
+                    } else {
+                        log.error("Failure during discovery", result.cause());
+                        handle400(context, result.cause().getMessage());
+                    }
                 });
             }
 
@@ -198,7 +203,7 @@ public class KeycloakOAuthFactory {
 
         // HTTP Client Options
         if (config.containsKey("ssl-required")) {
-            if (!config.getString("ssl-required").toLowerCase().equals("none")) {
+            if (!config.getString("ssl-required").equalsIgnoreCase("none")) {
                 options.setSsl(true);
             }
         }
