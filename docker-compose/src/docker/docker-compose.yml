@@ -225,7 +225,7 @@ services:
       - 'KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USERNAME}'
       - 'KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}'
       # Keycloak networking config
-      #- 'KC_HOSTNAME=auth.${APIMAN_HOSTNAME}'
+      - 'KC_HOSTNAME=auth.${APIMAN_HOSTNAME}'
       - 'KC_HOSTNAME_STRICT=false'
       - 'KC_HTTP_ENABLED=true'
       - 'KC_HTTP_PORT=8080'
