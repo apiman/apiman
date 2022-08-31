@@ -119,7 +119,15 @@
                     <named-formatter name="PATTERN"/>
                 </formatter>
                 <file relative-to="jboss.server.log.dir" path="server.log"/>
-                <suffix value=".yyyy-MM-dd"/>
+                <suffix value=".yyyy-MM-dd.zip"/>
+                <append value="true"/>
+            </periodic-rotating-file-handler>
+            <periodic-rotating-file-handler name="APIMAN-METRICS-LOGS-ROTATING-HANDLER" autoflush="false">
+                <formatter>
+                    <named-formatter name="PLAIN"/>
+                </formatter>
+                <file relative-to="jboss.server.log.dir" path="metrics.log"/>
+                <suffix value=".yyyy-MM-dd.zip"/>
                 <append value="true"/>
             </periodic-rotating-file-handler>
             <logger category="com.arjuna">
@@ -136,6 +144,12 @@
             </logger>
             <logger category="io.apiman">
                 <level name="INFO"/>
+            </logger>
+            <logger category="MetricsLogger" use-parent-handlers="false">
+                <level name="INFO"/>
+                <handlers>
+                    <handler name="APIMAN-METRICS-LOGS-ASYNC-HANDLER"/>
+                </handlers>
             </logger>
             <root-logger>
                 <level name="INFO"/>
@@ -154,6 +168,17 @@
             <!--            <formatter name="JSON">-->
             <!--                <json-formatter/>-->
             <!--            </formatter>-->
+            <formatter name="PLAIN">
+                <pattern-formatter pattern="%s%e%n"/>
+            </formatter>
+            <async-handler name="APIMAN-METRICS-LOGS-ASYNC-HANDLER">
+                <level name="INFO"/>
+                <queue-length value="2048"/>
+                <overflow-action value="discard"/>
+                <subhandlers>
+                    <handler name="APIMAN-METRICS-LOGS-ROTATING-HANDLER"/>
+                </subhandlers>
+            </async-handler>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:bean-validation:1.0"/>
         <subsystem xmlns="urn:jboss:domain:core-management:1.0"/>

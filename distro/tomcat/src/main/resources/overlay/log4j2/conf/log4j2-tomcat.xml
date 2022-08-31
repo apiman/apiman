@@ -31,6 +31,29 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
       </DefaultRolloverStrategy>
     </RollingRandomAccessFile>
 
+    <!-- Metrics logger -->
+    <RollingRandomAccessFile
+      name="RollingMetricsRandomAccessFile"
+      fileName="${env:CATALINA_HOME}/logs/apiman/metrics.log"
+      filePattern="${env:CATALINA_HOME}/logs/apiman/metrics-%d{dd-MM-yyyy}-%i.log.zip"
+      immediateFlush="false">
+      <PatternLayout>
+        <Pattern>%m%n</Pattern>
+      </PatternLayout>
+      <!-- JSON logging can be enabled by changing to JSONLayout. See https://logging.apache.org/log4j/log4j-2.2/manual/layouts.html#JSONLayout -->
+      <!-- <JSONLayout /> -->
+      <Policies>
+        <TimeBasedTriggeringPolicy modulate="true"/>
+        <SizeBasedTriggeringPolicy size="2 GB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10">
+        <Delete basePath="${env:CATALINA_HOME}/logs/apiman" maxDepth="1">
+          <IfFileName glob="metrics*.log" />
+          <IfLastModified age="7d" />
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingRandomAccessFile>
+
     <Console name="Console-Appender" target="SYSTEM_OUT" immediateFlush="false">
       <PatternLayout>
         <pattern>
@@ -46,6 +69,10 @@ See more detail at: https://logging.apache.org/log4j/2.x/manual/async.html
     <AsyncLogger level="${sys:apiman-logLevel:-info}" name="io.apiman" additivity="false">
       <AppenderRef ref="RollingRandomAccessFile"/>
       <AppenderRef ref="Console-Appender"/>
+    </AsyncLogger>
+    <!-- Apiman metrics disk-based logging (if you use it) -->
+    <AsyncLogger level="info" name="MetricsLogger" additivity="false">
+      <AppenderRef ref="RollingMetricsRandomAccessFile"/>
     </AsyncLogger>
     <!-- You can add your own loggers with separate levels, etc. -->
     <!-- <AsyncLogger level="info" name="com.example.yourpackage" additivity="false">

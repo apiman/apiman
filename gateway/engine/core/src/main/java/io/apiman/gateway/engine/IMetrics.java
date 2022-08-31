@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine;
 
+import io.apiman.common.logging.ApimanLoggerFactory;
+import io.apiman.common.logging.IApimanLogger;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.metrics.RequestMetric;
@@ -28,6 +30,7 @@ import io.apiman.gateway.engine.metrics.RequestMetric;
  * @author marc@blackparrotlabs.io
  */
 public interface IMetrics {
+    IApimanLogger METRICS_LOGGER = ApimanLoggerFactory.getLogger("MetricsLogger");
 
     /**
      * Records the metrics for a single request.  Most implementations will likely
