@@ -17,11 +17,14 @@ package io.apiman.gateway.engine.es;
 
 import io.apiman.common.config.options.GenericOptionsParser;
 import io.apiman.common.config.options.Predicates;
+import io.apiman.common.config.options.exceptions.InvalidOptionConfigurationException;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
 
 /**
@@ -34,6 +37,7 @@ public class EsMetricsClientOptionsParser extends GenericOptionsParser {
     private List<String> requestHeaders = Collections.emptyList();
     private List<String> responseHeaders = Collections.emptyList();
     private List<String> queryParams = Collections.emptyList();
+    private Set<WriteTo> writeTo = Set.of(WriteTo.REMOTE); // Preserve existing default behaviour.
 
     public EsMetricsClientOptionsParser(Map<String, String> options) {
         super(options);
@@ -55,6 +59,25 @@ public class EsMetricsClientOptionsParser extends GenericOptionsParser {
         if (!joinedQueryParams.isEmpty()) {
             queryParams = Arrays.asList(joinedQueryParams.split(","));
         }
+
+        // TODO(msavy): consider adding #getArray into GenericOptionsParser
+        String joinedWriteTo = super.getString(keys("write-to"), "REMOTE", Predicates.anyOk(), "");
+        if (!joinedWriteTo.isEmpty()) {
+            Set<WriteTo> writeTo = new HashSet<>();
+            for (String rawEnum : joinedWriteTo.strip().split(",")) {
+                try {
+                    writeTo.add(WriteTo.valueOf(rawEnum.strip().toUpperCase()));
+                } catch(RuntimeException rte) {
+                    throw InvalidOptionConfigurationException.constraintFailure(
+                            "write-to",
+                            "enum",
+                            rawEnum,
+                            "Valid inputs are: " + Arrays.toString(WriteTo.values())
+                    );
+                }
+            }
+            this.writeTo = writeTo;
+        }
     }
 
     public List<String> getRequestHeaders() {
@@ -69,12 +92,21 @@ public class EsMetricsClientOptionsParser extends GenericOptionsParser {
         return queryParams;
     }
 
+    public Set<WriteTo> getWriteTo() {
+        return writeTo;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", EsMetricsClientOptionsParser.class.getSimpleName() + "[", "]")
                 .add("requestHeaders=" + requestHeaders)
                 .add("responseHeaders=" + responseHeaders)
                 .add("queryParams=" + queryParams)
+                .add("writeTo=" + writeTo)
                 .toString();
+    }
+
+    public enum WriteTo {
+        REMOTE, LOG
     }
 }
