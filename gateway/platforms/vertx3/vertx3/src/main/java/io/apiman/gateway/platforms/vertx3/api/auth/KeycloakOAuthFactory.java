@@ -17,6 +17,7 @@
 package io.apiman.gateway.platforms.vertx3.api.auth;
 
 import io.apiman.common.util.Basic;
+import io.apiman.gateway.platforms.vertx3.api.auth.KeycloakDiscovery.MultiSiteOAuth2ClientOptions;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.verticles.ApiVerticle;
 
@@ -39,9 +40,9 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.oauth2.AccessToken;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.ext.auth.oauth2.OAuth2ClientOptions;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
 import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
+import io.vertx.ext.auth.oauth2.rbac.KeycloakRBAC;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.AuthHandler;
@@ -101,10 +102,11 @@ public class KeycloakOAuthFactory {
                         .put("username", username)
                         .put("password", password);
 
-                OAuth2ClientOptions options = buildClientOptions(authConfig);
-                KeycloakAuth.discover(vertx, options, (AsyncResult<OAuth2Auth> result) -> {
+                MultiSiteOAuth2ClientOptions options = buildClientOptions(authConfig);
+                KeycloakDiscovery.discover(vertx, options, (AsyncResult<OAuth2Auth> result) -> {
                     if (result.succeeded()) {
                         OAuth2Auth oauth2 = result.result();
+                        oauth2.rbacHandler(KeycloakRBAC.create(options));
                         oauth2.authenticate(params, tokenResult -> {
                             if (tokenResult.succeeded()) {
                                 log.debug("OAuth2 Keycloak exchange succeeded.");
@@ -170,9 +172,10 @@ public class KeycloakOAuthFactory {
         return EnumUtils.getEnum(OAuth2FlowType.class, flowType.toUpperCase());
     }
 
-    private static OAuth2ClientOptions buildClientOptions(JsonObject config) {
-        OAuth2ClientOptions options = new OAuth2ClientOptions();
+    private static MultiSiteOAuth2ClientOptions buildClientOptions(JsonObject config) {
+        MultiSiteOAuth2ClientOptions options = new MultiSiteOAuth2ClientOptions();
         String authServer = config.getString("auth-server-url");
+        String authServerPublic = config.getString("auth-server-public-url");
         String realmName = config.getString("realm");
         String clientId = config.getString("resource");
 
@@ -191,6 +194,7 @@ public class KeycloakOAuthFactory {
 
         options.setFlow(OAuth2FlowType.PASSWORD);
         options.setSite(uri.toString());
+        options.addAllowedIssuer(authServerPublic);
         options.setClientID(clientId);
 
         if (config.containsKey("credentials") && config.getJsonObject("credentials").containsKey("secret")) {
