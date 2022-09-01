@@ -79,22 +79,22 @@ services:
         -DallowAnyHost=${SELF_SIGNED}
         -DcachingPolicy.maxCacheSize=${MAX_CACHE_SIZE_IN_MB}
         -Dapiman.gateway-allowedProtocols=${TLS_ALLOWED_PROTOCOLS:-}
-        -Dapiman.es.keystore=${GATEWAY_ES_KEYSTORE}
-        -Dapiman.es.keystore.password=${GATEWAY_ES_KEYSTORE_PASSWORD}
-        -Dapiman.es.truststore=${GATEWAY_ES_TRUSTSTORE}
-        -Dapiman.es.truststore.password=${GATEWAY_ES_TRUSTSTORE_PASSWORD}
-        -Dapiman.keycloak.keystore=${GATEWAY_KEYCLOAK_KEYSTORE}
-        -Dapiman.keycloak.keystore.password=${GATEWAY_KEYCLOAK_KEYSTORE_PASSWORD}
-        -Dapiman.keycloak.truststore=${GATEWAY_KEYCLOAK_TRUSTSTORE}
-        -Dapiman.keycloak.truststore.password=${GATEWAY_KEYCLOAK_TRUSTSTORE_PASSWORD}
-        -Dapiman.gateway.client-keystore=${GATEWAY_CLIENT_KEYSTORE}
-        -Dapiman.gateway.client-keystore.password=${GATEWAY_CLIENT_KEYSTORE_PASSWORD}
-        -Dapiman.gateway.client-truststore=${GATEWAY_CLIENT_TRUSTSTORE}
-        -Dapiman.gateway.client-truststore.password=${GATEWAY_CLIENT_TRUSTSTORE_PASSWORD}
-        -Dapiman.gateway.backend-keystore=${GATEWAY_BACKEND_KEYSTORE}
-        -Dapiman.gateway.backend-keystore.password=${GATEWAY_BACKEND_KEYSTORE_PASSWORD}
-        -Dapiman.gateway.backend-truststore=${GATEWAY_BACKEND_TRUSTSTORE}
-        -Dapiman.gateway.backend-truststore.password=${GATEWAY_BACKEND_TRUSTSTORE_PASSWORD}
+        -Dapiman.es.keystore=${GATEWAY_ES_KEYSTORE:-}
+        -Dapiman.es.keystore.password=${GATEWAY_ES_KEYSTORE_PASSWORD:-}
+        -Dapiman.es.truststore=${GATEWAY_ES_TRUSTSTORE:-}
+        -Dapiman.es.truststore.password=${GATEWAY_ES_TRUSTSTORE_PASSWORD:-}
+        -Dapiman.keycloak.keystore=${GATEWAY_KEYCLOAK_KEYSTORE:-}
+        -Dapiman.keycloak.keystore.password=${GATEWAY_KEYCLOAK_KEYSTORE_PASSWORD:-}
+        -Dapiman.keycloak.truststore=${GATEWAY_KEYCLOAK_TRUSTSTORE:-}
+        -Dapiman.keycloak.truststore.password=${GATEWAY_KEYCLOAK_TRUSTSTORE_PASSWORD:-}
+        -Dapiman.gateway.client-keystore=${GATEWAY_CLIENT_KEYSTORE:-}
+        -Dapiman.gateway.client-keystore.password=${GATEWAY_CLIENT_KEYSTORE_PASSWORD:-}
+        -Dapiman.gateway.client-truststore=${GATEWAY_CLIENT_TRUSTSTORE:-}
+        -Dapiman.gateway.client-truststore.password=${GATEWAY_CLIENT_TRUSTSTORE_PASSWORD:-}
+        -Dapiman.gateway.backend-keystore=${GATEWAY_BACKEND_KEYSTORE:-}
+        -Dapiman.gateway.backend-keystore.password=${GATEWAY_BACKEND_KEYSTORE_PASSWORD:-}
+        -Dapiman.gateway.backend-truststore=${GATEWAY_BACKEND_TRUSTSTORE:-}
+        -Dapiman.gateway.backend-truststore.password=${GATEWAY_BACKEND_TRUSTSTORE_PASSWORD:-}
     volumes:
       - type: bind
         source: "$PWD/data/conf-es.json"
