@@ -65,7 +65,8 @@ services:
     environment:
      # You can add these below (and modify conf-es.json) to customise SSL/TLS
       - >-
-        APIMAN_GATEWAY_OPTS=-Dapiman.es.host=${ELASTICSEARCH_HOST}
+        APIMAN_GATEWAY_OPTS=-Dapiman.gateway.public-endpoint=${APIMAN_GATEWAY_PUBLIC_ENDPOINT}
+        -Dapiman.es.host=${ELASTICSEARCH_HOST}
         -Dapiman.es.protocol=${ELASTICSEARCH_PROTOCOL}
         -Dapiman.es.port=${ELASTICSEARCH_PORT}
         -Dapiman.es.username=
@@ -76,7 +77,6 @@ services:
         -Dapiman.auth.gateway.secret=${KEYCLOAK_GATEWAY_SECRET}
         -DallowSelfSigned=${SELF_SIGNED}
         -DallowAnyHost=${SELF_SIGNED}
-        -Dapiman.public-endpoint=${APIMAN_GATEWAY_PUBLIC_ENDPOINT}
         -DcachingPolicy.maxCacheSize=${MAX_CACHE_SIZE_IN_MB}
         -Dapiman.gateway-allowedProtocols=${TLS_ALLOWED_PROTOCOLS:-}
         -Dapiman.es.keystore=${GATEWAY_ES_KEYSTORE}
