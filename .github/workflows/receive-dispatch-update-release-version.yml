@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Default setup items
-        run: bash .git/workflows/support/setup.sh
+        run: bash .github/workflows/support/setup.sh
 
       - name: Update release version in docker-release flow
         run: echo ${{ github.event.client_payload.release-version }} > .github/workflows/RELEASE_VERSION
