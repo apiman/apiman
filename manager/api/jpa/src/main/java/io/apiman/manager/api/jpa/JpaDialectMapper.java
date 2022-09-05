@@ -30,8 +30,6 @@ import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.Oracle9iDialect;
 import org.hibernate.dialect.OracleDialect;
-import org.hibernate.dialect.PostgreSQL81Dialect;
-import org.hibernate.dialect.PostgreSQL82Dialect;
 import org.hibernate.dialect.PostgreSQL91Dialect;
 import org.hibernate.dialect.PostgreSQL92Dialect;
 import org.hibernate.dialect.PostgreSQL93Dialect;
@@ -70,24 +68,22 @@ public class JpaDialectMapper {
         DB_TYPE_MAP.put(Oracle8iDialect.class.getName(),  NamePair.of("oracle19", Oracle8iDialect.class.getName()));
         DB_TYPE_MAP.put(Oracle9iDialect.class.getName(),  NamePair.of("oracle19", Oracle9iDialect.class.getName()));
 
-        DB_TYPE_MAP.put("postgresql9",  NamePair.of("postgresql9", ApimanPostgreSQLDialect.class.getName()));
-        DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(),  NamePair.of("postgresql9",ApimanPostgreSQLDialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQLDialect.class.getName(), NamePair.of("postgresql9", PostgreSQLDialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL81Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL81Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL82Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL82Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL9Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL9Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL91Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL91Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL92Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL92Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL93Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL93Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL94Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL94Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL95Dialect.class.getName(), NamePair.of("postgresql9", PostgreSQL95Dialect.class.getName()));
+        DB_TYPE_MAP.put("postgresql10",  NamePair.of("postgresql10", ApimanPostgreSQLDialect.class.getName()));
+        DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(),  NamePair.of("postgresql10",ApimanPostgreSQLDialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQLDialect.class.getName(), NamePair.of("postgresql10", PostgreSQLDialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL9Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL9Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL91Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL91Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL92Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL92Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL93Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL93Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL94Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL94Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL95Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL95Dialect.class.getName()));
 
         DB_TYPE_MAP.put("mssql15", NamePair.of(SQLServerDialect.class.getName(), "mssql15"));
         DB_TYPE_MAP.put(SQLServerDialect.class.getName(), NamePair.of("mssql15", SQLServerDialect.class.getName()));
         DB_TYPE_MAP.put(SQLServer2012Dialect.class.getName(), NamePair.of("mssql15", SQLServer2012Dialect.class.getName()));
 
     }
-    
+
     private final DataSource ds;
     private final NamePair namePair;
 
@@ -96,13 +92,13 @@ public class JpaDialectMapper {
      */
     public JpaDialectMapper(String dsJndiLocation, String hibernateDialect) {
         if (dsJndiLocation == null) {
-            throw new RuntimeException("Missing datasource JNDI location from JPA storage configuration."); 
+            throw new RuntimeException("Missing datasource JNDI location from JPA storage configuration.");
         }
         ds = lookupDS(dsJndiLocation);
 
         this.namePair = DB_TYPE_MAP.get(hibernateDialect);
         if (namePair == null) {
-            throw new RuntimeException("Unknown hibernate dialect configured: " + hibernateDialect); 
+            throw new RuntimeException("Unknown hibernate dialect configured: " + hibernateDialect);
         }
     }
 
@@ -137,7 +133,7 @@ public class JpaDialectMapper {
         }
 
         if (ds == null) {
-            throw new RuntimeException("Datasource not found: " + dsJndiLocation); 
+            throw new RuntimeException("Datasource not found: " + dsJndiLocation);
         }
         return ds;
     }

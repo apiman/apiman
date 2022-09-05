@@ -8,6 +8,7 @@ Unless stated otherwise, the instructions assume that you are upgrading sequenti
 To migrate from Apiman 2.x to 3.0.0.Final, please use Apiman's export-import function.
 
 === Breaking Changes
+
 ==== Elasticsearch support removed for Apiman Manager backend storage
 
 [IMPORTANT]
@@ -50,6 +51,11 @@ We have replaced this with a Docker Compose quickstart distribution comprised of
 This also makes scaling Apiman easier out-of-the-box, as the gateway containers can be scaled independently of the manager.
 
 Please refer to the Apiman documentation for further information.
+
+==== Minimum database versions
+
+For PostgreSQL, 10 is now the minimum required database version.
+All versions from 10 to 14 seem to work well.
 
 == Migrating to 2.2.3.Final
 

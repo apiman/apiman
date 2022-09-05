@@ -184,7 +184,7 @@
                     </security>
                 </datasource>
                 <drivers>
-                    <driver name="postgresql9" module="org.postgres">
+                    <driver name="postgresql10" module="org.postgres">
                         <driver-class>org.postgresql.Driver</driver-class>
                     </driver>
                     <driver name="mysql8" module="com.mysql">

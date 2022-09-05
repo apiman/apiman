@@ -19,28 +19,25 @@ package io.apiman.gateway.engine.jdbc;
 import io.apiman.common.util.ddl.DdlParser;
 import io.apiman.gateway.engine.IGatewayInitializer;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
 
 /**
- * Used to (optionally) initialize the Gateway database using a DDL.  This 
+ * Used to (optionally) initialize the Gateway database using a DDL.  This
  * should probably be disabled in production, in favor of a proper DDL promotion
  * strategy (I'm talking to you, DBAs!).
- * 
+ *
  * @author eric.wittmann@gmail.com
  */
 public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayInitializer {
-    
+
     private final String dbType;
-    
+
     /**
      * Constructor.
      * @param config
@@ -49,7 +46,7 @@ public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayIn
         super(config);
         dbType = config.get("datasource.type"); //$NON-NLS-1$
         if (dbType == null) {
-            throw new IllegalArgumentException("Missing configuration parameter for JDBC Initializer: 'datasource.type',  Sample values: h2, mysql5, postgresql9, oracle12"); //$NON-NLS-1$
+            throw new IllegalArgumentException("Missing configuration parameter for JDBC Initializer: 'datasource.type',  Sample values: h2, mysql5, postgresql10, oracle12"); //$NON-NLS-1$
         }
     }
 
@@ -74,20 +71,20 @@ public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayIn
     private void doInit() {
         QueryRunner run = new QueryRunner(ds);
         Boolean isInitialized;
-        
+
         try {
             isInitialized = run.query("SELECT * FROM gw_apis", rs -> true);
         } catch (SQLException e) {
             isInitialized = false;
         }
-        
+
         if (isInitialized) {
             System.out.println("============================================");
             System.out.println("Apiman Gateway database already initialized.");
             System.out.println("============================================");
             return;
         }
-        
+
         ClassLoader cl = JdbcInitializer.class.getClassLoader();
         URL resource = cl.getResource("ddls/apiman-gateway_" + dbType + ".ddl");
         if (resource == null) {
