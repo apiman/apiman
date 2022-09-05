@@ -34,8 +34,8 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.xcontent.XContentType;
 
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.KEYWORD_PROP;
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.LONG_PROP;

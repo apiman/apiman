@@ -26,7 +26,6 @@ import io.apiman.gateway.engine.storage.util.BackingStoreUtil;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
 
 import org.apache.commons.codec.binary.Base64;
@@ -35,7 +34,7 @@ import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.xcontent.XContentType;
 
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.KEYWORD_PROP;
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.TEXT_AND_KEYWORD_PROP_256;
