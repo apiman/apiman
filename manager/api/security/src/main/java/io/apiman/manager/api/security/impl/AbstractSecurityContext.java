@@ -67,6 +67,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
      */
     protected static void clearPermissions() {
         permissions.remove();
+        discoverabilities.remove();
     }
 
     /**
