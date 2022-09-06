@@ -14,7 +14,7 @@ services:
       - "APIMAN_AUTH_API_SECRET=${KEYCLOAK_APIMAN_API_SECRET}"
       - "APIMAN_AUTH_UI_SECRET=${KEYCLOAK_APIMAN_UI_SECRET}"
       # Apiman Manager database config
-      - "APIMAN_DB_DRIVER=postgresql10"
+      - "APIMAN_DB_DRIVER=postgresql11"
       - "APIMAN_DB_URL=jdbc:postgresql://postgres:5432/apiman"
       - "APIMAN_DB_USERNAME=${POSTGRES_USERNAME}"
       - "APIMAN_DB_PASSWORD=${POSTGRES_PASSWORD}"
