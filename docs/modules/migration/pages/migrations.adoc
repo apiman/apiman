@@ -1,6 +1,6 @@
 = Apiman Migration Guide
 
-Notes for upgrading to newer versions of Apiman. 
+Notes for upgrading to newer versions of Apiman.
 Unless stated otherwise, the instructions assume that you are upgrading sequentially version to version.
 
 == Migrating to 3.0.0.Final
@@ -54,18 +54,18 @@ Please refer to the Apiman documentation for further information.
 
 ==== Minimum database versions
 
-For PostgreSQL, 10 is now the minimum required database version.
-All versions from 10 to 14 seem to work well.
+For PostgreSQL, 11 is now the minimum required database version.
+All versions from 11 to 14 seem to work well (the latest major version as of writing).
 
 == Migrating to 2.2.3.Final
 
 No special action should be required, although backing up is always recommended.
 
-== Migrating to 2.2.2.Final 
+== Migrating to 2.2.2.Final
 
 Issues with the release process meant this version number was skipped.
 
-== Migrating to 2.2.1.Final 
+== Migrating to 2.2.1.Final
 
 No special action should be required, although backing up is always recommended.
 
@@ -78,19 +78,19 @@ We have bumped WildFly to 23.0.2.Final and Keycloak to 15.1.1.Final for security
 If you are using the Apiman WildFly distribution and customised `apiman-standalone.xml` you _may_ need to update your configuration file.
 This is because of changes in the WildFly platform rather than Apiman itself.
 
-Presently, we bundle Keycloak in some of our Apiman quickstart distributions. 
+Presently, we bundle Keycloak in some of our Apiman quickstart distributions.
 This is now Keycloak version 15.1.1.Final.
 
-https://github.com/apiman/apiman/commit/e645b9990ae26f5de15fdaabb1e55b1cbb2b05f3#diff-01645d81b443f3ac51ce6ad78abc3b73f51852ecb9f229a6a968699fcac4c7b2[See the diff of the `standalone-apiman.xml` to understand what has changed]. 
+https://github.com/apiman/apiman/commit/e645b9990ae26f5de15fdaabb1e55b1cbb2b05f3#diff-01645d81b443f3ac51ce6ad78abc3b73f51852ecb9f229a6a968699fcac4c7b2[See the diff of the `standalone-apiman.xml` to understand what has changed].
 This mostly relates to changes in the way SSL/TLS is configured in the underlying WildFly platform.
 
 [NOTE]
 ====
-Most production deployments should unbundle Keycloak and Apiman. 
+Most production deployments should unbundle Keycloak and Apiman.
 
 In a release in the near future, we will stop bundling Keycloak and Apiman in the quickstarts, and instead we will provide a Docker Compose file that is much more representative of a real-world deployment.
 
-This will also mean Apiman is not forced to stay in sync with Keycloak Server releases. 
+This will also mean Apiman is not forced to stay in sync with Keycloak Server releases.
 We hope this will be more convenient for Apiman users and the Apiman team.
 ====
 

@@ -204,7 +204,7 @@
                   <goal>updateSQL</goal>
                 </goals>
                 <configuration>
-                  <migrationSqlOutputFile>${basedir}/target/apiman_postgresql10.ddl</migrationSqlOutputFile>
+                  <migrationSqlOutputFile>${basedir}/target/apiman_postgresql11.ddl</migrationSqlOutputFile>
                   <driver>org.postgresql.Driver</driver>
                   <url>offline:postgresql?version=9.6.23&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/postgresql/databasechangelog.csv</url>
                   <username>apiman</username>

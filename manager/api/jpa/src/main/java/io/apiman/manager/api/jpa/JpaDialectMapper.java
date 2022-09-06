@@ -68,15 +68,15 @@ public class JpaDialectMapper {
         DB_TYPE_MAP.put(Oracle8iDialect.class.getName(),  NamePair.of("oracle19", Oracle8iDialect.class.getName()));
         DB_TYPE_MAP.put(Oracle9iDialect.class.getName(),  NamePair.of("oracle19", Oracle9iDialect.class.getName()));
 
-        DB_TYPE_MAP.put("postgresql10",  NamePair.of("postgresql10", ApimanPostgreSQLDialect.class.getName()));
-        DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(),  NamePair.of("postgresql10",ApimanPostgreSQLDialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQLDialect.class.getName(), NamePair.of("postgresql10", PostgreSQLDialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL9Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL9Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL91Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL91Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL92Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL92Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL93Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL93Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL94Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL94Dialect.class.getName()));
-        DB_TYPE_MAP.put(PostgreSQL95Dialect.class.getName(), NamePair.of("postgresql10", PostgreSQL95Dialect.class.getName()));
+        DB_TYPE_MAP.put("postgresql11",  NamePair.of("postgresql11", ApimanPostgreSQLDialect.class.getName()));
+        DB_TYPE_MAP.put(ApimanPostgreSQLDialect.class.getName(),  NamePair.of("postgresql11",ApimanPostgreSQLDialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQLDialect.class.getName(), NamePair.of("postgresql11", PostgreSQLDialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL9Dialect.class.getName(), NamePair.of("postgresql11", PostgreSQL9Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL91Dialect.class.getName(), NamePair.of("postgresql11", PostgreSQL91Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL92Dialect.class.getName(), NamePair.of("postgresql11", PostgreSQL92Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL93Dialect.class.getName(), NamePair.of("postgresql11", PostgreSQL93Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL94Dialect.class.getName(), NamePair.of("postgresql11", PostgreSQL94Dialect.class.getName()));
+        DB_TYPE_MAP.put(PostgreSQL95Dialect.class.getName(), NamePair.of("postgresql11", PostgreSQL95Dialect.class.getName()));
 
         DB_TYPE_MAP.put("mssql15", NamePair.of(SQLServerDialect.class.getName(), "mssql15"));
         DB_TYPE_MAP.put(SQLServerDialect.class.getName(), NamePair.of("mssql15", SQLServerDialect.class.getName()));

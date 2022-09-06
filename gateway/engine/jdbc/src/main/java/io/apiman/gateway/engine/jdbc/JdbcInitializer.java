@@ -46,7 +46,7 @@ public class JdbcInitializer extends AbstractJdbcComponent implements IGatewayIn
         super(config);
         dbType = config.get("datasource.type"); //$NON-NLS-1$
         if (dbType == null) {
-            throw new IllegalArgumentException("Missing configuration parameter for JDBC Initializer: 'datasource.type',  Sample values: h2, mysql5, postgresql10, oracle12"); //$NON-NLS-1$
+            throw new IllegalArgumentException("Missing configuration parameter for JDBC Initializer: 'datasource.type',  Sample values: h2, mysql5, postgresql11, oracle12"); //$NON-NLS-1$
         }
     }
 

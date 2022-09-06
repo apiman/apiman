@@ -135,7 +135,7 @@ Particular thanks go to the team at https://www.scheer-pas.com[Scheer PAS^] who 
 
 * [manager-jpa]: Remove most uses of JPA Criteria API and replace with https://persistence.blazebit.com/[Blaze-Persistence^]. This is a modern reinterpretation of the Criteria API concept that is usable by mere human beings such as Apiman's maintainer. https://github.com/Blazebit/blaze-persistence/issues/1436[Thanks to Christian Beikov for his assistance^] in fixing a show-stopper bug that Apiman exposed in Hibernate when using Blaze-Persistence. By https://github.com/msavy[Marc Savy (@msavy)^].
 
-* [distro]: bump minimum version of Postgres from 9.x to 10.x. PGES 9.x does not support the `create or replace procedure` syntax we use, and the 9.x lineage is not supported upstream any more.
+* [distro]: bump minimum required version of Postgres from 9 to **11**. PGES 9.x does not support the `create or replace procedure` syntax we use, and the 9.x lineage is not supported upstream anymore.
 
 === Removed
 
