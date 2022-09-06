@@ -53,7 +53,7 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: Set up `mvnd`
+      - name: Set up `mvn`
         run: bash .github/workflows/support/set-mvn-location.sh
 
       - name: Set up JDK ${{ matrix.java }}
@@ -65,7 +65,7 @@ jobs:
 
       - name: Get Apiman version
         id: apiman-version-data
-        # Don't use mvnd for `help:evaluate` command, output is messed up.
+        # Don't use mvn for `help:evaluate` command, output is messed up.
         run: |
           export APIMAN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "::set-output name=apiman-version::$APIMAN_VERSION"
@@ -93,7 +93,8 @@ jobs:
         run: ./fastbuild.sh
 
       - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
-        run: mvnd test install -Dmaven.javadoc.skip=true ${{ matrix.integration-suite.command }}
+        
+        run: mvn test install -Dmaven.javadoc.skip=true ${{ matrix.integration-suite.command }}
 
       - name: Test Summary
         uses: test-summary/action@v1
@@ -111,7 +112,7 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: Set up `mvnd`
+      - name: Set up `mvn`
         run: bash .github/workflows/support/set-mvn-location.sh
 
       - name: Set up JDK 11 (for deploying assets, docker builds, etc)
@@ -152,7 +153,7 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: Set up `mvnd`
+      - name: Set up `mvn`
         run: bash .github/workflows/support/set-mvn-location.sh
 
       - name: Tag/retag snapshot
@@ -182,15 +183,15 @@ jobs:
       - name: 'Apiman Parent: Build and deploy POM/BOM & deploy to OSSRH Snapshots'
         run: |
           cd parent
-          mvnd -B clean install
-          mvnd -B deploy
+          mvn -B clean install
+          mvn -B deploy
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
       - name: 'Apiman: Build and deploy main project to OSSRH Snapshots'
         run: |
-          mvnd -B deploy -DskipTests -Dmaven.test.skip=true
+          mvn -B deploy -DskipTests -Dmaven.test.skip=true
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
