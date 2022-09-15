@@ -12,7 +12,7 @@
     <!-- Just for Liquibase generation - likely do not need to change -->
     <version.liquibase-hibernate5>4.16.0</version.liquibase-hibernate5>
     <version.hibernate5>5.5.3.Final</version.hibernate5>
-    <version.javassist>3.29.1-GA</version.javassist>
+    <version.javassist>3.29.2-GA</version.javassist>
     <version.javax.validation-api>2.0.1.Final</version.javax.validation-api>
     <version.spring-boot>2.3.4.RELEASE</version.spring-boot>
 
