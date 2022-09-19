@@ -72,7 +72,7 @@
     <version.dependency.plugin>3.2.0</version.dependency.plugin>
     <version.deploy.plugin>3.0.0</version.deploy.plugin>
     <version.install.plugin>2.5.2</version.install.plugin>
-    <version.jar.plugin>3.2.0</version.jar.plugin>
+    <version.jar.plugin>3.3.0</version.jar.plugin>
     <version.javadoc.plugin>3.4.0</version.javadoc.plugin>
     <version.maven-gpg-plugin.plugin>3.0.1</version.maven-gpg-plugin.plugin>
     <version.nexus-staging-maven-plugin.plugin>1.6.8</version.nexus-staging-maven-plugin.plugin>
@@ -170,7 +170,7 @@
     <version.com.hazelcast>4.2.5</version.com.hazelcast>
     <version.com.jcbai>1.18.1</version.com.jcbai>
     <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
-    <version.org.redisson>3.17.1</version.org.redisson>
+    <version.org.redisson>3.17.6</version.org.redisson>
     <version.net.javacrumbs.json-unit>2.35.0</version.net.javacrumbs.json-unit>
     <version.info.picocli>4.6.3</version.info.picocli>
 
