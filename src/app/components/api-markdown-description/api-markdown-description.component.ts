@@ -30,12 +30,12 @@ import 'prismjs/components';
   selector: 'app-api-markdown-description',
   templateUrl: './api-markdown-description.component.html',
   styleUrls: ['./api-markdown-description.component.scss'],
-  // Enable a ShadowRoot to apply styles in a isolated manner
+  // Enable a ShadowRoot to apply styles in an isolated manner
   // This is necessary to apply prism styling and syntax highlighting.
   encapsulation: ViewEncapsulation.ShadowDom
 })
 export class ApiMarkdownDescriptionComponent implements OnInit, AfterViewInit {
-  @ViewChild('markdown-container') markdownContainer!: ParentNode;
+  @ViewChild('markdown-container') markdownContainer: ParentNode | undefined;
   @Input() markdownText = '';
 
   constructor(private translator: TranslateService) {}
@@ -50,6 +50,8 @@ export class ApiMarkdownDescriptionComponent implements OnInit, AfterViewInit {
 
   // Activate syntax highlighting as soon as the page is rendered to avoid initialize errors
   ngAfterViewInit(): void {
-    Prism.highlightAllUnder(this.markdownContainer);
+    if (this.markdownContainer) {
+      Prism.highlightAllUnder(this.markdownContainer);
+    }
   }
 }
