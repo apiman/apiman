@@ -152,10 +152,10 @@
   dependencies:
     tui-color-picker "^2.2.6"
 
-"@toast-ui/editor@3.1.5":
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-3.1.5.tgz#b47c3d94c23a4f0f6a653975b0b4b35b0035d31f"
-  integrity sha512-epcZIcoJ5x7TI8mCvDXEvmAHEjPAyGVfqZDrjx9QpSOYlyW4ZAZfQ36QG4QbWVXVdJrwUoh4w9pMjOThYSSbLQ==
+"@toast-ui/editor@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-3.2.0.tgz#5c0bca0be825465fdb786b2d70aa16ab9ca09c46"
+  integrity sha512-lEvbBSbvz5MvmTGHoDAYkco5B1os9C8B0IJmSj/iLmjSFQCtku1g4hFG4jKzTju9e+5wTosbDa3aYHAJAZK/QA==
   dependencies:
     dompurify "^2.3.3"
     prosemirror-commands "^1.1.9"
