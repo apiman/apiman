@@ -72,6 +72,7 @@ export class ImgOrIconSelectorComponent implements AfterViewInit, OnChanges {
       icons.forEach((icon: HTMLElement) => {
         icon.style.fontSize = this.dimension + 'px';
         icon.style.height = this.dimension + 'px';
+        icon.style.width = this.dimension + 'px';
       });
     }
   }
