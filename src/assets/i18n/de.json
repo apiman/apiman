@@ -217,12 +217,13 @@
     },
     "MESSAGE": {
       "API": {
-        "SIGN_UP_APPROVED": "Ihre Registrierung für <code>{{ payload.apiId }}</code> in Ihrem Client <code>{{ payload.clientId }}</code> wurde genehmigt.",
-        "SIGN_UP_REJECTED": "Ihre Registrierung für <code>{{ payload.apiId }}</code> in Ihrem Client <code>{{ payload.clientId }}</code> wurde abgelehnt.",
-        "SIGN_UP_REQUESTED": "Ihre Registrierung für <code>{{ payload.apiId }}</code> in Ihrem Client <code>{{ payload.clientId }}</code> wird derzeit geprüft."
+        "SIGN_UP_APPROVED": "Ihre Registrierung für <strong>{{ payload.apiId }}</strong> in Ihrem Client <strong>{{ payload.clientId }}</strong> wurde genehmigt.",
+        "SIGN_UP_REJECTED": "Ihre Registrierung für <strong>{{ payload.apiId }}</strong> in Ihrem Client <strong>{{ payload.clientId }}</strong> wurde abgelehnt.",
+        "SIGN_UP_REQUESTED": "Ihre Registrierung für <strong>{{ payload.apiId }}</strong> in Ihrem Client <strong>{{ payload.clientId }}</strong> wird derzeit geprüft.",
+        "RETIRED": "Die API <strong>{{ payload.apiId }}</strong> wurde eingestellt, daher kann der Vertrag im Client <strong>{{ payload.clientId }}</strong> nicht mehr verwendet werden."
       },
       "CLIENT": {
-        "REGISTERED": "Ihr Client <code>{{ payload.clientId }}</code> wurde registriert."
+        "REGISTERED": "Ihr Client <strong>{{ payload.clientId }}</strong> wurde registriert."
       }
     },
     "STATUS": {

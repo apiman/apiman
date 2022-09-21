@@ -103,7 +103,8 @@ export class NotificationsComponent implements OnInit {
       [
         'apiman.client.contract.request.user',
         'NOTIFICATION.MESSAGE.API.SIGN_UP_REQUESTED'
-      ]
+      ],
+      ['apiman.api.status_change', 'NOTIFICATION.MESSAGE.API.RETIRED']
     ]);
 
     if (reason === 'apiman.client.status_change') {

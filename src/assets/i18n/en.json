@@ -217,12 +217,13 @@
     },
     "MESSAGE": {
       "API": {
-        "SIGN_UP_APPROVED": "Your API signup for <code>{{ payload.apiId }}</code> in your client <code>{{ payload.clientId }}</code> has been approved.",
-        "SIGN_UP_REJECTED": "Your API signup for <code>{{ payload.apiId }}</code> in your client <code>{{ payload.clientId }}</code> has been rejected.",
-        "SIGN_UP_REQUESTED": "Your API signup for <code>{{ payload.apiId }}</code> in your client <code>{{ payload.clientId }}</code> is pending approval."
+        "SIGN_UP_APPROVED": "Your API signup for <strong>{{ payload.apiId }}</strong> in your client <strong>{{ payload.clientId }}</strong> has been approved.",
+        "SIGN_UP_REJECTED": "Your API signup for <strong>{{ payload.apiId }}</strong> in your client <strong>{{ payload.clientId }}</strong> has been rejected.",
+        "SIGN_UP_REQUESTED": "Your API signup for <strong>{{ payload.apiId }}</strong> in your client <strong>{{ payload.clientId }}</strong> is pending approval.",
+        "RETIRED": "The API <strong>{{ payload.apiId }}</strong> has been retired, therefore the contract in the client <strong>{{ payload.clientId }}</strong> can no longer be used."
       },
       "CLIENT": {
-        "REGISTERED": "Your client <code>{{payload.clientId}}</code> has been registered."
+        "REGISTERED": "Your client <strong>{{payload.clientId}}</strong> has been registered."
       }
     },
     "STATUS": {
