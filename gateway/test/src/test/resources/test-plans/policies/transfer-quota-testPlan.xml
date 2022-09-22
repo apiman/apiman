@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" name="rate limiting">
+
+  <testGroup name="Test Policy">
+    <test name="Publish Api" endpoint="api">test-plan-data/policies/transfer-quota/001-publish-api.resttest</test>
+    <test name="Register Client" endpoint="api">test-plan-data/policies/transfer-quota/002-register-client.resttest</test>
+    <test name="Success 1">test-plan-data/policies/transfer-quota/003-success.resttest</test>
+    <test name="Probe policy state" endpoint="api">test-plan-data/policies/transfer-quota/003.5-probe-transfer-quota.resttest</test>
+    <test name="Failure 1">test-plan-data/policies/transfer-quota/004-failure.resttest</test>
+    <test name="Register Client With Ip policy" endpoint="api">test-plan-data/policies/transfer-quota/005-register-client-ip-policy.resttest</test>
+    <test name="Success 2">test-plan-data/policies/transfer-quota/006-success-ip-address.resttest</test>
+    <test name="Failure 2">test-plan-data/policies/transfer-quota/007-failure-ip-address.resttest</test>
+    <test name="Probe IP policy state" endpoint="api">test-plan-data/policies/transfer-quota/008-probe-ip-transfer-quota.resttest</test>
+    <test name="Probe IP policy state" endpoint="api">test-plan-data/policies/transfer-quota/009-probe-ip-transfer-quota.resttest</test>
+
+  </testGroup>
+
+</testPlan>

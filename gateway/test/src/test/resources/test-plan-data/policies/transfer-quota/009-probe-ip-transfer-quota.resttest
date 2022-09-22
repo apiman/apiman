@@ -1,0 +1,28 @@
+POST /organizations/Policy_TransferQuotaTest/apis/echo/versions/1.0.0/policies/0?apiKey=12345-ip admin/admin
+Content-Type: application/json
+X-API-Key: 12345-ip
+
+{
+  "user": "bgembalczyk",
+  "apiKey": "12345-ip",
+  "callerIp": "127.0.0.2"
+}
+
+----
+200
+Content-Type: application/json
+
+{
+  "TransferQuotaProbeResponse": {
+    "config": {
+      "limit": 100,
+      "granularity": "Ip",
+      "period": "Hour"
+    },
+    "status": {
+      "accepted": true,
+      "remaining": 100
+    },
+    "probeType": "TransferQuotaProbeResponse"
+  }
+}

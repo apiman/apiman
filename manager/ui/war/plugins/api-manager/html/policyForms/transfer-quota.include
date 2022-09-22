@@ -33,6 +33,7 @@
 	      <option value="Client" apiman-i18n-key="rate-limiting.client-client">Client App</option>
 	      <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
 	      <option value="Api" apiman-i18n-key="rate-limiting.api">API</option>
+	      <option value="Ip" apiman-i18n-key="rate-limiting.ip">IP Address</option>
 	    </select>
 
 	    <span apiman-i18n-key="per">per</span>
