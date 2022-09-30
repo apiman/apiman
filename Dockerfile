@@ -1,4 +1,4 @@
-FROM node:16.16.0 as base
+FROM node:16.17.1 as base
 MAINTAINER florian.volk@scheer-group.com
 
 # Start with npm tasks
