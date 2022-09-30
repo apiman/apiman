@@ -4450,10 +4450,10 @@ swagger-client@^3.18.5:
     traverse "~0.6.6"
     url "~0.11.0"
 
-swagger-ui@4.14.0:
-  version "4.14.0"
-  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-4.14.0.tgz#7fe6defc408ecd628eb9bd808d97374efcb9915f"
-  integrity sha512-XQgIw9AK6ZXTXBrSAKiEb/v+xjvgmIWxCBIYr4a0Hr0G2LwV9a024eO38aFCjftug/Jbobfd0JsENVzPIYywyA==
+swagger-ui@4.14.2:
+  version "4.14.2"
+  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-4.14.2.tgz#a8211d691aac06f3fd5c688c05a1c4ea2fe349fb"
+  integrity sha512-XVSiif8H9w2C0IDLCinpsXH8CHTksBoZ+QA+ZDfQZCqS9gXjcgLQRFeVCSFhRwCRmrXrHSeO2dUVIBJXX1jRfg==
   dependencies:
     "@babel/runtime-corejs3" "^7.18.9"
     "@braintree/sanitize-url" "=6.0.0"
@@ -4586,10 +4586,10 @@ traverse@~0.6.6:
   resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.6.6.tgz#cbdf560fd7b9af632502fed40f918c157ea97137"
   integrity sha1-y99WD9e5r2MlAv7UD5GMFX6pcTc=
 
-ts-loader@9.3.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-9.3.0.tgz#980f4dbfb60e517179e15e10ed98e454b132159f"
-  integrity sha512-2kLLAdAD+FCKijvGKi9sS0OzoqxLCF3CxHpok7rVgCZ5UldRzH0TkbwG9XECKjBzHsAewntC5oDaI/FwKzEUog==
+ts-loader@9.4.1:
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-9.4.1.tgz#b6f3d82db0eac5a8295994f8cb5e4940ff6b1060"
+  integrity sha512-384TYAqGs70rn9F0VBnh6BPTfhga7yFNdC5gXbQpDrBj9/KsT4iRkGqKXhziofHOlE2j6YEaiTYVGKKvPhGWvw==
   dependencies:
     chalk "^4.1.0"
     enhanced-resolve "^5.0.0"
