@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=eclipse-temurin:11-jre-alpine
+ARG BASE_IMAGE=eclipse-temurin:11.0.16_8-jre-alpine
 FROM $BASE_IMAGE
 
 ARG APIMAN_VERSION
