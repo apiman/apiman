@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=tomcat:9.0.65-jdk11-temurin
+ARG BASE_IMAGE=tomcat:9.0.68-jdk11-temurin
 FROM $BASE_IMAGE
 
 ARG APIMAN_VERSION
