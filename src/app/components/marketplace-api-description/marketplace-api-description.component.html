@@ -37,7 +37,7 @@
   <div id="content-header">
     <app-img-or-icon-selector [imgUrl]="api.api.image" [dimension]="'44'">
     </app-img-or-icon-selector>
-    <div *ngIf="api.api.description; else noDesc">
+    <div id="api-short-description" *ngIf="api.api.description; else noDesc">
       {{ api.api.description }}
     </div>
     <ng-template #noDesc>

@@ -156,7 +156,7 @@ Cypress.Commands.add('login', (username, password) => {
 
 Cypress.Commands.add('typeSearch', (searchTerm) => {
   cy.get('#search-input').clear().type(searchTerm);
-  cy.waitUntilLoaded(['@getRequests']);
+  cy.waitUntilLoaded();
 });
 
 Cypress.Commands.add('navigateToApiDetails', (apiId) => {
@@ -279,7 +279,10 @@ Cypress.Commands.add('deleteOrgRecursive', (orgName) => {
     }
     apiList
       .map((api) => api.id)
-      .forEach((id) => retireAllVersions(orgName, id));
+      .forEach((id) => {
+        retireAllVersions(orgName, id);
+        deleteApiImage(orgName, id);
+      });
   });
 
   cy.request({
@@ -318,6 +321,17 @@ Cypress.Commands.add('deleteOrgRecursive', (orgName) => {
           });
         }
       });
+    });
+  }
+
+  function deleteApiImage(orgId: string, apiId: string) {
+    cy.request({
+      method: 'DELETE',
+      url:
+        (Cypress.env('apiman_endpoint') as string) +
+        `/organizations/${orgId}/apis/${apiId}/image`,
+      auth: basicAuth,
+      failOnStatusCode: false
     });
   }
 
@@ -361,6 +375,7 @@ Cypress.Commands.add('tryLogout', () => {
 });
 
 Cypress.Commands.add('cleanUp', () => {
+  cy.deleteOrgRecursive('CypressTestOrg');
   cy.deleteOrgRecursive('CypressTestOrg1');
   cy.deleteOrgRecursive('CypressTestOrg2');
   cy.deleteOrgRecursive('cypress.admin');

@@ -16,10 +16,19 @@
 
 /// <reference types="cypress" />
 
+/*
+ * Testdata explanation
+ * 1 Org - with cypress.admin as member
+ * 3 public APIs (one API for every visibility)
+ *
+ * Test explanation
+ * We want to check if the api list on the marketplace shows only APIs which are visible for every type of user
+ * */
+
 describe('Testing the visibility on marketplace', () => {
   before(() => {
     cy.cleanUp();
-    cy.initApimanData('test-data/visibility.json');
+    cy.initApimanData('test-data/visibility_marketplace.json');
   });
 
   beforeEach(() => {
@@ -29,7 +38,7 @@ describe('Testing the visibility on marketplace', () => {
 
   it('Check APIs anonymous', () => {
     cy.visit('/marketplace');
-    cy.get('mat-card.api-card').should('have.length', 5);
+    cy.get('mat-card.api-card').should('have.length', 1);
   });
 
   it('Check APIs devportal user', () => {
@@ -39,7 +48,7 @@ describe('Testing the visibility on marketplace', () => {
     );
     cy.visit('/marketplace');
 
-    cy.get('mat-card.api-card').should('have.length', 5);
+    cy.get('mat-card.api-card').should('have.length', 1);
   });
 
   it('Check APIs platform user', () => {
@@ -48,7 +57,7 @@ describe('Testing the visibility on marketplace', () => {
       Cypress.env('nonAdminPassword') as string
     );
     cy.visit('/marketplace');
-    cy.get('mat-card.api-card').should('have.length', 7);
+    cy.get('mat-card.api-card').should('have.length', 2);
   });
 
   it('Check APIs org member', () => {
@@ -58,6 +67,6 @@ describe('Testing the visibility on marketplace', () => {
     );
     cy.visit('/marketplace');
 
-    cy.get('mat-card.api-card').should('have.length', 10);
+    cy.get('mat-card.api-card').should('have.length', 3);
   });
 });

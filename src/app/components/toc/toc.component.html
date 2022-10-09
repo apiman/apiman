@@ -34,7 +34,7 @@
 </div>
 
 <ng-template #Recursion let-links="links">
-  <li *ngFor="let link of links" id="{{ link.destination }}">
+  <li *ngFor="let link of links" id="{{ link.destination }}-toc-link">
     <a (click)="scroll(link.destination)" class="pointer"
       ><span [class.primary]="link.active">{{ link.name }}</span></a
     >

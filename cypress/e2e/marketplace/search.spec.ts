@@ -16,40 +16,43 @@
 
 /// <reference types="cypress" />
 
-describe('Testing the marketplace', () => {
+describe('Testing the marketplace search', () => {
   before(() => {
     cy.cleanUp();
-    cy.initApimanData('test-data/apiman_data.json');
+    cy.initApimanData('test-data/marketplace_search.json');
   });
 
-  it('Check Hero Image and Title home', () => {
-    cy.visit('/marketplace');
-    cy.get('#hero-title').should('include.text', 'Marketplace');
-    cy.get('#hero-subtitle').should('include.text', 'Discover our APIs');
-    cy.get('#hero-login-btn').should('exist').and('be.visible');
-    cy.get('#navbar-link-router-marketplace').should('have.class', 'primary');
-  });
-
-  it('Check API List', () => {
+  it('Check search input', () => {
     cy.visit('/marketplace');
     cy.intercept('GET', '**/devportal/organizations/**').as('getRequests');
     cy.intercept('POST', '**/devportal/search/apis/**').as('postRequests');
 
-    cy.get('mat-card.api-card').should('have.length', 2);
+    cy.get('mat-card.api-card').should('have.length', 3);
+    // Clear btn shouldn't be visible if input is empty
+    cy.get('#search-input-clear-btn').should('not.exist');
 
-    cy.typeSearch('TestApi');
-    cy.get('mat-card.api-card').should('have.length', 2);
+    cy.typeSearch('CypressTestApi');
+    cy.get('mat-card.api-card').should('have.length', 3);
 
-    cy.typeSearch('TestApi1');
+    cy.typeSearch('CypressTestApi1');
     cy.get('mat-card.api-card').should('have.length', 1);
 
-    cy.typeSearch('TestApi2');
+    cy.typeSearch('CypressTestApi2');
     cy.get('mat-card.api-card').should('have.length', 1);
 
-    cy.typeSearch('TestApi 3');
+    cy.typeSearch('CypressTestApi 3');
     cy.get('mat-card.api-card').should('have.length', 0);
-    cy.get('#no-data-text')
-      .should('be.visible')
-      .and('include.text', 'No APIs were found');
+    cy.get('#no-data-text').should('be.visible');
+
+    // Check if clear btn appears if input is not empty
+    cy.get('#search-input-clear-btn')
+      .should('exist')
+      .and('include.text', 'clear');
+
+    // Check clear btn working correctly
+    cy.get('#search-input-clear-btn').click();
+    cy.get('mat-card.api-card').should('have.length', 3);
+    cy.get('#search-input').should('have.value', '');
+    cy.get('#search-input-clear-btn').should('not.exist');
   });
 });

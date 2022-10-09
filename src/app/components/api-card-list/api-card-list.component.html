@@ -26,6 +26,7 @@
       [(ngModel)]="searchTerm"
       (ngModelChange)="searchTermNotifier.next($event)" />
     <button
+      id="search-input-clear-btn"
       *ngIf="searchTerm.length > 0"
       mat-button
       matSuffix

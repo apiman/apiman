@@ -1,8 +1,8 @@
 {
   "Metadata" : {
-    "id" : 1653464198347,
-    "exportedOn" : "2022-05-25T07:36:38Z",
-    "apimanVersion" : "8.2.0-SNAPSHOT"
+    "id" : 1665035690358,
+    "exportedOn" : "2022-10-06T05:54:50Z",
+    "apimanVersion" : "8.4.0-SNAPSHOT"
   },
   "Users" : [ ],
   "Gateways" : [ ],
@@ -16,120 +16,76 @@
       "id" : "CypressTestOrg1",
       "name" : "CypressTestOrg1",
       "createdBy" : "platform.admin",
-      "createdOn" : "2022-05-25T07:30:52Z",
+      "createdOn" : "2022-10-06T05:50:34Z",
       "modifiedBy" : "platform.admin",
-      "modifiedOn" : "2022-05-25T07:30:52Z"
+      "modifiedOn" : "2022-10-06T05:50:34Z"
     },
     "Memberships" : [ {
-      "id" : 1014,
+      "id" : 3003,
       "userId" : "platform.admin",
       "roleId" : "Editor",
       "organizationId" : "CypressTestOrg1",
-      "createdOn" : "2022-05-25T07:30:52Z"
+      "createdOn" : "2022-10-06T05:50:34Z"
     }, {
-      "id" : 1015,
+      "id" : 3004,
       "userId" : "platform.admin",
       "roleId" : "Organization-User-Manager",
       "organizationId" : "CypressTestOrg1",
-      "createdOn" : "2022-05-25T07:30:52Z"
-    } ],
-    "Plans" : [ {
-      "PlanBean" : {
-        "id" : "CypressTestPlan1",
-        "name" : "CypressTestPlan1",
-        "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:31:04Z"
-      },
-      "Versions" : [ {
-        "PlanVersionBean" : {
-          "id" : 1017,
-          "status" : "Locked",
-          "version" : "1.0",
-          "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:31:04Z",
-          "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:31:04Z",
-          "lockedOn" : "2022-05-25T07:31:07Z"
-        },
-        "Policies" : [ ]
-      } ]
-    } ],
-    "Apis" : [ {
-      "ApiBean" : {
-        "id" : "CypressTestApi0",
-        "name" : "CypressTestApi0",
-        "description" : "string",
-        "tags" : [ ],
-        "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:37Z"
-      },
-      "Versions" : [ {
-        "ApiVersionBean" : {
-          "id" : 1021,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
-          "endpointType" : "rest",
-          "endpointContentType" : "json",
-          "endpointProperties" : { },
-          "gateways" : [ {
-            "gatewayId" : "TheGateway"
-          } ],
-          "publicAPI" : false,
-          "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "0",
-          "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:37Z",
-          "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:37Z",
-          "definitionType" : "None",
-          "parsePayload" : false,
-          "disableKeysStrip" : true,
-          "extendedDescription" : "string"
-        },
-        "Policies" : [ ]
-      } ]
+      "createdOn" : "2022-10-06T05:50:34Z"
     }, {
+      "id" : 3005,
+      "userId" : "cypress.admin",
+      "roleId" : "Organization-User-Manager",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-10-06T05:52:12Z"
+    }, {
+      "id" : 3006,
+      "userId" : "cypress.admin",
+      "roleId" : "Viewer",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-10-06T05:52:12Z"
+    }, {
+      "id" : 3007,
+      "userId" : "cypress.admin",
+      "roleId" : "Editor",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-10-06T05:52:12Z"
+    } ],
+    "Plans" : [ ],
+    "Apis" : [ {
       "ApiBean" : {
         "id" : "CypressTestApi1",
         "name" : "CypressTestApi1",
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:37Z"
+        "createdOn" : "2022-10-06T05:52:56Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1024,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3010,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "1",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:37Z",
+          "createdOn" : "2022-10-06T05:52:56Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "modifiedOn" : "2022-10-06T05:52:56Z",
+          "publishedOn" : "2022-10-06T05:52:56Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -141,35 +97,71 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:38Z"
+        "createdOn" : "2022-10-06T05:52:57Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1051,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3043,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "10",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:38Z",
+          "createdOn" : "2022-10-06T05:52:57Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "modifiedOn" : "2022-10-06T05:52:57Z",
+          "publishedOn" : "2022-10-06T05:52:57Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
+          "extendedDescription" : "string"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi100",
+        "name" : "CypressTestApi100",
+        "description" : "string",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-10-06T05:53:13Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 3403,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-10-06T05:53:13Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-10-06T05:53:13Z",
+          "publishedOn" : "2022-10-06T05:53:14Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -181,35 +173,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:38Z"
+        "createdOn" : "2022-10-06T05:52:57Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1054,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3047,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "11",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:38Z",
+          "createdOn" : "2022-10-06T05:52:57Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "modifiedOn" : "2022-10-06T05:52:57Z",
+          "publishedOn" : "2022-10-06T05:52:58Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -221,35 +211,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:38Z"
+        "createdOn" : "2022-10-06T05:52:57Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1057,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3052,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "12",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:38Z",
+          "createdOn" : "2022-10-06T05:52:57Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "modifiedOn" : "2022-10-06T05:52:57Z",
+          "publishedOn" : "2022-10-06T05:52:58Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -261,35 +249,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:38Z"
+        "createdOn" : "2022-10-06T05:52:58Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1060,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3056,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "13",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:38Z",
+          "createdOn" : "2022-10-06T05:52:58Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "modifiedOn" : "2022-10-06T05:52:58Z",
+          "publishedOn" : "2022-10-06T05:52:58Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -301,35 +287,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:38Z"
+        "createdOn" : "2022-10-06T05:52:58Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1063,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3059,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "14",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:38Z",
+          "createdOn" : "2022-10-06T05:52:58Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "modifiedOn" : "2022-10-06T05:52:58Z",
+          "publishedOn" : "2022-10-06T05:52:58Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -341,35 +325,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:38Z"
+        "createdOn" : "2022-10-06T05:52:58Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1066,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3064,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "15",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:38Z",
+          "createdOn" : "2022-10-06T05:52:58Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "modifiedOn" : "2022-10-06T05:52:58Z",
+          "publishedOn" : "2022-10-06T05:52:58Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -381,35 +363,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:39Z"
+        "createdOn" : "2022-10-06T05:52:58Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1069,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3068,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "16",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:39Z",
+          "createdOn" : "2022-10-06T05:52:58Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "modifiedOn" : "2022-10-06T05:52:58Z",
+          "publishedOn" : "2022-10-06T05:52:58Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -421,35 +401,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:39Z"
+        "createdOn" : "2022-10-06T05:52:58Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1072,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3071,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "17",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:39Z",
+          "createdOn" : "2022-10-06T05:52:58Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "modifiedOn" : "2022-10-06T05:52:58Z",
+          "publishedOn" : "2022-10-06T05:52:58Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -461,35 +439,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:39Z"
+        "createdOn" : "2022-10-06T05:52:58Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1075,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3076,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "18",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:39Z",
+          "createdOn" : "2022-10-06T05:52:58Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "modifiedOn" : "2022-10-06T05:52:58Z",
+          "publishedOn" : "2022-10-06T05:52:58Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -501,35 +477,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:39Z"
+        "createdOn" : "2022-10-06T05:52:58Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1078,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3080,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "19",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:39Z",
+          "createdOn" : "2022-10-06T05:52:58Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "modifiedOn" : "2022-10-06T05:52:58Z",
+          "publishedOn" : "2022-10-06T05:52:59Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -541,35 +515,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:37Z"
+        "createdOn" : "2022-10-06T05:52:56Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1027,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3013,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "2",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:37Z",
+          "createdOn" : "2022-10-06T05:52:56Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "modifiedOn" : "2022-10-06T05:52:56Z",
+          "publishedOn" : "2022-10-06T05:52:56Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -581,35 +553,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:39Z"
+        "createdOn" : "2022-10-06T05:52:58Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1081,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3083,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "20",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:39Z",
+          "createdOn" : "2022-10-06T05:52:58Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "modifiedOn" : "2022-10-06T05:52:58Z",
+          "publishedOn" : "2022-10-06T05:52:59Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -621,35 +591,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:39Z"
+        "createdOn" : "2022-10-06T05:52:58Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1084,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3088,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "21",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:39Z",
+          "createdOn" : "2022-10-06T05:52:58Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "modifiedOn" : "2022-10-06T05:52:58Z",
+          "publishedOn" : "2022-10-06T05:52:59Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -661,35 +629,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:39Z"
+        "createdOn" : "2022-10-06T05:52:59Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1087,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3092,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "22",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:39Z",
+          "createdOn" : "2022-10-06T05:52:59Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:39Z",
+          "modifiedOn" : "2022-10-06T05:52:59Z",
+          "publishedOn" : "2022-10-06T05:52:59Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -701,35 +667,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:40Z"
+        "createdOn" : "2022-10-06T05:52:59Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1090,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3096,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "23",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:40Z",
+          "createdOn" : "2022-10-06T05:52:59Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "modifiedOn" : "2022-10-06T05:52:59Z",
+          "publishedOn" : "2022-10-06T05:52:59Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -741,35 +705,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:40Z"
+        "createdOn" : "2022-10-06T05:52:59Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1093,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3099,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "24",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:40Z",
+          "createdOn" : "2022-10-06T05:52:59Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "modifiedOn" : "2022-10-06T05:52:59Z",
+          "publishedOn" : "2022-10-06T05:52:59Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -781,35 +743,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:40Z"
+        "createdOn" : "2022-10-06T05:52:59Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1096,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3103,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "25",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:40Z",
+          "createdOn" : "2022-10-06T05:52:59Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "modifiedOn" : "2022-10-06T05:52:59Z",
+          "publishedOn" : "2022-10-06T05:53:00Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -821,35 +781,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:40Z"
+        "createdOn" : "2022-10-06T05:52:59Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1099,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3107,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "26",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:40Z",
+          "createdOn" : "2022-10-06T05:52:59Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "modifiedOn" : "2022-10-06T05:52:59Z",
+          "publishedOn" : "2022-10-06T05:53:00Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -861,35 +819,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:40Z"
+        "createdOn" : "2022-10-06T05:52:59Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1102,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3111,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "27",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:40Z",
+          "createdOn" : "2022-10-06T05:52:59Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "modifiedOn" : "2022-10-06T05:52:59Z",
+          "publishedOn" : "2022-10-06T05:53:00Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -901,35 +857,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:40Z"
+        "createdOn" : "2022-10-06T05:53:00Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1105,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3116,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "28",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:40Z",
+          "createdOn" : "2022-10-06T05:53:00Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "modifiedOn" : "2022-10-06T05:53:00Z",
+          "publishedOn" : "2022-10-06T05:53:00Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -941,35 +895,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:40Z"
+        "createdOn" : "2022-10-06T05:53:00Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1108,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3120,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "29",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:40Z",
+          "createdOn" : "2022-10-06T05:53:00Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "modifiedOn" : "2022-10-06T05:53:00Z",
+          "publishedOn" : "2022-10-06T05:53:00Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -981,35 +933,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:37Z"
+        "createdOn" : "2022-10-06T05:52:56Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1030,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3016,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "3",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:37Z",
+          "createdOn" : "2022-10-06T05:52:56Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "modifiedOn" : "2022-10-06T05:52:56Z",
+          "publishedOn" : "2022-10-06T05:52:57Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1021,35 +971,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:40Z"
+        "createdOn" : "2022-10-06T05:53:00Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1111,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3124,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "30",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:40Z",
+          "createdOn" : "2022-10-06T05:53:00Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "modifiedOn" : "2022-10-06T05:53:00Z",
+          "publishedOn" : "2022-10-06T05:53:00Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1061,35 +1009,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:40Z"
+        "createdOn" : "2022-10-06T05:53:00Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1114,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3128,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "31",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:40Z",
+          "createdOn" : "2022-10-06T05:53:00Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:40Z",
+          "modifiedOn" : "2022-10-06T05:53:00Z",
+          "publishedOn" : "2022-10-06T05:53:00Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1101,35 +1047,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:41Z"
+        "createdOn" : "2022-10-06T05:53:00Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1117,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3131,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "32",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:41Z",
+          "createdOn" : "2022-10-06T05:53:00Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "modifiedOn" : "2022-10-06T05:53:00Z",
+          "publishedOn" : "2022-10-06T05:53:00Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1141,35 +1085,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:41Z"
+        "createdOn" : "2022-10-06T05:53:00Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1120,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3135,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "33",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:41Z",
+          "createdOn" : "2022-10-06T05:53:00Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "modifiedOn" : "2022-10-06T05:53:00Z",
+          "publishedOn" : "2022-10-06T05:53:01Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1181,35 +1123,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:41Z"
+        "createdOn" : "2022-10-06T05:53:00Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1123,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3140,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "34",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:41Z",
+          "createdOn" : "2022-10-06T05:53:00Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "modifiedOn" : "2022-10-06T05:53:00Z",
+          "publishedOn" : "2022-10-06T05:53:01Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1221,35 +1161,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:41Z"
+        "createdOn" : "2022-10-06T05:53:01Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1126,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3144,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "35",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:41Z",
+          "createdOn" : "2022-10-06T05:53:01Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "modifiedOn" : "2022-10-06T05:53:01Z",
+          "publishedOn" : "2022-10-06T05:53:01Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1261,35 +1199,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:41Z"
+        "createdOn" : "2022-10-06T05:53:01Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1129,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3147,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "36",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:41Z",
+          "createdOn" : "2022-10-06T05:53:01Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "modifiedOn" : "2022-10-06T05:53:01Z",
+          "publishedOn" : "2022-10-06T05:53:01Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1301,35 +1237,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:41Z"
+        "createdOn" : "2022-10-06T05:53:01Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1132,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3150,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "37",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:41Z",
+          "createdOn" : "2022-10-06T05:53:01Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "modifiedOn" : "2022-10-06T05:53:01Z",
+          "publishedOn" : "2022-10-06T05:53:02Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1341,35 +1275,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:41Z"
+        "createdOn" : "2022-10-06T05:53:01Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1135,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3155,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "38",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:41Z",
+          "createdOn" : "2022-10-06T05:53:01Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "modifiedOn" : "2022-10-06T05:53:01Z",
+          "publishedOn" : "2022-10-06T05:53:02Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1381,35 +1313,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:41Z"
+        "createdOn" : "2022-10-06T05:53:01Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1138,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3158,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "39",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:41Z",
+          "createdOn" : "2022-10-06T05:53:01Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "modifiedOn" : "2022-10-06T05:53:01Z",
+          "publishedOn" : "2022-10-06T05:53:02Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1421,35 +1351,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:37Z"
+        "createdOn" : "2022-10-06T05:52:56Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1033,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3019,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "4",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:37Z",
+          "createdOn" : "2022-10-06T05:52:56Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "modifiedOn" : "2022-10-06T05:52:56Z",
+          "publishedOn" : "2022-10-06T05:52:57Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1461,35 +1389,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:41Z"
+        "createdOn" : "2022-10-06T05:53:02Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1141,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3163,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "40",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:41Z",
+          "createdOn" : "2022-10-06T05:53:02Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:41Z",
+          "modifiedOn" : "2022-10-06T05:53:02Z",
+          "publishedOn" : "2022-10-06T05:53:02Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1501,35 +1427,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:42Z"
+        "createdOn" : "2022-10-06T05:53:02Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1144,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3167,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "41",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:42Z",
+          "createdOn" : "2022-10-06T05:53:02Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "modifiedOn" : "2022-10-06T05:53:02Z",
+          "publishedOn" : "2022-10-06T05:53:02Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1541,35 +1465,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:42Z"
+        "createdOn" : "2022-10-06T05:53:02Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1147,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3172,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "42",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:42Z",
+          "createdOn" : "2022-10-06T05:53:02Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "modifiedOn" : "2022-10-06T05:53:02Z",
+          "publishedOn" : "2022-10-06T05:53:02Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1581,35 +1503,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:42Z"
+        "createdOn" : "2022-10-06T05:53:02Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1150,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3176,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "43",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:42Z",
+          "createdOn" : "2022-10-06T05:53:02Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "modifiedOn" : "2022-10-06T05:53:02Z",
+          "publishedOn" : "2022-10-06T05:53:03Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1621,35 +1541,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:42Z"
+        "createdOn" : "2022-10-06T05:53:02Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1153,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3179,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "44",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:42Z",
+          "createdOn" : "2022-10-06T05:53:02Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "modifiedOn" : "2022-10-06T05:53:02Z",
+          "publishedOn" : "2022-10-06T05:53:03Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1661,35 +1579,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:42Z"
+        "createdOn" : "2022-10-06T05:53:02Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1156,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3183,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "45",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:42Z",
+          "createdOn" : "2022-10-06T05:53:02Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "modifiedOn" : "2022-10-06T05:53:02Z",
+          "publishedOn" : "2022-10-06T05:53:03Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1701,35 +1617,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:42Z"
+        "createdOn" : "2022-10-06T05:53:02Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1159,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3187,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "46",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:42Z",
+          "createdOn" : "2022-10-06T05:53:02Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "modifiedOn" : "2022-10-06T05:53:02Z",
+          "publishedOn" : "2022-10-06T05:53:03Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1741,35 +1655,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:42Z"
+        "createdOn" : "2022-10-06T05:53:03Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1162,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3190,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "47",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:42Z",
+          "createdOn" : "2022-10-06T05:53:03Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "modifiedOn" : "2022-10-06T05:53:03Z",
+          "publishedOn" : "2022-10-06T05:53:03Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1781,35 +1693,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:42Z"
+        "createdOn" : "2022-10-06T05:53:03Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1165,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3195,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "48",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:42Z",
+          "createdOn" : "2022-10-06T05:53:03Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "modifiedOn" : "2022-10-06T05:53:03Z",
+          "publishedOn" : "2022-10-06T05:53:03Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1821,35 +1731,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:42Z"
+        "createdOn" : "2022-10-06T05:53:03Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1168,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3199,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "49",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:42Z",
+          "createdOn" : "2022-10-06T05:53:03Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "modifiedOn" : "2022-10-06T05:53:03Z",
+          "publishedOn" : "2022-10-06T05:53:03Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1861,35 +1769,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:37Z"
+        "createdOn" : "2022-10-06T05:52:56Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1036,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3024,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "5",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:37Z",
+          "createdOn" : "2022-10-06T05:52:56Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "modifiedOn" : "2022-10-06T05:52:56Z",
+          "publishedOn" : "2022-10-06T05:52:57Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1901,35 +1807,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:42Z"
+        "createdOn" : "2022-10-06T05:53:03Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1171,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3204,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "50",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:42Z",
+          "createdOn" : "2022-10-06T05:53:03Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:42Z",
+          "modifiedOn" : "2022-10-06T05:53:03Z",
+          "publishedOn" : "2022-10-06T05:53:03Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1941,35 +1845,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:43Z"
+        "createdOn" : "2022-10-06T05:53:03Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1174,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3208,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "51",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:43Z",
+          "createdOn" : "2022-10-06T05:53:03Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "modifiedOn" : "2022-10-06T05:53:03Z",
+          "publishedOn" : "2022-10-06T05:53:04Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -1981,35 +1883,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:43Z"
+        "createdOn" : "2022-10-06T05:53:03Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1177,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3212,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "52",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:43Z",
+          "createdOn" : "2022-10-06T05:53:03Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "modifiedOn" : "2022-10-06T05:53:03Z",
+          "publishedOn" : "2022-10-06T05:53:04Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2021,35 +1921,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:43Z"
+        "createdOn" : "2022-10-06T05:53:03Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1180,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3215,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "53",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:43Z",
+          "createdOn" : "2022-10-06T05:53:03Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "modifiedOn" : "2022-10-06T05:53:03Z",
+          "publishedOn" : "2022-10-06T05:53:04Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2061,35 +1959,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:43Z"
+        "createdOn" : "2022-10-06T05:53:04Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1183,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3219,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "54",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:43Z",
+          "createdOn" : "2022-10-06T05:53:04Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "modifiedOn" : "2022-10-06T05:53:04Z",
+          "publishedOn" : "2022-10-06T05:53:04Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2101,35 +1997,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:43Z"
+        "createdOn" : "2022-10-06T05:53:04Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1186,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3222,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "55",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:43Z",
+          "createdOn" : "2022-10-06T05:53:04Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "modifiedOn" : "2022-10-06T05:53:04Z",
+          "publishedOn" : "2022-10-06T05:53:05Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2141,35 +2035,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:43Z"
+        "createdOn" : "2022-10-06T05:53:04Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1189,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3227,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "56",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:43Z",
+          "createdOn" : "2022-10-06T05:53:04Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:43Z",
+          "modifiedOn" : "2022-10-06T05:53:04Z",
+          "publishedOn" : "2022-10-06T05:53:05Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2181,35 +2073,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:45Z"
+        "createdOn" : "2022-10-06T05:53:04Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1192,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3231,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "57",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:45Z",
+          "createdOn" : "2022-10-06T05:53:04Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:45Z",
+          "modifiedOn" : "2022-10-06T05:53:04Z",
+          "publishedOn" : "2022-10-06T05:53:05Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2221,35 +2111,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:47Z"
+        "createdOn" : "2022-10-06T05:53:04Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1195,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3235,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "58",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:47Z",
+          "createdOn" : "2022-10-06T05:53:04Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:47Z",
+          "modifiedOn" : "2022-10-06T05:53:04Z",
+          "publishedOn" : "2022-10-06T05:53:05Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2261,35 +2149,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:47Z"
+        "createdOn" : "2022-10-06T05:53:05Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1198,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3239,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "59",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:47Z",
+          "createdOn" : "2022-10-06T05:53:05Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:47Z",
+          "modifiedOn" : "2022-10-06T05:53:05Z",
+          "publishedOn" : "2022-10-06T05:53:05Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2301,35 +2187,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:37Z"
+        "createdOn" : "2022-10-06T05:52:57Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1039,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3028,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "6",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:37Z",
+          "createdOn" : "2022-10-06T05:52:57Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "modifiedOn" : "2022-10-06T05:52:57Z",
+          "publishedOn" : "2022-10-06T05:52:57Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2341,35 +2225,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:48Z"
+        "createdOn" : "2022-10-06T05:53:05Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1201,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3243,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "60",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:48Z",
+          "createdOn" : "2022-10-06T05:53:05Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "modifiedOn" : "2022-10-06T05:53:05Z",
+          "publishedOn" : "2022-10-06T05:53:05Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2381,35 +2263,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:48Z"
+        "createdOn" : "2022-10-06T05:53:05Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1204,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3248,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "61",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:48Z",
+          "createdOn" : "2022-10-06T05:53:05Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "modifiedOn" : "2022-10-06T05:53:05Z",
+          "publishedOn" : "2022-10-06T05:53:06Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2421,35 +2301,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:48Z"
+        "createdOn" : "2022-10-06T05:53:05Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1207,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3252,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "62",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:48Z",
+          "createdOn" : "2022-10-06T05:53:05Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "modifiedOn" : "2022-10-06T05:53:05Z",
+          "publishedOn" : "2022-10-06T05:53:06Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2461,35 +2339,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:48Z"
+        "createdOn" : "2022-10-06T05:53:05Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1210,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3256,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "63",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:48Z",
+          "createdOn" : "2022-10-06T05:53:05Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "modifiedOn" : "2022-10-06T05:53:05Z",
+          "publishedOn" : "2022-10-06T05:53:06Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2501,35 +2377,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:48Z"
+        "createdOn" : "2022-10-06T05:53:06Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1213,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3259,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "64",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:48Z",
+          "createdOn" : "2022-10-06T05:53:06Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "modifiedOn" : "2022-10-06T05:53:06Z",
+          "publishedOn" : "2022-10-06T05:53:06Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2541,35 +2415,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:48Z"
+        "createdOn" : "2022-10-06T05:53:06Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1216,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3263,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "65",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:48Z",
+          "createdOn" : "2022-10-06T05:53:06Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "modifiedOn" : "2022-10-06T05:53:06Z",
+          "publishedOn" : "2022-10-06T05:53:06Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2581,35 +2453,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:48Z"
+        "createdOn" : "2022-10-06T05:53:06Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1219,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3267,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "66",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:48Z",
+          "createdOn" : "2022-10-06T05:53:06Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "modifiedOn" : "2022-10-06T05:53:06Z",
+          "publishedOn" : "2022-10-06T05:53:06Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2621,35 +2491,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:48Z"
+        "createdOn" : "2022-10-06T05:53:06Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1222,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3271,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "67",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:48Z",
+          "createdOn" : "2022-10-06T05:53:06Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:48Z",
+          "modifiedOn" : "2022-10-06T05:53:06Z",
+          "publishedOn" : "2022-10-06T05:53:06Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2661,35 +2529,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:49Z"
+        "createdOn" : "2022-10-06T05:53:06Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1225,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3275,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "68",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:49Z",
+          "createdOn" : "2022-10-06T05:53:06Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "modifiedOn" : "2022-10-06T05:53:06Z",
+          "publishedOn" : "2022-10-06T05:53:07Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2701,35 +2567,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:49Z"
+        "createdOn" : "2022-10-06T05:53:06Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1228,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3279,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "69",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:49Z",
+          "createdOn" : "2022-10-06T05:53:06Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "modifiedOn" : "2022-10-06T05:53:06Z",
+          "publishedOn" : "2022-10-06T05:53:06Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2741,35 +2605,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:37Z"
+        "createdOn" : "2022-10-06T05:52:57Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1042,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3031,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "7",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:37Z",
+          "createdOn" : "2022-10-06T05:52:57Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:37Z",
+          "modifiedOn" : "2022-10-06T05:52:57Z",
+          "publishedOn" : "2022-10-06T05:52:57Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2781,35 +2643,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:49Z"
+        "createdOn" : "2022-10-06T05:53:06Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1231,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3284,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "70",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:49Z",
+          "createdOn" : "2022-10-06T05:53:06Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "modifiedOn" : "2022-10-06T05:53:06Z",
+          "publishedOn" : "2022-10-06T05:53:07Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2821,35 +2681,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:49Z"
+        "createdOn" : "2022-10-06T05:53:07Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1234,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3288,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "71",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:49Z",
+          "createdOn" : "2022-10-06T05:53:07Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "modifiedOn" : "2022-10-06T05:53:07Z",
+          "publishedOn" : "2022-10-06T05:53:07Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2861,35 +2719,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:49Z"
+        "createdOn" : "2022-10-06T05:53:07Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1237,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3292,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "72",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:49Z",
+          "createdOn" : "2022-10-06T05:53:07Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "modifiedOn" : "2022-10-06T05:53:07Z",
+          "publishedOn" : "2022-10-06T05:53:07Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2901,35 +2757,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:49Z"
+        "createdOn" : "2022-10-06T05:53:07Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1240,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3296,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "73",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:49Z",
+          "createdOn" : "2022-10-06T05:53:07Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "modifiedOn" : "2022-10-06T05:53:07Z",
+          "publishedOn" : "2022-10-06T05:53:07Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2941,35 +2795,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:49Z"
+        "createdOn" : "2022-10-06T05:53:07Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1243,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3299,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "74",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:49Z",
+          "createdOn" : "2022-10-06T05:53:07Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:49Z",
+          "modifiedOn" : "2022-10-06T05:53:07Z",
+          "publishedOn" : "2022-10-06T05:53:07Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -2981,35 +2833,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:50Z"
+        "createdOn" : "2022-10-06T05:53:07Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1246,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3303,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "75",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:50Z",
+          "createdOn" : "2022-10-06T05:53:07Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "modifiedOn" : "2022-10-06T05:53:07Z",
+          "publishedOn" : "2022-10-06T05:53:07Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3021,35 +2871,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:50Z"
+        "createdOn" : "2022-10-06T05:53:07Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1249,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3307,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "76",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:50Z",
+          "createdOn" : "2022-10-06T05:53:07Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "modifiedOn" : "2022-10-06T05:53:07Z",
+          "publishedOn" : "2022-10-06T05:53:08Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3061,35 +2909,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:50Z"
+        "createdOn" : "2022-10-06T05:53:07Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1252,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3312,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "77",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:50Z",
+          "createdOn" : "2022-10-06T05:53:07Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "modifiedOn" : "2022-10-06T05:53:07Z",
+          "publishedOn" : "2022-10-06T05:53:08Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3101,35 +2947,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:50Z"
+        "createdOn" : "2022-10-06T05:53:07Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1255,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3315,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "78",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:50Z",
+          "createdOn" : "2022-10-06T05:53:07Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "modifiedOn" : "2022-10-06T05:53:07Z",
+          "publishedOn" : "2022-10-06T05:53:08Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3141,35 +2985,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:50Z"
+        "createdOn" : "2022-10-06T05:53:08Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1258,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3320,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "79",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:50Z",
+          "createdOn" : "2022-10-06T05:53:08Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "modifiedOn" : "2022-10-06T05:53:08Z",
+          "publishedOn" : "2022-10-06T05:53:08Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3181,35 +3023,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:38Z"
+        "createdOn" : "2022-10-06T05:52:57Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1045,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3035,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "8",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:38Z",
+          "createdOn" : "2022-10-06T05:52:57Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "modifiedOn" : "2022-10-06T05:52:57Z",
+          "publishedOn" : "2022-10-06T05:52:57Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3221,35 +3061,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:50Z"
+        "createdOn" : "2022-10-06T05:53:08Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1261,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3324,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "80",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:50Z",
+          "createdOn" : "2022-10-06T05:53:08Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "modifiedOn" : "2022-10-06T05:53:08Z",
+          "publishedOn" : "2022-10-06T05:53:08Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3261,35 +3099,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:50Z"
+        "createdOn" : "2022-10-06T05:53:08Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1264,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3328,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "81",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:50Z",
+          "createdOn" : "2022-10-06T05:53:08Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "modifiedOn" : "2022-10-06T05:53:08Z",
+          "publishedOn" : "2022-10-06T05:53:09Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3301,35 +3137,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:50Z"
+        "createdOn" : "2022-10-06T05:53:08Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1267,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3331,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "82",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:50Z",
+          "createdOn" : "2022-10-06T05:53:08Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "modifiedOn" : "2022-10-06T05:53:08Z",
+          "publishedOn" : "2022-10-06T05:53:10Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3341,35 +3175,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:50Z"
+        "createdOn" : "2022-10-06T05:53:08Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1270,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3336,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "83",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:50Z",
+          "createdOn" : "2022-10-06T05:53:08Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "modifiedOn" : "2022-10-06T05:53:08Z",
+          "publishedOn" : "2022-10-06T05:53:10Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3381,35 +3213,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:50Z"
+        "createdOn" : "2022-10-06T05:53:09Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1273,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3339,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "84",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:50Z",
+          "createdOn" : "2022-10-06T05:53:09Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:50Z",
+          "modifiedOn" : "2022-10-06T05:53:09Z",
+          "publishedOn" : "2022-10-06T05:53:10Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3421,35 +3251,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:51Z"
+        "createdOn" : "2022-10-06T05:53:09Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1276,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3343,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "85",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:51Z",
+          "createdOn" : "2022-10-06T05:53:09Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "modifiedOn" : "2022-10-06T05:53:09Z",
+          "publishedOn" : "2022-10-06T05:53:11Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3461,35 +3289,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:51Z"
+        "createdOn" : "2022-10-06T05:53:10Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1279,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3346,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "86",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:51Z",
+          "createdOn" : "2022-10-06T05:53:10Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "modifiedOn" : "2022-10-06T05:53:10Z",
+          "publishedOn" : "2022-10-06T05:53:11Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3501,35 +3327,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:51Z"
+        "createdOn" : "2022-10-06T05:53:10Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1282,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3350,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "87",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:51Z",
+          "createdOn" : "2022-10-06T05:53:10Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "modifiedOn" : "2022-10-06T05:53:10Z",
+          "publishedOn" : "2022-10-06T05:53:11Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3541,35 +3365,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:51Z"
+        "createdOn" : "2022-10-06T05:53:11Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1285,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3355,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "88",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:51Z",
+          "createdOn" : "2022-10-06T05:53:11Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "modifiedOn" : "2022-10-06T05:53:11Z",
+          "publishedOn" : "2022-10-06T05:53:11Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3581,35 +3403,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:51Z"
+        "createdOn" : "2022-10-06T05:53:11Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1288,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3359,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "89",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:51Z",
+          "createdOn" : "2022-10-06T05:53:11Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "modifiedOn" : "2022-10-06T05:53:11Z",
+          "publishedOn" : "2022-10-06T05:53:12Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3621,35 +3441,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:38Z"
+        "createdOn" : "2022-10-06T05:52:57Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1048,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3039,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "9",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:38Z",
+          "createdOn" : "2022-10-06T05:52:57Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:38Z",
+          "modifiedOn" : "2022-10-06T05:52:57Z",
+          "publishedOn" : "2022-10-06T05:52:57Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3661,35 +3479,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:51Z"
+        "createdOn" : "2022-10-06T05:53:11Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1291,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3364,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "90",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:51Z",
+          "createdOn" : "2022-10-06T05:53:11Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "modifiedOn" : "2022-10-06T05:53:11Z",
+          "publishedOn" : "2022-10-06T05:53:12Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3701,35 +3517,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:51Z"
+        "createdOn" : "2022-10-06T05:53:11Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1294,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3367,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "91",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:51Z",
+          "createdOn" : "2022-10-06T05:53:11Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "modifiedOn" : "2022-10-06T05:53:11Z",
+          "publishedOn" : "2022-10-06T05:53:12Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3741,35 +3555,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:51Z"
+        "createdOn" : "2022-10-06T05:53:12Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1297,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3372,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "92",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:51Z",
+          "createdOn" : "2022-10-06T05:53:12Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "modifiedOn" : "2022-10-06T05:53:12Z",
+          "publishedOn" : "2022-10-06T05:53:12Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3781,35 +3593,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:51Z"
+        "createdOn" : "2022-10-06T05:53:12Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1300,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3375,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "93",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:51Z",
+          "createdOn" : "2022-10-06T05:53:12Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:51Z",
+          "modifiedOn" : "2022-10-06T05:53:12Z",
+          "publishedOn" : "2022-10-06T05:53:13Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3821,35 +3631,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:51Z"
+        "createdOn" : "2022-10-06T05:53:12Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1303,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3380,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "94",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:52Z",
+          "createdOn" : "2022-10-06T05:53:12Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "modifiedOn" : "2022-10-06T05:53:12Z",
+          "publishedOn" : "2022-10-06T05:53:13Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3861,35 +3669,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:52Z"
+        "createdOn" : "2022-10-06T05:53:12Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1306,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3384,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "95",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:52Z",
+          "createdOn" : "2022-10-06T05:53:12Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "modifiedOn" : "2022-10-06T05:53:12Z",
+          "publishedOn" : "2022-10-06T05:53:13Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3901,35 +3707,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:52Z"
+        "createdOn" : "2022-10-06T05:53:13Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1309,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3387,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "96",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:52Z",
+          "createdOn" : "2022-10-06T05:53:13Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "modifiedOn" : "2022-10-06T05:53:13Z",
+          "publishedOn" : "2022-10-06T05:53:13Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3941,35 +3745,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:52Z"
+        "createdOn" : "2022-10-06T05:53:13Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1312,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3392,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "97",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:52Z",
+          "createdOn" : "2022-10-06T05:53:13Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "modifiedOn" : "2022-10-06T05:53:13Z",
+          "publishedOn" : "2022-10-06T05:53:13Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -3981,35 +3783,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:52Z"
+        "createdOn" : "2022-10-06T05:53:13Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1315,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3396,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "98",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:52Z",
+          "createdOn" : "2022-10-06T05:53:13Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "modifiedOn" : "2022-10-06T05:53:13Z",
+          "publishedOn" : "2022-10-06T05:53:14Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]
@@ -4021,35 +3821,33 @@
         "description" : "string",
         "tags" : [ ],
         "createdBy" : "platform.admin",
-        "createdOn" : "2022-05-25T07:33:52Z"
+        "createdOn" : "2022-10-06T05:53:13Z",
+        "numPublished" : 1
       },
       "Versions" : [ {
         "ApiVersionBean" : {
-          "id" : 1318,
-          "status" : "Ready",
-          "endpoint" : "http://petstore.swagger.io/v2",
+          "id" : 3400,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
           "endpointType" : "rest",
           "endpointContentType" : "json",
           "endpointProperties" : { },
           "gateways" : [ {
             "gatewayId" : "TheGateway"
           } ],
-          "publicAPI" : false,
+          "publicAPI" : true,
           "discoverability" : "ORG_MEMBERS",
-          "plans" : [ {
-            "planId" : "CypressTestPlan1",
-            "version" : "1.0",
-            "requiresApproval" : false,
-            "discoverability" : "PORTAL"
-          } ],
-          "version" : "99",
+          "plans" : [ ],
+          "version" : "1.0",
           "createdBy" : "platform.admin",
-          "createdOn" : "2022-05-25T07:33:52Z",
+          "createdOn" : "2022-10-06T05:53:13Z",
           "modifiedBy" : "platform.admin",
-          "modifiedOn" : "2022-05-25T07:33:52Z",
+          "modifiedOn" : "2022-10-06T05:53:13Z",
+          "publishedOn" : "2022-10-06T05:53:14Z",
           "definitionType" : "None",
           "parsePayload" : false,
           "disableKeysStrip" : true,
+          "definitionUrl" : "",
           "extendedDescription" : "string"
         },
         "Policies" : [ ]

@@ -19,7 +19,7 @@
 describe('Testing the visibility on home page', () => {
   before(() => {
     cy.cleanUp();
-    cy.initApimanData('test-data/visibility.json');
+    cy.initApimanData('test-data/visibility_home.json');
   });
 
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe('Testing the visibility on home page', () => {
   });
 
   it('Check APIs anonymous', () => {
-    cy.get('mat-card.api-card').should('have.length', 2);
+    cy.get('mat-card.api-card').should('have.length', 1);
   });
 
   it('Check APIs devportal user', () => {
@@ -36,7 +36,7 @@ describe('Testing the visibility on home page', () => {
       Cypress.env('devportalUser') as string,
       Cypress.env('devportalPassword') as string
     );
-    cy.get('mat-card.api-card').should('have.length', 2);
+    cy.get('mat-card.api-card').should('have.length', 1);
   });
 
   it('Check APIs platform user', () => {
@@ -45,7 +45,7 @@ describe('Testing the visibility on home page', () => {
       Cypress.env('nonAdminPassword') as string
     );
 
-    cy.get('mat-card.api-card').should('have.length', 3);
+    cy.get('mat-card.api-card').should('have.length', 2);
   });
 
   it('Check APIs org member', () => {
@@ -53,6 +53,6 @@ describe('Testing the visibility on home page', () => {
       Cypress.env('adminUser') as string,
       Cypress.env('adminPassword') as string
     );
-    cy.get('mat-card.api-card').should('have.length', 4);
+    cy.get('mat-card.api-card').should('have.length', 3);
   });
 });

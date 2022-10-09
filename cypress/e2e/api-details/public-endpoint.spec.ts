@@ -16,7 +16,7 @@
 
 /// <reference types="cypress" />
 
-describe('Testing tooltips on api-details page', () => {
+describe('Testing public endpoint on api-details page', () => {
   before(() => {
     cy.visit('/home');
     cy.tryLogout();

@@ -16,10 +16,21 @@
 
 /// <reference types="cypress" />
 
+/*
+ * Testdata explanation
+ * 1 Org - with cypress.admin as member
+ * 1 public API - 3 Versions (one for every visibility)
+ * 1 private - 1 Version with 3 plans (one for every visibility)
+ *
+ * Test explanation
+ * We want to check if public versions disappear from the version accordion if the visibility doesn't match
+ * and if the assigned plans of a private API disappear is the visibility doesn't match
+ * */
+
 describe('Testing the visibility on api-details', () => {
   before(() => {
-    // cy.cleanUp();
-    // cy.initApimanData('test-data/visibility.json');
+    cy.cleanUp();
+    cy.initApimanData('test-data/visibility_api_details.json');
   });
 
   beforeEach(() => {

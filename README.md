@@ -31,10 +31,16 @@ docker build -t apiman/developer-portal:latest .
 
 ### Cypress E2E Tests
 #### Prerequirements
-* Create the necessary users (find the credentials in cypress.json) in your IDM with the following roles:
-  * cypress.admin - apiadmin
-  * cypress.user - apiuser
-  * cypress.user2 - devportaluser
+* Create the necessary users (find the credentials in cypress.config.ts) in your IDM with the following roles and locales:
+  * cypress.admin - apiadmin - EN 
+  * cypress.user - apiuser - EN
+  * cypress.user2 - devportaluser - EN
+
+* Login with the users in following applications:
+  * cypress.admin - API Management  
+  * cypress.user - API Management  
+  * cypress.user2 - API Developer Portal  
+
 * Adjust the following settings in cypress.json if needed:
   * baseUrl -> this url should point to your running 'API Developer Portal'-App 
   * env.apiman_endpoint -> this url should be the API Management REST API

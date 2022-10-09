@@ -25,8 +25,10 @@ export default defineConfig({
   viewportWidth: 1920,
   defaultCommandTimeout: 15000,
   responseTimeout: 300000,
+  video: false,
+  includeShadowDom: true,
   env: {
-    apiman_endpoint: 'https://pas.cluster/pas/apiman',
+    apiman_endpoint: 'https://<your-host-goes-here>/apiman',
     adminUser: 'cypress.admin',
     adminPassword: 'Demo123!',
     nonAdminUser: 'cypress.user',
