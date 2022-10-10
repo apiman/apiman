@@ -363,6 +363,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
         private final long bytesDownloaded;
         private final Map<String, HeaderMap> headers;
         private final QueryMap queryParams;
+        private final String remoteAddr;
 
         public EsMetricPayload(RequestMetric requestMetricIn, Map<String, HeaderMap> headers, QueryMap queryParams) {
             this.requestStart = requestMetricIn.getRequestStart();
@@ -394,6 +395,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
             this.bytesDownloaded = requestMetricIn.getBytesDownloaded();
             this.headers = headers;
             this.queryParams = queryParams;
+            this.remoteAddr = requestMetricIn.getRemoteAddr();
         }
 
         public Date getRequestStart() {
@@ -512,6 +514,10 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
             return queryParams;
         }
 
+        public String getRemoteAddr() {
+            return remoteAddr;
+        }
+
         @Override
         public String toString() {
             return new StringJoiner(", ", EsMetricPayload.class.getSimpleName() + "[", "]")
@@ -544,6 +550,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
                            .add("bytesDownloaded=" + bytesDownloaded)
                            .add("headers=" + headers)
                            .add("queryParams=" + queryParams)
+                           .add("remoteAddr='" + remoteAddr + "'")
                            .toString();
         }
     }
