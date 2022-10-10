@@ -170,8 +170,16 @@ export class NotificationsComponent implements OnInit {
 
   private redirectToMyClientsPage(notification: INotificationsDto): void {
     let routerFragment = '';
-    if (notification.payload.clientId && notification.payload.clientVersion) {
-      routerFragment = `${notification.payload.clientId}-${notification.payload.clientVersion}`;
+
+    if (notification.payload.clientOrgId) {
+      routerFragment = `${notification.payload.clientOrgId}`;
+    }
+    if (
+      routerFragment &&
+      notification.payload.clientId &&
+      notification.payload.clientVersion
+    ) {
+      routerFragment += `-${notification.payload.clientId}-${notification.payload.clientVersion}`;
     }
     if (
       routerFragment &&

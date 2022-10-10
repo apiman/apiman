@@ -115,7 +115,6 @@ export class MyAppsComponent implements OnInit {
             .pipe(
               tap((orgs: IOrganization[]) => {
                 this.organizationCount = orgs.length;
-                console.log(this.organizationCount);
               }),
               shareReplay()
             );
@@ -197,41 +196,63 @@ export class MyAppsComponent implements OnInit {
     this.clients$ = this.allClients$;
     this.contracts$ = this.allContracts$;
     this.contractsFiltered = false;
+    this.generateTocLinks();
   }
 
+  /*
+   * Filters the data by the searchTerm of the user
+   * Criteria:
+   *   Client has at least one contract with an API which contain the searchTerm in the name
+   *   OR
+   *   client name contains the searchTerm
+   * */
   private filterData() {
-    this.searchTerm = this.searchTerm.toLowerCase();
+    const searchTerm = this.searchTerm.toLowerCase();
     forkJoin([this.allOrganizations$, this.allClients$, this.allContracts$])
       .pipe(
-        map(([orgs, clients, contracts]) => {
-          contracts = contracts.filter(
-            (contract) =>
-              contract.client.client.name
-                .toLowerCase()
-                .includes(this.searchTerm) ||
-              contract.api.api.name.toLowerCase().includes(this.searchTerm)
-          );
+        map(([allOrgs, allClients, allContracts]) => {
+          // Get all unique client identifier for clients which matches the search criteria
           const availableClients: Set<string> = new Set(
-            contracts.map(
-              (contract) =>
+            allContracts
+              .filter(
+                (contract) =>
+                  contract.client.client.name
+                    .toLowerCase()
+                    .includes(searchTerm) ||
+                  contract.api.api.name.toLowerCase().includes(searchTerm)
+              )
+              .map(
+                (contract) =>
+                  contract.client.client.organization.id +
+                  contract.client.client.id +
+                  contract.client.version
+              )
+          );
+          // Filter the contracts by the available clients
+          const filteredContracts = allContracts.filter(
+            (contract: IContractExt) => {
+              return availableClients.has(
                 contract.client.client.organization.id +
-                contract.client.client.name +
-                contract.client.version
-            )
+                  contract.client.client.id +
+                  contract.client.version
+              );
+            }
           );
-          clients = clients.filter(
-            (client) =>
-              availableClients.has(
-                client.client.organization.id +
-                  client.client.id +
-                  client.version
-              ) || client.client.name.toLowerCase().includes(this.searchTerm)
-          );
+          // Filter the clients by the available clients
+          const filteredClients = allClients.filter((client) => {
+            return availableClients.has(
+              client.client.organization.id + client.client.id + client.version
+            );
+          });
+          // Get all unique orgIds from the filtered clients
           const availableOrgs: Set<string> = new Set(
-            clients.map((client) => client.client.organization.id)
+            filteredClients.map((client) => client.client.organization.id)
           );
-          orgs = orgs.filter((org) => availableOrgs.has(org.id));
-          return [orgs, clients, contracts];
+          // Filter the orgs by the available orgIds
+          const filteredOrgs = allOrgs.filter((org) =>
+            availableOrgs.has(org.id)
+          );
+          return [filteredOrgs, filteredClients, filteredContracts];
         })
       )
       .subscribe(([orgs, clients, contracts]) => {
@@ -239,6 +260,7 @@ export class MyAppsComponent implements OnInit {
         this.clients$ = of(clients as IClientVersionExt[]);
         this.contracts$ = of(contracts as IContractExt[]);
         this.contractsFiltered = true;
+        this.generateTocLinks();
       });
   }
 
