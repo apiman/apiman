@@ -1,0 +1,3 @@
+DELETE /organizations/Organization/clients/Client/versions/1.0/contracts/${contractId} admin/admin
+----
+204

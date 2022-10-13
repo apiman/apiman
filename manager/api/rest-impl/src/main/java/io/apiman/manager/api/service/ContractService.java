@@ -237,7 +237,12 @@ public class ContractService implements DataAccessUtilMixin {
 
         ArrayList<ContractBean> contractsToDelete = Lists.newArrayList(tryAction(() -> storage.getAllContracts(organizationId, clientId, version)));
         try {
-            actionService.unregisterClient(organizationId, clientId, version);
+            if (!contractsToDelete.isEmpty()) {
+                ClientStatus clientStatus = contractsToDelete.stream().findFirst().get().getClient().getStatus();
+                if (clientStatus == ClientStatus.Registered || clientStatus == ClientStatus.AwaitingApproval){
+                    actionService.unregisterClient(organizationId, clientId, version);
+                }
+            }
             deleteContractsInternal(organizationId, clientId, version, contractsToDelete, contractsToDelete);
         } catch (Exception e) {
             throw new SystemErrorException(e);
@@ -254,7 +259,10 @@ public class ContractService implements DataAccessUtilMixin {
             ContractBean contractToDelete = storage.getContract(contractId);
             if (allContracts.size() <= 1) {
                 // If we are deleting the only/last contract, then we can unregister.
-                actionService.unregisterClient(organizationId, clientId, version);
+                ClientStatus clientStatus = contractToDelete.getClient().getStatus();
+                if (clientStatus == ClientStatus.Registered || clientStatus == ClientStatus.AwaitingApproval){
+                    actionService.unregisterClient(organizationId, clientId, version);
+                }
                 deleteContractsInternal(organizationId, clientId, version, allContracts, List.of(contractToDelete));
             } else {
                 // If we still have contracts left, we should re-register the existing client.
