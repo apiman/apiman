@@ -1,6 +1,6 @@
 == Apiman Docker Compose Quickstart Distro
 
-This Apiman Docker Compose quickstart distro allows you to try out Apiman an architecture that is more representative of a real-world deployment.
+This Apiman Docker Compose quickstart distro allows you to try out Apiman with architecture that is more representative of a real-world deployment.
 
 Please ensure you change any default passwords before going to production.
 
