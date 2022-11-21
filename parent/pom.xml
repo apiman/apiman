@@ -58,7 +58,7 @@
 
     <!-- Supported platform versions -->
     <version.org.wildfly.as>23.0.2.Final</version.org.wildfly.as>
-    <version.org.apache.tomcat>9.0.55</version.org.apache.tomcat>
+    <version.org.apache.tomcat>9.0.69</version.org.apache.tomcat>
 
     <!-- Plugin Versions -->
     <version.ant>1.10.11</version.ant>
