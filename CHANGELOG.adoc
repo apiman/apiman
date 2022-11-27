@@ -2,13 +2,14 @@
 
 All notable changes to Apiman will be documented here, as of Apiman 3.0.0.Final.
 
+// tag::3.0.0.Final[]
 == 3.0.0.Final
 
 === Thanks
 
-A huge thanks to every company that has sponsored Apiman's main developer via consulting, support, sponsoring features, or other means. Without financial support, Apiman open source will not continue to be developed.
+A huge thanks to every company that has worked with https://www.github.com/msavy[Apiman's main developer] via consulting, support, sponsoring features, or other means. Without financial support, Apiman open source will not continue to be developed.
 
-Particular thanks go to the team at https://www.scheer-pas.com[Scheer PAS^] who have sponsored a considerable amount of the work that has gone into the 3.x release.
+Particular thanks go to the team at https://www.scheer-pas.com[Scheer PAS^] who sponsored a considerable amount of the work that is in the 3.0.0.Final release.
 
 === Added
 
@@ -189,3 +190,5 @@ Particular thanks go to the team at https://www.scheer-pas.com[Scheer PAS^] who 
 
 
 **Full Changelog**: https://github.com/apiman/apiman/compare/2.2.3.Final...3.0.0.Final
+
+// end::3.0.0.Final[]
