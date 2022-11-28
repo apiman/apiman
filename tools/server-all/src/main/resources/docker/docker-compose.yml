@@ -11,7 +11,7 @@ services:
       - |
         cd /opt/keycloak
         ./bin/kc.sh build
-        ./bin/kc.sh start-dev --import-realm
+        ./bin/kc.sh start-dev --import-realm --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true
     ports:
       - "8085:8080"
     environment:
