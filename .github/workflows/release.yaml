@@ -65,6 +65,7 @@ jobs:
           git checkout master
           git branch --set-upstream-to=origin/master
           git pull
+          git submodule update --init --recursive
 
       - name: Apiman Website Code Checkout
         run: |
