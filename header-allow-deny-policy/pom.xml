@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman.plugins</groupId>
     <artifactId>apiman-plugins</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0.RC6</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-plugins-header-allow-deny-policy</artifactId>
