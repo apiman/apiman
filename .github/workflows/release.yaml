@@ -249,3 +249,11 @@ jobs:
           cd plugins
           git commit -am "Automated commit for Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
           git push
+
+      - name: 'Send `apiman-release-version` repository dispatch event to `apiman/apiman-docker`'
+        uses: peter-evans/repository-dispatch@v1.1.3
+        with:
+          token: ${{ secrets.REPO_DISPATCH_ACCESS_TOKEN }}
+          repository: apiman/apiman-docker
+          event-type: apiman-release-version
+          client-payload: '{"release-version": "${{ github.events.inputs.release-version }}"}'
