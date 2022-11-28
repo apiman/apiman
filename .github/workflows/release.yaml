@@ -256,14 +256,3 @@ jobs:
           cd plugins
           git commit -am "Automated commit for Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
           git push
-
-      # Update project website with new version
-      - name: Update Web Site
-        run: |
-          cd website
-          export PREV_VERSION=`cat version`
-          find ./latest/ -name '*.html' -exec sed -i "s/$PREV_VERSION/${{ github.event.inputs.release-version }}/g" {} \;
-          echo "${{ github.event.inputs.release-version }}" > version
-          git add .
-          git commit -m "Automated website update for Apiman release: ${{ github.event.inputs.release-version }}"
-          git push
