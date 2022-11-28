@@ -161,7 +161,7 @@ jobs:
           git add .
           git commit -m "Automated commit for Release Version: ${{ github.event.inputs.release-version }}"
           git tag -f -a -m "Tagging release ${{ github.event.inputs.release-version }}" ${{ github.event.inputs.release-version }}
-          git push --atomic origin/master ${{ github.event.inputs.release-version }} 
+          git push --atomic origin ${{ github.event.inputs.release-version }}:${{ github.event.inputs.release-version }} 
 
       - name: Commit Changes for Apiman Plugins Release Version ${{ github.event.inputs.release-version }}
         run: |
@@ -169,7 +169,7 @@ jobs:
           git add .
           git commit -m "Automated commit for Release Version: ${{ github.event.inputs.release-version }}"
           git tag -f -a -m "Tagging release ${{ github.event.inputs.release-version }}" ${{ github.event.inputs.release-version }}
-          git push --atomic origin/master ${{ github.event.inputs.release-version }} 
+          git push --atomic origin ${{ github.event.inputs.release-version }}:${{ github.event.inputs.release-version }}
 
 
       # Create GitHub "release" with attached assets
