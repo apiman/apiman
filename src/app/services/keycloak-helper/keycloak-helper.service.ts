@@ -15,12 +15,12 @@
  */
 
 import { Injectable } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
 import {
-  KeycloakInstance,
-  KeycloakProfile,
-  KeycloakTokenParsed
-} from 'keycloak-js';
+  KeycloakEvent,
+  KeycloakEventType,
+  KeycloakService
+} from 'keycloak-angular';
+import { KeycloakProfile, KeycloakTokenParsed } from 'keycloak-js';
 import { ConfigService } from '../config/config.service';
 import { Router } from '@angular/router';
 
@@ -32,10 +32,6 @@ export class KeycloakHelperService {
   private isLoggedIn = false;
   private executed = false;
   private username?: string;
-
-  private readonly TOKEN = 'APIMAN_DEVPORTAL_KEYCLOAK_SESSION_STORAGE_TOKEN';
-  private readonly REFRESH_TOKEN =
-    'APIMAN_DEVPORTAL_KEYCLOAK_SESSION_STORAGE_REFRESH_TOKEN';
 
   constructor(
     private readonly keycloak: KeycloakService,
@@ -56,9 +52,7 @@ export class KeycloakHelperService {
         },
         initOptions: {
           onLoad: 'check-sso',
-          checkLoginIframe: false,
-          token: localStorage.getItem(this.TOKEN) ?? '',
-          refreshToken: localStorage.getItem(this.REFRESH_TOKEN) ?? ''
+          checkLoginIframe: false
         },
         loadUserProfileAtStartUp: true, // because of https://github.com/mauriciovigolo/keycloak-angular/pull/269
         enableBearerInterceptor: true,
@@ -99,7 +93,7 @@ export class KeycloakHelperService {
   }
 
   public logout(): void {
-    this.clearTokensFromSessionStorage();
+    // this.clearTokensFromSessionStorage();
     // remove current angular route so that the base path is still used
     const url = window.location.href.replace(this.router.url, '') + '/home';
     void this.keycloak.logout(url);
@@ -109,42 +103,22 @@ export class KeycloakHelperService {
    * Will set the current tokens after login, and start an automatic refresh of tokens.
    * Could be triggered multiple times but should only execute once
    */
-  public setAndUpdateTokens(): void {
+  public initUpdateTokens(): void {
     if (!this.executed && this.keycloak.getKeycloakInstance().tokenParsed) {
-      this.setTokensToLocalStorage(this.keycloak.getKeycloakInstance());
-      setInterval(() => {
-        this.keycloak
-          .updateToken()
-          .then(() => {
-            this.setTokensToLocalStorage(this.keycloak.getKeycloakInstance());
-          })
-          .catch(() => {
-            console.error('Error refreshing token', new Date());
-            this.clearTokensFromSessionStorage();
-          });
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      }, Math.min((this.keycloak.getKeycloakInstance().tokenParsed!.exp! - 60) * 1000, 4 * 60 * 1000)); // refresh token minimum every 4 minutes)
+      this.keycloak.keycloakEvents$.subscribe({
+        next: (event: KeycloakEvent) => {
+          if (event.type == KeycloakEventType.OnTokenExpired) {
+            console.info('Try to refresh token');
+            void this.keycloak.updateToken();
+          }
+        }
+      });
     }
     this.executed = true;
   }
 
-  private setTokensToLocalStorage(keycloakInstance: KeycloakInstance) {
-    localStorage.setItem(this.TOKEN, keycloakInstance.token ?? '');
-    localStorage.setItem(
-      this.REFRESH_TOKEN,
-      keycloakInstance.refreshToken ?? ''
-    );
-  }
-
-  public getTokenFromLocalStorage(): string {
-    // we have to trigger the method here to make sure the tokens are set after a login
-    this.setAndUpdateTokens();
-    return localStorage.getItem(this.TOKEN) ?? '';
-  }
-
-  private clearTokensFromSessionStorage() {
-    localStorage.removeItem(this.TOKEN);
-    localStorage.removeItem(this.REFRESH_TOKEN);
+  public getToken(): string {
+    return this.keycloak.getKeycloakInstance().token as string;
   }
 
   public getUsername(): string {
@@ -157,7 +131,7 @@ export class KeycloakHelperService {
   public decodeCurrentKeyloakToken(): KeycloakTokenParsed {
     try {
       return <KeycloakTokenParsed>(
-        JSON.parse(atob(this.getTokenFromLocalStorage().split('.')[1]))
+        JSON.parse(atob(this.getToken().split('.')[1]))
       );
     } catch (error) {
       console.error('Error while decoding keycloak token', error);

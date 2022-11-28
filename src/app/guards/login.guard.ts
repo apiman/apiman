@@ -42,7 +42,7 @@ export class LoginGuard extends KeycloakAuthGuard {
       });
     }
     // we are logged in and can set the tokens and fetch permissions
-    this.keycloakHelper.setAndUpdateTokens();
+    this.keycloakHelper.initUpdateTokens();
     return this.authenticated;
   }
 }

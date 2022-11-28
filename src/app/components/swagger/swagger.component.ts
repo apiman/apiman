@@ -109,7 +109,7 @@ export class SwaggerComponent implements OnInit {
   }
 
   private setAuthorizationHeader(request: SwaggerUI.Request) {
-    const token = this.keycloakHelperService.getTokenFromLocalStorage();
+    const token = this.keycloakHelperService.getToken();
     if (token.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       request.headers.Authorization = 'Bearer ' + token;
