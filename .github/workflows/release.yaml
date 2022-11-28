@@ -22,19 +22,17 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'Apiman'
     steps:
-      - name: Set up `mvn`
-        run: bash .github/workflows/support/set-mvn-location.sh
-
-      - name: Set up Node.js v10
+      - name: Set up Node.js v14
         uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 14
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
+          cache: maven
 
       - name: Set up Gren
         run: npm install github-release-notes -g
