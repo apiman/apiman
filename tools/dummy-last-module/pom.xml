@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-tools</artifactId>
-    <version>3.0.0.RC6</version>
+    <version>3.0.0.RC7-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-tools-dummy-last-module</artifactId>
   <name>apiman-tools-dummy-last-module</name>
