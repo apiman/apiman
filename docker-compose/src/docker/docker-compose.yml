@@ -207,7 +207,7 @@ services:
       - |
         cd /opt/keycloak
         ./bin/kc.sh build
-        ./bin/kc.sh start-dev --import-realm --log=console
+        ./bin/kc.sh start-dev --import-realm --log=console --legacy-logout-redirect-uri
     environment:
       # Import realm with these secrets at first startup
       - 'KEYCLOAK_REALM=${KEYCLOAK_REALM}'
