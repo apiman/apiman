@@ -128,10 +128,10 @@ export class KeycloakHelperService {
     return this.username;
   }
 
-  public decodeCurrentKeyloakToken(): KeycloakTokenParsed {
+  public decodeCurrentKeycloakToken(): KeycloakTokenParsed {
     try {
       return <KeycloakTokenParsed>(
-        JSON.parse(atob(this.getToken().split('.')[1]))
+        JSON.parse(window.atob(this.getToken().split('.')[1]))
       );
     } catch (error) {
       console.error('Error while decoding keycloak token', error);

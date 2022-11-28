@@ -46,7 +46,7 @@ export class AccountComponent implements OnInit {
     this.accountUrl = this.keycloakHelper.getKeycloakAccountUrl();
     this.userProfile$ = from(this.keycloakHelper.getUserProfile());
     this.apimanAccount$ = this.backendService.getCurrentUser();
-    this.keycloakToken = this.keycloakHelper.decodeCurrentKeyloakToken();
+    this.keycloakToken = this.keycloakHelper.decodeCurrentKeycloakToken();
   }
 
   private setUpHero() {
