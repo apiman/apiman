@@ -20,6 +20,7 @@ jobs:
     env:
       RELEASE_VERSION: ${{ github.event.inputs.release-version }}
       DEV_VERSION: ${{ github.event.inputs.snapshot-version }}
+      RELEASE_BRANCH: ${{ github.event.inputs.branch }}
     steps:
       - name: Set global git
         run: |
@@ -128,20 +129,20 @@ jobs:
           find . -name "*.properties" -exec sed -i "s|apiman-manager.plugins.registries=https://cdn.jsdelivr.net/gh/apiman/apiman-plugin-registry@master/registry.json|apiman-manager.plugins.registries=https://cdn.jsdelivr.net/gh/apiman/apiman-plugin-registry@$RELEASE_VERSION/registry.json|" {} \;
 
       # Commit changes back to GitHub
-      - name: Commit Changes for Apiman Release Version ${{ env.RELEASE_VERSION }}
+      - name: Commit changes for Apiman Portal ${{ env.RELEASE_VERSION }}
+        run: |
+          cd apiman/portal/ui
+          git add .
+          git commit -m "Automated commit for Release Version: $RELEASE_VERSION"
+          git tag -f -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
+
+      - name: Commit & push changes for Apiman ${{ env.RELEASE_VERSION }}
         run: |
           cd apiman
           git add .
           git commit -m "Automated commit for Release Version: $RELEASE_VERSION"
           git tag -f -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
           
-          cd portal/ui
-        
-          git add .
-          git commit -m "Automated commit for Release Version: $RELEASE_VERSION"
-          git tag -f -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
-          
-          cd ../..
           git push --recurse-submodules=on-demand --atomic origin $RELEASE_VERSION:$RELEASE_VERSION 
 
       - name: Commit Changes for Apiman Plugins Release Version ${{ env.RELEASE_VERSION }}
@@ -183,20 +184,18 @@ jobs:
       # Deploy Apiman to Maven Central
       - name: Deploy Apiman to Maven Central
         run: |
-          cd apiman
-          mvn deploy --batch-mode -DskipTests -Prelease
-          cd parent
-          mvn deploy --batch-mode -DskipTests -Prelease
+          cd ${{ github.workspace }}/parent
+          mvn deploy -B -DskipTests -Prelease
+          
+          cd ${{ github.workspace }}/apiman
+          mvn deploy -B -DskipTests -Prelease
+          
+          cd ${{ github.workspace }}/plugins
+          mvn deploy -B -DskipTests -Prelease
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      # Deploy Apiman Plugins to Maven Central
-      - name: Deploy Apiman Plugins to Maven Central
-        run: |
-          cd plugins
-          mvn deploy --batch-mode -DskipTests -Prelease --settings /home/runner/.m2/settings.xml
 
       # Update project pom.xml files to next snapshot version and push to GH
       - name: Update Apiman Parent Next Snapshot Version ${{ env.DEV_VERSION }} in pom.xml
@@ -220,15 +219,13 @@ jobs:
 
       - name: Commit Changes for Apiman Next Snapshot Version ${{ env.DEV_VERSION }}
         run: |
-          cd apiman
-          git commit -am "Automated commit for Next Snapshot Version: $DEV_VERSION"          
-          
-          cd portal/ui
+          cd ${{ github.workspace }}/apiman/portal/ui
           git commit -am "Automated commit for Next Snapshot Version: $DEV_VERSION"
           
-          cd ../..
-          git push --recurse-submodules=on-demand --atomic origin
-          
+          cd ${{ github.workspace }}/apiman
+          git commit -am "Automated commit for Next Snapshot Version: $DEV_VERSION"          
+
+          git push --recurse-submodules=on-demand --atomic origin 
 
       - name: Commit Changes for Apiman Plugins Next Snapshot Version ${{ env.DEV_VERSION }}
         run: |
