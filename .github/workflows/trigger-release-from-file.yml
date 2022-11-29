@@ -24,23 +24,25 @@ jobs:
 
       - name: "Read release version"
         id: read-version
-        run: echo "APIMAN_VERSION=$(head -n1 .github/workflows/RELEASE_VERSION) >> $GITHUB_ENV"
-
+        run: |
+          echo "APIMAN_VERSION=$(head -n1 .github/workflows/RELEASE_VERSION)" >> $GITHUB_ENV
+          echo "version=$(head -n1 .github/workflows/RELEASE_VERSION)" >> $GITHUB_OUTPUT
+          
       - name: Update Maven versions, including parent (if version changed)
         run: |
           mvn clean install
-          mvn -ntp -N versions:update-parent -DparentVersion="[${{ env.APIMAN_VERSION }}]" -DgenerateBackupPoms=false
-          mvn -ntp versions:set -DnewVersion="${{ env.APIMAN_VERSION }}" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvn -ntp -N versions:update-parent -DparentVersion="[$APIMAN_VERSION]" -DgenerateBackupPoms=false
+          mvn -ntp versions:set -DnewVersion="$APIMAN_VERSION" -DgenerateBackupPoms=false -DprocessAllModules=true
           mvn clean install
           
       - uses: EndBug/add-and-commit@v9
         with:
-          message: "Bump Apiman version to ${{ env.APIMAN_VERSION }}"
+          message: "Bump Apiman version to $APIMAN_VERSION"
 
       - name: Tag release
         run: |
-          git tag -f -a -m "Apiman Docker tag release ${{ env.APIMAN_VERSION }}" ${{ env.APIMAN_VERSION }}
-          git push origin HEAD:master ${{ env.APIMAN_VERSION }} --tags
+          git tag -f -a -m "Apiman Docker tag release $APIMAN_VERSION" $APIMAN_VERSION
+          git push origin HEAD:master $APIMAN_VERSION --tags
 
       - name: Create GitHub release ${{ env.APIMAN_VERSION }}
         uses: softprops/action-gh-release@v1
@@ -48,9 +50,9 @@ jobs:
           tag_name: ${{ env.APIMAN_VERSION }}
           name: ${{ env.APIMAN_VERSION }}
           files: |
-            docker-compose/target/apiman-docker-compose-${{ env.APIMAN_VERSION }}.zip
+            docker-compose/target/apiman-docker-compose-$APIMAN_VERSION.zip
           body: |
-            Apiman Docker release for Apiman version ${{ env.APIMAN_VERSION }}.
+            Apiman Docker release for Apiman version $APIMAN_VERSION.
             
             To access the images associated with this build, please look on Apiman's DockerHub or our GHCR registry (GitHub Packages).   
 
