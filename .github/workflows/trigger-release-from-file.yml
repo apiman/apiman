@@ -35,14 +35,11 @@ jobs:
           mvn -ntp versions:set -DnewVersion="$APIMAN_VERSION" -DgenerateBackupPoms=false -DprocessAllModules=true
           mvn clean install
           
-      - uses: EndBug/add-and-commit@v9
+      - uses: EndBug/add-and-commit@v9.1.1
         with:
           message: "Bump Apiman version to $APIMAN_VERSION"
-
-      - name: Tag release
-        run: |
-          git tag -f -a -m "Apiman Docker tag release $APIMAN_VERSION" $APIMAN_VERSION
-          git push origin HEAD:master $APIMAN_VERSION --tags
+          tag: '${{ env.APIMAN_VERSION }} --force -m "Apiman Docker tag release $APIMAN_VERSION"'
+          tag_push: "--force"
 
       - name: Create GitHub release ${{ env.APIMAN_VERSION }}
         uses: softprops/action-gh-release@v1
