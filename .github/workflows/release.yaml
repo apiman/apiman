@@ -135,6 +135,7 @@ jobs:
           git add .
           git commit -m "Automated commit for Release Version: $RELEASE_VERSION"
           git tag -f -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
+          git push --atomic --tags origin $RELEASE_VERSION:various-work-for-release 
 
       - name: Commit & push changes for Apiman ${{ env.RELEASE_VERSION }}
         run: |
@@ -142,8 +143,7 @@ jobs:
           git add .
           git commit -m "Automated commit for Release Version: $RELEASE_VERSION"
           git tag -f -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
-          
-          git push --recurse-submodules=on-demand --atomic origin $RELEASE_VERSION:$RELEASE_VERSION 
+          git push --atomic --tags origin $RELEASE_VERSION:master 
 
       - name: Commit Changes for Apiman Plugins Release Version ${{ env.RELEASE_VERSION }}
         run: |
@@ -151,7 +151,7 @@ jobs:
           git add .
           git commit -m "Automated commit for Release Version: $RELEASE_VERSION"
           git tag -f -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
-          git push --atomic origin $RELEASE_VERSION:$RELEASE_VERSION
+          git push --atomic --tags origin $RELEASE_VERSION:master
 
       # Create GitHub "release" with attached assets
       - name: Signing and Archiving the Quickstart ZIPs
@@ -202,12 +202,13 @@ jobs:
         run: |
           cd apiman/parent
           mvn -ntp versions:set -DnewVersion="$DEV_VERSION" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvn install
 
       - name: Update Apiman Next Snapshot Version ${{ env.DEV_VERSION }} in pom.xml
         run: |
           cd apiman
           mvn -ntp versions:set -DnewVersion="$DEV_VERSION" -DgenerateBackupPoms=false -DprocessAllModules=true
-          mvn -ntp versions:update-parent -DparentVersion="[$DEV_VERSION]" -DgenerateBackupPoms=false -DallowSnapshots=true
+          mvn -ntp versions:update-parent -DgenerateBackupPoms=false -DallowSnapshots=true -DparentVersion="[$DEV_VERSION]"
           find . -name "*.properties" -exec sed -i "s|apiman-manager.api-catalog.catalog-url=https://cdn.jsdelivr.net/gh/apiman/apiman-api-catalog@$RELEASE_VERSION/catalog.json|apiman-manager.api-catalog.catalog-url=https://cdn.jsdelivr.net/gh/apiman/apiman-api-catalog@master/catalog.json|" {} \;
           find . -name "*.properties" -exec sed -i "s|apiman-manager.plugins.registries=https://cdn.jsdelivr.net/gh/apiman/apiman-plugin-registry@$RELEASE_VERSION/registry.json|apiman-manager.plugins.registries=https://cdn.jsdelivr.net/gh/apiman/apiman-plugin-registry@master/registry.json|" {} \;
 
@@ -215,23 +216,23 @@ jobs:
         run: |
           cd plugins
           mvn -ntp versions:set -DnewVersion="$DEV_VERSION" -DgenerateBackupPoms=false -DprocessAllModules=true
-          mvn -ntp versions:update-parent -DparentVersion="[$DEV_VERSION]" -DgenerateBackupPoms=false -DallowSnapshots=true
+          mvn -ntp versions:update-parent -DgenerateBackupPoms=false -DallowSnapshots=true -DparentVersion="[$DEV_VERSION]"
 
       - name: Commit Changes for Apiman Next Snapshot Version ${{ env.DEV_VERSION }}
         run: |
           cd ${{ github.workspace }}/apiman/portal/ui
           git commit -am "Automated commit for Next Snapshot Version: $DEV_VERSION"
+          git push origin --atomic HEAD:various-work-for-release
           
           cd ${{ github.workspace }}/apiman
-          git commit -am "Automated commit for Next Snapshot Version: $DEV_VERSION"          
-
-          git push --recurse-submodules=on-demand --atomic origin 
+          git commit -am "Automated commit for Next Snapshot Version: $DEV_VERSION"
+          git push origin --atomic HEAD:master
 
       - name: Commit Changes for Apiman Plugins Next Snapshot Version ${{ env.DEV_VERSION }}
         run: |
           cd plugins
           git commit -am "Automated commit for Next Snapshot Version: $DEV_VERSION"
-          git push
+          git push origin --atomic HEAD:master
 
       - name: 'Send `apiman-release-version` repository dispatch event to `apiman/apiman-docker`'
         uses: peter-evans/repository-dispatch@v1.1.3
