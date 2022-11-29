@@ -50,9 +50,9 @@ jobs:
           tag_name: ${{ env.APIMAN_VERSION }}
           name: ${{ env.APIMAN_VERSION }}
           files: |
-            docker-compose/target/apiman-docker-compose-$APIMAN_VERSION.zip
+            docker-compose/target/apiman-docker-compose-${{ env.APIMAN_VERSION }}.zip
           body: |
-            Apiman Docker release for Apiman version $APIMAN_VERSION.
+            Apiman Docker release for Apiman version ${{ env.APIMAN_VERSION }}
             
             To access the images associated with this build, please look on Apiman's DockerHub or our GHCR registry (GitHub Packages).   
 
