@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 echo ""
 echo "######################################"
 echo "  Releasing apiman service catalog"
@@ -28,5 +28,5 @@ echo "Release Version: $RELEASE_VERSION"
 echo "Dev Version: $DEV_VERSION"
 echo "######################################"
 
-git tag -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
+git tag -f -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
 git push origin $RELEASE_VERSION
