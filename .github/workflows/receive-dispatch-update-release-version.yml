@@ -4,10 +4,24 @@ on:
   repository_dispatch:
     types:
       - apiman-release-version
+  workflow_dispatch:
+    inputs:
+      apiman-release-version:
+        description: Apiman release version
+        required: false
+        type: string
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Get version
+        run: |
+          A=${{ github.event.inputs.apiman-release-version }}
+          B=${{ github.event.client_payload.release-version }} 
+          RESOLVED_VER=${A:=$B}
+          echo "Resolved version: $RESOLVED_VER"
+          echo "APIMAN_VERSION=$RESOLVED_VER" >> $GITHUB_ENV
+          
       - name: Checkout Apiman Docker repo
         uses: actions/checkout@v3
 
@@ -15,12 +29,14 @@ jobs:
         run: bash .github/workflows/support/setup.sh
 
       - name: Update release version in docker-release flow
-        run: echo ${{ github.event.client_payload.release-version }} > .github/workflows/RELEASE_VERSION
+        run: echo ${{ env.APIMAN_VERSION }} > .github/workflows/RELEASE_VERSION
 
       - name: Commit release version update to repository
         uses: EndBug/add-and-commit@v7.2.1
+        continue-on-error: true
         with:
           author_name: apiman-ci
           default_author: user_info
-          message: "chore(ci): update RELEASE_VERSION to ${{ github.event.client_payload.release-version }}"
+          message: "chore(ci): update RELEASE_VERSION to ${{ env.APIMAN_VERSION }}"
           add: .github/workflows --force
+          push: true
