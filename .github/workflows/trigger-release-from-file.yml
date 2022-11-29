@@ -26,14 +26,18 @@ jobs:
       - name: Update Maven versions, including parent (if version changed)
         run: |
           mvn clean install
-          mvnd -ntp -N versions:update-parent -DparentVersion="[${{ env.version }}]" -DgenerateBackupPoms=false
-          mvnd -ntp versions:set -DnewVersion="${{ env.version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
+          mvn -ntp -N versions:update-parent -DparentVersion="[${{ env.version }}]" -DgenerateBackupPoms=false
+          mvn -ntp versions:set -DnewVersion="${{ env.version }}" -DgenerateBackupPoms=false -DprocessAllModules=true
           mvn clean install
+          
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: "Bump Apiman version to ${{ env.version }}"
 
       - name: Tag release
         run: |
           git tag -f -a -m "Apiman Docker tag release ${{ env.version }}" ${{ env.version }}
-          git push origin ${{ env.version }}
+          git push origin HEAD:master ${{ env.version }} --tags
 
       - name: Create GitHub release ${{ env.version }}
         uses: softprops/action-gh-release@v1
