@@ -115,7 +115,7 @@ jobs:
       - name: Commit changes for Apiman Plugin Registry
         run: |
           cd apiman-plugin-registry
-          bash release.sh
+          bash release.sh $RELEASE_VERSION $DEV_VERSION
 
       - name: Commit changes for Apiman API Catalog
         run: |
@@ -179,10 +179,6 @@ jobs:
             ${{ github.workspace }}/apiman/releases/apiman-distro-vertx-$RELEASE_VERSION.zip.asc
             ${{ github.workspace }}/apiman/releases/apiman-distro-tomcat-$RELEASE_VERSION-overlay.zip
             ${{ github.workspace }}/apiman/releases/apiman-distro-tomcat-$RELEASE_VERSION-overlay.zip.asc
-
-          # releases/apiman-distro-tomcat-${{ github.event.inputs.release-version }}-overlay.zip
-#      - name: Generate Release Notes
-#        run: cd apiman && gren release --token=${{ secrets.GITHUB_TOKEN }} --override
 
       # Deploy Apiman to Maven Central
       - name: Deploy Apiman to Maven Central
