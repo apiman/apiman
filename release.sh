@@ -33,7 +33,7 @@ mv tmp.json registry.json
 git add .
 git commit -m "Prepare for release $RELEASE_VERSION"
 git push origin $BRANCH
-git tag -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
+git tag -f -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
 git push origin $RELEASE_VERSION
 
 jq ".plugins[].version = \"$RELEASE_VERSION\" | .version = \"$RELEASE_VERSION\"" registry.json > tmp.json
