@@ -1,0 +1,68 @@
+= How Apiman Works
+
+The primary groups of Apiman users are:
+
+* API Providers
+* API Consumers
+* API Management Administrators
+* API Developers
+
+Apiman fulfills these groups of users' needs by providing these subsystems:
+
+* API Manager - The API Manager provides an easy way for API providers to use a web UI to define plans for their APIs, apply these plans across multiple APIs, and control role-based user access and API versioning. These plans can govern access to APIs and limits on the rate at which consumers can access APIs. The same UI enables API consumers to easily locate and access APIs.  All features available in the web UI are also available via a REST interface, allowing full automation.
+
+* API Gateway - The gateway applies the policies configured in the API Manager, enforcing them as runtime rules for each managed API request made.  The way that the API Gateway works is that the consumer of the API accesses the API through a URL that designates the API Gateway as a proxy for the API. If the policies defined to govern access to the API permit that access, the API Gateway then proxies requests to the backend API implementation.
+
+* An Extensible Plugin-Based Architecture - API Developers can create their own custom API management policies and install them into Apiman.  In addition, custom implementations of core Apiman components can be created and used, without needing to rebuild the core system.
+
+== The Apiman Data Model
+Apiman uses a hierarchical data model that consists of the following primary elements:
+
+* Organizations
+* Plans
+* APIs
+* Client Apps
+* Policies
+
+image::apiman_001.png[Apiman data model]
+
+* *Policies* - Policies are at the lowest level of the data model, but they are arguably the most important concept because they represent the unit of work done at runtime (when the API Gateway applies the policies to all API requests). Everything defined in the API Manager is there to enable Apiman to apply policies to requests made to APIs. When a request to an API is made, Apiman creates a chain of policies to be applied to that request. Apiman policy chains define a specific sequence order in which the policies defined in the API Manager UI are applied to API requests. You can think of a policy as a rule, or set of rules that are enforced by the API Gateway. There are multiple types of Apiman policies. Some policies allow or block access to APIs based on the IP address of the client application, while others allow or restrict access to specific resources provided by an API, while still others enable you to control or “throttle” the rate at which requests made to an API.
+
+* *Plans* - In Apiman, a Plan is a set policies that together define the level of service that Apiman provides for an API. Plans enable Apiman users to define multiple different levels of service for their APIs. It's common to define different plans for the same API, where the differences depend on configuration options. For example, an organization may offer both a “gold” and “silver” plan for the same API. The gold plan may be more expensive than the silver plan, but it may offer a higher level of API requests in a given (and configurable) time period.
+
+* *APIs* - These represent real back-end APIs that are being “managed” by Apiman.  An API can either be Public (available to any invoker at a static endpoint) or Private (only invokable by Client Apps that are modeled within Apiman).  This is the primary entity that an API Provider is responsible for editing within the API Manager.
+
+* *Client Apps* - A Client App represents a piece of software that needs to consume managed APIs that are offered through Apiman.  Each Client App can consume multiple APIs within Apiman by creating a contract to the API through one of its Plans.  This is the primary entity that an API Consumer is responsible for editing within the API Manager.
+
+* *Organizations* - The Organization is at the top level of the Apiman data model. An organization contains and manages all elements used by a company, university, group inside a company, etc. for API management with Apiman. All Plans, APIs,and Client Apps are defined in an Apiman organization. In this way, an organization acts as a container of other elements. Users must be associated with an organization before they can use Apiman to manage elements within it. Apiman implements role-based access controls for users. The organization membership role assigned to a user defines the actions that a user can perform and the elements that a user can manage within the organization.
+
+[TIP]
+====
+In the Apiman data model, almost everything exists in the context of an organization.
+====
+
+Note that the Apiman data model supports versioning for many of its data elements. Versioning enables you to retain and make use of multiple versions of data elements such as APIs and plans.
+
+== Apiman at Runtime - Proxying Requests
+What happens is that when an API request is received by the API Gateway at runtime, the policy chain is applied in the order of client app, plan, and API. If no failures, such as a rate counter being exceeded, occur, the API Gateway sends the request to the API. In order to be accepted by the API Gateway, a request must include an API key. The API Gateway acts as a proxy for the API:
+
+image::apiman_002.png[Apiman at runtime]
+
+Next, when the API Gateway receives a response from the API's backend implementation, the policy chain is applied again, but this time in the reverse order. The API policies are applied first, then the plan policies, and finally the client app policies. If no failures occur, then the API response is sent back to the consumer of the API.
+
+Before we move on, it's important that we're clear on some basic terminology. When we talk about an API that is _managed_ by Apiman (in other words, a _managed API_), we're referring to an API where the Apiman API Gateway is acting as a proxy. In order to able access a managed API, a client app must make of of an _API key_ that is generated when the API is published to the API Gateway. The API key is embedded in the URL at which the managed API is published by the API Gateway. We'll see a working example of this later in the crash course.
+
+[TIP]
+====
+From a client app's perspective, the only difference between accessing a managed API and another API is the format of the APIs' endpoint URL.
+====
+
+The sequence in which incoming API requests have policies applied is:
+
+* First, at the client app level. In Apiman, a client app is contracted to use one or more APIs.
+* Second, at the plan level. In Apiman, policies can be organized into groups called plans.
+* Third, at the individual API level.
+
+By applying the policy chain twice, both for the originating incoming request and the resulting response, Apiman allows policy implementations two opportunities to provide management functionality during the lifecycle. The following diagram illustrates this two-way approach to applying policies:
+
+image::apiman_003.png[policy ordering]

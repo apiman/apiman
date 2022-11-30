@@ -1,0 +1,119 @@
+= Hazelcast Components
+Marc Savy <marc@blackparrotlabs.io>
+
+Apiman components for https://www.hazelcast.com[Hazelcast^].
+
+== Global Optional Parameters
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `eager-init`
+| Boolean
+| false
+
+|===
+
+== Components
+
+[#_cache_store]
+=== Cache Store
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.components.ICacheStoreComponent=io.apiman.gateway.engine.hazelcast.HazelcastCacheStoreComponent
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "components": {
+    "ICacheStoreComponent": {
+      "class": "io.apiman.gateway.engine.hazelcast.HazelcastCacheStoreComponent",
+      "config": {
+        // <config here>
+      }
+    }
+  }
+}
+----
+--
+====
+
+[#_rate_limiter]
+=== Rate Limiter
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.components.IRateLimiterComponent=io.apiman.gateway.engine.hazelcast.HazelcastRateLimiterComponent
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "components": {
+    "IRateLimiterComponent": {
+      "class": "io.apiman.gateway.engine.hazelcast.HazelcastRateLimiterComponent",
+      "config": {
+        // <config here>
+      }
+    }
+  }
+}
+----
+--
+====
+
+[#_shared_state]
+=== Shared State
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.components.ISharedStateComponent=io.apiman.gateway.engine.hazelcast.HazelcastSharedStateComponent
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "components": {
+    "ISharedStateComponent": {
+      "class": "io.apiman.gateway.engine.hazelcast.HazelcastSharedStateComponent",
+      "config": {
+        // <config here>
+      }
+    }
+  }
+}
+----
+--
+====
+
+

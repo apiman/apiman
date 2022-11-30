@@ -1,0 +1,106 @@
+= WildFly
+
+== Overview
+
+This guide explores downloading and installing the Apiman quickstarts.
+
+The distribution consists of:
+
+* Apiman Manager (`apiman.war`)
+* Apiman Manager UI (`apimanui.war`)
+* Apiman Developer Portal UI (`apiman-developer-portal.war`)
+* Apiman Gateway (`apiman-gateway.war`)
+* Apiman Gateway API (`apiman-gateway-api.war`)
+
+== Prerequisites
+
+[[keycloak_setup]]
+=== Set up Keycloak IDM
+
+In order to manage our users and provide login security we will use Keycloak.
+
+For instructions, please refer to: xref:keycloak.adoc[]
+
+We will assume you have not changed anything from the default Keycloak realm definition for the purposes of this guide footnote:[Available in your distro zip, `apiman/data/default-realm-for-apiman.json`].
+Please substitute your changes, where appropriate.
+
+=== Installing Apiman on WildFly
+
+Apiman can target https://www.wildfly.org[WildFly^] as a runtime environment.
+In order to install Apiman you will need to download both WildFly and the Apiman overlay distribution.
+
+Once both are downloaded, it's a simple matter of unpacking both into the same location.
+
+[#_download]
+==== Download
+
+First you will need to download both WildFly and Apiman:
+
+. http://download.jboss.org/wildfly/{wildfly-version}/wildfly-{wildfly-version}.zip[Download WildFly {wildfly-version}]
+
+. http://downloads.jboss.org/apiman/{apiman-version-release}/apiman-distro-wildfly-{apiman-version-release}-overlay.zip[Download Apiman {apiman-version-release}]
+
+[source,bash,subs=attributes+]
+----
+wget https://download.jboss.org/wildfly/{wildfly-version}/wildfly-{wildfly-version}.zip
+
+wget https://github.com/apiman/apiman/releases/download/{apiman-version-release}/apiman-distro-wildfly-{apiman-version-release}-overlay.zip
+----
+
+==== Unpack
+
+Once both files have been downloaded, simply unpack both in the same location.
+
+[source,bash,subs=attributes+]
+----
+unzip wildfly-{wildfly-version}.zip
+
+unzip -o apiman-distro-wildfly-{apiman-version-release}-overlay.zip -d wildfly-{wildfly-version}
+----
+
+== Run Apiman on WildFly
+
+IMPORTANT: Ensure you have set `APIMAN_AUTH_URL` as described in the <<keycloak_setup, Keycloak Setup>> section.
+
+The Apiman overlay contains everything needed to run Apiman, including:
+
+* Apiman binaries (several WAR files)
+* Apiman-specific WildFly configuration (*`standalone-apiman.xml`*)
+* Apiman RDBMS datasource (h2)
+* Drivers for some popular databases, including H2, PostgreSQL, and MySQL. See xref:manager/database.adoc[] for more.
+* Pre-configured *`admin`* user with password *`admin123!`*
+
+[source,bash,subs=attributes+]
+----
+export APIMAN_AUTH_URL=<Your keycloak URL>
+cd wildfly-{wildfly-version}
+./bin/standalone.sh -c standalone-apiman.xml
+----
+
+== Logging In
+
+Once Apiman is running, you should be able to log in to the API Manager by pointing your browser at the following URL:
+
+[source,bash]
+----
+http://localhost:8080/apimanui/
+----
+
+Log in with credentials *`admin`/`admin123!`*
+
+[CAUTION]
+====
+We strongly advise that you immediately change the Keycloak admin user's password, as well as the *_admin_* user found in the *_apiman_* realm!
+
+You can do that by logging into your Keycloak console.
+If you followed this tutorial, it will be at http://localhost:8085/admin/
+====
+
+
+[#_installing_using_docker]
+== Installing using Docker
+
+* We have a variety of Docker images available with Apiman broken into its components.
+You can find them at: https://github.com/apiman/apiman-docker/#apiman-docker-images[apiman/apiman-docker^].
+
+* xref:/quickstart.adoc[Refer to our Docker Compose quickstart guide] for a full Docker setup that is already configured for you.

@@ -1,0 +1,15 @@
+name: user-guide
+title: User Guide
+version: 3.1
+prerelease: '.0-SNAPSHOT'
+start_page: ROOT:index.adoc
+nav:
+  - modules/ROOT/nav.adoc
+
+asciidoc:
+  attributes:
+    inbuilt-policy-msg: This is a built-in policy and therefore no plugins need to be installed prior to using it.
+    apiman-version-release: 3.1.0-SNAPSHOT
+    wildfly-version: 23.0.2.Final
+    wildfly-version-major: 23
+    keycloak-version: 18.0.2

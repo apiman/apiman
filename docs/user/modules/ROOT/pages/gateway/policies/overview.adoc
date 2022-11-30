@@ -1,0 +1,88 @@
+= Apiman Policies
+
+The most important runtime concept in Apiman is the policy.
+Policies are configured in the API Manager and then applied at runtime by the API Gateway.
+This section of the guide provides more information about each of the policies available in Apiman, what they do, and how they can be configured.
+
+== Policy Types
+
+Apiman supports several policy types like security, limiting, modification and others which are explained in the following.
+
+=== Security Policies
+
+There are authentication-based policies which manage access to an API is governed by the identity of the user.
+And there are authorization-based policies which manage access to an API, or specific resources provided by an API, is governed by the role(s) assigned to a user.
+
+Apiman supports these types of security policies:
+
+* Authorization Policy
+* BASIC Authentication Policy
+* CORS Policy
+* Header Allow/Deny Policy
+* HTTP Security Policy
+* Ignored Resources Policy
+* IP Blacklist Policy
+* IP Whitelist Policy
+* JWT Policy
+* Keycloak OAuth Policy
+* SOAP Authorization Policy
+* Time Restricted Access Policy
+
+=== Limiting Policies
+
+Some Apiman policies provide an all-or-nothing level of control over access to managed APIs.
+For example, IP Blacklist or Whitelist policies either block or enable all access to a managed API, based on the IP address of the client.
+Rate limiting and quota policies provide you with more flexible ways to govern access to managed APIs.
+With rate limiting and quota policies, you can place limits on either the number of requests an API will accept over a specified period of time, or the total number of of bytes in the API requests.
+In addition, you can use combinations of fine-grained and coarse-grained rate limiting policies together to give you more flexibility in governing access to your managed API.
+
+The ability to throttle API requests based on request counts and bytes transferred provides even greater flexibility in implementing policies.
+APIs that transfer larger amounts of data, but rely on fewer API requests can have that data transfer throttled on a per-byte basis.
+For example, an API that is data intensive, will return a large amount of data in response to each API request.
+The API may only receive a request a few hundreds of times a day, but each request may result in several megabytes of data being transferred.
+Let's say that we want to limit the amount of data transferred to 6GB per hour. For this type of API, we could set a rate limiting policy to allow for one request per minute, and then augment that policy with a transfer quota policy of 100Mb per hour.
+
+Each of these policies, if used singly, can be effective in throttling requests.
+Apiman, however, adds a layer of flexibility to your use of these policy types by enabling you to use them in combinations.
+
+Apiman supports these types of limiting policies:
+
+* Quota Policy
+* Rate Limiting Policy
+* Transfer Quota Policy
+
+=== Modification Policies
+
+Apiman supports these types of modification policies:
+
+* JSONP Policy
+* Simple Header Policy
+* URL Rewriting Policy
+
+=== Other Policies
+
+Apiman supports these types of other policies:
+
+* APIKey Policy
+* Caching Resource Policy
+
+== Policies
+
+== Caching Policy (Deprecated)
+[[policy-caching]]
+
+=== Description
+This policy is deprecated. Use <<Caching Resources Policy>> instead.
+
+
+
+
+
+
+
+
+
+
+
+
+

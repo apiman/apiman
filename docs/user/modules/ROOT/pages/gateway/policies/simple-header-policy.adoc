@@ -1,0 +1,173 @@
+= Simple Header Policy
+
+== Description
+
+Set and remove headers on request, response or both.
+The values can be literal strings, environment, system properties or request headers.
+Headers can be removed by simple string equality or regular expression.
+
+== Plugin
+
+[source,json,subs=attributes+]
+----
+{
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-simple-header-policy",
+    "version": "{apiman-version-release}"
+}
+----
+
+== Configuration
+
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| addHeaders
+| <<addHeaders>>[]
+a| *Add and overwrite headers*
+Add headers to a request, response or both.
+| None
+
+| stripHeaders
+| <<stripHeaders>>[]
+a| *Strip headers*
+Remove headers from a request, response or both when patterns match.
+| None
+
+|===
+
+=== addHeaders
+
+.Add headers
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| headerName
+| String
+a| *Header Name*
+The name of the header to set.
+| Empty
+
+| headerValue
+| String
+a| *Header Value*
+The value of the header to set, or key into the environment or system properties, depending upon the value of `valueType`.
+| Empty
+
+| valueType
+| Enum [String, Env, "System Properties", Header]
+a| *Value Type*
+String:: Treat as a literal value.
+Env:: Treat as a key into the environment `Env[headerValue]`, and set the returned value.
+System Properties:: Treat as a key into the JVM's System Properties, and set the returned value.
+Header:: Treat as key into the http request headers, and set the returned value.
+| None
+
+| applyTo
+| Enum [Request, Response, Both]
+a| *Where to apply rule*
+Request:: Request only.
+Response:: Response only.
+Both:: Both request and response.
+| None
+
+| overwrite
+| Boolean
+a| *Overwrite*
+Overwrite any existing header with same name.
+| false
+
+|===
+
+=== stripHeaders
+
+.Strip headers
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| stripType
+| Enum[Key, Value]
+a| *Strip when*
+Key:: `pattern` matches key.
+Value:: `pattern` matches value.
+| None
+
+| with
+| Enum[String, Regex]
+a| *With matcher type*
+String:: Case-insensitive string equality.
+Regex:: Case-insensitive regular expression.
+| Empty
+
+| pattern
+| String
+a| *Using pattern*
+String to match or compile into a regex, depending on the value of `with`.
+| Empty
+
+|===
+
+== Sample Configuration
+
+[source,json]
+----
+{
+  "addHeaders": [
+    {
+      "headerName": "X-APIMAN-IS",
+      "headerValue": "free-and-open-source",
+      "valueType": "String",
+      "applyTo": "Response",
+      "overwrite": false
+    },
+    {
+      "headerName": "X-LANG-FROM-ENV",
+      "headerValue": "LANG",
+      "valueType": "Env",
+      "applyTo": "Both",
+      "overwrite": true
+    },
+    {
+      "headerName": "X-JAVA-VERSION-FROM-PROPS",
+      "headerValue": "java.version",
+      "valueType": "System Properties",
+      "applyTo": "Request",
+      "overwrite": false
+    },
+    {
+      "headerName": "X-NEW-HTTP-HEADER",
+      "headerValue": "X-OLD-HTTP-HEADER",
+      "valueType": "Header",
+      "applyTo": "Request",
+      "overwrite": false
+    }
+  ],
+  "stripHeaders": [
+    {
+      "stripType": "Key",
+      "with": "String",
+      "pattern": "Authorization"
+    },
+    {
+      "stripType": "Key",
+      "with": "Regex",
+      "pattern": "^password=.*$"
+    }
+  ]
+}
+----

@@ -1,0 +1,43 @@
+= Transformation Policy
+
+== Description
+
+This policy converts an API format between JSON and XML.
+If an API is implemented to return XML, but a client would prefer to receive JSON data, this policy can be used to automatically convert both the request and response bodies.
+In this way, the client can work with JSON data even though the back-end API requires XML (and responds with XML).
+
+Note that this policy is very generic, and does an automatic conversion between XML and JSON.
+For more control over the specifics of the format conversion, a custom policy may be a better choice.
+
+== Plugin
+
+[source,json,subs=attributes+]
+----
+{
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-transformation-policy",
+    "version": "{apiman-version-release}"
+}
+----
+
+== Configuration
+
+The configuration of this policy consists of two properties which indicate:
+
+. the format required by the client
+. the format required by the back-end server
+
+From these two properties, the policy can decide how (and if) to convert the data.
+
+* *clientFormat* (enum) : The format required by the client, possible values are:  'XML', 'JSON'
+* *serverFormat* (enum) : The format required by the server, possible values are:  'XML', 'JSON'
+
+== Sample Configuration
+
+[source,json]
+----
+{
+   "clientFormat" : "JSON",
+   "serverFormat" : "XML"
+}
+----

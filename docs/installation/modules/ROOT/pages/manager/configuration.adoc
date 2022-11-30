@@ -1,0 +1,162 @@
+= General Apiman Manager Configuration
+
+== General Configuration
+
+Apiman is made up of a number of different components, many of which can be configured to use various implementations and/or providers.
+
+When downloading and installing Apiman, the default distribution includes reasonable default values for all options.
+
+This section details these options and explains the default values.
+
+=== Configuration Properties
+
+All Apiman WARs share a common configuration file called *apiman.properties*, which can be found in:
+
+* *standalone/configuration/apiman.properties* for WildFly.
+* *conf/apiman.properties* for Tomcat.
+
+This file therefore can contain configuration settings for all three main applications: API Manager, API Manager UI, API Gateway.
+In many production-grade deployments, these will be split up into separate deployments (especially the gateways).
+
+Please refer to the `apiman.properties` file itself, as well as this document, for more information on each property's purpose and possible values.
+
+TIP: If you are running a non-Servlet gateway implementation (e.g. Vert.x), then you should refer to that gateway's configuration documentation to understand how to configure it.
+
+[#_custom_api_catalog]
+== Custom API Catalog
+
+The API Manager has a feature allowing users can import APIs from a globally configured API Catalog.
+
+By default, Apiman comes with a community catalog that contains a set of common public APIs such as Flickr and Netflix.
+
+When deploying Apiman into an enterprise setting, it is often useful to replace the community API Catalog with something that lists out the internal APIs available within the enterprise.
+
+You can also provide your own custom implementation which is able to integrate with your internal systems; for example, by connecting to your internal API registry.
+
+=== High Level Overview
+
+. Describe your enterprise APIs as Apiman API Catalog JSON
+. Make your enterprise API Catalog available in URL form
+. Point Apiman at your enterprise API Catalog
+
+==== Create a Custom Enterprise API Catalog JSON
+
+The first thing you will need to do is express all of your enterprise APIs as a
+JSON file.
+The format of the JSON file is specific to Apiman.
+You can find an example of the format here:
+
+https://github.com/apiman/apiman-api-catalog/blob/master/catalog.json
+
+==== Make Your Enterprise API Catalog Available
+
+Now that you have a custom JSON based API Catalog, you need to make it available
+at a URL accessible to the API Manager.
+This can either be done by stashing it in some web server location, so you have an HTTP-based URL, or you can store it locally on the API Manager server to have a valid file based URL.
+
+==== Point Apiman at Your Enterprise API Catalog
+
+The last step is to make Apiman aware of your custom API Catalog file.
+The catalog is configured in the `apiman.properties` file via these properties:
+
+[source,properties,subs=attributes+]
+----
+apiman-manager.api-catalog.type=io.apiman.manager.api.core.catalog.JsonApiCatalog
+apiman-manager.api-catalog.catalog-url=https://cdn.rawgit.com/apiman/apiman-api-catalog/{apiman-version-release}/catalog.json
+----
+
+Simply change the URL defined by the `apiman-manager.api-catalog.catalog-url` property, and you're good to go!
+
+[TIP]
+====
+For even more customization, you can implement your own API Catalog Java plugin.
+
+This approach will allow you to find your APIs in whatever location they happen to be (e.g. a database, registry, etc).
+
+Please see the Developer Guide for more information on how to create a truly custom API Catalog.
+====
+
+[#_custom_plugin_registry]
+== Custom Plugin Registry
+
+The API Manager uses a plugin registry to show admin users a list of available plugins that can be installed.
+Apiman comes with an official plugin registry that shows a list of the standard Apiman plugins.
+
+If your enterprise implements a large number of custom policies, you may find it useful to replace the standard registry with one that includes your custom plugins in the list.
+
+=== High Level Overview
+
+. Describe your enterprise plugins in a registry JSON file
+. Make your enterprise plugin registry available in URL form
+. Point Apiman at your enterprise plugin registry
+
+==== Create a Custom Enterprise Plugin Registry JSON
+
+The first thing you will need to do is express all of your enterprise plugins as a JSON file.
+The format of the JSON file is specific to Apiman.
+You can find an example of the format here:
+
+https://github.com/apiman/apiman-plugin-registry/blob/master/registry.json
+
+==== Make Your Enterprise Plugin Registry Available
+
+Now that you have a custom JSON based plugin registry, you need to make it available at a URL accessible to the API Manager.
+This can either be done by stashing it in some web server location with an HTTP-based URL, or you can store it locally on the API Manager server to have a valid file based URL.
+
+==== Point Apiman at Your Enterprise Plugin Registry
+
+The last step is to make Apiman aware of your custom plugin registry file.
+The registry is configured in the *apiman.properties* file via the following property:
+
+[source,properties,subs=attributes+]
+----
+apiman-manager.plugins.registries=https://cdn.rawgit.com/apiman/apiman-plugin-registry/{apiman-version-release}/registry.json
+----
+
+The value of this property is a comma-separated list of URLs.
+Each URL in the list should point to a valid plugin registry JSON file.
+To include your enterprise plugins in the list, simply add the URL to your plugin registry to the end of the existing list.
+
+[#_property_replacement_in_policy_config]
+== Property Replacement in Policy Config
+
+It is often useful to externalize certain information that varies from one deployment environment to another.
+
+For example, you may have an LDAP server for authentication, but you have one in the Test deployment environment and a different one in Production.
+
+Rather than configure your Apiman policies differently in each environment (to match the actual LDAP connection info) you can externalize those settings into system properties or environment variables.
+
+Once that is done, you can refer to those properties/variables in your Apiman policy configuration.
+
+=== High Level Overview
+
+. Externalize values into system properties or environment variables
+. Reference a system property or environment variable in a policy
+
+=== Externalize Values
+
+Depending on your deployment strategy, how you do this may vary.
+If you are using WildFly, for example, you can set system properties in the `standalone.xml` file or by passing them in via -D parameters on startup.
+
+For more information, see the https://docs.wildfly.org/23/Admin_Guide.html#General_configuration_concepts[WildFly Admin Guide^].
+
+Describing all approaches to setting system properties and environment variables is out of scope for this document.
+
+=== Reference a System Property or Environment Variable
+
+Once you have some values externalized into system properties or environment variables, you can reference them easily in your Apiman policies.
+
+All you need to do is use the Ant-style syntax to refer to your externalized values, like this:
+
+[source,text]
+----
+${MY_ENVIRONMENT_VARIABLE}
+----
+
+A variable of this style can be used in any Apiman policy configuration field.
+
+The variables are resolved when the policy configuration is first loaded, and  then cached.
+
+To change a value, you must restart your server.
+
+TIP: When resolving variables, if there is an environment variable with the same name as a system property, the value of the *system property* will be used.

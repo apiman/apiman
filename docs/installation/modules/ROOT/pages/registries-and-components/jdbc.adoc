@@ -1,0 +1,167 @@
+= JDBC Registry & Components
+Marc Savy <marc@rhymewithgravy.com>
+
+Apiman components for JDBC (SQL).
+
+NOTE: These components are presently optimised for Servlet editions of the gateway, whilst they will work with Vert.x the experience will likely be less performant than normal.
+
+TIP: We ship a range of sample DDLs to get you started for all major databases. In your distribution, look in the `apiman/ddls` directory, or refer to the link:https://github.com/apiman/apiman/tree/{apiman-version-release}/distro/data/src/main/resources/ddls[Apiman Repo^].
+
+A gateway registry and components that uses JDBC (i.e. SQL databases, such as PostgreSQL, MySQL, Oracle, etc).
+
+[#_registry]
+== Registry
+
+To set your registry, assign your chosen implementation to:
+
+[source,properties]
+----
+apiman-gateway.registry=<IMPLEMENTATION>
+----
+
+.Available implementations:
+[cols="2",options="header"]
+|===
+
+| Implementation
+| Notes
+
+| `io.apiman.gateway.engine.jdbc.PollCachingJdbcRegistry`
+| *Recommended*. Works well in multi-node setups.
+
+| `io.apiman.gateway.engine.jdbc.CachingJdbcRegistry`
+| Works only in single node setups.
+
+| `io.apiman.gateway.engine.jdbc.JdbcRegistry`
+| Only recommended for very low volume or test setups; causes database calls to be issued on every request.
+
+|===
+
+=== Required Parameters
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `datasource.jndi-location`
+| String
+a| The JNDI location of the datasource you wish to use.
+
+|===
+
+Example:
+
+[source,properties]
+----
+apiman-gateway.registry=io.apiman.gateway.engine.jdbc.JdbcRegistry
+apiman-gateway.registry.datasource.jndi-location=java:/apiman/datasources/apiman-gateway
+----
+
+=== Optional Parameters
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `cache-polling-interval`
+| Integer
+a| Polling interval in millis
+
+| `cache-polling-startup-delay`
+| Integer
+a| How long to wait before starting polling in millis
+
+|===
+
+== Database Initializer
+
+Of course, there is a database schema that must be installed in your database, which creates the tables and indexes needed.
+This schema can be automatically created by apiman the first time it is used.
+To enable this feature, you must configure the API Gateway JDBC initializer in `apiman.properties`, like so:
+
+=== Required Parameters
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `apiman-gateway.initializers`
+| String
+a| Initializer type (always JDBC for this use-case)
+
+* *Required Value*: `jdbc`
+
+| `apiman-gateway.initializers.jdbc`
+| String
+a| Use JDBC initialiser (always for this use-case)
+
+* *Required Value*: `io.apiman.gateway.engine.jdbc.JdbcInitializer`
+
+| `apiman-gateway.initializers.jdbc.datasource.jndi-location`
+| String
+a| JNDI location for your data source 
+
+| `apiman-gateway.initializers.jdbc.datasource.type`
+| String
+a| Datasource type:
+
+* *Allowed Values*: h2, mysql8, postgresql11, oracle12
+
+Note, your particular DB version may work successfully with one of these variants.
+
+|===
+
+Example:
+
+[source]
+----
+# Initializer for the Gateway JDBC
+# ################################
+apiman.jdbc.datasource.jndi-location=java:/apiman/datasources/apiman-gateway
+apiman-gateway.initializers=jdbc
+apiman-gateway.initializers.jdbc=io.apiman.gateway.engine.jdbc.JdbcInitializer
+apiman-gateway.initializers.jdbc.datasource.jndi-location=${apiman.jdbc.datasource.jndi-location}
+apiman-gateway.initializers.jdbc.datasource.type=postgresql11
+----
+
+[#_metrics]
+== Metrics
+
+Set the metrics implementation as shown:
+
+[source,properties]
+----
+apiman-gateway.metrics=io.apiman.gateway.engine.jdbc.JdbcMetrics
+apiman-gateway.metrics.queue.size=10000 // Example.
+----
+
+=== Required Parameters
+
+See <<Registry,Registry Required Parameters>>.
+
+IMPORTANT: Must be configured with the JNDI location of the datasource to use.
+
+=== Optional Parameters
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `queue.size`
+| Integer
+| Metrics maximum queue size
+
+|===
+

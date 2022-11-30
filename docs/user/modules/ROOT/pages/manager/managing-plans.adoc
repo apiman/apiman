@@ -1,0 +1,36 @@
+= Managing Plans
+
+Plans must be managed within the scope of an organization.
+Once created, plans can be used for any API defined within that same organization.
+
+To see a list of existing plans for an organization, navigate to the 'Plans' tab for that organization on its details page.
+
+== Creating a Plan
+
+Plans can be created easily from the 'Plans' tab of the organization details page.
+Simply click the 'New Plan' button and then provide a plan name, version, and description.
+
+Once that information is provided, click the 'Create Plan' button.
+
+If successfully created, you'll be taken to the plan details page.
+
+== Plan Policies
+
+If you switch to the 'Policies' tab on the plan details page you can configure the list of policies for the plan.
+
+Please note that the order of the policies can be changed and is important.
+The order that the policies appear in the user interface determines the order they will be applied at runtime.
+
+You can drag a policy up and down the list to change the order.
+
+To add a policy to the plan click the 'Add Policy' button.
+On the resulting page choose the type of policy you wish to create and then configure the details for that policy.
+
+Once you have configured the details click the 'Add Policy' button to add the policy to the plan.
+
+== Locking the Plan
+
+Once all your plan policies are added and configured the way you want them, you will need to lock the plan.
+This can be done from any tab of the Plan UI page.
+
+Locking the plan will prevent all future policy changes, and make the plan available for use by APIs.

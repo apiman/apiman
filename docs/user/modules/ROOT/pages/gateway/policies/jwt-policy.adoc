@@ -1,0 +1,193 @@
+= JWT Policy
+
+== Description
+
+The JWT Policy helps you to validate JWT Tokens by providing a signing key and also via JSON Web Key Set (JWK(S)).
+
+You can also require claims, strip them, and/or forward them as header values to the backend API.
+
+== Plugin
+
+[source,json,subs=attributes+]
+----
+{
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-jwt-policy",
+    "version": "{apiman-version-release}"
+}
+----
+
+== Configuration
+
+.JWT Policy configuration
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| requireJwt
+| Boolean
+a| *Require JWT*
+Terminate request if no JWT is provided.
+| true
+
+| requireSigned
+| Boolean
+a| *Require Signed JWT (JWS).*
+Require JWTs be cryptographically signed and verified (JWS).
+It is strongly recommended to enable this option.
+| true
+
+| requireTransportSecurity
+| Boolean
+a| *Require Transport Security*
+Any request used without transport security will be rejected. JWT requires transport security (e.g. TLS, SSL) to provide protection against a variety of attacks.
+It is strongly advised this option be switched on.
+| true
+
+| stripTokens
+| Boolean
+a| *Strip tokens*
+Remove any Authorization header or token query parameter before forwarding traffic to the API
+| true
+
+| signingKeyString
+| String
+a| *Signing Key or URL to a JWK(S)*
+To validate JWT. Must be Base-64 encoded or you specify a URL to a JWK(S)
+| Empty
+
+| kid
+| String
+a| *Key ID (kid) of JWK(S)*
+Only set this if you provided a JWK(S) URL. Specify here the kid of the JWK(S).
+| Empty
+
+| allowedClockSkew
+| Integer
+a| *Maximum Clock Skew*
+Maximum allowed clock skew in seconds when validating exp (expiry) and nbf (not before) claims. Zero implies default behaviour.
+| 0
+
+| requiredClaims
+| <<_items>>[]
+a| *Required Claims*
+Set whether to forward roles to an authorization policy.
+| None
+
+| forwardAuthInfo
+| <<forwardAuthInfo>>[]
+a| *Forward Claim Information*
+Set auth information from the token into header(s).
+| None
+
+|===
+
+[#_items]
+=== items
+
+.Require standard claims, custom claims and ID token fields (case sensitive).
+[cols="2,1,4,1",options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| header
+| String
+a| *Claim*
+Fields that the token must contain.
+| Empty
+
+| field
+| String
+a| *Value*
+Value that must match with the value of the claim.
+| Empty
+
+|===
+
+=== forwardAuthInfo
+:id-token-fields: https://openid.net/specs/openid-connect-basic-1_0.html#IDToken
+:standard-claims: https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims
+
+TIP: Fields from the JWT can be set as headers and forwarded to the API. All {standard-claims}[standard claims^], custom claims and {id-token-fields}[ID token fields^] are available (case-sensitive).
+
+A special value of `*access_token*` will forward the entire encoded token. Nested claims can be accessed by using javascript dot syntax (e.g: `address.country`, `address.formatted`).
+
+.Forward Keycloak token information
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| headers
+| String
+a| *Header*
+The header value to set (to paired field).
+| None
+
+| field
+| String
+a| *Field*
+The token field name.
+| None
+
+|===
+
+== Sample Configuration
+
+=== Example 1 (Signing Key)
+
+[source,json]
+----
+{
+  "requireJWT": true,
+  "requireSigned": false,
+  "requireTransportSecurity": true,
+  "stripTokens": true,
+  "signingKeyString": "Y29uZ3JhdHVsYXRpb25zLCB5b3UgZm91bmQgdGhlIHNlY3JldCByb29tLiB5b3VyIHByaXplIGlzIGEgZnJlZSBkb3dubG9hZCBvZiBhcGltYW4h",
+  "allowedClockSkew": 0,
+  "requiredClaims": [
+    {
+      "claimName": "sub",
+      "claimValue": "aride"
+    }
+  ],
+  "forwardAuthInfo": [
+    {
+      "header": "X-Foo",
+      "field": "sub"
+    }
+  ]
+}
+----
+
+=== Example 2 (JWK(S))
+
+[source,json]
+----
+{
+  "requireJWT": true,
+  "requireSigned": true,
+  "requireTransportSecurity": true,
+  "stripTokens": false,
+  "signingKeyString": "http://127.0.0.1:1080/jwks.json",
+  "kid": null,
+  "allowedClockSkew": 0,
+  "requiredClaims": [
+    {
+      "claimName": "sub",
+      "claimValue": "france frichot"
+    }
+  ]
+}
+----

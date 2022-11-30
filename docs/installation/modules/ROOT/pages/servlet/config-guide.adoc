@@ -1,0 +1,37 @@
+= Servlet Configuration
+
+The Servlet version of the Apiman gateway uses Java properties as its primary source of configuration.
+
+This includes such platforms as WildFly and Tomcat.
+
+== Configuration Properties
+
+All the Apiman WARs share a common configuration file called *apiman.properties*, which for the WildFly and EAP editions can be found in *standalone/configuration*.
+
+This file therefore contains configuration settings for all three applications (API Manager, API Manager UI, API Gateway).
+
+Please refer to the `apiman.properties` file itself, as well as this documentation, for more information on each property's purpose and possible values.
+
+To discover available options for components, refer to the xref:registries-and-components/overview.adoc[Registries & Components] documentation.
+
+TIP: If you are running a non-Servlet gateway implementation (e.g. Vert.x), then you should refer to that gateway's configuration documentation to understand how to configure that element.
+
+//== Variables
+//
+//The configuration supports variable substitution (transclusion) in the form `"${FOO.SOME_VARIABLE}"`; where `FOO.SOME_VARIABLE` is the variable to be transcluded.
+//The following list defines the lookup sources and order of precedence for variable resolution.
+//
+//1. Properties defined in `apiman.properties`:
+//+
+//[source,properties]
+//----
+//FOO.SOMEVARIABLE=1234
+//# some.value will now become 1234
+//some.value=${FOO.SOMEVARIABLE}
+//----
+//2. System properties: `-DFOO.SOME_VARIABLE="foo"`
+//3. Environment: `export FOO.SOME_VARIABLE="foo"`
+//
+//A default value can be provided, which will be used if other lookup sources fail.
+//
+//For example `${MAGIC_NUMBER:-8090}` will result in `8090` being set if `MAGIC_NUMBER` is unresolved after the prior steps.

@@ -1,0 +1,97 @@
+= Providing APIs
+
+== Publishing APIs
+
+When an API is published to the API Gateway, the API is made available to the client apps that are the consumers of APIs. There are two different ways to publish an API:
+
+Publishing an API as Public API - Public APIs can be directly accessed by any client, without providing an API Key. This allows you to distribute the URL that is used to access the API through the API Gateway.
+The URL for a managed Public API takes this form:
+
+[source,log]
+----
+http://gatewayhostname:port/apiman-gateway/{organizationId}/{API ID}/{API version}/
+----
+
+Public APIs are also very flexible in that they can be updated without being re-published.
+Unlike APIs published through Plans, Public APS can be accessed by a client app without requiring API consumers to agree to any terms and conditions related to a contract defined in a plan for the API.
+It is also important to note that when an API is Public, only the policies configured on the API itself will be applied by the API Gateway.
+
+Publishing an API through Plans - In contrast to Public APIs, these APIs, once published, must be accessed by a Client App via its API key.
+In order to gain access to an API, the Client App must create a contract with an API through one of the API's configured Plans.
+Also unlike Public APIs, APIs that are published and accessed through its Plans, once published, cannot be changed. To make changes, new versions of these APIs must be created.
+
+== Security for APIs - Policy and Endpoint Security
+One important aspect of all APIs that are managed by the API Gateway is the security that the API Gateway provides.
+Let's next take a look at the different types of security that are available.
+
+The authentication policy type provides username/password security for clients as they access the managed API through the API Gateway, but it does not protect the API from unauthorized access attempts that bypass the Gateway completely.
+To make the API secure from unauthorized client applications, endpoint level security should also be configured.
+
+The best way to start our discussion of the different, but complementary types of security that we'll examine in this article is with a diagram. The nodes involved are the client applications that will access our APIs, the Apiman API Gateway, and the servers that host our APIs:
+
+image::apiman_006.png[]
+
+Let's work our way through the diagram from left to right and start by taking a look at Policy Level Security.
+
+=== Policy Level Security
+Policy level security, such as that provided by an Authentication policy, secures the left side of the diagram, that is the communication channel between the applications and the API Gateway.
+In this communication channel, the applications play the role of the client, and the API Gateway plays the role of the server.
+
+We also want to secure the right side of the diagram, where the API Gateway plays the role of a client, and the APIs play the role of the servers.
+
+NOTE: It's worth noting that while policy security protects the managed API, it does nothing to protect the unmanaged API as this API can be reached directly, without going through the API Gateway. This is illustrated by the red line in the diagram. So, while access to the managed API through the Apiman API Gateway is secure, policy security does not secure the unmanaged API endpoint.
+
+=== Endpoint Level Security
+
+In contrast to policy level security, with endpoint security we are securing the right side of the diagram.
+Currently, Apiman supports two endpoint security options:
+
+* BASIC Authentication
+* mTLS (mutual TLS, also known as two-way SSL)
+
+A recent post by Marc Savy to the Apiman blog http://www.apiman.io/blog/gateway/security/mutual-auth/ssl/mtls/2015/06/16/mtls-mutual-auth.html[described how to configure Mutually Authenticated TLS] (Transport Layer Security) between the API Gateway and the managed APIs. With Mutual TLS, bi-direction authentication is configured so that the identities of both the client and server are verified before a connection can be made.
+
+We should also note that, unlike policy security, endpoint security also secures the APIs from attempts to bypass the API Gateway. With Mutual TLS, a two-way trust pattern is created. The API Gateway trusts the APIs and the APIs trust the API Gateway. The APIs, however, do not trust the client applications. As is shown by the large “X” character that indicates that an application cannot bypass the API Gateway and access the APIs directly.
+
+One last point that is important to remember is that the endpoint level of security applies to all requests made to the APIs, regardless of the policies configured.
+
+[TIP]
+====
+Policy security alone does not secure an API's unmanaged endpoints.
+====
+
+To summarize, the differences between policy level security and endpoint level security are:
+
+[cols="2*", options="header"]
+|===
+| Policy Level Security
+| End Point Level Security
+
+| Secures communications between the applications (clients) and API Gateway (server)
+| Secures communications between the API Gateway (client) and APIs (servers)
+
+| Configured in an API Gateway policy
+| Configured for the API Gateway as a whole in `apiman.properties` and with key/certificates infrastructure
+
+| Applied by a policy at runtime
+| Enabled for all API requests, regardless of the policies configured for an API
+
+| Does not secure the unmanaged API from access by unauthorized clients
+| Secures the unmanaged API endpoints from access by unauthorized clients
+|===
+
+== API Metrics
+
+After you've created and published your APIs, you will want to be able to keep track of the level of use they are receiving. To fulfill this need, Apiman provides you with API metrics. The metrics track the following information:
+
+* Request start and end times
+* API start and end times (i.e. just the part of the request taken up by the back end API)
+* Resource path
+* Response type (success, failure, error)
+* API info (org id, id, version)
+* Client App info (org id, id, version)
+* Bytes uploaded/downloaded
+
+API Metrics can be accessed in the Management UI and through the REST API. The metrics are displayed visually in the Management UI, for example:
+
+image::apiman_007.png[metrics]

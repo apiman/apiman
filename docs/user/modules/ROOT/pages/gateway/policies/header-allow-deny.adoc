@@ -1,0 +1,32 @@
+= Header Allow/Deny
+
+The *Header Allow/Deny Policy* allows the user to control which incoming requests may be forwarded to the backend service.
+Permission is granted by adding values for a header.
+
+When a request is received, the policy examines the HTTP headers.
+The configured rules are applied using a regular expression against the names and values.
+
+If these are permitted, the request is passed unmodified to the backend API.
+
+If they are not allowed, an HTTP 403 response is returned and the call to the backend service is not executed.
+
+== Configuration
+
+[cols=",,,",options="header",]
+|===
+|*Option* |*Description* |*Possible Values* |*Default*
+|*Header Name* |Name of the HTTP header, e.g. *Host* |Any string. |-
+
+|*Allow request if header is missing* |Determines whether the request is
+considered if a header is missing. |true/false |false
+
+|*Allow request if no rules match* |Determines whether the request is
+considered if no rule applies. |true/false |false
+
+|*Header Rules* | | |
+
+|*Allow request if value matches* |Determines whether the request is
+considered if the value applies. |true/false |false
+
+|*Header Value Regex* |Defines the header value. |Any regex. |-
+|===

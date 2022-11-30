@@ -1,0 +1,14 @@
+name: development-guide
+title: Development Guide
+version: 3.1
+start_page: ROOT:intro.adoc
+prerelease: '.0-SNAPSHOT'
+nav:
+  - modules/ROOT/nav.adoc
+
+asciidoc:
+  attributes:
+    apiman-version-release: 3.1.0-SNAPSHOT
+    wildfly-version: 23.0.2.Final
+    wildfly-version-major: 23
+    keycloak-version: 18.0.2

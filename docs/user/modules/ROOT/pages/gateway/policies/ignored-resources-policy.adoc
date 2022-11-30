@@ -1,0 +1,75 @@
+= Ignored Resources Policy
+
+== Description
+
+The ignored resources policy type enables you to shield some of an API's resources from being accessed, without blocking access to all the API's resources.
+
+Requests made to access to API resources designated as “ignored” result in an HTTP 404 (“not found”) error code.
+
+By defining ignored resource policies, Apiman enables you to have fine-grained control over which of an API's resources are accessible.
+
+For example, let's say that you have an Apiman managed API that provides information to remote staff.
+The REST resources provided by this API are structured as follows:
+
+[source]
+----
+/customers
+/customers/{customer id}/orders
+/customers/{customer id}/orders/bad_debts
+----
+
+By setting up multiple ignored resource policies, these policies can work together to give you more flexibility in how you govern access to your API's resources.
+
+You can define multiple plans, and in each plan, allow differing levels of access, based on the paths (expressed as regular expressions) defined, for resources to be ignored.
+
+To illustrate, using the above examples:
+
+[width="80%",options="header"]
+|===
+| This Path                      | Results in these Resources Being Ignored
+| (empty)                        | Access to all resources is allowed
+| /customers                     | Denies access to all customer information
+| /customers/.*/orders           | Denies access to all customer order information
+| /customers/.*/orders/bad_debts | Denies access to all customer bad debt order information
+|===
+
+What happens when the policy is applied to an API request is that the Apiman Gateway matches the configured paths to the requested API resources.
+If any of the exclusion paths match, the policy triggers a failure with an HTTP return code of 404.
+
+The IP-related policy types are less fine-grained in that they allow or block access to all of an API's resources based on the IP address of the client application.
+We'll look at these policy types next.
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+****
+
+== Configuration
+
+The configuration parameters for an Ignored Resources Policy are:
+
+* *rules* (array of objects) : The list of matching rules representing the resources to be ignored.
+** *verb* (enum) : The HTTP verb to be controlled by the rule. Valid values are:
+*** * (matches all verbs)
+*** GET
+*** POST
+*** PUT
+*** DELETE
+*** OPTIONS
+*** HEAD
+*** TRACE
+*** CONNECT
+** *pathPattern* (string regexp) : A regular expression used to match the REST resource being hidden.
+
+== Sample Configuration
+
+[source,json]
+----
+{
+  "rules" : [
+    { "verb" : "GET",  "pathPattern" : "/customers" },
+    { "verb" : "POST", "pathPattern" : "/customers/.*/orders" },
+    { "verb" : "*",    "pathPattern" : "/customers/.*/orders/bad_debts"}
+  ]
+}
+----

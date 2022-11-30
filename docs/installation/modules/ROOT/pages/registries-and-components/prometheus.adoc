@@ -1,0 +1,86 @@
+= Prometheus Components
+Marc Savy <marc@blackparrotlabs.io>
+
+NOTE: This component currently only works on the Apiman Vert.x Gateway
+
+Apiman components for https://prometheus.io/[Prometheus^].
+
+Prometheus is a popular scrape metrics and monitoring platform.
+
+If you choose Prometheus metrics, you can access your metrics data via: `http://<Apiman gateway node IP address>:<port configured>`.
+
+Metrics will be *per gateway* instance; it is not a distributed metrics store.
+Each gateway will need to be individually added to your Prometheus scrape mappings.
+
+[.MaintainerMessage]
+****
+If you would like to see Apiman's Prometheus component expanded or improved, please give us feedback in this https://github.com/apiman/apiman/issues/2269[GitHub Issue^]
+****
+
+== Global Required Parameters
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `port`
+| Integer
+a| Port for Prometheus scrape server to listen on
+
+* *Allowed values*: any valid port number
+
+|===
+
+== Components
+
+=== Metrics
+
+Set the metrics implementation as shown.
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.metrics=io.apiman.gateway.engine.prometheus.PrometheusScrapeMetrics
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+"metrics": {
+  "class": "io.apiman.gateway.engine.prometheus.PrometheusScrapeMetrics",
+  "config": {
+    "client": {
+       "type": "es",
+       "protocol": "${apiman.es.protocol}",
+       "host": "${apiman.es.host}",
+       "port": "${apiman.es.port}"
+       // <metrics configuration>
+     }
+   }
+}
+----
+--
+====
+
+Currently, the fields captured include:
+
+requests_total::
+    Total number of requests
+
+errors_total::
+    Total number of errors
+
+policy_failures_total::
+    Total number of Apiman policy failures (i.e. a policy refused traffic)
+
+request_duration_milliseconds::
+    Request duration in milliseconds.

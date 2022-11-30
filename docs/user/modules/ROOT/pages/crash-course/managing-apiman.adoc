@@ -1,0 +1,96 @@
+= Managing Apiman
+
+== Users and Roles
+
+In the Apiman data model, all data elements exist in the context of the organization. The same holds true for user memberships as users can be members of multiple organizations. Permissions in Apiman are role based. The actions that a user is able to perform are dependent on the roles to which the user is assigned when she is added as a member of an organization.
+
+Let's start by looking at the roles that are preconfigured in Apiman.
+
+=== Understanding OOTB Apiman user roles
+
+In Apiman, each role defines a set of permissions granted by that role. When a user is made a member of an organization, that user must be assigned to a role. A role definition consists of a name and description, and, most importantly, a set of permissions that govern the user's ability to view, edit, and administer the organization itself, as well as the organization's plans, APIs, and applications.
+
+Role Definitions are managed in the Roles section of the Apiman System Administration section of the Management UI.
+
+Apiman is preconfigured with the following roles:
+
+* Organization Owner
+* API Developer
+* Client App Developer
+
+These role names are self-explanatory. For example, a user assigned the Client App Developer role is able to manage the organization's client apps but is blocked from managing its APIs or plans.
+
+The full set of permissions provided in Apiman by these preconfigured roles are:
+
+[cols="1,2,1" options="header"]
+|===
+| Preconfigured Role
+| Who Should be Assigned this Role
+| Permissions Granted by this Role
+
+| Client App Developer
+| Users responsible for creating and managing client apps.
+a| * *Client App* View, Edit, Admin
+
+| Organization Owner
+| Automatically granted to the user who creates an Organization. Can be granted to other users by an existing Organization Owner.
+a| (all permissions)
+
+| API Developer
+| Users responsible for creating and managing APIs.
+a| * *Plan* View, Edit, Admin
+* *API* View, Edit, Admin
+|===
+
+Organization owners can assign roles to users through the _Manage Members_ form in the Apiman Management UI (found off the _Members_ tab for an Organization). Each user must be assigned at least one role, but users can also be assigned multiple roles.
+
+While Apiman admin users can also modify the permissions as defined for these preconfigured roles, it is also very easy to create new custom roles.
+
+=== Creating a New User Role/Defining the Role Permissions
+
+Custom roles give you the ability to exercise fine-grained control over the set of permissions granted to users.
+
+Let's look at an example of a custom role. Imagine a situation where you have API developer users and client app developer users. These sets of users can rely on Apiman's preconfigured roles. Let's also imagine that you have a third set of user. You want these users to have read access to APIs and applications so that they can participate in a review/approval process. However, you do not want to give these users write access. You can create a view-only (read-only) role these users by configuring your custom Role Definition to only grant the Client App View and API View permissions.
+
+== Managing Policies and Plugins
+
+Apiman is preconfigured with a core set of policies, but also supports adding more policies by installing one or more plugin.  There are a number of official Apiman plugins which will enable additional policies to be configured.  Some examples of the official Apiman plugin policies include (but are not limited to):
+
+* CORS - This plugin implements CORS (Cross-origin resource sharing): A method of controlling access to resources outside of an originating domain.
+* HTTP Security - Provides a policy which allows security-related HTTP headers to be set, which can help mitigate a range of common security vulnerabilities.
+* JSONP - A plugin that contributes a policy that turns a standard RESTful endpoint into a JSONP compatible endpoint.
+* Keycloak OAuth - This plugin offers an OAuth2 policy which leverages the Keycloak authentication platform as the identity and access provider.
+* Log Headers - Offers a simple policy that allows request headers to be added or stripped from the HTTP request (outgoing) or HTTP response (incoming).
+
+These optional plugins are accessed in the administrative page in the Apiman Management UI.  You can install these policies as needed, and then uninstall them when they are no longer needed.
+
+There are a couple of caveats to keep in mind when you uninstall a policy plugin:
+
+* First, uninstalling the plugin removes it from the Apiman Management UI, but it still remains in use for all APIs in which it was previously configured.
+* Second, if you want to completely remove the plugin from all APIs in which it was previously configured, you must manually click on each API, Plan, and Client App that uses the policy and remove it. Apiman does not include a single “kill” button to automatically remove all references to a policy.
+
+In addition to enabling you to create and install your own custom policies, Apiman also provides a mechanism to upgrade to new versions of those policies. This is an especially useful feature as, over time, a policy may be upgraded to include bug fixes or new features.
+
+== Managing Gateways
+
+When you install Apiman, it's configured with one API Gateway. Apiman, however, enables you to configure and use multiple API Gateways simultaneously. There are several reasons why you might want to configure multiple API Gateways:
+
+* It's a good practice to maintain separate test and production environments for Apiman. A test environment provides you with a safe place to experiment with the design of plans and custom policies without causing any interruption in service for APIs that are use for mission-critical production environments.
+
+* If some APIs are used more heavily than others, you might want to group these APIs and configure an API Gateway for them on higher performance servers, or base these APIs on API Gateways located in geographic locations closer to their highest use Client apps.
+
+Note that typically you will want to set up a single Gateway which is actually backed by multiple nodes/instances.  Each instance (e.g. running on WildFly) should be configured to use the same backing storage (e.g. Elasticsearch or JDBC).  This configuration results in a single “logical” gateway in Apiman - so only one (1) gateway needs to be configured in the UI - when an API is published to one of the nodes, it will be available to them all.
+
+=== Apiman REST API
+It's inevitable that, after you work with a product's UI for a while that you encounter tasks that are better suited to a scripting or batch interface. For example, if you have to perform a similar task for a large number of related data items, the time that it can require to perform these tasks through an interactive UI can be prohibitive. Also, it's easy for repetitive tasks to become error prone as you can lose focus, even if you are working in a well designed and easy to use interface such as Apiman.
+
+One solution to this problem is to augment the UI with a command line or scripting interface. This can lead to a whole separate set of issues if the new interface is built on a different set of underlying routines than the UI. A better approach is to allow access to the same routines in which the UI is constructed. This approach removes any duplication, and also enables you to replicate manual UI based tasks with automated or scripted tools.
+
+Apiman follows this second approach with its REST interface. All of the functionality provided by Apiman in its Management UI are directly supported in the API Manager REST API  In fact, the UI simply makes calls to the REST layer in order to get data or make changes.
+
+[TIP]
+====
+You can use the REST interface to automate any task that is performed in the UI.
+====
+
+The documentation for the Apiman REST API is available (for free, of course), here: http://www.apiman.io/latest/api-manager-restdocs.html

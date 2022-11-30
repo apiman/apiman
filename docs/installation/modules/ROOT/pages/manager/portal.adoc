@@ -1,0 +1,112 @@
+= Apiman Developer Portal
+
+As of version 3, Apiman includes a customisable developer portal, which is focussed entirely on the API consumer experience.
+None of the advanced features or complexity of the main Apiman UI.
+Plus, it's very easy to customise it with your organisation's style and branding.
+
+[.MaintainerMessage]
+****
+The developer portal is new in Apiman 3, and the documentation is still being developed.
+
+You can help the project by https://www.github.com/apiman/apiman-developer-portal[providing your feedback and making contributions^].
+It is a standard Angular 13+ application, so if you have some UI/UX skills, we'd greatly welcome your input!
+****
+
+== WildFly
+
+In the Apiman WildFly distribution, you can access the API Developer Portal on the `/portal` endpoint (e.g. http://localhost:8080/portal).
+It is also part of the Docker Compose quickstart.
+
+For WildFly, the developer portal assets referred to in the rest of this guide are in: `standalone/configuration/portal/`.
+
+== Basic Configuration
+
+The most important file for customisation is `assets/config.json5`.
+
+[source,json5]
+----
+{
+  // set language the API Developer Portal is running in
+  "language": "en", // <1>
+  // if new languages are available add them here (must exist in assets/i18n)
+  "supportedLanguages": ["de", "en"],
+  // do not change this
+  "theme": "custom",
+  // config options for header
+  "hero": {
+    "title": "HOME.TITLE", // <2>
+    "subtitle": "HOME.SUBTITLE", // <3>
+    // enforces a min height visible header image
+    "large": true,
+  },
+  // config options for navigation below header
+  "navigation": {
+    "showHomeLink": true,
+    "links": [], // <4>
+    "separator": ""
+  },
+  // config options for footer
+  "footer": {
+    // additional links to be shown in footer
+    "links": [ // <5>
+      {
+        "name": "Apiman",
+        "link": "https://www.apiman.io/",
+        "openInNewTab": true
+      }
+    ],
+    // tell the application how the menu separator should look like
+    "separator": "•"
+  },
+  // specify the entrypoint to the API Management Manager: This is MANDATORY for communication with backend
+  "endpoint": "${apiman-manager-ui.api.endpoint}", // <6>
+  // the SSO role that the manager endpoint requires
+  "backendRoles": ["view-profile", "devportaluser"],
+  // set authentication details when pressing "login" telling where to redirect for SSO login with keycloak
+  "auth": {
+    "url": "${apiman.auth.public.url}",  // <7>
+    "realm": "${apiman.auth.realm}",  // <8>
+    "clientId": "devportal" // <9>
+  },
+  // set your desired terms and conditions for API subscriptions here. Could be disabled so no such infos will be shown.
+  "terms": { // <10>
+    "enabled": true,
+    // both provided links will always be opened in a new browser tab
+    "termsLink": "https://www.apache.org/licenses/LICENSE-2.0",
+    "privacyLink": "https://www.apache.org/licenses/LICENSE-2.0"
+  }
+}
+
+----
+<1> Default language for the portal. Translations are in `i18n/de.json`.
+<2> Page title: ideally, reference this to an i18n constant.
+<3> Page subtitle: ideally, reference this to an i18n constant.
+<4> Links at the top of the developer portal. These have the same format as the footer links, see <5>.
+<5> Array of link objects to custom resources.
+<6> This is where your Apiman Manager backend is. Resolved automatically against `apiman.properties`, but you can override it.
+<7> Keycloak auth URL, this must be accessible by the browser application. Resolved automatically against `apiman.properties`, but you can override it.
+<8> Keycloak realm, usually as defined in `apiman.properties`.
+<9> Keycloak client ID.
+<10> Terms and conditions for APIs can be placed here. At present, only a single T&Cs is supported, but https://github.com/apiman/apiman/issues/1705[if there is demand we can add support for a T&C Manager (please let us know)^].
+
+=== If your Keycloak internal vs external URL is different
+
+The Apiman Developer Portal interacts with Keycloak entirely in-browser using Javascript.
+In some setups, the Keycloak server name internally vs externally is different.
+This can cause difficulties where the Keycloak redirect URL is wrong for external users.
+
+For example, within a Docker network Keycloak may be `http://keycloak:8080`, whereas externally it may be `http://auth.local.gd:8080`.
+
+To handle this situation, you can set:
+
+* System Property: `apiman.auth.public.url`
+* Env var: `APIMAN_AUTH_PUBLIC_URL`
+
+If you don't set this explicitly, Apiman will fall back to `apiman.auth.url`.
+
+== Style Customisations
+
+* `assets/custom-style.css`: modify this CSS to appearance of the main Apiman Developer Portal application.
+* `assets/swagger-custom-styles.css`: modify this CSS to change the appearance of Swagger UI, which is used for rendering OpenAPI and Swagger schemas.
+* `assets/img/favicon.ico`: Apiman Developer Portal https://en.wikipedia.org/wiki/Favicon[favicon^].
+* `assets/img/header.jpeg`: Apiman Developer Portal header/hero image.

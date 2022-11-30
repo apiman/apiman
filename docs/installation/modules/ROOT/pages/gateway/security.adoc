@@ -1,0 +1,461 @@
+= Security
+:keycloak: https://www.keycloak.org
+
+== Keycloak IDM
+
+NOTE: As of Apiman 3, we no longer bundle the Keycloak server into Apiman quickstart distributions.
+
+In order to use the Apiman quickstarts, you need to run Keycloak.
+
+{keycloak}[Keycloak^] is used to manage a range of security tasks for Apiman, including user account management, login security, OIDC provider, etc.
+
+To provide flexibility, there are a few ways you can configure Apiman to point to your Keycloak server.
+
+[[kc-configuration-options]]
+=== Configuration
+
+.Required Params
+[cols="2,1,4",options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+a| * System property: apiman.auth.realm
+* Env var: APIMAN_AUTH_REALM
+| String
+a| Keycloak realm name.
+
+* *Default Value*: apiman
+
+a| * System property: apiman.auth.url
+* Env var: APIMAN_AUTH_URL
+| String
+a| Keycloak auth server URL
+
+NOTE: In older versions of Keycloak the auth server might have `/auth` at the end of the URL, rather than being at root (i.e. `http://old-keycloak:8080/auth` vs `http://new-keycloak:8080/auth`).
+
+a| * System property: apiman.auth.api.secret
+* Env var: APIMAN_AUTH_API_SECRET
+| String
+a| Keycloak secret credential for the Apiman Manager API (`apiman` client)
+
+* *Default Value*: password
+
+a| * System property: apiman.auth.ui.secret
+* Env var: APIMAN_AUTH_UI_SECRET
+| String
+a| Keycloak secret credential for the Apiman Manager UI (`apimanui` client)
+
+* *Default Value*: password
+
+a| * System property: apiman.auth.gateway.secret
+* Env var: APIMAN_AUTH_GATEWAY_SECRET
+| String
+a| Keycloak secret credential for the Apiman Gateway API (`apiman-gateway-api` client)
+
+* *Default Value*: password
+
+a| * System property: apiman.auth.realm-public-key
+* Env var: APIMAN_AUTH_REALM_PUBLIC_KEY
+| String
+a| Public key for Apiman realm (only needed on Vert.x Gateway).
+
+* *Default Value*: example Apiman realm key
+
+|===
+
+WARNING: Please change default secrets and keys before deploying Apiman to production.
+
+=== Setting up Keycloak
+
+As a quick way to run Keycloak and initialise it with the Apiman's default realm, here's an example Docker Compose file:
+
+.Example Docker Compose file
+[source,yaml,subs=attributes+]
+----
+services:
+  keycloak:
+    container_name: keycloak_server_all
+    image: quay.io/keycloak/keycloak:{keycloak-version}
+    entrypoint: ['/bin/bash', '-c']
+    command:
+      - |
+        cd /opt/keycloak
+        ./bin/kc.sh build
+        ./bin/kc.sh start-dev --import-realm
+    ports:
+      - "8085:8080"
+    environment:
+      - "KEYCLOAK_ADMIN=admin"
+      - "KEYCLOAK_ADMIN_PASSWORD=admin123!"
+      - "KEYCLOAK_FRONTEND_URL=http://localhost:8085"
+    volumes:
+      - ${PWD}/apiman-realm-for-keycloak.json:/opt/keycloak/data/import/apiman-realm-for-keycloak.json <1>
+----
+<1> Copy `apiman-realm-for-keycloak.json` from `apiman/data/apiman-realm-for-keycloak.json`
+
+. Create a file called `docker-compose.yml` with the contents shown above.
+
+. Copy `apiman/data/apiman-realm-for-keycloak.json` from your distro zip to the same directory as your `docker-compose.yml`.
+
+. Start with `docker-compose up`.
+
+. You should now have Keycloak running on localhost port 8085
+. Try it with: `http://localhost:8085/admin`
+.. Admin username: `admin`
+.. Admin password: `admin123!`
+. Your Apiman Auth URL is: `http://localhost:8085` (see <<kc-configuration-options>>)
+
+NOTE: This is running in dev mode. For production, refer to the Keycloak Production Guides.
+
+[#_gateway_api_authentication]
+== Gateway API Authentication
+
+The Apiman Gateway's REST API is what the API Manager invokes when publishing APIs and Client Apps to the Gateway footnote:[Some advanced configurations may interact directly with the Gateway API, whilst others may bypass it entirely by using polling, etc.].
+
+[NOTE]
+====
+The quickstart configurations should work out of the box, but they assume the locality of all components.
+
+Real deployments will likely need to perform some reconfiguration.
+====
+
+This REST API should be protected, usually by BASIC authentication.
+
+By default, the Apiman Gateway REST API requires BASIC authentication credentials, as well as a role of `apipublisher`.
+
+* The Apiman Gateway REST API can only be invoked by a valid user, and that user must have the `apipublisher` role.
+
+* The Keycloak client for this API is `apiman-gateway-api`
+** The default user is: *apimanager*
+** The default password is: *apiman123!*
+
+=== Advanced Setup
+
+For more advanced setups, the environment variables/system properties may not be sufficient; manual editing of configuration files might be necessary.
+
+==== Vert.x Gateway
+
+For the Vert.x gateway, the simplest way to retrieve the necessary configuration is to generate it from your Keycloak server.
+
+The gateway accepts Keycloak's generated JSON, allowing you to paste your chosen client configuration from the Keycloak console into the `auth.config` section.
+
+To retrieve it:
+
+. Log into your Keycloak Administrator console (e.g http://localhost:8085/admin).
+
+. `Clients` -> `apiman-gateway-api` -> `Installation`.
+
+. Select `Keycloak OIDC JSON` for `Format Option`.
+
+. Copy the contents and merge into the `config` selection where indicated below.
+
+The precise configuration you need to provide will vary depending upon your Keycloak setup.
+
+[IMPORTANT]
+====
+Due to a current limitation in the underlying OAuth2 library you may be required to provide a `credentials` section to avoid issues.
+
+You can change your client type to `confidential`, or simply provide a dummy `credentials` section.
+====
+
+[source,json5]
+----
+"auth": {
+  "type": "keycloak",
+  "config": {
+    "flowType": "PASSWORD",
+    "requiredRole": "realm:apipublisher",
+    // Paste and overwrite your Keycloak config here.
+    "realm": "apiman",
+    "realm-public-key": "<snip>",
+    "auth-server-url": "http://localhost:8080/auth",
+    "ssl-required": "none",
+    "resource": "apiman-gateway-api",
+    // A limitation in the current OAuth2 implementation means a credentials section is required
+    // even if your client is not set to "confidential". Leave this dummy section if you're using non-confidential.
+    "credentials": {
+      "secret": "217b725d-7790-47a7-a3fc-5cf31f92a8db"
+    }
+    // End paste here
+  }
+}
+----
+
+==== Servlet Gateway
+
+The API Gateway has a REST based configuration API which the API Manager uses when publishing APIs to it.
+This API is protected by Keycloak authentication.
+
+Most options can be configured using environment variables or system properties, rather than editing configuration directly. Please see the <<kc-configuration-options, Keycloak Configuration Options>> section for details.
+
+If not, the relevant portion of the **standalone-apiman.xml** file that you must change is `keycloak` subsystem.
+It looks something like this:
+
+[source,xml]
+----
+<realm name="apiman">
+  <auth-server-url>https://keycloak-host.org:8443</auth-server-url>
+  <ssl-required>none</ssl-required>
+  <enable-cors>false</enable-cors>
+  <principal-attribute>preferred_username</principal-attribute>
+</realm>
+----
+
+[#_mtls_mutual_ssl_endpoint_security]
+== MTLS (Mutual SSL) Endpoint Security
+
+If you wish to use mutual SSL to ensure endpoint security between the Apiman API Gateway and your back-end API(s), you must update some settings.
+
+=== High Level Overview
+
+. Create Trust and Key Stores
+. Make changes to your config file
+. (Re)start Apiman!
+. Configure one or more API to use MTLS
+
+=== Create Trust and Key Stores
+
+Please refer to https://docs.oracle.com/javase/7/docs/technotes/tools/solaris/keytool.html[official JDK documentation] to learn how to create and managed your SSL Trust and Key stores.
+Minimally a Keystore is required in order to successfully utilise MTLS, and in many cases also a Truststore.
+
+A *keystore* contains a given node's private key material, and must be kept safe.
+Each node should have a unique key entry.
+For instance, a gateway should have its own keystore, and each API likewise.
+In a production system, these keys should be issued by a trusted certificate authority.
+
+A *truststore* typically contains a set of certificate authorities which are trusted issuers.
+Therefore, any certificate signed by the trusted CA would be trusted by the gateway.
+If no truststore is explicitly provided to Apiman the
+https://docs.oracle.com/javase/7/docs/technotes/tools/solaris/keytool.html#cacerts[default trusted certificates] provided by the JVM will be used.
+A typical use-case would be that an organization's internal signing authority is marked as trusted within in the truststore, and as the authority has been used to sign the certificate material in the keystores, they will mutually trust each other by virtue of the issuer.
+
+It is also possible to directly insert the *public/self-signed certificate* corresponding to a given private key pair into a truststore, which works well at small scales and for development, but will quickly cause the accumulation of a huge number of certificates in larger systems as it requires a 1:1 mapping of certificates and private keys (rather than 1:N by using a trusted authority).
+
+Your back-end APIs must be SSL enabled and *require authenticated client SSL connections*.
+This means you must have server SSL certificates generated (and appropriate certificates and/or CAs stored in your Trust Store).
+
+=== Example Scenarios
+
+There are many potential configuration permutations, but we'll outline a few simple ones here to get you started. You should research the best options to meet your security and deployment requirements.
+
+==== Development Setup
+
+In our hypothetical development setup, let's imagine we have two APIs and a single gateway.
+
+[cols="1,1,2", options="header"]
+.Simple Development MTLS Setup
+|===
+
+|Component
+|Key Alias
+|Truststore's Trusted Certificates
+
+|Apiman Gateway
+|gateway
+|api_a.cer, api_b.cer
+
+|API A
+|api_a
+|gateway.cer
+
+|API B
+|api_b
+|gateway.cer
+
+|===
+
+.Walkthrough
+* Generate a keystore and export a certificate for each component:
+
+** Gateway:
+
+[source,bash]
+----
+keytool -genkey -keyalg RSA -keystore gateway_ks.jks -alias gateway
+keytool -export -alias gateway -file gateway.cer -keystore gateway_ks.jks
+----
+
+** API A:
+
+[source,bash]
+----
+keytool -genkey -keyalg RSA -keystore api_a_ks.jks -alias api_a
+keytool -export -alias api_a -file api_a.cer -keystore api_a_ks.jks
+----
+
+** API B:
+
+[source,bash]
+----
+keytool -genkey -keyalg RSA -keystore api_b_ks.jks -alias api_b
+keytool -export -alias api_b -file api_b.cer -keystore api_b_ks.jks
+----
+
+* Import certificates into appropriate trust stores:
+
+** Gateway:
+
+[source,bash]
+----
+keytool -import -file api_a.cer -alias api_a -keystore gateway_ts.jks
+keytool -import -file api_b.cer -alias api_b -keystore gateway_ts.jks
+----
+
+** API A:
+
+[source,bash]
+----
+keytool -import -file gateway.cer -alias gateway -keystore api_a_ts.jks
+----
+
+** API B:
+
+[source,bash]
+----
+keytool -import -file gateway.cer -alias gateway -keystore api_b_ts.jks
+----
+
+Now simply set the appropriate paths to the keystore and truststore in `apiman.properties` for the gateway, and set up your APIs with their respective truststores and keystores (the specifics of how to do this will depend on your API's implementation).
+
+We will also set the following in `apiman.properties` to make our development easier:
+
+[source,properties]
+----
+apiman-gateway.connector-factory.tls.allowAnyHost=true
+----
+
+When you add your MTLS protected APIs into Apiman via the web application, you should set the `API Security` field to `MTLS/Two-Way-SSL`.
+
+==== MTLS via Custom Certificate Authority
+
+The previous approach works for development, but doesn't scale well, is harder to manage and doesn't gracefully handle revocations, expiry, expansion, etc.
+Instead, let's summarise a scenario where an organisation has an internal CA which they use to sign APIs' certificates.
+The process for generating a CA and signing certificates is out of scope for this guide, but is trivial to accomplish using OpenSSL, LibreSSL, or similar.
+
+Let's imagine we have a CA called `apimanCA`, and have *signed* the certificates
+for each node.
+
+[cols="3", options="header"]
+.CA-based MTLS Setup
+|===
+
+|Component
+|Signed Key Alias
+|Truststore Contents
+
+|Apiman Gateway
+|gateway (signed by apimanCA)
+|apimanCA.cer
+
+|API A
+|api_a (signed by apimanCA)
+|apimanCA.cer
+
+|API N
+|api_n (signed by apimanCA)
+|apimanCA.cer
+
+|===
+
+Despite the initial administrative work setting up the CA and signing the certificates, this process is drastically less effort to maintain in large deployments.
+Only the trusted CA needs to be in the truststore, and any certificates signed by it are trusted by virtue of this.
+
+=== Make changes to configuration
+
+Once you have your Trust Store and Key Store properly configured, you must alter your configuration file.
+Here is a summary of the properties:
+
+Omit any properties which are not relevant to you, except `trustStore`, which is mandatory for MTLS.
+
+CAUTION: The settings chosen here have significant security implications.
+Best practice guides are https://www.owasp.org/[available at OWASP].
+
+==== Vert.x
+
+.conf-es.json
+[source,json5]
+----
+{
+  "connector-factory": {
+    "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory",
+    "config": {
+      "tls": {
+        // Whether self-signed certificates should be automatically trusted. *Use with care.*
+        //"allowSelfSigned": true,
+
+        // Developer mode (bypass almost all security checks). *Use with care.*
+        //"devMode": false,
+
+        // Whether certificate host checks should be bypassed. *Use with care.*
+        //"allowAnyHost": true,
+
+        // Trust store contains certificate(s) trusted by gateway.
+        "trustStore": "/path/to/your/truststore.jks",
+        "trustStorePassword": "abc123",
+
+        // Key store contains gateway's keys.
+        "keyStore": "/path/to/your/keystore.jks",
+        "keyStorePassword": "abc123"
+
+        // By default all keys can be used (will try all).
+        // If alias list provided, will only attempt to use listed keys.
+        //"keyAliases": "mykey,myotherkey",
+
+        // Allowed TLS/SSL protocols and ciphers suites as CSV.
+        // Availability will vary depending on your JVM impl.
+        // Uses JVM defaults depending if not explicitly provided.
+        // See: https://docs.oracle.com/javase/8/docs/technotes/guides/security/SunProviders.html
+        //"allowedProtocols": "TLSv1.2,TLSv1.1",
+        //"allowedCiphers": "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,...",
+        //"disallowedCiphers": "..."
+      }
+    }
+  }
+}
+----
+
+==== Servlet
+
+.apiman.properties
+[source,properties]
+----
+# ---------------------------------------------------------------------
+# SSL/TLS settings for the gateway connector(s).
+# ---------------------------------------------------------------------
+
+# Trust store contains certificate(s) trusted by gateway.
+apiman-gateway.connector-factory.tls.trustStore=<PATH_TO_TRUST_STORE>
+apiman-gateway.connector-factory.tls.trustStorePassword=<PASSWORD_IF_ANY>
+
+# Key store contains gateway's keys (including private components: keep it safe).
+apiman-gateway.connector-factory.tls.keyStore=<PATH_TO_KEY_STORE>
+apiman-gateway.connector-factory.tls.keyStorePassword=<PASSWORD_IF_ANY> # Password on key store as a whole
+apiman-gateway.connector-factory.tls.keyPassword=<PASSWORD_IF_ANY> # Password on specific key(s)
+# By default all keys can be used (will try all). If alias list provided, will only attempt to use listed keys.
+apiman-gateway.connector-factory.tls.keyAliases=<COMMA_SEPARATED_LIST>
+
+# Allowed TLS/SSL protocols and ciphers suites as CSV. Availability will vary depending on your JVM impl.
+# Uses JVM defaults depending if not explicitly provided.
+# See: https://docs.oracle.com/javase/7/docs/technotes/guides/security/SunProviders.html
+apiman-gateway.connector-factory.tls.allowedProtocols=TLSv1.2,TLSv1.1
+apiman-gateway.connector-factory.tls.allowedCiphers=TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,...
+
+# Whether certificate host checks should be bypassed. *Use with great care.*
+apiman-gateway.connector-factory.tls.allowAnyHost=false
+
+# Whether self-signed certificates should be automatically trusted. *Use with great care.*
+apiman-gateway.connector-factory.tls.allowSelfSigned=false
+----
+
+=== (Re)start Apiman
+
+If Apiman was running, you should stop it now.
+Once everything is shutdown, and the changes to `apiman.properties` have been made, go ahead and start Apiman up again.
+
+=== Configure one or more API to use MTLS
+
+Now that the Apiman MTLS feature has been configured, use the Manager UI to enable MTLS in one or more API.
+This can be done on the "Implementation" tab when you are configuring the details of your back-end endpoint (URL, type, and endpoint security).

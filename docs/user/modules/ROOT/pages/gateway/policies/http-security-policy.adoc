@@ -1,0 +1,144 @@
+= HTTP Security Policy
+
+== Description
+
+Security-related HTTP headers can be set, such as HSTS, CSP and XSS protection.
+
+== Plugin
+
+[source,json,subs=attributes+]
+----
+{
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-http-security-policy",
+    "version": "{apiman-version-release}"
+}
+----
+
+== Configuration
+
+.HTTP security policy configuration
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| frameOptions
+| Enum [DENY, SAMEORIGIN, DISABLED]
+a| *Frame Options*
+Defines if, or how, a resource should be displayed in a frame, iframe or object.
+| DISABLED
+
+| xssProtection
+| Enum [OFF, ON, BLOCK, DISABLED]
+a| *XSS Protection*
+Enable or disable XSS filtering in the UA.
+| DISABLED
+
+| contentTypeOptions
+| Boolean
+a| *X-Content-Type-Options*
+Prevent MIME-sniffing to any type other than the declared Content-Type.
+| false
+
+| hsts
+| <<_hsts>>
+a| *HTTP Strict Transport Security*
+Configure HSTS.
+| None
+
+| contentSecurityPolicy
+| <<_contentSecurityPolicy, contentSecurityPolicy>>
+a| *Content Security Policy*
+CSP definition.
+| None
+
+|===
+
+[#_hsts]
+=== hsts
+
+.HTTP Strict Transport Security (hsts): Enforce transport security when using HTTP to mitigate a range of common web vulnerabilities.
+[cols="2,1,4,1",options="header"]
+|===
+| Option
+| Type
+| Description
+| Default
+
+| enabled
+| Boolean
+a| *HSTS*
+Enable HTTP Strict Transport
+| false
+
+| includeSubdomains
+| Boolean
+| Include subdomains
+| false
+
+| maxAge
+| Integer
+a| *Maximum age*
+Delta seconds user agents should cache HSTS status for
+| 0
+
+| preload
+| Boolean
+a| *Enable HSTS preloading*
+Flag to verify HSTS preload status.
+Popular browsers contain a hard-coded (pinned) list of domains and certificates, which they always connect securely with.
+This mitigates a wide range of identity and MIITM attacks, and is particularly useful for high-profile domains.
+Users must submit a request for their domain to be included in the scheme.
+| false
+|===
+
+[[_contentSecurityPolicy]]
+=== contentSecurityPolicy (Content Security Policy)
+
+.CSP (contentSecurityPolicy): A sophisticated mechanism to precisely define the types and sources of content that may be loaded, with violation reporting and the ability to restrict the availability and scope of many security-sensitive features
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| mode
+| Enum [ENABLED, REPORT_ONLY, DISABLED]
+a| *CSP Mode*
+Which content security policy mode to use.
+| DISABLED
+
+| csp
+| String
+a| *Content Security Policy*
+A valid CSP definition to apply
+| Empty string
+
+|===
+
+== Sample Configuration
+
+[source,json]
+----
+{
+   "contentSecurityPolicy" : {
+      "mode" : "REPORT_ONLY",
+      "csp" : "default-src none; script-src self; connect-src self; img-src self; style-src self;"
+   },
+   "frameOptions" : "SAMEORIGIN",
+   "contentTypeOptions" : true,
+   "hsts" : {
+      "includeSubdomains" : true,
+      "preload" : false,
+      "enabled" : true,
+      "maxAge" : 9001
+   },
+   "xssProtection" : "ON"
+}
+----

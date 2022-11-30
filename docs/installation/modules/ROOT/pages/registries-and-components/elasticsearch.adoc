@@ -1,0 +1,479 @@
+= Elasticsearch Registry & Components
+Marc Savy <marc@rhymewithgravy.com>
+
+TIP: Many of the shipped configurations make use of variable substitution to reduce repetition.
+
+Apiman components for https://www.elastic.co[Elasticsearch^].
+
+[#_global_required_parameters]
+== Global Required Parameters
+
+[cols="2,1,4",options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `client.type`
+| String
+a| The Elasticsearch client type:
+
+* *Default Value*: es
+
+| `client.protocol`
+| Enum
+a| The Elasticsearch protocol to use
+
+* *Default Value*: http
+* *Allowed Values*: http, https
+
+| `client.indexPrefix`
+| String
+a| Elasticsearch index prefix
+
+* *Default Value*: name of component
+
+| `client.host`
+| String
+a| The ES host
+
+| `client.port`
+| Integer
+a| The ES port
+
+| `client.timeout`
+| Integer
+a| Client timeout (milliseconds)
+
+* *Default Value*: 10000
+* *Allowed Values*: 0 infinite timeout or any positive int
+
+|===
+
+[#_global_optional_parameters]
+== Global Optional Parameters
+
+[cols="2,1,4",options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `client.index`
+| String
+a| An alternative Elasticsearch index name.
+
+| `client.initialize`
+| Boolean
+a| Initialise the storage
+
+| `client.username`
+| String
+a| Username if using an auth mechanism like SearchGuard, Shield, etc
+
+| `client.password`
+| String
+a| Password if using an auth mechanism like SearchGuard, Shield, etc
+
+| `client.keystore.path`
+| String
+a| Path to the client KeyStore
+
+| `client.keystore.format`
+| Enum
+a| Format of keystore
+
+* *Default Value*: jks
+* *Allowed Values*: pkcs12, jks
+
+| `client.keystore.password`
+| String
+a| Password for the client KeyStore
+
+| `client.truststore.path`
+| String
+a| Path to the TrustStore
+
+| `client.truststore.format`
+| Enum
+a| Format of truststore
+
+* *Default Value*: jks
+* *Allowed Values*: pkcs12, jks
+
+| `client.truststore.password`
+| String
+a| Password for the TrustStore
+
+| `client.allowSelfSigned` / `client.trust.certificate`
+| Boolean
+a| Trust self-signed certificates
+
+* *Default Value*: false
+
+| `client.allowAnyHost` / `client.trust.host`
+| Boolean
+a| Disable hostname verification checks
+
+* *Default Value*: false
+
+| `client.trustAll`
+| Boolean
+a| Trust all SSL endpoints without any checks (use with great care)
+
+* *Default Value*: false
+
+| `client.pollingTime` / `client.polling.time`
+| String
+a| Polling frequency for client attempting connection to Elasticsearch (milliseconds). This is only relevant if the client is unable to connect on first attempt.
+
+* *Default Value*: 600
+
+|===
+
+[#_registry]
+== Registry
+
+Assign your chosen implementation as shown in the example, providing configuration.
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.registry=io.apiman.gateway.engine.es.PollCachingESRegistry
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "registry": {
+    "class": "io.apiman.gateway.engine.es.PollCachingESRegistry",
+    "config": {
+      // <registry configuration>
+    }
+  }
+}
+----
+--
+====
+
+.Available implementations:
+[cols="2", options="header"]
+|===
+
+| Implementation
+| Notes
+
+| `io.apiman.gateway.engine.es.PollCachingESRegistry`
+| *Recommended*. Works well in multi-node setups.
+
+| `io.apiman.gateway.engine.es.CachingESRegistry`
+| Works well in single-node setups.
+
+| `io.apiman.gateway.engine.es.ESRegistry`
+| Only recommended for very low volume or test setups; causes remote calls to be issued on every request.
+
+|===
+
+=== Required Parameters
+
+Refer also to <<Global Required Parameters>>.
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `cache-polling-interval`
+| Integer
+a| Cache polling interval in seconds.
+
+* *Default Value*: 10
+* *Implementations*: PollCachingESRegistry
+
+|===
+
+=== Optional Parameters
+
+Refer also to <<Global Optional Parameters>>.
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `cache-polling-startup-delay`
+| Integer
+a| Polling startup delay in seconds.
+
+* *Default Value*: 30
+* *Implementations*: PollCachingESRegistry
+
+|===
+
+[#_metrics]
+== Metrics
+
+Set the metrics implementation as shown.
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.metrics=io.apiman.gateway.engine.es.ESMetrics
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "metrics": {
+    "class": "io.apiman.gateway.engine.es.ESMetrics",
+    "config": {
+      "client": {
+         "type": "es",
+         "protocol": "${apiman.es.protocol}",
+         "host": "${apiman.es.host}",
+         "port": "${apiman.es.port}"
+         // <metrics configuration>
+       }
+     }
+  }
+}
+----
+--
+====
+
+Set the Apiman Manager metrics accessor implementation to enable Apiman Manager UI to provide some basic visualisations from your Elasticsearch data.
+
+[TIP]
+====
+* A commented-out segment should be in your `apiman.properties` already.
+
+* All the same global <<_global_required_parameters, required>> and <<_global_optional_parameters, optional>> options are available.
+====
+
+[source,properties]
+----
+# API Manager metrics settings.
+apiman-manager.metrics.type=io.apiman.manager.api.es.EsMetricsAccessor
+
+apiman-manager.metrics.es.client.type=es
+# All options available as in global mandatory and optional
+apiman-manager.metrics.es.client.protocol=${apiman.es.protocol}
+apiman-manager.metrics.es.client.host=${apiman.es.host}
+apiman-manager.metrics.es.client.port=${apiman.es.port}
+
+----
+
+=== Optional Parameters
+
+Refer also to <<Global Required Parameters>>.
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `queue.size`
+| Integer
+a| Maximum metrics queue size
+
+* *Default Value*: 10000
+
+| `batch.size`
+| Integer
+a| Maximum metrics batching size
+
+* *Default Value*: 1000
+
+| `custom.headers.request`
+| String[]
+a| Case-insensitive list of _request_ headers to capture, for example `X-Correlation-Id`.
+
+| `custom.headers.response`
+| String[]
+a| Case-insensitive list of _response_ headers to capture
+
+| `custom.query-params`
+| String[]
+a| Case-insensitive list of HTTP https://en.wikipedia.org/wiki/Query_string[query parameters^] to capture
+
+| `write-to`
+| String[]
+a| Case-insensitive list of destinations to write Elasticsearch logs.
+
+Rather than solely pushing metrics directly to the Elasticsearch server, Apiman can also write the metrics to a log file as JSON (e.g. for scraping).
+
+* *Default Value*: `REMOTE`
+* *Allowed Values*: `REMOTE`, `LOG` (both permissible at once)
+* *File Location*:
+** WildFly: `standalone/log/metrics.log`
+** Tomcat: `logs/apiman/metrics.log`
+
+|===
+
+NOTE: For custom header and query param capture, we add entries into the Elasticsearch index dynamically using https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic-templates.html[dynamic templates^].
+
+// Rate limiting.
+== Components
+
+[#_shared_state]
+=== Shared State
+
+Set shared state implementation as shown.
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.components.ISharedStateComponent=io.apiman.gateway.engine.es.ESSharedStateComponent
+apiman-gateway.components.ISharedStateComponent.client.type=es
+# <other configuration options>
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "components": {
+    // Shared State Component Settings
+    "ISharedStateComponent": {
+      "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
+      "config": {
+        "client": {
+          "type": "es",
+          "protocol": "${apiman.es.protocol}",
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port}"
+          //<configuration options>
+        }
+      }
+    }
+  }
+}
+----
+--
+====
+
+==== Required Parameters
+
+Refer to <<Global Required Parameters>>.
+
+[#_rate_limiter]
+=== Rate Limiter
+
+Set rate limiter implementation as shown.
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.components.IRateLimiterComponent=io.apiman.gateway.engine.es.ESRateLimiterComponent
+apiman-gateway.components.IRateLimiterComponent.client.type=es
+# <configuration options>
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "components": {
+    // Rate Limiter Component Settings
+    "IRateLimiterComponent": {
+      "class": "io.apiman.gateway.engine.es.ESRateLimiterComponent",
+      "config": {
+        "client": {
+          "type": "es",
+          "protocol": "${apiman.es.protocol}",
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port}"
+          // <configuration options>
+        }
+      }
+    }
+  }
+}
+----
+--
+====
+
+==== Required Parameters
+
+Refer to <<Global Required Parameters>>.
+
+[#_cache_store]
+=== Cache Store
+
+Set cache store implementation as shown.
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.components.ICacheStoreComponent=io.apiman.gateway.engine.es.EsCacheStoreComponent
+apiman-gateway.components.ICacheStoreComponent.client.type=es
+# <configuration options>
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "components": {
+    // Cache Store Component Settings
+    "ICacheStoreComponent": {
+      "class": "io.apiman.gateway.engine.es.ESCacheStoreComponent",
+      "config": {
+        "client": {
+          "type": "es",
+          "protocol": "${apiman.es.protocol}",
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port}"
+          // <configuration options>
+        }
+      }
+    }
+  }
+}
+----
+--
+====
+
+==== Required Parameters
+
+Refer to <<Global Required Parameters>>.

@@ -1,1 +1,25 @@
-include::welcome::page$index.adoc[]
+= Welcome to the Apiman Documentation
+
+[cols="~h,~"]
+
+|===
+
+| xref:user-guide::index.adoc[User Guide]
+
+a| Day-to-day usage of Apiman, covering most topics including policies, plugins, and basic administration.
+
+|  xref:installation-guide::index.adoc[Installation & Administration Guide]
+
+a| Installing Apiman, and configuring it in a more production-ready way.
+
+| xref:migration-guide::migrations.adoc[Migration Guide]
+
+a| How to upgrade your installation of Apiman to a newer version.
+
+|  xref:development-guide::intro.adoc[Development Guide]
+
+a| For those wanting to extend Apiman's functionality or even embed Apiman in their own platform.
+
+For example, if you want to create your own Apiman Policy plugin, this is the place to start.
+
+|===

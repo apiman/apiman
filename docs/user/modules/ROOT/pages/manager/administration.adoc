@@ -1,0 +1,124 @@
+= System Administration
+
+There are several "global" settings that must be configured/managed by an Apiman administrator.
+These global settings are managed by navigating to the *System Administration* section of the API Manager UI.
+
+== Roles
+
+Users must become a member of an organization before being allowed to manage any of the plans, APIs, or client apps contained within it.
+When a user is made a member of an organization, they are granted a specific role within that organization.
+Typical examples of roles are *Organization Owner*, *API Provider*, and *Client App Developer*.
+These roles each grant different specific privileges to the user.
+For example, a user with the *Client App Developer* role will be able to manage the organization's client apps but not its APIs or plans.
+
+The roles that are available when adding a member to an organization are managed in the *Roles* section of the *System Administration* UI.
+The Apiman admin can create as many roles as she wishes, giving each one a name, description, and the set of permissions it grants.
+Additionally, certain roles may be automatically granted to users who create new organizations.
+At least one such role must be present, otherwise organizations cannot be created.
+
+== Discoverability
+
+Apiman's discoverability system is a type of implicit read permissions system that allows users who are not explicit members of an organization to find and subscribe APIs.
+It works hand-in-hand with Apiman's existing explicit permissions and roles system.
+
+It is analogous to GitHub's public repository concept, where it is possible to implicitly allow read-only permissions for a given repo outside your organization (including to anonymous users).
+
+Learn more in the xref:manager/providing-apis.adoc#_discoverability[Providing APIs: Discoverability] guide.
+
+== Policy Definitions
+
+The policies available when configuring APIs, Plans, and Client Apps are controlled by the *Policy Definitions* known to Apiman.
+These definitions are stored in the API Manager and are added by the Apiman admin.
+Typically, these are added once and rarely changed.
+But as new versions of Apiman are released, additional policies will be made available.
+For each policy, a policy definition must be configured in the *System Administration* UI.
+
+Additionally, it is possible for a plugin, when installed, to contribute one or more policy definitions to the list.
+This is a very common way for new policy definitions to be added to Apiman.
+
+== Gateways
+
+Apiman allows multiple logical Gateways to be configured.
+The Gateway is the server that actually applies the policies configured in the API Manager to live requests to managed APIs.
+When using Apiman, at least one Gateway must be running and configured in the API Manager.
+However, there is no limit to the total number of Gateways that may be running.
+The typical reason to have multiple Gateways is when some APIs are very high volume and others are not.
+In this case, the high volume APIs could be published to a Gateway that can handle such load, while the low volume APIs could be published to
+another (perhaps cheaper) Gateway.
+
+Another reason you may want multiple Gateways if you need some of your APIs to be provided in a particular physical region and others in a different one.
+In this case, you may have a Gateway (perhaps clustered) running in a US data center, while another Gateway (different cluster) is running separately in a data center in Europe.
+
+In all cases, the Apiman admin must configure these Gateways in the *System Administration* UI.
+Each Gateway has a name, description, and configuration endpoint.
+The configuration endpoint is what the API Manager will use when publishing APIs and client apps into the Gateway.
+
+When configuring an API Gateway you will need to include the authentication credentials required to invoke the API Gateway configuration REST API.  Typically this user must have the `apipublisher` role in order to successfully talk to the API Gateway.
+The Gateway UI includes a *Test Gateway* button which will attempt to contact the Gateway API with the credentials included.
+If successful, the test button will turn green.
+If unsuccessful, details about the failure will be displayed and the test button will turn red.
+
+== Plugins
+
+Apiman supports contributing additional functionality via a powerful plugin mechanism.
+Plugins can be managed by an administrator within the API Manager UI.
+The plugin management administration page allows an admin to install and uninstall plugins.
+
+=== Adding Plugins
+
+The Plugin admin page has two tabs - one shows the list of plugins currently installed, and the other shows a list of "Available Plugins".
+The list of available plugins comes from a plugin registry that is configured when Apiman is installed (see the Installation Guide for details on how to configure a custom plugin registry).
+By default, the "official" Apiman plugins will show up in the list.
+
+A custom plugin is typically added by clicking on the 'Add Custom Plugin' button found on the "Available Plugins" tab.
+This allows you to install a plugin that is not found in the configured plugin registry.
+When installing a custom plugin, you must provide the "coordinates" of the plugin.
+All plugins are actually maven artifacts, and as such their coordinates consist of the following maven properties:
+
+* Group ID
+* Artifact ID
+* Version
+* Classifier (optional)
+* Type (optional, defaults to 'war')
+
+When installing a plugin from the plugin registry, simply locate it in the list shown on the "Available Plugins" tab and then click the "Install" action.
+This will again take you to the Add Plugin page, but with all the appropriate information already filled in.
+At this point you should only need to click the "Add Plugin" button.
+
+Plugins primarily are used to contribute custom policies to Apiman.
+These policies are automatically discovered (if they exist in the plugin) when a plugin is added to the API Manager.
+Policies that have been contributed via a plugin will appear in the Policy Definitions admin page along with the built-in policies.
+
+=== Uninstalling Plugins
+
+At any time you may choose to uninstall a plugin.
+Note that if the plugin was contributing one or more policies to Apiman, then the policy will no longer be available for use when configuring your Plans, APIs, and Client Apps.
+However, if the policy is already in use by one of these entities, it will continue to work.
+In other words, uninstalling a plugin only removes the policy for use by new entities, it does *not* break existing usages.
+
+To uninstall a plugin, simply click the "Uninstall" action for the appropriate plugin on the "Installed Plugins" tab (it is likely represented as a button with a little X).
+After confirming the action, the plugin should disappear from the list.
+
+=== Upgrading Plugins
+
+If Apiman determines that a plugin can be upgraded, then an "Upgrade Plugin" action button will show up for the plugin in the "Installed Plugins" tab.
+This action will be represented as an up arrow icon button.
+When clicked, you will be prompted for the version of the plugin you wish to upgrade *to*.
+The result will be that a new version of the plugin will be downloaded and installed, replacing the older version you had before.
+Note that any Plans, APIs, or Client Apps that were using the old version of the plugin's policies will *continue* to use the older version.
+However, any new policies from the plugin added to entities will use the new version.
+In order to upgrade an existing entity to a newer policy, you will need to remove the old policy from that entity and re-add it.
+We recommend that you only do this if there is a compelling reason (e.g. a bug is fixed or a new feature added).
+
+== Export/Import Data
+
+Apiman has a feature that allows an admin user to Export and/or Import data.  You can access this feature by clicking the "Export/Import Data" link on the API Manager Dashboard page (admin only).
+This feature is useful for the following use-cases:
+
+* Backing up data
+* Migrating data between environments (e.g. Test->Production)
+* Upgrading between Apiman versions
+
+From the Export/Import UI page, simply click the "Export All" button if you wish to export all the data in the API Manager.
+The result will be a downloaded JSON file containing all of your Apiman data.  This file can then be optionally post-processed (perhaps you want to migrate only a single Organization from your Test environment to your Prod environment).
+At some later time, you can import this file (typically into a different installation of Apiman) by selecting it and choosing "Upload File".

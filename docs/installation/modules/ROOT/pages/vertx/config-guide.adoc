@@ -1,0 +1,176 @@
+= Vert.x Gateway Configuration Guide
+Marc Savy <marc@rhymewithgravy.com>
+
+The Vert.x gateway is configured via a simple JSON file, generically referred to here as `config.json`.
+This guide provides a brief outline to some of the most important information that may be unique to this platform.
+Annotations in the configuration file should be considered canonical.
+
+== Comments
+
+Unlike standard JSON, you can insert comments into the configuration by using C-style `// comment` syntax.
+
+[source,json5]
+----
+{
+  "foo": "bar" // This is a comment.
+}
+----
+
+== Variables
+
+The configuration supports variable substitution (transclusion) in the form `"${FOO.SOME_VARIABLE}"`; where `FOO.SOME_VARIABLE` is the variable to be transcluded.
+The following list defines the lookup sources and order of precedence for variable resolution.
+
+1. JSON config's `variables` section:
++
+[source,json5]
+----
+{
+  "variables": {
+    "FOO": {
+      "SOME_VARIABLE": "foo"
+    }
+  }
+}
+----
+2. System properties: `-DFOO.SOME_VARIABLE="foo"`
+3. Environment: `export FOO.SOME_VARIABLE="foo"`
+
+A default value can be provided, which will be used if other lookup sources fail.
+
+For example `${MAGIC_NUMBER:-8090}` will result in `8090` being set if `MAGIC_NUMBER` is unresolved after the prior steps.
+
+== Registries, factories and components
+
+To configure a registry, component or factory, set the `class` to the corresponding fully qualified name of a valid implementation on the classpath.
+
+You can pass arguments to the component using the `config` section.
+
+[source,json5]
+----
+{
+  "registry": {
+    "class": "io.apiman.gateway.engine.es.PollCachingESRegistry", // <1>
+    "config": {
+      "client": {
+          "type": "es",
+          "protocol": "${apiman.es.protocol}", //<2>
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port}",
+          "initialize": true,
+          "pollingTime": "${apiman.es.pollingTime}",
+          "username": "${apiman.es.username}",
+          "password": "${apiman.es.password}",
+          "timeout": "${apiman.es.timeout}"//,
+          // only for https
+          //"allowSelfSigned": "${apiman.es.allowSelfSigned}",
+          //"allowAnyHost": "${apiman.es.allowAnyHost}",
+          //"truststore.path": "${apiman.es.truststore.path}",
+          //"truststore.password": "${apiman.es.truststore.password}",
+          //"keystore.path": "${apiman.es.keystore.path}",
+          //"keystore.password": "${apiman.es.keystore.password}"
+      }
+    }
+  }
+}
+----
+<1> Fully qualified path to registry class.
+<2> Note the variables here, which will be resolved as defined in <<Variables>>.
+
+== Verticles and scaling
+
+To scale your gateway, you can alter the number of verticles that will be spun up per-JVM when the project is deployed by changing `count`.
+If you prefer, a count value of `"auto"` will provide a sensible default based upon the number of cores.
+
+[source,json5]
+----
+{
+  "verticles": {
+    "http": { "port": 8082, "count": "auto" },
+    "https": { "port": 8443, "count": 1 },
+    "api": { "port": 8081, "count": 1 }
+  }
+}
+----
+
+If you don't want any instances of a particular verticle type, set its `count` to `0`.
+
+Which port the verticle listens on can be changed with `port`.
+
+NOTE: Verticle count only defines the number of verticles deployed in a given JVM instance.
+How many deployments, and hence total number of verticles exist within your overall cluster is entirely up to you.
+
+=== HTTP
+
+Plaintext HTTP entry-point, with no transport security. Turn off by reducing count to zero.
+
+=== HTTPS
+
+Encrypted HTTPS entry-point, with TLS/SSL. Turn off by reducing count to zero. Add you keystore and truststore to the <<SSL>> section of your configuration to enable this functionality.
+
+//NOTE: Refer to the link:../[security].
+
+=== API
+
+Hosts the Apiman gateway API, which is typically used by the Apiman manager to drive the gateway.
+For instance, publishing and retiring APIs, Contracts.
+You probably only need 1 of these.
+
+== Hostname
+
+[source,json5]
+----
+{ "hostname": "localhost" }
+----
+The hostname to bind to.
+
+== Endpoint
+
+[source,json5]
+----
+{ "endpoint": "mynode.local" }
+----
+
+Force the gateway to report the given gateway endpoint when it is queried by the manager.
+By default, the gateway will inspect the request used to hit the Gateway API, and use whichever address was used to reach it as the endpoint.
+
+[[SSL]]
+== SSL (TLS)
+
+The SSL section configures transport security to the gateway's *front end*; that is, connections established between client app ⇋ Apiman Gateway.
+
+[source,json]
+----
+{
+  "ssl": {
+    "keystore": {
+      "path": "/the/keystore/path/here.jks",
+      "password": "password-here"
+    },
+    "truststore": {
+      "path": "/the/truststore/path/here.jks",
+      "password": "password-here"
+    },
+    // Allowed TLS/SSL protocols for Client <-> Gateway (Server)
+    "allowedProtocols": "TLSv1.1, TLSv1.2"
+  }
+}
+----
+
+The precise keystore and truststore setups to use will vary considerably depending upon your organisation and security requirements; hence, they are out of the scope of this guide.
+
+NOTE: Refer to the https://docs.oracle.com/en/java/javase/11/tools/keytool.html[Java keytool reference^] for more information on creating keystores and truststores.
+
+=== Allowed TLS Protocols
+
+If you want to use a specific TLS version for the connection between client app ⇋ Apiman Gateway you can add the TLS version in a comma separated list with the setting `allowedProtocols`.
+
+== Prefer Secure
+
+[source,json5]
+----
+{ "preferSecure": true }
+----
+
+When reporting gateway endpoints (as above), set whether to prefer reporting the secure (HTTPS) URI rather than an insecure one (HTTP).
+This is likely the preferred option for production deployments where transport security <<SSL,has been configured>>.
