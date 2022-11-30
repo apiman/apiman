@@ -1,0 +1,47 @@
+= Transfer Quota Policy
+
+== Description
+
+In contrast to the other policy types, Transfer Quota tracks the number of bytes transferred (either uploaded or downloaded) rather than the total number of requests made.
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+****
+
+== Configuration
+
+The configuration parameters for a Quota Policy are:
+
+* *direction* (enum) : Indicates whether uploads, downloads, or both directions should count against the limit.  Value values are:
+** upload
+** download
+** both
+* *limit* (integer) : This is the number of requests that must be received before the policy will trigger.
+* *granularity* (enum) : The Apiman element for which the transmitted bytes are counted. Valid values are:
+** User
+** Api
+** Client
+* *period* : The time period over which the policy is applied.  Valid values are:
+** Hour
+** Day
+** Month
+** Year
+* *headerLimit* (string) [optional] : HTTP response header that Apiman will use to store the limit being applied.
+* *headerRemaining* (string) [optional] : HTTP response header that Apiman will use to store how many requests remain before the limit is reached.
+* *headerReset* (string) [optional] : HTTP response header that Apiman will use to store the number of seconds until the limit is reset.
+
+== Sample Configuration
+
+[source,json]
+----
+{
+  "direction" : "download",
+  "limit" : 1024000,
+  "granularity" : "Client",
+  "period" : "Day",
+  "headerLimit" : "X-XferQuota-Limit",
+  "headerRemaining" : "X-XferQuota-Limit-Remaining",
+  "headerReset" : "X-XferQuota-Limit-Reset"
+}
+----

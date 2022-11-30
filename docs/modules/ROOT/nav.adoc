@@ -1,6 +1,0 @@
-* xref:migration:migrations.adoc[Migration Guide]
-
-* xref:development:intro.adoc[Development Guide]
-** xref:development:plugins.adoc[Apiman Plugins]
-** xref:development:gateway.adoc[Apiman Gateway Implementation Guide]
-

@@ -1,0 +1,82 @@
+= How To: Use a SQL Database to Store and Retrieve Metrics (Replacing Elasticsearch)
+
+Sometimes you just don't want to use Elasticsearch to store your metrics, even though it's rather good at it.
+
+We typically recommend that you stick with ES if possible, because it gives you the option of installing Kibana, opening up a whole new world of advanced analytics over the metric data.
+
+However, if all you want is the basic graphs/charts shown in the Apiman UI, you can easily switch to storing metric data in a database.
+
+== High Level Overview
+
+. Deploy an appropriate JDBC datasource
+. Enable the Apiman Gateway JDBC initializer
+. Configure the Apiman Gateway metrics provider to be JDBC
+. Configure the API Manager metrics accessor to be JDBC
+
+== Set up or deploy an appropriate JDBC datasource
+
+Using a set of system properties or environment variables, Apiman can quickly bootstrap your JDBC datasource.
+If your setup isn't supported out of the box, you may need to configure your own datasources, including JDBC drivers.
+
+Please refer to the xref:manager/database.adoc[Apiman database configuration] section for how to do this.
+
+== Enable the Apiman Gateway JDBC initializer
+
+A database schema must be installed in your Apiman Gateway database, which creates the tables and indexes needed.
+
+This schema can be automatically created by Apiman the first time it is used.
+
+To enable this feature, you must configure the Apiman Gateway JDBC initializer in the *apiman.properties* file, like so:
+
+[source,properties]
+----
+apiman.jdbc.datasource.jndi-location=java:/apiman/datasources/apiman-gateway
+apiman-gateway.initializers=jdbc
+apiman-gateway.initializers.jdbc=io.apiman.gateway.engine.jdbc.JdbcInitializer
+apiman-gateway.initializers.jdbc.datasource.jndi-location=${apiman.jdbc.datasource.jndi-location}
+apiman-gateway.initializers.jdbc.datasource.type=mysql8
+----
+
+This initializer will run whenever Apiman starts up, and it will install the Apiman Gateway schema/DDL into the configured database so that the metrics JDBC implementations can function properly.
+
+Note that you will need to set the correct value of *apiman-gateway.initializers.jdbc.datasource.type* based on the specific database you will be using.
+
+Possible values for this property include:
+
+* `h2`
+* `mysql8`
+* `postgresql11`
+* `mssql15`
+* `oracle19`
+
+TIP: Generally these work with newer database versions without issue.
+
+== Configure the Apiman Gateway metrics provider to be JDBC
+
+JDBC-based metrics can be selected in *apiman.properties* via:
+
+[source,properties]
+----
+apiman-gateway.metrics=io.apiman.gateway.engine.jdbc.JdbcMetrics
+apiman-gateway.metrics.datasource.jndi-location=${apiman.jdbc.datasource.jndi-location}
+----
+
+== Configure the API Manager metrics accessor to be JDBC
+
+If you have configured the Apiman Gateway to use JDBC, then it likely makes sense to configure the API Manager to *retrieve* those metrics via JDBC, also.
+
+Edit the *apiman.properties* file:
+
+[source,properties]
+----
+apiman-manager.metrics.type=io.apiman.manager.api.jdbc.JdbcMetricsAccessor
+apiman-manager.metrics.datasource.jndi-location=${apiman.jdbc.datasource.jndi-location}
+----
+
+[TIP]
+====
+If you are deploying the API Manager and Apiman Gateway separately (on different nodes), make sure you edit the correct `apiman.properties` files on the correct nodes.
+
+If you wish, you can make the same changes to all nodes, since any properties in `apiman.properties` will be ignored on nodes where certain components are excluded.
+====
+

@@ -1,0 +1,14 @@
+name: installation-guide
+title: Installation Guide
+version: 3.0
+start_page: ROOT:index.adoc
+#prerelease: '.0-SNAPSHOT'
+nav:
+  - modules/ROOT/nav.adoc
+
+asciidoc:
+  attributes:
+    apiman-version-release: 3.0.0.Final
+    wildfly-version: 23.0.2.Final
+    wildfly-version-major: 23
+    keycloak-version: 18.0.2

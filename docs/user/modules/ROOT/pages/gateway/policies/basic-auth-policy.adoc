@@ -1,0 +1,90 @@
+= Basic Authentication Policy
+
+== Description
+
+This policy enables HTTP BASIC Authentication on an API.
+In other words, you can use this policy to require clients to provide HTTP BASIC authentication credentials when making requests to the managed API.
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+****
+
+== Configuration
+
+The BASIC Authentication policy has a number of configuration options.
+There are several top level configuration properties:
+
+* *realm* (string) : defines the BASIC Auth realm that will be used when responding with an auth challenge (when authentication is missing or fails)
+* *forwardIdentityHttpHeader* (string) : if authentication succeeds, indicates the name of an HTTP header to send with the principal/identity of the authenticated user (useful when the back-end API needs to know the identify of the authenticated user)
+* *requireTransportSecurity* (boolean) : set to true if this policy should fail when receiving a message over an unsecured communication channel (in other words, enabling this will require clients to use *https*)
+* *requireBasicAuth* (boolean) : set to true if BASIC authentication credentials are *required* (set to false if alternative authentication mechanisms, such as OAuth, are also supported)
+
+Additionally, one of the following complex properties must be included in the configuration, indicating whether Apiman should use JDBC, LDAP, or Static (not recommended for production) information as the source of identity used to validate provided user credentials.
+
+* *jdbcIdentity* (object) : included when you wish to use JDBC to connect to a database containing user and password information
+** *type* (enum) : what type of JDBC connection to use - options are 'datasource', 'url'
+** *datasourcePath* (string) : the JNDI path of the datasource to use (only when type is 'datasource')
+** *jdbcUrl* (string) : the URL to the JDBC database (only when type is 'url')
+** *username* (string) : the Username to use when connecting to the JDBC database (only when type is 'url')
+** *password* (string) : the Passowrd to use when connecting to the JDBC database (only when type is 'url')
+** *query* (string) : the SQL query to use when searching for a user record - the first parameter passed to the query will be the username, the second parameter will be the (optionally hashed) password
+** *hashAlgorithm* (enum) : the hashing algorithm used when storing the password data in the database
+** *extractRoles* (boolean) : set to true if you also want to extract role information from the database
+** *roleQuery* (string) : a SQL query to use when extracting role information - the first parameter passed to the query will be the username
+* *ldapIdentity* (object) : included when you wish to connect to LDAP when validating user credentials
+** *url* (string) : the URL to the LDAP server
+** *dnPattern* (string) : the pattern to use when binding to the LDAP server (you can use `${username}`+ in this pattern)
+** *bindAs* (enum) : whether to bind directly to LDAP as the authenticating user (UserAccount), or instead to bind as a service account and then search LDAP for the user's record (ServiceAccount)
+** *credentials* (object) : an object with two properties: 'username' and 'password' - credentials used when initially binding to LDAP as a service account
+** *userSearch* (object) : an object with two properties: 'baseDn' and 'expression' - used to search for the user's LDAP record so that it can be used to re-bind to LDAP with the appropriate password
+** *extractRoles* (boolean) : set to true if you wish to extract role information from LDAP
+** *membershipAttribute* (string) : the attribute representing the user's membership in a group - each value should be a reference to another LDAP node
+** *rolenameAttribute* (string) : the attribute on a role LDAP node that represents the name of the role
+* *staticIdentity* (object) : used mostly for testing purposes - allows you to provide a static set of user names and passwords (do not use in production!)
+
+== Sample Configuration (LDAP)
+
+Here is an example of the JSON configuration you might use when configuring a BASIC Authentication policy that uses LDAP to validate the inbound credentials:
+
+[source,json]
+----
+{
+   "realm" : "Example",
+   "forwardIdentityHttpHeader" : "X-Identity",
+   "requireTransportSecurity" : true,
+   "requireBasicAuth" : true,
+   "ldapIdentity" : {
+      "url" : "ldap://example.org",
+      "dnPattern" : "cn=${username},dc=example,dc=org",
+      "bindAs" : "UserAccount",
+      "extractRoles" : true,
+      "membershipAttribute" : "memberOf",
+      "rolenameAttribute" : "objectGUID"
+   }
+}
+----
+
+== Sample Configuration (JDBC)
+
+Here is an example of the JSON configuration you might use when configuring a BASIC Authentication policy that uses JDBC to validate the inbound credentials:
+
+[source,json]
+----
+{
+   "realm" : "Example",
+   "forwardIdentityHttpHeader" : "X-Identity",
+   "requireTransportSecurity" : true,
+   "requireBasicAuth" : true,
+   "jdbcIdentity" : {
+      "type" : "url",
+      "jdbcUrl" : "jdbc:h2:mem:UserDB",
+      "username" : "dbuser",
+      "password" : "dbpass123#",
+      "query" : "SELECT * FROM users WHERE userid = ? AND pass = ?",
+      "hashAlgorithm" : "SHA1",
+      "extractRoles" : true,
+      "roleQuery" : "SELECT r.rolename FROM roles r WHERE r.user = ?"
+   }
+}
+----

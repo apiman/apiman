@@ -1,0 +1,39 @@
+= URL Rewriting Policy
+
+== Description
+
+This policy is used to re-write responses from the back-end API such that they will be modified by fixing up any incorrect URLs found with modified ones.
+This is useful because Apiman works through an API Gateway, and in some cases an API might return URLs to followup action or data endpoints.
+In these cases the back-end API will likely be configured to return a URL pointing to the unmanaged API endpoint.
+This policy can fix up those URL references so that they point to the managed API endpoint (the API Gateway endpoint) instead.
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+****
+
+== Configuration
+
+This policy requires some basic configuration, including a regular expression used to match the URL, as well as a replacement value.
+
+* *fromRegex* (string regex) : A regular expression used to identify a matching URL found in the response.
+* *toReplacement* (string) : The replacement URL - regular expression groups identified in the *fromRegex* can be used.
+* *processBody* (boolean) : Set to true if URLs should be replaced in the response body.
+* *processHeaders* (boolean) : Set to true if URLs should be replaced in the response headers.
+
+TIP: This policy *cannot* be used for any other replacements besides URLs - the policy is implemented specifically to find and replace valid URLs.
+As a result, arbitrary regular expression matching will not work (the policy scans for URLs and then matches those URLs against the configured regex).
+This is done for performance reasons.
+
+== Sample Configuration
+
+[source,json]
+----
+{
+    "fromRegex" : "https?://[^\/]*\/([.\/]*)",
+    "toReplacement" : "https://apiman.example.com/$1",
+    "processBody" : true,
+    "processHeaders" : true
+
+}
+----

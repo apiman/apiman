@@ -1,0 +1,139 @@
+= Policies, the Core of API Management
+
+Policies are the most important element of API management.
+All the subsystems in Apiman, from the Management API UI to the API Gateway, exist for one ultimate goal; to ensure that API governance is achieved by the application of policies to API requests.
+In Apiman, policies are applied through a policy chain.
+
+Apiman is not only preconfigured with a rich set of policies that you can use, right out of the box, it also supports a mechanism that you can use to define your own custom policies.
+
+[TIP]
+====
+API governance is achieved by the API Gateway applying policies to API requests.
+====
+
+Apiman has support for many policies, including (but not limited to):
+
+[cols="1,2" options="header"]
+|===
+
+| Policy Categories | Policies
+
+| Security Policies
+a| * *BASIC Authentication* - A username/password is required to access an API.
+* *OAuth Authentication* - Uses Keycloak to provide OAuth authentication.
+* *Authorization* - Access to APIs’ resources is controlled by user roles.
+* *IP Blocklist* - Clients with specific IP address will be blocked from accessing an API.
+* *IP Allowlist* - And, clients with specific IP address will not &nbsp;be blocked from accessing an API.
+* *Ignored Resources* - Paths to APIs’ resources that will not be accessible.
+* *Time Restricted Access* - Specify when an API can be accessed.
+* *URL Whitelist* - Allow only specific sub-resources to be accessed.
+
+| Limiting Policies
+a| * *Rate Limiting* - Access to an API is limited by the number of requests in a defined time period (generally used to create a fine-grained limit).
+* *Quota* - Access to an API is limited by the number of requests in a defined time period (generally used to create a coarse-grained limit).
+* *Transfer Quota* - Similar to a Quota policy, but based on the number of bytes transferred, not the number of requests.
+
+| Modification Policies
+a| * *URL Rewriting* - Modify any URLs in the API response so that they direct users through the API Gateway rather than directly to the back-end API.
+* *Transformation* - Used to convert between JSON and XML.
+* *JSONP* - Can convert a standard JSON API into a JSONP endpoint.
+* *Simple Header* - Used to make custom changes to the request and/or response headers (add, remove, modify).
+
+| Other Policies
+a| * *Caching* - Cache results from a backend API.
+* *Logging* - Log all request/response headers for each request.
+
+|===
+
+Let's learn a bit more about policies.
+
+== What's in a Policy
+An Apiman policy consists of the following:
+
+* Basic meta-data about the policy (name, description)
+* JSON based configuration
+* A Java class providing the implementation of the policy
+
+Each policy supported by Apiman performs a specific task, such as (but not limited to):
+
+* Rate Limiting/Quotas
+* Security
+* Caching
+* Transformation
+
+Every API managed by Apiman can be configured with zero or more policies.  In addition, an API can be offered for consumption through several Plans, where each Plan can be configured with zero or more policies.  Finally, a Client App can also be configured with a set of policies.  Whenever the API Gateway receives a request for an API (optionally on behalf of a specific Client App), it creates a chain of policies from those configured at the three levels, and then applies that chain of policies to the request.
+
+Most of the Apiman policies work alone (e.g. caching), but some of them are used in conjunction with other policies.  The next couple of sections will discuss two very common categories of policies, some policies found in those categories, and how they work together.
+
+== Security Policies - Authentication & Authorization
+
+We'll start with the Authorization and Authentication policies. We'll review these policies together as the use of the Authorization type depends on the BASIC authentication type. Before we take a detailed look at the policies supported by Apiman, it's important that we understand the differences between authentication and authorization:
+
+* In authentication-based policies, access to an API is governed by the identity of the user
+* In authorization-based policies, access to an API, or specific resources provided by an API is governed by the role(s) assigned to a user
+
+In order to make use of an authorization policy, roles must be extracted during authentication. In other words, you cannot have authorization without authentication.
+
+APIs often define security requirements to ensure that clients have to authenticate. By having Apiman perform this authentication, backend APIs are freed from having to implement and perform this authentication. This also has the added benefit of centralizing the authentication for all your APIs.
+
+In creating an Authentication policy, we define an Authentication Realm (think of this as an area to be protected, within which usernames and passwords exist) and an optional HTTP header. The HTTP header is used to optionally pass the authenticated user's principal to the back-end API through an HTTP header. This is useful if the back-end system needs to know the username of the user calling it (e.g. to perform a user-specific operation).
+
+An Apiman Authorization policy consists of a set of rules. The rules define the resources that can be accessed in terms of a regular expression and an HTTP verb (GET, PUT, etc.)
+
+Through its authorization policies, Apiman enables you to create fine-grained rules to govern access to your API's resources. For example, based on the user roles that you define, users assigned a “sales” role can access the sales related API resources, and users assigned a “marketing” role can access the marketing related API resources. Users assigned to an “admin” role are able to access all the API's resources.
+
+As we mentioned a moment ago, in order to make use of an authorization policy, roles must be extracted during authentication. Apiman can be configured to extract those roles from an available source; for instance, the http://jwt.io/[JSON Web Token] when using Keycloak, or JDBC/LDAP with the BASIC authentication policy in the API request. Remember, you cannot have authorization without authentication.
+
+== Limiting Policies - Rates and Quotas
+
+Apiman provides (3) limiting policies:
+
+* Rate Limiting - This policy type governs the number of times requests are made to an API within a specified time period. The requests can be filtered by user, application, or API and can set the level of granularity for the time period to second, minute, hour, day, month, or year. The intended use of this policy type is 	for fine grained processing (e.g., 10 requests per second).
+
+* Quota - This policy type performs the same basic functionality as the Rate Limiting policy type., however, the intended use of this policy type is for less fine grained processing (e.g., 10,000 requests per month).
+
+* Transfer Quota - In contrast to the other policies, Transfer Quota tracks the number of bytes transferred (either uploaded or downloaded) rather than the total number of requests made.
+
+Each of these policies, if used singly, can be effective in throttling requests. Apiman, however, adds a layer of flexibility to your use of these policies by enabling you to use them in combinations. Let's look at a few examples.
+
+Limiting the total number of API requests within a period of time is a straightforward task and can be configured in a quota policy. This policy, however, may not have the desired effect as the quota may be reached early in the defined time period. If this happens, the requests made to the API during the remainder of the (typically long) time period will be blocked by the policy. A better way to deal with a situation like this is to implement a more flexible approach where the monthly quota policy is combined with a fine grained rate limiting policy that will act as a throttle on the traffic.
+
+To illustrate, there are about 2.5 million seconds in a month. If we want to set the API request quota for a month to 1/2 million, then we can also set a rate limit policy to a limit of 5 requests per second to ensure that API requests are throttled and the API can be accessed throughout the entire month.
+
+Here's a visual view of a rate limiting policy based on a time period of one week. If we define a weekly quota, there is no guarantee that users will not consume that quota before the week is over. This will result in an API's requests being denied at the end of the week. In contrast, if we augment the weekly quota with a more fine grained policy, we can maintain the API's ability to respond to requests throughout the week:
+
+image::apiman_004.png[rate limiting]
+
+[TIP]
+====
+Policies can be configured to work together in combinations.
+====
+
+The ability to throttle API requests based on API request counts and bytes transferred provides even greater flexibility in implementing policies. APIs that transfer larger amounts of data, but rely on fewer API requests can have that data transfer throttled on a per-byte basis. For example, an API that is data intensive, will return a large amount of data in response to each API request. The API may only receive a request a few hundreds of times a day, but each request may result in several megabytes of data being transferred. Let's say that we want to limit the amount of data transferred to 6GB per hour. For this type of API, we could set a rate limiting policy to allow for one request per minute, and then augment that policy with a transfer quota policy of 100Mb per hour.
+
+Before we move on, let's look at how we can combine multiple policies into a plan.
+
+It's important to keep in mind that a plan can contain multiple policies. For our example, we'll create both a “gold” plan and a “silver” plan. In a real-world situation, gold and silver level plans might look something like this:
+
+[cols="1,3"]
+|===
+| Gold plan
+a| * A coarse grained Quota plan with a limit of 100,000 API requests per month, and a fine-grained Rate Limiting plan of 100 service requests per minute
+
+| Silver plan
+a| * A coarse grained Quota plan with a limit of 20,000 API requests per month, and a fine-grained Rate Limiting plan of 500 service requests per minute
+
+|===
+
+This diagram lets us visualize how the two policies will work together:
+
+image::apiman_005.png[policies working together]
+
+In this diagram,  each filled in box represents one API request. The important thing to understand is how the policies work together to enable you to have flexible throttling of requests to your API:
+
+* The fine grained rate limit is reset at  the end of the time period defined for the rate limit policy
+* And, the total number of API requests continue to be applied to the defined quota until the quota policy time limit is reached.
+
+== Other Policies
+
+There are many other policies offered by Apiman, each of them performing a specific task.  And more policies are added with every release!  Even more interesting, you can add your own custom policies using Apiman's excellent plugin framework (more on that later).  You can refer to the Apiman User Guide for a full list of official policies, what each policy does, and how to configure it.

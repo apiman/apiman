@@ -1,0 +1,79 @@
+= Apiman Concepts
+
+== API Gateway
+
+The runtime layer of Apiman consists of a small, lightweight and embeddable API Gateway, which is responsible for applying the policies configured in the API Manager to all requests to managed APIs.
+
+The Apiman gateway is distributed in two main versions:
+
+* Vert.x: Our premier and recommended gateway platform.
+* WAR: Runnable on various Servlet platforms.
+
+=== Configuration
+
+The API Gateway is a completely separate component from the API Manager, and can therefore be used completely standalone if desired.
+However, the API Manager provides a great deal of management functionality (along with a user interface) that is quite useful.
+The API Gateway has a simple REST API that is used to configure it.
+The API provides the following basic capabilities:
+
+* Publish an API
+* Register a Client App (with API Contracts)
+* Retire an API
+* Unregister a Client App
+
+Typically, the API Manager is used to manage the configuration of various APIs and client apps within the scope of one or more Organizations.
+At various times during the management of these entities, the user of the API Manager will 'Publish' an API or 'Register' a Client App.
+When this action occurs, the API Manager invokes one of the relevant API Gateway configuration endpoints listed above.
+
+=== Invoking Managed APIs
+
+Once appropriate configuration has been published/registered with the API Gateway (see the Configuration section above), the API Gateway can be used to make managed calls to the APIs it knows about.
+A managed API can be invoked as though the back-end API were being invoked directly, with the exception that the endpoint is obviously different.
+
+The specific endpoint to use in order to invoke a particular API can be different based on the Gateway implementation.
+However, typically the endpoint format is:
+
+[source,text]
+----
+http://gatewayhost:port/apiman-gateway/{organizationId}/{apiId}/{version}/
+----
+
+Note that all path segments beyond the `\{version}` segment will be proxied on to the back-end API endpoint.
+Additionally, all HTTP headers and all query parameters (except for the API Key) will also be proxied to the back-end API.
+
+Requests to managed endpoints may include the API Key so that the Gateway knows which Client App is being used to invoke the API.
+
+The API Key can be sent in one of the following ways:
+
+* As an HTTP Header named *X-API-Key*
+* As a URL query parameter named *apikey*
+
+If the API being invoked is a "Public" API, then no API Key should be sent.
+However, the request should still be sent to the same endpoint as described above.
+
+The endpoint itself contains enough information to let the Gateway know what API is being invoked.
+
+If an API is not "Public" and you omit the API Key, then the request will fail.
+
+=== Recording Metrics
+
+The API Gateway is typically configured to record each request made to it into a metrics storage system of some kind.
+By default, Apiman will use an included Elasticsearch instance to store this information.
+Various pieces of information about each request is included in the record, including but not necessarily limited to the following:
+
+* Request start and end times
+* API start and end times (i.e. just the part of the request taken up by the back end API)
+* Resource path
+* Response type (success, failure, error)
+* API info (org id, id, version)
+* Client App info (org id, id, version)
+
+This information is then available for analysis and reporting.
+The data can be accessed in a number of ways, including:
+
+* Through the API Manager UI
+* Through the API Manager REST API
+* Directly from the metrics system
+
+Some metrics implementations support capturing custom headers and query parameters.
+Refer to the Installation Guide for more.

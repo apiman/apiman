@@ -1,0 +1,33 @@
+= Log Policy
+
+== Description
+
+A policy that logs the headers to standard out.
+Useful to analyse inbound HTTP traffic to the gateway when added as the first policy in the chain or to analyse outbound HTTP traffic from the gateway when added as the last policy in the chain.
+
+== Plugin
+
+[source,json,subs=attributes+]
+----
+{
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-log-policy",
+    "version": "{apiman-version-release}"
+}
+----
+
+== Configuration
+
+The Log Policy can be configured to output the request headers, the response headers, or both.
+When configuring this policy via the Apiman REST API, there is only property:
+
+* *direction* (enum) : Which direction you wish to log, options are: 'request', 'response', 'both'
+
+== Sample Configuration
+
+[source,json]
+----
+{
+   "direction" : "both"
+}
+----

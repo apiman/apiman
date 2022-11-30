@@ -1,0 +1,27 @@
+= Versioning
+
+Many of the entities in the API Manager support multiple simultaneous versions.
+These include the following:
+
+* Plans
+* APIs
+* Client Apps
+
+Typically, once an entity is frozen (e.g. Locked or Published) it can no longer be modified.
+But often as things change, modifications to the API Management configuration are necessary.
+
+For example, as an API implementation evolves, the policies associated with it in the API Manager may need to change.
+
+Versioning allows this to happen, by providing a way for a user to create a new
+version of a particular API (or Client App or Plan) and then make changes to it.
+
+To create a new version of an entity:
+
+* View the details of the entity and click the *'New Version'* button in the UI.
+
+* This will allow you to make a new version of the entity.
+
+* You can either make a simple, empty new version or you can make a clone of an existing version.
+The latter is typically more convenient when making incremental changes.
+
+TIP: "Public" APIs and Client Apps can be modified and re-published (or re-registered) in the Gateway without the need to create a new version.

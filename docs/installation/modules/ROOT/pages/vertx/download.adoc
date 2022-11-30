@@ -1,0 +1,138 @@
+= Apiman Vert.x Gateway
+
+[TIP]
+====
+The easiest way to try out the Vert.x Gateway is to use our xref:quickstart.adoc[Docker Compose Quickstart distribution].
+====
+
+The Apiman Vert.x distro is our premier gateway offering and should provide the best performance characteristics of our platforms.
+
+The implementation is the _Apiman Gateway_ only, and hence is normally paired with the Manager and UI from the xref:servlet/wildfly.adoc[Servlet edition] (e.g. WildFly, Tomcat, etc.), but it can be run headless for specific workloads.
+
+There are a few different common configuration examples shipped with the Vert.x distro; they are outlined in more detail below, but you can customise your configurations however you see fit by xref:registries-and-components/overview.adoc[mixing and matching components].
+
+[#_download_launch]
+== Download & launch
+
+Download the latest Apiman Vert.x distro from http://www.apiman.io/latest/download.html#vertx[apiman.io downloads] page, or:
+
+[source,bash,subs=attributes+]
+----
+wget https://github.com/apiman/apiman/releases/download/{apiman-version-release}/apiman-distro-vertx-{apiman-version-release}.zip
+----
+
+Extract the archive and execute it with:
+
+[source,bash,subs=attributes+]
+----
+unzip apiman-distro-vertx-{apiman-version-release}
+cd apiman-distro-vertx-{apiman-version-release}
+./apiman-gateway.sh --conf configs/conf-es.json
+----
+
+Where `config-es.json` is your configuration file.
+Refer to the config and its annotations for additional detail.
+
+If the gateway has started successfully then you should see console output similar to:
+
+[source,log]
+----
+$ ./apiman-gateway.sh --conf configs/conf-es.json
+[INFO ] ... InitVerticle - Starting verticle: INITIALISER. UUID: 7c577980-716c-4bb9-93a8-e517b0ae15a5.INITIALISER.
+[INFO ] ... InitVerticle - Will deploy 1 of type API
+[INFO ] ... InitVerticle - Will deploy 8 of type HTTP
+[INFO ] ... ApiVerticle - Starting verticle: API. UUID: aad6996f-16e0-4a87-baa7-5fc4843c76bf.API.
+[INFO ] ... HttpGatewayVerticle - Starting verticle: HTTP. UUID: effa81a3-fa74-4bd6-813f-8ad09c86344b.HTTP.
+<snip>
+[INFO ] ... HttpGatewayVerticle - Starting verticle: HTTP. UUID: 09827a46-6d41-4ab1-aef2-0d152e31fe15.HTTP.
+[INFO ] ... InitVerticle - Will deploy 0 of type HTTPS
+[WARN ] ... ApiVerticle - API is running in plaintext mode. Enable SSL in config for production deployments.
+[INFO ] ... InitVerticle - Successfully deployed all verticles
+[INFO ] ... InitVerticle - Gateway API port: 8081
+[INFO ] ... VertxIsolatedDeployer - Succeeded in deploying verticle
+----
+
+== Test your gateway
+
+To quickly verify whether the installation is working, try footnote:[If a non-default host, port and protocol, otherwise alter the command accordingly.]:
+
+[source,bash]
+----
+  $ curl -v 'http://apimanager:apiman123!@localhost:8081/system/status'
+----
+
+WARNING: You must alter the default passwords and enable SSL for production deployments, otherwise your system will be at risk.
+
+Version information can be displayed with the `version` flag footnote:[When a SNAPSHOT version is used, further information is displayed to identify the precise commit used to build the project and understand the state of the git repo. For example: `Apiman 1.3.1-SNAPSHOT apiman-1.3.0.Final-3-g1b9ebf5 2017-05-08 12:15:53`.]:
+
+[source,bash,subs=attributes+]
+----
+$ ./apiman-gateway.sh --version
+[INFO ] ApimanVersionCommand - Apiman {apiman-version-release}
+[INFO ] ApimanVersionCommand - Vert.x 3.4.0
+----
+
+[#_configurations]
+== Configurations
+
+Some example configurations ship with the distro, aiming to provide sensible defaults.
+
+TIP: Refer to the comments within the shipped configuration files, the xref:vertx/config-guide.adoc[configuration guide] and the xref:registries-and-components/overview.adoc[registries & components] documentation for further detail.
+
+
+[#_elasticsearch]
+=== Elasticsearch
+
+The Elasticsearch config `conf-es.json` comes pre-configured with Elasticsearch components.
+
+Alter the `variables.apiman.es` configuration variables to match your Elasticsearch setup.
+
+You can either use the Elasticsearch instance bundled with the _Apiman Manager_, or run your own cluster (which is the preferred option for production).
+
+You can optionally set a username and password; this is only useful if you are using a security service like Elasticsearch Shield to enable authentication.
+
+[source,json5]
+----
+{
+  "variables": {
+    "apiman": {
+      "es": {
+        "protocol": "http",
+        "host": "localhost",
+        "port": 9200,
+        "username": null, // Optional
+        "password": null, // Optional
+        "timeout": 10000
+        // etc
+      }
+    }
+  },
+  // rest of your config...
+}
+----
+
+NOTE: Refer to the xref:registries-and-components/elasticsearch.adoc[Elasticsearch registries & components documentation] for a complete list of configuration options.
+
+[#_headless_elasticsearch]
+=== Headless Elasticsearch
+
+The Apiman Headless Elasticsearch config `conf-headless-es.json` uses an immutable registry to load its configuration from a local or remote JSON file.All other components (e.g. metrics, rate-limiting, etc) use Elasticsearch.
+
+First, alter your configuration as detailed in the <<Elasticsearch>> section.
+
+Then, modify the `registry.config` section of the config:
+
+[source,json5]
+----
+"registry": {
+  "class": "io.apiman.gateway.engine.vertx.polling.URILoadingRegistry",
+  "config": {
+    "configUri": "file:///path/to/my/json/reg-config.json", // <1>
+    "auth": "NONE" // <2>
+  }
+}
+----
+<1> A file, http or https URI to a JSON file containing the registry configuration, as detailed in xref:registries-and-components/headless.adoc#_configuration_file_format[Configuration File Format].
+<2> Authentication method to retrieve the file, as detailed in link:../registries-and-components/headless.adoc#_authentication[Authentication].
+
+NOTE: Refer to the xref:registries-and-components/headless.adoc[Elasticsearch headless registry documentation] for a complete list of configuration options.

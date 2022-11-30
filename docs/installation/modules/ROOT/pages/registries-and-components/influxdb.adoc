@@ -1,0 +1,126 @@
+= InfluxDB Components
+Marc Savy <marc@blackparrotlabs.io>
+
+Apiman components for https://www.influxdata.com[InfluxDB^].
+
+InfluxDB is a popular time-series database.
+Apiman supports the InfluxDB 1 protocol.
+Refer to the https://docs.influxdata.com/influxdb/v2.3/reference/api/influxdb-1x/#[InfluxDB v2 documentation on _InfluxDB 1.x compatibility API_].
+
+[.MaintainerMessage]
+****
+https://github.com/apiman/apiman/issues/2264[If you need explicit support for InfluxDB 2, please comment to this GitHub Issue^].
+****
+
+== Metrics
+
+Set the metrics implementation as shown.
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.metrics=io.apiman.gateway.engine.influxdb.InfluxDbMetrics
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "metrics": {
+    "class": "io.apiman.gateway.engine.influxdb.InfluxDbMetrics",
+    "config": {
+      // Config options here.
+     }
+  }
+}
+----
+--
+====
+
+=== Required Parameters
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `endpoint`
+| String
+a| InfluxDB URL for Apiman to connect to.
+
+* *Allowed Values*: must not contain whitespace
+
+| `database`
+| String
+a| InfluxDB database name
+
+* *Allowed Values*: must not contain whitespace
+
+| `measurement`
+| String
+a| InfluxDB series name (aka. measurement)
+
+* *Allowed Values*: must not contain whitespace
+
+|===
+
+=== Optional Parameters
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `retentionPolicy`
+| String
+a| InfluxDB data retention policy
+
+* *Default Value*: default retention policy, as set in InfluxDB
+* *Allowed Values*: must not contain whitespace
+
+| `username`
+| String
+a| Username
+
+| `password`
+| String
+a| Password
+
+| `token`
+| String
+a| Authentication token (typically used in place of username and password, especially in InfluxDB v2)
+
+* *Allowed Values*: must not contain whitespace
+
+| `generatorName`
+| String
+a| Generator name (tag in dataset)
+
+* *Default Value*: apiman-gateway
+* *Allowed Values*: must not contain whitespace
+
+| `queue.size`
+| Integer
+a| Maximum allowed queue size (metrics waiting to be sent)
+
+* *Default Value*: 10,000
+* *Allowed Values*: int greater than zero
+
+| `batch.size`
+| Integer
+a| Maximum batch size flushed to InfluxDB in a single request. Typically, batch sizes will be much smaller than this unless there is a backlog caused by network issues, outages, etc.
+
+* *Default Value*: 5,000
+* *Allowed Values*: int greater than zero
+
+|===

@@ -1,0 +1,22 @@
+= Install Gateway into Apiman Manager
+Marc Savy <marc@rhymewithgravy.com>
+
+* Log into the Apiman Manager as an administrator and navigate to the `Manage Gateways` page.
+
+image::manage-gateways.png[]
+
+'''
+
+* Add a new gateway or modify an existing one:
+
+TIP: If you're using the standard Apiman Manager distro with Keycloak, then the default username and password will be: `apimanager`/`apiman123!`
+
+image::new-gateway.png[]
+
+'''
+
+* The gateway will now be available to publish to.
+If you have only one gateway configured it will be the default target and the UI will look no different.
+If you have multiple gateways, then you will be able to select the target at publishing time in the `Implementation` tab.
+
+image::publish-to.png[]

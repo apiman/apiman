@@ -1,0 +1,53 @@
+.Installation
+
+** xref:index.adoc[Introduction]
+** xref:quickstart.adoc[Quickstart]
+** xref:keycloak.adoc[Set up Keycloak SSO]
+
+.Apiman Platforms
+
+** xref:servlet/wildfly.adoc[WildFly]
+*** xref:servlet/wildfly.adoc#_download[Download & Launch]
+*** xref:servlet/wildfly.adoc#_installing_using_docker[Docker]
+*** xref:servlet/config-guide.adoc[Config Guide]
+
+** xref:vertx/download.adoc[Vert.x Gateway]
+*** xref:vertx/download.adoc#_download_launch[Download & Launch]
+*** xref:vertx/download.adoc#_configurations[Configurations]
+**** xref:vertx/download.adoc#_elasticsearch[Elasticsearch]
+**** xref:vertx/download.adoc#_headless_elasticsearch[Headless ES]
+*** xref:vertx/install.adoc[Installation Walkthrough]
+*** xref:vertx/config-guide.adoc[Config Guide]
+
+.Apiman Manager
+
+** xref:manager/database.adoc[Database Configuration]
+** xref:manager/configuration.adoc[Apiman Customisation]
+** xref:manager/notifications.adoc[Notifications]
+** xref:manager/portal.adoc[Developer Portal]
+** xref:manager/backup-migration.adoc[Backup & Migration]
+** xref:manager/backup-migration.adoc#_upgrading_to_a_new_apiman_version[Upgrading Apiman]
+
+.Apiman Gateway
+
+** xref:registries-and-components/overview.adoc[Registries & Components]
+*** xref:registries-and-components/jdbc.adoc[JDBC / SQL]
+*** xref:registries-and-components/elasticsearch.adoc[Elasticsearch]
+***  xref:registries-and-components/influxdb.adoc[InfluxDB Metrics]
+***  xref:registries-and-components/hazelcast.adoc[Hazelcast]
+***  xref:registries-and-components/prometheus.adoc[Prometheus]
+***  xref:registries-and-components/redis.adoc[Redis]
+*** xref:registries-and-components/headless.adoc[Headless]
+
+** xref:gateway/security.adoc[Security]
+*** xref:gateway/security.adoc#_gateway_api_authentication[Gateway API Authentication]
+*** xref:gateway/security.adoc#_mtls_mutual_ssl_endpoint_security[Mutual TLS (mTLS)]
+
+.How to
+
+** xref:how-to/jdbc.adoc[SQL Metrics Instead of Elasticsearch]
+
+* xref:production.adoc[Production Guide]
+** xref:manager/production-manager.adoc[WildFly Manager]
+** xref:gateway/production-gateway-wildfly.adoc[WildFly Gateway]
+** xref:gateway/production-gateway.adoc[Vert.x Gateway]

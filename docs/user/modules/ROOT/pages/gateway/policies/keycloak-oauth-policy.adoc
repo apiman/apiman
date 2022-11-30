@@ -1,0 +1,178 @@
+= Keycloak OAuth Policy
+
+== Description
+:keycloak: https://www.keycloak.org
+:keycloak-docs: https://www.keycloak.org/documentation
+
+A {keycloak}[Keycloak^]-specific OAuth2 policy to regulate access to APIs.
+This plugin enables a wide range of sophisticated auth facilities in combination with, for instance, Keycloak's federation, brokering and user management capabilities.
+An exploration of the basics can be found http://www.apiman.io/blog/gateway/security/oauth2/keycloak/authentication/authorization/1.2.x/2016/01/22/keycloak-oauth2-redux.html[in our blog], but we encourage users to explore the {keycloak-docs}[project documentation^], as there is a tremendous depth and breadth of functionality, most of which works extremely well with Apiman.
+
+Keycloak's token format and auth mechanism facilitate excellent performance characteristics, with users able to easily tune the setup to meet their security requirements.
+
+In general, this is one of the best approaches for achieving security without greatly impacting performance.
+
+== Plugin
+
+[source,json,subs=attributes+]
+----
+{
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-keycloak-oauth-policy",
+    "version": "{apiman-version-release}"
+}
+----
+
+== Configuration
+
+.Keycloak oauth2 policy configuration
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| requireOauth
+| Boolean
+a| *Require auth token*
+Terminate request if no OAuth token is provided.
+| true
+
+| requireTransportSecurity
+| Boolean
+a| *Require transport security*
+Any request used without transport security will be rejected.
+OAuth2 requires transport security (e.g. TLS, SSL) to provide protection against replay attacks.
+It is strongly advised for this option to be switched on
+| true
+
+| blacklistUnsafeTokens
+| Boolean
+a| *Blacklist unsafe tokens*
+Any tokens used without transport security will be blackedlisted in all gateways to mitigate associated security risks.
+Uses distributed data store to share blacklist
+| true
+
+| stripTokens
+| Boolean
+a| *Strip tokens*
+Remove any Authorization header or token query parameter before forwarding traffic to the API
+| true
+
+| realm
+| String
+a| *Realm name*
+If you are using KeyCloak 1.2.0x or later this must be a full iss domain path (e.g. `https://mykeycloak.local/auth/realms/apimanrealm`); pre-1.2.0x simply use the realm name (e.g. `apimanrealm`).
+| Empty
+
+| realmCertificateString
+| String
+a| *Keycloak Realm Certificate*
+To validate OAuth2 requests.
+Must be a PEM-encoded X.509 certificate. This can be copied from the Keycloak console.
+| Empty
+
+| delegateKerberosTicket
+| Boolean
+a| *Delegate Kerberos Ticket*
+Delegate any Kerberos Ticket embedded in the Keycloak token to the API (via the Authorization header).
+| false
+
+| forwardRoles
+| <<forwardRoles>>[]
+a| *Forward Keycloak roles*
+Set whether to forward roles to an authorization policy.
+| None
+
+| forwardAuthInfo
+| <<forwardAuthInfo>>[]
+a| *Forward auth information*
+Set auth information from the token into header(s).
+| None
+
+|===
+
+=== forwardRoles
+
+.Forward Keycloak roles to the Authorization policy. You should specify your required role(s) in the Authorization policy's configuration.
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| active
+| Boolean
+a| *Forward roles*
+Opt whether to forward any type of roles.
+By default these will be *realm roles* unless the `applicationName` option is also provided.
+| false
+
+| applicationName (optional)
+| String
+a| *Application Name*
+Which application roles to forward.
+Note that you cannot presently forward realm and application roles, only one or the other.
+| Empty
+
+|===
+
+=== forwardAuthInfo
+
+TIP: Fields from the token can be set as headers and forwarded to the API. All https://openid.net/specs/openid-connect-basic-1_0.html#StandardClaims[standard claims], custom claims and https://openid.net/specs/openid-connect-basic-1_0.html#IDToken[ID token fields] are available (case sensitive).
+A special value of *access_token* will forward the entire encoded token. Nested claims can be accessed by using javascript dot syntax (e.g: `address.country`, `address.formatted`).
+
+.Forward Keycloak token information
+[cols="2,1,4,1", options="header"]
+|===
+
+| Option
+| Type
+| Description
+| Default
+
+| headers
+| String
+a| *Header*
+The header value to set (to paired field).
+| None
+
+| field
+| String
+a| *Field*
+The token field name.
+| None
+
+|===
+
+== Sample Configuration
+
+[source,json]
+----
+{
+  "requireOauth": true,
+  "requireTransportSecurity": true,
+  "blacklistUnsafeTokens": false,
+  "stripTokens": false,
+  "realm": "apiman-is-cool",
+  "realmCertificateString": "Y29uZ3JhdHVsYXRpb25zLCB5b3UgZm91bmQgdGhlIHNlY3JldCByb29tLiB5b3VyIHByaXplIGlzIGEgZnJlZSBkb3dubG9hZCBvZiBhcGltYW4h",
+  "forwardRoles": {
+    "active": true
+  },
+  "delegateKerberosTicket": false,
+  "forwardAuthInfo": [
+    {
+      "headers": "X-COUNTRY",
+      "field": "address.country"
+    },
+    {
+      "headers": "X-USERNAME",
+      "field": "preferred_username"
+    }
+  ]
+}
+----

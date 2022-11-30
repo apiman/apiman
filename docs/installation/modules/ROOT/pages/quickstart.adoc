@@ -1,0 +1,34 @@
+= Apiman Quickstart
+Marc Savy <marc@rhymewithgravy.com>
+:gw-install-walkthrough: xref:vertx/install.adoc
+:docker-compose-distro: https://github.com/apiman/apiman-docker/releases/download/{apiman-version-release}/apiman-docker-compose-{apiman-version-release}.zip
+
+== Docker Compose
+
+[.MaintainerMessage]
+****
+The Apiman Docker Compose distro is new in Apiman 3.
+We need your feedback, support, and suggestions.
+
+Please leave your thoughts in https://github.com/apiman/apiman/discussions/2274[this GitHub Discussions thread^].
+****
+
+The easiest way to try Apiman is with our Docker Compose distribution.
+It is also arranged in a way that is more representative of a real-world deployment; broken down into its constituent parts, with all features enabled, and using a production-grade database.
+
+. Download the {docker-compose-distro}[Apiman Docker Compose distribution^].
+. `unzip apiman-docker-compose-{apiman-version-release}.zip && cd apiman-docker-compose-{apiman-version-release}`
+. `docker-compose -f docker-compose.setup.yml up`
+. `docker-compose up`
+. Open http://apiman.local.gd:8080/apimanui
+. 🎉 Success!
+
+[TIP]
+====
+* Refer to the distro's **`README.adoc`** for more information, it's in the root of the zip.
+You will find a list of endpoints, including devportal and a mock mail server.
+
+* It may take a short while to boot all services and for the Apiman endpoints to become available, especially if you are using a system with virtualised container support (e.g. Windows).
+
+* Don't forget to look at `.env` for a variety of useful settings.
+====

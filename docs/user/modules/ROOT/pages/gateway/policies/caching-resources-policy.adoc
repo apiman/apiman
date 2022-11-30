@@ -1,0 +1,42 @@
+= Caching Resources Policy
+[[policy-caching-resources]]
+
+== Description
+Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.
+The Resource Caching Policy can cache requests based on their URL path, http method and specific status code.
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+****
+
+== Configuration
+
+IMPORTANT: If you want to cache POST requests you have to enable stateful request payload inspection in your API Implementation.
+
+The configuration parameters for a Caching Resources Policy are:
+
+* *ttl* (long) : Number of seconds to cache the response.
+
+* *cachingResourcesSettingsEntries* (array of objects) : The list of matching rules representing the resources to be cached.
+** *httpMethod* (enum) : The HTTP method to be controlled by the rule. Valid values are:
+*** * (matches all cachable http methods, see  https://developer.mozilla.org/en-US/docs/Glossary/cacheable)
+*** GET
+*** POST (see important note above)
+*** HEAD
+** *pathPattern* (string regexp) : A regular expression used to match the REST resource being cached.
+** *statusCode* (string): Either a single number representing a specific status code or * to cache all status codes.
+
+== Sample Configuration
+
+[source,json]
+----
+{
+  "ttl" : 60,
+  "cachingResourcesSettingsEntries" : [
+    { "httpMethod" : "GET",  "pathPattern" : "/customers", "statusCode" : "200" },
+    { "httpMethod" : "POST", "pathPattern" : "/customers/.*/orders", "statusCode": "*" },
+    { "httpMethod" : "*",    "pathPattern" : "/customers/.*/orders/bad_debts", "statusCode": "403" }
+  ]
+}
+----

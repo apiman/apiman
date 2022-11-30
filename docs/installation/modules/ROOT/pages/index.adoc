@@ -1,0 +1,93 @@
+= Apiman Installation Guide
+
+This guide provides detailed information about how to install and configure Apiman.
+
+== Switching formats
+
+On some pages different configuration instructions and examples are available for each platform.
+They encode the same information using different formats.
+You can choose which format you want via the tabbed sample boxes.
+
+== Understanding syntax
+
+In many places in the documentation you will see format agnostic syntax which can be translated into your chosen format.
+
+For example:
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| project.name
+| String
+a| The project name
+
+| project.type
+| Enum
+a| *Must be one of*: JAVA, GO
+
+| project.tags
+| String[]
+a| Array of tags describing project
+
+| project.version.major
+| Integer
+a| Project major release version
+
+| project.version.minor
+| Integer
+a| Project minor release version
+
+| project.version.micro
+| Integer
+a| Project micro release version
+
+| project.favourite
+| Boolean
+a| Favourite project?
+
+|===
+
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+project.name=apiman
+project.type=JAVA
+project.tags=api-management,excellent
+project.version.major=1
+project.version.minor=3
+project.version.micro=0
+project.favourite=true
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json]
+----
+{
+  "project": {
+    "name": "apiman",
+    "type": "JAVA",
+    "tags": ["api-management", "excellent"],
+    "version": {
+        "major": 1,
+        "minor": 3,
+        "micro": 0
+    },
+    "favourite": true
+  }
+}
+----
+--
+====
+
+

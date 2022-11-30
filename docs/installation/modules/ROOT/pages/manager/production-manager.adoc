@@ -1,0 +1,158 @@
+= Apiman Manager Production Guide
+
+== Deployment Tooling for Apiman
+
+This is a quick guide to manually deploy Apiman into production.
+
+== Keycloak
+
+We assume that you have configured and started a standalone https://www.keycloak.org[Keycloak instance^].
+You can find the default Apiman realm definition in your distro zip: `apiman/data/apiman-realm-for-keycloak.json`.
+
+Note your Keycloak auth endpoint for subsequent steps.
+
+* In the newer versions of Keycloak this will be something similar to:
+** `http://keycloak:8080`
+** `https://keycloak:8443`
+* In older versions of Keycloak (or its product equivalents), something similar to:
+** `http://keycloak:8080/auth`
+** `https://keycloak:8443/auth`
+
+[TIP]
+====
+The production guide assumes you are installing into WildFly {wildfly-version}.
+
+The instructions are slightly different if you are using some other platform (Tomcat, older WildFly versions, EAP, etc).
+====
+
+[#_database]
+== Database
+
+The Apiman Manager backend supports a range of RDBMSes, and Apiman can initialise and update them on your behalf using https://www.liquibase.org[Liquibase^].
+
+However, you will need to create a database with appropriate credentials and permissions for Apiman to use.
+
+=== Steps
+
+On a separate server, install a production-ready database such as PostgreSQL or MySQL.
+
+* Create a database: `apiman`. For example, `CREATE DATABASE apiman;`
+
+* Make sure your DB is accessible remotely, and enable whatever security options you need (SSL, users/passwords, etc.).
+
+* We recommend using different users for Keycloak and Apiman, and permissioning them appropriately (e.g. create a `sa_apiman` account and a `sa_keycloak` account).
+
+* After creating the `apiman` database, you can initialize it:
+
+** **Automatically (Liquibase)**: start up Apiman with the correct configuration, and Liquibase will initialise the database on your behalf.
+
+** **Manually (DDL)**: the Apiman DDLs for databases can be found in the quickstart overlay ZIP file, or you can grab them directly from GitHub.
+
+** **Manually (Liquibase)**: run the `liquibase` command-line tool against your database. You can find the master Liquibase log at `apiman/distro/ddl/src/main/resources/liquibase/master.xml`
+
+For example:
+
+https://github.com/apiman/apiman/tree/{apiman-version-release}/distro/data/src/main/resources/ddls
+
+== Installation
+
+[TIP]
+====
+If you are using Docker, you can find images for a standalone Apiman Manager.
+
+Alternatively, we have a full Docker Compose distribution that breaks Apiman down into its components.
+====
+
+The easiest way to install just the API Manager is to download and install the Apiman quickstart overlay ZIP and then remove the extraneous components.
+
+Follow that up with a few configuration modifications, and you should have the Manager running in no time!
+
+=== Steps
+
+Here are the steps you should take to install a standalone API Manager:
+
+. Download and unpack WildFly
+. Download Apiman
+. Unpack Apiman into WildFly
+. Remove unused Apiman deployments from standalone/deployments
+
+Delete the following deployments:
+
+[source,text]
+----
+standalone/deployments/apiman-gateway-api.war
+standalone/deployments/apiman-gateway.war
+----
+
+== Configuration
+
+=== Configuring Keycloak Authentication for the Manager API and UI
+
+The API Manager has a REST based API which the User Interface uses for all actions taken.
+It can also be used directly for automation and/or integration purposes.
+This API is protected by Keycloak authentication.
+
+There are multiple ways you can tell Apiman where your Keycloak instance is.
+For this example, we will assume you have initialised Keycloak with the default Apiman realm.
+
+==== Steps
+
+Please refer to the xref:./configuration.adoc[dedicated guide for the full set of options], but in short, you must set at least the following environment variables (or system property equivalents).
+
+IMPORTANT: For a production setup, we recommend changing the Keycloak client secrets; the guide above explains how to do that.
+
+`export APIMAN_AUTH_URL=<URL to the Keycloak auth server>`
+
+For example, if Keycloak is running on localhost port `8085`:
+
+`export APIMAN_AUTH_URL=http://localhost:8085`
+
+=== Connecting to the Database
+
+Hopefully you've already created and initialized the database in the earlier  <<_database,installing a database>> section.
+
+So at this point you really only need to connect the API Manager up to the already existing database.
+
+For this example, we're going to assume the use of Postgres, but other options are available.
+
+Refer to the full xref:./configuration.adoc[configuration guide] for how to do that, including setups that don't work out of the box.
+
+==== Steps
+
+We're going to use environment variables in this example, but you can also use system property equivalents, or edit `standalone-apiman.xml` directly (datasources section).
+
+Set the following environment variables:
+
+* `APIMAN_DB_DRIVER="postgresql11"`
+* `APIMAN_DB_URL="jdbc:postgresql://localhost:5432/apiman"` (replace with your server and db name)
+* `APIMAN_DB_USERNAME="sa_apiman"` (replace with your account)
+* `APIMAN_DB_PASSWORD="admin123\!"` (replace with your password)
+
+When you launch Apiman, it will use these values to connect to your database.
+
+=== Point the API Manager to the API Gateway
+
+Now that both your API Manager and Apiman Gateway are running, you need to hook them up.
+This just means telling the API Manager where the gateway lives.
+There is an admin UI page in Apiman that will let you do this.
+
+==== Steps
+
+* Simply navigate to: `https://api-manager-host.org:8443/apimanui/api-manager/admin/gateways`
+
+* From there, you will be able to click on the gateway and modify its settings.
+
+* Use the *Test* button to verify your configuration is correct.
++
+Don't worry, the *Test* button will simply try to make a connection to the Apiman Gateway's configuration URL, asking it for the current Gateway status.
+
+* If the Gateway responds as expected, then you can be confident that your settings are correct.
+
+[TIP]
+====
+You will need to log into the UI.
+The default credentials are: `admin`/`admin123!`
+
+You may have changed the default user credentials when you installed and configured Keycloak.
+If so, make sure you use those credentials.
+====

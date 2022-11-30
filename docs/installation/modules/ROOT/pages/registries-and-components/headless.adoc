@@ -1,0 +1,424 @@
+[#_headless_registry]
+= Headless Registry
+Marc Savy <marc@rhymewithgravy.com>
+
+The Apiman headless registry uses an immutable registry to load its configuration from a local or remote JSON file.
+
+.Available implementations:
+[cols="2",options="header"]
+|===
+
+| Implementation
+| Notes
+
+| `io.apiman.gateway.engine.vertx.polling.URILoadingRegistry`
+| *Recommended*. Works well in multi-node setups.
+
+|===
+
+NOTE: This registry is optimised for the Vert.x gateway implementation. Although it should work for other platforms, it is unlikely to be as performant.
+
+== Example
+
+[source,json5]
+----
+"registry": {
+  "class": "io.apiman.gateway.engine.vertx.polling.URILoadingRegistry",
+  "config": {
+    "configUri": "file:///path/to/my/json/reg-config.json", // <1>
+    "auth": "NONE" // <2>
+  }
+},
+----
+<1> A file, http or https URI to a JSON file containing the registry configuration, as detailed in <<Configuration File Format>>.
+<2> Authentication method to retrieve the file, as detailed in <<Authentication>>.
+
+== Required Parameters
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `configUri`
+| String
+a| URI to file containing registry configuration. Supports `file`, `http`, `https`.
+
+| `auth`
+| Enum
+a| Auth mechanism to access resource indicated in `configUri`.
+
+.*Allowed Values:*
+* NONE: No auth needed.
+* <<BASIC>>: BASIC auth.
+* <<Keycloak OAuth2,KEYCLOAKOAUTH2>>: Convenience Keycloak OAuth2 implementation.
+* <<OAuth2,OAUTH2>>: Generic OAuth2.
+
+Refer to the subsections for each auth mechanism for respective configuration options.
+
+*Default value:* NONE.
+
+|===
+
+[#_authentication]
+== Authentication
+
+=== BASIC
+
+Standard BASIC auth with static credentials.
+
+.Required Parameters
+[cols="2,1,4",options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `username`
+| String
+a| A username. Consider using variable substitution.
+
+| `password`
+| String
+a| A password. Consider using variable substitution.
+
+|===
+
+.Example
+[source,json5]
+----
+"config": {
+  "configUri": "https://example.org/reg-config.json",
+  "auth": "BASIC",
+  "username": "MyUsername",
+  "password": "${PASSWORD}" // <1>
+}
+----
+<1> The password in this example is defined as a variable to be substituted from the config variables, system properties or environment.
+
+=== Keycloak OAuth2
+
+A convenience Keycloak OAuth2 implementation, allowing you to paste your chosen client configuration from the Keycloak console into the `config` section.
+
+To retrieve it:
+
+. Log into Keycloak (e.g. http://localhost:8080/auth).
+. `Clients` -> `<Your-Client>` -> `Installation`.
+. Select `Keycloak OIDC JSON` for `Format Option`.
+. Copy the contents and merge into the `config` selection where indicated below.
+
+The precise configuration you need to provide will vary depending upon your Keycloak setup.
+
+IMPORTANT: Due to a current limitation in the underlying OAuth2 library you may be required to provide a `credentials` section to avoid issues. You can change your client type to `confidential`, or simply provide a dummy `credentials` section.
+
+.Example
+[source,json5]
+----
+"config": {
+  "auth": "KeycloakOAuth2",
+  "flowType": "password",
+  "username": "foo",
+  "password": "bar",
+  // Start paste & replace your Keycloak config here.
+  "realm": "apiman",
+  "realm-public-key": "< snip >",
+  "auth-server-url": "http://localhost:8080/auth",
+  "ssl-required": "none",
+  "resource": "apiman-gateway-api",
+  "credentials": {
+    "secret": "217b725d-7790-47a7-a3fc-5cf31f92a8db"
+  }
+  // End paste here.
+}
+----
+
+.Required Parameters
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `flowType`
+| Enum
+a| The OAuth2 flow for your configuration.
+
+.Allowed Values:
+* `PASSWORD`
+* `CLIENT`
+* `AUTH_CODE`
+* `AUTH_JWT`
+
+|===
+
+.Optional Parameters
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `username`
+| String
+a| A username. Usually only useful if using the password `flowType`.
+
+| `password`
+| String
+a| A password. Usually only useful if using the password `flowType`.
+
+|===
+
+=== OAuth2
+
+TIP: The combination of required parameters and optional parameters will vary considerably depending upon your configuration.
+
+.Required Parameters
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `flowType`
+| Enum
+a| The OAuth2 flow for your configuration.
+
+.Allowed Values:
+* `PASSWORD`
+* `CLIENT`
+* `AUTH_CODE`
+* `AUTH_JWT`
+
+| `oauthUri`
+| String
+a| The OAuth2 URI.
+
+| `clientId`
+| String
+a| The OAuth2 client ID.
+
+| `clientSecret`
+| String
+a| The OAuth2 client secret.
+
+|===
+
+.Optional Parameters
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `site`
+| String
+a| Site URI
+
+| `publicKey`
+| String
+a| Public key
+
+| `clientSecret`
+| String
+a| Client secret
+
+| `username`
+| String
+a| A username. Usually only useful if using the password `flowType`.
+
+| `password`
+| String
+a| A password. Usually only useful if using the password `flowType`.
+
+| `authorizationPath`
+| String
+a| The authorization path
+
+| `tokenPath`
+| String
+a| The token path
+
+| `recovationPath`
+| String
+a| The revocation path
+
+| `scopeSeparator`
+| String
+a| The introspection path
+
+| `logoutPath`
+| String
+a| The logout path (OIDC)
+
+| `useBasicAuthorizationHeader`
+| boolean
+a| Whether to use BASIC auth header (OIDC)
+
+| `clientSecretParameterName`
+| String
+a| Client secret query parameter name (OIDC)
+
+| `userInfoPath`
+| String
+a| User info path (OIDC)
+
+| `introspectionPath`
+| String
+a| User info path (RFC7662)
+
+| `userAgent`
+| String
+a| User agent
+
+| `privateKey`
+| String
+a| Private key
+
+|===
+
+[#_configuration_file_format]
+== Configuration File Format
+
+Configuration of the registry is via a JSON file, https://gist.github.com/msavy/f79766b4f448672cdaf84ce4159ba2e9[the schema for which can be found on GitHub].
+
+Broadly, it consists of:
+
+* An `api` array containing your APIs.
+* A `clients` array containing your Clients.
+
+.Example
+[source,json5,subs=attributes+]
+----
+{
+    "apis": [{
+        "publicAPI": true,
+        "organizationId": "foo",
+        "apiId": "foo",
+        "version": "foo",
+        "endpoint": "http://www.example.org/my-api-uri/",
+        "endpointType": "rest", // <1>
+        "endpointContentType": "json", // <2>
+        "endpointProperties": {}, // <3>
+        "parsePayload": false,
+        "apiPolicies": [{
+            // Plugin's JSON config.
+           "policyJsonConfig": "{ \"responseCode\" : \"403\", \"ipList\" : [ \"1.2.3.4\" ] }", // <4>
+           // Plugin coordinates.
+           "policyImpl": "plugin:io.apiman.plugins:apiman-plugins-url-whitelist-policy:{apiman-version-release}:war/io.apiman.gateway.engine.policies.IPWhitelistPolicy" // <5>
+       }]
+    }],
+    "clients": [{
+        "organizationId": "foo",
+        "clientId": "fooClient",
+        "version": "foo",
+        "apiKey": "12345",
+        "contracts": [{
+            "apiOrgId": "foo",
+            "apiId": "foo",
+            "apiVersion": "foo",
+            "plan": "foo",
+            "policies": []
+        }]
+    }]
+}
+----
+<1> See <<Endpoint Type>>.
+<2> See <<Endpoint Content Type>>.
+<3> See <<Endpoint Properties>>.
+<4> See <<Policy Config>>.
+<5> See <<Policy Implementation URI>>.
+
+=== Endpoint Type
+
+* `rest`: Standard RESTful endpoint type.
+* `soap`: SOAP endpoint type.
+
+=== Endpoint Content Type
+
+The `endpointContentType` indicates which format you want apiman's responses to be in (e.g. error messages).
+
+=== Endpoint Properties
+
+* Authorization type (between gateway and backend):
+** Basic Auth: `"authorization.type": "basic"`
+*** Username: `"basic-auth.username": "<username>"`
+*** Password: `"basic-auth.password": "<password>"`
+** SSL Required?: `"basic-auth.requireSSL": "<true|false>"`
+* MTLS/MSSL: `"authorization.type": "<mtls|ssl>"`. You should also provide the corresponding SSL certificate settings in the gateway's config file.
+
+=== Policy Config
+
+`policyJsonConfig` is an escaped string containing the policy plugin's configuration, and must be valid according to the plugin's schema.
+
+For in-built policies, you can refer to the http://www.apiman.io/latest/user-guide.html#_policies_2[Policies section of the User Guide] to see the available configuration options and samples.
+
+However, for custom policies without explicit documentation a bit more effort may be required:
+
+Each plugin's schema is defined in source code and bundled within the plugin's WAR, as defined by the `form` element in `src/main/apiman/policyDefs/<policy-Name>-policyDef.json`.
+
+For example, the Simple Header Policy's https://github.com/apiman/apiman-plugins/blob/master/simple-header-policy/src/main/apiman/plugin.json[simple-header-policyDef.json] file points to a JSON schema at https://github.com/apiman/apiman-plugins/blob/master/simple-header-policy/src/main/apiman/policyDefs/schemas/simple-header-PolicyDef.schema[schemas/simple-header-policyDef.schema].
+
+In the following sample we've built a JSON configuration corresponding to the schema.
+
+.Example Simple Header Policy config
+[source,json5]
+----
+{
+  "addHeaders": [{
+    "headerName": "X-Clacks-Overhead",
+    "headerValue": "GNU Terry Pratchett",
+    "valueType": "String",
+    "applyTo": "Request",
+    "overwrite": true,
+    "resolvedHeaderValue": "GNU Terry Pratchett"
+  }],
+  "stripHeaders": []
+}
+----
+
+And escaped it, before inserting into `policyJsonConfig`: footnote:[You might wonder why JSON is escaped inside JSON. The field name is somewhat of a misnomer, it is intended to be generic and could be XML, YAML, etc.]
+
+.Example Simple Header Policy in policyJsonConfig
+[source,text]
+----
+"policyJsonConfig": "{\"addHeaders\":[{\"headerName\":\"X-Clacks-Overhead\",\"headerValue\":\"GNU Terry Pratchett\",\"valueType\":\"String\",\"applyTo\":\"Request\",\"overwrite\":true,\"resolvedHeaderValue\":\"GNU Terry Pratchett\"}],\"stripHeaders\":[]}"
+----
+
+TIP: For more information, refer to the xref:development-guide::plugins.adoc[plugin developer's guide].
+
+=== Policy Implementation URI
+
+The policy implementation URI is used by the apiman gateway to look up your plugins.
+You can find this in the plugin's `policyDef.json` file, usually located in `src/main/apiman/policyDefs/`.
+
+The format is:
+
+[source,text]
+----
+plugin:{pluginGroupId}:{pluginArtifactId}:{pluginVersion}:{pluginType}/{fullyQualifiedClassname}
+----
+
+In our example of the Simple Header Policy it's:
+
+[source,text]
+----
+plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.simpleheaderpolicy.SimpleHeaderPolicy
+----
+
+Which then informs us that the URI is:
+
+[source,text,subs=attributes+]
+----
+plugin:io.apiman.plugins:apiman-plugins-simple-header-policy:{apiman-version-release}:war/io.apiman.plugins.simpleheaderpolicy.SimpleHeaderPolicy
+----
+
+Note that the classifier is almost certainly `war`.
+
+TIP: For more information, refer to the xref:development-guide::plugins.adoc[plugin developer's guide].

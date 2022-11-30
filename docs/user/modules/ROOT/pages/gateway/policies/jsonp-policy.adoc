@@ -1,0 +1,74 @@
+= JSONP Policy
+
+== Description
+
+This policy turns a standard REST endpoint into a https://en.wikipedia.org/wiki/JSONP[JSONP] compatible endpoint.
+For example, a REST endpoint may typically return the following JSON data:
+
+[source,json]
+----
+{
+  "foo" : "bar",
+  "baz" : 17
+}
+----
+
+If the JSONP policy is applied to this API, then the caller must provide a JSONP callback function name via the URL (for details on this, see the *Configuration* section below).
+When this is done, the API might respond with this instead:
+
+[source,js]
+----
+callbackFunction({
+  "foo" : "bar",
+  "baz" : 17
+})
+----
+
+TIP: If the API client does not send the JSONP callback function name in the URL (via the configured query parameter name), this policy will do nothing.
+This allows managed endpoints to support both standard REST *and* JSONP at the same time.
+
+== Plugin
+
+[source,json,subs=attributes+]
+----
+{
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-jsonp-policy",
+    "version": "{apiman-version-release}"
+}
+----
+
+== Configuration
+
+The JSONP policy has a single configuration property, which can be used to specify the name of the HTTP query parameter that the caller must use to pass the name of the JSONP callback function.
+
+* *callbackParamName* (string) : Name of the HTTP query parameter that should contain the JSONP callback function name.
+
+== Sample Configuration
+
+[source,json]
+----
+{
+   "callbackParamName" : "callback"
+}
+----
+
+If the above configuration were to be used, the API client (caller) must send the JSONP callback function name in the URL of the request as a query parameter named *callback*.
+For example:
+
+[source,text]
+----
+GET /path/to/resource?callback=myCallbackFunction HTTP/1.1
+Host: www.example.org
+Accept: application/json
+----
+
+In this example, the response might look like this:
+
+[source,js]
+----
+myCallbackFunction({
+  "property1" : "value1",
+  "property2" : "value2"
+})
+----

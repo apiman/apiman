@@ -1,0 +1,19 @@
+= WildFly/EAP Production Guide
+
+The easiest way to install just the API Gateway is to download and install the Apiman quickstart overlay ZIP and then remove the extraneous components.
+
+Follow that up with some modification of the `apiman.properties` configuration file, and you'll be Gatewaying in no time!
+
+Here are the steps you should take to install a standalone API Gateway:
+
+. Download and unpack WildFly
+. Download Apiman
+. Unpack Apiman into WildFly
+. Remove unused Apiman deployments from standalone/deployments
+
+[source,bash]
+----
+rm standalone/deployments/apiman.war
+rm standalone/deployments/apimanui.war
+rm standalone/deployments/apiman-developer-portal*.war
+----

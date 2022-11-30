@@ -1,0 +1,67 @@
+= Gateway Components
+
+Apiman is made up of a number of different **components**, many of which can be configured to use different implementations and/or providers.
+
+When downloading and installing Apiman, the default distribution includes reasonable default values, but you can pick-and-choose components to match your needs.
+
+[TIP]
+====
+* Refer to your platform's configuration documentation, or the corresponding component configuration documentation for comprehensive information.
+
+* You can implement your own components to provide tightly integrated functionality with your platform, or if you need custom semantics.
+====
+
+== API Gateway Registry
+
+The API Gateway includes a registry that stores the published API and Client App information.
+
+This registry is updated whenever a user publishes an API (or registers a Client App) from the Apiman Manager.
+
+The registry contains only the information necessary for the API Gateway to apply the configured policies to requests transiting the gateway footnote:[The Apiman Gateway Registry contains a subset of the information stored in the Apiman Manager.].
+
+* xref:registries-and-components/elasticsearch.adoc#_registry[Elasticsearch]
+* xref:registries-and-components/jdbc.adoc#_registry[JDBC (SQL)]
+* xref:registries-and-components/headless.adoc#_headless_registry[Headless (JSON)]
+* In-memory
+
+== Rate Limiter
+
+The rate limiter component is used by Apiman policies to enforce rate limits and quotas, and uses the specified implementation to store data.
+
+Different implementations have different semantic and performance characteristics.
+
+* xref:registries-and-components/elasticsearch.adoc#_rate_limiter[Elasticsearch]
+* xref:registries-and-components/redis.adoc#_rate_limiter[Redis]
+* xref:registries-and-components/hazelcast.adoc#_rate_limiter[Hazelcast]
+* In-memory
+
+== Shared State
+
+The shared state component is used by Apiman policies to share interesting state information across multiple requests.
+
+* xref:registries-and-components/elasticsearch.adoc#_shared_state[Elasticsearch]
+* xref:registries-and-components/redis.adoc#_shared_state[Redis]
+* xref:registries-and-components/hazelcast.adoc#_shared_state[Hazelcast]
+* In-memory
+
+== Cache Store
+
+Cache data on Apiman instead of hitting real back end.
+
+* xref:registries-and-components/elasticsearch.adoc#_cache_store[Elasticsearch]
+* xref:registries-and-components/redis.adoc#_cache_store[Redis]
+* xref:registries-and-components/hazelcast.adoc#_cache_store[Hazelcast]
+* In-memory
+
+[#_metrics]
+== Metrics
+
+Apiman has a metrics engine that collects a variety of valuable data before passing it to a pluggable metrics component.
+
+Metrics implementations complete control in processing and transmitting data to external systems.
+
+* xref:registries-and-components/elasticsearch.adoc#_metrics[Elasticsearch]
+* xref:registries-and-components/influxdb.adoc[InfluxDB]
+* xref:registries-and-components/jdbc.adoc#_metrics[JDBC]
+* xref:registries-and-components/prometheus.adoc[Prometheus] (scrape/pull metrics)
+* In-memory (no-op)

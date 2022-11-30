@@ -1,0 +1,50 @@
+= Crash Course in Apiman {apiman-version-release}
+:homepage: http://apiman.io/
+:doctype: book
+:wf-admin-guide: https://docs.wildfly.org/{wildfly-version-major}/Admin_Guide.html
+
+[.MaintainerMessage]
+****
+The Crash Course needs some TLC to bring it up to Apiman 3.x standard.
+
+https://github.com/apiman/apiman/issues/2278[Could you help us?^]. Let us know your thoughts, and whether you are willing to contribute in some way.
+****
+
+A Crash Course in API Management with Apiman.
+
+[#_introduction]
+== Introduction
+
+Welcome to the crash course in Apiman!
+
+The goal of this crash course is to provide a short and easy-to-consume introduction to API Management with Apiman.
+
+This crash course will explain how Apiman works and will walk you through a hands-on session to demonstrate how to use it.
+This course also provides links to the extensive online Apiman user documentation, demos and quickstarts, and other resources.
+
+== How Apiman Works
+
+This section describes the data model Apiman uses, and how it uses the elements created in that data model to perform its tasks.
+
+=== Policies
+
+At the Core of API Management - In API Management, policies are where the action is.
+
+It's the policies that define the rules that Apiman uses to manage your APIs. Since policies are so important, this is the longest section of the crash course.
+
+Each of the next four sections in the crash course describes how Apiman supports the four primary groups of Apiman users:
+
+* Providing APIs - This section describes how API providers can use Apiman to publish APIs and summarizes management options for those APIs.
+
+* Consuming APIs - And this section describes how their counterparts, consumers of APIs, utilize Apiman.
+
+* Managing Apiman - This section describes the major tasks that are performed by Apiman administrators.
+
+* Developing for Apiman - And, this section describes how Apiman supports the development of extensions and customizations.
+
+Each of the last two sections in the crash course provides step-by-step descriptions of how to use Apiman to:
+
+ * Install, configure and get Apiman running for API providers and API consumers in 10 minutes.
+ * Utilize Apiman's REST interface to automate tasks.
+
+Let's get started!

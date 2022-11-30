@@ -1,0 +1,10 @@
+= Apiman Resources
+
+* https://www.apiman.io/[Apiman website^]
+* https://www.apiman.io/blog/[Apiman blog^]
+* https://www.apiman.io/latest/download.html[Apiman downloads^]
+* https://www.apiman.io/apiman-docs/[Apiman docs, including our user guide, installation guide, migration guide, and developer guide^]
+* https://github.com/apiman/apiman[Apiman on GitHub^]
+* https://github.com/apiman/apiman/issues[Apiman Issues^]
+* https://github.com/apiman/apiman/discussions[Apiman Discussions^]
+* https://twitter.com/apiman_io[Apiman on Twitter^]

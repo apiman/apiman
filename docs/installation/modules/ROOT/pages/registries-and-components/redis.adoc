@@ -1,0 +1,119 @@
+= Redis Components
+Marc Savy <marc@blackparrotlabs.io>
+
+Apiman components for https://redis.io/[Redis^].
+
+== Global Required Parameters
+
+[cols="2,1,4", options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `config.file`
+| String
+a| Path to https://github.com/redisson/redisson/wiki/2.-Configuration/#22-declarative-configuration[your Redisson client configuration file^].
+
+|===
+
+== Components
+
+[#_cache_store]
+=== Cache Store
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.components.ICacheStoreComponent=io.apiman.gateway.engine.redis.RedisCacheStoreComponent
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "components": {
+    "ICacheStoreComponent": {
+      "class": "io.apiman.gateway.engine.redis.RedisCacheStoreComponent",
+      "config": {
+        // <config here>
+      }
+    }
+  }
+}
+----
+--
+====
+
+[#_rate_limiter]
+=== Rate Limiter
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.components.IRateLimiterComponent=io.apiman.gateway.engine.redis.RedisRateLimiterComponent
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "components": {
+    "IRateLimiterComponent": {
+      "class": "io.apiman.gateway.engine.redis.RedisRateLimiterComponent",
+      "config": {
+        // <config here>
+      }
+    }
+  }
+}
+----
+--
+====
+
+[#_shared_state]
+=== Shared State
+
+[tabset]
+====
+Properties (Servlet)::
++
+--
+[source,properties]
+----
+apiman-gateway.components.ISharedStateComponent=io.apiman.gateway.engine.redis.RedisSharedStateComponent
+----
+--
+JSON (Vert.x)::
++
+--
+[source,json5]
+----
+{
+  "components": {
+    "ISharedStateComponent": {
+      "class": "io.apiman.gateway.engine.redis.RedisSharedStateComponent",
+      "config": {
+        // <config here>
+      }
+    }
+  }
+}
+----
+--
+====
+
+

@@ -1,0 +1,49 @@
+= Time Restricted Access Policy
+
+== Description
+
+This policy is used to only allow access to an API during certain times.
+In fact, the policy can be configured to apply different time restrictions to different API resources (matched via regular expressions).
+This allows you to control *when* client and users are allowed to access your API.
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+****
+
+== Configuration
+
+The configuration parameters for a Time Restricted Access Policy are:
+
+* *rules* (array of objects) : The list of matching rules representing the resources being controlled and the time ranges they are allowed to be accessed.
+** *timeStart* (time) : Indicates the time of day (UTC) to begin allowing access.
+** *timeEnd* (time) : Indicates the time of day (UTC) to stop allowing access.
+** *dayStart* (integer) : Indicates the day of week (1=Monday, 2=Tuesday, etc) to begin allowing access.
+** *dayEnd* (integer) : Indicates the day of week (1=Monday, 2=Tuesday, etc) to stop allowing access.
+** *pathPattern* (string regexp) : A regular expression used to match the request's resource path/destination.  The time restriction will be applied only when the request's resource matches this pattern.
+
+TIP: If none of the configured rules matches the request resource path/destination, then no rules will be applied and the request will succeed.
+
+== Sample Configuration
+
+[source,json]
+----
+{
+    "rules": [
+        {
+            "timeStart": "12:00:00",
+            "timeEnd": "20:00:00",
+            "dayStart": 1,
+            "dayEnd": 5,
+            "pathPattern": "/path/to/.*"
+        },
+        {
+            "timeStart": "10:00:00.000Z",
+            "timeEnd": "18:00:00.000Z",
+            "dayStart": 1,
+            "dayEnd": 7,
+            "pathPattern": "/other/path/.*"
+        }
+    ]
+}
+----

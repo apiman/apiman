@@ -1,0 +1,136 @@
+= Data Model
+
+It is perhaps most important to understand the various entities used by the API Manager, as well as their relationships with each other.
+
+== Organizations
+
+The top level container concept within the API management project is called the organization.
+All other entities are managed within the scope of an organization.
+
+When users log into the API management system they must be affiliated with one or more organization.
+Users can have different roles within that organization allowing them to perform different actions and manage different entities.
+
+Please see the 'User Management' section below for more details on this topic.
+
+What an organization actually represents will depend upon who is using API management.
+When installed within a large enterprise, an organization may represent an internal group within IT (for example the HR group).
+
+If installed in the cloud, an organization might represent an external company or organization.
+
+In any case, an organization is required before the end user can create or consume APIs.
+
+== Policies
+
+The most important concept in API management is the policy.
+The policy is the unit of work executed at runtime in order to implement API governance.
+All other entities within the API Manager exist in support of configuring policies and sensibly applying them at runtime.
+
+When a request for an API is made at runtime, a policy chain is created and applied to the inbound request, prior to proxying that request to the back-end API implementation.
+This policy chain consists of policies configured in the API Manager.
+
+An individual policy consists of a type (e.g. authentication or rate limiting) as well as configuration details specific to the type and instance of that policy.
+Multiple policies can be configured per API resulting in a policy chain that is applied at runtime.
+
+It is very important to understand that policies can be configured at three different levels within API management.
+Policies can be configured on an API, on a plan, or on a client app.
+
+For more details please see the sections below.
+
+== Plans
+
+A plan is a set of policies that define a level of service for an API.
+When an API is consumed it may be consumed through a plan.
+Please see the section on 'API Contracts' for more information.
+
+An organization can have multiple plans associated with it.
+Typically, each plan within an organization consists of the same set of policies, but with different configuration details.
+
+For example, an organization might have a Gold plan with a rate limiting policy that restricts consumers to 1000 requests per day.
+The same organization may then have a Silver plan which is also configured with a rate limiting policy, but which restricts consumers to 500 requests per day.
+
+Once a plan has been fully configured (all desired policies added and configured), it must be locked so that it can be used by APIs.
+This is done so that API providers can't change the details of the plan out from underneath the client app developers who are using it.
+
+== APIs
+
+An API represents an external API that is being governed by the API management system.
+An API consists of a set of metadata including name and description as well as an external endpoint defining the API implementation.
+
+The external API implementation endpoint includes:
+
+* The type/protocol of the endpoint (e.g. REST or SOAP)
+* The endpoint content type (e.g. XML or JSON)
+* The endpoint location (URL) so that the API can be properly proxied to at runtime.
+
+In addition, policies can be configured on an API.
+Typically, the policies applied to APIs are things like authentication, or caching.
+
+Any policies configured on API will be applied at runtime regardless of the client app and API contract.
+This is why authentication is a common policy to configure at the API level.
+
+APIs may be offered through one or more plans configured in the same organization.
+When plans are used, API consumers (client apps) must consume the API through one of those plans.
+Please see the section on 'API Contracts' for more information.
+
+Alternatively, an API can simply be marked as "Public", in which case any client may access the API's managed endpoint without providing an API Key.
+
+Only once an API is fully configured, including its policies, implementation, and plans can it be published to the Gateway for consumption by client apps.
+
+Once an API has been published, it can only be changed if it is a "Public" API.
+APIs that are offered via Plans are immutable - to change them you must create a new version.
+The reason for this is that API consumers may have created Contracts with your API, through your Plan.
+When they do this, they must agree to some terms and conditions.
+It is therefore understood that the terms to which they are agreeing will not change.
+However, for Public APIs, there is no such agreement.
+For this reason, you can make changes to Public APIs and re-publish them at any time.
+
+== Client Apps
+
+A client app represents a consumer of an API.
+Typical API consumers are things like mobile applications and B2B applications.
+
+Regardless of the actual implementation, a client app must be added to the
+API management system so that Contracts can be created between it and the APIs it wishes to consume.
+
+A client app consists of basic metadata such as name and description.
+Policies can also be configured on a client app, but are optional.
+
+Finally, API Contracts can be created between a client app and the API(s) it wishes to consume.
+Once the API Contracts are created, the client app can be registered with the runtime gateway.
+Policies and Contracts can be added/removed at any time.
+However, after any changes are made, you must re-register the client app.
+
+== API Contracts
+
+An API contract is simply a link between a Client App and an API through a plan offered by that API.
+This is the only way that a client app can consume an API.
+If there are no client apps that have created API contracts with an API, that API cannot be accessed through the API management runtime gateway (unless of course the API is "Public").
+
+When an API Contract is created, the system generates a unique API key specific to that contract.
+All requests made to the API by a Client App through the API Gateway must include this API key.
+The API key is used to create the runtime policy chain from the policies configured on the API, plan, and client app.
+
+API Contracts can only be created between Client Apps and published APIs which are offered through at least one Plan.
+An API Contract cannot be created between a Client App and a Public API.
+
+[#_policy_chain]
+== Policy Chain
+
+A policy chain is an ordered sequence of policies that are applied when a request is made for an API through the API Gateway.
+
+The order that policies are applied is important and is as follows:
+
+. Client App
+. Plan
+. API
+
+Within these individual sections, the end user can specify the order of the policies.
+
+When a request for an API is received by the API Gateway the policy chain is applied to the request in the order listed above.
+
+If none of the policies fail, the API Gateway will proxy the request to the backend
+API implementation.
+
+Once a response is received from the back end API implementation, the policy chain is
+then applied in reverse order to that response.
+This allows each policy to be applied twice, once to the inbound request and then again to the outbound response.

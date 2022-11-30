@@ -1,0 +1,104 @@
+= CORS Policy
+
+== Description
+:cors-w3c: http://www.w3.org/TR/2014/REC-cors-20140116/
+:cors-mozilla: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Access-Control-Allow-Origin
+
+A policy implementing CORS (Cross-origin resource sharing): a method of defining access to resources outside the originating domain.
+It is principally a security mechanism to prevent the loading of resources from unexpected domains, for instance via XSS injection attacks.
+
+For further references, see:
+
+* {cors-w3c}[CORS W3C Recommendation 16 January 2014^]
+* {cors-mozilla}[MDN's CORS articles^].
+
+== Plugin
+
+[source,json,subs=attributes+]
+----
+{
+    "groupId": "io.apiman.plugins",
+    "artifactId": "apiman-plugins-cors-policy",
+    "version": "{apiman-version-release}"
+}
+----
+
+== Configuration
+
+The configuration options available, are:
+
+.CORS policy configuration
+[cols="2,1,4,1", options="header"]
+|===
+| Option
+| Type
+| Description
+| Default
+
+| errorOnCorsFailure
+| Boolean
+a| *Error on CORS failure*
+When true, any request that fails CORS validation will be terminated with an appropriate error. When false, the request will still be sent to the backend API, but the browser will be left to enforce the CORS failure. In both cases valid CORS headers will be set.
+| true
+
+| allowOrigin
+| Set<String>
+a| *Access-Control-Allow-Origin*
+List of origins permitted to make CORS requests through the gateway. By default same-origin is permitted, and cross-origin is forbidden.
+A special entry of `*` permits all CORS requests.
+| Empty
+
+| allowCredentials
+| Boolean
+a| *Access-Control-Allow-Credentials*
+Whether response may be exposed when the `credentials` flag is set to true on the request.
+| false
+
+| exposeHeaders
+| Set<String>
+a| *Access-Control-Expose-Headers*
+Which non-simple headers the browser may expose during CORS.
+| Empty
+
+| allowHeaders
+| Set<String>
+a| *Access-Control-Allow-Headers*
+In response to preflight request, which _headers_ can be used during actual request.
+| Empty
+
+| allowMethods
+| Set<String>
+a| *Access-Control-Allow-Methods*
+In response to preflight request, which _methods_ can be used during actual request.
+| Empty
+
+| maxAge
+| Integer
+a| *Access-Control-Max-Age*
+How long preflight request can be cached in delta seconds.
+| Not included
+|===
+
+== Sample Configuration
+
+[source,json]
+----
+{
+   "exposeHeaders" : [
+      "X-REQUESTS-REMAINING"
+   ],
+   "maxAge" : 9001,
+   "allowOrigin" : [
+      "https://foo.example",
+      "https://bar.example"
+   ],
+   "errorOnCorsFailure" : true,
+   "allowCredentials" : false,
+   "allowMethods" : [
+      "POST"
+   ],
+   "allowHeaders" : [
+      "X-CUSTOM-HEADER"
+   ]
+}
+----

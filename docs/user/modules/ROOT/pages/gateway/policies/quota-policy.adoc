@@ -1,0 +1,42 @@
+= Quota Policy
+
+== Description
+
+The Quota Policy type performs the same basic functionality as the Rate Limiting policy type, however, the intended use of this policy type is for less fine-grained processing (e.g., 10,000 requests per month).
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+****
+
+== Configuration
+
+The configuration parameters for a Quota Policy are:
+
+* *limit* (integer) : This is the number of requests that must be received before the policy will trigger.
+* *granularity* (enum) : The Apiman element for which the requests are counted. Valid values are:
+** User
+** Api
+** Client
+* *period* : The time period over which the policy is applied.  Valid values are:
+** Hour
+** Day
+** Month
+** Year
+* *headerLimit* (string) [optional] : HTTP response header that Apiman will use to store the limit being applied.
+* *headerRemaining* (string) [optional] : HTTP response header that Apiman will use to store how many requests remain before the limit is reached.
+* *headerReset* (string) [optional] : HTTP response header that Apiman will use to store the number of seconds until the limit is reset.
+
+== Sample Configuration
+
+[source,json]
+----
+{
+  "limit" : 100000,
+  "granularity" : "Client",
+  "period" : "Month",
+  "headerLimit" : "X-Quota-Limit",
+  "headerRemaining" : "X-Quota-Limit-Remaining",
+  "headerReset" : "X-Quota-Limit-Reset"
+}
+----

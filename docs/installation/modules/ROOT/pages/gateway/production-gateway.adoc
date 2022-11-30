@@ -1,0 +1,81 @@
+= Apiman Gateway Production Guide
+
+== Setting the API Gateway Public Endpoint
+
+An important step is to let the API Gateway know what its public endpoint is.
+This is important because the API Manager will sometimes ask the Gateway to report on the Managed Endpoint for a published API.
+
+=== Vert.x
+
+To set the public endpoint of the API Gateway, add the following to `conf.json`:
+
+[source,json5]
+----
+{
+  "publicEndpoint": "https://api-gateway-host.org:8443" // <1>
+}
+----
+<1> You can also append a path, etc. This is useful if you are behind a proxy and need to report a specific endpoint.
+
+=== Servlet
+
+To set the public URL/endpoint of the API Gateway, add the following to `apiman.properties`:
+
+[source,properties]
+----
+apiman-gateway.public-endpoint=https://api-gateway-host.org:8443/apiman-gateway/
+----
+
+WARNING: Please make sure to use your appropriate values for the host and port.
+
+== Pointing the API Gateway to a Remote Elasticsearch
+
+The API Gateway uses Elasticsearch in a number of ways, including:
+
+* Storing configuration information
+* Managing shared state across a cluster
+* Storing metrics to share with the API Manager (analytics)
+
+In order to configure the gateway properly, you will need to configure the location of the Elasticsearch instance.
+
+TIP: You will need to replace the values with those appropriate for your installation of Elasticsearch.
+
+=== Vert.x
+
+To do this, modify these properties in the `conf-es.json` file **for each ES component**. For example:
+
+[source,json5]
+----
+{
+  "registry": {
+    "class": "io.apiman.gateway.engine.es.ESRegistry",
+    "config": {
+      "client": {
+        "type": "es",
+        "cluster-name": "elasticsearch",
+        "host": "localhost", // <1>
+        "port": "9200",
+        "initialize": true
+      }
+    }
+  }
+}
+----
+<1> You could use Environment Variables or System Properties such as `${ES_HOST}` `${ES_PORT}`.
+
+=== Servlet
+
+To do this, modify these properties in the `apiman.properties` file:
+
+[source,properties]
+----
+apiman.es.protocol=http
+apiman.es.host=es.myorg.com
+apiman.es.port=9200
+apiman.es.username=es_admin
+apiman.es.password=es_admin_password
+----
+
+== Pointing the API Gateway to a Remote Keycloak
+
+Refer to the Keycloak guide on xref:keycloak.adoc[configuring a Keycloak SSO instance and importing the default Apiman realm].

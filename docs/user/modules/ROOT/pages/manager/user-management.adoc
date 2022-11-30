@@ -1,0 +1,41 @@
+= User Management
+
+The API Manager offers user role capabilities at the organization level.
+Users can be members of organizations and have specific roles within those organizations.
+
+The roles themselves are configurable by an administrator, and each role provides the user with a set of permissions that determine what actions the user can take within an organization.
+
+== New Users
+
+Users must self register with the management UI in order to be given access to an organization or to create their own organization.
+
+In some configurations it is possible that user self registration is
+unavailable and instead user information is provided by a standard source of identity such as LDAP.
+
+In either case, the actions a user can take are determined by that user's role memberships within the context of an organization.
+
+== Membership
+
+Users can be members of organizations.
+All memberships in an organization include the specific roles the user is granted.
+
+It is typically up to the owner of an organization to grant role memberships to the members
+of that organization.
+
+== Roles
+
+Roles determine the capabilities granted a user within the context of the organization.
+
+The roles themselves and the capabilities that those roles grant are configured by system administrators.
+
+For example, administrators would typically configure the following roles:
+
+* Organization Owner
+* API Developer
+* Client App Developer
+
+Each of these roles is configured by an administrator to provide a specific set of permissions allowing the user to perform relevant actions appropriate to that role.
+
+For example, the Client App Developer role would grant an end user the ability to manage client apps and API contracts for those client apps.
+
+However, that user would not be able to create or manage the organization's APIs or plans.

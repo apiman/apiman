@@ -1,0 +1,49 @@
+= Authorization Policy
+
+== Description
+
+This policy enables fine-grained authorization to API resources based on authenticated user roles.
+
+This policy can be used to control precisely who (authenticated users) are allowed to access the API, at an arbitrarily fine-grained level.
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+****
+
+== Configuration
+
+The configuration of this policy consists of a number of rules that are applied to any inbound request to the API.
+Each rule consists of a regular expression pattern, an HTTP verb, and the role that an authenticated user must possess in order for access to be granted.
+
+TIP: It's *very* important to note that this policy must be configured *after* one of the standard Apiman authentication policies (e.g. the BASIC Authentication policy or the Keycloak OAuth Policy).
+The reason is that an Authentication policy is responsible for extracting the authenticated user's roles, which is data that is required for the Authorization Policy to do its work.
+
+* *rules* (array) : Array of rules - each rule is applied only if it matches the current request.
+** *pathPattern* (string regexp) : Pattern that must match the request resource path you'd like the policy to be applicable to.
+** *verb* (string) : The HTTP verb that must match the request you'd like the policy to be applicable to.
+** *role* (string) : The role the user must have if this pattern matches the request.
+* *multimatch* (boolean) : Should the request pass when any or all of the authorization rules pass?  Set to true if all rules must match, false if only one rule must match.
+* *requestUnmatched* (boolean) : If the request does not match any of the authorization rules, should it pass or fail?  Set to true if you want the policy to *pass* when no rules are matched.
+
+== Sample Configuration
+
+[source,json]
+----
+{
+   "rules" : [
+   	{
+   		"pathPattern": "/admin/.*",
+   		"verb": "*",
+   		"role": "admin"
+   	},
+   	{
+   		"pathPattern": "/.*",
+   		"verb": "GET",
+   		"role": "user"
+   	}
+   ],
+   "multiMatch": true,
+   "requestUnmatched": false
+}
+----

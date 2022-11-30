@@ -1,0 +1,46 @@
+= Rate Limiting Policy
+
+== Description
+
+The Rate Limiting Policy type governs the number of times requests are made to an API within a specified time period.
+The requests can be filtered by user, application, or API and can set the level of granularity for the time period to second, minute, hour, day, month, or year.
+The intended use of this policy type is for fine-grained processing (e.g., 10 requests per second).
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+****
+
+== Configuration
+
+The configuration parameters for a Rate Limiting Policy are:
+
+* *limit* (integer) : This is the number of requests that must be received before the policy will trigger. Maximum value is 9007199254740991 (2^53 - 1).
+* *granularity* (enum) : The Apiman element for which the requests are counted. Valid values are:
+** User
+** Api
+** Client
+* *period* : The time period over which the policy is applied.  Valid values are:
+** Second
+** Minute
+** Hour
+** Day
+** Month
+** Year
+* *headerLimit* (string) [optional] : HTTP response header that Apiman will use to store the limit being applied.
+* *headerRemaining* (string) [optional] : HTTP response header that Apiman will use to store how many requests remain before the limit is reached.
+* *headerReset* (string) [optional] : HTTP response header that Apiman will use to store the number of seconds until the limit is reset.
+
+== Sample Configuration
+
+[source,json]
+----
+{
+  "limit" : 100,
+  "granularity" : "Api",
+  "period" : "Minute",
+  "headerLimit" : "X-Limit",
+  "headerRemaining" : "X-Limit-Remaining",
+  "headerReset" : "X-Limit-Reset"
+}
+----

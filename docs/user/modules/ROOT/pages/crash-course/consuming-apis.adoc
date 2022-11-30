@@ -1,0 +1,27 @@
+= Consuming APIs
+
+== Invoking Managed APIs
+From a client app's perspective, the only difference between accessing a managed API and another API is the URL of the API's endpoint. As we mentioned earlier in this crash course, a managed Apiman endpoint takes this form:
+
+[source,log]
+----
+http://gatewayhostname:port/apiman-gateway/{organizationId}/{API ID}/{API version}/
+----
+
+In addition, if the API is not Public, then the managed API endpoint must include a Client App's API Key, either as a query parameter in the URL or as an HTTP header.  For example:
+
+[source,log]
+----
+http://localhost:8080/apiman-gateway/ACMEServices/echo/1.0?apikey=c374c202-d4b3-444206e3d
+----
+
+TIP: Don't panic! You don't have to memorize the endpoint string. As we'll see in a bit, the endpoint string is provided to you by Apiman.
+
+== Managing Client Applications and Contracts
+Public APIs can be consumed by any client. APIs that are not public can only be consumed by client applications that exist in an Apiman organization and are registered with Apiman.
+
+When you create a client app in the Management UI, you are able to perform a search through all published APIs to locate the API that you want the client app to consume. The Management UI allows you to select from all published versions of an API, and from all the defined plans for an API. (Remember that, in this context, a plan is a set of policies that the API enforces.) Note that client apps can have configured policies, the same manner as plans and APIs.
+
+Once you find an API that you want your client app to consume, and after you select the version of the API and the plan that you want to govern how your client app will consume the API, you use the Management UI to create an API contract. The contract contains the “Terms and Conditions” defined by the API provider that govern your client app's use of the API.
+
+Your client app can consume one or more API.  Once your client app has created contracts with all of the APIs it needs to consume, it must be registered with the Gateway.  This enables the Gateway to know which contracts are valid and how to create the full policy chain it will apply to the request.

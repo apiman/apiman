@@ -1,0 +1,12 @@
+= Managing Organizations
+
+Before any other actions can be taken an organization must exist.
+All other operations take place within the context of an organization.
+
+In order to create an organization click the 'Create a New Organization' link found on the dashboard page that appears when you first log in.
+
+Simply provide an organization name and description and then click the 'Create Organization' button.
+If successful you will be taken to the organization details page.
+
+If you create multiple organizations, you can see the list of those organizations on your home page.
+For example, you may click the 'Go to My Organizations' link from the dashboard page.

@@ -1,0 +1,91 @@
+= IP Block and Allow policies
+
+== IP Blocklist Policy
+
+=== Description
+
+As its name indicates, the IP blocklist policy type blocks access to an API's resources based on the IP address of the client application.
+
+The Apiman Management UI form used to create an IP blocklist policy enables you to use wildcard characters in specifying the IP addresses to be blocked.
+
+In addition, Apiman gives you the option of specifying the return error code sent in the response to the client if a request is denied.
+
+Note, that an IP blocklist policy in a plan overrides an IP allowlist policy.
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+
+This policy was formerly known as 'blacklist', but the name has been deprecated.
+****
+== Configuration
+
+The configuration parameters for an IP Blocklist Policy are:
+
+* *ipList* (array) : The IP address(es), and/or ranges of addresses that will be blocked from accessing the API. Both IPv4 and IPv6 are supported.
+** Literal addresses, such as: `192.0.2.0` or `2001:db8::1`
+** CIDR address ranges, such as: `192.0.2.0/24` or `2001:db8:1212::/48`
+** Dashed address ranges, such as: `192.0.2.0-192.0.2.10`
+** Wildcards, such as: `192.0.2.*`
+
+* *responseCode* (int) : The server response code. The possible values for the return code are:
+** 500 - Server error
+** 404 - Not found
+** 403 - Authentication failure
+* *httpHeader* (string) [optional] : Tells Apiman to use the IP address found in the given HTTP request header *instead* of the one associated with the incoming TCP socket.  Useful when going through a proxy, often the value of this is 'X-Forwarded-For'.
+
+=== Sample Configuration
+
+[source,json]
+----
+{
+  "ipList" : ["192.168.7.*"],
+  "responseCode" : 500,
+  "httpHeader" : "X-Forwarded-For"
+}
+----
+
+== IP Allowlist Policy
+
+=== Description
+
+The IP Allowlist Policy Type is the counterpart to the IP Blocklist Policy type.
+In the IP Allowlist policy, only inbound API requests from Client Apps, policies, or APIs that satisfy the policy are accepted.
+
+The IP Blocklist and IP Allowlist policies are complementary, but different, approaches to limiting access to an API:
+
+* The IP Blocklist policy type is exclusive in that you must specify the IP address ranges to be excluded from being able to access the API. Any addresses that you do not explicitly exclude from the policy are able to access the API.
+
+* The IP Allowlist policy type is inclusive in that you must specify the IP address ranges to be included to be able to access the API. Any addresses that you do not explicitly include are not able to access the API.
+
+[.inbuilt-policy]
+****
+{inbuilt-policy-msg}
+
+This policy was formerly known as 'whitelist' but the name has been deprecated.
+****
+=== Configuration
+
+The configuration parameters for an IP Allowlist Policy are:
+
+* *ipList* (array) : The IP address(es), and/or ranges of addresses that will be allowed to access the API. Both IPv4 and IPv6 are supported.
+** Literal addresses, such as: `192.0.2.0` or `2001:db8::1`
+** CIDR address ranges, such as: `192.0.2.0/24` or `2001:db8:1212::/48`
+** Dashed address ranges, such as: `192.0.2.0-192.0.2.10`
+** Wildcards, such as: `192.0.2.*`
+* *responseCode* (int) : The server response code. The possible values for the return code are:
+** 500 - Server error
+** 404 - Not found
+** 403 - Authentication failure
+* *httpHeader* (string) [optional] : Tells Apiman to use the IP address found in the given HTTP request header *instead* of the one associated with the incoming TCP socket.  Useful when going through a proxy, often the value of this is 'X-Forwarded-For'.
+
+=== Sample Configuration
+
+[source,json]
+----
+{
+  "ipList" : ["192.168.3.*", "192.168.4.*"],
+  "responseCode" : 403,
+  "httpHeader" : "X-Forwarded-For"
+}
+----

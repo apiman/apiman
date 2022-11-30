@@ -1,0 +1,133 @@
+= Consuming APIs
+
+After the API providers have added a number of APIs to the API management system, those APIs can be consumed by Client Apps.
+
+This section explains how to consume APIs.
+
+== Consuming Public APIs
+If you have marked an API as "Public", then consuming it is a simple matter of sending a request to the appropriate API Gateway endpoint.
+
+The managed API endpoint may vary depending on the Gateway being used, but it typically of the following form:
+
+* http://gatewayhost:port/apiman-gateway/\{organizationId}/\{apiId}/\{version}/
+
+Simply send requests to the managed API endpoint, and do not include an API Key.
+
+TIP: The managed endpoint URL can be easily determined in the UI by navigating to the
+"Endpoint" tab on the API details UI page.
+
+== Creating a Client App
+
+In order to consume an API that is not "Public" you must first create a client app.
+Client Apps must exist within the context of an organization.
+
+If an organization does not yet exist for this purpose, simply create a new organization. See the section above on 'Managing Organizations' for more information.
+
+To create a new Client App:
+
+* Click the 'Create a New Client App' link on the dashboard page.
+
+* On the resulting page provide a client app name, version, and description and then click the 'Create Client App' button.
+
+* If the client app is successfully created, you will be taken to the client app details page.
+
+TIP: You can also create a Client App within an Organization by going to the Organization's "Client Apps" tab and clicking the "New Client App" button.
+
+== Creating API Contracts
+
+The primary action taken when configuring a client app is the creation of Contracts to APIs.
+This is how you 'consume an API'.
+
+There are a number of ways to create API contracts.
+This section will describe the most useful of these options.
+
+* From the Client App details page, you can find an API to consume by clicking on the 'Search for APIs to consume' link in the top section of the page.
+
+* You will be taken to a page that will help you search for and find the API you wish to consume.
+
+* Use the controls on this page to search for an API.
+
+* Once you have found the API you are interested in, click on its name in the search results area.
+
+* This will take you to the API details page for API consumers. The consumer-oriented API details page presents you with all the information necessary to make a decision about how to consume the API. It includes:
+** A list of all API versions.
+** A list of all available plans the API can be consumed through.
+
+If you wish, you can click on an individual plan to see the details of the policies that will be enforced should that plan be chosen.
+
+* Click on the 'Create Contract' button next to the plan you wish to use when consuming this API.
+
+* You will be taken to the new contract page to confirm that you want to create an API  contract to this API through the selected plan.
+
+* If you are sure this is the API contract you wish to create, click the 'Create Contract' button and then agree to the terms and conditions.
+
+* If successful, you will be taken to the 'Contracts' tab on the client app details page.
+
+From the 'Contracts' tab on the client app details page you can see the list of API contracts already created for this client app.
+
+It is also possible to break API contracts from this same list by clicking an appropriate 'Break Contract' button.
+
+== API Definition Information
+
+If An API provider has included An API Definition for the API they are providing, you will be  presented with an additional link on the consumer-oriented API details page labeled "API Definition".
+
+This link will take you to a page where you can browse the detailed documentation for the API.
+
+The detailed documentation should be very helpful in learning what resources and operations are supported by the API, which will aid in figuring out how precisely to consume the API.
+
+== Managing Policies
+
+Just like plans and APIs, client apps can have configured policies.
+
+* The 'Policies' tab will present a list of all the policies configured for this client app.
+
+* To add another policy to the client app click the *'Add Policy'* button.
+
+* On the resulting page choose the type of policy you wish to create and then configure the details for that policy.
+
+* Once you have configured the details click the *'Add Policy'* button to add the policy to the client app.
+
+Of course, just like for Plans and APIs, you can manage the Client App policies from the 'Policies' tab.
+This allows you to not only add new policies but also edit, remove, and reorder them.
+
+== Registering in the Gateway
+
+After at least one API contract has been created for the client app, it is possible to register the client app with the runtime gateway.
+
+Until the client app is registered with the runtime gateway, it is not possible to make requests to back-end APIs on behalf of that client app.
+
+* To register the client app with the gateway, simply click the *'Register'* button at the top of the Client App details UI page (any tab).
+
+* If the status of the client app is "Ready", then the 'Register' button should be enabled.
+
+* If successful, the client app status will change to "Registered", and the 'Register' button will disappear.
+
+Once the client app is registered, you can continue to make changes to it (such as modify its policies or create/break API Contracts).
+
+If you do make any changes, then the *'Re-Register'* button will become enabled.
+
+Whenever you make changes to your Client App, you *must* Re-Register it before those changes will show up in the Gateway.
+
+== Live API Endpoints
+
+After a client app has been registered with the runtime gateway, it is possible to send requests to the back-end APIs on behalf of that client app (through the client app's API contracts).
+To do this you must know the URL of the managed API.
+This URL can include the API Key generated for the Client App.
+
+To view a list of all of these managed endpoints:
+
+* Navigate to the 'APIs' tab on the API detail page.
+
+* Each API contract is represented in the list of managed endpoints.
+
+* You can expand an entry in the managed API endpoints table by clicking the '>' icon in the first column.
+
+* The resulting details will help you figure out the appropriate endpoint to use for a particular managed API.
+
+[TIP]
+====
+There are two ways to pass the API Key to the Gateway when you make a request for a Managed Endpoint. You can either include the API key:
+
+* In the URL as a query parameter.
+* In the *X-API-Key* HTTP Header.
+====

@@ -1,0 +1,188 @@
+= API Manager Notifications Configuration
+Marc Savy <marc@blackparrotlabs.io>
+
+The Apiman notifications subsystem is responsible for routing notifications to Apiman users and/or groups of users about important topics, such as when an API signup needs approval.
+
+The notifications system is driven by the Apiman Events system.
+All notifications contain the event that triggered them.
+
+== General Configuration
+
+The notifications subsystem is enabled by default, but can be entirely disabled by setting the following in `apiman.properties`:
+
+[source,properties]
+----
+apiman-manager.notifications.enable=true|false
+----
+
+== In-Browser/API Notifications
+
+The details of the Notifications API are beyond the scope of this guide, but there is a full REST API for Apiman's notifications system, including searching, pagination, filtering, etc.
+
+Refer to the Apiman REST API documentation.
+
+
+== Email Notifications
+
+Apiman has a rich, https://quarkus.io/guides/qute[fully-templated^], and internationalised email notification system; it is driven by the main event subsystem.
+Email notifications are sent as both HTML and plaintext.
+
+=== General Configuration
+
+The email notification system is disabled by default (unless you are using the xref:quickstart.adoc[Docker Compose quickstart]), and must be enabled by setting the following in `apiman.properties`:
+
+TIP: If you use the xref:quickstart.adoc[Apiman Docker Compose quickstart], email notifications are enabled and sent to a MailDev mock SMTP mail server that you can preview via a web application.
+
+[source,properties]
+----
+apiman-manager.notifications.email.enable=true|false
+----
+
+=== Required parameters
+
+All parameters are prefixed with `apiman-manager.notifications`
+
+[cols="2,1,4",options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `email.smtp.fromName`
+| String
+| What the email notification's "From" name should be
+
+| `email.smtp.fromEmail`
+| String
+| What the email notification's "From" email address should be
+
+| `email.smtp.host`
+| String
+| SMTP server host address
+
+|===
+
+=== Optional parameters
+
+[cols="2,1,4",options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+| `email.smtp.mock`
+| Boolean
+a| Whether Apiman should just print email notifications to logs, rather than trying to send a real email
+
+* *Default Value*: false
+
+| `email.smtp.ssl`
+| Boolean
+a| Whether an SSL connection to the SMTP server should be used.
+
+* *Default Value*: true
+
+| `email.smtp.startTLSMode`
+| Enum
+a| Whether StartTLS should be used, and which version
+
+* *Allowed Values*: DISABLED, OPTIONAL, REQUIRED
+* *Default Value*: OPTIONAL
+
+| `email.smtp.port`
+| Integer
+a| SMTP server host port
+
+* *Allowed Values*: greater than zero, any valid port
+* *Default Value*: 587
+
+| `email.smtp.username`
+| String
+| SMTP server username
+
+| `email.smtp.password`
+| String
+| SMTP server password
+
+|===
+
+=== Apiman's email notification templating system
+
+Apiman's email templates are easy to modify, for example, to add your company's branding instead of the default upstream appearance.
+
+It consists of three parts:
+
+* Template index: a global index of all templates.
+* Template includes: a special directory where assets can be stored that can be transcluded into other templates.
+* Template: the email templates themselves
+
+When sending emails, Apiman will try to find the best locale match for a given user (assuming it is known).
+Otherwise, the default locale from the JVM, and finally English, will be used.
+
+For example, if a template is `en`, but the user's preference is `en_US`, then the `en` template will still be resolved as being satisfactory.
+
+=== Template index
+
+Find `notification-template-index.json` in your distribution. For WildFly it's in `standalone/configuration/notifications/email/notification-template-index.json`.
+
+You'll find a structure that looks something like this:
+
+[source,json5]
+----
+{
+  "en": { // <1>
+    "apiman.account.approval.request": { // <2>
+      "subject": "Action required: New developer account needs activation", // <3>
+      "html": "tpl/en/apiman.account.approval.request.html", // <4>
+      "plain": "tpl/en/apiman.account.approval.request.txt", // <5>
+      "category": "USER_ADMINISTRATION" // <6>
+    },
+  },
+  "de": {
+    // <7>
+  }
+}
+----
+<1> Language tag (locale)
+<2> Apiman's notification reason code. Users should not change this.
+<3> Email subject line
+<4> Path to HTML version of email template
+<5> Path to plaintext version of email template
+<6> Apiman's notification category. Users should not normally change this.
+<7> Same as above, but a German version.
+
+=== Template includes
+
+Assets can be transcluded into Apiman email notification templates, including other templates.
+
+This is located in `notifications/email/tpl/includes`.
+
+Any file stored in the includes directory (or subdirectories) can be referenced from an Apiman email notification template as if it were a root directory.
+
+For example, a file:
+
+`notifications/email/tpl/includes/footer.en.include.html`
+
+could be included from an email template using an expression such as:
+
+`{#include footer.en.include.html /}`
+
+=== Templates
+:apiman-email-tpl-github: https://github.com/apiman/apiman/tree/{apiman-version-release}/distro/conf/src/main/resources/notifications/email/tpl
+
+Apiman email notifications templates are https://quarkus.io/guides/qute[Qute templates^] that are rendered and sent to recipient(s).
+
+They are located in `notifications/email/tpl/<locale>/`.
+You can also {apiman-email-tpl-github}[find them on GitHub^].
+
+If you create your own templates, consider using your own file structure and simply changing the <<Template index,template index>>.
+This will minimise merge conflicts when you update to the latest version of Apiman.
+
+Currently, there is no automated documentation for the values available for injection into a given notification template.
+However, you can use the existing templates to know which values are definitely available.
+
+In the future, if there is demand, we may  be able to generate all available values. https://www.github.com/apiman/apiman/issues[Let us know via GitHub Issues^].
+
+
