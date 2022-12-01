@@ -3,6 +3,23 @@
 
 # The Apiman project (Open Source API Management)
 
+Apiman is a flexible and open source API Management platform.
+
+With just a few clicks you can get Apiman running, putting a platform at your fingertips that covers the whole API Management lifecycle. Whether you want to offer existing APIs to external consumers in a secure way, or have a centralised location to discover and govern APIs, Apiman has you covered.
+
+But that's not all. Apiman is designed to be easy to customise, and you can implement your own functionality by writing simple Java plugins.
+
+## 🗞️ Apiman Newsletter
+
+Did you know, we have an [Apiman newsletter now](https://www.apiman.io/#newsletter)! We'll inform you of the latest Apiman releases as soon as they happen, along with great Apiman-related content. The latest Apiman news, blogs, tutorials, software engineering topics, and more. No spam, no nonsense.
+
+## ⚡️ Quick links
+
+* [Download Apiman](https://www.apiman.io/download.html)
+* [Read the latest Apiman Blogs](https://www.apiman.io/support.html)
+* [Get Support](https://www.apiman.io/support.html)
+* [Talk Apiman](https://github.com/apiman/apiman/discussions)
+
 ## 📖 Requirements
 
 - Java 11+
@@ -82,14 +99,10 @@ There are [lots of different workflows for contributing](https://docs.github.com
 
 ## 🔎 Developer Portal
 
-Apiman also comes with a developer portal. There you can allow developers to access your APIs. Developers can view and test your APIs to develop their own apps.\
-Check it out here: [Apiman Developer-Portal](https://github.com/apiman/apiman-developer-portal)
+Apiman also comes with a skinnable developer portal which you can let external developers sign up to your APIs in a streamlined API marketplace experience. 
 
-## Looking for support?
+Currently the [Apiman Developer Portal](https://github.com/apiman/apiman-developer-portal) lives in a separate repository.
 
-Apiman is a non-commercial project and it is supported downstream by multiple commercial sponsors that offer support and SaaS.
+## 🙋 Looking for support?
 
- > [Scheer PAS](https://www.scheer-pas.com/en/) is the platform for flexible end-to-end support of individual processes. It stands for digitization and automation, regardless of how many people, systems or companies need to be integrated.
-
-[Scheer PAS API Management](https://www.scheer-pas.com/en/api-management/) is based on Apiman and offers you also enterprise support.\
-You may visit [Scheer PAS documentation](https://doc.scheer-pas.com/display/HOME) for further details.
+Check out [Apiman's support page](https://www.apiman.io/support.html) where you can find Apiman experts to help you.
