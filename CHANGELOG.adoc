@@ -2,6 +2,22 @@
 
 All notable changes to Apiman will be documented here, as of Apiman 3.0.0.Final.
 
+// tag::3.1.0.Final[]
+== 3.1.0.Final
+
+=== Added
+
+* [metrics-es]: allow logging metrics to file with `write-to` option. To facilitate scrape-based metrics patterns, this commit allows Apiman's ES metrics to be written to a log file as JSON via whichever logging framework you are using (asynchronously). You can set any combination of `remote` (ES server) or/and `log` (local). By https://github.com/msavy[Marc Savy (@msavy)^].
+
+=== Changed
+
+=== Removed
+
+=== Fixed
+
+**Full Changelog**: +++https://github.com/apiman/apiman/compare/2.2.3.Final...3.0.0.Final+++
+// end::3.1.0.Final[]
+
 // tag::3.0.0.Final[]
 == 3.0.0.Final
 
