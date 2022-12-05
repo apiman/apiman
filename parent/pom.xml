@@ -130,7 +130,7 @@
     <version.org.apache.directory.server>2.0.0.AM25</version.org.apache.directory.server>
     <version.org.apache.directory.api-all>2.1.0</version.org.apache.directory.api-all>
     <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
-    <version.org.apache.httpcomponents.httpcore>4.4.14</version.org.apache.httpcomponents.httpcore>
+    <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpasyncclient>4.1.4</version.org.apache.httpcomponents.httpasyncclient>
     <version.org.apache.logging.log4j>2.19.0</version.org.apache.logging.log4j>
     <version.org.agrona>1.16.0</version.org.agrona>
