@@ -16,7 +16,7 @@ Did you know, we have an [Apiman newsletter now](https://www.apiman.io/#newslett
 ## ⚡️ Quick links
 
 * [Download Apiman](https://www.apiman.io/download.html)
-* [Read the latest Apiman Blogs](https://www.apiman.io/support.html)
+* [Read the latest Apiman Blogs](https://www.apiman.io/blog/)
 * [Get Support](https://www.apiman.io/support.html)
 * [Talk Apiman](https://github.com/apiman/apiman/discussions)
 
