@@ -155,7 +155,7 @@ services:
     #  - traefik.http.services.postgres-service.loadbalancer.server.port=5432
 
   elasticsearch:
-    image: elasticsearch:7.17.7
+    image: elasticsearch:7.17.8
     #ports:
     #  - '${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}'
     environment:
