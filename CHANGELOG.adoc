@@ -11,11 +11,17 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Changed
 
+* A variety of dependencies have been updated across the Apiman codebase in order to keep users secure. If you don't want to upgrade, speak to your long-term support provider.
+
+* [manager-api-rest]: Apiman Manager API now has an OpenAPI v3 schema! You can access this at `/openapi.json` or `/openapi.yml`. For example, http://localhost:8080/apiman/openapi.json. By https://github.com/msavy[Marc Savy (@msavy)^].
+
 === Removed
+
+* [manager-api-rest]: Removed obsolete Qmino API documentation generator. I would like to thank the Qmino team for their support over the years. By https://github.com/msavy[Marc Savy (@msavy)^].
 
 === Fixed
 
-**Full Changelog**: link:https://github.com/apiman/apiman/compare/2.2.3.Final...3.1.0-SNAPSHOT[2.2.3.Final...3.1.0-SNAPSHOT]
+**Full Changelog**: link:https://github.com/apiman/apiman/compare/3.0.0.Final...3.1.0-SNAPSHOT[3.0.0.Final...3.1.0-SNAPSHOT]
 // end::3.1.0.Final[]
 
 // tag::3.0.0.Final[]

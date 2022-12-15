@@ -27,8 +27,10 @@ import io.apiman.manager.api.rest.exceptions.DeveloperAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.DeveloperNotFoundException;
 import io.apiman.manager.api.rest.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -39,14 +41,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-
-import io.swagger.annotations.Api;
+import java.util.List;
 
 /**
  * A interface for REST calls for the Developer Portal
  */
 @Path("/developers")
-@Api(tags = "Developers")
+@Tag(name = "Developers")
 @Deprecated(forRemoval = true)
 @RolesAllowed("devportaluser")
 public interface IDeveloperResource {
@@ -56,13 +57,15 @@ public interface IDeveloperResource {
      *
      * @return The list of all public api versions
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @statuscode 200 If the list of public apis was successfully returned
-     * @statuscode 403 If the access is not allowed
      */
     @GET
     @Path("apis")
     @Produces(MediaType.APPLICATION_JSON)
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the list of public apis was successfully returned"),
+            @ApiResponse(responseCode = "403", description = "If the access is not allowed")
+    })
     List<ApiVersionBean> getAllPublicApiVersions() throws NotAuthorizedException;
 
     /**
@@ -70,12 +73,15 @@ public interface IDeveloperResource {
      *
      * @return The list of all developers
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @statuscode 200 If the developer list was successfully returned
-     * @statuscode 403 If the access is not allowed
+
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the developer list was successfully returned"),
+            @ApiResponse(responseCode = "403", description = "If the access is not allowed")
+    })
     List<DeveloperBean> getDevelopers() throws NotAuthorizedException;
 
     /**
@@ -84,14 +90,17 @@ public interface IDeveloperResource {
      * @param bean Information about the new developer
      * @return Full details about the developer that was created
      * @throws InvalidNameException
-     * @throws NotAuthorizedException          when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @statuscode 200 If the developer was successfully created
-     * @statuscode 403 If the access is not allowed
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the developer was successfully created"),
+            @ApiResponse(responseCode = "403", description = "If the access is not allowed")
+    })
     DeveloperBean create(DeveloperBean bean) throws InvalidNameException, NotAuthorizedException, DeveloperAlreadyExistsException;
 
     /**
@@ -100,14 +109,17 @@ public interface IDeveloperResource {
      * @param bean Information about the updated developer
      * @throws DeveloperNotFoundException when trying to get, update, or delete a developer that does not exist
      * @throws NotAuthorizedException     when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @statuscode 204 If the developer was successfully updated
-     * @statuscode 403 If the access is not allowed
-     * @statuscode 404 If the developer does not exist.
+
      */
     @PUT
     @Path("{developerId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "If the developer was successfully updated"),
+            @ApiResponse(responseCode = "403", description = "If the access is not allowed"),
+            @ApiResponse(responseCode = "404", description = "If the developer does not exist.")
+    })
     void update(@PathParam("developerId") String id, UpdateDeveloperBean bean) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -117,14 +129,17 @@ public interface IDeveloperResource {
      * @return The developer
      * @throws DeveloperNotFoundException when trying to get, update, or delete a developer that does not exist
      * @throws NotAuthorizedException     when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @statuscode 200 If the developer was successfully returned
-     * @statuscode 403 If the access is not allowed
-     * @statuscode 404 If the developer does not exist.
+
      */
     @GET
     @Path("{developerId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the developer was successfully returned"),
+            @ApiResponse(responseCode = "403", description = "If the access is not allowed"),
+            @ApiResponse(responseCode = "404", description = "If the developer does not exist.")
+    })
     DeveloperBean get(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -133,13 +148,16 @@ public interface IDeveloperResource {
      * @param id The id of the developer
      * @throws DeveloperNotFoundException when trying to get, update, or delete a developer that does not exist
      * @throws NotAuthorizedException     when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @statuscode 204 If the developer was successfully deleted
-     * @statuscode 403 If the access is not allowed
-     * @statuscode 404 If the developer does not exist.
+
      */
     @DELETE
     @Path("{developerId}")
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "If the developer was successfully deleted"),
+            @ApiResponse(responseCode = "403", description = "If the access is not allowed"),
+            @ApiResponse(responseCode = "404", description = "If the developer does not exist.")
+    })
     void delete(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -150,14 +168,17 @@ public interface IDeveloperResource {
      * @return The list of ClientVersionSummaryBeans
      * @throws DeveloperNotFoundException when trying to get, update, or delete a developer that does not exist
      * @throws NotAuthorizedException     when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @statuscode 200 If the the list was successfully returned
-     * @statuscode 403 If the access is not allowed
-     * @statuscode 404 If the developer does not exist.
+
      */
     @GET
     @Path("{developerId}/clients")
     @Produces(MediaType.APPLICATION_JSON)
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the the list was successfully returned"),
+            @ApiResponse(responseCode = "403", description = "If the access is not allowed"),
+            @ApiResponse(responseCode = "404", description = "If the developer does not exist.")
+    })
     List<ClientVersionSummaryBean> getAllClientVersions(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -168,14 +189,17 @@ public interface IDeveloperResource {
      * @return The list of ContractSummaryBeans
      * @throws DeveloperNotFoundException when trying to get, update, or delete a developer that does not exist
      * @throws NotAuthorizedException     when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @statuscode 200 If the the list was successfully returned
-     * @statuscode 403 If the access is not allowed
-     * @statuscode 404 If the developer does not exist.
+
      */
     @GET
     @Path("{developerId}/contracts")
     @Produces(MediaType.APPLICATION_JSON)
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the the list was successfully returned"),
+            @ApiResponse(responseCode = "403", description = "If the access is not allowed"),
+            @ApiResponse(responseCode = "404", description = "If the developer does not exist.")
+    })
     List<ContractSummaryBean> getAllClientContracts(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -186,14 +210,17 @@ public interface IDeveloperResource {
      * @return The list of ApiVersionBeans
      * @throws DeveloperNotFoundException when trying to get, update, or delete a developer that does not exist
      * @throws NotAuthorizedException     when the user attempts to do or see something that they are not authorized (do not have permission) to
-     * @statuscode 200 If the the list was successfully returned
-     * @statuscode 403 If the access is not allowed
-     * @statuscode 404 If the developer does not exist.
+
      */
     @GET
     @Path("{developerId}/apis")
     @Produces(MediaType.APPLICATION_JSON)
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the the list was successfully returned"),
+            @ApiResponse(responseCode = "403", description = "If the access is not allowed"),
+            @ApiResponse(responseCode = "404", description = "If the developer does not exist.")
+    })
     List<DeveloperApiVersionBeanDto> getAllApiVersions(@PathParam("developerId") String id) throws DeveloperNotFoundException, NotAuthorizedException;
 
     /**
@@ -204,8 +231,7 @@ public interface IDeveloperResource {
      * @param organizationId The id of the organization
      * @param apiId The id of the API
      * @param version The version of the API
-     * @statuscode 200 If the API definition is successfully returned.
-     * @statuscode 404 If the API version does not exist.
+
      * @return The API Definition document (e.g. a Swagger JSON file).
      * @throws DeveloperNotFoundException
      * @throws NotAuthorizedException
@@ -214,6 +240,10 @@ public interface IDeveloperResource {
     @Path("{developerId}/organizations/{organizationId}/apis/{apiId}/versions/{version}/definition")
     @Produces({MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml"})
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the API definition is successfully returned."),
+            @ApiResponse(responseCode = "404", description = "If the API version does not exist.")
+    })
     Response getApiDefinition(@PathParam("developerId") String developerId,
                               @PathParam("organizationId") String organizationId,
                               @PathParam("apiId") String apiId,
@@ -227,8 +257,7 @@ public interface IDeveloperResource {
      * @param organizationId The id of the organization
      * @param apiId The id of the API
      * @param version The version of the API
-     * @statuscode 200 If the API definition is successfully returned.
-     * @statuscode 404 If the API version does not exist.
+
      * @return The API Definition document (e.g. a Swagger JSON file).
      * @throws NotAuthorizedException
      */
@@ -236,6 +265,10 @@ public interface IDeveloperResource {
     @Path("/organizations/{organizationId}/apis/{apiId}/versions/{version}/definition")
     @Produces({MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml"})
     @Deprecated(forRemoval = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the API definition is successfully returned."),
+            @ApiResponse(responseCode = "404", description = "If the API version does not exist.")
+    })
     Response getPublicApiDefinition(@PathParam("organizationId") String organizationId,
                                     @PathParam("apiId") String apiId,
                                     @PathParam("version") String version)
