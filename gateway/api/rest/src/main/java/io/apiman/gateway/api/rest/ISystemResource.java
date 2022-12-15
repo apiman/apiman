@@ -28,15 +28,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.swagger.annotations.Api;
-
 /**
  * The System API.
  *
  * @author eric.wittmann@redhat.com
  */
 @Path("system")
-@Api
 public interface ISystemResource {
     @GET
     @Path("status")

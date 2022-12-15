@@ -13,7 +13,6 @@
   <modules>
     <module>servlet</module>
     <module>war</module>
-    <module>war/micro</module>
     <module>war/wildfly8</module>
     <module>vertx3/vertx3</module>
     <module>vertx3/vertx3-common</module>

@@ -32,14 +32,11 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
-import io.swagger.annotations.Api;
-
 /**
  * The client API.
  *
  * @author eric.wittmann@redhat.com
  */
-@Api
 @Path("/")
 public interface IClientResource {
 

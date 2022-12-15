@@ -162,7 +162,7 @@
     <version.io.apicurio>1.1.26</version.io.apicurio>
     <version.io.netty>4.1.74.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
-    <version.io.swagger>1.6.7</version.io.swagger>
+    <version.io.swagger>2.2.7</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.13</version.io.vertx>
     <version.net.openhft>0.15</version.net.openhft>
@@ -1025,13 +1025,13 @@
 
       <!-- Swagger 2.0 -->
       <dependency>
-        <groupId>io.swagger</groupId>
+        <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-annotations</artifactId>
         <version>${version.io.swagger}</version>
       </dependency>
       <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-jaxrs</artifactId>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-jaxrs2</artifactId>
         <version>${version.io.swagger}</version>
       </dependency>
       <dependency>

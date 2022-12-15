@@ -23,6 +23,11 @@ import io.apiman.gateway.engine.beans.IPolicyProbeRequest;
 import io.apiman.gateway.engine.beans.IPolicyProbeResponse;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,18 +42,11 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 /**
  * The API API.  Ha!
  *
  * @author eric.wittmann@redhat.com
  */
-@io.swagger.annotations.Api
 @Path("")
 public interface IApiResource {
 
@@ -122,12 +120,17 @@ public interface IApiResource {
                               @Suspended final AsyncResponse response) throws NotAuthorizedException;
 
     @POST
-    @ApiOperation(value = "Probe the state of a policy")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "OK", response = IPolicyProbeResponse.class)
-    )
-    @ApiImplicitParams(
-            @ApiImplicitParam(name = "request", dataTypeClass = IPolicyProbeRequest.class)
+    @Operation(
+            description = "Probe the state of a policy",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "OK",
+                    content = @Content(schema = @Schema(implementation = IPolicyProbeResponse.class))
+            ),
+            parameters = @Parameter(
+                    name = "request",
+                    schema = @Schema(implementation = IPolicyProbeRequest.class)
+            )
     )
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

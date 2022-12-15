@@ -23,6 +23,10 @@ import io.apiman.manager.api.beans.clients.ClientVersionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.rest.exceptions.ActionException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -31,8 +35,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
-import io.swagger.annotations.Api;
-
 /**
  * The Action API.  This API allows callers to perform actions on various
  * entities - actions other than the standard REST "crud" actions.
@@ -40,21 +42,23 @@ import io.swagger.annotations.Api;
  * @author eric.wittmann@redhat.com
  */
 @Path("actions")
-@Api(tags = "Actions")
+@Tag(name = "Actions")
 public interface IActionResource {
 
     /**
      * Call this endpoint in order to execute actions for apiman entities such
      * as Plans, APIs, or Clients.  The type of the action must be
      * included in the request payload.
-     * @summary Execute an Entity Action
      * @param action The details about what action to execute.
-     * @statuscode 204 If the action completes successfully.
      * @throws ActionException action is performed but an error occurs during processing
      */
     @PermitAll
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "If the action completes successfully.")
+    })
+    @Operation(description = "Execute an Entity Action")
     void performAction(ActionBean action) throws ActionException, NotAuthorizedException;
 
     /**
@@ -66,12 +70,14 @@ public interface IActionResource {
      *
      * @param action The details about what action to execute.
      * @throws ActionException action is performed but an error occurs during processing
-     * @summary Approve a contract
-     * @statuscode 204 If the action completes successfully.
      */
     @RolesAllowed("apiuser")
     @POST
     @Path("contracts")
     @Consumes(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "If the action completes successfully.")
+    })
+    @Operation(description = " Approve a contract")
     void approveContract(ContractActionDto action) throws ActionException, NotAuthorizedException;
 }

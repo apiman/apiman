@@ -19,15 +19,12 @@ package io.apiman.manager.api.rest;
 import io.apiman.manager.api.beans.idm.NewRoleBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UpdateRoleBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.RoleAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
-import io.swagger.annotations.Api;
-
-import java.util.List;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
@@ -39,16 +36,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * The Role API. Used to manage roles. Note: not used to manage users or user
  * membership in roles. This API simply provides a way to create and manage role
- * definitions. Typically this API is only available to system admins.
- * 
+ * definitions. Typically, this API is only available to system admins.
+ *
  * @author eric.wittmann@redhat.com
  */
 @Path("roles")
-@Api(tags = "Roles")
+@Tag(name = "Roles")
 @PermitAll
 public interface IRoleResource {
 
@@ -59,7 +57,6 @@ public interface IRoleResource {
      * @summary Create Role
      * @servicetag admin
      * @param bean The new role.
-     * @statuscode 200 If the role is created successfully.
      * @return Full information about the created role.
      * @throws RoleAlreadyExistsException when role already exists
      * @throws NotAuthorizedException when not authorized to invoke this method
@@ -67,17 +64,22 @@ public interface IRoleResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the role is created successfully.")
+    })
     public RoleBean create(NewRoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException;
 
     /**
      * This endpoint lists all of the roles currently defined in apiman.
      * @summary List all Roles
      * @servicetag admin
-     * @statuscode 200 If the role list is returned successfully.
      * @return A list of roles.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the role list is returned successfully.")
+    })
     public List<RoleBean> list();
 
     /**
@@ -86,29 +88,33 @@ public interface IRoleResource {
      * @summary Get a Role by ID
      * @servicetag admin
      * @param roleId The role ID.
-     * @statuscode 200 If the role is returned successfully.
      * @return A role.
      * @throws RoleNotFoundException when a request is sent for a role that does not exist
      */
     @GET
     @Path("{roleId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the role is returned successfully.")
+    })
     public RoleBean get(@PathParam("roleId") String roleId) throws RoleNotFoundException;
 
     /**
-     * Use this endpoint to update the information about an existing role.  The 
+     * Use this endpoint to update the information about an existing role.  The
      * role is identified by its ID.
      * @summary Update a Role by ID
      * @servicetag admin
      * @param roleId The role ID.
      * @param bean Updated role information.
-     * @statuscode 204 If the role is updated successfully.
      * @throws RoleNotFoundException when a request is sent for a role that does not exist
      * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @PUT
     @Path("{roleId}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "If the role is updated successfully.")
+    })
     public void update(@PathParam("roleId") String roleId, UpdateRoleBean bean) throws RoleNotFoundException,
             NotAuthorizedException;
 
@@ -117,11 +123,13 @@ public interface IRoleResource {
      * @summary Delete a Role by ID
      * @servicetag admin
      * @param roleId The role ID.
-     * @statuscode 204 If the role is deleted.
      * @throws RoleNotFoundException when a request is sent for a role that does not exist
      * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @DELETE
     @Path("{roleId}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "If the role is deleted.")
+    })
     public void delete(@PathParam("roleId") String roleId) throws RoleNotFoundException, NotAuthorizedException;
 }
