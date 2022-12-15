@@ -27,7 +27,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>io.swagger</groupId>
+      <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations</artifactId>
     </dependency>
     <dependency>
@@ -46,40 +46,4 @@
       <version>${version.org.jboss.resteasy}</version>
     </dependency>
   </dependencies>
-
-  <profiles>
-    <profile>
-      <id>apidocs</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.qmino</groupId>
-            <artifactId>miredot-plugin</artifactId>
-            <version>${version.com.qmino.miredot-plugin}</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>restdoc</goal>
-                </goals>
-                <configuration>
-                  <output>
-                    <title>API Manager REST Services (${project.version})</title>
-                    <html>
-                      <initialCollapseLevel>1</initialCollapseLevel>
-                      <baseUrl>http://localhost:8080/apiman</baseUrl>
-                      <hideIssuesTab>true</hideIssuesTab>
-                    </html>
-                  </output>
-                </configuration>
-              </execution>
-            </executions>
-            <configuration>
-              <licence>cHJvamVjdHxpby5hcGltYW4uYXBpbWFuLW1hbmFnZXItYXBpLXJlc3R8MjAyMy0wMS0zMXxmYWxzZXwtMSNNQ3dDRkJlbVhWb2dLTk5CYXlkNm9GVUZ6amNNQjc3REFoUUloTUxvVkovY0pyNERVM1c1V0h1WVhSaTl0QT09</licence>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
 </project>

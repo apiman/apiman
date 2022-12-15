@@ -25,10 +25,11 @@ import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.rest.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.util.List;
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,8 +39,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import io.swagger.annotations.Api;
+import java.util.List;
 
 /**
  * The Gateway API.
@@ -47,7 +47,7 @@ import io.swagger.annotations.Api;
  * @author eric.wittmann@redhat.com
  */
 @Path("gateways")
-@Api(tags = "Gateways")
+@Tag(name = "Gateways")
 @PermitAll // Nobody without Apiman admin permissions can do these actions anyway, so no need to guard with IDM roles.
 public interface IGatewayResource {
 
@@ -59,23 +59,27 @@ public interface IGatewayResource {
      * @summary Test a Gateway
      * @servicetag admin
      * @param bean Details of the Gateway for testing.
-     * @statuscode 200 If the test is performed (regardless of the outcome of the test).
      * @return The result of testing the Gateway settings.
      * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the test is performed (regardless of the outcome of the test).")
+    })
     public GatewayTestResultBean test(NewGatewayBean bean) throws NotAuthorizedException;
 
     /**
      * This endpoint returns a list of all the Gateways that have been configured.
      * @summary List All Gateways
-     * @statuscode 200 If the gateways are successfully returned.
      * @return A list of configured Gateways.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the gateways are successfully returned.")
+    })
     public List<GatewaySummaryBean> list();
 
     /**
@@ -83,7 +87,6 @@ public interface IGatewayResource {
      * @summary Create a Gateway
      * @servicetag admin
      * @param bean The details of the new Gateway.
-     * @statuscode 200 If the Gateway is created successfully.
      * @return The newly created Gateway.
      * @throws GatewayAlreadyExistsException when the gateway already exists
      * @throws NotAuthorizedException when attempt to do something user is not authorized to do
@@ -91,6 +94,9 @@ public interface IGatewayResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the Gateway is created successfully.")
+    })
     public GatewayBean create(NewGatewayBean bean) throws GatewayAlreadyExistsException, NotAuthorizedException;
 
     /**
@@ -98,7 +104,6 @@ public interface IGatewayResource {
      * @summary Get a Gateway by ID
      * @servicetag admin
      * @param gatewayId The ID of the Gateway to get.
-     * @statuscode If the Gateway is returned successfully.
      * @return The Gateway identified by {gatewayId}
      * @throws GatewayNotFoundException when gateway is not found
      * @throws NotAuthorizedException when attempt to do something user is not authorized to do
@@ -106,6 +111,9 @@ public interface IGatewayResource {
     @GET
     @Path("{gatewayId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "If", description = "the Gateway is returned successfully.")
+    })
     public GatewayBean get(@PathParam("gatewayId") String gatewayId) throws GatewayNotFoundException, NotAuthorizedException;
 
     /**
@@ -117,13 +125,15 @@ public interface IGatewayResource {
      * @servicetag admin
      * @param gatewayId The ID of the Gateway to update.
      * @param bean The Gateway information to update.  All fields are optional.
-     * @statuscode 204 If the update is successful.
      * @throws GatewayNotFoundException when gateway is not found
      * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @PUT
     @Path("{gatewayId}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "If the update is successful.")
+    })
     public void update(@PathParam("gatewayId") String gatewayId, UpdateGatewayBean bean)
             throws GatewayNotFoundException, NotAuthorizedException;
 
@@ -132,12 +142,14 @@ public interface IGatewayResource {
      * @summary Delete a Gateway
      * @servicetag admin
      * @param gatewayId The ID of the Gateway to delete.
-     * @statuscode 204 If the delete is successful.
      * @throws GatewayNotFoundException when gateway is not found
      * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @DELETE
     @Path("{gatewayId}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "If the delete is successful.")
+    })
     public void delete(@PathParam("gatewayId") String gatewayId)
             throws GatewayNotFoundException, NotAuthorizedException;
 

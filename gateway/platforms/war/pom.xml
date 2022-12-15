@@ -68,12 +68,12 @@
       <artifactId>apiman-gateway-api-rest</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>io.swagger</groupId>
+          <groupId>io.swagger.core.v3</groupId>
           <artifactId>swagger-annotations</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>io.swagger</groupId>
-          <artifactId>swagger-jaxrs</artifactId>
+          <groupId>io.swagger.core.v3</groupId>
+          <artifactId>swagger-jaxrs2</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

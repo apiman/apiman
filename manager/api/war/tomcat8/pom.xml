@@ -123,8 +123,8 @@
 
     <!-- Other Libs -->
     <dependency>
-      <groupId>io.swagger</groupId>
-      <artifactId>swagger-jaxrs</artifactId>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-jaxrs2</artifactId>
       <exclusions>
         <exclusion>
           <groupId>javax.ws.rs</groupId>
