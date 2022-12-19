@@ -155,7 +155,7 @@
     <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
     <version.org.mvel>2.4.12.Final</version.org.mvel>
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
-    <version.io.github.classgraph>4.8.149</version.io.github.classgraph>
+    <version.io.github.classgraph>4.8.152</version.io.github.classgraph>
     <version.org.slf4j>1.7.36</version.org.slf4j>
     <version.org.testcontainers>1.17.3</version.org.testcontainers>
     <version.io.apicurio>1.1.26</version.io.apicurio>
