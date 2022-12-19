@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -186,7 +188,7 @@ public class KeycloakOAuthFactory {
         URI uri;
         try {
             uri = new URIBuilder(authServer)
-                          .setPathSegments(List.of("realms", realmName))
+                          .setPathSegments(Stream.concat(new URIBuilder(authServer).getPathSegments().stream(), Stream.of("realms", realmName)).collect(Collectors.toList()))
                           .build();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
