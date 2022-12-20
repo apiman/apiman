@@ -152,7 +152,7 @@
     <version.org.keycloak>18.0.2</version.org.keycloak>
     <version.org.lz4.lz4-java>1.8.0</version.org.lz4.lz4-java>
     <version.org.mockito>3.12.1</version.org.mockito>
-    <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
+    <version.org.mapstruct>1.5.3.Final</version.org.mapstruct>
     <version.org.mvel>2.4.12.Final</version.org.mvel>
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
     <version.io.github.classgraph>4.8.152</version.io.github.classgraph>
