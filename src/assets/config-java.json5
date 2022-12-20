@@ -37,7 +37,7 @@
   "backendRoles": ["view-profile", "devportaluser"],
   // set authentication details when pressing "login" telling where to redirect for SSO login with keycloak
   "auth": {
-    "url": "${apiman.auth.url}",
+    "url": "${apiman.auth.public.url}",
     "realm": "${apiman.auth.realm}",
     "clientId": "devportal"
   },

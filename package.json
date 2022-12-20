@@ -10,6 +10,7 @@
     "lint": "ng lint && stylelint '**/*.scss'",
     "lint-fix": "ng lint --fix && stylelint --fix '**/*.scss'",
     "build-production": "ng build --configuration production",
+    "build-production-mvn": "ng build --configuration production,java --output-path=target/classes/ --base-href=/portal/",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "prepare": "husky install"

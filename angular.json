@@ -50,7 +50,15 @@
               "node_modules/simplebar/dist/simplebar.min.js"
             ]
           },
-          "configurations": {
+          "configurations": { // --configuration production,java
+            "java": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.java.ts"
+                }
+              ]
+            },
             "production": {
               "sourceMap": true,
               "budgets": [
