@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * The bean/model used when updating a new policy definition.
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author eric.wittmann@redhat.com
  */
 @JsonInclude(Include.NON_NULL)
+@Schema(description = "Update a new policy definition")
 public class UpdatePolicyDefinitionBean implements Serializable {
 
     private static final long serialVersionUID = 350049376316732992L;

@@ -65,7 +65,7 @@ public interface ISearchResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the search is successful.")
+            @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
     })
     public SearchResultsBean<OrganizationSummaryBean> searchOrgs(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
@@ -87,7 +87,7 @@ public interface ISearchResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the search is successful.")
+            @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
     })
     public SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException, NotAuthorizedException;
@@ -107,7 +107,7 @@ public interface ISearchResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the search is successful.")
+            @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
     })
     public SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
@@ -126,7 +126,7 @@ public interface ISearchResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the search is successful.")
+            @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
     })
     public SearchResultsBean<AvailableApiBean> searchApiCatalog(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
@@ -142,7 +142,7 @@ public interface ISearchResource {
     @Path("apiCatalog/namespaces")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the namespaces were successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the namespaces were successfully returned.", useReturnTypeSchema = true)
     })
     public List<ApiNamespaceBean> getApiNamespaces();
 
@@ -161,7 +161,7 @@ public interface ISearchResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the search is successful.")
+            @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
     })
     SearchResultsBean<UserSearchResult> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
 
@@ -179,7 +179,7 @@ public interface ISearchResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the search completes successfully.")
+            @ApiResponse(responseCode = "200", description = "If the search completes successfully.", useReturnTypeSchema = true)
     })
     public SearchResultsBean<RoleBean> searchRoles(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;

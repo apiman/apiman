@@ -1195,14 +1195,16 @@ public interface IOrganizationResource {
     @Path("{organizationId}/apis/{apiId}/tags")
     @Operation(
             parameters = {
-
+                @Parameter(name = "organizationId", description = "Organization ID"),
+                @Parameter(name = "apiId", description = "API ID")
             },
             description = "Tag an API",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Tag was created successfully.")
             })
     void tagApi(@PathParam("organizationId") String organizationId,
-                @PathParam("apiId") String apiId, KeyValueTagDto bean)
+                @PathParam("apiId") String apiId,
+                KeyValueTagDto bean)
             throws ApiNotFoundException, NotAuthorizedException;
 
     /**
@@ -1251,14 +1253,16 @@ public interface IOrganizationResource {
             },
             description = "Get API Activity",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the audit information is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the audit information is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist."),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
             })
     public SearchResultsBean<AuditEntryBean> getApiActivity(
-            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
-            @QueryParam("page") int page, @QueryParam("count") int pageSize) throws ApiNotFoundException,
-            NotAuthorizedException;
+            @PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId,
+            @QueryParam("page") int page,
+            @QueryParam("count") int pageSize
+    ) throws ApiNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to create a new version of the API.
@@ -1278,17 +1282,16 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "bean", description = "Initial information about the new API version.")
-
             },
             description = "Create API Version",
-
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the API version is created successfully."),
+                    @ApiResponse(responseCode = "200", description = "If the API version is created successfully.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist."),
                     @ApiResponse(responseCode = "409", description = "If the API version already exists.")
             })
     public ApiVersionBeanDto createApiVersion(@PathParam("organizationId") String organizationId,
-                                              @PathParam("apiId") String apiId, NewApiVersionBean bean)
+                                              @PathParam("apiId") String apiId,
+                                              NewApiVersionBean bean)
             throws ApiNotFoundException, NotAuthorizedException, InvalidVersionException,
             ApiVersionAlreadyExistsException;
 
@@ -1307,12 +1310,10 @@ public interface IOrganizationResource {
             parameters = {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "apiId", description = "The API ID.")
-
             },
             description = "List API Versions",
-
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the list of API versions is successfully returned.")
+                    @ApiResponse(responseCode = "200", description = "If the list of API versions is successfully returned.", useReturnTypeSchema = true)
             })
     public List<ApiVersionSummaryBean> listApiVersions(@PathParam("organizationId") String organizationId,
                                                        @PathParam("apiId") String apiId) throws ApiNotFoundException;
@@ -1332,16 +1333,15 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
-
             },
             description = "Get API Version",
-
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the API version is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the API version is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API version does not exist.")
             })
     public ApiVersionBeanDto getApiVersion(@PathParam("organizationId") String organizationId,
-                                           @PathParam("apiId") String apiId, @PathParam("version") String version)
+                                           @PathParam("apiId") String apiId,
+                                           @PathParam("version") String version)
             throws ApiVersionNotFoundException;
 
     /**
@@ -1362,16 +1362,15 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
-
             },
             description = "Get API Version Status",
-
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the status information is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the status information is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API version does not exist.")
             })
     public ApiVersionStatusBean getApiVersionStatus(@PathParam("organizationId") String organizationId,
-                                                    @PathParam("apiId") String apiId, @PathParam("version") String version)
+                                                    @PathParam("apiId") String apiId,
+                                                    @PathParam("version") String version)
             throws ApiVersionNotFoundException, NotAuthorizedException;
 
     /**
@@ -1392,16 +1391,15 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
-
             },
             description = "Get API Definition",
-
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the API definition is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the API version does not exist.")
             })
     public Response getApiDefinition(@PathParam("organizationId") String organizationId,
-                                     @PathParam("apiId") String apiId, @PathParam("version") String version)
+                                     @PathParam("apiId") String apiId,
+                                     @PathParam("version") String version)
             throws ApiVersionNotFoundException;
 
     /**
@@ -1421,17 +1419,16 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
-
             },
             description = "Get API Endpoint",
-
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the endpoint information is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the endpoint information is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
             })
     @Produces(MediaType.APPLICATION_JSON)
     public ApiVersionEndpointSummaryBean getApiVersionEndpointInfo(@PathParam("organizationId") String organizationId,
-                                                                   @PathParam("apiId") String apiId, @PathParam("version") String version)
+                                                                   @PathParam("apiId") String apiId,
+                                                                   @PathParam("version") String version)
             throws ApiVersionNotFoundException, InvalidApiStatusException, GatewayNotFoundException;
 
     /**
@@ -1455,7 +1452,7 @@ public interface IOrganizationResource {
             description = "Update API Version",
             requestBody = @RequestBody(description = "Updated information about the API version."),
             responses = {
-                    @ApiResponse(responseCode = "204", description = "If the API version information was successfully updated."),
+                    @ApiResponse(responseCode = "204", description = "If the API version information was successfully updated.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
             })
     public ApiVersionBeanDto updateApiVersion(@PathParam("organizationId") String organizationId,
@@ -1566,13 +1563,15 @@ public interface IOrganizationResource {
             },
             description = "Get API Version Activity",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the audit activity entries are successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the audit activity entries are successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API version does not exist.")
             })
-    public SearchResultsBean<AuditEntryBean> getApiVersionActivity(
-            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
-            @PathParam("version") String version, @QueryParam("page") int page,
-            @QueryParam("count") int pageSize) throws ApiVersionNotFoundException, NotAuthorizedException;
+    public SearchResultsBean<AuditEntryBean> getApiVersionActivity(@PathParam("organizationId") String organizationId,
+                                                                   @PathParam("apiId") String apiId,
+                                                                   @PathParam("version") String version,
+                                                                   @QueryParam("page") int page,
+                                                                   @QueryParam("count") int pageSize
+    ) throws ApiVersionNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to list the Plans configured for the given API version.
@@ -1592,7 +1591,7 @@ public interface IOrganizationResource {
             },
             description = "List API Plans",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the API plans are successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the API plans are successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API cannot be found.")
             })
     public List<ApiPlanSummaryBean> getApiVersionPlans(@PathParam("organizationId") String organizationId,
@@ -1605,9 +1604,11 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Reordering of plans was successful."),
+                    @ApiResponse(responseCode = "200", description = "Reordering of plans was successful.")
             })
-    public void reorderApiPlans(@PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId, @PathParam("version") String version,
+    public void reorderApiPlans(@PathParam("organizationId") String organizationId,
+                                @PathParam("apiId") String apiId,
+                                @PathParam("version") String version,
                                 ApiPlanOrderDto apiPlanOrder)
             throws ApiVersionNotFoundException;
 
@@ -1632,11 +1633,12 @@ public interface IOrganizationResource {
             description = "Add API Policy",
             requestBody = @RequestBody(description = "Information about the new Policy."),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the Policy is successfully added."),
+                    @ApiResponse(responseCode = "200", description = "If the Policy is successfully added.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
             })
     public PolicyBean createApiPolicy(@PathParam("organizationId") String organizationId,
-                                      @PathParam("apiId") String apiId, @PathParam("version") String version,
+                                      @PathParam("apiId") String apiId,
+                                      @PathParam("version") String version,
                                       NewPolicyBean bean) throws OrganizationNotFoundException, ApiVersionNotFoundException,
             NotAuthorizedException;
 
@@ -1661,11 +1663,12 @@ public interface IOrganizationResource {
             },
             description = "Get API Policy",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the Policy is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the Policy is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
             })
     public PolicyBean getApiPolicy(@PathParam("organizationId") String organizationId,
-                                   @PathParam("apiId") String apiId, @PathParam("version") String version,
+                                   @PathParam("apiId") String apiId,
+                                   @PathParam("version") String version,
                                    @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ApiVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException;
 
@@ -1696,8 +1699,10 @@ public interface IOrganizationResource {
                     @ApiResponse(responseCode = "404", description = "If the Policy does not exist.")
             })
     public void updateApiPolicy(@PathParam("organizationId") String organizationId,
-                                @PathParam("apiId") String apiId, @PathParam("version") String version,
-                                @PathParam("policyId") long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
+                                @PathParam("apiId") String apiId,
+                                @PathParam("version") String version,
+                                @PathParam("policyId") long policyId,
+                                UpdatePolicyBean bean) throws OrganizationNotFoundException,
             ApiVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
     /**
@@ -1724,7 +1729,8 @@ public interface IOrganizationResource {
                     @ApiResponse(responseCode = "404", description = "If the Policy does not exist.")
             })
     public void deleteApiPolicy(@PathParam("organizationId") String organizationId,
-                                @PathParam("apiId") String apiId, @PathParam("version") String version,
+                                @PathParam("apiId") String apiId,
+                                @PathParam("version") String version,
                                 @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ApiVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException;
 
@@ -1750,7 +1756,8 @@ public interface IOrganizationResource {
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
             })
     public void deleteApiDefinition(@PathParam("organizationId") String organizationId,
-                                    @PathParam("apiId") String apiId, @PathParam("version") String version)
+                                    @PathParam("apiId") String apiId,
+                                    @PathParam("version") String version)
             throws OrganizationNotFoundException, ApiVersionNotFoundException,
             NotAuthorizedException;
 
@@ -1773,11 +1780,12 @@ public interface IOrganizationResource {
             },
             description = "List All API Policies",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the list of Policies is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the list of Policies is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
             })
     public List<PolicySummaryBean> listApiPolicies(@PathParam("organizationId") String organizationId,
-                                                   @PathParam("apiId") String apiId, @PathParam("version") String version)
+                                                   @PathParam("apiId") String apiId,
+                                                   @PathParam("version") String version)
             throws OrganizationNotFoundException, ApiVersionNotFoundException,
             NotAuthorizedException;
 
@@ -1810,7 +1818,8 @@ public interface IOrganizationResource {
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
             })
     public void reorderApiPolicies(@PathParam("organizationId") String organizationId,
-                                   @PathParam("apiId") String apiId, @PathParam("version") String version,
+                                   @PathParam("apiId") String apiId,
+                                   @PathParam("version") String version,
                                    PolicyChainBean policyChain) throws OrganizationNotFoundException,
             ApiVersionNotFoundException, NotAuthorizedException;
 
@@ -1836,11 +1845,12 @@ public interface IOrganizationResource {
             },
             description = "Get API Policy Chain",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the Policy Chain is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the Policy Chain is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
             })
     public PolicyChainBean getApiPolicyChain(@PathParam("organizationId") String organizationId,
-                                             @PathParam("apiId") String apiId, @PathParam("version") String version,
+                                             @PathParam("apiId") String apiId,
+                                             @PathParam("version") String version,
                                              @PathParam("planId") String planId) throws ApiVersionNotFoundException;
 
     /**
@@ -1864,12 +1874,14 @@ public interface IOrganizationResource {
             },
             description = "List API Contracts",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the list of Contracts is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the list of Contracts is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
             })
     public List<ContractSummaryBean> getApiVersionContracts(
-            @PathParam("organizationId") String organizationId, @PathParam("apiId") String apiId,
-            @PathParam("version") String version, @QueryParam("page") int page,
+            @PathParam("organizationId") String organizationId,
+            @PathParam("apiId") String apiId,
+            @PathParam("version") String version,
+            @QueryParam("page") int page,
             @QueryParam("count") int pageSize) throws ApiVersionNotFoundException, NotAuthorizedException;
 
     /*
@@ -1900,7 +1912,7 @@ public interface IOrganizationResource {
             },
             requestBody = @RequestBody(description = "Information about the new Plan."),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the Plan is successfully created."),
+                    @ApiResponse(responseCode = "200", description = "If the Plan is successfully created.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist.")
             })
     public PlanBean createPlan(@PathParam("organizationId") String organizationId, NewPlanBean bean)
@@ -1928,7 +1940,7 @@ public interface IOrganizationResource {
             },
             description = "Get Plan By ID",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the Plan is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the Plan is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist."),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
             })
@@ -1957,7 +1969,7 @@ public interface IOrganizationResource {
             description = "Get Plan Activity",
 
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the audit information is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the audit information is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist."),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
             })
@@ -1981,7 +1993,7 @@ public interface IOrganizationResource {
             },
             description = "List Plans",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the list of Plans is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the list of Plans is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist.")
             })
     public List<PlanSummaryBean> listPlans(@PathParam("organizationId") String organizationId)
@@ -2035,7 +2047,7 @@ public interface IOrganizationResource {
             description = "Create Plan Version",
             requestBody = @RequestBody(description = "Initial information about the new Plan version."),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the Plan version is created successfully."),
+                    @ApiResponse(responseCode = "200", description = "If the Plan version is created successfully.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist."),
                     @ApiResponse(responseCode = "409", description = "If the Plan version already exists.")
             })
@@ -2061,7 +2073,7 @@ public interface IOrganizationResource {
             },
             description = "List Plan Versions",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the list of Plan versions is successfully returned.")
+                    @ApiResponse(responseCode = "200", description = "If the list of Plan versions is successfully returned.", useReturnTypeSchema = true)
             })
     public List<PlanVersionSummaryBean> listPlanVersions(@PathParam("organizationId") String organizationId,
                                                          @PathParam("planId") String planId) throws PlanNotFoundException, NotAuthorizedException;
@@ -2085,7 +2097,7 @@ public interface IOrganizationResource {
             },
             description = "Get Plan Version",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the Plan version is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the Plan version is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan version does not exist.")
             })
     public PlanVersionBean getPlanVersion(@PathParam("organizationId") String organizationId,
@@ -2113,7 +2125,7 @@ public interface IOrganizationResource {
             },
             description = "Get Plan Version Activity",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the audit activity entries are successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the audit activity entries are successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan version does not exist.")
             })
     public SearchResultsBean<AuditEntryBean> getPlanVersionActivity(@PathParam("organizationId") String organizationId,
@@ -2142,11 +2154,12 @@ public interface IOrganizationResource {
             description = "Add Plan Policy",
             requestBody = @RequestBody(description = "Information about the new Policy."),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the Policy is successfully added."),
+                    @ApiResponse(responseCode = "200", description = "If the Policy is successfully added.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
             })
     public PolicyBean createPlanPolicy(@PathParam("organizationId") String organizationId,
-                                       @PathParam("planId") String planId, @PathParam("version") String version,
+                                       @PathParam("planId") String planId,
+                                       @PathParam("version") String version,
                                        NewPolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
             NotAuthorizedException;
 
@@ -2169,11 +2182,12 @@ public interface IOrganizationResource {
             },
             description = "List All Plan Policies",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the list of Policies is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the list of Policies is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
             })
     public List<PolicySummaryBean> listPlanPolicies(@PathParam("organizationId") String organizationId,
-                                                    @PathParam("planId") String planId, @PathParam("version") String version)
+                                                    @PathParam("planId") String planId,
+                                                    @PathParam("version") String version)
             throws OrganizationNotFoundException, PlanVersionNotFoundException,
             NotAuthorizedException;
 
@@ -2198,7 +2212,7 @@ public interface IOrganizationResource {
             },
             description = "Get Plan Policy",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the Policy is successfully returned."),
+                    @ApiResponse(responseCode = "200", description = "If the Policy is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
             })
     public PolicyBean getPlanPolicy(@PathParam("organizationId") String organizationId,
@@ -2321,7 +2335,8 @@ public interface IOrganizationResource {
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
             })
     public void reorderPlanPolicies(@PathParam("organizationId") String organizationId,
-                                    @PathParam("planId") String planId, @PathParam("version") String version,
+                                    @PathParam("planId") String planId,
+                                    @PathParam("version") String version,
                                     PolicyChainBean policyChain) throws OrganizationNotFoundException,
             PlanVersionNotFoundException, NotAuthorizedException;
 
@@ -2417,7 +2432,7 @@ public interface IOrganizationResource {
             },
             description = "List Organization Members",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the list of members is returned successfully.")
+                    @ApiResponse(responseCode = "200", description = "If the list of members is returned successfully.", useReturnTypeSchema = true)
             })
     public List<MemberBean> listMembers(@PathParam("organizationId") String organizationId)
             throws OrganizationNotFoundException, NotAuthorizedException;
@@ -2451,7 +2466,7 @@ public interface IOrganizationResource {
             },
             description = "Get API Usage Metrics",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.")
+                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
     public UsageHistogramBean getUsage(@PathParam("organizationId") String organizationId,
                                        @PathParam("apiId") String apiId,
@@ -2483,7 +2498,7 @@ public interface IOrganizationResource {
             },
             description = "Get API Usage Metrics (per Client)",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.")
+                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
     public UsagePerClientBean getUsagePerClient(
             @PathParam("organizationId") String organizationId,
@@ -2516,7 +2531,7 @@ public interface IOrganizationResource {
             },
             description = "Get API Usage Metrics (per Plan)",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.")
+                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
     public UsagePerPlanBean getUsagePerPlan(
             @PathParam("organizationId") String organizationId,
@@ -2552,7 +2567,7 @@ public interface IOrganizationResource {
             },
             description = "Get API Response Statistics (Histogram)",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.")
+                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
     public ResponseStatsHistogramBean getResponseStats(@PathParam("organizationId") String organizationId,
                                                        @PathParam("apiId") String apiId,
@@ -2585,7 +2600,7 @@ public interface IOrganizationResource {
             },
             description = "Get API Response Statistics (Summary)",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.")
+                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
     public ResponseStatsSummaryBean getResponseStatsSummary(
             @PathParam("organizationId") String organizationId,
@@ -2616,7 +2631,7 @@ public interface IOrganizationResource {
             },
             description = "Get API Response Statistics (per Client)",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.")
+                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
     public ResponseStatsPerClientBean getResponseStatsPerClient(
             @PathParam("organizationId") String organizationId,
@@ -2647,8 +2662,7 @@ public interface IOrganizationResource {
             },
             description = "Get API Response Statistics (per Plan)",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned."),
-
+                    @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
     public ResponseStatsPerPlanBean getResponseStatsPerPlan(
             @PathParam("organizationId") String organizationId,
