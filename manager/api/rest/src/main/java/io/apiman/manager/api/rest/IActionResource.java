@@ -58,7 +58,7 @@ public interface IActionResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If the action completes successfully.")
     })
-    @Operation(description = "Execute an Entity Action")
+    @Operation(summary = "Execute an Entity Action")
     void performAction(ActionBean action) throws ActionException, NotAuthorizedException;
 
     /**
@@ -78,6 +78,6 @@ public interface IActionResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If the action completes successfully.")
     })
-    @Operation(description = " Approve a contract")
+    @Operation(summary = " Approve a contract")
     void approveContract(ContractActionDto action) throws ActionException, NotAuthorizedException;
 }
