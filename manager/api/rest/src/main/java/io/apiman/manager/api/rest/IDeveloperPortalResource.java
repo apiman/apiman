@@ -65,8 +65,10 @@ public interface IDeveloperPortalResource {
     @Path("organizations")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Create a 'home' organization on behalf of the portal user " +
-            "(they may not normally have permissions to do this themselves).")
+    @Operation(
+            summary = "Create home org for developer",
+            description = "Create a 'home' organization on behalf of the portal user (they may not normally have permissions to do this themselves)."
+    )
     Response createHomeOrgForDeveloper(NewOrganizationBean newOrg)
             throws OrganizationAlreadyExistsException;
 

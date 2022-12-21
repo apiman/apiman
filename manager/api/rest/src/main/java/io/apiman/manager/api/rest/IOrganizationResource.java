@@ -99,7 +99,6 @@ import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.exceptions.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -143,7 +142,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
             requestBody = @RequestBody(description = "Information about the new Organization", required = true),
-            description = "Create Organization",
+            summary = "Create Organization",
             responses = @ApiResponse(responseCode = "200", description = "If the Organization was successfully created.", useReturnTypeSchema = true)
     )
     public OrganizationBean createOrg(NewOrganizationBean bean) throws OrganizationAlreadyExistsException,
@@ -160,10 +159,9 @@ public interface IOrganizationResource {
     @Path("{organizationId}")
     @Operation(
             parameters = {
-
                     @Parameter(name = "organizationId", description = "The Organization ID to delete")
             },
-            description = "Delete an organization",
+            summary = "Delete an organization",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Organization was successfully deleted"),
                     @ApiResponse(responseCode = "409", description = "If the delete preconditions have not been met (i.e. sub-elements are still active, such as still-published APIs).")
@@ -185,9 +183,9 @@ public interface IOrganizationResource {
             parameters = {
                     @Parameter(name = "organizationId", description = "The Organization id.")
             },
-            description = "Get Organization By ID",
+            summary = "Get Organization By ID",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "If the Organization was successfully returned"),
+                    @ApiResponse(responseCode = "200", description = "If the Organization was successfully returned", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist")
             })
     public OrganizationBean getOrg(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException;
@@ -205,7 +203,7 @@ public interface IOrganizationResource {
             parameters = {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
             },
-            description = "Update Organization By ID",
+            summary = "Update Organization By ID",
             requestBody = @RequestBody(description = "Updated Organization information."),
             responses = {
             @ApiResponse(responseCode = "200", description = "If the Organization meta-data is successfully updated."),
@@ -232,7 +230,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "page", description = "Which page of activity results to return."),
                     @Parameter(name = "pageSize", description = "The number of entries per page.")
             },
-            description = "Get Organization Activity",
+            summary = "Get Organization Activity",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the audit information is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist.")
@@ -267,7 +265,7 @@ public interface IOrganizationResource {
             parameters = {
                     @Parameter(name = "organizationId", description = "The Organization ID.")
             },
-            description = "Create Client",
+            summary = "Create Client",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Client is successfully created."),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist.")
@@ -290,7 +288,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID the client exists within"),
                     @Parameter(name = "clientId", description = "The ClientApp ID to delete")
             },
-            description = "Delete a client",
+            summary = "Delete a client",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Organization was successfully deleted"),
                     @ApiResponse(responseCode = "409", description = "If the delete preconditions have not been met (i.e. sub-elements are still active, such as still-registered ClientVersions).")
@@ -316,7 +314,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "clientId", description = "The Client ID.")
             },
-            description = "Get Client By ID",
+            summary = "Get Client By ID",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Client is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist."),
@@ -344,7 +342,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "pageSize", description = "The number of entries per page to return.")
 
             },
-            description = "Get Client Activity",
+            summary = "Get Client Activity",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the audit information is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist."),
@@ -368,9 +366,8 @@ public interface IOrganizationResource {
     @Operation(
             parameters = {
                     @Parameter(name = "organizationId", description = "The Organization ID.")
-
             },
-            description = "List Clients",
+            summary = "List Clients",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of Clients is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist.")
@@ -395,7 +392,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "bean", description = "Updated Client information.")
 
             },
-            description = "Update Client",
+            summary = "Update Client",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Client is updated successfully."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist.")
@@ -424,7 +421,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "bean", description = "Initial information about the new Client version.")
 
             },
-            description = "Create Client Version",
+            summary = "Create Client Version",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Client version is created successfully."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist."),
@@ -451,7 +448,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "clientId", description = "The Client ID.")
 
             },
-            description = "List Client Versions",
+            summary = "List Client Versions",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of Client versions is successfully returned.")
             })
@@ -484,7 +481,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "bean", description = "The new custom API Key (or empty to auto-generate a new one).")
 
             },
-            description = "Update API Key",
+            summary = "Update API Key",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Client's API Key is successfully updated."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist."),
@@ -513,7 +510,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "clientId", description = "The Client ID."),
                     @Parameter(name = "version", description = "The Client Version.")
             },
-            description = "Get API Key",
+            summary = "Get API Key",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Client's API Key is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist.")
@@ -540,7 +537,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Client version.")
 
             },
-            description = "Get Client Version",
+            summary = "Get Client Version",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Client version is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Client version does not exist.")
@@ -569,7 +566,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "page", description = "Which page of activity data to return."),
                     @Parameter(name = "pageSize", description = "The number of entries per page to return.")
             },
-            description = "Get Client Version Activity",
+            summary = "Get Client Version Activity",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the audit activity entries are successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Client version does not exist.")
@@ -601,7 +598,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "toDate", description = "The end of a valid date range.")
 
             },
-            description = "Get Client Usage Metrics (per API)",
+            summary = "Get Client Usage Metrics (per API)",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.")
             })
@@ -636,7 +633,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "clientId", description = "The Client ID."),
                     @Parameter(name = "version", description = "The Client version.")
             },
-            description = "Create an API Contract",
+            summary = "Create an API Contract",
             requestBody = @RequestBody(description = "Required information about the new Contract."),
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Contract is successfully created."),
@@ -669,8 +666,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Client version."),
                     @Parameter(name = "contractId", description = "The ID of the Contract.")
             },
-            description = "Get API Contract",
-
+            summary = "Get API Contract",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Contract is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Client version does not exist."),
@@ -696,7 +692,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "clientId", description = "The Client ID."),
                     @Parameter(name = "version", description = "The Client version.")
             },
-            description = "Probe a policy associated with a contract",
+            summary = "Probe a policy associated with a contract",
             requestBody = @RequestBody(description = "The probe payload (refer to the documentation of the probe you want to use for the correct format)."),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Probe executed successfully"),
@@ -723,7 +719,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "clientId", description = "The Client ID."),
                     @Parameter(name = "version", description = "The Client version.")
             },
-            description = "List All Contracts for a Client",
+            summary = "List All Contracts for a Client",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of Contracts is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Client is not found.")
@@ -760,9 +756,8 @@ public interface IOrganizationResource {
                     @Parameter(name = "clientId", description = "The Client ID."),
                     @Parameter(name = "version", description = "The Client version."),
                     @Parameter(name = "download", description = "Query parameter set to true in order to generate a download link.")
-
             },
-            description = "Get API Registry (JSON)",
+            summary = "Get API Registry (JSON)",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the API Registry information is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist.")
@@ -802,7 +797,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Client version."),
                     @Parameter(name = "download", description = "Query parameter set to true in order to generate a download link.")
             },
-            description = "Get API Registry (XML)",
+            summary = "Get API Registry (XML)",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the API Registry information is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist.")
@@ -827,7 +822,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "clientId", description = "The Client ID."),
                     @Parameter(name = "version", description = "The Client version.")
             },
-            description = "Break All Contracts",
+            summary = "Break All Contracts",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the operation is successful."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist.")
@@ -853,8 +848,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Client version."),
                     @Parameter(name = "contractId", description = "The Contract ID.")
             },
-            description = "Break Contract",
-
+            summary = "Break Contract",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Contract is successfully broken."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist."),
@@ -884,8 +878,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Client version."),
                     @Parameter(name = "bean", description = "Information about the new Policy.")
             },
-            description = "Add Client Policy",
-
+            summary = "Add Client Policy",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Policy is successfully added."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist.")
@@ -915,8 +908,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "policyId", description = "The Policy ID.")
 
             },
-            description = "Get Client Policy",
-
+            summary = "Get Client Policy",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Policy is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist.")
@@ -947,7 +939,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "bean", description = "New meta-data and/or configuration for the Policy.")
 
             },
-            description = "Update Client Policy",
+            summary = "Update Client Policy",
 
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Policy was successfully updated."),
@@ -975,10 +967,8 @@ public interface IOrganizationResource {
                     @Parameter(name = "clientId", description = "The Client ID."),
                     @Parameter(name = "version", description = "The Client version."),
                     @Parameter(name = "policyId", description = "The Policy ID.")
-
             },
-            description = "Remove Client Policy",
-
+            summary = "Remove Client Policy",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Policy was successfully deleted."),
                     @ApiResponse(responseCode = "404", description = "If the Client does not exist."),
@@ -1007,7 +997,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Client version.")
 
             },
-            description = "List All Client Policies",
+            summary = "List All Client Policies",
 
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of Policies is successfully returned."),
@@ -1042,7 +1032,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "policyChain", description = "The Policies in the desired order.")
 
             },
-            description = "Re-Order Client Policies",
+            summary = "Re-Order Client Policies",
 
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the re-ordering of Policies was successful."),
@@ -1080,7 +1070,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "bean", description = "Information about the new API.")
 
             },
-            description = "Create API",
+            summary = "Create API",
 
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the API is successfully created."),
@@ -1102,7 +1092,7 @@ public interface IOrganizationResource {
             parameters = {
                     @Parameter(name = "organizationId", description = "The Organization ID.")
             },
-            description = "List APIs",
+            summary = "List APIs",
 
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of APIs is successfully returned."),
@@ -1129,7 +1119,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID.")
 
             },
-            description = "Get API By ID",
+            summary = "Get API By ID",
 
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the API is successfully returned."),
@@ -1156,7 +1146,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "bean", description = "Updated API information.")
             },
-            description = "Update API",
+            summary = "Update API",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the API is updated successfully."),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
@@ -1179,7 +1169,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "apiId", description = "The API ID.")
             },
-            description = "Delete API Image",
+            summary = "Delete API Image",
 
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the API is updated successfully."),
@@ -1198,7 +1188,7 @@ public interface IOrganizationResource {
                 @Parameter(name = "organizationId", description = "Organization ID"),
                 @Parameter(name = "apiId", description = "API ID")
             },
-            description = "Tag an API",
+            summary = "Tag an API",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Tag was created successfully.")
             })
@@ -1224,7 +1214,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "apiId", description = "The API ID.")
             },
-            description = "Delete API",
+            summary = "Delete API",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the API is updated successfully."),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist."),
@@ -1251,7 +1241,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "page", description = "Which page of activity should be returned."),
                     @Parameter(name = "pageSize", description = "The number of entries per page to return.")
             },
-            description = "Get API Activity",
+            summary = "Get API Activity",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the audit information is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist."),
@@ -1283,7 +1273,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "bean", description = "Initial information about the new API version.")
             },
-            description = "Create API Version",
+            summary = "Create API Version",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the API version is created successfully.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist."),
@@ -1311,7 +1301,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "apiId", description = "The API ID.")
             },
-            description = "List API Versions",
+            summary = "List API Versions",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of API versions is successfully returned.", useReturnTypeSchema = true)
             })
@@ -1334,7 +1324,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
             },
-            description = "Get API Version",
+            summary = "Get API Version",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the API version is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API version does not exist.")
@@ -1363,7 +1353,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
             },
-            description = "Get API Version Status",
+            summary = "Get API Version Status",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the status information is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API version does not exist.")
@@ -1392,7 +1382,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
             },
-            description = "Get API Definition",
+            summary = "Get API Definition",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the API definition is successfully returned."),
                     @ApiResponse(responseCode = "404", description = "If the API version does not exist.")
@@ -1420,7 +1410,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
             },
-            description = "Get API Endpoint",
+            summary = "Get API Endpoint",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the endpoint information is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
@@ -1449,7 +1439,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version."),
             },
-            description = "Update API Version",
+            summary = "Update API Version",
             requestBody = @RequestBody(description = "Updated information about the API version."),
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the API version information was successfully updated.", useReturnTypeSchema = true),
@@ -1497,7 +1487,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
             },
-            description = "Update API Definition",
+            summary = "Update API Definition",
 
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the API definition was successfully updated."),
@@ -1532,7 +1522,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version."),
             },
-            description = "Update API Definition from URL",
+            summary = "Update API Definition from URL",
             requestBody = @RequestBody(description = "The API definition reference information."),
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the API definition was successfully updated."),
@@ -1561,7 +1551,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "page", description = "Which page of activity data to return."),
                     @Parameter(name = "pageSize", description = "The number of entries per page to return.")
             },
-            description = "Get API Version Activity",
+            summary = "Get API Version Activity",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the audit activity entries are successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API version does not exist.")
@@ -1589,7 +1579,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
             },
-            description = "List API Plans",
+            summary = "List API Plans",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the API plans are successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API cannot be found.")
@@ -1630,7 +1620,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
             },
-            description = "Add API Policy",
+            summary = "Add API Policy",
             requestBody = @RequestBody(description = "Information about the new Policy."),
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Policy is successfully added.", useReturnTypeSchema = true),
@@ -1661,7 +1651,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The API version."),
                     @Parameter(name = "policyId", description = "The Policy ID.")
             },
-            description = "Get API Policy",
+            summary = "Get API Policy",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Policy is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
@@ -1691,7 +1681,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The API version."),
                     @Parameter(name = "policyId", description = "The Policy ID.")
             },
-            description = "Update API Policy",
+            summary = "Update API Policy",
             requestBody = @RequestBody(description = "New meta-data and/or configuration for the Policy."),
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Policy was successfully updated."),
@@ -1722,7 +1712,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The API version."),
                     @Parameter(name = "policyId", description = "The Policy ID.")
             },
-            description = "Remove API Policy",
+            summary = "Remove API Policy",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Policy was successfully deleted."),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist."),
@@ -1750,7 +1740,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
             },
-            description = "Remove API Definition",
+            summary = "Remove API Definition",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the API definition was successfully deleted."),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
@@ -1778,7 +1768,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "apiId", description = "The API ID."),
                     @Parameter(name = "version", description = "The API version.")
             },
-            description = "List All API Policies",
+            summary = "List All API Policies",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of Policies is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
@@ -1812,7 +1802,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The API version."),
                     @Parameter(name = "policyChain", description = "The Policies in the desired order.")
             },
-            description = "Re-Order API Policies",
+            summary = "Re-Order API Policies",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the re-ordering of Policies was successful."),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
@@ -1843,7 +1833,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The API version."),
                     @Parameter(name = "planId", description = "The Plan ID.")
             },
-            description = "Get API Policy Chain",
+            summary = "Get API Policy Chain",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Policy Chain is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
@@ -1872,7 +1862,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "page", description = "Which page of Contracts to return."),
                     @Parameter(name = "pageSize", description = "The number of Contracts per page to return.")
             },
-            description = "List API Contracts",
+            summary = "List API Contracts",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of Contracts is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
@@ -1906,7 +1896,7 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
-            description = "Create Plan",
+            summary = "Create Plan",
             parameters = {
                     @Parameter(name = "organizationId", description = "The Organization ID.")
             },
@@ -1938,7 +1928,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "planId", description = "The Plan ID.")
 
             },
-            description = "Get Plan By ID",
+            summary = "Get Plan By ID",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Plan is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist."),
@@ -1966,7 +1956,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "page", description = "Which page of activity should be returned."),
                     @Parameter(name = "pageSize", description = "The number of entries per page to return.")
             },
-            description = "Get Plan Activity",
+            summary = "Get Plan Activity",
 
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the audit information is successfully returned.", useReturnTypeSchema = true),
@@ -1991,7 +1981,7 @@ public interface IOrganizationResource {
             parameters = {
                     @Parameter(name = "organizationId", description = "The Organization ID.")
             },
-            description = "List Plans",
+            summary = "List Plans",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of Plans is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Organization does not exist.")
@@ -2016,7 +2006,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "planId", description = "The Plan ID.")
             },
             requestBody = @RequestBody(description = "Updated Plan information."),
-            description = "Update Plan",
+            summary = "Update Plan",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Plan is updated successfully."),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
@@ -2044,7 +2034,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "planId", description = "The Plan ID.")
             },
-            description = "Create Plan Version",
+            summary = "Create Plan Version",
             requestBody = @RequestBody(description = "Initial information about the new Plan version."),
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Plan version is created successfully.", useReturnTypeSchema = true),
@@ -2071,7 +2061,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "planId", description = "The Plan ID.")
             },
-            description = "List Plan Versions",
+            summary = "List Plan Versions",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of Plan versions is successfully returned.", useReturnTypeSchema = true)
             })
@@ -2095,7 +2085,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "planId", description = "The Plan ID."),
                     @Parameter(name = "version", description = "The Plan version.")
             },
-            description = "Get Plan Version",
+            summary = "Get Plan Version",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Plan version is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan version does not exist.")
@@ -2123,7 +2113,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "page", description = "Which page of activity data to return."),
                     @Parameter(name = "pageSize", description = "The number of entries per page to return.")
             },
-            description = "Get Plan Version Activity",
+            summary = "Get Plan Version Activity",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the audit activity entries are successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan version does not exist.")
@@ -2151,7 +2141,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "planId", description = "The Plan ID."),
                     @Parameter(name = "version", description = "The Plan version.")
             },
-            description = "Add Plan Policy",
+            summary = "Add Plan Policy",
             requestBody = @RequestBody(description = "Information about the new Policy."),
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Policy is successfully added.", useReturnTypeSchema = true),
@@ -2180,7 +2170,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "planId", description = "The Plan ID."),
                     @Parameter(name = "version", description = "The Plan version.")
             },
-            description = "List All Plan Policies",
+            summary = "List All Plan Policies",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of Policies is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
@@ -2210,7 +2200,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Plan version."),
                     @Parameter(name = "policyId", description = "The Policy ID.")
             },
-            description = "Get Plan Policy",
+            summary = "Get Plan Policy",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Policy is successfully returned.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
@@ -2240,7 +2230,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Plan version."),
                     @Parameter(name = "policyId", description = "The Policy ID.")
             },
-            description = "Update Plan Policy",
+            summary = "Update Plan Policy",
             requestBody = @RequestBody(description = "New meta-data and/or configuration for the Policy."),
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Policy was successfully updated."),
@@ -2269,7 +2259,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Plan version."),
                     @Parameter(name = "policyId", description = "The Policy ID.")
             },
-            description = "Remove Plan Policy",
+            summary = "Remove Plan Policy",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Policy was successfully deleted."),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist."),
@@ -2296,7 +2286,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
                     @Parameter(name = "planId", description = "The Plan ID.")
             },
-            description = "Delete Plan",
+            summary = "Delete Plan",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the Plan was successfully deleted"),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist."),
@@ -2329,7 +2319,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Plan version."),
                     @Parameter(name = "policyChain", description = "The Policies in the desired order.")
             },
-            description = "Re-Order Plan Policies",
+            summary = "Re-Order Plan Policies",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the re-ordering of Policies was successful."),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
@@ -2359,7 +2349,7 @@ public interface IOrganizationResource {
             parameters = {
                     @Parameter(name = "organizationId", description = "The Organization ID."),
             },
-            description = "Grant Membership(s)",
+            summary = "Grant Membership(s)",
             requestBody = @RequestBody(description = "Roles to grant, and the ID of the user."),
             responses = @ApiResponse(responseCode = "204", description = "If the membership(s) were successfully granted.")
     )
@@ -2382,7 +2372,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "roleId", description = "The role ID."),
                     @Parameter(name = "userId", description = "The user ID.")
             },
-            description = "Revoke Single Membership",
+            summary = "Revoke Single Membership",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the membership was successfully revoked.")
             })
@@ -2407,7 +2397,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "organizationId", description = "The organization ID."),
                     @Parameter(name = "userId", description = "The user ID.")
             },
-            description = "Revoke All Memberships",
+            summary = "Revoke All Memberships",
             responses = {
                     @ApiResponse(responseCode = "204", description = "If the user's memberships were successfully revoked."),
                     @ApiResponse(responseCode = "404", description = "If the user does not exist.")
@@ -2430,7 +2420,7 @@ public interface IOrganizationResource {
             parameters = {
                     @Parameter(name = "organizationId", description = "The organization ID.")
             },
-            description = "List Organization Members",
+            summary = "List Organization Members",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the list of members is returned successfully.", useReturnTypeSchema = true)
             })
@@ -2464,7 +2454,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "fromDate", description = "The start of a valid date range."),
                     @Parameter(name = "toDate", description = "The end of a valid date range.")
             },
-            description = "Get API Usage Metrics",
+            summary = "Get API Usage Metrics",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
@@ -2496,7 +2486,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "fromDate", description = "The start of a valid date range."),
                     @Parameter(name = "toDate", description = "The end of a valid date range.")
             },
-            description = "Get API Usage Metrics (per Client)",
+            summary = "Get API Usage Metrics (per Client)",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
@@ -2529,7 +2519,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "fromDate", description = "The start of a valid date range."),
                     @Parameter(name = "toDate", description = "The end of a valid date range.")
             },
-            description = "Get API Usage Metrics (per Plan)",
+            summary = "Get API Usage Metrics (per Plan)",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
@@ -2565,7 +2555,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "fromDate", description = "The start of a valid date range."),
                     @Parameter(name = "toDate", description = "The end of a valid date range.")
             },
-            description = "Get API Response Statistics (Histogram)",
+            summary = "Get API Response Statistics (Histogram)",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
@@ -2598,7 +2588,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "fromDate", description = "The start of a valid date range."),
                     @Parameter(name = "toDate", description = "The end of a valid date range.")
             },
-            description = "Get API Response Statistics (Summary)",
+            summary = "Get API Response Statistics (Summary)",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
@@ -2629,7 +2619,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "fromDate", description = "The start of a valid date range."),
                     @Parameter(name = "toDate", description = "The end of a valid date range.")
             },
-            description = "Get API Response Statistics (per Client)",
+            summary = "Get API Response Statistics (per Client)",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
@@ -2660,7 +2650,7 @@ public interface IOrganizationResource {
                     @Parameter(name = "fromDate", description = "The start of a valid date range."),
                     @Parameter(name = "toDate", description = "The end of a valid date range.")
             },
-            description = "Get API Response Statistics (per Plan)",
+            summary = "Get API Response Statistics (per Plan)",
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the metrics data is successfully returned.", useReturnTypeSchema = true)
             })
