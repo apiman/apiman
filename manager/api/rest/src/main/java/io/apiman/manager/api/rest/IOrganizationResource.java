@@ -1621,7 +1621,6 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The API version.")
             },
             summary = "Add API Policy",
-            requestBody = @RequestBody(description = "Information about the new Policy."),
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Policy is successfully added.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the API does not exist.")
@@ -2142,7 +2141,6 @@ public interface IOrganizationResource {
                     @Parameter(name = "version", description = "The Plan version.")
             },
             summary = "Add Plan Policy",
-            requestBody = @RequestBody(description = "Information about the new Policy."),
             responses = {
                     @ApiResponse(responseCode = "200", description = "If the Policy is successfully added.", useReturnTypeSchema = true),
                     @ApiResponse(responseCode = "404", description = "If the Plan does not exist.")
