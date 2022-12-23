@@ -16,5 +16,5 @@ If you are using a downstream support provider, you should contact your vendor t
 
 Please report Apiman vulnerabilities via email to either:
  
-  - [Marc Savy](https://github.com/msavy)
+  - [Marc Savy](https://github.com/msavy) — marc@blackparrotlabs.io
   - [Eric Wittmann](https://github.com/EricWittmann)
