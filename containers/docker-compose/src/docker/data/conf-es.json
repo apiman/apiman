@@ -1,0 +1,330 @@
+{
+  "variables": {
+    "apiman": {
+    }
+  },
+
+  "registry": {
+    "class": "io.apiman.gateway.engine.es.PollCachingEsRegistry",
+    "config": {
+      "client": {
+        "type": "es",
+        "protocol": "${apiman.es.protocol:-http}",
+        "host": "${apiman.es.host}",
+        "port": "${apiman.es.port:-9200}",
+        "initialize": true,
+        "pollingTime": "${apiman.es.pollingTime:-600}",
+        "username": "${apiman.es.username}",
+        "password": "${apiman.es.password}",
+        "timeout": "${apiman.es.timeout:-10000}",
+        // only for https
+        "allowSelfSigned": "${allowSelfSigned:-true}}",
+        "allowAnyHost": "${allowAnyHost:-true}}"
+        // "truststore": {
+        //   "path": "${apiman.es.truststore:-/opt/java/openjdk/lib/security/cacerts}",
+        //   "password": "${apiman.truststore.password:-changeit}"
+        // },
+        // "keystore": {
+        //   "path": "${apiman.es.keystore:-/opt/java/openjdk/lib/security/cacerts}",
+        //   "password": "${apiman.keystore.password:-changeit}"
+        // }
+        // "cache-polling-interval": 15
+        // "indexPrefix": ""
+      }
+    }
+  },
+
+  // Gateway error writer
+  // A "trace" version of the error writer - comment out/remove this to suppress stack traces
+  // in the JSON/XML payload returned by the gateway when an error occurs.
+  "writers": {
+    "error": {
+      "class": "io.apiman.gateway.engine.impl.TracePolicyErrorWriter",
+      "config": {}
+    }
+    // "policy-failure": {
+    //   "class": "",
+    //   "config": {}
+    // }
+  },
+
+  "encrypter": {
+    "class": "io.apiman.gateway.engine.impl.DefaultDataEncrypter",
+    "config": {}
+  },
+
+  "plugin-registry": {
+    "class": "io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry",
+    "config": {
+      // "pluginRepositories":["https://url.to.maven.repo"],
+      // "pluginsDir": "/path/to/your/plugin_dir"
+    }
+  },
+
+  "connector-factory": {
+    "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory",
+    "config": {
+      // -----------------------------------------------
+      // SSL/TLS settings for the gateway connector(s).
+      // -----------------------------------------------
+      "tls": {
+        // Enable devMode for HTTPS connections (gateway trusts any certificate).
+        // This should *NOT* be used in production mode. *Use with great care.*
+        "devMode": true
+
+        // Whether self-signed certificates should be automatically trusted. *Use with great care.*
+        //"allowSelfSigned": "${allowSelfSigned:-true}",
+
+        // Whether certificate host checks should be bypassed. *Use with great care.*
+        //"allowAnyHost": "${allowAnyHost:-true}",
+
+        // Trust store contains certificate(s) trusted by gateway.
+        //"trustStore": "${apiman.gateway.backend-truststore:-/opt/java/openjdk/lib/security/cacerts}",
+        //"trustStorePassword": "${apiman.gateway.backend-truststore.password:-changeit}",
+
+        // Key store contains gateway's keys (including private components: keep it safe).
+        //"keyStore": "${apiman.gateway.backend-keystore:-/opt/java/openjdk/lib/security/cacerts}",
+        //"keyStorePassword": "${apiman.gateway.backend-keystore.password:-changeit}"
+
+        // By default, all keys can be used (will try all). If alias list provided, will only attempt to use listed keys.
+        // "keyAliases": "mykey,myotherkey",
+
+        // Allowed TLS/SSL protocols and ciphers suites as CSV. Availability will vary depending on your JVM impl.
+        // Uses JVM defaults depending if not explicitly provided.
+        // See: https://docs.oracle.com/javase/7/docs/technotes/guides/security/SunProviders.html
+        // You may wish to consider global JVM settings by modifying java.security
+        // "allowedProtocols": "TLSv1.2,TLSv1.1",
+        // "allowedCiphers": "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,...",
+        // "disallowedCiphers": "..."
+      }
+    }
+  },
+
+  "policy-factory": {
+    "class": "io.apiman.gateway.engine.policy.PolicyFactoryImpl",
+    "config": {}
+  },
+
+  "logger-factory": {
+    "class": "io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate",
+    "config": {}
+  },
+
+  // Elasticsearch Metrics Settings
+  "metrics": {
+    "class": "io.apiman.gateway.engine.es.EsMetrics",
+    "config": {
+      "client": {
+        "type": "es",
+        "protocol": "${apiman.es.protocol:-http}",
+        "host": "${apiman.es.host}",
+        "port": "${apiman.es.port:-9200}",
+        "initialize": true,
+        "pollingTime": "${apiman.es.pollingTime:-600}",
+        "username": "${apiman.es.username}",
+        "password": "${apiman.es.password}",
+        "timeout": "${apiman.es.timeout:-10000}",
+        // only for https
+        "allowSelfSigned": "${allowSelfSigned:-false}}",
+        "allowAnyHost": "${allowAnyHost:-false}}"
+        // "truststore": {
+        //   "path": "${apiman.es.truststore:-/opt/java/openjdk/lib/security/cacerts}",
+        //   "password": "${apiman.truststore.password:-changeit}"
+        // },
+        // "keystore": {
+        //   "path": "${apiman.es.keystore:-/opt/java/openjdk/lib/security/cacerts}",
+        //   "password": "${apiman.keystore.password:-changeit}"
+        // }
+      },
+      // You can collect custom headers into Elasticsearch!
+      "custom": {
+        "headers": {
+          "request": "${apiman.es.custom.headers.request:-}",
+          "response": "${apiman.es.custom.headers.response:-}"
+        },
+        "query-params": "${apiman.es.custom.query-params:-}"
+      }
+    }
+  },
+
+  "components": {
+    // Shared State Component Settings
+    "ISharedStateComponent": {
+      "class": "io.apiman.gateway.engine.es.EsSharedStateComponent",
+      "config": {
+        "client": {
+          "type": "es",
+          "protocol": "${apiman.es.protocol:-http}",
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port:-9200}",
+          "initialize": true,
+          "pollingTime": "${apiman.es.pollingTime:-600}",
+          "username": "${apiman.es.username}",
+          "password": "${apiman.es.password}",
+          "timeout": "${apiman.es.timeout:-10000}",
+          // only for https
+          "allowSelfSigned": "${allowSelfSigned:-false}}",
+          "allowAnyHost": "${allowAnyHost:-false}}"
+          //"truststore": {
+          //  "path": "${apiman.es.truststore:-/opt/java/openjdk/lib/security/cacerts}",
+          //  "password": "${apiman.truststore.password:-changeit}"
+          //},
+          //"keystore": {
+          //  "path": "${apiman.es.keystore:-/opt/java/openjdk/lib/security/cacerts}",
+          //  "password": "${apiman.truststore.password:-changeit}"
+          //}
+        }
+      }
+    },
+
+    // Rate Limiter Component Settings
+    "IRateLimiterComponent": {
+      "class": "io.apiman.gateway.engine.es.EsRateLimiterComponent",
+      "config": {
+        "client": {
+          "type": "es",
+          "protocol": "${apiman.es.protocol:-http}",
+          "host": "${apiman.es.host}",
+          "port": "${apiman.es.port:-9200}",
+          "initialize": true,
+          "pollingTime": "${apiman.es.pollingTime:-600}",
+          "username": "${apiman.es.username}",
+          "password": "${apiman.es.password}",
+          "timeout": "${apiman.es.timeout:-10000}",
+          // only for https
+          "allowSelfSigned": "${allowSelfSigned:-false}}",
+          "allowAnyHost": "${allowAnyHost:-false}}"
+          //"truststore": {
+          //  "path": "${apiman.es.truststore:-/opt/java/openjdk/lib/security/cacerts}",
+          //  "password": "${apiman.truststore.password:-changeit}"
+          //},
+          //"keystore": {
+          //  "path": "${apiman.es.keystore:-/opt/java/openjdk/lib/security/cacerts}",
+          //  "password": "${apiman.truststore.password:-changeit}"
+          //}
+        }
+      }
+    },
+
+    // Cache Store Component Settings
+    "ICacheStoreComponent": {
+      "class": "io.apiman.gateway.engine.impl.InMemoryCacheStoreComponent",
+      "config": {
+        // maxCacheSize in bytes (100MB default)
+        "maxCacheSize" : "${cachingPolicy.maxCacheSize:-104857600}"
+      }
+    },
+
+    // Execute Blocking Component
+    "IExecuteBlockingComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.ExecuteBlockingComponentImpl",
+      "config": {}
+    },
+
+    // JDBC Component Settings
+    "IJdbcComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.JdbcClientComponentImpl",
+      "config": {}
+    },
+
+    // LDAP Component Settings
+    "ILdapComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.LdapClientComponentImpl",
+      "config": {}
+    },
+
+    // HTTP Component Settings
+    "IHttpClientComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.HttpClientComponentImpl",
+      "config": {}
+    },
+
+    // Policy Failure Factory Component
+    "IPolicyFailureFactoryComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.PolicyFailureFactoryComponent",
+      "config": {}
+    },
+
+    // Buffer Factory Component
+    "IBufferFactoryComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.BufferFactoryComponentImpl",
+      "config": {}
+    },
+
+    // Periodic Component
+    "IPeriodicComponent": {
+      "class": "io.apiman.gateway.platforms.vertx3.components.PeriodicComponentImpl",
+      "config": {}
+    }
+  },
+
+  // Host-name to bind to for this machine.
+  //"hostname": "localhost",
+
+  // You can force a particular endpoint to be reported here (e.g.
+  // if you have some clustered setup with exotic DNS setup)
+  "publicEndpoint": "${apiman.gateway.public-endpoint}",
+
+  // Verticle configuration
+  // Port - The port a given verticle listens on (where relevant)
+  // Count - Number of given verticle type launched, or "auto" for automatic.
+  "verticles": {
+    "http": {
+      "port": "${apiman.gateway.http.port:-8080}",
+      "count": "${apiman.gateway.http.count:-auto}"
+    },
+    // Configure the following SSL section to enable SSL/TLS.
+    "https": {
+      "port": "${apiman.gateway.https.port:-8443}",
+      "count": "${apiman.gateway.https.count:-0}"
+    },
+    // The Gateway API; this will be the port to set in the UI.
+    // e.g. http://localhost:8081 or https://gateway.machine:8081
+    // Configure the following SSL section to enable SSL/TLS.
+    "api": {
+      "protocol": "${apiman.gateway-api.protocol:-http}",
+      "port": "${apiman.gateway-api.port:-8081}",
+      "count": 1
+    }
+  },
+
+  // SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
+  //  "ssl": {
+  //    "keystore": {
+  //      "path": "${apiman.gateway.client-keystore:-/your/keystore/here}",
+  //      "password": "${apiman.gateway.client-keystore.password:-changeit}"
+  //    },
+  //    "truststore": {
+  //      "path": "${apiman.gateway.client-truststore:-/opt/java/openjdk/lib/security/cacerts}",
+  //      "password": "${apiman.gateway.client-truststore.password:-changeit}"
+  //    },
+  //    "allowedProtocols": "${apiman.gateway.allowedProtocols}"
+  //  },
+
+  // Gateway API Authentication. See documentation for further possibilities.
+  "auth": {
+    "type": "keycloak",
+    "config": {
+      "flowType": "PASSWORD",
+      "requiredRole": "realm:apipublisher",
+      // Override with System Properties, or paste and overwrite your Client Keycloak config here.
+      "auth-server-url": "${apiman.auth.url:-http://localhost:8085}", // Location of your keycloak server.
+      "realm": "${apiman.auth.realm:-apiman}",
+      "resource": "apiman-gateway-api",
+      "credentials": {
+        "secret": "${apiman.auth.gateway.secret:-password}"
+      },
+      // End paste here
+      // "truststore": "${apiman.keycloak.truststore:-/opt/java/openjdk/lib/security/cacerts}",
+      // "truststore-password": "${apiman.keycloak.truststore.password:-changeit}"
+      // "client-keystore": "${apiman.keycloak.keystore:-/your/keystore/here}",
+      // "client-keystore-password": "${apiman.keycloak.keystore.password:-changeit}"
+      "ssl-required": "none",
+      "disable-trust-manager": true,
+      "allow-any-hostname" : true
+    }
+  },
+
+  // When reporting an API's endpoint, prefer secure (i.e. https). You should probably change this after enabling HTTPS.
+  "preferSecure": false
+}
