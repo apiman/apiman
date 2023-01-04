@@ -694,6 +694,7 @@
 
   <modules>
     <module>common</module>
+    <module>containers</module>
     <module>distro</module>
     <module>manager</module>
     <module>gateway</module>

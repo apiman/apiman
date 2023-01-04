@@ -154,6 +154,7 @@
     <version.org.mockito>3.12.1</version.org.mockito>
     <version.org.mapstruct>1.5.3.Final</version.org.mapstruct>
     <version.org.mvel>2.4.12.Final</version.org.mvel>
+    <version.org.passay>1.6.2</version.org.passay>
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
     <version.io.github.classgraph>4.8.152</version.io.github.classgraph>
     <version.org.slf4j>1.7.36</version.org.slf4j>
@@ -470,6 +471,11 @@
         <groupId>io.prometheus</groupId>
         <artifactId>simpleclient</artifactId>
         <version>${version.io.prometheus}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.passay</groupId>
+        <artifactId>passay</artifactId>
+        <version>${version.org.passay}</version>
       </dependency>
       <dependency>
         <groupId>org.picketbox</groupId>

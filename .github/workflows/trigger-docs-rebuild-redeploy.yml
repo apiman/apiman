@@ -2,7 +2,7 @@ name: Trigger rebuild and redeployment of Apiman docs website
 
 on:
   push:
-    branches: [ master, 2.x ] # Put all branches we want to track docs for here.
+    branches: [ master, 3.x, 2.x ] # Put all branches we want to track docs for here.
     paths:
       - 'docs/**'
   workflow_dispatch:
@@ -17,4 +17,4 @@ jobs:
           token: ${{ secrets.REPO_DISPATCH_ACCESS_TOKEN }}
           repository: apiman/apiman-docs
           event-type: rebuild-apiman-antora-docs
- 
+
