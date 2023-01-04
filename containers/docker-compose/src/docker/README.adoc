@@ -1,0 +1,72 @@
+== Apiman Docker Compose Quickstart Distro
+
+This Apiman Docker Compose quickstart distro allows you to try out Apiman with architecture that is more representative of a real-world deployment.
+
+Please ensure you change any default passwords before going to production.
+
+Please leave feedback on https://github.com/apiman/apiman/discussions[Apiman Discussions^] on GitHub.
+
+Main Apiman repo: https://www.github.com/apiman/apiman
+
+Apiman Docker repo: https://www.github.com/apiman/apiman-docker
+
+=== 3 step TL;DR
+
+TIP: If using Windows, set the working directory variable with `set PWD=%CD%` before running the steps below.
+
+. `docker-compose -f docker-compose.setup.yml up`
+. `docker-compose up`
+. http://apiman.local.gd:8080/apimanui
+
+=== Quickstart
+
+* Initialise secrets and keys by running: `docker-compose -f docker-compose.setup.yml up`.
+** This must be run *before* starting the main docker-compose, and only needs to be run once.
+** We will generate self-signed RSA certificates for you to use in Keycloak.
++
+The default keysize is 2048 bits. Set the `RSA_KEY_SIZE` environment variable
+before running `setup.sh` if you want a different keysize.
++
+These are also copied into `.env`, where they can be injected into Apiman, etc.
+
+* Start docker compose: `docker-compose up` or `docker compose up`
+* Location of services:
+** Apiman Manager UI: `http://apiman.local.gd:8080/apimanui`
+** Apiman Developer Portal: `http://apiman.local.gd:8080/portal`
+** Apiman Manager API: `http://apiman.local.gd:8080/apiman`
+** Apiman Gateway: `http://gateway.local.gd:8080`
+** Keycloak Admin: `http://auth.local.gd:8080/admin`
+** Keycloak Auth Endpoint: `http://auth.local.gd:8080`
+** Elasticsearch: `http://elasticsearch.local.gd:8080`
+*** You may want to edit the docker-compose file and bind port 9200.
+** link:https://github.com/maildev/maildev[MailDev^] mock mail service: `http://mail.local.gd:8080`
+*** You can view Apiman email notifications here
+*** All mail goes to same mailbox with this mock server
+*** You can distinguish between recipients by looking at the `to` field.
+
+* Default user and password for Apiman and Keycloak Admin:
+** Username: `admin`
+** Password: `admin123!`
+
+You can edit the values in `.env` if you want to change hostname bindings, passwords, etc.
+
+=== Production notes
+
+==== Apiman
+
+* Assuming you are terminating TLS/SSL on Apiman, the demo self-signed certificates, keystores, truststores, etc., should be replaced with your organisation's versions.
+
+* Components for such as Postgres and Elasticsearch likely should be run in a multi-node setup to provide high levels of resilience and redundancy.
+You should make some considerations for backups, etc.
+
+==== Keycloak
+
+* For a real deployment, please run Keycloak in production mode. For this quickstart Keycloak runs in dev-mode, which is very permissive and tolerant of self-signed certs, etc. -- but it is inappropriate for real-world deployments. https://www.keycloak.org/server/configuration-production[Refer to the Keycloak production guide^].
+
+* You **must** change the default usernames and/or passwords before going to production.
+
+* Keys are generated and stored in `data/keys`, and then copied into the `.env` file.
+Storing keys in plaintext is not usually advised for a production environment; you should consider using a dedicated secrets storage and injection mechanism.
+For example, Hashicorp Vault or K8s secrets.
+
+

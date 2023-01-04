@@ -68,17 +68,17 @@ jobs:
         # Don't use mvn for `help:evaluate` command, output is messed up.
         run: |
           export APIMAN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "::set-output name=apiman-version::$APIMAN_VERSION"
+          echo "apiman-version=$APIMAN_VERSION" >> $GITHUB_OUTPUT
           if [[ "$APIMAN_VERSION" =~ "SNAPSHOT" ]]
           then
-            echo "::set-output name=is-snapshot-version::true"
+            echo "is-snapshot-version=true" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=is-snapshot-version::false"
+            echo "is-snapshot-version=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn cache
         uses: actions/cache@v2
@@ -93,7 +93,7 @@ jobs:
         run: ./fastbuild.sh
 
       - name: Run platform-specific integration tests (${{ matrix.integration-suite.name }})
-        
+
         run: mvn test install -Dmaven.javadoc.skip=true ${{ matrix.integration-suite.command }}
 
       - name: Test Summary
@@ -171,7 +171,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-            
+
       - name: Set up JDK 11 (for deploying assets, docker builds, etc)
         uses: actions/setup-java@v1
         with:
@@ -202,17 +202,24 @@ jobs:
         with:
           tag_name: ${{ env.APIMAN_VERSION }}
           name: ${{ env.APIMAN_VERSION }}
-          body: Snapshot ${{ env.APIMAN_VERSION }}. This is not a production-grade release!
+          body: | 
+            Snapshot ${{ env.APIMAN_VERSION }}. This is not a production-grade release!
+            
+            Each time a snapshot of this version is built in CI, the artifacts in this release will be replaced.
+            The date you see on the release itself may therefore be misleading.
           prerelease: true
           files: |
             distro/wildfly/target/apiman-distro-wildfly-${{ env.APIMAN_VERSION }}-overlay.zip
             distro/vertx/target/apiman-distro-vertx-${{ env.APIMAN_VERSION }}.zip
             distro/tomcat/target/apiman-distro-tomcat-${{ env.APIMAN_VERSION }}-overlay.zip
+            containers/docker-compose/target/apiman-distro-docker-compose-${{ env.APIMAN_VERSION }}.zip
 
-      - name: 'Send `apiman-snapshot-version` repository dispatch event to `apiman/apiman-docker`'
-        uses: peter-evans/repository-dispatch@v1.1.3
-        with:
-          token: ${{ secrets.REPO_DISPATCH_ACCESS_TOKEN }}
-          repository: apiman/apiman-docker
-          event-type: apiman-snapshot-version
-          client-payload: '{"snapshot-version": "${{ env.APIMAN_VERSION }}"}'
+  publish-docker-images:
+    needs: [read-versions, publish-snapshots]
+    uses: apiman/apiman/.github/workflows/docker-test-release.yml@master
+    secrets: inherit
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+    with:
+      apiman-version: ${{ needs.build-verify.outputs.apiman-version }}
+      push-to-repos: true
+      snapshot: ${{ needs.build-verify.outputs.is-snapshot-version }}
