@@ -1,0 +1,172 @@
+{
+  "Metadata" : {
+    "id" : 1665061360158,
+    "exportedOn" : "2022-10-06T13:02:40Z",
+    "apimanVersion" : "8.4.0-SNAPSHOT"
+  },
+  "Users" : [ ],
+  "Gateways" : [ ],
+  "Plugins" : [ ],
+  "Roles" : [ ],
+  "PolicyDefinitions" : [ ],
+  "Developers" : [ ],
+  "Blobs" : [ ],
+  "Orgs" : [ {
+    "OrganizationBean" : {
+      "id" : "CypressTestOrg1",
+      "name" : "CypressTestOrg1",
+      "createdBy" : "platform.admin",
+      "createdOn" : "2022-10-06T12:39:56Z",
+      "modifiedBy" : "platform.admin",
+      "modifiedOn" : "2022-10-06T12:39:56Z"
+    },
+    "Memberships" : [ {
+      "id" : 4804,
+      "userId" : "platform.admin",
+      "roleId" : "Editor",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-10-06T12:39:56Z"
+    }, {
+      "id" : 4805,
+      "userId" : "platform.admin",
+      "roleId" : "Organization-User-Manager",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-10-06T12:39:56Z"
+    } ],
+    "Plans" : [ ],
+    "Apis" : [ {
+      "ApiBean" : {
+        "id" : "CypressTestApi1",
+        "name" : "CypressTestApi1",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-10-06T12:41:11Z",
+        "numPublished" : 2
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 4812,
+          "status" : "Created",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "discoverability" : "PORTAL",
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-10-06T12:41:11Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-10-06T12:43:34Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      }, {
+        "ApiVersionBean" : {
+          "id" : 4814,
+          "status" : "Ready",
+          "endpoint" : "https://httpbin.org/",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "discoverability" : "PORTAL",
+          "plans" : [ ],
+          "version" : "2.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-10-06T12:41:21Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-10-06T12:41:33Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      }, {
+        "ApiVersionBean" : {
+          "id" : 4819,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "discoverability" : "PORTAL",
+          "plans" : [ ],
+          "version" : "3.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-10-06T12:41:39Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-10-06T12:41:53Z",
+          "publishedOn" : "2022-10-06T12:42:29Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      }, {
+        "ApiVersionBean" : {
+          "id" : 4824,
+          "status" : "Retired",
+          "endpoint" : "https://httpbin.org/",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "discoverability" : "PORTAL",
+          "plans" : [ ],
+          "version" : "4.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-10-06T12:42:39Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-10-06T12:42:50Z",
+          "publishedOn" : "2022-10-06T12:42:52Z",
+          "retiredOn" : "2022-10-06T12:43:02Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      }, {
+        "ApiVersionBean" : {
+          "id" : 4831,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "discoverability" : "PORTAL",
+          "plans" : [ ],
+          "version" : "5.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-10-06T12:43:08Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-10-06T12:43:15Z",
+          "publishedOn" : "2022-10-06T12:43:17Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      } ]
+    } ],
+    "Clients" : [ ],
+    "Audits" : [ ]
+  } ]
+}

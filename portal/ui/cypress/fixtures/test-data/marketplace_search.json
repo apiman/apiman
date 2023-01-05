@@ -1,0 +1,146 @@
+{
+  "Metadata" : {
+    "id" : 1665125436076,
+    "exportedOn" : "2022-10-07T06:50:36Z",
+    "apimanVersion" : "8.4.0-SNAPSHOT"
+  },
+  "Users" : [ ],
+  "Gateways" : [ ],
+  "Plugins" : [ ],
+  "Roles" : [ ],
+  "PolicyDefinitions" : [ ],
+  "Developers" : [ ],
+  "Blobs" : [ ],
+  "Orgs" : [ {
+    "OrganizationBean" : {
+      "id" : "CypressTestOrg1",
+      "name" : "CypressTestOrg1",
+      "createdBy" : "platform.admin",
+      "createdOn" : "2022-10-07T06:49:18Z",
+      "modifiedBy" : "platform.admin",
+      "modifiedOn" : "2022-10-07T06:49:18Z"
+    },
+    "Memberships" : [ {
+      "id" : 4864,
+      "userId" : "platform.admin",
+      "roleId" : "Editor",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-10-07T06:49:18Z"
+    }, {
+      "id" : 4865,
+      "userId" : "platform.admin",
+      "roleId" : "Organization-User-Manager",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-10-07T06:49:18Z"
+    } ],
+    "Plans" : [ ],
+    "Apis" : [ {
+      "ApiBean" : {
+        "id" : "CypressTestApi1",
+        "name" : "CypressTestApi1",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-10-07T06:49:28Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 4867,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "discoverability" : "PORTAL",
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-10-07T06:49:28Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-10-07T06:49:42Z",
+          "publishedOn" : "2022-10-07T06:49:43Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi2",
+        "name" : "CypressTestApi2",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-10-07T06:49:50Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 4873,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "discoverability" : "PORTAL",
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-10-07T06:49:50Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-10-07T06:50:00Z",
+          "publishedOn" : "2022-10-07T06:50:01Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi3",
+        "name" : "CypressTestApi3",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-10-07T06:50:08Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 4879,
+          "status" : "Published",
+          "endpoint" : "https://httpbin.org/",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "discoverability" : "PORTAL",
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-10-07T06:50:08Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-10-07T06:50:23Z",
+          "publishedOn" : "2022-10-07T06:50:26Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      } ]
+    } ],
+    "Clients" : [ ],
+    "Audits" : [ ]
+  } ]
+}

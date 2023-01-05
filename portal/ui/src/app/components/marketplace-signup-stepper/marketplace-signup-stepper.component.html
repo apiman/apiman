@@ -1,0 +1,157 @@
+<!--
+  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
+<div id="center">
+  <mat-stepper #stepper linear>
+    <!-- Step 1: Create client-->
+    <!-- disable default behaviour: [completed]=false-->
+    <!-- By default, the completed attribute of a step returns true if the step is valid (in case of linear stepper) and the user has interacted with the step. -->
+    <mat-step
+      label="{{ 'WIZARD.FIRST_STEP_LABEL' | translate }}"
+      [completed]="false">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{
+            'WIZARD.FIRST_STEP_TITLE' | translate
+          }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="mat-card-header-text">
+          <app-marketplace-client-app
+            (selectedClient)="
+              checkApplications($event)
+            "></app-marketplace-client-app>
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions class="right">
+          <button
+            id="next-btn-step-1"
+            mat-raised-button
+            color="primary"
+            (click)="nextAfterClientSelect(stepper)">
+            {{ 'COMMON.NEXT' | translate }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-step>
+    <!-- Step 2: Terms & Condition-->
+    <mat-step
+      *ngIf="termsEnabled"
+      label="{{ 'WIZARD.SECOND_STEP_LABEL' | translate }}"
+      [completed]="agreedTermsAndPrivacy">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{
+            'WIZARD.SECOND_STEP_TITLE' | translate
+          }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="mat-card-header-text">
+          <app-marketplace-api-terms
+            (agreedTermsAndPrivacy)="
+              checkTerms($event)
+            "></app-marketplace-api-terms>
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions class="right">
+          <button mat-raised-button matStepperPrevious color="primary">
+            {{ 'COMMON.BACK' | translate }}
+          </button>
+          <button
+            id="next-btn-step-2"
+            mat-raised-button
+            matStepperNext
+            color="primary"
+            (click)="nextAfterTermsAgreed()">
+            {{ 'COMMON.NEXT' | translate }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-step>
+    <!-- Step 3: Summary-->
+    <mat-step
+      label="{{ 'WIZARD.THIRD_STEP_LABEL' | translate }}"
+      [completed]="false">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{
+            'WIZARD.THIRD_STEP_TITLE' | translate
+          }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="mat-card-header-text">
+          <app-my-apps-use-api></app-my-apps-use-api>
+          <ng-container *ngIf="newContractDetails.policies.length > 0">
+            <h4>{{ 'WIZARD.POLICIES' | translate }}</h4>
+            <!--In this version we will not have more than 2 policies-->
+            <div class="policies">
+              <app-policy-card
+                *ngFor="let policy of newContractDetails.policies"
+                [policy]="policy"></app-policy-card>
+            </div>
+          </ng-container>
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions class="right">
+          <button mat-raised-button matStepperPrevious color="primary">
+            {{ 'COMMON.BACK' | translate }}
+          </button>
+          <button
+            id="confirm-btn"
+            mat-raised-button
+            (click)="createContractAndRegisterClient(stepper)"
+            color="primary">
+            {{ 'COMMON.CONFIRM' | translate }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-step>
+    <!-- Step 4: Finish & Confirmation-->
+    <mat-step>
+      <ng-template matStepLabel>{{
+        'WIZARD.FORTH_STEP_LABEL' | translate
+      }}</ng-template>
+      <ng-template matStepContent>
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>{{
+              'WIZARD.FORTH_STEP_TITLE' | translate
+            }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="mat-card-header-text">
+            <app-my-apps-use-api [contract]="contract"></app-my-apps-use-api>
+            <ng-container *ngIf="newContractDetails.policies.length > 0">
+              <h4>{{ 'WIZARD.POLICIES' | translate }}</h4>
+              <!--In this version we will not have more than 2 policies-->
+              <div class="policies">
+                <app-policy-card
+                  *ngFor="let policy of newContractDetails.policies"
+                  [policy]="policy"></app-policy-card>
+              </div>
+            </ng-container>
+          </mat-card-content>
+          <mat-divider></mat-divider>
+          <mat-card-actions class="right">
+            <button
+              id="finish-btn"
+              mat-raised-button
+              color="primary"
+              (click)="finish()">
+              {{ 'COMMON.FINISH' | translate }}
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </ng-template>
+    </mat-step>
+  </mat-stepper>
+</div>

@@ -24,39 +24,39 @@ jobs:
         docker-images:
           - description: Apiman Vert.x Gateway (Official Image)
             name: vertx-gateway
-            path: ./vertx-gateway
+            path: ./containers/vertx-gateway
             build-args: |
 
           - description: Apiman WildFly Manager (Official Image)
             name: wildfly-manager
-            path: ./wildfly-manager
+            path: ./containers/wildfly-manager
 
           - description: Apiman Tomcat Manager (Official Image)
             name: tomcat-manager
-            path: ./tomcat-manager
+            path: ./containers/tomcat-manager
 
           - description: Apiman Migration Assistant (Official Image)
             name: migration-assistant
-            path: ./migration-assistant
+            path: ./containers/migration-assistant
 
           - description: Apiman CLI (Community Image)
             name: cli
-            path: ./cli
+            path: ./containers/cli
 
           - description: Apiman WildFly All-In-One (Legacy)
             name: on-wildfly
-            path: ./on-wildfly
+            path: ./containers/on-wildfly
 
           - description: Apiman Vert.x OpenShift (Community Image)
             name: vertx-openshift
-            path: ./vertx-openshift
+            path: ./containers/vertx-openshift
 
           - description: Apiman Vert.x Standalone (Community Image)
             name: vertx-standalone
-            path: ./vertx-standalone
+            path: ./containers/vertx-standalone
 
     steps:
-      - name: Checkout Apiman Docker repo
+      - name: Checkout Apiman Monorepo
         uses: actions/checkout@v3
 
       - name: Version information

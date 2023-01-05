@@ -1,0 +1,83 @@
+<!--
+  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
+<mat-accordion class="headers-align">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{
+        'ACCOUNT.IDENTITY_MANAGEMENT.TITLE' | translate
+      }}</mat-panel-title>
+      <mat-panel-description>
+        &nbsp;
+        <mat-icon>badge</mat-icon>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div class="permission-view property-container">
+      <!-- realm access -->
+      <div *ngIf="keycloakToken.realm_access?.roles">
+        <label class="default-label">{{
+          'ACCOUNT.IDENTITY_MANAGEMENT.IDM_ENTITY.REALM_ACCESS' | translate
+        }}</label>
+        <ul>
+          <li *ngFor="let roles of keycloakToken.realm_access?.roles">
+            {{ roles }}
+          </li>
+        </ul>
+      </div>
+      <!-- realm access -->
+      <div *ngIf="keycloakToken.resource_access?.account">
+        <label class="default-label">{{
+          'ACCOUNT.IDENTITY_MANAGEMENT.IDM_ENTITY.RESOURCE_ACCESS' | translate
+        }}</label>
+        <ul>
+          <li
+            *ngFor="let roles of keycloakToken.resource_access?.account?.roles">
+            {{ roles }}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- issuer -->
+    <div *ngIf="keycloakToken.iss" class="property-container">
+      <label class="default-label">{{
+        'ACCOUNT.IDENTITY_MANAGEMENT.IDM_ENTITY.TOKEN_ISSUER' | translate
+      }}</label>
+      <div>{{ keycloakToken.iss }}</div>
+    </div>
+    <!-- azp -->
+    <div *ngIf="keycloakToken.azp" class="property-container">
+      <label class="default-label">{{
+        'ACCOUNT.IDENTITY_MANAGEMENT.IDM_ENTITY.AUTHORIZED_PARTY' | translate
+      }}</label>
+      <div>{{ keycloakToken.azp }}</div>
+    </div>
+    <!-- scope -->
+    <div *ngIf="keycloakToken.scope" class="property-container">
+      <label class="default-label">{{
+        'ACCOUNT.IDENTITY_MANAGEMENT.IDM_ENTITY.SCOPE' | translate
+      }}</label>
+      <div>{{ keycloakToken.scope }}</div>
+    </div>
+    <!-- typ -->
+    <div *ngIf="keycloakToken.typ" class="property-container">
+      <label class="default-label">{{
+        'ACCOUNT.IDENTITY_MANAGEMENT.IDM_ENTITY.TOKEN_TYPE' | translate
+      }}</label>
+      <div>{{ keycloakToken.typ }}</div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

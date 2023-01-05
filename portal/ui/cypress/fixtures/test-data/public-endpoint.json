@@ -1,0 +1,261 @@
+{
+  "Metadata" : {
+    "id" : 1659015079241,
+    "exportedOn" : "2022-07-28T13:31:19Z",
+    "apimanVersion" : "8.3.0-SNAPSHOT"
+  },
+  "Users" : [ ],
+  "Gateways" : [ ],
+  "Plugins" : [ ],
+  "Roles" : [ ],
+  "PolicyDefinitions" : [ ],
+  "Developers" : [ ],
+  "Blobs" : [ ],
+  "Orgs" : [ {
+    "OrganizationBean" : {
+      "id" : "CypressTestOrg1",
+      "name" : "CypressTestOrg1",
+      "createdBy" : "platform.admin",
+      "createdOn" : "2022-07-28T13:20:17Z",
+      "modifiedBy" : "platform.admin",
+      "modifiedOn" : "2022-07-28T13:20:17Z"
+    },
+    "Memberships" : [ {
+      "id" : 7132,
+      "userId" : "platform.admin",
+      "roleId" : "Editor",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-07-28T13:20:17Z"
+    }, {
+      "id" : 7133,
+      "userId" : "platform.admin",
+      "roleId" : "Organization-User-Manager",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-07-28T13:20:17Z"
+    } ],
+    "Plans" : [ {
+      "PlanBean" : {
+        "id" : "CypressTestPlan1",
+        "name" : "CypressTestPlan1",
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-07-28T13:31:00Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 7145,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-07-28T13:31:00Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-07-28T13:31:00Z",
+          "lockedOn" : "2022-07-28T13:31:01Z"
+        },
+        "Policies" : [ ]
+      } ]
+    } ],
+    "Apis" : [ {
+      "ApiBean" : {
+        "id" : "CypressTestApi1",
+        "name" : "CypressTestApi1",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-07-28T13:20:26Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 7135,
+          "status" : "Published",
+          "endpoint" : "https://petstore.swagger.io/v2/",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : true,
+          "discoverability" : "PORTAL",
+          "plans" : [ ],
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-07-28T13:20:26Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-07-28T13:20:49Z",
+          "publishedOn" : "2022-07-28T13:20:50Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "ApiBean" : {
+        "id" : "CypressTestApi2",
+        "name" : "CypressTestApi2",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-07-28T13:30:44Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 7141,
+          "status" : "Published",
+          "endpoint" : "https://petstore.swagger.io/v2/",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          } ],
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-07-28T13:30:44Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-07-28T13:31:13Z",
+          "publishedOn" : "2022-07-28T13:31:14Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      } ]
+    } ],
+    "Clients" : [ ],
+    "Audits" : [ {
+      "id" : 7131,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Organization",
+      "createdOn" : "2022-07-28T13:20:17Z",
+      "what" : "Create"
+    }, {
+      "id" : 7134,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "createdOn" : "2022-07-28T13:20:26Z",
+      "what" : "Create"
+    }, {
+      "id" : 7136,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-07-28T13:20:26Z",
+      "what" : "Create"
+    }, {
+      "id" : 7137,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-07-28T13:20:31Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"https://petstore.swagger.io/v2/\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 7138,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-07-28T13:20:49Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"\"},{\"name\":\"publicAPI\",\"before\":\"false\",\"after\":\"true\"},{\"name\":\"discoverability\",\"before\":\"ORG_MEMBERS\",\"after\":\"PORTAL\"}]}"
+    }, {
+      "id" : 7139,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-07-28T13:20:50Z",
+      "what" : "Publish"
+    }, {
+      "id" : 7140,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi2",
+      "createdOn" : "2022-07-28T13:30:44Z",
+      "what" : "Create"
+    }, {
+      "id" : 7142,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi2",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-07-28T13:30:44Z",
+      "what" : "Create"
+    }, {
+      "id" : 7143,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi2",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-07-28T13:30:48Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"https://petstore.swagger.io/v2/\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"},{\"name\":\"endpointContentType\",\"before\":null,\"after\":\"json\"}]}"
+    }, {
+      "id" : 7144,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Plan",
+      "entityId" : "CypressTestPlan1",
+      "createdOn" : "2022-07-28T13:31:00Z",
+      "what" : "Create"
+    }, {
+      "id" : 7146,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Plan",
+      "entityId" : "CypressTestPlan1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-07-28T13:31:00Z",
+      "what" : "Create"
+    }, {
+      "id" : 7147,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Plan",
+      "entityId" : "CypressTestPlan1",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-07-28T13:31:01Z",
+      "what" : "Lock"
+    }, {
+      "id" : 7148,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi2",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-07-28T13:31:13Z",
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"CypressTestPlan1:1.0\"}]}"
+    }, {
+      "id" : 7149,
+      "who" : "platform.admin",
+      "organizationId" : "CypressTestOrg1",
+      "entityType" : "Api",
+      "entityId" : "CypressTestApi2",
+      "entityVersion" : "1.0",
+      "createdOn" : "2022-07-28T13:31:14Z",
+      "what" : "Publish"
+    } ]
+  } ]
+}

@@ -1,0 +1,320 @@
+/*!
+ * Copyright 2022 Scheer PAS Schweiz AG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  imitations under the License.
+ */
+
+@use "@angular/material" as mat;
+@use "sass:map";
+@import "@angular/material/theming";
+@import "src/themes/default";
+@import "src/themes/custom";
+@import "assets/swagger-custom-styles.css";
+@include mat.core;
+
+/***** THEMING *****/
+@mixin app-color($config-or-theme) {
+  // Extract the color configuration in case a theme has been passed.
+  // This allows consumers to either pass a theme object or a color configuration.
+  $config: mat.get-color-config($config-or-theme);
+
+  // Extract the palettes you need from the theme definition.
+  $primary-palette: map.get($config, primary);
+  $accent-palette: map.get($config, accent);
+  $warn-palette: map.get($config, warn);
+  $primary: mat.define-palette($primary-palette);
+  $accent: mat.define-palette($accent-palette);
+  $warn: mat.define-palette($warn-palette);
+
+  // Main Colors: Use this classes in components
+  // Color
+  .primary { color: mat.get-color-from-palette($primary); }
+  .accent { color: mat.get-color-from-palette($accent); }
+  .warn { color: mat.get-color-from-palette($warn); }
+
+  // Background
+  .primary-bg { background-color: mat.get-color-from-palette($primary) !important; }
+  .warn-bg { background-color: mat.get-color-from-palette($warn) !important; }
+  .accent-bg { background-color: mat.get-color-from-palette($accent) !important; }
+
+  // Border
+  .primary-border-color { border-color: mat.get-color-from-palette($primary) !important; }
+  .accent-border-color { border-color: mat.get-color-from-palette($accent) !important; }
+  .warn-border-color { border-color: mat.get-color-from-palette($warn) !important; }
+
+  .grid-divider {
+    width: 4rem;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+
+    div {
+      height: 100%;
+      border-right: 2px solid mat.get-color-from-palette($primary);
+    }
+  }
+
+  .form-field-pre-icon {
+    min-width: 40px;
+  }
+
+  $directions: top, right, bottom, left;
+
+  @each $dir in $directions {
+    .divider-#{$dir} {
+      border-#{$dir}: 2px solid mat.get-color-from-palette($primary);
+    }
+  }
+}
+
+@mixin app-theme($theme) {
+  // Extracts the color and typography configurations from the theme.
+  $color: mat.get-color-config($theme);
+  $typography: mat.get-typography-config($theme);
+
+  // Do not generate styles if configurations for individual theming
+  // systems have been explicitly set to `null`.
+  @if $color {
+    @include app-color($color);
+  }
+
+  // Include theme styles for core and each component used in your app.
+  // Alternatively, you can import and @include the theme mixins for each component
+  // that you are using.
+  @include angular-material-theme($theme);
+
+  // Include theme styles for components.
+}
+
+.theme-default {
+  @include app-theme($theme-default);
+}
+
+.theme-custom {
+  @include app-theme($theme-custom);
+}
+
+/***** DEFINITIONS *****/
+
+/** Font **/
+$default-font: "Open Sans", sans-serif;
+
+// text-classes work the same as h tags do
+.text {
+  font-size: 1rem;
+}
+
+.text1 {
+  font-size: 0.9rem;
+}
+
+.text2 {
+  font-size: 0.8rem;
+}
+
+.text3 {
+  font-size: 0.7rem;
+}
+
+// text-big-classes increase the sizes with an increasing index
+.text-big1 {
+  font-size: 1.2rem;
+}
+
+.text-big2 {
+  font-size: 1.4rem;
+}
+
+.text-big3 {
+  font-size: 1.5rem;
+}
+
+/** Paddings and Margins **/
+$sizes: 0, 5, 8, 10, 15, 20, 25, 30, 35, 40;
+
+@each $size in $sizes {
+  // Margins
+  .mt-#{$size} {
+    margin-top: #{$size}px;
+  }
+  .mr-#{$size} {
+    margin-right: #{$size}px;
+  }
+  .mb-#{$size} {
+    margin-bottom: #{$size}px;
+  }
+  .ml-#{$size} {
+    margin-left: #{$size}px;
+  }
+
+  // Paddings
+  .pt-#{$size} {
+    padding-top: #{$size}px;
+  }
+  .pr-#{$size} {
+    padding-right: #{$size}px;
+  }
+  .pb-#{$size} {
+    padding-bottom: #{$size}px;
+  }
+  .pl-#{$size} {
+    padding-left: #{$size}px;
+  }
+}
+
+$rem-sizes: 1, 2, 3, 4;
+
+@each $size in $rem-sizes {
+  // Margins
+  .mt-rem-#{$size} {
+    margin-top: #{$size}rem;
+  }
+  .mr-rem-#{$size} {
+    margin-right: #{$size}rem;
+  }
+  .mb-rem-#{$size} {
+    margin-bottom: #{$size}rem;
+  }
+  .ml-rem-#{$size} {
+    margin-left: #{$size}rem;
+  }
+
+  // Paddings
+  .pt-rem-#{$size} {
+    padding-top: #{$size}rem;
+  }
+  .pr-rem-#{$size} {
+    padding-right: #{$size}rem;
+  }
+  .pb-rem-#{$size} {
+    padding-bottom: #{$size}rem;
+  }
+  .pl-rem-#{$size} {
+    padding-left: #{$size}rem;
+  }
+}
+
+// Alignment
+.dp-center {
+  text-align: center;
+}
+
+/***** DevPortal Default Styling *****/
+
+/** Main tags **/
+html {
+  font-size: 100%;
+}
+
+body {
+  font-family: $default-font;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/** h-tags **/
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+h4 {
+  font-size: 1rem;
+}
+
+/** a-tags **/
+a {
+  color: black;
+  text-decoration: none;
+
+  &:visited {
+    color: black;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.input-icon-btn {
+  font-size: 22px !important;
+}
+
+/***** Material Styling *****/
+
+/** Form Field Pre- and Suffix **/
+.mat-form-field-prefix {
+  margin-right: 10px;
+}
+
+.mat-form-field-suffix {
+  margin-left: 10px;
+}
+
+.mat-form-field-appearance-legacy {
+  .mat-form-field-prefix,
+  .mat-form-field-suffix {
+    align-self: flex-end;
+  }
+}
+
+.mat-simple-snackbar {
+  color: white;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.mat-tooltip.multiline-tooltip {
+  white-space: pre-line;
+  font-size: 0.9rem;
+  max-width: unset;
+}
+
+// disables header navigation
+.mat-horizontal-stepper-header {
+  pointer-events: none;
+}
+
+.headers-align .mat-expansion-panel-header-title,
+.headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headers-align .mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
+
+.default-label {
+  font-size: 12px;
+  color: var(--acccent-contrast-60);
+}
+
+.cdk-global-scrollblock {
+  position: initial;
+  width: initial;
+  overflow: hidden;
+}

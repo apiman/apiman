@@ -1,0 +1,64 @@
+<!--
+  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
+<div *ngIf="listType === 'api'" class="align">
+  <mat-form-field id="search-form-field">
+    <mat-icon matPrefix color="primary">search</mat-icon>
+    <input
+      id="search-input"
+      matInput
+      type="search"
+      [placeholder]="'MPLACE.SEARCH' | translate"
+      class="search-input"
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="searchTermNotifier.next($event)" />
+    <button
+      id="search-input-clear-btn"
+      *ngIf="searchTerm.length > 0"
+      mat-button
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      color="primary"
+      (click)="resetSearch()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
+<ng-container *ngIf="(apis$ | async)!.length > 0 && ready; else NoDataMsg">
+  <div id="grid">
+    <ng-container *ngFor="let api of apis$ | async">
+      <app-api-card *ngIf="api.id" [api]="api" class="api-card"></app-api-card>
+    </ng-container>
+    <div id="grid-spinner" [hidden]="!loadingMoreApis">
+      <mat-spinner strokeWidth="3" diameter="50"></mat-spinner>
+    </div>
+  </div>
+</ng-container>
+<ng-template #NoDataMsg>
+  <div *ngIf="this.ready; else ErrorMsg" class="dp-center">
+    <app-no-data
+      [text]="'HOME.NO_APIS_FOUND' | translate"
+      [textClass]="'text-big2'"></app-no-data>
+  </div>
+</ng-template>
+<ng-template #ErrorMsg>
+  <div *ngIf="error" class="dp-center">
+    <app-no-data
+      [text]="'COMMON.ERROR' | translate"
+      [textClass]="'text-big2'"></app-no-data>
+  </div>
+</ng-template>

@@ -1,2 +1,11 @@
 # Whitespace change to fix line endings / Fri Feb 5 14:54:21 2016 +0000
 770a90d1c86af77ae40fe8456abb3137ca55b9ab
+
+# chore(portal): apply eslint/prettier style on the project
+654ed4b326cd467df041413f1a65b3a51224c0cb
+
+# chore(portal): add copyright notice to all src files and set line separator to LF
+0d21a022df3b7d8064a5fce3e4227991664667ab
+
+# chore(portal): apply stylelint on the project
+25380de830d442e536470e0a22933260f15f11a6

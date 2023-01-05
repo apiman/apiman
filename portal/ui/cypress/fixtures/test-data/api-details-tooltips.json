@@ -1,0 +1,157 @@
+{
+  "Metadata" : {
+    "id" : 1654087949882,
+    "exportedOn" : "2022-06-01T12:52:29Z",
+    "apimanVersion" : "8.2.0-SNAPSHOT"
+  },
+  "Users" : [ ],
+  "Gateways" : [ ],
+  "Plugins" : [ ],
+  "Roles" : [ ],
+  "PolicyDefinitions" : [ ],
+  "Developers" : [ ],
+  "Blobs" : [ ],
+  "Orgs" : [ {
+    "OrganizationBean" : {
+      "id" : "CypressTestOrg1",
+      "name" : "CypressTestOrg1",
+      "createdBy" : "platform.admin",
+      "createdOn" : "2022-06-01T12:40:53Z",
+      "modifiedBy" : "platform.admin",
+      "modifiedOn" : "2022-06-01T12:40:53Z"
+    },
+    "Memberships" : [ {
+      "id" : 1042,
+      "userId" : "platform.admin",
+      "roleId" : "Editor",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-06-01T12:40:53Z"
+    }, {
+      "id" : 1043,
+      "userId" : "platform.admin",
+      "roleId" : "Organization-User-Manager",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-06-01T12:40:53Z"
+    }, {
+      "id" : 1051,
+      "userId" : "cypress.user",
+      "roleId" : "Viewer",
+      "organizationId" : "CypressTestOrg1",
+      "createdOn" : "2022-06-01T13:00:30Z"
+    } ],
+    "Plans" : [ {
+      "PlanBean" : {
+        "id" : "CypressTestPlan1",
+        "name" : "CypressTestPlan1",
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-06-01T12:41:01Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1017,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-06-01T12:41:01Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-06-01T12:41:01Z",
+          "lockedOn" : "2022-06-01T12:41:34Z"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "CypressTestPlan2",
+        "name" : "CypressTestPlan2",
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-06-01T12:41:43Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1021,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-06-01T12:41:43Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-06-01T12:41:43Z",
+          "lockedOn" : "2022-06-01T12:41:45Z"
+        },
+        "Policies" : [ ]
+      } ]
+    }, {
+      "PlanBean" : {
+        "id" : "CypressTestPlan3",
+        "name" : "CypressTestPlan3",
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-06-01T12:41:52Z"
+      },
+      "Versions" : [ {
+        "PlanVersionBean" : {
+          "id" : 1025,
+          "status" : "Locked",
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-06-01T12:41:52Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-06-01T12:41:52Z",
+          "lockedOn" : "2022-06-01T12:42:19Z"
+        },
+        "Policies" : [ ]
+      } ]
+    } ],
+    "Apis" : [ {
+      "ApiBean" : {
+        "id" : "CypressTestApi1",
+        "name" : "CypressTestApi1",
+        "tags" : [ ],
+        "createdBy" : "platform.admin",
+        "createdOn" : "2022-06-01T12:42:05Z",
+        "numPublished" : 1
+      },
+      "Versions" : [ {
+        "ApiVersionBean" : {
+          "id" : 1028,
+          "status" : "Published",
+          "endpoint" : "http://petstore.swagger.io/v2",
+          "endpointType" : "rest",
+          "endpointContentType" : "json",
+          "endpointProperties" : { },
+          "gateways" : [ {
+            "gatewayId" : "TheGateway"
+          } ],
+          "publicAPI" : false,
+          "discoverability" : "ORG_MEMBERS",
+          "plans" : [ {
+            "planId" : "CypressTestPlan2",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "FULL_PLATFORM_MEMBERS"
+          }, {
+            "planId" : "CypressTestPlan3",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "PORTAL"
+          }, {
+            "planId" : "CypressTestPlan1",
+            "version" : "1.0",
+            "requiresApproval" : false,
+            "discoverability" : "ORG_MEMBERS"
+          } ],
+          "version" : "1.0",
+          "createdBy" : "platform.admin",
+          "createdOn" : "2022-06-01T12:42:05Z",
+          "modifiedBy" : "platform.admin",
+          "modifiedOn" : "2022-06-01T12:42:35Z",
+          "publishedOn" : "2022-06-01T12:42:44Z",
+          "definitionType" : "None",
+          "parsePayload" : false,
+          "disableKeysStrip" : false
+        },
+        "Policies" : [ ]
+      } ]
+    } ],
+    "Clients" : [ ],
+    "Audits" : [ ]
+  } ]
+}

@@ -1,0 +1,62 @@
+/*!
+ * Copyright 2022 Scheer PAS Schweiz AG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  imitations under the License.
+ */
+
+.summary {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 4fr 6fr;
+  grid-gap: 6rem;
+}
+
+.policies {
+  display: grid;
+  gap: 20px;
+}
+
+h2,
+h3 {
+  text-align: center;
+}
+
+.policy-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 4rem;
+
+  // https://stackoverflow.com/a/11149311
+  margin-left: -3rem;
+  padding-left: 3rem;
+  border-left: 2px solid var(--primary);
+}
+
+// everything smaller than full hd (1920px x 1080px)
+@media only screen and (max-width: 1919px) {
+  .summary {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(1, auto);
+    grid-gap: 1rem;
+  }
+
+  .summary:first-child {
+    padding-bottom: 3rem;
+    border-bottom: 2px solid var(--primary);
+  }
+
+  .policy-charts-grid {
+    border-left: 0;
+  }
+}

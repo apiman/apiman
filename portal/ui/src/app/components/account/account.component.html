@@ -1,0 +1,100 @@
+<!--
+  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
+<ng-container *ngIf="userProfile$ | async as userProfile">
+  <mat-card>
+    <mat-card-header>
+      <mat-icon id="profile-avatar" mat-card-avatar matSuffix aria-hidden="true"
+        >account_circle</mat-icon
+      >
+      <mat-card-title
+        >{{ userProfile.firstName }} {{ userProfile.lastName }}</mat-card-title
+      >
+      <mat-card-subtitle>{{ userProfile.email }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="property-container">
+        <label class="default-label">{{
+          'ACCOUNT.USER_ENTITY.USERNAME' | translate
+        }}</label>
+        <div>{{ userProfile.username }}</div>
+      </div>
+
+      <div class="property-container">
+        <label class="default-label">{{
+          'ACCOUNT.USER_ENTITY.FIRSTNAME' | translate
+        }}</label>
+        <div>{{ userProfile.firstName }}</div>
+      </div>
+
+      <div class="property-container">
+        <label class="default-label">{{
+          'ACCOUNT.USER_ENTITY.LASTNAME' | translate
+        }}</label>
+        <div>{{ userProfile.lastName }}</div>
+      </div>
+
+      <div class="property-container">
+        <label class="default-label">{{
+          'ACCOUNT.USER_ENTITY.EMAIL' | translate
+        }}</label>
+        <div class="flex-centered">
+          <span>{{ userProfile.email }}</span>
+          <mat-icon
+            matSuffix
+            [ngClass]="
+              userProfile.emailVerified
+                ? 'account-confirmed'
+                : 'account-pending'
+            "
+            >{{
+              userProfile.emailVerified ? 'verified_user' : 'gpp_bad'
+            }}</mat-icon
+          >
+        </div>
+      </div>
+
+      <div class="property-container">
+        <label class="default-label">{{
+          'ACCOUNT.USER_ENTITY.LOCALE' | translate
+        }}</label>
+        <ng-container *ngIf="keycloakToken.locale"
+          ><div>{{ keycloakToken.locale }}</div></ng-container
+        >
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <a [href]="accountUrl" target="_blank">
+        <button mat-raised-button class="default-btn">
+          <mat-icon>open_in_new</mat-icon>
+          <span>{{ 'ACCOUNT.EDIT_EXTERNAL_BTN' | translate }}</span>
+        </button>
+      </a>
+    </mat-card-actions>
+  </mat-card>
+
+  <br />
+
+  <app-account-idm [keycloakToken]="keycloakToken"></app-account-idm>
+
+  <br />
+
+  <app-account-organization-permissions
+    [apimanAccount]="
+      apimanAccount$ | async
+    "></app-account-organization-permissions>
+</ng-container>
