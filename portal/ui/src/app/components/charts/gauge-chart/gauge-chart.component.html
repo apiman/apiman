@@ -1,0 +1,54 @@
+<!--
+  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
+<div class="chart mat-elevation-z2" *ngIf="gaugeData">
+  <h3 id="chart-name" class="chart-header primary">{{ gaugeData.name }}</h3>
+  <mat-divider></mat-divider>
+  <div class="ngx-wrapper">
+    <ngx-charts-gauge
+      [results]="data"
+      [legend]="legend"
+      [max]="gaugeData.limit!"
+      [legendPosition]="legendPosition"
+      [scheme]="colorScheme"
+      [valueFormatting]="disableValueLabel">
+    </ngx-charts-gauge>
+
+    <div class="info-icon">
+      <mat-icon
+        id="chart-icon"
+        class="material-icons-outlined"
+        [inline]="true"
+        color="primary"
+        >{{ icon }}</mat-icon
+      >
+    </div>
+
+    <div class="infos">
+      <div id="chart-info-header" class="text2">{{ gaugeData.infoHeader }}</div>
+      <div id="chart-usage" class="text-big1">
+        {{ gaugeData.currentVal }} {{ gaugeData.dividendSuffix }} /
+        <span class="primary"
+          >{{ gaugeData.limit }} {{ gaugeData.divisorSuffix }}</span
+        >
+      </div>
+      <div class="text1">
+        <mat-divider></mat-divider>
+        <span id="chart-bottom-text">{{ gaugeData.bottomText }}</span>
+      </div>
+    </div>
+  </div>
+</div>

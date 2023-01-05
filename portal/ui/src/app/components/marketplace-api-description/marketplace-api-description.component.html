@@ -1,0 +1,95 @@
+<!--
+  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
+<mat-expansion-panel
+  id="{{ api.api.name }}-{{ api.version }}"
+  [expanded]="isLatest"
+  xmlns="http://www.w3.org/1999/html">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <app-api-status-tag
+        [apiStatus]="api.status"
+        [primary]="true"></app-api-status-tag>
+      <div id="version-info">
+        {{ 'COMMON.VERSION' | translate }} {{ api.version }}
+        {{ 'COMMON.OF' | translate }} {{ api.api.name }}
+        <span *ngIf="isLatest" id="latest-tag" class="primary">[latest]</span>
+      </div>
+      <app-api-documentation-buttons
+        *ngIf="api.docsAvailable"
+        [apiVersion]="api"
+        [downloadEnabled]="true"></app-api-documentation-buttons>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div id="content-header">
+    <app-img-or-icon-selector [imgUrl]="api.api.image" [dimension]="'44'">
+    </app-img-or-icon-selector>
+    <div id="api-short-description" *ngIf="api.api.description; else noDesc">
+      {{ api.api.description }}
+    </div>
+    <ng-template #noDesc>
+      <div>
+        <app-no-data [text]="'MPLACE.NO_DESC' | translate"></app-no-data>
+      </div>
+    </ng-template>
+  </div>
+
+  <h2 class="primary mt-rem-3">
+    {{ 'API_DETAILS.EXTENDED_DESCRIPTION' | translate }}
+  </h2>
+
+  <!-- Template for MD-Reader -->
+  <ng-template #mdTemplate>
+    <app-api-markdown-description
+      [markdownText]="api.extendedDescription"></app-api-markdown-description>
+  </ng-template>
+
+  <!-- Template for Key Features -->
+  <ng-template #featuresTemplate>
+    <div id="key-features" *ngIf="features.length > 0">
+      <h2 class="primary">{{ 'API_DETAILS.KEY_FEATURES' | translate }}</h2>
+      <div>
+        <mat-list>
+          <mat-list-item *ngFor="let feature of features">
+            <mat-icon matListIcon class="primary material-icons-outlined mr-8"
+              >star_border</mat-icon
+            >
+            <span>{{ feature }}</span>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Markdown Reader & Key Features -->
+  <div *ngIf="hasFeatures()" class="md-and-features">
+    <template [ngTemplateOutlet]="mdTemplate"></template>
+    <template [ngTemplateOutlet]="featuresTemplate"></template>
+  </div>
+
+  <!-- Markdown only -->
+  <div *ngIf="!hasFeatures()" class="md-only">
+    <template [ngTemplateOutlet]="mdTemplate"></template>
+  </div>
+
+  <!-- Plans -->
+  <app-plan-card-list [apiVersion]="api"></app-plan-card-list>
+
+  <!-- Public Endpoint -->
+  <app-api-public-endpoint
+    *ngIf="api.publicAPI && api.publicDiscoverability"
+    [publicApiVersion]="api"></app-api-public-endpoint>
+</mat-expansion-panel>

@@ -7,8 +7,8 @@ jobs:
   read-versions:
     runs-on: ubuntu-latest
     outputs:
-      apiman-version: ${{ steps.read-apiman-versions.outputs.release-version }}
-      is-snapshot-version: ${{ steps.read-apiman-versions.outputs.is-snapshot-version }}
+      apiman-version: ${{ steps.read-apiman-version.outputs.release-version }}
+      is-snapshot-version: ${{ steps.read-apiman-version.outputs.is-snapshot-version }}
     steps:
       - name: Checkout Apiman Docker repo
         uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
     uses: apiman/apiman/.github/workflows/docker-test-release.yml@master
     secrets: inherit
     with:
-      apiman-version: ${{ needs.read-versions.outputs.release-version }}
+      apiman-version: ${{ needs.read-versions.outputs.apiman-version }}
       push-to-repos: false
       snapshot: ${{ needs.read-versions.outputs.is-snapshot-version }}
 

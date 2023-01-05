@@ -1,0 +1,51 @@
+{
+  // set language the API Developer Portal is running in
+  "language": "en",
+  // if new languages are available add them here (must exist in assets/i18n)
+  "supportedLanguages": ["de", "en"],
+  // do not change this
+  "theme": "custom",
+  // config options for header
+  "hero": {
+    "title": "HOME.TITLE",
+    "subtitle": "HOME.SUBTITLE",
+    // enforces a min height visible header image
+    "large": true,
+  },
+  // config options for navigation below header
+  "navigation": {
+    "showHomeLink": true,
+    "links": [],
+    "separator": ""
+  },
+  // config options for footer
+  "footer": {
+    // additional links to be shown in footer
+    "links": [
+      {
+        "name": "Apiman",
+        "link": "https://www.apiman.io/",
+        "openInNewTab": true
+      }
+    ],
+    // tell the application how the menu separator should look like
+    "separator": "•"
+  },
+  // specify the entrypoint to the API Management Manager: This is MANDATORY for communication with backend
+  "endpoint": "${apiman-manager-ui.api.endpoint}",
+  // the SSO role that the manager endpoint requires
+  "backendRoles": ["view-profile", "devportaluser"],
+  // set authentication details when pressing "login" telling where to redirect for SSO login with keycloak
+  "auth": {
+    "url": "${apiman.auth.public.url}",
+    "realm": "${apiman.auth.realm}",
+    "clientId": "devportal"
+  },
+  // set your desired terms and conditions for API subscriptions here. Could be disabled so no such infos will be shown.
+  "terms": {
+    "enabled": true,
+    // both provided links will always be opened in a new browser tab
+    "termsLink": "https://www.apache.org/licenses/LICENSE-2.0",
+    "privacyLink": "https://www.apache.org/licenses/LICENSE-2.0"
+  }
+}

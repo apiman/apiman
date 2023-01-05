@@ -1,0 +1,63 @@
+<!--
+  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
+<div id="hero-image" [ngClass]="{ 'hero-large': heroService.hero.large }">
+  <div id="hero-overlay" class="content-container">
+    <div id="hero-overlay-box">
+      <h1 class="mt-40" id="hero-title">{{ heroService.hero.title }}</h1>
+      <p id="hero-subtitle">{{ heroService.hero.subtitle }}</p>
+    </div>
+    <div id="hero-actions">
+      <div id="hero-actions-logged-in" *ngIf="loggedIn">
+        <span id="hero-username" class="pr-5" [routerLink]="['/account']">{{
+          username
+        }}</span>
+        <mat-icon
+          id="hero-account"
+          class="hero-action"
+          [routerLink]="['/account']"
+          >account_circle</mat-icon
+        >
+        <mat-divider [vertical]="true"></mat-divider>
+        <mat-icon
+          id="hero-notifications"
+          class="hero-action"
+          matBadge="{{ heroService.hero.notificationCount }}"
+          matBadgeColor="warn"
+          [matBadgeHidden]="heroService.hero.notificationCount === '0'"
+          [routerLink]="['/notifications']">
+          notifications
+        </mat-icon>
+        <mat-divider [vertical]="true"></mat-divider>
+        <button
+          mat-raised-button
+          (click)="logout()"
+          *ngIf="loggedIn"
+          id="hero-logout-btn">
+          {{ 'COMMON.LOGOUT' | translate }}
+        </button>
+      </div>
+
+      <button
+        mat-raised-button
+        (click)="login()"
+        *ngIf="!loggedIn"
+        id="hero-login-btn">
+        {{ 'COMMON.LOGIN' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
