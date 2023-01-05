@@ -224,4 +224,4 @@ jobs:
     with:
       apiman-version: ${{ needs.build-verify.outputs.apiman-version }}
       push-to-repos: true
-      snapshot: ${{ needs.build-verify.outputs.is-snapshot-version }}
+      snapshot: ${{ needs.build-verify.outputs.is-snapshot-version == 'true' }}
