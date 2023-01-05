@@ -215,7 +215,7 @@ jobs:
             containers/docker-compose/target/apiman-distro-docker-compose-${{ env.APIMAN_VERSION }}.zip
 
   publish-docker-images:
-    needs: [read-versions, publish-snapshots]
+    needs: [build-verify, publish-snapshots]
     uses: apiman/apiman/.github/workflows/docker-test-release.yml@master
     secrets: inherit
     if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
