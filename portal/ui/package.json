@@ -31,7 +31,7 @@
     "@ngx-translate/http-loader": "7.0.0",
     "@swimlane/ngx-charts": "20.1.0",
     "@types/prismjs": "^1.26.0",
-    "json5": "2.2.1",
+    "json5": "2.2.2",
     "keycloak-angular": "9.3.2",
     "keycloak-js": "16.1.1",
     "luxon": "2.5.0",
