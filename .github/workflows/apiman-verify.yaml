@@ -81,7 +81,7 @@ jobs:
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -165,7 +165,7 @@ jobs:
           git tag -a -f -m "Snapshot tag: $APIMAN_VERSION" $APIMAN_VERSION 
 
       - name: Cache local Maven repository
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
