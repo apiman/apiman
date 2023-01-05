@@ -35,6 +35,15 @@ updates:
     schedule:
       interval: "daily"
     labels:
-      - "V: Apiman 3"
+      - "dependency"
+      - "javascript"
+
+  - package-ecosystem: "npm"
+    open-pull-requests-limit: 2
+    target-branch: "master"
+    directory: "portal/ui"
+    schedule:
+      interval: "daily"
+    labels:
       - "dependency"
       - "javascript"
