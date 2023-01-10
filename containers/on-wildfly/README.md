@@ -10,9 +10,11 @@ You will need to run Keycloak separately and point Apiman to Keycloak using an e
 The following is just an example; you are free to use any ports or configuration.
 You may need to tweak your Keycloak realm definition depending upon the particulars of your setup.
 
-```shell
-docker run -it -p 8085:8080 -e KEYCLOAK_FRONTEND_URL=http://localhost:8085 quay.io/keycloak/keycloak:18.0.2
+First, start Keycloak by following the [Apiman Keycloak quickstart guide](https://www.apiman.io/apiman-docs/installation-guide/latest/keycloak.html#running-keycloak).
 
+Then, start Apiman:
+
+```shell
 docker run -it -p 8080:8080 -e APIMAN_AUTH_URL=http://localhost:8085 apiman/on-wildfly:latest-release
 ```
 * Run Keycloak and map to 8085. Let Keycloak know externally the port is 8085 for redirects, etc.
