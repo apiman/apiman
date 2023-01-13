@@ -13,6 +13,17 @@ But that's not all. Apiman is designed to be easy to customise, and you can impl
 
 Did you know, we have an [Apiman newsletter now](https://www.apiman.io/#newsletter)! We'll inform you of the latest Apiman releases as soon as they happen, along with great Apiman-related content. The latest Apiman news, blogs, tutorials, software engineering topics, and more. No spam, no nonsense.
 
+## 🐒 Monorepo
+
+⚠️ We may move stuff around as we settle on a finalised monorepo structure post-merge.
+
+* [Apiman Containers/Docker Images](https://github.com/apiman/apiman/tree/master/containers)
+* [Apiman Plugins](https://github.com/apiman/apiman/tree/master/plugins)
+* [Apiman Developer Portal](https://github.com/apiman/apiman/tree/master/portal/ui)
+* [Apiman Manager](https://github.com/apiman/apiman/tree/master/manager)
+* [Apiman Gateway](https://github.com/apiman/apiman/tree/master/gateway)
+* [Apiman Distributions (packaged binaries we ship)](https://github.com/apiman/apiman/tree/master/distro)
+
 ## ⚡️ Quick links
 
 * [Download Apiman](https://www.apiman.io/download.html)
