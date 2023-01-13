@@ -13,6 +13,13 @@ But that's not all. Apiman is designed to be easy to customise, and you can impl
 
 Did you know, we have an [Apiman newsletter now](https://www.apiman.io/#newsletter)! We'll inform you of the latest Apiman releases as soon as they happen, along with great Apiman-related content. The latest Apiman news, blogs, tutorials, software engineering topics, and more. No spam, no nonsense.
 
+## ⚡️ Quick links
+
+* [Download Apiman](https://www.apiman.io/download.html)
+* [Read the latest Apiman Blogs](https://www.apiman.io/blog/)
+* [Get Support](https://www.apiman.io/support.html)
+* [Talk Apiman](https://github.com/apiman/apiman/discussions)
+
 ## 🐒 Monorepo
 
 ⚠️ We may move stuff around as we settle on a finalised monorepo structure post-merge.
@@ -23,13 +30,6 @@ Did you know, we have an [Apiman newsletter now](https://www.apiman.io/#newslett
 * [Apiman Manager](https://github.com/apiman/apiman/tree/master/manager)
 * [Apiman Gateway](https://github.com/apiman/apiman/tree/master/gateway)
 * [Apiman Distributions (packaged binaries we ship)](https://github.com/apiman/apiman/tree/master/distro)
-
-## ⚡️ Quick links
-
-* [Download Apiman](https://www.apiman.io/download.html)
-* [Read the latest Apiman Blogs](https://www.apiman.io/blog/)
-* [Get Support](https://www.apiman.io/support.html)
-* [Talk Apiman](https://github.com/apiman/apiman/discussions)
 
 ## 📖 Requirements
 
@@ -110,9 +110,7 @@ There are [lots of different workflows for contributing](https://docs.github.com
 
 ## 🔎 Developer Portal
 
-Apiman also comes with a skinnable developer portal which you can let external developers sign up to your APIs in a streamlined API marketplace experience. 
-
-Currently the [Apiman Developer Portal](https://github.com/apiman/apiman-developer-portal) lives in a separate repository.
+Apiman also comes with a skinnable developer portal which you can let external developers sign up to your APIs in a streamlined API marketplace experience.
 
 ## 🙋 Looking for support?
 
