@@ -702,6 +702,7 @@
     <module>migration-assistant</module>
     <module>sso</module>
     <module>portal</module>
+    <module>plugins</module>
   </modules>
 
   <profiles>

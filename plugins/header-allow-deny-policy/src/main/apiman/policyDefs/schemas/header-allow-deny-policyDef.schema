@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title" : "Header Allow/Deny Policy",
+  "description" : "Add header entries for the the requests that should be allowed or denied.",
+  "properties": {
+    "entries": {
+      "title": "Add Header Entries",
+      "type": "array",
+      "format": "table",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "title": "Header Entry",
+        "description": "Permits a request matching header criteria.",
+        "properties": {
+          "headerName": {
+            "type": "string",
+            "title": "Header Name"
+          },
+          "allowIfHeaderMissing": {
+            "type": "boolean",
+            "title": "Allow request if header is missing",
+            "default": false
+          },
+          "allowIfNoRulesMatch": {
+            "type": "boolean",
+            "title": "Allow request if no rules match",
+            "default": false
+          },
+          "rules": {
+            "title": "Add Header Rules",
+            "type": "array",
+            "format": "table",
+            "uniqueItems": false,
+            "items": {
+              "type": "object",
+              "title": "Header Rules",
+              "description": "Allow/deny rules for this header.",
+              "properties": {
+                "allowRequest": {
+                  "type": "boolean",
+                  "title": "Allow request if value matches",
+                  "default": false
+                },
+                "headerValueRegex": {
+                  "title": "Header Value Regex (e.g. foo[0-9]bar)",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

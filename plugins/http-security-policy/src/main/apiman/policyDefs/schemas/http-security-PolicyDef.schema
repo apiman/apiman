@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "HTTP Security Headers Configuration",
+  "type": "object",
+  "properties": {
+    "hsts": {
+      "title": "HTTP Strict Transport Security",
+      "description": "Enforce transport security when using HTTP to mitigate a range of common web vulnerabilities.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "title": "Enable HTTP Strict Transport (HSTS)",
+          "type": "boolean",
+          "default": false
+        },
+        "includeSubdomains": {
+          "title": "Include Subdomains",
+          "type": "boolean",
+          "default": false
+        },
+        "maxAge": {
+          "title": "Maximum Age",
+          "description": "Delta seconds user agents should cache HSTS status for.",
+          "default": 0,
+          "type": "integer"
+        },
+        "preload": {
+          "title": "Enable HSTS Preload Flag",
+          "description": "Flag to verify HSTS preload status. Popular browsers contain a hard-coded (pinned) list of domains and certificates, which they always connect securely with. This mitigates a wide range of identity and MIITM attacks, and is particularly useful for high-profile domains. Users must submit a request for their domain to be included in the scheme.",
+          "type": "boolean",
+          "default": false,
+          "links": [
+            {
+              "href": "https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security",
+              "rel": "Mozilla Dev: HTTP Strict-Transport-Security guide"
+            },
+            {
+              "href": "https://hstspreload.appspot.com/",
+              "rel": "Chromium: HSTS preload submission guidelines"
+            }
+          ]
+        }
+      }
+    },
+    "contentSecurityPolicy": {
+      "title": "Content Security Policy",
+      "description": "A sophisticated mechanism to precisely define the types and sources of content that may be loaded, with violation reporting and the ability to restrict the availability and scope of many security-sensitive features.",
+      "type": "object",
+      "properties": {
+        "mode": {
+          "title": "CSP Mode",
+          "type": "string",
+          "default": "DISABLED",
+          "enum": [
+            "ENABLED",
+            "REPORT_ONLY",
+            "DISABLED"
+          ]
+        },
+        "csp": {
+          "title": "Content Security Policy Definition",
+          "description": "Valid CSP definition must be provided.",
+          "type": "string",
+          "format": "textarea",
+          "links": [
+            {
+              "href": "https://developer.mozilla.org/en-US/docs/Web/Security/CSP",
+              "rel": "Mozilla Dev: Content-Security-Policy (CSP) guide"
+            }
+          ]
+        }
+      }
+    },
+    "frameOptions": {
+      "title": "Frame Options",
+      "description": "Defines if, or how, a resource should be displayed in a frame, iframe or object.",
+      "type": "string",
+      "default": "DISABLED",
+      "enum": [
+        "DENY",
+        "SAMEORIGIN",
+        "DISABLED"
+      ],
+      "links": [
+        {
+          "href": "https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options",
+          "rel": "Mozilla Dev: X-Frame-Options guide"
+        }
+      ]
+    },
+    "xssProtection": {
+      "title": "XSS Protection",
+      "description": "Enable or disable XSS filtering in the UA.",
+      "type": "string",
+      "default": "DISABLED",
+      "enum": [
+        "OFF",
+        "ON",
+        "BLOCK",
+        "DISABLED"
+      ],
+      "links": [
+        {
+          "href": "http://blogs.msdn.com/b/ieinternals/archive/2011/01/31/controlling-the-internet-explorer-xss-filter-with-the-x-xss-protection-http-header.aspx",
+          "rel": "MSDN: X-XSS-Protection guide"
+        }
+      ]
+    },
+    "contentTypeOptions": {
+      "title": "Content Type Options",
+      "description": "X-Content-Type-Options: Prevent MIME-sniffing to any type other than the declared Content-Type.",
+      "type": "boolean",
+      "default": false,
+      "links": [
+        {
+          "href": "http://blogs.msdn.com/b/ie/archive/2008/09/02/ie8-security-part-vi-beta-2-update.aspx",
+          "rel": "MSDN: X-Content-Type-Options guide"
+        }
+      ]
+    }
+  }
+}

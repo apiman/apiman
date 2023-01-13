@@ -1,0 +1,9 @@
+{
+  "id" : "url-whitelist-policy",
+  "name" : "URL Whitelist Policy",
+  "description" : "A policy that only permits requests matching a whitelist.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.urlwhitelist.UrlWhitelistPolicy",
+  "icon" : "sliders",
+  "formType" : "JsonSchema",
+  "form" : "schemas/url-whitelist-policyDef.schema"
+}

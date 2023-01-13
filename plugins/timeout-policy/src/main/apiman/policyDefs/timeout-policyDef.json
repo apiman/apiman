@@ -1,0 +1,15 @@
+{
+  "id" : "timeout-policy",
+  "name" : "Timeout Policy",
+  "description" : "Configures timeout for the back-end connection.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.timeoutpolicy.TimeoutPolicy",
+  "icon" : "bullhorn",
+   "formType" : "JsonSchema",
+  "templates" : [
+    {
+      "language": null,
+      "template": "Timeout Connect : @{timeoutConnect} ms, Timeout Read :  @{timeoutRead} ms"
+    }
+  ],
+  "form" : "schemas/timeout-policyDef.schema"
+}

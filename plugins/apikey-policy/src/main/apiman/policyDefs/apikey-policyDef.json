@@ -1,0 +1,9 @@
+{
+  "id" : "apikey-policy",
+  "name" : "API Key Policy",
+  "description" : "A policy used to pass the apiman API Key through to the back-end service.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.apikey_policy.ApiKeyPolicy",
+  "icon" : "mail-forward",
+  "formType" : "JsonSchema",
+  "form" : "schemas/apikey-policyDef.schema"
+}

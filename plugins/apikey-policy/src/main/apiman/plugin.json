@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "API Key Policy Plugin",
+  "description" : "This plugin provides a policy that can help pass the API Key through to the back-end service.",
+  "version" : "${project.version}"
+}

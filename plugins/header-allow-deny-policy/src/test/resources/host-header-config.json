@@ -1,0 +1,30 @@
+{
+  "entries": [
+    {
+      "headerName": "Host",
+      "allowIfHeaderMissing": false,
+      "allowIfNoRulesMatch": false,
+      "rules": [
+        {
+          "headerValueRegex": ".*.allow.example.com",
+          "allowRequest": true
+        },
+        {
+          "headerValueRegex": ".*.deny.example.com",
+          "allowRequest": false
+        }
+      ]
+    },
+    {
+      "headerName": "X-Another-Header",
+      "allowIfHeaderMissing": true,
+      "allowIfNoRulesMatch": false,
+      "rules": [
+        {
+          "headerValueRegex": ".*",
+          "allowRequest": false
+        }
+      ]
+    }
+  ]
+}

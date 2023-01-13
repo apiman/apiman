@@ -1,0 +1,9 @@
+{
+  "id" : "transformation-policy",
+  "name" : "Transformation Policy",
+  "description" : "Transforms the data from one format to another.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.transformation_policy.TransformationPolicy",
+  "icon" : "adjust",
+  "formType" : "JsonSchema",
+  "form" : "schemas/transformation-policyDef.schema"
+}

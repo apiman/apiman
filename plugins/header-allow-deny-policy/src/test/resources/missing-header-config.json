@@ -1,0 +1,15 @@
+{
+  "entries": [
+    {
+      "headerName": "X-Optional-Header",
+      "allowIfHeaderMissing": true,
+      "allowIfNoRulesMatch": false,
+      "rules": [
+        {
+          "headerValueRegex": ".*",
+          "allowRequest": false
+        }
+      ]
+    }
+  ]
+}

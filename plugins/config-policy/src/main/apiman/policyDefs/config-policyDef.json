@@ -1,0 +1,9 @@
+{
+  "id" : "config-policy",
+  "name" : "Config Policy",
+  "description" : "A policy used to showcase policy configuration.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.config_policy.ConfigPolicy",
+  "icon" : "sliders",
+  "formType" : "JsonSchema",
+  "form" : "schemas/config-policyDef.schema"
+}
