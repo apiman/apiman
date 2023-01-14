@@ -97,9 +97,16 @@ jobs:
         run: mvn test install -Dmaven.javadoc.skip=true ${{ matrix.integration-suite.command }}
 
       - name: Test Summary
-        uses: test-summary/action@v1
+        uses: test-summary/action@v2
         with:
           paths: '**/target/surefire-reports/TEST-*.xml'
+        if: always()
+        
+      - name: Upload test summary
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-summary
+          path: test-summary.md
         if: always()
 
   e2e:
