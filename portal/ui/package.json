@@ -64,7 +64,7 @@
     "cypress": "10.9.0",
     "cypress-real-events": "1.7.1",
     "eslint": "8.24.0",
-    "eslint-config-prettier": "8.5.0",
+    "eslint-config-prettier": "8.6.0",
     "eslint-plugin-prettier": "4.2.1",
     "husky": "8.0.3",
     "jasmine-core": "4.4.0",
