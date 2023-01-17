@@ -22,4 +22,8 @@ a| For those wanting to extend Apiman's functionality or even embed Apiman in th
 
 For example, if you want to create your own Apiman Policy plugin, this is the place to start.
 
+| https://www.apiman.io/rest-api-docs.html[Apiman Manager API REST Documentation]
+
+| Generated using Apiman's OpenAPI v3 schema, this will continue to be filled out as we add annotations across our REST codebase.
+
 |===
