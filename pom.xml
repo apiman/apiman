@@ -723,7 +723,8 @@
         <pluginRepository>
           <id>miredot</id>
           <name>MireDot Releases</name>
-          <url>https://nexus.qmino.com/content/repositories/miredot</url>
+	  <!-- Don't change to HTTPS -->
+          <url>http://nexus.qmino.com/content/repositories/miredot</url>
         </pluginRepository>
       </pluginRepositories>
     </profile>
