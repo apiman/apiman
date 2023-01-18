@@ -17,14 +17,17 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Thrown when the user attempts to do or see something that they
  * are not authorized (do not have permission) to.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "403", description = "Action not authorized (user does not have permission to do this)")
 public class NotAuthorizedException extends AbstractUserException {
-    
+
     private static final long serialVersionUID = 5447085523881661547L;
 
     /**
@@ -34,7 +37,7 @@ public class NotAuthorizedException extends AbstractUserException {
     public NotAuthorizedException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getHttpCode()
      */
@@ -42,7 +45,7 @@ public class NotAuthorizedException extends AbstractUserException {
     public int getHttpCode() {
         return ErrorCodes.HTTP_STATUS_CODE_FORBIDDEN;
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -50,7 +53,7 @@ public class NotAuthorizedException extends AbstractUserException {
     public int getErrorCode() {
         return -1;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

@@ -17,12 +17,15 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Thrown when trying to get, update, or delete an API version that does not
  * exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@Schema(description = "Error when trying to get, update, or delete an API version that does not exist")
 public class ApiVersionNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = -7120965195175475680L;
