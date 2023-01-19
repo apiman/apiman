@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" name="rate limiting">
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" name="transfer quota">
 
   <testGroup name="Test Policy">
     <test name="Publish Api" endpoint="api">test-plan-data/policies/transfer-quota/001-publish-api.resttest</test>
@@ -12,7 +12,6 @@
     <test name="Failure 2">test-plan-data/policies/transfer-quota/007-failure-ip-address.resttest</test>
     <test name="Probe IP policy state" endpoint="api">test-plan-data/policies/transfer-quota/008-probe-ip-transfer-quota.resttest</test>
     <test name="Probe IP policy state" endpoint="api">test-plan-data/policies/transfer-quota/009-probe-ip-transfer-quota.resttest</test>
-
   </testGroup>
 
 </testPlan>
