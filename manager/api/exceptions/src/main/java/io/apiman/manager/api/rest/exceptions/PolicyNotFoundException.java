@@ -17,12 +17,14 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * Thrown when trying to get, update, or delete a policy that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Policy not found", useReturnTypeSchema = true)
 public class PolicyNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = -4168188371956258549L;

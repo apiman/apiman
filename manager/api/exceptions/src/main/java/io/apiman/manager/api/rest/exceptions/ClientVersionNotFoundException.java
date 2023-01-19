@@ -17,12 +17,15 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Thrown when trying to get, update, or delete a Client version that does not
  * exist.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Client version not found", useReturnTypeSchema = true)
 public class ClientVersionNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = -7120965195175475680L;
@@ -32,7 +35,7 @@ public class ClientVersionNotFoundException extends AbstractNotFoundException {
      */
     public ClientVersionNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the message
@@ -40,7 +43,7 @@ public class ClientVersionNotFoundException extends AbstractNotFoundException {
     public ClientVersionNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -48,7 +51,7 @@ public class ClientVersionNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.CLIENT_VERSION_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

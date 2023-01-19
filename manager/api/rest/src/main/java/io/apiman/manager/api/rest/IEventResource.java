@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.annotations.Beta;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -30,5 +31,5 @@ public interface IEventResource {
     @POST
     @Path("sso/users")
     @Consumes(MediaType.APPLICATION_JSON)
-    void newAccountCreated(NewAccountCreatedDto newAccountCreatedDto);
+    void newAccountCreated(@RequestBody NewAccountCreatedDto newAccountCreatedDto);
 }

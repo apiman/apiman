@@ -28,6 +28,7 @@ import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -67,7 +68,7 @@ public interface ISearchResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
     })
-    public SearchResultsBean<OrganizationSummaryBean> searchOrgs(SearchCriteriaBean criteria)
+    SearchResultsBean<OrganizationSummaryBean> searchOrgs(@RequestBody SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
 
     /**
@@ -89,7 +90,7 @@ public interface ISearchResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
     })
-    public SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
+    SearchResultsBean<ClientSummaryBean> searchClients(@RequestBody SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException, NotAuthorizedException;
 
     /**
@@ -109,7 +110,7 @@ public interface ISearchResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
     })
-    public SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria)
+    SearchResultsBean<ApiSummaryBean> searchApis(@RequestBody SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
     /**
@@ -128,7 +129,7 @@ public interface ISearchResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
     })
-    public SearchResultsBean<AvailableApiBean> searchApiCatalog(SearchCriteriaBean criteria)
+    SearchResultsBean<AvailableApiBean> searchApiCatalog(@RequestBody SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
 
     /**
@@ -144,7 +145,7 @@ public interface ISearchResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the namespaces were successfully returned.", useReturnTypeSchema = true)
     })
-    public List<ApiNamespaceBean> getApiNamespaces();
+    List<ApiNamespaceBean> getApiNamespaces();
 
     /**
      * Use this endpoint to search for users.  The search criteria is
@@ -163,12 +164,13 @@ public interface ISearchResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
     })
-    SearchResultsBean<UserSearchResult> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
+    SearchResultsBean<UserSearchResult> searchUsers(@RequestBody SearchCriteriaBean criteria)
+            throws InvalidSearchCriteriaException;
 
     /**
      * This endpoint provides a way to search for roles.  The search criteria is
      * provided in the body of the request, including filters, order-by, and paging
-     * information.@
+     * information.
      * @summary Search for Roles
      * @param criteria The search criteria.
      * @return The search results (a page of roles).
@@ -181,7 +183,7 @@ public interface ISearchResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the search completes successfully.", useReturnTypeSchema = true)
     })
-    public SearchResultsBean<RoleBean> searchRoles(SearchCriteriaBean criteria)
+    SearchResultsBean<RoleBean> searchRoles(@RequestBody SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
 
 }

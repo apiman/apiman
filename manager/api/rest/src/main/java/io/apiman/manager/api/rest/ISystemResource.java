@@ -17,6 +17,7 @@
 package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.system.SystemStatusBean;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,7 +55,7 @@ public interface ISystemResource {
     @Path("status")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "On success.")
+            @ApiResponse(responseCode = "200", description = "Service is available.", useReturnTypeSchema = true)
     })
     SystemStatusBean getStatus();
 
@@ -76,7 +77,9 @@ public interface ISystemResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "On successful export")
     })
-    Response exportData(@QueryParam("download") String download) throws NotAuthorizedException;
+    Response exportData(
+            @QueryParam("download") @Parameter(description = "The download ID") String download
+    ) throws NotAuthorizedException;
 
     // "Internal" method - called by the download resource.
     Response exportData();

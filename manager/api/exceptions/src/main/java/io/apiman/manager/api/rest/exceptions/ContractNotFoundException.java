@@ -17,12 +17,14 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * Thrown when trying to get, update, or delete a contract that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Contract not found", useReturnTypeSchema = true)
 public class ContractNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = -8321449288246652304L;
@@ -32,7 +34,7 @@ public class ContractNotFoundException extends AbstractNotFoundException {
      */
     public ContractNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the message
@@ -40,7 +42,7 @@ public class ContractNotFoundException extends AbstractNotFoundException {
     public ContractNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -48,7 +50,7 @@ public class ContractNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.CONTRACT_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

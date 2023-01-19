@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
  *
  * @author eric.wittmann@redhat.com
  */
-@ApiResponse(responseCode = "404", description = "Thrown when trying to get, update, or delete an organization that does not exist")
+@ApiResponse(responseCode = "404", description = "Organization not found", useReturnTypeSchema = true)
 public class OrganizationNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = -6377298317341796900L;

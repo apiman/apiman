@@ -25,6 +25,8 @@ import io.apiman.manager.api.rest.exceptions.PluginAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.PluginNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PluginResourceNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -61,9 +63,9 @@ public interface IPluginResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the list of plugins is successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the list of plugins is successfully returned.", useReturnTypeSchema = true)
     })
-    public List<PluginSummaryBean> list() throws NotAuthorizedException;
+    List<PluginSummaryBean> list() throws NotAuthorizedException;
 
     /**
      * Use this endpoint to add a plugin to apiman.  A plugin consists of the maven
@@ -82,9 +84,9 @@ public interface IPluginResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the plugin was added successfully.")
+            @ApiResponse(responseCode = "200", description = "If the plugin was added successfully.", useReturnTypeSchema = true)
     })
-    public PluginBean create(NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException, NotAuthorizedException;
+    PluginBean create(@RequestBody NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException, NotAuthorizedException;
 
     /**
      * This endpoint can be used to access the full information about an apiman
@@ -102,24 +104,25 @@ public interface IPluginResource {
     @Path("{pluginId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the plugin exists and is returned.")
+            @ApiResponse(responseCode = "200", description = "If the plugin exists and is returned.", useReturnTypeSchema = true)
     })
-    public PluginBean get(@PathParam("pluginId") Long pluginId) throws PluginNotFoundException, NotAuthorizedException;
+    PluginBean get(@PathParam("pluginId") @Parameter(description = "The plugin ID") Long pluginId)
+            throws PluginNotFoundException, NotAuthorizedException;
 
     /**
      * Call this endpoint to delete a plugin.
      * @summary Delete a Plugin by ID
      * @servicetag admin
-     * @param pluginId the plugin id The plugin's ID.
+     * @param pluginId the plugin id The plugin ID.
      * @throws PluginNotFoundException when specified plugin not found
      * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @DELETE
     @Path("{pluginId}")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "If the plugin was deleted successfully.")
+            @ApiResponse(responseCode = "204", description = "If the plugin was deleted successfully.", useReturnTypeSchema = true)
     })
-    public void delete(@PathParam("pluginId") Long pluginId)
+    void delete(@PathParam("pluginId") @Parameter(description = "The plugin ID") Long pluginId)
             throws PluginNotFoundException, NotAuthorizedException;
 
     /**
@@ -135,10 +138,10 @@ public interface IPluginResource {
     @Path("{pluginId}/policyDefs")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the list of policy definitions is returned successfully."),
+            @ApiResponse(responseCode = "200", description = "If the list of policy definitions is returned successfully.", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", description = "If the plugin does not exist.")
     })
-    public List<PolicyDefinitionSummaryBean> getPolicyDefs(@PathParam("pluginId") Long pluginId)
+    List<PolicyDefinitionSummaryBean> getPolicyDefs(@PathParam("pluginId") @Parameter(description = "The plugin ID") Long pluginId)
             throws PluginNotFoundException, NotAuthorizedException;
 
     /**
@@ -159,14 +162,15 @@ public interface IPluginResource {
     @Path("{pluginId}/policyDefs/{policyDefId}/form")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the form is returned successfully."),
+            @ApiResponse(responseCode = "200", description = "If the form is returned successfully.", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", description = "If the plugin does not exist."),
             @ApiResponse(responseCode = "404", description = "If the policy definition does not exist."),
             @ApiResponse(responseCode = "404", description = "If the form does not exist.")
     })
-    public String getPolicyForm(@PathParam("pluginId") Long pluginId,
-            @PathParam("policyDefId") String policyDefId) throws PluginNotFoundException,
-            PolicyDefinitionNotFoundException, PluginResourceNotFoundException;
+    public String getPolicyForm(
+            @PathParam("pluginId") @Parameter(description = "The plugin ID") Long pluginId,
+            @PathParam("policyDefId") @Parameter(description = "The policy definition ID") String policyDefId
+    ) throws PluginNotFoundException, PolicyDefinitionNotFoundException, PluginResourceNotFoundException;
 
     /**
      * Use this endpoint to retrieve a list of all plugins available to be
@@ -186,7 +190,7 @@ public interface IPluginResource {
     @Path("availablePlugins")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the plugins are returned successfully."),
+            @ApiResponse(responseCode = "200", description = "If the plugins are returned successfully.", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "403", description = "If the user is not an admin.")
     })
     public List<PluginSummaryBean> getAvailablePlugins() throws NotAuthorizedException;

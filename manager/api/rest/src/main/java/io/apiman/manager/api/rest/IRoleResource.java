@@ -22,6 +22,8 @@ import io.apiman.manager.api.beans.idm.UpdateRoleBean;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.RoleAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,12 +67,12 @@ public interface IRoleResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the role is created successfully.")
+            @ApiResponse(responseCode = "200", description = "If the role is created successfully.", useReturnTypeSchema = true)
     })
-    public RoleBean create(NewRoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException;
+    RoleBean create(@RequestBody NewRoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException;
 
     /**
-     * This endpoint lists all of the roles currently defined in apiman.
+     * This endpoint lists all the roles currently defined in apiman.
      * @summary List all Roles
      * @servicetag admin
      * @return A list of roles.
@@ -78,9 +80,9 @@ public interface IRoleResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the role list is returned successfully.")
+            @ApiResponse(responseCode = "200", description = "If the role list is returned successfully.", useReturnTypeSchema = true)
     })
-    public List<RoleBean> list();
+    List<RoleBean> list();
 
     /**
      * Use this endpoint to retrieve information about a single Role by its
@@ -95,9 +97,9 @@ public interface IRoleResource {
     @Path("{roleId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the role is returned successfully.")
+            @ApiResponse(responseCode = "200", description = "If the role is returned successfully.", useReturnTypeSchema = true)
     })
-    public RoleBean get(@PathParam("roleId") String roleId) throws RoleNotFoundException;
+    RoleBean get(@PathParam("roleId") @Parameter(description = "The Role ID")String roleId) throws RoleNotFoundException;
 
     /**
      * Use this endpoint to update the information about an existing role.  The
@@ -115,8 +117,8 @@ public interface IRoleResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If the role is updated successfully.")
     })
-    public void update(@PathParam("roleId") String roleId, UpdateRoleBean bean) throws RoleNotFoundException,
-            NotAuthorizedException;
+    void update(@PathParam("roleId") @Parameter(description = "The Role ID")String roleId, @RequestBody UpdateRoleBean bean)
+            throws RoleNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to delete a role by its ID.
@@ -131,5 +133,6 @@ public interface IRoleResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If the role is deleted.")
     })
-    public void delete(@PathParam("roleId") String roleId) throws RoleNotFoundException, NotAuthorizedException;
+    void delete(@PathParam("roleId") @Parameter(description = "The Role ID")String roleId)
+            throws RoleNotFoundException, NotAuthorizedException;
 }

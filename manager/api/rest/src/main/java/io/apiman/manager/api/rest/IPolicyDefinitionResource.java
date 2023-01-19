@@ -22,6 +22,8 @@ import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.PolicyDefinitionAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,9 +59,9 @@ public interface IPolicyDefinitionResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the policy definition list is successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the policy definition list is successfully returned.", useReturnTypeSchema = true)
     })
-    public List<PolicyDefinitionSummaryBean> list();
+    List<PolicyDefinitionSummaryBean> list();
 
     /**
      * Use this endpoint to add a policy definition to apiman.  The policy definition
@@ -76,9 +78,9 @@ public interface IPolicyDefinitionResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the policy definition is added successfully.")
+            @ApiResponse(responseCode = "200", description = "If the policy definition is added successfully.", useReturnTypeSchema = true)
     })
-    public PolicyDefinitionBean create(PolicyDefinitionBean bean) throws PolicyDefinitionAlreadyExistsException, NotAuthorizedException;
+    PolicyDefinitionBean create(@RequestBody PolicyDefinitionBean bean) throws PolicyDefinitionAlreadyExistsException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get a single policy definition by its ID.
@@ -94,7 +96,9 @@ public interface IPolicyDefinitionResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the policy definition is returned successfully.")
     })
-    public PolicyDefinitionBean get(@PathParam("policyDefinitionId") String policyDefinitionId) throws PolicyDefinitionNotFoundException;
+    PolicyDefinitionBean get(
+            @PathParam("policyDefinitionId") @Parameter(description = "The policy definition ID") String policyDefinitionId
+    ) throws PolicyDefinitionNotFoundException;
 
     /**
      * Update the meta information about a policy definition.
@@ -110,8 +114,10 @@ public interface IPolicyDefinitionResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If the update was successful.")
     })
-    public void update(@PathParam("policyDefinitionId") String policyDefinitionId, UpdatePolicyDefinitionBean bean)
-            throws PolicyDefinitionNotFoundException, NotAuthorizedException;
+    void update(
+            @PathParam("policyDefinitionId") @Parameter(description = "The policy definition ID") String policyDefinitionId,
+            @RequestBody UpdatePolicyDefinitionBean bean
+    ) throws PolicyDefinitionNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to delete a policy definition by its ID.  If the policy definition
@@ -128,7 +134,7 @@ public interface IPolicyDefinitionResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If the policy definition is successfully deleted.")
     })
-    public void delete(@PathParam("policyDefinitionId") String policyDefinitionId)
+    void delete(@PathParam("policyDefinitionId") @Parameter(description = "") String policyDefinitionId)
             throws PolicyDefinitionNotFoundException, NotAuthorizedException;
 
 }

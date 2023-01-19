@@ -70,9 +70,9 @@ public interface IUserResource {
     @Path("{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the user exists and information is returned.")
+            @ApiResponse(responseCode = "200", description = "If the user exists and information is returned.", useReturnTypeSchema = true)
     })
-    public UserDto get(@PathParam("userId") String userId) throws UserNotFoundException;
+    UserDto get(@PathParam("userId") String userId) throws UserNotFoundException;
 
     /**
      * Use this endpoint to get information about the currently authenticated user.
@@ -82,10 +82,10 @@ public interface IUserResource {
     @GET
     @Path("currentuser/info")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the information is correctly returned.")
+            @ApiResponse(responseCode = "200", description = "If the information is correctly returned.", useReturnTypeSchema = true)
     })
     @Produces(MediaType.APPLICATION_JSON)
-    public CurrentUserBean getInfo();
+    CurrentUserBean getInfo();
 
     /**
      * Use this endpoint to update the information about a user.  This will fail
@@ -103,7 +103,7 @@ public interface IUserResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If the user information is successfully updated.")
     })
-    public void update(@PathParam("userId") String userId, UpdateUserBean user) throws UserNotFoundException, NotAuthorizedException;
+    void update(@PathParam("userId") String userId, UpdateUserBean user) throws UserNotFoundException, NotAuthorizedException;
 
     /**
      * This endpoint returns the list of organizations that the user is a member of.  The
@@ -117,9 +117,9 @@ public interface IUserResource {
     @Path("{userId}/organizations")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the organization list is successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the organization list is successfully returned.", useReturnTypeSchema = true)
     })
-    public List<OrganizationSummaryBean> getOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
+    List<OrganizationSummaryBean> getOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
 
     /**
      * This endpoint returns all clients that the user has permission to view.
@@ -132,9 +132,9 @@ public interface IUserResource {
     @Path("{userId}/viewable-clients")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the client list is successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the client list is successfully returned.", useReturnTypeSchema = true)
     })
-    public List<ClientSummaryBean> getClients(@PathParam("userId") String userId) throws NotAuthorizedException;
+    List<ClientSummaryBean> getClients(@PathParam("userId") String userId) throws NotAuthorizedException;
 
     /**
      * This endpoint returns all clients that the user has permission to edit.
@@ -148,9 +148,9 @@ public interface IUserResource {
     @Path("{userId}/editable-clients")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the client list is successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the client list is successfully returned.", useReturnTypeSchema = true)
     })
-    public List<ClientSummaryBean> getEditableClients(@PathParam("userId") String userId) throws NotAuthorizedException;
+    List<ClientSummaryBean> getEditableClients(@PathParam("userId") String userId) throws NotAuthorizedException;
 
     /**
      * This endpoint returns a list of all the organizations for which the current user
@@ -165,9 +165,9 @@ public interface IUserResource {
     @Path("{userId}/clientorgs")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the organizations are successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the organizations are successfully returned.", useReturnTypeSchema = true)
     })
-    public List<OrganizationSummaryBean> getClientOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
+    List<OrganizationSummaryBean> getClientOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
 
     /**
      * This endpoint returns all APIs that the user has permission to view.
@@ -180,9 +180,9 @@ public interface IUserResource {
     @Path("{userId}/apis")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the API list is successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the API list is successfully returned.", useReturnTypeSchema = true)
     })
-    public List<ApiSummaryBean> getApis(@PathParam("userId") String userId) throws NotAuthorizedException;
+    List<ApiSummaryBean> getApis(@PathParam("userId") String userId) throws NotAuthorizedException;
 
     /**
      * This endpoint returns a list of all the organizations for which the
@@ -198,9 +198,9 @@ public interface IUserResource {
     @Path("{userId}/apiorgs")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the organizations are successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the organizations are successfully returned.", useReturnTypeSchema = true)
     })
-    public List<OrganizationSummaryBean> getApiOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
+    List<OrganizationSummaryBean> getApiOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
 
     /**
      * This endpoint returns a list of all the organizations for which the current user
@@ -215,9 +215,9 @@ public interface IUserResource {
     @Path("{userId}/planorgs")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the organizations are successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the organizations are successfully returned.", useReturnTypeSchema = true)
     })
-    public List<OrganizationSummaryBean> getPlanOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
+    List<OrganizationSummaryBean> getPlanOrganizations(@PathParam("userId") String userId) throws NotAuthorizedException;
 
     /**
      * Use this endpoint to get information about the user's audit history.  This
@@ -235,9 +235,9 @@ public interface IUserResource {
     @Path("{userId}/activity")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the activity is successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the activity is successfully returned.", useReturnTypeSchema = true)
     })
-    public SearchResultsBean<AuditEntryBean> getActivity(@PathParam("userId") String userId,
+    SearchResultsBean<AuditEntryBean> getActivity(@PathParam("userId") String userId,
             @QueryParam("page") int page, @QueryParam("count") int pageSize) throws NotAuthorizedException;
 
     /**
@@ -253,9 +253,9 @@ public interface IUserResource {
     @Path("{userId}/permissions")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the permissions are successfully retrieved.")
+            @ApiResponse(responseCode = "200", description = "If the permissions are successfully retrieved.", useReturnTypeSchema = true)
     })
-    public UserPermissionsBean getPermissionsForUser(@PathParam("userId") String userId)
+    UserPermissionsBean getPermissionsForUser(@PathParam("userId") String userId)
             throws UserNotFoundException, NotAuthorizedException;
 
     /**
@@ -273,9 +273,9 @@ public interface IUserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the notifications are successfully retrieved.")
+            @ApiResponse(responseCode = "200", description = "If the notifications are successfully retrieved.", useReturnTypeSchema = true)
     })
-    public SearchResultsBean<NotificationDto<?>> getNotificationsForUser(@PathParam("userId") String userId, NotificationCriteriaBean criteria)
+    SearchResultsBean<NotificationDto<?>> getNotificationsForUser(@PathParam("userId") String userId, NotificationCriteriaBean criteria)
          throws UserNotFoundException, NotAuthorizedException;
 
     /**
@@ -294,7 +294,7 @@ public interface IUserResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If user's notification metadata is successfully retrieved")
     })
-    public Response getNotificationCountForUser(@PathParam("userId") String userId, @DefaultValue("false") @QueryParam("includeDismissed") boolean includeDismissed)
+    Response getNotificationCountForUser(@PathParam("userId") String userId, @DefaultValue("false") @QueryParam("includeDismissed") boolean includeDismissed)
          throws UserNotFoundException, NotAuthorizedException;
 
     /**
@@ -313,7 +313,7 @@ public interface IUserResource {
     @Path("{userId}/notifications")
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiResponse(responseCode = "202", description = "If the command to mark the user's notification was accepted")
-    public Response markNotifications(@PathParam("userId") String userId, @NotNull NotificationActionDto notificationAction)
+    Response markNotifications(@PathParam("userId") String userId, @NotNull NotificationActionDto notificationAction)
          throws UserNotFoundException, NotAuthorizedException;
 
 
@@ -321,6 +321,6 @@ public interface IUserResource {
     @Path("{userId}/notifications/filters")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createNotificationFilter(@PathParam("userId") String userId, CreateNotificationFilterDto createFilter);
+    Response createNotificationFilter(@PathParam("userId") String userId, CreateNotificationFilterDto createFilter);
 
 }

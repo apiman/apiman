@@ -17,11 +17,14 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
- * Thrown when trying to get, update, or delete a gateay that does not exist.
+ * Thrown when trying to get, update, or delete a gateway that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Gateway not found", useReturnTypeSchema = true)
 public class GatewayNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = 6854316462415238451L;
@@ -31,7 +34,7 @@ public class GatewayNotFoundException extends AbstractNotFoundException {
      */
     public GatewayNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the message
@@ -39,7 +42,7 @@ public class GatewayNotFoundException extends AbstractNotFoundException {
     public GatewayNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -47,7 +50,7 @@ public class GatewayNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.GATEWAY_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

@@ -17,11 +17,14 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Thrown when trying to get, update, or delete a plugin that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Apiman plugin not found", useReturnTypeSchema = true)
 public class PluginNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = 4877430226993586299L;
@@ -31,11 +34,11 @@ public class PluginNotFoundException extends AbstractNotFoundException {
      */
     public PluginNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
-     */ 
+     */
     public PluginNotFoundException(String message) {
         super(message);
     }
@@ -47,7 +50,7 @@ public class PluginNotFoundException extends AbstractNotFoundException {
     public PluginNotFoundException(Throwable cause) {
         super(cause);
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
@@ -56,7 +59,7 @@ public class PluginNotFoundException extends AbstractNotFoundException {
     public PluginNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -64,7 +67,7 @@ public class PluginNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.PLUGIN_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

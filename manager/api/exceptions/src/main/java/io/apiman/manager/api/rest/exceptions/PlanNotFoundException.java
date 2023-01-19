@@ -17,12 +17,14 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * Thrown when trying to get, update, or delete a plan that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Plan not found", useReturnTypeSchema = true)
 public class PlanNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = 6770692745475536788L;
@@ -32,7 +34,7 @@ public class PlanNotFoundException extends AbstractNotFoundException {
      */
     public PlanNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message exception message
@@ -40,7 +42,7 @@ public class PlanNotFoundException extends AbstractNotFoundException {
     public PlanNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -48,7 +50,7 @@ public class PlanNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.PLAN_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

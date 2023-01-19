@@ -25,6 +25,8 @@ import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.rest.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -66,9 +68,9 @@ public interface IGatewayResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the test is performed (regardless of the outcome of the test).")
+            @ApiResponse(responseCode = "200", description = "If the test is performed (regardless of the outcome of the test).", useReturnTypeSchema = true)
     })
-    public GatewayTestResultBean test(NewGatewayBean bean) throws NotAuthorizedException;
+    GatewayTestResultBean test(@RequestBody NewGatewayBean bean) throws NotAuthorizedException;
 
     /**
      * This endpoint returns a list of all the Gateways that have been configured.
@@ -78,9 +80,9 @@ public interface IGatewayResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the gateways are successfully returned.")
+            @ApiResponse(responseCode = "200", description = "If the gateways are successfully returned.", useReturnTypeSchema = true)
     })
-    public List<GatewaySummaryBean> list();
+    List<GatewaySummaryBean> list();
 
     /**
      * This endpoint is called to create a new Gateway.
@@ -95,9 +97,9 @@ public interface IGatewayResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If the Gateway is created successfully.")
+            @ApiResponse(responseCode = "200", description = "If the Gateway is created successfully.", useReturnTypeSchema = true)
     })
-    public GatewayBean create(NewGatewayBean bean) throws GatewayAlreadyExistsException, NotAuthorizedException;
+    GatewayBean create(@RequestBody NewGatewayBean bean) throws GatewayAlreadyExistsException, NotAuthorizedException;
 
     /**
      * Call this endpoint to get the details of a single configured Gateway.
@@ -112,9 +114,11 @@ public interface IGatewayResource {
     @Path("{gatewayId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({
-            @ApiResponse(responseCode = "If", description = "the Gateway is returned successfully.")
+            @ApiResponse(responseCode = "200", description = "the Gateway is returned successfully.", useReturnTypeSchema = true)
     })
-    public GatewayBean get(@PathParam("gatewayId") String gatewayId) throws GatewayNotFoundException, NotAuthorizedException;
+    GatewayBean get(
+            @PathParam("gatewayId") @Parameter(description = "The ID of the Gateway to get") String gatewayId
+    ) throws GatewayNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to update an existing Gateway.  Note that the name of the
@@ -134,8 +138,10 @@ public interface IGatewayResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If the update is successful.")
     })
-    public void update(@PathParam("gatewayId") String gatewayId, UpdateGatewayBean bean)
-            throws GatewayNotFoundException, NotAuthorizedException;
+    void update(
+            @PathParam("gatewayId") @Parameter(description = "The ID of the Gateway to update") String gatewayId,
+            @RequestBody UpdateGatewayBean bean
+    ) throws GatewayNotFoundException, NotAuthorizedException;
 
     /**
      * This endpoint deletes a Gateway by its unique ID.
@@ -150,8 +156,9 @@ public interface IGatewayResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If the delete is successful.")
     })
-    public void delete(@PathParam("gatewayId") String gatewayId)
-            throws GatewayNotFoundException, NotAuthorizedException;
+    void delete(
+            @PathParam("gatewayId") @Parameter(description = "The ID of the Gateway to delete") String gatewayId
+    ) throws GatewayNotFoundException, NotAuthorizedException;
 
     /**
      * This endpoint delivers the gateway endpoint for the corresponding gateway id
@@ -164,5 +171,7 @@ public interface IGatewayResource {
     @Path("{gatewayId}/endpoint")
     @Produces(MediaType.APPLICATION_JSON)
     @Deprecated(since = "1.3.0.Final", forRemoval = true)
-    public GatewayEndpointSummaryBean getGatewayEndpoint(@PathParam("gatewayId") String gatewayId) throws GatewayNotFoundException;
+    GatewayEndpointSummaryBean getGatewayEndpoint(
+            @PathParam("gatewayId") String gatewayId
+    ) throws GatewayNotFoundException;
 }

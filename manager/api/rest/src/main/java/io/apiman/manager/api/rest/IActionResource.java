@@ -24,6 +24,7 @@ import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.rest.exceptions.ActionException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -57,12 +58,10 @@ public interface IActionResource {
     @Operation(
         summary = "Execute an Entity Action",
         description = "Call this endpoint in order to execute actions for apiman entities such as Plans, APIs, or Clients. " +
-                "The type of the action must be included in the request payload.",
-        responses = {
-            @ApiResponse(responseCode = "204", description = "If the action completes successfully.")
-        }
+                "The type of the action must be included in the request payload."
     )
-    void performAction(ActionBean action) throws ActionException, NotAuthorizedException;
+    @ApiResponse(responseCode = "204", description = "If the action completes successfully.")
+    void performAction(@RequestBody ActionBean action) throws ActionException, NotAuthorizedException;
 
     /**
      * Call this endpoint to approve a contract. If all contracts for a given {@link ClientVersionBean} have been
@@ -82,10 +81,8 @@ public interface IActionResource {
         summary = "Approve a contract",
         description = "Approve a contract (assuming it requires approval). " +
                 "If all contracts for a given Client Version have been approved, " +
-                "then it will transition from `AwaitingApproval` to `Ready`, and hence can be published.",
-        responses = {
-            @ApiResponse(responseCode = "204", description = "If the action completes successfully.")
-        }
+                "then it will transition from `AwaitingApproval` to `Ready`, and hence can be published."
     )
-    void approveContract(ContractActionDto action) throws ActionException, NotAuthorizedException;
+    @ApiResponse(responseCode = "204", description = "If the action completes successfully.")
+    void approveContract(@RequestBody ContractActionDto action) throws ActionException, NotAuthorizedException;
 }

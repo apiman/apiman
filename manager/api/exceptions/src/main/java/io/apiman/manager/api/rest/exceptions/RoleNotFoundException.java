@@ -17,14 +17,16 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * Thrown when a request is sent for a role that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Role not found", useReturnTypeSchema = true)
 public class RoleNotFoundException extends AbstractNotFoundException {
-    
+
     private static final long serialVersionUID = -5416700206708610404L;
 
     /**
@@ -32,7 +34,7 @@ public class RoleNotFoundException extends AbstractNotFoundException {
      */
     public RoleNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
@@ -40,7 +42,7 @@ public class RoleNotFoundException extends AbstractNotFoundException {
     public RoleNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -48,7 +50,7 @@ public class RoleNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.ROLE_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

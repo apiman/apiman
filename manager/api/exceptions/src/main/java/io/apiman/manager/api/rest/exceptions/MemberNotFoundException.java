@@ -16,11 +16,14 @@
 
 package io.apiman.manager.api.rest.exceptions;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Thrown when trying to get a member of an organization.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Organization member not found", useReturnTypeSchema = true)
 public class MemberNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = 2785823316258685639L;
@@ -30,7 +33,7 @@ public class MemberNotFoundException extends AbstractNotFoundException {
      */
     public MemberNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
@@ -38,7 +41,7 @@ public class MemberNotFoundException extends AbstractNotFoundException {
     public MemberNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -46,7 +49,7 @@ public class MemberNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.MEMBER_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */
