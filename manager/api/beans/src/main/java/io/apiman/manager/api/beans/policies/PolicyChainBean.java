@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author eric.wittmann@redhat.com
  */
 @JsonInclude(Include.NON_NULL)
-@Schema(description = "Models a list of policies that would be applied if an API were invoked via a particular plan")
+@Schema(description = "Models an ordered list of policies that would be applied if an API were invoked via a particular plan")
 public class PolicyChainBean implements Serializable {
 
     private static final long serialVersionUID = -497197512733345793L;

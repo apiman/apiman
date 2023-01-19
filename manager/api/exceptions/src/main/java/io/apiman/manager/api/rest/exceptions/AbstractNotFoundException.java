@@ -16,13 +16,16 @@
 
 package io.apiman.manager.api.rest.exceptions;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Base class for "not found" exceptions.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404")
 public abstract class AbstractNotFoundException extends AbstractUserException {
-    
+
     private static final long serialVersionUID = -196398343525920762L;
 
     /**
@@ -46,7 +49,7 @@ public abstract class AbstractNotFoundException extends AbstractUserException {
     public AbstractNotFoundException(Throwable cause) {
         super(cause);
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
@@ -55,7 +58,7 @@ public abstract class AbstractNotFoundException extends AbstractUserException {
     public AbstractNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
-    
+
     /**
      * @see AbstractRestException#getHttpCode()
      */

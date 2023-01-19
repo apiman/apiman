@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * A KV tag pair DTO.
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Schema(description = "Key value tag pair")
 public class KeyValueTagDto {
     @NotNull
     private String key;

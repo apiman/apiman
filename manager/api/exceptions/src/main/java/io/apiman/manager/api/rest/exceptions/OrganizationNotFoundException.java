@@ -17,12 +17,14 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * Thrown when trying to get, update, or delete an organization that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Thrown when trying to get, update, or delete an organization that does not exist")
 public class OrganizationNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = -6377298317341796900L;
@@ -32,7 +34,7 @@ public class OrganizationNotFoundException extends AbstractNotFoundException {
      */
     public OrganizationNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
@@ -40,7 +42,7 @@ public class OrganizationNotFoundException extends AbstractNotFoundException {
     public OrganizationNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -48,7 +50,7 @@ public class OrganizationNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.ORG_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */
