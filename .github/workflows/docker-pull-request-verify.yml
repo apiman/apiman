@@ -36,6 +36,6 @@ jobs:
     with:
       apiman-version: ${{ needs.read-versions.outputs.apiman-version }}
       push-to-repos: false
-      snapshot: ${{ needs.read-versions.outputs.is-snapshot-version }}
+      snapshot: ${{ needs.build-verify.outputs.is-snapshot-version == 'true' }}
 
 
