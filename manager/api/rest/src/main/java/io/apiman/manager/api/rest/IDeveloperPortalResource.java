@@ -23,7 +23,6 @@ import io.apiman.manager.api.rest.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PolicyNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
 
@@ -54,7 +53,7 @@ public interface IDeveloperPortalResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Search Apiman APIs")
-    SearchResultsBean<ApiSummaryBean> searchApis(@RequestBody SearchCriteriaBean criteria)
+    SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
     @GET
@@ -71,7 +70,7 @@ public interface IDeveloperPortalResource {
             summary = "Create home org for developer",
             description = "Create a 'home' organization on behalf of the portal user (they may not normally have permissions to do this themselves)."
     )
-    Response createHomeOrgForDeveloper(@RequestBody NewOrganizationBean newOrg)
+    Response createHomeOrgForDeveloper(NewOrganizationBean newOrg)
             throws OrganizationAlreadyExistsException;
 
     @GET

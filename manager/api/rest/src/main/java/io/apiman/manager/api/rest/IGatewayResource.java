@@ -26,7 +26,6 @@ import io.apiman.manager.api.rest.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -70,7 +69,7 @@ public interface IGatewayResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the test is performed (regardless of the outcome of the test).", useReturnTypeSchema = true)
     })
-    GatewayTestResultBean test(@RequestBody NewGatewayBean bean) throws NotAuthorizedException;
+    GatewayTestResultBean test(NewGatewayBean bean) throws NotAuthorizedException;
 
     /**
      * This endpoint returns a list of all the Gateways that have been configured.
@@ -99,7 +98,7 @@ public interface IGatewayResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the Gateway is created successfully.", useReturnTypeSchema = true)
     })
-    GatewayBean create(@RequestBody NewGatewayBean bean) throws GatewayAlreadyExistsException, NotAuthorizedException;
+    GatewayBean create(NewGatewayBean bean) throws GatewayAlreadyExistsException, NotAuthorizedException;
 
     /**
      * Call this endpoint to get the details of a single configured Gateway.
@@ -140,7 +139,7 @@ public interface IGatewayResource {
     })
     void update(
             @PathParam("gatewayId") @Parameter(description = "The ID of the Gateway to update") String gatewayId,
-            @RequestBody UpdateGatewayBean bean
+            UpdateGatewayBean bean
     ) throws GatewayNotFoundException, NotAuthorizedException;
 
     /**

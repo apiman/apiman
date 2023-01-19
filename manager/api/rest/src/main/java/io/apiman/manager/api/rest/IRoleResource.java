@@ -23,7 +23,6 @@ import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.RoleAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.RoleNotFoundException;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -69,7 +68,7 @@ public interface IRoleResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the role is created successfully.", useReturnTypeSchema = true)
     })
-    RoleBean create(@RequestBody NewRoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException;
+    RoleBean create(NewRoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException;
 
     /**
      * This endpoint lists all the roles currently defined in apiman.
@@ -117,7 +116,7 @@ public interface IRoleResource {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "If the role is updated successfully.")
     })
-    void update(@PathParam("roleId") @Parameter(description = "The Role ID")String roleId, @RequestBody UpdateRoleBean bean)
+    void update(@PathParam("roleId") @Parameter(description = "The Role ID")String roleId, UpdateRoleBean bean)
             throws RoleNotFoundException, NotAuthorizedException;
 
     /**

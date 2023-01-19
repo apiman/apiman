@@ -23,7 +23,6 @@ import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.PolicyDefinitionAlreadyExistsException;
 import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -80,7 +79,7 @@ public interface IPolicyDefinitionResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the policy definition is added successfully.", useReturnTypeSchema = true)
     })
-    PolicyDefinitionBean create(@RequestBody PolicyDefinitionBean bean) throws PolicyDefinitionAlreadyExistsException, NotAuthorizedException;
+    PolicyDefinitionBean create(PolicyDefinitionBean bean) throws PolicyDefinitionAlreadyExistsException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get a single policy definition by its ID.
@@ -116,7 +115,7 @@ public interface IPolicyDefinitionResource {
     })
     void update(
             @PathParam("policyDefinitionId") @Parameter(description = "The policy definition ID") String policyDefinitionId,
-            @RequestBody UpdatePolicyDefinitionBean bean
+            UpdatePolicyDefinitionBean bean
     ) throws PolicyDefinitionNotFoundException, NotAuthorizedException;
 
     /**

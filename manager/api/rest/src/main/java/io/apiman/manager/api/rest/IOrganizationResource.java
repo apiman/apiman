@@ -148,9 +148,8 @@ public interface IOrganizationResource {
                     "Using other API calls, you can add users to an organization and assign them fine-grained permissions"
     )
     @ApiResponse(responseCode = "200", description = "If the Organization was successfully created.", useReturnTypeSchema = true)
-    OrganizationBean createOrg(
-            @RequestBody(description = "Information about the new Organization", required = true) NewOrganizationBean bean
-    ) throws OrganizationAlreadyExistsException, NotAuthorizedException, InvalidNameException;
+    OrganizationBean createOrg(NewOrganizationBean bean)
+            throws OrganizationAlreadyExistsException, NotAuthorizedException, InvalidNameException;
 
     /**
      * Delete an org
@@ -208,7 +207,7 @@ public interface IOrganizationResource {
     })
     void updateOrg(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
-            @RequestBody(description = "Updated Organization information.") UpdateOrganizationBean bean
+            UpdateOrganizationBean bean
     ) throws OrganizationNotFoundException, NotAuthorizedException;
 
     /**
@@ -271,7 +270,7 @@ public interface IOrganizationResource {
     })
     ClientBean createClient(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
-            @RequestBody(description = "Information about the new Client.") NewClientBean bean
+            NewClientBean bean
     ) throws OrganizationNotFoundException, ClientAlreadyExistsException, NotAuthorizedException, InvalidNameException;
 
     /**
@@ -383,7 +382,7 @@ public interface IOrganizationResource {
     void updateClient(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("clientId") @Parameter(description = "The Client ID.") String clientId,
-            @RequestBody(description = "Updated Client information.") UpdateClientBean bean
+            UpdateClientBean bean
     ) throws ClientNotFoundException, NotAuthorizedException;
 
     /**
@@ -408,7 +407,7 @@ public interface IOrganizationResource {
     ClientVersionBean createClientVersion(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("clientId") @Parameter(description = "The Client ID.") String clientId,
-            @RequestBody(description = "Initial information about the new Client version.") NewClientVersionBean bean
+            NewClientVersionBean bean
     ) throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException, ClientVersionAlreadyExistsException;
 
     /**
@@ -462,7 +461,7 @@ public interface IOrganizationResource {
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("clientId") @Parameter(description = "The Client ID.") String clientId,
             @PathParam("version") @Parameter(description = "The Client Version.") String version,
-            @RequestBody(description = "The new custom API Key (or empty to auto-generate a new one).") ApiKeyBean bean
+            ApiKeyBean bean
     ) throws ClientNotFoundException, NotAuthorizedException, InvalidVersionException, InvalidClientStatusException;
 
     /**
@@ -593,7 +592,7 @@ public interface IOrganizationResource {
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("clientId") @Parameter(description = "The Client ID.") String clientId,
             @PathParam("version") @Parameter(description = "The Client version.") String version,
-            @RequestBody NewContractBean bean
+            NewContractBean bean
     ) throws OrganizationNotFoundException, ClientNotFoundException, ApiNotFoundException, PlanNotFoundException,
             ContractAlreadyExistsException, NotAuthorizedException;
 
@@ -802,7 +801,7 @@ public interface IOrganizationResource {
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("clientId")  @Parameter(description = "The Client ID.") String clientId,
             @PathParam("version") @Parameter(description = "The Client version.") String version,
-            @RequestBody NewPolicyBean bean
+            NewPolicyBean bean
     ) throws OrganizationNotFoundException, ClientVersionNotFoundException, NotAuthorizedException;
 
     /**
@@ -851,7 +850,7 @@ public interface IOrganizationResource {
             @PathParam("clientId") @Parameter(description = "The Client ID.") String clientId,
             @PathParam("version") @Parameter(description = "The Client version.") String version,
             @PathParam("policyId") @Parameter(description = "The Policy ID.") long policyId,
-            @RequestBody(description = "New meta-data and/or configuration for the Policy.") UpdatePolicyBean bean
+            UpdatePolicyBean bean
     ) throws OrganizationNotFoundException, ClientVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
     /**
@@ -924,7 +923,7 @@ public interface IOrganizationResource {
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("clientId") @Parameter(description = "The Client ID.") String clientId,
             @PathParam("version") @Parameter(description = "The Client version.") String version,
-            @RequestBody(description = "The Policies in the desired order.") PolicyChainBean policyChain
+            PolicyChainBean policyChain
     ) throws OrganizationNotFoundException, ClientVersionNotFoundException, NotAuthorizedException;
 
     /*
@@ -955,7 +954,7 @@ public interface IOrganizationResource {
     })
     ApiBeanDto createApi(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
-            @RequestBody(description = "Information about the new API.") @NotNull NewApiBean bean
+            @NotNull NewApiBean bean
     ) throws OrganizationNotFoundException, ApiAlreadyExistsException, NotAuthorizedException, InvalidNameException;
 
     /**
@@ -1016,7 +1015,7 @@ public interface IOrganizationResource {
     void updateApi(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("apiId") @Parameter(description = "The API ID.") String apiId,
-            @RequestBody(description = "Updated API information.") UpdateApiBean bean
+            UpdateApiBean bean
     ) throws ApiNotFoundException, NotAuthorizedException;
 
     /**
@@ -1120,7 +1119,7 @@ public interface IOrganizationResource {
     ApiVersionBeanDto createApiVersion(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("apiId") @Parameter(description = "The API ID.") String apiId,
-            @RequestBody NewApiVersionBean bean
+            NewApiVersionBean bean
     ) throws ApiNotFoundException, NotAuthorizedException, InvalidVersionException, ApiVersionAlreadyExistsException;
 
     /**
@@ -1257,7 +1256,7 @@ public interface IOrganizationResource {
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("apiId") @Parameter(description = "The API ID.") String apiId,
             @PathParam("version") @Parameter(description = "The API version.") String version,
-            @RequestBody(description = "Updated information about the API version.") @Valid UpdateApiVersionBean bean
+            @Valid UpdateApiVersionBean bean
     ) throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException;
 
     /**
@@ -1330,7 +1329,7 @@ public interface IOrganizationResource {
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("apiId") @Parameter(description = "The API ID.") String apiId,
             @PathParam("version") @Parameter(description = "The API version.") String version,
-            @RequestBody(description = "The API definition reference information.") NewApiDefinitionBean bean
+            NewApiDefinitionBean bean
     ) throws ApiVersionNotFoundException, NotAuthorizedException, InvalidApiStatusException;
 
     /**
@@ -1384,8 +1383,7 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(
             summary = "Reorder API plans",
-            description = "Reorder API plans, which affects the order they are displayed in the API Developer Portal.",
-            requestBody = @RequestBody(description = "Ordered set of API Plans")
+            description = "Reorder API plans, which affects the order they are displayed in the API Developer Portal."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Reordering of plans was successful."),
@@ -1420,7 +1418,7 @@ public interface IOrganizationResource {
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("apiId") @Parameter(description = "The API ID.") String apiId,
             @PathParam("version") @Parameter(description = "The API version.") String version,
-            @RequestBody(description = "Details of new policy to create on API", required = true) NewPolicyBean bean
+            NewPolicyBean bean
     ) throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException;
 
     /**
@@ -1470,7 +1468,7 @@ public interface IOrganizationResource {
             @PathParam("apiId") @Parameter(description = "The API ID.") String apiId,
             @PathParam("version") @Parameter(description = "The API version.") String version,
             @PathParam("policyId") @Parameter(description = "The Policy ID.") long policyId,
-            @RequestBody(description = "New meta-data and/or configuration for the Policy.") UpdatePolicyBean requestBody
+            UpdatePolicyBean requestBody
     ) throws OrganizationNotFoundException, ApiVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
     /**
@@ -1564,7 +1562,7 @@ public interface IOrganizationResource {
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("apiId") @Parameter(description = "The API ID.") String apiId,
             @PathParam("version") @Parameter(description = "The API version.")  String version,
-            @RequestBody(description = "The Policies in the desired order.") PolicyChainBean policyChain
+            PolicyChainBean policyChain
     ) throws OrganizationNotFoundException, ApiVersionNotFoundException, NotAuthorizedException;
 
     /**
@@ -1644,7 +1642,7 @@ public interface IOrganizationResource {
     })
     PlanBean createPlan(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
-            @RequestBody(description = "Information about the new Plan.") NewPlanBean bean
+            NewPlanBean bean
     ) throws OrganizationNotFoundException, PlanAlreadyExistsException, NotAuthorizedException, InvalidNameException;
 
     /**
@@ -1732,7 +1730,7 @@ public interface IOrganizationResource {
     void updatePlan(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("planId") @Parameter(description = "The Plan ID.") String planId,
-            @RequestBody(description = "Updated Plan information.") UpdatePlanBean bean
+            UpdatePlanBean bean
     ) throws PlanNotFoundException, NotAuthorizedException;
 
     /**
@@ -1758,7 +1756,7 @@ public interface IOrganizationResource {
     PlanVersionBean createPlanVersion(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("planId")  @Parameter(description = "The Plan ID.") String planId,
-            @RequestBody(description = "Initial information about the new Plan version.") NewPlanVersionBean bean
+            NewPlanVersionBean bean
     ) throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException, PlanVersionAlreadyExistsException;
 
     /**
@@ -1848,7 +1846,7 @@ public interface IOrganizationResource {
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("planId") @Parameter(description = "The Plan ID.") String planId,
             @PathParam("version")  @Parameter(description = "The Plan version.") String version,
-            @RequestBody NewPolicyBean bean
+            NewPolicyBean bean
     ) throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException;
 
     /**
@@ -1921,7 +1919,7 @@ public interface IOrganizationResource {
             @PathParam("planId") @Parameter(description = "The Plan ID.") String planId,
             @PathParam("version") @Parameter(description = "The Plan version.") String version,
             @PathParam("policyId") @Parameter(description = "The Policy ID.") long policyId,
-            @RequestBody(description = "New meta-data and/or configuration for the Policy.") UpdatePolicyBean bean
+            UpdatePolicyBean bean
     ) throws OrganizationNotFoundException, PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
     /**
@@ -1994,7 +1992,7 @@ public interface IOrganizationResource {
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
             @PathParam("planId")  @Parameter(description = "The Plan ID.") String planId,
             @PathParam("version") @Parameter(description = "The Plan version.") String version,
-            @RequestBody PolicyChainBean policyChain
+            PolicyChainBean policyChain
     ) throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException;
 
     /*
@@ -2012,14 +2010,11 @@ public interface IOrganizationResource {
     @POST
     @Path("{organizationId}/roles")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Grant Membership(s)",
-            requestBody = @RequestBody(description = "Roles to grant, and the ID of the user.")
-    )
+    @Operation(summary = "Grant Membership(s)")
     @ApiResponse(responseCode = "204", description = "If the membership(s) were successfully granted.")
     void grant(
             @PathParam("organizationId") @Parameter(description = "The Organization ID.") String organizationId,
-            @RequestBody GrantRolesBean bean
+            GrantRolesBean bean
     ) throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException, NotAuthorizedException;
 
     /**

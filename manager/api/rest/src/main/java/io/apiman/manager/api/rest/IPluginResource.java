@@ -26,7 +26,6 @@ import io.apiman.manager.api.rest.exceptions.PluginNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PluginResourceNotFoundException;
 import io.apiman.manager.api.rest.exceptions.PolicyDefinitionNotFoundException;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -86,7 +85,7 @@ public interface IPluginResource {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If the plugin was added successfully.", useReturnTypeSchema = true)
     })
-    PluginBean create(@RequestBody NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException, NotAuthorizedException;
+    PluginBean create(NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException, NotAuthorizedException;
 
     /**
      * This endpoint can be used to access the full information about an apiman
