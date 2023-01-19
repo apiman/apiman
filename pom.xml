@@ -557,15 +557,6 @@
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.qmino</groupId>
-          <artifactId>miredot-plugin</artifactId>
-          <version>${version.com.qmino.miredot-plugin}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>pl.project13.maven</groupId>
@@ -716,17 +707,6 @@
       <modules>
         <module>tools</module>
       </modules>
-    </profile>
-    <profile>
-      <id>apidocs</id>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>miredot</id>
-          <name>MireDot Releases</name>
-	  <!-- Don't change to HTTPS -->
-          <url>http://nexus.qmino.com/content/repositories/miredot</url>
-        </pluginRepository>
-      </pluginRepositories>
     </profile>
     <profile>
       <id>release</id>
