@@ -1,13 +1,28 @@
-GET /Policy_TransferQuotaTest/echo/1.0.0/path/to/app/resource admin/admin
+POST /Policy_TransferQuotaTest/echo/1.0.0/path/to/app/resource admin/admin
 X-API-Key: 12345
+
+{
+  "sdsdsd":"adasdasdasda",
+  "sdsdsx":"adasdasdasda",
+  "sdsdsy":"adasdasdasda",
+  "sdsdsz":"adasdasdasda",
+  "sdsdsa":"adasdasdasda",
+  "sdsdsb":"adasdasdasda",
+  "sdsdsc":"adasdasdasda",
+  "sdsdsd":"adasdasdasda",
+  "sdsdse":"adasdasdasda",
+  "sdsdsf":"adasdasdasda",
+  "sdsdsg":"adasdasdasda",
+  "sdsdsi":"adasdasdasda"
+}
 
 ----
 200
 Content-Type: application/json
-X-TransferQuota-Limit: 100
+X-TransferQuota-Limit: 355
 
 {
-  "method" : "GET",
+  "method" : "POST",
   "resource" : "/path/to/app/resource",
   "uri" : "/path/to/app/resource"
 }
