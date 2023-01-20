@@ -50,7 +50,17 @@ import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.net.ProxyOptions;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.Base64;
+import java.util.Map;
 
 /**
  * A vertx implementation of the API Gateway's plugin registry. This version simply extends the default
@@ -199,20 +209,7 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
             httpClientOptions.setSsl(true);
         }
 
-        // If there's a proxy that should be used, it will be resolved and set here.
-        proxySelector.resolveProxy(artifactUrl).ifPresent(proxy -> {
-            ProxyOptions proxyOptions = new ProxyOptions();
-            proxyOptions.setHost(proxy.getHost());
-            proxyOptions.setPort(proxy.getPort());
-            proxyOptions.setType(proxySelector.translateProxyType(proxy));
-
-            proxy.getCredentials().ifPresent((credentials) -> {
-                proxyOptions.setUsername(credentials.getPrinciple());
-                proxyOptions.setPassword(credentials.getPasswordAsString());
-            });
-
-            httpClientOptions.setProxyOptions(proxyOptions);
-        });
+        proxySelector.setProxyOptions(artifactUrl, httpClientOptions);
 
         return httpClientOptions;
     }

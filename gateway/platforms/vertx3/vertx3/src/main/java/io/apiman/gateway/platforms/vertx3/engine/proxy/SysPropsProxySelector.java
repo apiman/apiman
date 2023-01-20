@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.platforms.vertx3.engine.proxy;
 
+import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
 
 import java.net.URI;
@@ -39,10 +41,32 @@ public class SysPropsProxySelector {
     }
 
     /**
+     * Set proxy options on vxClientOptions derived from System properties.
+     *
+     * @param proxyUri proxy URI
+     * @param vxClientOptions Vert.x client options to mutate
+     */
+    public void setProxyOptions(URI proxyUri, HttpClientOptions vxClientOptions) {
+        this.resolveProxy(proxyUri).ifPresent(proxy -> {
+            ProxyOptions proxyOptions = new ProxyOptions();
+            proxyOptions.setHost(proxy.getHost());
+            proxyOptions.setPort(proxy.getPort());
+            proxyOptions.setType(translateProxyType(proxy));
+
+            proxy.getCredentials().ifPresent((credentials) -> {
+                proxyOptions.setUsername(credentials.getPrinciple());
+                proxyOptions.setPassword(credentials.getPasswordAsString());
+            });
+
+            vxClientOptions.setProxyOptions(proxyOptions);
+        });
+    }
+
+    /**
      * Resolve a proxy, if there is one.
      *
      * @param resourceUri the URI that will be assessed against the proxy configuration
-     * @return the proxy, if there is an appropriate one configured and it is not on the non-proxy list.
+     * @return the proxy, if there is an appropriate one configured, and it is not on the non-proxy list.
      */
     public Optional<HttpProxy> resolveProxy(URI resourceUri) {
         String scheme = resourceUri.getScheme();
@@ -59,7 +83,7 @@ public class SysPropsProxySelector {
         return Optional.empty();
     }
 
-    public ProxyType translateProxyType(HttpProxy proxy) {
+    private ProxyType translateProxyType(HttpProxy proxy) {
         switch(proxy.getProxyType()) {
             case HTTP:
                 return ProxyType.HTTP;

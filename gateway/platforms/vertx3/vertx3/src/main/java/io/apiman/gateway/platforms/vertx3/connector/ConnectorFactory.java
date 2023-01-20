@@ -30,7 +30,6 @@ import io.apiman.gateway.platforms.vertx3.http.HttpClientOptionsFactory;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
-import io.vertx.core.net.ProxyOptions;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,7 +45,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class ConnectorFactory implements IConnectorFactory {
 
-    private final SysPropsProxySelector proxySelector = new SysPropsProxySelector();
+    private final SysPropsProxySelector sysPropsProxySelector = new SysPropsProxySelector();
     private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
     static {
         SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
@@ -72,7 +71,8 @@ public class ConnectorFactory implements IConnectorFactory {
                                 .setKeepAlive(opts.isKeepAlive())
                                 .setTryUseCompression(opts.isTryUseCompression());
 
-                        applyProxyOptions(opts, vxClientOptions);
+                        sysPropsProxySelector.setProxyOptions(opts.getUri(), vxClientOptions);
+                        
                         return vertx.createHttpClient(vxClientOptions);
                     }
                 });
@@ -147,25 +147,5 @@ public class ConnectorFactory implements IConnectorFactory {
     @Override
     public IConnectorConfig createConnectorConfig(ApiRequest request, Api api) {
         return new VertxConnectorConfig();
-    }
-
-    /*
-     * Set the proxy options in the same way it was originally implemented by msavy
-     * @see io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry#createVertxClientOptions(URI, boolean)
-     */
-    private void applyProxyOptions(ApimanHttpConnectorOptions opts, HttpClientOptions vxClientOptions) {
-        proxySelector.resolveProxy(opts.getUri()).ifPresent(proxy -> {
-            ProxyOptions proxyOptions = new ProxyOptions();
-            proxyOptions.setHost(proxy.getHost());
-            proxyOptions.setPort(proxy.getPort());
-            proxyOptions.setType(proxySelector.translateProxyType(proxy));
-
-            proxy.getCredentials().ifPresent((credentials) -> {
-                proxyOptions.setUsername(credentials.getPrinciple());
-                proxyOptions.setPassword(credentials.getPasswordAsString());
-            });
-
-            vxClientOptions.setProxyOptions(proxyOptions);
-        });
     }
 }
