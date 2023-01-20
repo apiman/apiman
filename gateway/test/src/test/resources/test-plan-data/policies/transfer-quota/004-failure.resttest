@@ -1,5 +1,9 @@
-GET /Policy_TransferQuotaTest/echo/1.0.0/path/to/app/resource admin/admin
+POST /Policy_TransferQuotaTest/echo/1.0.0/path/to/app/resource admin/admin
 X-API-Key: 12345
+
+{
+  "some-kind-of-payload": "we've gone way over our limits, sorry!"
+}
 
 ----
 429
