@@ -14,7 +14,7 @@ Content-Type: application/json
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.engine.policies.TransferQuotaPolicy",
-          "policyJsonConfig" : "{\"limit\":100,\"direction\":\"both\",\"granularity\":\"Client\",\"period\":\"Hour\"}"
+          "policyJsonConfig" : "{\"limit\":355,\"direction\":\"both\",\"granularity\":\"Client\",\"period\":\"Day\"}"
         }
       ]
     }

@@ -15,13 +15,12 @@ Content-Type: application/json
 {
   "TransferQuotaProbeResponse": {
     "config": {
-      "limit": 100,
+      "limit": 355,
       "granularity": "Ip",
-      "period": "Hour"
+      "period": "Day"
     },
     "status": {
-      "accepted": true,
-      "remaining": 100
+      "accepted": true
     },
     "probeType": "TransferQuotaProbeResponse"
   }

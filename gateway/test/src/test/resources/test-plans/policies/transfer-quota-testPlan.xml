@@ -11,7 +11,7 @@
     <test name="Success 2">test-plan-data/policies/transfer-quota/006-success-ip-address.resttest</test>
     <test name="Failure 2">test-plan-data/policies/transfer-quota/007-failure-ip-address.resttest</test>
     <test name="Probe IP policy state" endpoint="api">test-plan-data/policies/transfer-quota/008-probe-ip-transfer-quota.resttest</test>
-    <test name="Probe IP policy state" endpoint="api">test-plan-data/policies/transfer-quota/009-probe-ip-transfer-quota.resttest</test>
+    <test name="Probe IP policy state (different IP address)" endpoint="api">test-plan-data/policies/transfer-quota/009-probe-ip-transfer-quota.resttest</test>
   </testGroup>
 
 </testPlan>

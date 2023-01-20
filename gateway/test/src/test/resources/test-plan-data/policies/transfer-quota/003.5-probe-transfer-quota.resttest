@@ -13,15 +13,20 @@ X-API-Key: 12345
 Content-Type: application/json
 
 {
-  "TransferQuotaProbeResponse": {
-    "config": {
-      "limit": 100,
-      "granularity": "Client",
-      "period": "Hour"
-    },
-    "status": {
-      "accepted": false
-    },
-    "probeType": "TransferQuotaProbeResponse"
-  }
+	"TransferQuotaProbeResponse": {
+		"probeType": "TransferQuotaProbeResponse",
+		"config": {
+			"limit": 355,
+			"granularity": "Client",
+			"period": "Day",
+			"userHeader": null,
+			"headerRemaining": null,
+			"headerLimit": null,
+			"headerReset": null,
+			"direction": "both"
+		},
+		"status": {
+			"accepted": false
+		}
+	}
 }
