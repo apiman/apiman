@@ -1,0 +1,19 @@
+GET /organizations/Organization/clients/Client/versions/1.0 admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "client" : {
+    "organization" : {
+      "id" : "Organization"
+    },
+    "id" : "Client",
+    "name" : "Client",
+    "description" : "This is the description of the Client.",
+    "createdBy":"admin"
+  },
+  "status" : "Retired",
+  "version" : "1.0",
+  "createdBy" : "admin"
+}

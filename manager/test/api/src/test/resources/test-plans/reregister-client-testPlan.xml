@@ -22,6 +22,10 @@
     <test name="Re-Register Client">test-plan-data/reregister-client/112_reregister-client.resttest</test>
     <test name="Retire Client">test-plan-data/reregister-client/113_unregister-client.resttest</test>
     <test name="Re-Register Client [2]">test-plan-data/reregister-client/114_reregister-client.resttest</test>
+    <!--Should not unregister an retired client-->
+    <test name="Retire Client">test-plan-data/reregister-client/113_unregister-client.resttest</test>
+    <test name="Break Contract">test-plan-data/reregister-client/115_delete-contract.resttest</test>
+    <test name="Get Version - retired">test-plan-data/reregister-client/116_get-version-1.0.resttest</test>
   </testGroup>
 
 </testPlan>
