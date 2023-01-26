@@ -47,7 +47,7 @@ Here's what you need to do:
 
 ```bash
 echo "Cloning Apiman"
-git clone --recurse-submodules https://github.com/apiman/apiman.git && cd apiman
+git clone https://github.com/apiman/apiman.git && cd apiman
 
 echo "Building Apiman"
 ./fastbuild.sh
@@ -80,7 +80,7 @@ There's also a handy echo service available at http://localhost:8080/services/ec
 The easiest way to build quickly (without tests) is to run our [fastbuild script](https://github.com/apiman/apiman/blob/master/fastbuild.sh). It's in the root of the project. If you have [mvnd](https://github.com/apache/maven-mvnd/) the build will be faster.
 
 ```shell
-git clone --recurse-submodules https://github.com/apiman/apiman.git && cd apiman
+git clone https://github.com/apiman/apiman.git && cd apiman
 ./fastbuild.sh 
 ```
 
