@@ -58,7 +58,7 @@ a| Keycloak realm name.
 
 * *Default Value*: apiman
 
-NOTE: In older versions of Keycloak the auth server might have `/auth` at the end of the URL, rather than being at root (i.e. `http://old-keycloak:8080/auth` vs `http://new-keycloak:8080/auth`).
+NOTE: In older versions of Keycloak the auth server might have `/auth` at the end of the URL, rather than being at root (i.e. `http://old-keycloak:8080/auth` vs `http://new-keycloak:8080`).
 
 a| * System property: `apiman.auth.api.secret`
 * Env var: `APIMAN_AUTH_API_SECRET`
