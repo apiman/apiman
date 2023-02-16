@@ -102,7 +102,7 @@ public interface KeycloakDiscovery {
                         issuerEndpoint = issuerEndpoint.substring(0, issuerEndpoint.length() - 1);
                     }
 
-                    if (config.getAllowedIssuers().contains(issuerEndpoint)) {
+                    if (!config.getAllowedIssuers().contains(issuerEndpoint)) {
                         handler.handle(Future.failedFuture("issuer validation failed: received [" + issuerEndpoint + "]"));
                         return;
                     }

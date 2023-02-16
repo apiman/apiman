@@ -25,6 +25,8 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Fixed
 
+* fix[gateway-vertx]: in Keycloak discovery code `getAllowedIssuers` check was mistakenly inverted. By https://www.github.com/ronimhd[ronimhd].
+
 * fix[manager-api]: register subtypes for deserializing policy probe response, this step was
 inadvertently removed during refactoring. By https://github.com/fvolk[Florian Volk (@fvolk)^].
 
