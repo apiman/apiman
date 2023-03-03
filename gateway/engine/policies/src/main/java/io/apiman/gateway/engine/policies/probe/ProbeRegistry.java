@@ -36,6 +36,7 @@ public class ProbeRegistry {
             for (ClassInfo klazzInfo : scanResult.getClassesImplementing(IPolicyProbeResponse.class)) {
                 try {
                     Class<IPolicyProbeResponse> klazz = (Class<IPolicyProbeResponse>) klazzInfo.loadClass();
+                    register(klazz);
                     LOGGER.info("Found policy probe: {0}", klazz.getCanonicalName());
                 } catch (Throwable t) {
                     LOGGER.warn("Ignoring exception during event class load: {0}", t);
