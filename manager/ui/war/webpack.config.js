@@ -15,6 +15,7 @@ module.exports = (env, argv) => {
       static: './dist',
       historyApiFallback: true
     },
+    stats: 'normal',
     plugins: [
       new HtmlWebpackPlugin({
         title: 'Apiman',
