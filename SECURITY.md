@@ -14,7 +14,8 @@ If you are using a downstream support provider, you should contact your vendor t
 
 ## Reporting a Vulnerability
 
-Please report Apiman vulnerabilities via email to either:
+Please report Apiman vulnerabilities via [GitHub's *Report a Vulnerability*](https://github.com/apiman/apiman/security/advisories/new) feature.
+
+If you prefer email, you can contact:
  
   - [Marc Savy](https://github.com/msavy) — marc@blackparrotlabs.io
-  - [Eric Wittmann](https://github.com/EricWittmann)
