@@ -203,7 +203,10 @@
     <fileSet>
       <directory>src/main/resources/overlay</directory>
       <outputDirectory></outputDirectory>
-      <filtered>false</filtered>
+      <filtered>true</filtered>
+      <nonFilteredFileExtensions>
+        <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+      </nonFilteredFileExtensions>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
       <excludes>
