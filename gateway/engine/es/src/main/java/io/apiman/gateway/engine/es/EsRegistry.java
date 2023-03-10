@@ -221,7 +221,7 @@ public class EsRegistry extends AbstractEsComponent implements IRegistry {
             if (response.status().equals(RestStatus.OK)) {
                 handler.handle(AsyncResultImpl.create((Void) null));
             } else {
-                handler.handle(AsyncResultImpl.create(new ApiNotFoundException(Messages.i18n.format("EsRegistry.ClientNotFound")))); //$NON-NLS-1$
+                handler.handle(AsyncResultImpl.create(new ClientNotFoundException(Messages.i18n.format("EsRegistry.ClientNotFound")))); //$NON-NLS-1$
             }
         } catch (IOException e) {
             handler.handle(AsyncResultImpl.create(new PublishingException(Messages.i18n.format("EsRegistry.ErrorUnregisteringClient"), e), Void.class)); //$NON-NLS-1$
