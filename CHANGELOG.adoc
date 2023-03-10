@@ -25,6 +25,9 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Fixed
 
+* fix[manager-api]: register subtypes for deserializing policy probe response, this step was
+inadvertently removed during refactoring. By https://github.com/fvolk[Florian Volk (@fvolk)^].
+
 * fix[ui]: move validation function for IP list into validate function to ensure list valid when switching between IP policies. By https://github.com/fvolk[Florian Volk (@fvolk)^].
 
 * fix[gateway-engine-es]: throw ClientNotFoundException if client not found when unregistering. By https://github.com/fvolk[Florian Volk (@fvolk)^].
