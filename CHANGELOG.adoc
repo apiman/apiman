@@ -25,6 +25,8 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Fixed
 
+* fix[gateway-engine-es]: throw ClientNotFoundException if client not found when unregistering. By https://github.com/fvolk[Florian Volk (@fvolk)^].
+
 * [manager-api]: Perform unregister only if client is in correct state. By https://github.com/fvolk[Florian Volk (@fvolk)^].
 
 **Full Changelog**: link:https://github.com/apiman/apiman/compare/3.0.0.Final...3.1.0-SNAPSHOT[3.0.0.Final...3.1.0-SNAPSHOT]
