@@ -694,6 +694,7 @@
     <module>sso</module>
     <module>portal</module>
     <module>plugins</module>
+    <module>api-catalog</module>
   </modules>
 
   <profiles>

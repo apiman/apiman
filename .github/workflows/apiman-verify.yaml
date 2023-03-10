@@ -101,7 +101,7 @@ jobs:
         with:
           paths: '**/target/surefire-reports/TEST-*.xml'
         if: always()
-        
+
       - name: Upload test summary
         uses: actions/upload-artifact@v3
         with:
@@ -206,6 +206,10 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - run: |
+          cp api-catalog/catalog.json /tmp/apiman-api-catalog.json
+          cp plugins/plugin-registry/target/classes/registry.json /tmp/apiman-plugin-registry.json
+
       - name: Create/update GitHub snapshot release ${{ env.APIMAN_VERSION }}
         uses: softprops/action-gh-release@v1
         with:
@@ -222,6 +226,9 @@ jobs:
             distro/vertx/target/apiman-distro-vertx-${{ env.APIMAN_VERSION }}.zip
             distro/tomcat/target/apiman-distro-tomcat-${{ env.APIMAN_VERSION }}-overlay.zip
             containers/docker-compose/target/apiman-distro-docker-compose-${{ env.APIMAN_VERSION }}.zip
+            /tmp/apiman-api-catalog.json
+            /tmp/apiman-plugin-registry.json
+            
 
   publish-docker-images:
     needs: [build-verify, publish-snapshots]
