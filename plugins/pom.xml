@@ -21,7 +21,7 @@
     <version.org.json>20140107</version.org.json>
     <version.org.mock-server>5.11.2</version.org.mock-server>
     <version.io.jsonwebtoken.jjwt>0.9.1</version.io.jsonwebtoken.jjwt>
-    <version.com.auth0.jwks-rsa>0.21.3</version.com.auth0.jwks-rsa>
+    <version.com.auth0.jwks-rsa>0.22</version.com.auth0.jwks-rsa>
     <version.commons-lang>2.6</version.commons-lang>
     <version.commons-validator>1.7</version.commons-validator>
   </properties>
