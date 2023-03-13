@@ -157,7 +157,7 @@
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
     <version.io.github.classgraph>4.8.152</version.io.github.classgraph>
     <version.org.slf4j>1.7.36</version.org.slf4j>
-    <version.org.testcontainers>1.17.3</version.org.testcontainers>
+    <version.org.testcontainers>1.17.6</version.org.testcontainers>
     <version.io.apicurio>1.1.26</version.io.apicurio>
     <version.io.netty>4.1.74.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
