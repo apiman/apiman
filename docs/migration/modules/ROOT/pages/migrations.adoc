@@ -3,6 +3,10 @@
 Notes for upgrading to newer versions of Apiman.
 Unless stated otherwise, the instructions assume that you are upgrading sequentially version to version.
 
+== Migrating to 3.1.0.Final
+
+No special action should be required, although backing up is always recommended.
+
 == Migrating to 3.0.0.Final
 
 To migrate from Apiman 2.x to 3.0.0.Final, please use Apiman's export-import function.
