@@ -28,13 +28,13 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 * fix[gateway-vertx]: in Keycloak discovery code `getAllowedIssuers` check was mistakenly inverted. By https://www.github.com/ronimhd[ronimhd].
 
 * fix[manager-api]: register subtypes for deserializing policy probe response, this step was
-inadvertently removed during refactoring. By https://github.com/fvolk[Florian Volk (@fvolk)^].
+inadvertently removed during refactoring. By https://github.com/volkflo[Florian Volk (@volkflo)^].
 
-* fix[ui]: move validation function for IP list into validate function to ensure list valid when switching between IP policies. By https://github.com/fvolk[Florian Volk (@fvolk)^].
+* fix[ui]: move validation function for IP list into validate function to ensure list valid when switching between IP policies. By https://github.com/volkflo[Florian Volk (@volkflo)^].
 
-* fix[gateway-engine-es]: throw ClientNotFoundException if client not found when unregistering. By https://github.com/fvolk[Florian Volk (@fvolk)^].
+* fix[gateway-engine-es]: throw ClientNotFoundException if client not found when unregistering. By https://github.com/volkflo[Florian Volk (@volkflo)^].
 
-* [manager-api]: Perform unregister only if client is in correct state. By https://github.com/fvolk[Florian Volk (@fvolk)^].
+* [manager-api]: Perform unregister only if client is in correct state. By https://github.com/volkflo[Florian Volk (@volkflo)^].
 
 **Full Changelog**: link:https://github.com/apiman/apiman/compare/3.0.0.Final...3.1.0-SNAPSHOT[3.0.0.Final...3.1.0-SNAPSHOT]
 // end::3.1.0.Final[]
