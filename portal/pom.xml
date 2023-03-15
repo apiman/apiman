@@ -11,7 +11,7 @@
   <packaging>pom</packaging>
 
   <modules>
-<!--    <module>ui</module>-->
+    <module>ui</module>
     <module>war</module>
   </modules>
 </project>
