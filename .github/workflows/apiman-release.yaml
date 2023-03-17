@@ -92,12 +92,18 @@ jobs:
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign /tmp/releases/apiman-distro-wildfly-$RELEASE_VERSION-overlay.zip
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign /tmp/releases/apiman-distro-vertx-$RELEASE_VERSION.zip
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign /tmp/releases/apiman-distro-tomcat-$RELEASE_VERSION-overlay.zip
+          
+
+      - name: Prepare Asciidoc ➡ MarkDown for GH Release
+        run: |
+          npm install --global downdoc
+          npx downdoc CHANGELOG.adoc -o /tmp/CHANGELOG.md
 
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          body_path: ${{ github.workspace }}/apiman/CHANGELOG.adoc
+          body_path: /tmp/CHANGELOG.md
           tag_name: ${{ github.event.inputs.release-version }}
           name: ${{ github.event.inputs.release-version }}
           prerelease: false
