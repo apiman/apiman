@@ -26,6 +26,7 @@ jobs:
         run: |
           git config --global user.name "apiman-ci"
           git config --global user.email "ci.apiman@gmail.com"
+          git config --global commit.gpgsign true
 
       # Checkout all repositories we're going to use for the release
       - name: Check out Apiman
@@ -49,10 +50,12 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
 
       - name: Import GPG Key
-        uses: crazy-max/ghaction-import-gpg@v1
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
 
       # Update all project versions to the version # being released
       - name: Update Apiman *Parent* Release Version ${{ env.RELEASE_VERSION }} in pom.xml
