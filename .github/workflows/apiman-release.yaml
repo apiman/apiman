@@ -78,7 +78,7 @@ jobs:
           git add .
           git commit -m "Automated commit for Release Version: $RELEASE_VERSION"
           git tag -f -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
-          git push --atomic --tags origin $RELEASE_VERSION:master 
+          git push --atomic origin master $RELEASE_VERSION   
 
       # Create GitHub "release" with attached assets
       - name: Signing and Archiving the Quickstart ZIPs
