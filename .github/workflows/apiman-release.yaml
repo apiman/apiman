@@ -8,6 +8,10 @@ on:
       snapshot-version:
         description: 'Next snapshot version'
         required: true
+      release-candidate:
+        description: 'Is release candidate or prerelease?'
+        type: boolean
+        default: false
       branch:
         description: 'Branch to release from'
         required: true
@@ -48,14 +52,6 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
-
-      - name: Import GPG Key
-        uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
 
       # Update all project versions to the version # being released
       - name: Update Apiman *Parent* Release Version ${{ env.RELEASE_VERSION }} in pom.xml
@@ -109,7 +105,7 @@ jobs:
           body_path: /tmp/CHANGELOG.md
           tag_name: ${{ github.event.inputs.release-version }}
           name: ${{ github.event.inputs.release-version }}
-          prerelease: false
+          prerelease: ${{ github.event.inputs.prerelease }}
           files: |
             /tmp/releases/apiman-distro-wildfly-$RELEASE_VERSION-overlay.zip
             /tmp/releases/apiman-distro-wildfly-$RELEASE_VERSION-overlay.zip.asc
@@ -132,7 +128,7 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       # Update project pom.xml files to next snapshot version and push to GH
       - name: Update Apiman Parent Next Snapshot Version ${{ env.DEV_VERSION }} in pom.xml
@@ -152,3 +148,12 @@ jobs:
         run: |
           git commit -am "Automated commit for Next Snapshot Version: $DEV_VERSION"
           git push origin --atomic HEAD:master
+
+  publish-docker-images:
+    needs: [release]
+    uses: apiman/apiman/.github/workflows/docker-test-release.yml@master
+    secrets: inherit
+    with:
+      apiman-version: ${{ github.event.inputs.release-version }}
+      push-to-repos: true
+      snapshot: ${{ github.event.inputs.prerelease }}
