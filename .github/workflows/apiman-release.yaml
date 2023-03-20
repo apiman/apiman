@@ -53,10 +53,11 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
 
       - name: Git GPG key setup (keys imported in setup/java)
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
-          git config --global commit.gpgsign true
-          GPG_SHORT_KEY=$(gpg --list-secret-keys --with-colons | awk -F: '$1 == "sec" {print $5}' | head -n1)
-          git config --global user.signingkey $GPG_SHORT_KEY
+          bash .github/workflows/support/set-up-gpg.sh
 
       # Update all project versions to the version # being released
       - name: Update Apiman *Parent* Release Version ${{ env.RELEASE_VERSION }} in pom.xml
@@ -133,7 +134,7 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       # Update project pom.xml files to next snapshot version and push to GH
       - name: Update Apiman Parent Next Snapshot Version ${{ env.DEV_VERSION }} in pom.xml
