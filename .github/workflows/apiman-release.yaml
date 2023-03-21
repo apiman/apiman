@@ -22,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'Apiman'
     env:
-      RELEASE_VERSION: ${{ github.event.inputs.release-version }}
-      DEV_VERSION: ${{ github.event.inputs.snapshot-version }}
-      RELEASE_BRANCH: ${{ github.event.inputs.branch }}
+      RELEASE_VERSION: ${{ inputs.release-version }}
+      DEV_VERSION: ${{ inputs.snapshot-version }}
+      RELEASE_BRANCH: ${{ inputs.branch }}
     steps:
       - name: Initial Git setup
         run: |
@@ -109,9 +109,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body_path: /tmp/CHANGELOG.md
-          tag_name: ${{ github.event.inputs.release-version }}
-          name: ${{ github.event.inputs.release-version }}
-          prerelease: ${{ github.event.inputs.prerelease }}
+          tag_name: ${{ inputs.release-version }}
+          name: ${{ inputs.release-version }}
+          prerelease: ${{ inputs.prerelease }}
           files: |
             /tmp/releases/apiman-distro-wildfly-${{ env.RELEASE_VERSION }}-overlay.zip
             /tmp/releases/apiman-distro-wildfly-${{ env.RELEASE_VERSION }}-overlay.zip.asc
@@ -160,6 +160,6 @@ jobs:
     uses: apiman/apiman/.github/workflows/docker-test-release.yml@master
     secrets: inherit
     with:
-      apiman-version: ${{ github.event.inputs.release-version }}
+      apiman-version: ${{ inputs.release-version }}
       push-to-repos: true
-      snapshot: ${{ github.event.inputs.prerelease }}
+      snapshot: ${{ inputs.prerelease == 'true' }}
