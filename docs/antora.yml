@@ -1,5 +1,5 @@
 name: guides
 title: Apiman Guides
-version: 3.1
+version: 3.2
 prerelease: '.0-SNAPSHOT'
 start_page: ROOT:index.adoc
