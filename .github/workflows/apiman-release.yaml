@@ -85,19 +85,19 @@ jobs:
           git tag -f -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
           git push --atomic origin master $RELEASE_VERSION   
 
-      # Create GitHub "release" with attached assets
-      - name: Signing and Archiving the Quickstart ZIPs
+      # Create GitHub "release" with attached assets.
+      - name: Collecting and signing release assets
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           mkdir -p /tmp/releases
-          cp distro/wildfly/target/apiman-distro-wildfly-$RELEASE_VERSION-overlay.zip /tmp/releases/.
-          cp distro/vertx/target/apiman-distro-vertx-$RELEASE_VERSION.zip /tmp/releases/.
-          cp distro/tomcat/target/apiman-distro-tomcat-$RELEASE_VERSION-overlay.zip /tmp/releases/.
+          cp containers/docker-compose/target/apiman-distro-docker-compose-$RELEASE_VERSION.zip /tmp/releases/
+          cp distro/wildfly/target/apiman-distro-wildfly-$RELEASE_VERSION-overlay.zip /tmp/releases/
+          cp distro/vertx/target/apiman-distro-vertx-$RELEASE_VERSION.zip /tmp/releases/
+          cp distro/tomcat/target/apiman-distro-tomcat-$RELEASE_VERSION-overlay.zip /tmp/releases/
           cp api-catalog/catalog.json /tmp/releases/apiman-api-catalog.json
           cp plugins/plugin-registry/target/classes/registry.json /tmp/releases/apiman-plugin-registry.json
-          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign /tmp/releases/apiman-distro-wildfly-$RELEASE_VERSION-overlay.zip
-          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign /tmp/releases/apiman-distro-vertx-$RELEASE_VERSION.zip
-          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign /tmp/releases/apiman-distro-tomcat-$RELEASE_VERSION-overlay.zip
-          
+          find /tmp/releases -name "*" -exec gpg --batch --passphrase "$GPG_PASSPHRASE" --armor --detach-sign {} \;
 
       - name: Prepare Asciidoc ➡ MarkDown for GH Release
         run: |
@@ -113,14 +113,7 @@ jobs:
           name: ${{ inputs.release-version }}
           prerelease: ${{ inputs.prerelease }}
           files: |
-            /tmp/releases/apiman-distro-wildfly-${{ env.RELEASE_VERSION }}-overlay.zip
-            /tmp/releases/apiman-distro-wildfly-${{ env.RELEASE_VERSION }}-overlay.zip.asc
-            /tmp/releases/apiman-distro-vertx-${{ env.RELEASE_VERSION }}.zip
-            /tmp/releases/apiman-distro-vertx-${{ env.RELEASE_VERSION }}.zip.asc
-            /tmp/releases/apiman-distro-tomcat-${{ env.RELEASE_VERSION }}-overlay.zip
-            /tmp/releases/apiman-distro-tomcat-${{ env.RELEASE_VERSION }}-overlay.zip.asc
-            /tmp/releases/apiman-api-catalog.json
-            /tmp/releases/apiman-plugin-registry.json
+            /tmp/releases/*
 
       # Deploy Apiman to Maven Central.
       # Retry as this command can be moody.
