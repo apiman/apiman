@@ -122,14 +122,20 @@ jobs:
             /tmp/releases/apiman-api-catalog.json
             /tmp/releases/apiman-plugin-registry.json
 
-      # Deploy Apiman to Maven Central
+      # Deploy Apiman to Maven Central.
+      # Retry as this command can be moody.
       - name: Deploy Apiman to Maven Central
-        run: |
-          cd parent
-          mvn deploy -B -DskipTests -Prelease
-          
-          cd ${{ github.workspace }}
-          mvn deploy -B -DskipTests -Prelease
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 20
+          max_attempts: 3
+          retry_on: any
+          command: |
+            cd parent
+            mvn deploy -B -DskipTests -Prelease
+            
+            cd ${{ github.workspace }}
+            mvn deploy -B -DskipTests -Prelease
 
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
