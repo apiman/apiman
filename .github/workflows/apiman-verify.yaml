@@ -209,7 +209,7 @@ jobs:
       - name: Collecting release assets
         run: |
           mkdir -p /tmp/releases
-          cp containers/docker-compose/target/apiman-distro-docker-compose-$APIMAN_VERSION.zip /tmp/releases/
+          cp containers/docker-compose/target/apiman-docker-compose-$APIMAN_VERSION.zip /tmp/releases/
           cp distro/wildfly/target/apiman-distro-wildfly-$APIMAN_VERSION-overlay.zip /tmp/releases/
           cp distro/vertx/target/apiman-distro-vertx-$APIMAN_VERSION.zip /tmp/releases/
           cp distro/tomcat/target/apiman-distro-tomcat-$APIMAN_VERSION-overlay.zip /tmp/releases/

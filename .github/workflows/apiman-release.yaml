@@ -91,7 +91,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           mkdir -p /tmp/releases
-          cp containers/docker-compose/target/apiman-distro-docker-compose-$RELEASE_VERSION.zip /tmp/releases/
+          cp containers/docker-compose/target/apiman-docker-compose-$RELEASE_VERSION.zip /tmp/releases/
           cp distro/wildfly/target/apiman-distro-wildfly-$RELEASE_VERSION-overlay.zip /tmp/releases/
           cp distro/vertx/target/apiman-distro-vertx-$RELEASE_VERSION.zip /tmp/releases/
           cp distro/tomcat/target/apiman-distro-tomcat-$RELEASE_VERSION-overlay.zip /tmp/releases/
