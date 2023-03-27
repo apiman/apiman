@@ -401,6 +401,7 @@ public class OrganizationResourceImpl implements IOrganizationResource, DataAcce
     @Override
     public Response getApiRegistryJSON(String organizationId, String clientId, String version, String download)
             throws ClientNotFoundException, NotAuthorizedException {
+        securityContext.checkPermissions(PermissionType.clientView, organizationId);
         if (BooleanUtils.toBoolean(download)) { //$NON-NLS-1$
             String path = String.format("%s/%s/%s", organizationId, clientId, version); //$NON-NLS-1$
             DownloadBean dbean = tryAction(() ->  downloadManager.createDownload(DownloadType.apiRegistryJson, path));

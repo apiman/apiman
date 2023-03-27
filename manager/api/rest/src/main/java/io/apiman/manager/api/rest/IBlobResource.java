@@ -1,8 +1,10 @@
 package io.apiman.manager.api.rest;
 
-import io.apiman.manager.api.beans.download.BlobRef;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-import java.io.IOException;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -12,9 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import io.swagger.annotations.Api;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import java.io.IOException;
 
 /**
  * Serve blobs via REST.
@@ -22,7 +22,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 @Path("blobs")
-@Api(tags = "Blobs")
+@Tag(name = "Blobs")
 public interface IBlobResource {
 
     /**
@@ -38,5 +38,8 @@ public interface IBlobResource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "If your upload has been accepted")
+    })
     Response uploadBlob(@NotNull MultipartFormDataInput multipartInput) throws IOException;
 }

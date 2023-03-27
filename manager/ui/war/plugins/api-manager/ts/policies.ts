@@ -306,20 +306,22 @@ _module.controller('Apiman.IPListFormController',
                 $scope.currentTypedValue = $('#ip-address').text();
             }
 
-            var validate = function(config) {
-                var valid = true;
+            const validate = function (config) {
+                // set default configs in validate method as both IP (Allow/Block) policies share the IPListFormController
+                // otherwise we run into undefined errors if user switches between the policies
+                // as the config object is reset during NewPolicyController#loadTemplate
+                if (!$scope.config.ipList) {
+                    $scope.config.ipList = [];
+                }
+                if (!$scope.config.responseCode) {
+                    $scope.config.responseCode = '500';
+                }
+
+                const valid = true;
                 $scope.setValid(valid);
             };
 
             $scope.$watch('config', validate, true);
-
-            if (!$scope.config.ipList) {
-                $scope.config.ipList = [];
-            }
-
-            if (!$scope.config.responseCode) {
-                $scope.config.responseCode = '500';
-            }
 
             $scope.add = function(ip) {
                 $scope.remove(ip);

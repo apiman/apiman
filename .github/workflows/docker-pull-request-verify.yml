@@ -1,0 +1,41 @@
+name: Docker Pull Request CI
+
+on:
+  pull_request:
+
+jobs:
+  read-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      apiman-version: ${{ steps.read-apiman-version.outputs.release-version }}
+      is-snapshot-version: ${{ steps.read-apiman-version.outputs.is-snapshot-version }}
+    steps:
+      - name: Checkout Apiman Monorepo
+        uses: actions/checkout@v3
+
+      - name: Default setup items
+        run: bash .github/workflows/support/setup.sh
+
+      - name: Get Apiman version
+        id: read-apiman-version
+        # Don't use mvn for `help:evaluate` command, output is messed up.
+        run: |
+          export APIMAN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "apiman-version=$APIMAN_VERSION" >> $GITHUB_OUTPUT
+          if [[ "$APIMAN_VERSION" =~ "SNAPSHOT" ]]
+          then
+            echo "is-snapshot-version=true" >> $GITHUB_OUTPUT
+          else
+            echo "is-snapshot-version=false" >> $GITHUB_OUTPUT
+          fi
+
+  test-build:
+    needs: read-versions
+    uses: apiman/apiman/.github/workflows/docker-test-release.yml@master
+    secrets: inherit
+    with:
+      apiman-version: ${{ needs.read-versions.outputs.apiman-version }}
+      push-to-repos: false
+      snapshot: ${{ needs.build-verify.outputs.is-snapshot-version == 'true' }}
+
+

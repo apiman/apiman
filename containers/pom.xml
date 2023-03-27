@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.apiman</groupId>
+    <artifactId>apiman</artifactId>
+    <version>3.2.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>apiman-docker</artifactId>
+  <version>3.2.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>Apiman Containers</name>
+  <description>This project contains Container related assets for Apiman.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.passay</groupId>
+      <artifactId>passay</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-common</artifactId>
+    </dependency>
+  </dependencies>
+
+ <modules>
+   <module>docker-compose</module>
+ </modules>
+</project>
+

@@ -1,0 +1,26 @@
+package io.apiman.plugins.transformation_policy.backend;
+
+import io.apiman.gateway.engine.beans.ApiRequest;
+import io.apiman.gateway.engine.beans.ApiResponse;
+import io.apiman.test.policies.IPolicyTestBackEndApi;
+import io.apiman.test.policies.PolicyTestBackEndApiResponse;
+
+import java.io.UnsupportedEncodingException;
+
+@SuppressWarnings("nls")
+public class ProduceJsonBackEndApi implements IPolicyTestBackEndApi {
+
+    @Override
+    public PolicyTestBackEndApiResponse invoke(ApiRequest apiRequest, byte[] requestBody) {
+        try {
+            String responseBody = "{\"name\":\"apiman\"}";
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.getHeaders().put("Content-Type", "application/json");
+            apiResponse.getHeaders().put("Content-Length", String.valueOf(responseBody.getBytes("UTF-8").length));
+            return new PolicyTestBackEndApiResponse(apiResponse, responseBody);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+}

@@ -15,13 +15,16 @@
  */
 package io.apiman.manager.api.beans.policies;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * The type of policy.
  *
  * @author eric.wittmann@redhat.com
  */
+@Schema(description = "The type of policy")
 public enum PolicyType {
 
     Client, Plan, Api
-    
+
 }

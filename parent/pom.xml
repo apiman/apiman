@@ -4,7 +4,7 @@
 
   <groupId>io.apiman</groupId>
   <artifactId>apiman-parent</artifactId>
-  <version>3.0.0.Final</version>
+  <version>3.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>apiman-parent</name>
@@ -67,7 +67,6 @@
     <version.buildhelper.plugin>3.3.0</version.buildhelper.plugin>
     <version.buildnumber.plugin>1.4</version.buildnumber.plugin>
     <version.clean.plugin>3.1.0</version.clean.plugin>
-    <version.com.qmino.miredot-plugin>1.6.2</version.com.qmino.miredot-plugin>
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.dependency.plugin>3.2.0</version.dependency.plugin>
     <version.deploy.plugin>3.0.0</version.deploy.plugin>
@@ -79,10 +78,10 @@
     <version.resources.plugin>3.3.0</version.resources.plugin>
     <version.source.plugin>3.2.1</version.source.plugin>
     <version.surefire.plugin>3.0.0-M5</version.surefire.plugin>
-    <version.surefire-report.plugin>3.0.0-M5</version.surefire-report.plugin>
+    <version.surefire-report.plugin>3.0.0-M7</version.surefire-report.plugin>
     <version.failsafe.plugin>3.0.0-M5</version.failsafe.plugin>
     <version.war.plugin>3.3.2</version.war.plugin>
-    <version.exec.plugin>3.0.0</version.exec.plugin>
+    <version.exec.plugin>3.1.0</version.exec.plugin>
     <version.docker.plugin>0.38.0</version.docker.plugin>
     <version.frontend-maven.plugin>1.6</version.frontend-maven.plugin>
     <version.git-commit-id.plugin>2.2.1</version.git-commit-id.plugin>
@@ -98,8 +97,8 @@
     <version.org.liquibase>4.16.1</version.org.liquibase>
 
     <!-- Dependency Versions -->
-    <version.com.blazebit.blaze-persistence>1.6.7</version.com.blazebit.blaze-persistence>
-    <version.com.fasterxml.jackson>2.12.7</version.com.fasterxml.jackson>
+    <version.com.blazebit.blaze-persistence>1.6.8</version.com.blazebit.blaze-persistence>
+    <version.com.fasterxml.jackson>2.14.1</version.com.fasterxml.jackson>
     <version.com.github.ben-manes.caffeine>3.1.1</version.com.github.ben-manes.caffeine>
     <version.com.github.seancfoley.ipaddress>5.3.4</version.com.github.seancfoley.ipaddress>
     <version.com.h2database>1.4.199</version.com.h2database> <!-- Unclear why, but 1.4.200 seems to cause some random issues, including inability for DB viewers to parse the data -->
@@ -122,17 +121,17 @@
     <version.com.zaxxer>2.7.9</version.com.zaxxer>
     <version.com.google.guava>31.1-jre</version.com.google.guava>
     <version.io.prometheus>0.0.13</version.io.prometheus>
-    <version.joda-time>2.10.14</version.joda-time>
+    <version.joda-time>2.12.2</version.joda-time>
     <version.junit>4.13.2</version.junit>
     <version.org.assertj>3.21.0</version.org.assertj>
-    <version.org.junit.jupiter>5.8.2</version.org.junit.jupiter>
+    <version.org.junit.jupiter>5.9.1</version.org.junit.jupiter>
     <version.org.apache.commons.commons-lang3>3.12.0</version.org.apache.commons.commons-lang3>
     <version.org.apache.directory.server>2.0.0.AM25</version.org.apache.directory.server>
     <version.org.apache.directory.api-all>2.1.0</version.org.apache.directory.api-all>
     <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
-    <version.org.apache.httpcomponents.httpcore>4.4.14</version.org.apache.httpcomponents.httpcore>
+    <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpasyncclient>4.1.4</version.org.apache.httpcomponents.httpasyncclient>
-    <version.org.apache.logging.log4j>2.18.0</version.org.apache.logging.log4j>
+    <version.org.apache.logging.log4j>2.19.0</version.org.apache.logging.log4j>
     <version.org.agrona>1.16.0</version.org.agrona>
     <version.org.eclipse.jetty>9.4.41.v20210516</version.org.eclipse.jetty>
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
@@ -152,27 +151,28 @@
     <version.org.keycloak>18.0.2</version.org.keycloak>
     <version.org.lz4.lz4-java>1.8.0</version.org.lz4.lz4-java>
     <version.org.mockito>3.12.1</version.org.mockito>
-    <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
+    <version.org.mapstruct>1.5.3.Final</version.org.mapstruct>
     <version.org.mvel>2.4.12.Final</version.org.mvel>
+    <version.org.passay>1.6.2</version.org.passay>
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
-    <version.io.github.classgraph>4.8.149</version.io.github.classgraph>
+    <version.io.github.classgraph>4.8.152</version.io.github.classgraph>
     <version.org.slf4j>1.7.36</version.org.slf4j>
     <version.org.testcontainers>1.17.3</version.org.testcontainers>
     <version.io.apicurio>1.1.26</version.io.apicurio>
     <version.io.netty>4.1.74.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
-    <version.io.swagger>1.6.7</version.io.swagger>
+    <version.io.swagger>2.2.7</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>3.9.13</version.io.vertx>
     <version.net.openhft>0.15</version.net.openhft>
     <version.com.ibm.icu4j>71.1</version.com.ibm.icu4j>
     <version.com.icegreen.greenmail>1.6.8</version.com.icegreen.greenmail>
-    <version.com.hazelcast>4.2.5</version.com.hazelcast>
+    <version.com.hazelcast>4.2.6</version.com.hazelcast>
     <version.com.jcbai>1.18.1</version.com.jcbai>
     <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
     <version.org.redisson>3.17.6</version.org.redisson>
     <version.net.javacrumbs.json-unit>2.35.0</version.net.javacrumbs.json-unit>
-    <version.info.picocli>4.6.3</version.info.picocli>
+    <version.info.picocli>4.7.0</version.info.picocli>
 
     <!-- Sun and javax dependencies to maintain compatibility with Java 9+ module changes -->
     <version.com.sun.xml.ws>2.3.4</version.com.sun.xml.ws>
@@ -470,6 +470,11 @@
         <groupId>io.prometheus</groupId>
         <artifactId>simpleclient</artifactId>
         <version>${version.io.prometheus}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.passay</groupId>
+        <artifactId>passay</artifactId>
+        <version>${version.org.passay}</version>
       </dependency>
       <dependency>
         <groupId>org.picketbox</groupId>
@@ -1019,13 +1024,13 @@
 
       <!-- Swagger 2.0 -->
       <dependency>
-        <groupId>io.swagger</groupId>
+        <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-annotations</artifactId>
         <version>${version.io.swagger}</version>
       </dependency>
       <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-jaxrs</artifactId>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-jaxrs2</artifactId>
         <version>${version.io.swagger}</version>
       </dependency>
       <dependency>

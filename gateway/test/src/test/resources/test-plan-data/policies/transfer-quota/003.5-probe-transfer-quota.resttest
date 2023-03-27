@@ -1,0 +1,32 @@
+POST /organizations/Policy_TransferQuotaTest/apis/echo/versions/1.0.0/policies/0?apiKey=12345 admin/admin
+Content-Type: application/json
+X-API-Key: 12345
+
+{
+    "user": "bgembalczyk",
+    "apiKey": "12345",
+    "callerIp": "127.0.0.1"
+}
+
+----
+200
+Content-Type: application/json
+
+{
+	"TransferQuotaProbeResponse": {
+		"probeType": "TransferQuotaProbeResponse",
+		"config": {
+			"limit": 355,
+			"granularity": "Client",
+			"period": "Day",
+			"userHeader": null,
+			"headerRemaining": null,
+			"headerLimit": null,
+			"headerReset": null,
+			"direction": "both"
+		},
+		"status": {
+			"accepted": false
+		}
+	}
+}

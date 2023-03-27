@@ -1,0 +1,9 @@
+{
+  "id" : "jsonp-policy",
+  "name" : "JSONP Policy",
+  "description" : "Turns an endpoint into a JSONP compatible endpoint.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.jsonp_policy.JsonpPolicy",
+  "icon" : "bars",
+  "formType" : "JsonSchema",
+  "form" : "schemas/jsonp-policyDef.schema"
+}

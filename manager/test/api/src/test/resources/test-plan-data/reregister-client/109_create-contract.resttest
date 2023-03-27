@@ -10,6 +10,7 @@ Content-Type: application/json
 ----
 200
 Content-Type: application/json
+X-RestTest-BindTo-contractId: id
 
 {
   "client" : {
@@ -23,7 +24,7 @@ Content-Type: application/json
     "version" : "1.0",
     "createdBy" : "admin"
   },
-  
+
   "api":{
     "api" : {
       "organization" : {
@@ -33,7 +34,7 @@ Content-Type: application/json
     },
     "version" : "1.0"
   },
-  
+
   "plan" : {
     "plan" : {
       "organization" : {

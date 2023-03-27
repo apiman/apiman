@@ -1,0 +1,9 @@
+{
+  "entries": [
+    {
+      "headerName": "X-No-Rules",
+      "allowIfHeaderMissing": false,
+      "allowIfNoRulesMatch": false
+    }
+  ]
+}

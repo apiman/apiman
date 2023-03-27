@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.policies;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.io.Serializable;
 
 /**
@@ -22,6 +24,7 @@ import java.io.Serializable;
  *
  * @author eric.wittmann@redhat.com
  */
+@Schema(description = "Payload for creating a new policy for a Plan, API, or Client")
 public class NewPolicyBean implements Serializable {
 
     private static final long serialVersionUID = -3616888650365376571L;

@@ -26,23 +26,34 @@ import io.apiman.manager.api.rest.exceptions.mappers.IllegalArgumentExceptionMap
 import io.apiman.manager.api.rest.exceptions.mappers.RestExceptionMapper;
 import io.apiman.manager.api.rest.interceptors.BlobResourceInterceptorProvider;
 import io.apiman.manager.api.rest.interceptors.TotalCountInterceptorProvider;
+import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
+import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import io.swagger.v3.oas.integration.OpenApiConfigurationException;
+import io.swagger.v3.oas.integration.SwaggerConfiguration;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-
-import io.swagger.jaxrs.config.BeanConfig;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * The jax-rs application for the API Manager rest api.
  *
  * @author eric.wittmann@redhat.com
  */
+//@OpenAPIDefinition(info = @Info(
+//        title = "Apiman Manager API",
+//        description = "Apiman's manager has its own standalone API which enables you to perform all functionality on the platform."
+//    )
+//)
 @ApplicationPath("/")
 @ApplicationScoped
 public class ApiManagerApplication extends Application {
@@ -58,13 +69,14 @@ public class ApiManagerApplication extends Application {
      */
     public ApiManagerApplication() {
         //add swagger 2.0 config
-        BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setVersion(new Version().getVersionString());
-        beanConfig.setBasePath(getBasePath()); //$NON-NLS-1$
-        beanConfig.setResourcePackage("io.apiman.manager.api.rest"); //$NON-NLS-1$
-        beanConfig.setTitle("API Manager REST API");
-        beanConfig.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs.");
-        beanConfig.setScan(true);
+        //BeanConfig beanConfig = new BeanConfig();
+        //beanConfig.setVersion(new Version().getVersionString());
+        //beanConfig.setBasePath(getBasePath()); //$NON-NLS-1$
+        //beanConfig.setResourcePackage("io.apiman.manager.api.rest"); //$NON-NLS-1$
+        //beanConfig.setTitle("API Manager REST API");
+        //beanConfig.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done. You can use it to automate any API Management task you wish. For example, create new Organizations, Plans, Clients, and APIs.");
+        //beanConfig.setScan(true);
+
 
         classes.add(SystemResourceImpl.class);
         classes.add(SearchResourceImpl.class);
@@ -83,8 +95,7 @@ public class ApiManagerApplication extends Application {
         classes.add(ProtectedDeveloperPortalResourceWrapper.class);
 
         //add swagger 2.0 resource
-        classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
-        classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+        classes.add(OpenApiResource.class);
 
         classes.add(RestExceptionMapper.class);
         classes.add(IllegalArgumentExceptionMapper.class);
@@ -97,15 +108,44 @@ public class ApiManagerApplication extends Application {
                 RestExceptionMapper.class
                 // EagerProvider.class
         );
+
+        OpenAPI oas = new OpenAPI();
+        oas.setInfo(new Info()
+                .title("API Manager REST API")
+                .version(new Version().getVersionString())
+                .description("The API Manager REST API is used by the API Manager UI to get stuff done. " +
+                        "You can use it to automate any API Management task you wish. " +
+                        "For example, create new Organizations, Plans, Clients, and APIs.")
+        );
+        oas.addServersItem(new Server().url(getBasePath()));
+
+        SwaggerConfiguration oasConfig = new SwaggerConfiguration()
+                .openAPI(oas)
+                .resourcePackages(Set.of("io.apiman.manager.api.rest"))
+                .resourceClasses(klazzes)
+                .prettyPrint(true);
+
+        try {
+            new JaxrsOpenApiContextBuilder<>()
+                    .application(this)
+                    .openApiConfiguration(oasConfig)
+                    .resourcePackages(Set.of("io.apiman.manager.api.rest"))
+                    .resourceClasses(klazzes)
+                    .buildContext(true);
+        } catch (OpenApiConfigurationException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
+    private static final Set<String> klazzes = new LinkedHashSet<>();
     private void registerProviders(Class<?>... classes) {
         for (Class<?> klazz : classes) {
             log.info("Registering provider: {0}", klazz.getCanonicalName());
             ResteasyProviderFactory.getInstance().register(klazz);
+            klazzes.add(klazz.getCanonicalName());
         }
     }
-    
+
     @PostConstruct
     protected void postConstruct() {
         if (manager.isImportExport()) {

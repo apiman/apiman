@@ -1,0 +1,56 @@
+<!--
+  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
+<mat-card id="api-card_{{ api.id }}" class="api-card">
+  <div class="api-card-header">
+    <div class="api-card-header-title">
+      <app-img-or-icon-selector
+        [imgUrl]="api.image"
+        [dimension]="'32'"></app-img-or-icon-selector>
+      <div class="api-card-title primary">{{ api.name }}</div>
+    </div>
+    <div class="api-card-header-status">
+      <app-api-status-tag
+        [apiStatus]="api.latestApiVersion.status"
+        [primary]="false"></app-api-status-tag>
+    </div>
+  </div>
+  <mat-card-content class="api-card-content">
+    <p *ngIf="api.description; else noDescription" class="content-text">
+      {{ api.description }}
+    </p>
+    <ng-template #noDescription>
+      <app-no-data [text]="'MPLACE.NO_DESC' | translate"></app-no-data>
+    </ng-template>
+  </mat-card-content>
+  <div>
+    <mat-card-actions class="api-card-actions">
+      <app-api-documentation-buttons
+        id="swagger-btn"
+        *ngIf="api.docsAvailable"
+        [apiVersion]="api.latestApiVersion"></app-api-documentation-buttons>
+
+      <button
+        id="details-btn"
+        mat-raised-button
+        color="primary"
+        class="api-card-button"
+        [routerLink]="['/api-details', api.organizationId, api.id]">
+        {{ 'MPLACE.LEARN_MORE' | translate }}
+      </button>
+    </mat-card-actions>
+  </div>
+</mat-card>

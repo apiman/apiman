@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Circuit Breaker Policy Configuration",
+  "type": "object",
+  "properties": {
+    "window": {
+      "title": "Time Window",
+      "description": "The window of time (in seconds) within which the configured number of faults must be seen for the circuit to break.",
+      "type": "integer",
+      "default": 60,
+      "minimum": 1
+    },
+    "limit": {
+      "title": "Limit",
+      "description": "The number of faults that must be detected within the configured time window for the circuit to break.",
+      "type": "integer",
+      "default": 10,
+      "minimum": 1
+    },
+    "reset": {
+      "title": "Reset Time",
+      "description": "The amount of time (in seconds) to wait before possibly resetting the circuit.",
+      "type": "integer",
+      "default": 300,
+      "minimum": 1
+    },
+    "errorCodes": {
+      "title": "Error Codes",
+      "description": "List of HTTP error codes that the policy will monitor (* wildcard allowed).  Anything not in this list will be ignored by the circuit.",
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 1,
+      "default" : [ "5**" ],
+      "items": {
+        "type": "string",
+        "pattern": "^[3-5\\*][0-9\\*][0-9\\*]$"
+      }
+    },
+    "failureCode": {
+      "title": "Failure Code",
+      "description": "HTTP response code to (immediately) return when the circuit is broken.",
+      "type": "integer",
+      "default": 503,
+      "minimum": 400
+    }
+  }
+}

@@ -1,7 +1,35 @@
 ![Verify Build Workflow](https://github.com/Apiman/apiman/workflows/Verify%20Build%20Workflow/badge.svg)
 [![Apiman Cypress](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/tpeh3n/master&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/tpeh3n/runs)
 
-# The Apiman project (Open Source API Management)
+# Apiman (Open Source API Management)
+
+Apiman is a flexible and open source API Management platform.
+
+With just a few clicks you can get Apiman running, putting a platform at your fingertips that covers the whole API Management lifecycle. Whether you want to offer existing APIs to external consumers in a secure way, or have a centralised location to discover and govern APIs, Apiman has you covered.
+
+But that's not all. Apiman is designed to be easy to customise, and you can implement your own functionality by writing simple Java plugins.
+
+## 🗞️ Apiman Newsletter
+
+Did you know, we have an [Apiman newsletter now](https://www.apiman.io/#newsletter)! We'll inform you of the latest Apiman releases as soon as they happen, along with great Apiman-related content. The latest Apiman news, blogs, tutorials, software engineering topics, and more. No spam, no nonsense.
+
+## ⚡️ Quick links
+
+* [Download Apiman](https://www.apiman.io/download.html)
+* [Read the latest Apiman Blogs](https://www.apiman.io/blog/)
+* [Get Support](https://www.apiman.io/support.html)
+* [Talk Apiman](https://github.com/apiman/apiman/discussions)
+
+## 🐒 Monorepo
+
+⚠️ We may move stuff around as we settle on a finalised monorepo structure post-merge.
+
+* [Apiman Containers/Docker Images](https://github.com/apiman/apiman/tree/master/containers)
+* [Apiman Plugins](https://github.com/apiman/apiman/tree/master/plugins)
+* [Apiman Developer Portal](https://github.com/apiman/apiman/tree/master/portal/ui)
+* [Apiman Manager](https://github.com/apiman/apiman/tree/master/manager)
+* [Apiman Gateway](https://github.com/apiman/apiman/tree/master/gateway)
+* [Apiman Distributions (packaged binaries we ship)](https://github.com/apiman/apiman/tree/master/distro)
 
 ## 📖 Requirements
 
@@ -19,7 +47,7 @@ Here's what you need to do:
 
 ```bash
 echo "Cloning Apiman"
-git clone --recurse-submodules https://github.com/apiman/apiman.git && cd apiman
+git clone https://github.com/apiman/apiman.git && cd apiman
 
 echo "Building Apiman"
 ./fastbuild.sh
@@ -52,7 +80,7 @@ There's also a handy echo service available at http://localhost:8080/services/ec
 The easiest way to build quickly (without tests) is to run our [fastbuild script](https://github.com/apiman/apiman/blob/master/fastbuild.sh). It's in the root of the project. If you have [mvnd](https://github.com/apache/maven-mvnd/) the build will be faster.
 
 ```shell
-git clone --recurse-submodules https://github.com/apiman/apiman.git && cd apiman
+git clone https://github.com/apiman/apiman.git && cd apiman
 ./fastbuild.sh 
 ```
 
@@ -82,14 +110,8 @@ There are [lots of different workflows for contributing](https://docs.github.com
 
 ## 🔎 Developer Portal
 
-Apiman also comes with a developer portal. There you can allow developers to access your APIs. Developers can view and test your APIs to develop their own apps.\
-Check it out here: [Apiman Developer-Portal](https://github.com/apiman/apiman-developer-portal)
+Apiman also comes with a skinnable developer portal which you can let external developers sign up to your APIs in a streamlined API marketplace experience.
 
-## Looking for support?
+## 🙋 Looking for support?
 
-Apiman is a non-commercial project and it is supported downstream by multiple commercial sponsors that offer support and SaaS.
-
- > [Scheer PAS](https://www.scheer-pas.com/en/) is the platform for flexible end-to-end support of individual processes. It stands for digitization and automation, regardless of how many people, systems or companies need to be integrated.
-
-[Scheer PAS API Management](https://www.scheer-pas.com/en/api-management/) is based on Apiman and offers you also enterprise support.\
-You may visit [Scheer PAS documentation](https://doc.scheer-pas.com/display/HOME) for further details.
+Check out [Apiman's support page](https://www.apiman.io/support.html) where you can find Apiman experts to help you.

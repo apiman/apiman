@@ -1,0 +1,19 @@
+{
+  "Metadata": {
+    "exportedOn": "2022-08-01T12:00:00Z",
+    "apimanVersion": "3.0.0.Final"
+  },
+  "Gateways": [
+    {
+      "id": "TheGateway",
+      "name": "The Gateway",
+      "description": "This is the default gateway.",
+      "createdBy": "admin",
+      "createdOn": "2022-08-01T12:00:00Z",
+      "modifiedBy": "admin",
+      "modifiedOn": "2022-08-01T12:00:00Z",
+      "type": "REST",
+      "configuration": "{\"endpoint\":\"${apiman.gateway-endpoint:http://apiman-gateway:8081}\",\"username\":\"${apiman.gateway-endpoint.username:apimanager}\",\"password\":\"${apiman.gateway-endpoint.password:apiman123!}\"}"
+    }
+  ]
+}

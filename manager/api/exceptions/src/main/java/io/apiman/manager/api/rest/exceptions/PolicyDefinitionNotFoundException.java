@@ -17,11 +17,14 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Thrown when trying to get, update, or delete a policy definition that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Policy definition not found", useReturnTypeSchema = true)
 public class PolicyDefinitionNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = -2991993331373394098L;
@@ -31,7 +34,7 @@ public class PolicyDefinitionNotFoundException extends AbstractNotFoundException
      */
     public PolicyDefinitionNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
@@ -39,7 +42,7 @@ public class PolicyDefinitionNotFoundException extends AbstractNotFoundException
     public PolicyDefinitionNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -47,7 +50,7 @@ public class PolicyDefinitionNotFoundException extends AbstractNotFoundException
     public int getErrorCode() {
         return ErrorCodes.POLICY_DEF_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

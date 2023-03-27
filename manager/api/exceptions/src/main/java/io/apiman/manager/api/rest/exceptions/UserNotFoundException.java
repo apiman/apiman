@@ -17,22 +17,24 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * Thrown when a request is sent for a user who does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "User not found", useReturnTypeSchema = true)
 public class UserNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = 8937297365588151067L;
-    
+
     /**
      * Constructor.
      */
     public UserNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
@@ -40,7 +42,7 @@ public class UserNotFoundException extends AbstractNotFoundException {
     public UserNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -48,7 +50,7 @@ public class UserNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.USER_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

@@ -1,0 +1,15 @@
+{
+  "id" : "soap-authorization-policy",
+  "name" : "SOAP Authorization Policy",
+  "description" : "Enables fine grained authorization to API resources based on authenticated user roles. Allows a single SOAPAction in the header.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.soap_authorization_policy.SoapAuthorizationPolicy",
+  "icon" : "code",
+  "formType" : "JsonSchema",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "Appropriate authorization roles are required.  There are @{rules.size()} authorization rules defined."
+    }
+  ],
+  "form" : "schemas/soap-authorization-policyDef.schema"
+}

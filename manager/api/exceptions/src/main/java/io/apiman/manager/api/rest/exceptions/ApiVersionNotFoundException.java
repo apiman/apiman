@@ -17,12 +17,15 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Thrown when trying to get, update, or delete an API version that does not
  * exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "API Version not found", useReturnTypeSchema = true)
 public class ApiVersionNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = -7120965195175475680L;

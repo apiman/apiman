@@ -16,9 +16,13 @@
 
 package io.apiman.manager.api.rest.exceptions;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Thrown when trying to get, update, or delete a developer that does not exist.
  */
+@Deprecated
+@ApiResponse(responseCode = "404", description = "Developer not found (deprecated endpoint)", useReturnTypeSchema = true)
 public class DeveloperNotFoundException extends AbstractNotFoundException {
     private static final long serialVersionUID = -1864829072317282670L;
 

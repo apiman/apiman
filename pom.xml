@@ -3,14 +3,14 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-parent</artifactId>
-    <version>3.0.0.Final</version>
+    <version>3.2.0-SNAPSHOT</version>
     <relativePath>parent/pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>apiman</artifactId>
-  <version>3.0.0.Final</version>
+  <version>3.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>apiman</name>
 
@@ -551,21 +551,12 @@
     <dependency>
       <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
-      <version>22.0.0</version>
+      <version>24.0.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.qmino</groupId>
-          <artifactId>miredot-plugin</artifactId>
-          <version>${version.com.qmino.miredot-plugin}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>pl.project13.maven</groupId>
@@ -694,6 +685,7 @@
 
   <modules>
     <module>common</module>
+    <module>containers</module>
     <module>distro</module>
     <module>manager</module>
     <module>gateway</module>
@@ -701,6 +693,8 @@
     <module>migration-assistant</module>
     <module>sso</module>
     <module>portal</module>
+    <module>plugins</module>
+    <module>api-catalog</module>
   </modules>
 
   <profiles>
@@ -714,16 +708,6 @@
       <modules>
         <module>tools</module>
       </modules>
-    </profile>
-    <profile>
-      <id>apidocs</id>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>miredot</id>
-          <name>MireDot Releases</name>
-          <url>https://nexus.qmino.com/content/repositories/miredot</url>
-        </pluginRepository>
-      </pluginRepositories>
     </profile>
     <profile>
       <id>release</id>

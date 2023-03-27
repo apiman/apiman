@@ -1,0 +1,6 @@
+{
+	"frameworkVersion": 1.0,
+	"name": "SOAP Authorization Policy Plugin",
+	"description": "An implementation of our out-of-the-box Authorization Policy Plugin, with the difference that this one accepts a single SOAPAction field in the request header.",
+	"version": "${project.version}"
+}

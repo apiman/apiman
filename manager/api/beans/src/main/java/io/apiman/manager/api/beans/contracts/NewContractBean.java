@@ -15,6 +15,9 @@
  */
 package io.apiman.manager.api.beans.contracts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 import java.io.Serializable;
 
 /**
@@ -22,6 +25,7 @@ import java.io.Serializable;
  *
  * @author eric.wittmann@redhat.com
  */
+@Schema(description = "Required information to create a new Contract.")
 public class NewContractBean implements Serializable {
 
     private static final long serialVersionUID = -2326957716478467884L;

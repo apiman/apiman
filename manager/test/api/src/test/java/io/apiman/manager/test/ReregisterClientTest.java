@@ -40,6 +40,8 @@ import org.junit.runner.RunWith;
         "DELETE:/mock-gateway/clients/Organization/Client/1.0\n" +
         "GET:/mock-gateway/system/status\n" +
         "PUT:/mock-gateway/clients\n" +
+        "GET:/mock-gateway/system/status\n" +
+        "DELETE:/mock-gateway/clients/Organization/Client/1.0\n" +
         ""
 )
 @ManagerRestTestPublishPayload({

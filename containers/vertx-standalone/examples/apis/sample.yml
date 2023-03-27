@@ -1,0 +1,32 @@
+# Simple apiman example
+---
+  system:
+    gateways:
+      - name: "test-gw"
+        description: "Test Gateway"
+        type: "REST"
+        config:
+          endpoint: "http://localhost:8080/apiman-gateway-api"
+          username: "apimanager"
+          password: "apiman123!"
+    plugins:
+      - groupId: "io.apiman.plugins"
+        artifactId: "apiman-plugins-test-policy"
+        version: "1.3.1.Final"
+  org:
+    name: "test"
+    description: "Test organisation"
+    apis:
+      - name: "example"
+        description: "Example API"
+        version: "1.0"
+        published: true
+        config:
+          endpoint: "http://example.com"
+          endpointType: "rest"
+          public: true
+          gateway: "test-gw"
+        policies:
+          - name: "CachingPolicy"
+            config:
+              ttl: 60

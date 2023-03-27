@@ -1,0 +1,81 @@
+/*!
+ * Copyright 2022 Scheer PAS Schweiz AG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  imitations under the License.
+ */
+
+h1 {
+  margin: 0;
+}
+
+p {
+  margin-top: 0.2em;
+}
+
+#hero-image {
+  height: 19vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+#hero-overlay {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  max-width: 2560px;
+  height: 10vh;
+  margin: auto;
+
+  @media screen and (max-width: 2560px) {
+    margin-left: 2vw;
+    margin-right: 2vw;
+  }
+}
+
+#hero-overlay-box {
+  h1 {
+    margin-top: 0;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.hero-action {
+  cursor: pointer;
+}
+
+#hero-actions-logged-in {
+  align-items: center;
+  display: flex;
+  column-gap: 3px;
+}
+
+#hero-notifications {
+  cursor: pointer;
+}
+
+#hero-account {
+  color: white;
+}
+
+.hero-large {
+  min-height: 32vh;
+}
+
+mat-divider {
+  width: 0.8vw;
+}

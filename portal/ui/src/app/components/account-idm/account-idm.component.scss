@@ -1,0 +1,15 @@
+.permission-view {
+  display: flex;
+}
+
+.permission-view > div {
+  margin-right: 2vw;
+}
+
+.property-container {
+  margin-bottom: 5px;
+}
+
+.property-container:last-child {
+  margin: 0;
+}

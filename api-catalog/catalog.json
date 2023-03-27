@@ -1,0 +1,148 @@
+{
+  "name" : "Official apiman API Catalog",
+  "apis" : [
+    {
+      "id" : "vine-api",
+      "icon" : "vine",
+      "endpoint" : "https://api.vineapp.com/",
+      "endpointType" : "rest",
+      "name" : "Vine API",
+      "description" : "The Vine API allows users to retrieve data from the service, including popular videos, user data, a user's timeline, videos matching a given tag, individual posts, and notifications.",
+      "definitionUrl" : "https://github.com/starlock/vino/wiki/API-Reference",
+      "definitionType" : "External",
+      "tags" : [ "video", "mobile" ]
+    },
+    {
+      "id" : "tumblr-api",
+      "icon" : "tumblr",
+      "endpoint" : "https://www.tumblr.com/api/",
+      "endpointType" : "rest",
+      "name" : "Tumblr API",
+      "description" : "Use the Tumblr API to read Tumblr data or to write a Tumblr post.",
+      "definitionUrl" : "https://www.tumblr.com/docs/en/api/v2",
+      "definitionType" : "External",
+      "tags" : [ "social", "blogging" ]
+    },
+    {
+      "id" : "vimeo-api",
+      "icon" : "https://www.sublitex.com/wp-content/themes/sublitex/img/grafica/vimeo.png",
+      "endpoint" : "https://api.vimeo.com/",
+      "endpointType" : "rest",
+      "name" : "Vimeo API",
+      "description" : "The Vimeo API provides an interface to access much of the public data from Vimeo. Share videos with your friends. Access privacy settings to share videos with only select people. The API uses RESTful calls and responses are formatted in JSON",
+      "definitionUrl" : "https://developer.vimeo.com/api",
+      "definitionType" : "External",
+      "tags" : [ "video", "transcoding" ]
+    },
+    {
+      "id" : "yelp-api",
+      "icon" : "yelp",
+      "endpoint" : "https://api.yelp.com/",
+      "endpointType" : "rest",
+      "name" : "Yelp API",
+      "description" : "The Yelp APIs are RESTful APIs and users can retrieve business review and rating, information for a particular geographic region or location.display review information for a particular business, determine accurate neighborhood name information for a particular location, track recent reviews for a particular business, display pictures of highly rated local businesses and of the top reviewers for that business, determine a particular business' review and rating information based on the phone number for that business. ",
+      "definitionUrl" : "https://www.yelp.com/developers",
+      "definitionType" : "External",
+      "tags" : [ "recommendations", "ecommerce", "localization" ]
+    },
+    {
+      "id" : "linkedin-api",
+      "icon" : "linkedin",
+      "endpoint" : "https://api.linkedin.com/v1/",
+      "endpointType" : "rest",
+      "name" : "LinkedIn API",
+      "description" : "The REST API provides a simple, consistent representation of people, companies, jobs, and the interactions and relationships between them. Our query language lets you read data in XML and JSON at the granularity and aggregation that you choose. Use OAuth 1.0a to authorize users and begin making REST API calls using any programming language.",
+      "definitionUrl" : "https://developer.linkedin.com/docs",
+      "definitionType" : "External",
+      "tags" : [ "social", "enterprise" ]
+    },
+    {
+      "id" : "lastfm-api",
+      "icon" : "lastfm",
+      "endpoint" : "https://ws.audioscrobbler.com/2.0/",
+      "endpointType" : "rest",
+      "name" : "Last.fm API",
+      "description" : "The Last.fm API gives users the ability to build programs using Last.fm data, whether on the web, the desktop or mobile devices. The RESTful API allows for read and write access to the full slate of last.fm music data resources - albums, artists, playlists, events, users, and more. It allows users to call methods that respond in either XML or JSON.",
+      "definitionUrl" : "https://www.last.fm/api",
+      "definitionType" : "External",
+      "tags" : [ "music" ]
+    },
+    {
+      "id" : "instagram-api",
+      "icon" : "instagram",
+      "endpoint" : "https://api.instagram.com/v1",
+      "endpointType" : "rest",
+      "name" : "Instagram API",
+      "description" : "The Instagram API provides access to user authentication, friend connections, photos and all the other elements of the iPhone app -- including uploading new media.",
+      "definitionUrl" : "https://instagram.com/developer/",
+      "definitionType" : "External",
+      "tags" : [ "photos", "mobile" ]
+    },
+    {
+      "id" : "google-maps-api",
+      "icon" : "globe",
+      "endpoint" : "https://maps.googleapis.com/maps/api/js",
+      "endpointType" : "rest",
+      "name" : "Google Maps API",
+      "description" : "The Google Maps API allow for the embedding of Google Maps onto web pages of outside developers.",
+      "definitionUrl" : "https://developers.google.com/maps/",
+      "definitionType" : "External",
+      "tags" : [ "mapping", "viewer" ]
+    },
+    {
+      "id" : "twitter-api",
+      "icon" : "twitter",
+      "endpoint" : "https://twitter.com/statuses/",
+      "endpointType" : "rest",
+      "name" : "Twitter API",
+      "description" : "The Twitter micro-blogging service includes two RESTful APIs.",
+      "definitionUrl" : "https://dev.twitter.com/rest/public",
+      "definitionType" : "External",
+      "tags" : [ "social", "blogging" ]
+    },
+    {
+      "id" : "youtube-api",
+      "icon" : "youtube",
+      "endpoint" : "https://gdata.youtube.com/feeds/",
+      "endpointType" : "rest",
+      "name" : "YouTube API",
+      "description" : "The Data API allows users to integrate their program with YouTube and allow it to perform many of the operations available on the website.",
+      "definitionUrl" : "https://developers.google.com/youtube/",
+      "definitionType" : "External",
+      "tags" : [ "video", "media" ]
+    },
+    {
+      "id" : "flickr-api",
+      "icon" : "flickr",
+      "endpoint" : "https://api.flickr.com/services/rest/",
+      "endpointType" : "rest",
+      "name" : "Flickr API",
+      "description" : "The Flickr API can be used to retrieve photos from the Flickr photo sharing service using a variety of feeds.",
+      "definitionUrl" : "https://www.flickr.com/services/api/",
+      "definitionType" : "External",
+      "tags" : [ "photos", "video" ]
+    },
+    {
+      "id" : "facebook-api",
+      "icon" : "facebook-official",
+      "endpoint" : "https://api.facebook.com/restserver.php",
+      "endpointType" : "rest",
+      "name" : "Facebook API",
+      "description" : "The Facebook API is a platform for building applications that are available to the members of the social network of Facebook.",
+      "definitionUrl" : "https://developers.facebook.com/",
+      "definitionType" : "External",
+      "tags" : [ "social", "web-hooks" ]
+    },
+    {
+      "id" : "amazon-s3-api",
+      "icon" : "https://www.rmws.nl/wp-content/uploads/2015/01/RM-Web-Services-Amazon-S3.png",
+      "endpoint" : "https://s3.amazonaws.com/",
+      "endpointType" : "rest",
+      "name" : "Amazon S3 API",
+      "description" : "Since 2006 Amazon Web Services has been offering web services commonly known as cloud computing.",
+      "definitionUrl" : "https://aws.amazon.com/documentation/s3/",
+      "definitionType" : "External",
+      "tags" : [ "storage" ]
+    }
+  ]
+}

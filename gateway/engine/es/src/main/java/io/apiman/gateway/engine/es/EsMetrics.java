@@ -24,12 +24,14 @@ import io.apiman.common.es.util.builder.index.EsIndexProperties;
 import io.apiman.common.es.util.builder.index.EsIndexProperties.EsIndexPropertiesBuilder;
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
+import io.apiman.common.util.JsonUtil;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.beans.ApiRequest;
 import io.apiman.gateway.engine.beans.ApiResponse;
 import io.apiman.gateway.engine.beans.util.HeaderMap;
 import io.apiman.gateway.engine.beans.util.QueryMap;
+import io.apiman.gateway.engine.es.EsMetricsClientOptionsParser.WriteTo;
 import io.apiman.gateway.engine.metrics.RequestMetric;
 
 import java.io.Serializable;
@@ -60,13 +62,17 @@ import static io.apiman.common.es.util.builder.index.EsIndexUtils.KEYWORD_PROP;
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.LONG_PROP;
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.TEXT_AND_KEYWORD_PROP_128;
 import static io.apiman.common.es.util.builder.index.EsIndexUtils.TEXT_AND_KEYWORD_PROP_256;
-import static io.apiman.gateway.engine.storage.util.BackingStoreUtil.JSON_MAPPER;
 
 /**
- * An elasticsearch implementation of the {@link IMetrics} interface.
- * <p>
- * Can also dynamically capture headers and query parameters.
+ * An Elasticsearch implementation of the {@link IMetrics} interface.
  * See available options in {@link EsMetricsClientOptionsParser}.
+ * <p>
+ * In addition to standard features, this implementation:
+ * <ul>
+ *   <li>Is batched and async non-blocking, where at all possible. A separate thread is used for dispatch.</li>
+ *   <li>Can dynamically capture request and response headers, and query parameters by regex.</li>
+ *   <li>Can write to file, log, or both (e.g. to scrape file with logstash or filebeats).</li>
+ * </ul>
  *
  * @author eric.wittmann@redhat.com
  * @author marc@blackparrotlabs.io
@@ -132,7 +138,6 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
     public void record(RequestMetric metric, ApiRequest apiRequest, ApiResponse apiResponse) {
         try {
             EsMetricPayload esMetric = buildEsMetric(metric, apiRequest, apiResponse);
-
             // Queue#offer returns false if queue is full and unable to accept new records.
             if (!queue.offer(esMetric)) {
                 LOGGER.warn("A metrics entry was dropped because the metrics queue is full. You can try to alter `queue.size` and `batch.size`, but a full buffer "
@@ -166,16 +171,38 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
      */
     protected void processQueue() {
         try {
-            RestHighLevelClient client = getClient();
             Collection<EsMetricPayload> batch = new ArrayList<>(this.batchSize);
             EsMetricPayload rm = queue.take();
             batch.add(rm);
             queue.drainTo(batch, this.batchSize - 1);
+            if (options.getWriteTo().contains(WriteTo.REMOTE)) {
+                writeToEsServer(batch);
+            }
+            if (options.getWriteTo().contains(WriteTo.LOG)) {
+                writeToLogger(batch);
+            }
+        } catch (InterruptedException ire) {
+            LOGGER.error("Unexpected thread interruption in metrics", ire); //$NON-NLS-1$
+        }
+    }
 
+    private void writeToLogger(Collection<EsMetricPayload> batch) {
+        for (EsMetricPayload payload : batch) {
+            try {
+                METRICS_LOGGER.info(JsonUtil.getObjectMapper().writeValueAsString(payload));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void writeToEsServer(Collection<EsMetricPayload> batch) {
+        try {
+            RestHighLevelClient client = getClient();
             BulkRequest request = new BulkRequest();
             for (EsMetricPayload metric : batch) {
                 IndexRequest index = new IndexRequest(getIndexPrefix());
-                index.source(JSON_MAPPER.writeValueAsString(metric), XContentType.JSON);
+                index.source(JsonUtil.getObjectMapper().writeValueAsString(metric), XContentType.JSON);
                 request.add(index);
             }
 
@@ -190,12 +217,12 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
 
                 @Override
                 public void onFailure(Exception e) {
-                    LOGGER.error("Failed to add metric(s) to ES", e); //$NON-NLS-1$
+                    LOGGER.error("Failed to add metric(s) to Elasticsearch", e); //$NON-NLS-1$
                 }
             };
             client.bulkAsync(request, RequestOptions.DEFAULT, listener);
-        } catch (InterruptedException | JsonProcessingException e) {
-            LOGGER.error("Failed to add metric(s) to ES", e); //$NON-NLS-1$
+        } catch (JsonProcessingException e) {
+            LOGGER.error("Failed to add metric(s) to Elasticsearch", e); //$NON-NLS-1$
         }
     }
 

@@ -1,0 +1,24 @@
+PUT /clients admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "Policy_TransferQuotaTest",
+  "clientId" : "testIp",
+  "version" : "1.0.0",
+  "apiKey" : "12345-ip",
+  "contracts" : [
+    {
+      "apiOrgId" : "Policy_TransferQuotaTest",
+      "apiId" : "echo",
+      "apiVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.engine.policies.TransferQuotaPolicy",
+          "policyJsonConfig" : "{\"limit\":355,\"direction\":\"both\",\"granularity\":\"Ip\",\"period\":\"Day\"}"
+        }
+      ]
+    }
+  ]
+}
+----
+204

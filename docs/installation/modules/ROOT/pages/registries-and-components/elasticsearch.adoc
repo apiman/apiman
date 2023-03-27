@@ -318,6 +318,18 @@ a| Case-insensitive list of _response_ headers to capture
 | String[]
 a| Case-insensitive list of HTTP https://en.wikipedia.org/wiki/Query_string[query parameters^] to capture
 
+| `write-to`
+| String[]
+a| Case-insensitive list of destinations to write Elasticsearch logs.
+
+Rather than solely pushing metrics directly to the Elasticsearch server, Apiman can also write the metrics to a log file as JSON (e.g. for scraping).
+
+* *Default Value*: `REMOTE`
+* *Allowed Values*: `REMOTE`, `LOG` (both permissible at once)
+* *File Location*:
+** WildFly: `standalone/log/metrics.log`
+** Tomcat: `logs/apiman/metrics.log`
+
 |===
 
 NOTE: For custom header and query param capture, we add entries into the Elasticsearch index dynamically using https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic-templates.html[dynamic templates^].

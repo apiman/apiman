@@ -29,7 +29,6 @@ import javax.ws.rs.core.MediaType;
  * Org API
  */
 @Path("/")
-@io.swagger.annotations.Api
 public interface IOrgResource {
 
     // Organisation

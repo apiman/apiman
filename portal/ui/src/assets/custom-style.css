@@ -1,0 +1,106 @@
+/*
+ * Copyright 2022 Scheer PAS Schweiz AG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  imitations under the License.
+ */
+
+:root {
+  /* Put the color values for you primary, accent and warning to define your color theme */
+  --primary: rgb(41 150 204 / 100%);
+  --primary-80: rgb(41 150 204 / 80%);
+  --primary-60: rgb(41 150 204 / 60%);
+  --primary-40: rgb(41 150 204 / 40%);
+  --primary-20: rgb(41 150 204 / 20%);
+
+  --accent: rgb(186 182 185 / 100%);
+  --accent-80: rgb(186 182 185 / 80%);
+  --accent-60: rgb(186 182 185 / 60%);
+  --accent-40: rgb(186 182 185 / 40%);
+  --accent-20: rgb(186 182 185 / 20%);
+
+  --warn: rgb(208 50 55 / 100%);
+  --warn-80: rgb(208 50 55 / 80%);
+  --warn-60: rgb(208 50 55 / 60%);
+  --warn-40: rgb(208 50 55 / 40%);
+  --warn-20: rgb(208 50 55 / 20%);
+
+  --primary-warn-contrast: rgb(255 255 255 / 100%);
+
+  --dark-primary: rgb(5 97 141 / 100%);
+  --dark-primary-80: rgb(5 97 141 / 80%);
+  --dark-primary-60: rgb(5 97 141 / 60%);
+  --dark-primary-40: rgb(5 97 141 / 40%);
+  --dark-primary-20: rgb(5 97 141 / 20%);
+
+  --dark-accent: rgb(106 116 127 / 100%);
+  --dark-accent-80: rgb(106 116 127 / 80%);
+  --dark-accent-60: rgb(106 116 127 / 60%);
+  --dark-accent-40: rgb(106 116 127 / 40%);
+  --dark-accent-20: rgb(106 116 127 / 20%);
+
+  --acccent-contrast: rgb(0 0 0 / 100%);
+  --acccent-contrast-80: rgb(0 0 0 / 80%);
+  --acccent-contrast-60: rgb(0 0 0 / 60%);
+  --acccent-contrast-40: rgb(0 0 0 / 40%);
+  --acccent-contrast-20: rgb(0 0 0 / 20%);
+
+  --dark-warn: rgb(172 30 28 / 100%);
+  --dark-warn-80: rgb(172 30 28 / 80%);
+  --dark-warn-60: rgb(172 30 28 / 60%);
+  --dark-warn-40: rgb(172 30 28 / 40%);
+  --dark-warn-20: rgb(172 30 28 / 20%);
+}
+
+/* set color for login/logout button */
+#hero-login-btn,
+#hero-logout-btn {
+  color: var(--primary);
+  background-color: var(--primary-warn-contrast);
+
+  /* optional if a button border is needed */
+  border: 1px solid var(--primary);
+}
+
+/* set color of notification badge in hero */
+#hero-notifications {
+  color: var(--primary-warn-contrast);
+}
+
+/* set hero image, must exist in respective assets folder */
+#hero-image {
+  background-image: url("img/header.jpeg");
+}
+
+/* set background color with transparency for your header title/subtitle */
+#hero-overlay-box {
+  background-color: rgb(0 0 0 / 0%);
+}
+
+/* set the color for you header/subtitle */
+#hero-title,
+#hero-subtitle {
+  color: var(--primary-warn-contrast);
+}
+
+#hero-username {
+  color: var(--primary-warn-contrast);
+  cursor: pointer;
+}
+
+/* Example to override scrollbar color */
+
+/* .simplebar-scrollbar::before {
+  background: var(--primary) !important;
+} */
+
+/* Place your custom styles below this comment */

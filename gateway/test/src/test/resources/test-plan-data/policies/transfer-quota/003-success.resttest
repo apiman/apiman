@@ -1,0 +1,35 @@
+POST /Policy_TransferQuotaTest/echo/1.0.0/path/to/app/resource admin/admin
+X-API-Key: 12345
+
+{
+  "K6Y5n9zB" : "TVALMWVryKL0zfbC",
+  "gMUjvY63" : "93J42WOTctQc49mN",
+  "XWzQHNb8" : "YGo72D1F46gU5r1r",
+  "6k1o4Ee8" : "7fTwgcyXhFg0f4f3",
+  "P6SsjAru" : "069WIGpo6oz2Kr9M",
+  "04wJ9491" : "SKf3eJwVT4Hm71XP",
+  "mmFFbmZ3" : "Ngs5q4K3vLf9lu5U",
+  "03id3m5p" : "878SJ1SH6e9ku736",
+  "cx58s226" : "5PzhYXVa133zp3mI",
+  "di5zgxYT" : "kM4XKvU7KaNtwBhB",
+  "BNBE8Qo8" : "0JxN1UafeOMFEDZ2",
+  "qaA4cW1P" : "w3aVhqhkIiqM607Y",
+  "U3y0m41t" : "s5yOHf0M9CUhKT2P",
+  "yjQQ6264" : "yYJY56rEqSIFF49E",
+  "LJ9CsXE0" : "M3kb8iUVm5ESHd22",
+  "KjIHXY56" : "XVVGQbGN0DaVnpsp",
+  "d6VJ2yIk" : "gLl02FE117t3Yf7r",
+  "it4yC2Id" : "OxhB17lhZV5258c9",
+  "qcaALQm1" : "VCw0OTK69qkiZ4hQ"
+ }
+
+----
+200
+Content-Type: application/json
+X-TransferQuota-Limit: 355
+
+{
+  "method" : "POST",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource"
+}

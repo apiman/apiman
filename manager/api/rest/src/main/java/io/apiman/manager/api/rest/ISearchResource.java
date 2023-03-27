@@ -28,8 +28,10 @@ import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.rest.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.exceptions.OrganizationNotFoundException;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.util.List;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -37,8 +39,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import io.swagger.annotations.Api;
+import java.util.List;
 
 /**
  * The Search API.
@@ -46,7 +47,7 @@ import io.swagger.annotations.Api;
  * @author eric.wittmann@redhat.com
  */
 @Path("search")
-@Api(tags = "Search")
+@Tag(name = "Search")
 @PermitAll
 public interface ISearchResource {
 
@@ -56,7 +57,6 @@ public interface ISearchResource {
      * information.
      * @summary Search for Organizations
      * @param criteria The search criteria.
-     * @statuscode 200 If the search is successful.
      * @return The search results (a page of organizations).
      * @throws InvalidSearchCriteriaException when provided criteria are invalid when provided criteria are invalid
      */
@@ -64,7 +64,10 @@ public interface ISearchResource {
     @Path("organizations")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<OrganizationSummaryBean> searchOrgs(SearchCriteriaBean criteria)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
+    })
+    SearchResultsBean<OrganizationSummaryBean> searchOrgs(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
 
     /**
@@ -74,7 +77,6 @@ public interface ISearchResource {
      * @summary Search for Clients
      * @servicetag admin
      * @param criteria The search criteria.
-     * @statuscode 200 If the search is successful.
      * @return The search results (a page of clients).
      * @throws OrganizationNotFoundException when provided organization is not found
      * @throws InvalidSearchCriteriaException when provided criteria are invalid
@@ -84,7 +86,10 @@ public interface ISearchResource {
     @Path("clients")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
+    })
+    SearchResultsBean<ClientSummaryBean> searchClients(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException, NotAuthorizedException;
 
     /**
@@ -93,7 +98,6 @@ public interface ISearchResource {
      * information.
      * @summary Search for APIs
      * @param criteria The search criteria.
-     * @statuscode 200 If the search is successful.
      * @return The search results (a page of APIs).
      * @throws OrganizationNotFoundException when provided organization is not found
      * @throws InvalidSearchCriteriaException when provided criteria are invalid
@@ -102,7 +106,10 @@ public interface ISearchResource {
     @Path("apis")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
+    })
+    SearchResultsBean<ApiSummaryBean> searchApis(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
     /**
@@ -111,7 +118,6 @@ public interface ISearchResource {
      * results.
      * @summary Search for APIs in API Catalogs
      * @param criteria The search criteria.
-     * @statuscode 200 If the search is successful.
      * @return The search results (a page of available APIs).
      * @throws InvalidSearchCriteriaException when provided criteria are invalid
      */
@@ -119,7 +125,10 @@ public interface ISearchResource {
     @Path("apiCatalog/entries")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<AvailableApiBean> searchApiCatalog(SearchCriteriaBean criteria)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
+    })
+    SearchResultsBean<AvailableApiBean> searchApiCatalog(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
 
     /**
@@ -127,13 +136,15 @@ public interface ISearchResource {
      * within.  Not all platforms support this functionality.  If no namespaces are
      * found, then the UI should simply suppress the namespace filter.
      * @summary List All Namespaces in API Catalogs
-     * @statuscode 200 If the namespaces were successfully returned.
      * @return The list of namespaces.
      */
     @GET
     @Path("apiCatalog/namespaces")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ApiNamespaceBean> getApiNamespaces();
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the namespaces were successfully returned.", useReturnTypeSchema = true)
+    })
+    List<ApiNamespaceBean> getApiNamespaces();
 
     /**
      * Use this endpoint to search for users.  The search criteria is
@@ -144,21 +155,23 @@ public interface ISearchResource {
      * @return The search results (a page of users).
      * @throws InvalidSearchCriteriaException when provided criteria are invalid
      * @summary Search for Users
-     * @statuscode 200 If the search is successful.
      */
     @POST
     @Path("users")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    SearchResultsBean<UserSearchResult> searchUsers(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the search is successful.", useReturnTypeSchema = true)
+    })
+    SearchResultsBean<UserSearchResult> searchUsers(SearchCriteriaBean criteria)
+            throws InvalidSearchCriteriaException;
 
     /**
      * This endpoint provides a way to search for roles.  The search criteria is
      * provided in the body of the request, including filters, order-by, and paging
-     * information.@
+     * information.
      * @summary Search for Roles
      * @param criteria The search criteria.
-     * @statuscode 200 If the search completes successfully.
      * @return The search results (a page of roles).
      * @throws InvalidSearchCriteriaException when provided criteria are invalid
      */
@@ -166,7 +179,10 @@ public interface ISearchResource {
     @Path("roles")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<RoleBean> searchRoles(SearchCriteriaBean criteria)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If the search completes successfully.", useReturnTypeSchema = true)
+    })
+    SearchResultsBean<RoleBean> searchRoles(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
 
 }

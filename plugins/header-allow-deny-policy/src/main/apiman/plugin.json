@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "Header Allow/Deny Policy Plugin",
+  "description" : "This plugin only permits requests matching specific header values.",
+  "version" : "${project.version}"
+}

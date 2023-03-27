@@ -1,0 +1,10 @@
+{
+  "PLANT": {
+    "COMMON": "Bloodroot",
+    "BOTANICAL": "Sanguinaria canadensis",
+    "ZONE": 4,
+    "LIGHT": "Mostly Shady",
+    "PRICE": "$2.44",
+    "AVAILABILITY": "031599"
+  }
+}

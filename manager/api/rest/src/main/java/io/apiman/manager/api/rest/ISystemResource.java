@@ -17,6 +17,10 @@
 package io.apiman.manager.api.rest;
 
 import io.apiman.manager.api.beans.system.SystemStatusBean;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
@@ -29,15 +33,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.swagger.annotations.Api;
-
 /**
  * A simple System API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @Path("system")
-@Api(tags = "System")
+@Tag(name = "System")
 @PermitAll
 public interface ISystemResource {
 
@@ -47,14 +49,16 @@ public interface ISystemResource {
      * API Manager REST services.
      *
      * @summary Get System Status
-     * @statuscode 200 On success.
      * @return System status information.
      */
     @GET
     @Path("status")
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Service is available.", useReturnTypeSchema = true)
+    })
     SystemStatusBean getStatus();
-    
+
     /**
      * Use this endpoint to export data from the API Manager to a file.  All data
      * in the API Manager, including global/admin information, will be exported.
@@ -64,14 +68,18 @@ public interface ISystemResource {
      *
      * @summary Export Data
      * @servicetag admin
-     * @statuscode 200 On successful export
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @return A full export of all API Manager data
      */
     @GET
     @Path("export")
     @Produces(MediaType.APPLICATION_JSON)
-    Response exportData(@QueryParam("download") String download) throws NotAuthorizedException;
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "On successful export")
+    })
+    Response exportData(
+            @QueryParam("download") @Parameter(description = "The download ID") String download
+    ) throws NotAuthorizedException;
 
     // "Internal" method - called by the download resource.
     Response exportData();
@@ -81,7 +89,6 @@ public interface ISystemResource {
      *
      * @summary import data into Apiman that was previously exported
      * @servicetag admin
-     * @statuscode 200 On successful import
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      * @return A logged summary of the importation process
      */
@@ -89,5 +96,8 @@ public interface ISystemResource {
     @Path("import")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "On successful import")
+    })
     Response importData() throws NotAuthorizedException;
 }

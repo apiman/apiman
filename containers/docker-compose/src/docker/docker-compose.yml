@@ -1,0 +1,304 @@
+version: '3.9'
+# Please refer to the .env file (it might be hidden by default on your OS).
+services:
+  apiman-manager:
+    image: apiman/wildfly-manager:${project.version}
+    depends_on:
+      - postgres
+      - keycloak
+    environment:
+      # Keycloak SSO config
+      - "APIMAN_AUTH_URL=${KEYCLOAK_PRIVATE_ENDPOINT}"
+      - "APIMAN_AUTH_PUBLIC_URL=${KEYCLOAK_PUBLIC_ENDPOINT}"
+      - "APIMAN_AUTH_REALM=${KEYCLOAK_REALM}"
+      - "APIMAN_AUTH_API_SECRET=${KEYCLOAK_APIMAN_API_SECRET}"
+      - "APIMAN_AUTH_UI_SECRET=${KEYCLOAK_APIMAN_UI_SECRET}"
+      # Apiman Manager database config
+      - "APIMAN_DB_DRIVER=postgresql11"
+      - "APIMAN_DB_URL=jdbc:postgresql://postgres:5432/apiman"
+      - "APIMAN_DB_USERNAME=${POSTGRES_USERNAME}"
+      - "APIMAN_DB_PASSWORD=${POSTGRES_PASSWORD}"
+      # Apiman Elasticsearch metrics config
+      - "APIMAN_ES_PROTOCOL=${ELASTICSEARCH_PROTOCOL}"
+      - "APIMAN_ES_HOST=${ELASTICSEARCH_HOST}"
+      - "APIMAN_ES_PORT=${ELASTICSEARCH_PORT}"
+      - "APIMAN_ES_ALLOW_SELF_SIGNED=true"
+      - "APIMAN_ES_ALLOW_ANY_HOST=true"
+      - "APIMAN_ES_TRUST_ALL=true"
+     # - "APIMAN_ES_USERNAME="
+     # - "APIMAN_ES_PASSWORD="
+      # General Apiman config
+      - "ALLOW_ANY_HOST=${SELF_SIGNED}"
+      - "APIMAN_MANAGER_UI_ENDPOINT=${APIMAN_MANAGER_UI_ENDPOINT}"
+      - "APIMAN_MANAGER_API_ENDPOINT=${APIMAN_MANAGER_API_ENDPOINT}"
+    volumes:
+      - type: bind
+        source: "$PWD/data/apiman.properties"
+        target: /opt/jboss/wildfly/standalone/configuration/apiman.properties
+      - type: bind
+        source: "$PWD/data/default-gateway.json"
+        target: /opt/jboss/wildfly/standalone/data/bootstrap/default-gateway.json
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+        mode: non-blocking
+    labels:
+      # - traefik.http.routers.apimanui-router.tls=true
+      - traefik.http.routers.apimanui-router.entrypoints=http
+      - traefik.http.routers.apimanui-router.rule=Host(`apiman.${APIMAN_HOSTNAME}`)
+      - traefik.http.routers.apimanui-router.rule=PathPrefix(`/apiman`, `/apimanui`, `/portal`)
+      - traefik.http.routers.apimanui-router.service=apimanui-service
+      - traefik.http.services.apimanui-service.loadbalancer.server.port=8080
+
+    restart: unless-stopped
+    healthcheck:
+      # Double $$ sign in health-check predicate is to escape first $ in docker-compose syntax (prevent expansion here).
+      test: curl -s -f http://apiman-manager:8080/apiman/system/status &>/dev/null; if [[ $$? == 0 ]]; then echo 0; else echo 1; fi
+
+  apiman-gateway:
+    image: apiman/vertx-gateway:${project.version}
+    depends_on:
+      elasticsearch:
+          condition: service_healthy
+    environment:
+     # You can add these below (and modify conf-es.json) to customise SSL/TLS
+      - >-
+        APIMAN_GATEWAY_OPTS=-Dapiman.gateway.public-endpoint=${APIMAN_GATEWAY_PUBLIC_ENDPOINT}
+        -Dapiman.es.host=${ELASTICSEARCH_HOST}
+        -Dapiman.es.protocol=${ELASTICSEARCH_PROTOCOL}
+        -Dapiman.es.port=${ELASTICSEARCH_PORT}
+        -Dapiman.es.username=
+        -Dapiman.es.password=
+        -Dapiman.es.timeout=10000
+        -Dapiman.auth.url=${KEYCLOAK_PRIVATE_ENDPOINT}
+        -Dapiman.auth.realm=${KEYCLOAK_REALM}
+        -Dapiman.auth.gateway.secret=${KEYCLOAK_GATEWAY_SECRET}
+        -DallowSelfSigned=${SELF_SIGNED}
+        -DallowAnyHost=${SELF_SIGNED}
+        -DcachingPolicy.maxCacheSize=${MAX_CACHE_SIZE_IN_MB}
+        -Dapiman.gateway-allowedProtocols=${TLS_ALLOWED_PROTOCOLS:-}
+        -Dapiman.es.keystore=${GATEWAY_ES_KEYSTORE:-}
+        -Dapiman.es.keystore.password=${GATEWAY_ES_KEYSTORE_PASSWORD:-}
+        -Dapiman.es.truststore=${GATEWAY_ES_TRUSTSTORE:-}
+        -Dapiman.es.truststore.password=${GATEWAY_ES_TRUSTSTORE_PASSWORD:-}
+        -Dapiman.keycloak.keystore=${GATEWAY_KEYCLOAK_KEYSTORE:-}
+        -Dapiman.keycloak.keystore.password=${GATEWAY_KEYCLOAK_KEYSTORE_PASSWORD:-}
+        -Dapiman.keycloak.truststore=${GATEWAY_KEYCLOAK_TRUSTSTORE:-}
+        -Dapiman.keycloak.truststore.password=${GATEWAY_KEYCLOAK_TRUSTSTORE_PASSWORD:-}
+        -Dapiman.gateway.client-keystore=${GATEWAY_CLIENT_KEYSTORE:-}
+        -Dapiman.gateway.client-keystore.password=${GATEWAY_CLIENT_KEYSTORE_PASSWORD:-}
+        -Dapiman.gateway.client-truststore=${GATEWAY_CLIENT_TRUSTSTORE:-}
+        -Dapiman.gateway.client-truststore.password=${GATEWAY_CLIENT_TRUSTSTORE_PASSWORD:-}
+        -Dapiman.gateway.backend-keystore=${GATEWAY_BACKEND_KEYSTORE:-}
+        -Dapiman.gateway.backend-keystore.password=${GATEWAY_BACKEND_KEYSTORE_PASSWORD:-}
+        -Dapiman.gateway.backend-truststore=${GATEWAY_BACKEND_TRUSTSTORE:-}
+        -Dapiman.gateway.backend-truststore.password=${GATEWAY_BACKEND_TRUSTSTORE_PASSWORD:-}
+    volumes:
+      - type: bind
+        source: "$PWD/data/conf-es.json"
+        target: /opt/apiman/configs/conf-es.json
+      - type: volume
+        source: gateway_logs
+        target: /usr/src/apiman/apiman-distro-vertx/logs
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+        mode: non-blocking
+    restart: unless-stopped
+    labels:
+      # - traefik.http.routers.gateway-router.tls=true
+      - traefik.http.routers.gateway-router.entrypoints=http
+      - traefik.http.routers.gateway-router.rule=Host(`gateway.${APIMAN_HOSTNAME}`)
+      - traefik.http.routers.gateway-router.service=gateway-service
+      - traefik.http.services.gateway-service.loadbalancer.server.port=8080
+      # - traefik.http.routers.gateway-management-router.tls=true
+      # - traefik.http.routers.gateway-management-router.entrypoints=https
+      # - traefik.http.routers.gateway-management-router.rule=Host(`gateway-management.${APIMAN_HOSTNAME}`)
+      # - traefik.http.routers.gateway-management-router.service=gateway-management-service
+      # - traefik.http.services.gateway-management-service.loadbalancer.server.port=8081
+
+  postgres:
+    image: postgres:14.6
+    # ports:
+    #   - '5432:5432'
+    environment:
+      - 'POSTGRES_MULTIPLE_DATABASES=apiman,${POSTGRES_KEYCLOAK_DATABASE}'
+      - 'POSTGRES_USERNAME=${POSTGRES_USERNAME}'
+      - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
+    volumes:
+      - type: bind
+        source: "$PWD/common/create-multiple-postgresql-databases.sh"
+        target: /docker-entrypoint-initdb.d/create-multiple-postgresql-databases.sh
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgres
+      - type: volume
+        source: postgres_logs
+        target: /var/log/postgres
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+        mode: non-blocking
+    restart: unless-stopped
+    #labels:
+    #  - traefik.http.routers.postgres-router.tls=true
+    #  - traefik.http.routers.postgres-router.entrypoints=https
+    #  - traefik.http.routers.postgres-router.rule=Host(`postgres.${APIMAN_HOSTNAME}`)
+    #  - traefik.http.routers.postgres-router.service=postgres-service
+    #  - traefik.http.services.postgres-service.loadbalancer.server.port=5432
+
+  elasticsearch:
+    image: elasticsearch:7.17.8
+    #ports:
+    #  - '${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}'
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms${ELASTICSEARCH_JAVA_MEMORY} -Xmx${ELASTICSEARCH_JAVA_MEMORY}
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc:
+        soft: 4096
+        hard: 4096
+    volumes:
+      - type: volume
+        source: elasticsearch_data
+        target: /usr/share/elasticsearch/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+        mode: non-blocking
+    healthcheck:
+      test: curl -s http://elasticsearch:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    labels:
+      - traefik.http.routers.elasticsearch-router.tls=true
+      - traefik.http.routers.elasticsearch-router.entrypoints=https
+      - traefik.http.routers.elasticsearch-router.rule=Host(`elasticsearch.${APIMAN_HOSTNAME}`)
+      - traefik.http.routers.elasticsearch-router.service=elasticsearch-service
+      - traefik.http.services.elasticsearch-service.loadbalancer.server.port=9200
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:18.0.2
+    depends_on:
+      - postgres
+    entrypoint: [ '/bin/bash', '-c' ]
+    # ./bin/kc.sh build => build and deploy custom themes, providers, etc.
+    # ./bin/kc.sh start-dev --import-realm => import Apiman realm, if not already imported.
+    command:
+      - |
+        cd /opt/keycloak
+        ./bin/kc.sh build
+        ./bin/kc.sh start-dev --import-realm --log=console --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true
+    environment:
+      # Import realm with these secrets at first startup
+      - 'KEYCLOAK_REALM=${KEYCLOAK_REALM}'
+      - 'KEYCLOAK_APIMAN_API_SECRET=${KEYCLOAK_APIMAN_API_SECRET}'
+      - 'KEYCLOAK_APIMAN_UI_SECRET=${KEYCLOAK_APIMAN_UI_SECRET}'
+      - 'KEYCLOAK_GATEWAY_SECRET=${KEYCLOAK_GATEWAY_SECRET}'
+      - 'KEYCLOAK_REALM_CERTIFICATE=${KEYCLOAK_REALM_CERTIFICATE}'
+      - 'KEYCLOAK_REALM_PRIVATE_KEY=${KEYCLOAK_REALM_PRIVATE_KEY}'
+      # Keycloak default admin username and password
+      - 'KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USERNAME}'
+      - 'KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}'
+      # Keycloak networking config
+      - 'KC_HOSTNAME=auth.${APIMAN_HOSTNAME}'
+      - 'KC_HOSTNAME_STRICT=false'
+      - 'KC_HTTP_ENABLED=true'
+      - 'KC_HTTP_PORT=8080'
+      - 'KC_HOSTNAME_PORT=8080'
+      - 'KC_PROXY=edge'
+      # KC Database config
+      - 'KC_DB=postgres'
+      - 'KC_DB_SCHEMA=public'
+      - 'KC_DB_URL=jdbc:postgresql://postgres:5432/${POSTGRES_KEYCLOAK_DATABASE}'
+      - 'KC_DB_USERNAME=${POSTGRES_KEYCLOAK_USER}'
+      - 'KC_DB_PASSWORD=${POSTGRES_KEYCLOAK_PASSWORD}'
+      - 'JDBC_PARAMS="useSSL=false"'
+      # General KC config
+      - 'KC_HEALTH_ENABLED=true'
+    volumes:
+      - type: bind
+        source: "$PWD/data/apiman-realm-for-keycloak.json"
+        target: /opt/keycloak/data/import/apiman-realm-for-keycloak.json
+      - type: bind
+        source: "$PWD/data/apiman-keycloak-theme.jar"
+        target: /opt/keycloak/providers/apiman-keycloak-theme.jar
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+        mode: non-blocking
+    restart: unless-stopped
+    labels:
+      #- traefik.http.routers.keycloak-router.tls=true
+      - traefik.http.routers.keycloak-router.entrypoints=http
+      - traefik.http.routers.keycloak-router.rule=Host(`auth.${APIMAN_HOSTNAME}`)
+      - traefik.http.routers.keycloak-router.service=keycloak-service
+      - traefik.http.services.keycloak-service.loadbalancer.server.port=8080
+
+  mock-mail-server:
+    image: maildev/maildev:2.0.5
+    restart: unless-stopped
+    labels:
+      - traefik.http.routers.mailserver-router.entrypoints=http
+      - traefik.http.routers.mailserver-router.rule=Host(`mail.${APIMAN_HOSTNAME}`)
+      - traefik.http.routers.mailserver-router.service=mailserver-service
+      - traefik.http.services.mailserver-service.loadbalancer.server.port=1080
+
+  reverse-proxy:
+    image: traefik:v2.8.3
+    command:
+      - --entrypoints.http.address=:8080
+      - --entrypoints.https.address=:8443
+      - --providers.docker
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    #labels:
+    #  # global redirect to https
+    #  - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+    #  - "traefik.http.routers.http-catchall.entrypoints=http"
+    #  - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+    #  # middleware redirect
+    #  - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+volumes:
+  ui_logs:
+    driver: local
+  elasticsearch_data:
+    driver: local
+  postgres_data:
+    driver: local
+  postgres_logs:
+    driver: local
+  keycloak_logs:
+    driver: local
+  manager_logs:
+    driver: local
+  gateway_logs:
+    driver: local
+
+#networks:
+#

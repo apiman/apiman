@@ -76,7 +76,7 @@ public class EsMetricsAccessorTest {
 
     public static final String APIMAN_METRICS_INDEX_NAME = "apiman_metrics";
     @Container
-    private static ElasticsearchContainer node = EsTestUtil.provideElasticsearchContainer();
+    private final static ElasticsearchContainer NODE = EsTestUtil.provideElasticsearchContainer();
 
     private static RestHighLevelClient client;
     private static Locale locale;
@@ -86,7 +86,7 @@ public class EsMetricsAccessorTest {
         locale = Locale.getDefault();
         Locale.setDefault(Locale.US);
 
-        node.start();
+        NODE.start();
 
         // Delete, refresh and create new client
         client = createEsClient();
@@ -111,15 +111,15 @@ public class EsMetricsAccessorTest {
     private static RestHighLevelClient createEsClient() {
         Map<String, String> config = new HashMap<>();
         config.put("client.protocol", "http");
-        config.put("client.host", node.getHost());
-        config.put("client.port", node.getFirstMappedPort().toString());
+        config.put("client.host", NODE.getHost());
+        config.put("client.port", NODE.getFirstMappedPort().toString());
         config.put("client.initialize", "true");
         config.put("client.type", "es");
 
         // We want the metrics client to initialise its indexes and this is an easy way of doing that.
         // Normally it would be triggered at startup of the component, but we bypass it in these tests.
         EsMetrics metrics = new EsMetrics(config);
-        System.out.println(metrics.getEsIndices());
+        System.out.println(metrics.getClient());
 
         return new DefaultEsClientFactory()
             .createClient(config,
@@ -142,7 +142,7 @@ public class EsMetricsAccessorTest {
     public static void teardown() throws Exception {
         System.out.println("----------- All done.");
         Locale.setDefault(locale);
-        node.stop();
+        NODE.stop();
     }
 
     @Before

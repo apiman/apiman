@@ -24,7 +24,6 @@ import io.apiman.gateway.engine.vertx.polling.exceptions.BadResponseCodeError;
 import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpClientOptions;
 import io.apiman.gateway.platforms.vertx3.common.config.InheritingHttpClientOptionsConverter;
 import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
-import io.apiman.gateway.platforms.vertx3.engine.proxy.HttpProxy;
 import io.apiman.gateway.platforms.vertx3.engine.proxy.SysPropsProxySelector;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 
@@ -51,8 +50,6 @@ import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.net.ProxyOptions;
-import io.vertx.core.net.ProxyType;
 
 /**
  * A vertx implementation of the API Gateway's plugin registry. This version simply extends the default
@@ -144,7 +141,7 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
             handler.handle(AsyncResultImpl.create(failure));
         });
     }
-    
+
     private void tryDownloadingArtifact(HttpClient client, int port, URL artifactUrl, File pluginFile, Promise<File> promise) {
         final HttpClientRequest request = client.get(port, artifactUrl.getHost(), artifactUrl.getPath(),
             (Handler<HttpClientResponse>) response -> {
@@ -201,32 +198,8 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
             httpClientOptions.setSsl(true);
         }
 
-        // If there's a proxy that should be used, it will be resolved and set here.
-        proxySelector.resolveProxy(artifactUrl).ifPresent(proxy -> {
-            ProxyOptions proxyOptions = new ProxyOptions();
-            proxyOptions.setHost(proxy.getHost());
-            proxyOptions.setPort(proxy.getPort());
-            proxyOptions.setType(translateProxyType(proxy));
-
-            proxy.getCredentials().ifPresent((credentials) -> {
-                proxyOptions.setUsername(credentials.getPrinciple());
-                proxyOptions.setPassword(credentials.getPasswordAsString());
-            });
-        });
+        proxySelector.setProxyOptions(artifactUrl, httpClientOptions);
 
         return httpClientOptions;
-    }
-
-    private ProxyType translateProxyType(HttpProxy proxy) {
-        switch(proxy.getProxyType()) {
-            case HTTP:
-                return ProxyType.HTTP;
-            case SOCKS4:
-                return ProxyType.SOCKS4;
-            case SOCKS5:
-                return ProxyType.SOCKS5;
-            default:
-                throw new IllegalStateException("Unexpected value: " + proxy.getProxyType());
-        }
     }
 }

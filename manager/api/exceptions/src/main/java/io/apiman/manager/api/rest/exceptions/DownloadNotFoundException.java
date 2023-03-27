@@ -17,11 +17,14 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Thrown when trying to get a download.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Apiman download not found", useReturnTypeSchema = true)
 public class DownloadNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = -6071114119976971441L;
@@ -31,11 +34,11 @@ public class DownloadNotFoundException extends AbstractNotFoundException {
      */
     public DownloadNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
-     */ 
+     */
     public DownloadNotFoundException(String message) {
         super(message);
     }
@@ -47,7 +50,7 @@ public class DownloadNotFoundException extends AbstractNotFoundException {
     public DownloadNotFoundException(Throwable cause) {
         super(cause);
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
@@ -56,7 +59,7 @@ public class DownloadNotFoundException extends AbstractNotFoundException {
     public DownloadNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -64,7 +67,7 @@ public class DownloadNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.DOWNLOAD_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

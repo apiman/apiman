@@ -17,12 +17,14 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
- * Thrown when trying to get, update, or delete an Client that does not exist.
+ * Thrown when trying to get, update, or delete a Client that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Client not found", useReturnTypeSchema = true)
 public class ClientNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = 2885339519882791087L;
@@ -32,7 +34,7 @@ public class ClientNotFoundException extends AbstractNotFoundException {
      */
     public ClientNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the message
@@ -40,7 +42,7 @@ public class ClientNotFoundException extends AbstractNotFoundException {
     public ClientNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -48,7 +50,7 @@ public class ClientNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.CLIENT_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

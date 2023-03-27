@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  imitations under the License.
+  -->
+
+<div class="toc divider-left" (window:scroll)="onWindowScroll()">
+  <ul>
+    <li id="toc-title">
+      <span
+        ><b>{{ 'CLIENTS.CLIENTS_AND_APIS' | translate }}</b></span
+      >
+    </li>
+    <div data-simplebar data-simplebar-auto-hide="false">
+      <div id="toc-client-list" class="content-wrapper">
+        <ng-container
+          *ngTemplateOutlet="
+            Recursion;
+            context: { links: links }
+          "></ng-container>
+      </div>
+    </div>
+  </ul>
+</div>
+
+<ng-template #Recursion let-links="links">
+  <li *ngFor="let link of links" id="{{ link.destination }}-toc-link">
+    <a (click)="scroll(link.destination)" class="pointer"
+      ><span [class.primary]="link.active">{{ link.name }}</span></a
+    >
+    <ul *ngIf="link.subLinks.length > 0">
+      <ng-container
+        *ngTemplateOutlet="
+          Recursion;
+          context: { links: link.subLinks }
+        "></ng-container>
+    </ul>
+  </li>
+</ng-template>

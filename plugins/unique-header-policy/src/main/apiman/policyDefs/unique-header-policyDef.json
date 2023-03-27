@@ -1,0 +1,9 @@
+{
+  "id" : "unique-header-policy",
+  "name" : "Unique Header Policy",
+  "description" : "A policy that sets a unique value in a named header.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.uniqueheader.UniqueHeaderPolicy",
+  "icon" : "fa-edit",
+  "formType" : "JsonSchema",
+  "form" : "schemas/unique-header-policyDef.schema"
+}

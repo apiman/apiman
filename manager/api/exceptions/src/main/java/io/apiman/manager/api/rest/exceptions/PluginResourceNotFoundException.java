@@ -17,11 +17,14 @@
 package io.apiman.manager.api.rest.exceptions;
 
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Thrown when trying to get a resource from a plugin.
  *
  * @author eric.wittmann@redhat.com
  */
+@ApiResponse(responseCode = "404", description = "Plugin resource not found", useReturnTypeSchema = true)
 public class PluginResourceNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = 2620584248905679316L;
@@ -31,7 +34,7 @@ public class PluginResourceNotFoundException extends AbstractNotFoundException {
      */
     public PluginResourceNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message the exception message
@@ -39,7 +42,7 @@ public class PluginResourceNotFoundException extends AbstractNotFoundException {
     public PluginResourceNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * @see AbstractRestException#getErrorCode()
      */
@@ -47,7 +50,7 @@ public class PluginResourceNotFoundException extends AbstractNotFoundException {
     public int getErrorCode() {
         return ErrorCodes.PLUGIN_RESOURCE_NOT_FOUND;
     }
-    
+
     /**
      * @see AbstractRestException#getMoreInfoUrl()
      */

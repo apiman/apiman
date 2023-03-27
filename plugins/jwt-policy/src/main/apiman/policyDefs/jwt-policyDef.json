@@ -1,0 +1,15 @@
+{
+  "id" : "jwt-policy",
+  "name" : "JWT Policy",
+  "description" : "Generic JWT authentication policy.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.jwt.JWTPolicy",
+  "icon" : "lock",
+  "formType" : "JsonSchema",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "JWT authentication is @if{requireJWT} required @else{} enabled @end{}."
+    }
+  ],
+  "form" : "schemas/jwt-policyDef.schema"
+}

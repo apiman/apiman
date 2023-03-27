@@ -1,0 +1,23 @@
+== Workflows
+
+=== `docker-test-release`
+
+Reusable workflow that can build and release Docker images.
+
+It is called from several other workflows.
+
+If new images are added to the repository, then this workflow should be updated.
+
+Callers can decide which Apiman version to use, and whether to push the images to the Docker repos, hence this workflow can be in a 'build-only' mode if desired.
+
+=== `pull-request-verify`
+
+For PRs:
+
+* Calls `docker-test-release`
+** Reads release version
+** Does a build-only run
+
+* Calls `docker-test-release` (again)
+** Reads snapshot version
+** Does a build-only run

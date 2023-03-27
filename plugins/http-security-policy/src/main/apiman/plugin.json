@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "HTTP Security Policy Plugin",
+  "description" : "Security-related HTTP headers can be set which can help mitigate a range of common security vulnerabilities.",
+  "version" : "${project.version}"
+}

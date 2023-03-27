@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "Custom Path Parser Plugin Demo",
+  "description" : "This plugin provide a demonstration of a custom path parser for the Apiman Gateway.",
+  "version" : "${project.version}"
+}

@@ -1,0 +1,17 @@
+{
+  "title" : "Timeout Policy Configuration",
+  "description" : "Configure Timeout for API.",
+  "type" : "object",
+  "properties": {
+    "timeoutConnect": {
+	    "type": "string",
+	    "title": "Timeout Connect (ms)",
+	    "default": "10000"
+     },
+     "timeoutRead": {
+        "type": "string",
+        "title": "Timeout Read (ms)",
+        "default": "30000"
+      }
+  }
+}

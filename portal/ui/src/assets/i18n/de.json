@@ -1,0 +1,236 @@
+{
+  "COMMON": {
+    "OKAY": "Okay",
+    "CANCEL": "Abbrechen",
+    "YES": "Ja",
+    "NO": "Nein",
+    "SEARCH": "Suchen oder erstellen",
+    "CREATE": "Erstellen",
+    "NEXT": "Weiter",
+    "BACK": "Zurück",
+    "FINISH": "Fertig",
+    "ORGANIZATION": "Organisation",
+    "CLIENT": "Client",
+    "NO_DATA_FOUND": "Keine Einträge gefunden",
+    "CONFIRM": "Bestätigen",
+    "SIGNUP": "Anmeldung",
+    "HOME": "Home",
+    "QUERY_PARAMETER": "Als HTTP Query Parameter",
+    "HTTP_HEADER": "Als HTTP Request Header",
+    "API_DOCS": "API Dokumentation",
+    "ERROR": "Die Daten konnten nicht geladen werden, bitte versuchen Sie es später erneut.",
+    "SUCCESS": "Erfolgreich erstellt.",
+    "LOGIN": "Anmelden",
+    "LOGIN_OR_REGISTER": "Anmelden / Registrieren",
+    "LOGOUT": "Abmelden",
+    "VERSION": "Version",
+    "OF": "von",
+    "AGREEMENT": "Zustimmung"
+  },
+  "HOME": {
+    "TITLE": "API Entwickler Portal",
+    "SUBTITLE": "",
+    "NO_APIS_FOUND": "Es wurden keine APIs gefunden"
+  },
+  "MPLACE": {
+    "TITLE": "Marktplatz",
+    "SUBTITLE": "Entdecken Sie unsere APIs",
+    "SEARCH": "APIs und Tags",
+    "LEARN_MORE": "Mehr",
+    "NO_DESC": "Keine API-Beschreibung verfügbar",
+    "ERROR_WHILE_FETCHING_APIS": "Es konnten nicht alle APIs geladen werden."
+  },
+  "ACCOUNT": {
+    "TITLE": "Benutzerkonto",
+    "SUBTITLE": "Verwalten Sie Ihre Einstellungen",
+    "USER_ENTITY": {
+      "USERNAME": "Benutzername",
+      "FIRSTNAME": "Vorname",
+      "LASTNAME": "Nachname",
+      "EMAIL": "E-Mail",
+      "PASSWORD": "Passwort",
+      "LOCALE": "Sprache"
+    },
+    "EDIT_EXTERNAL_BTN": "Öffne Profilverwaltung",
+    "IDENTITY_MANAGEMENT": {
+      "TITLE": "Identity Management",
+      "IDM_ENTITY": {
+        "REALM_ACCESS": "Realm access roles",
+        "RESOURCE_ACCESS": "Resource access",
+        "TOKEN_ISSUER": "Token issuer",
+        "AUTHORIZED_PARTY": "Authorized party",
+        "SCOPE": "Scope",
+        "TOKEN_TYPE": "Type"
+      }
+    },
+    "API_MANAGEMENT": {
+      "TITLE": "Scheer PAS API Management",
+      "NO_PERMISSIONS": "Sie haben derzeit keine API Management Berechtigungen",
+      "VERSION": "Version"
+    }
+  },
+  "CLIENTS": {
+    "SEARCH": "Clients und APIs",
+    "TITLE": "Meine Clients",
+    "SUBTITLE": "API-Gruppen",
+    "SUMMARY": "Überblick",
+    "DESCRIPTION": "Beschreibung",
+    "USE_API": "API verwenden",
+    "POLICIES": "Policys",
+    "MANAGE_API": "API verwalten",
+    "API_KEY": "API Key",
+    "ENDPOINT": "Endpunkt",
+    "AUTHENTICATION": "Authentifizierung",
+    "DISABLE_THIS_API": "Diese API deaktivieren",
+    "DISABLE_API": "Deaktivieren",
+    "UNSUB_FROM_API": "Von der API abmelden",
+    "UNSUB_FROM_THIS_API": "Von dieser API abmelden",
+    "UNSUB": "Abmelden",
+    "CLIENT_DELETED": "Der Client und die zugehörigen Verträge wurden entfernt",
+    "CONTRACT_DELETED": "Der Vertrag wurde entfernt",
+    "REMOVE_CLIENT_TOOLTIP": "Client entfernen",
+    "REMOVE_CONTRACT_TOOLTIP": "Vertrag entfernen",
+    "USED": "verbraucht",
+    "RESETS_AT": "Wird zurückgesetzt am",
+    "RESETS_EVERY_SECOND": "Wird jede Sekunde zurückgesetzt",
+    "NO_POLICIES_FOR_API": "Für diese API wurden keine benutzer-relevanten Policys konfiguriert",
+    "CLIENTS_AND_APIS": "Clients und APIs",
+    "NO_CLIENTS_FOUND": "Es wurden keine Clients gefunden",
+    "FAILED_WHILE_FETCHING_CLIENTS": "Fehler beim Laden der Clients",
+    "DELETE_CLIENT_FAILED": "Fehler beim Löschen des Client",
+    "DELETE_CONTRACT_FAILED": "Fehler beim Löschen des Vertrags",
+    "REGISTER_CLIENT_FAILED": "Fehler beim Registrieren des Client",
+    "REGISTER_CLIENT_SUCCEED": "Der  Client {{ clientName }} ({{ clientVersion }}) wurde erfolgreich registriert",
+    "NO_PROBES": "Für diese API liegen keine Policy-Daten vor",
+    "RETIRED_API": "Diese API kann nicht mehr verwendet werden.",
+    "SELECT": "Aus vorhandenen Anwendungen auswählen",
+    "CLIENT_TOOLTIP": "Client Organization: {{ client.organization.name }}\nClient Name (Version): {{ client.name }} ({{ version }})",
+    "API_TOOLTIP": "API Organization: {{ api.api.organization.name }}\nAPI Name (Version): {{ api.api.name }} ({{ api.version }})\nPlan Name (Version): {{ plan.plan.name }} ({{ plan.version }})",
+    "REGISTER": "Client registrieren",
+    "NO_CONTRACTS": "Für diesen Client wurden keine Verträge abgeschlossen"
+  },
+  "WIZARD": {
+    "FIRST_STEP_LABEL": "Client auswählen/erstellen",
+    "SECOND_STEP_LABEL": "Lizenz",
+    "THIRD_STEP_LABEL": "Zusammenfassung",
+    "FORTH_STEP_LABEL": "Bestätigung",
+    "FIRST_STEP_TITLE": "Client auswählen oder neuen erstellen",
+    "SECOND_STEP_TITLE": "Lizenzvereinbarung",
+    "THIRD_STEP_TITLE": "Zusammenfassung",
+    "FORTH_STEP_TITLE": "Bestätigung",
+    "CLIENT_ERROR": "Sie müssen zuerst einen Client auswählen",
+    "TERMS_ERROR": "Sie müssen den Lizenzvereinbarungen zustimmen",
+    "REDIRECT": "Sie werden wegen fehlenden Daten umgeleitet",
+    "SUCCESS": "Der Vertrag wurde erfolgreich erstellt",
+    "API_KEY_PREVIEW": "Nach der Anmeldung wird Ihnen ein API-Key bereitgestellt",
+    "API_ENDPOINT_PREVIEW": "Nach der Anmeldung wird Ihnen der Endpoint bereitgestellt",
+    "LICENSE_TYPE": "Lizenztyp",
+    "POLICIES": "Policys",
+    "CONTRACT_EXISTS": "Es besteht schon ein Vertrag für diese API mit dem ausgewählten Client"
+  },
+  "POLICIES": {
+    "RateLimitingPolicy": {
+      "TITLE": "Rate Limiting Policy",
+      "DESCRIPTION": "Die Anfragefrequenz wird beschränkt auf <b>{{limit}}</b> Anfragen pro <b>{{timeUnit}}</b>",
+      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Beschränkung:",
+      "LIMIT": "Beschränkung (pro Zeit)",
+      "REMAINING": "Verbleibende Anzahl Anfragen",
+      "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird (in Sekunden)",
+      "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> Anfragen pro <span class='bold'>{{timeUnit}}</span>"
+    },
+    "TransferQuotaPolicy": {
+      "TITLE": "Transfer Quota Policy",
+      "DESCRIPTION": "Es können maximal <b>{{limit}}<b> Daten pro <b>{{timeUnit}}</b> konsumiert werden",
+      "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Beschränkung:",
+      "LIMIT": "Maximale Datenmenge (pro Zeiteinheit in Bytes)",
+      "REMAINING": "Verbleibende Datenmenge (in Bytes)",
+      "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird (in Sekunden)",
+      "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> Daten pro <span class='bold'>{{timeUnit}}</span>"
+    },
+    "PERIODS": {
+      "SECOND": "Sekunde",
+      "MINUTE": "Minute",
+      "HOUR": "Stunde",
+      "DAY": "Tag",
+      "MONTH": "Monat",
+      "YEAR": "Jahr"
+    },
+    "USAGE": "Verbrauch",
+    "UNLIMITED": "Unbegrenzt"
+  },
+  "DESCRIPTIONS": {
+    "TRY_IT_OUT": "Öffnet die Open API Defintion (Swagger). Hier können Sie Testaufrufe auf die API durchführen.",
+    "API_KEY": "Wenn ein API-Vertrag erstellt wird, erzeugt das System einen eindeutigen API-Key. <br>Dieser API-Key ist pro Client eindeutig und für alle Verträge dieses Clients gleich.<br> Alle Aufrufe dieser API müssen diesen API-Key beinhalten:",
+    "API_ENDPOINT": "Benutzen Sie diese URL, um die API aufzurufen:"
+  },
+  "APPROVAL": {
+    "API": {
+      "HERO_TITLE": "Bestätigung erforderlich",
+      "TITLE": "Vielen Dank",
+      "SUBTITLE": "Ihr Auftrag muss noch bestätigt werden",
+      "MORE_INFO": "Sie werden über den aktuellen Status per E-Mail benachrichtigt"
+    },
+    "ACCOUNT": {
+      "HERO_TITLE": "Bestätigung erforderlich",
+      "TITLE": "Vielen Dank",
+      "SUBTITLE": "Ihr Account muss noch bestätigt werden",
+      "MORE_INFO": "Sie werden über den aktuellen Status per E-Mail benachrichtigt"
+    }
+  },
+  "DIALOGS": {
+    "DELETE_CLIENT": {
+      "TITLE":"Client löschen",
+      "DELETE_SURE": "Sind Sie sicher, dass Sie den Client <b>{{client}}</b> und all seine Verträge <span class='warn'>löschen</span> möchten?",
+      "DELETE_BTN": "Client löschen"
+    },
+    "DELETE_CONTRACT": {
+      "TITLE": "Vertrag löschen",
+      "DELETE_SURE": "Sind Sie sicher, dass Sie den Vertrag zwischen <b>{{client}}</b> und <b>{{api}}</b> <span class='warn'>löschen</span> möchten?",
+      "DELETE_BTN": "Vertrag löschen"
+    }
+  },
+  "API_DETAILS": {
+    "PLANS": "Pläne",
+    "KEY_FEATURES": "Vorteile",
+    "EXTENDED_DESCRIPTION": "Ausführliche Beschreibung",
+    "NO_EXT_DESCRIPTION": "Für diese API wurde keine ausführliche Beschreibung hinterlegt",
+    "SIGN_UP": "Registrieren",
+    "PUBLIC_ENDPOINT": "Öffentlicher Endpunkt"
+  },
+  "TERMS": {
+    "PREFIX": "Ich stimme den ",
+    "LINK_TEXT": "Lizenzvereinbarungen",
+    "SUFFIX": " zu"
+  },
+  "PRIVACY": {
+    "PREFIX": "Ich stimme den ",
+    "LINK_TEXT": "Datenschutzbestimmungen",
+    "SUFFIX": " zu"
+  },
+  "NOTIFICATION": {
+    "TITLE": "Benachrichtigungen",
+    "COLUMN_TITLE": {
+      "CATEGORY": "Kategorie",
+      "MESSAGE": "Nachricht",
+      "DATE": "Datum",
+      "ACTION": "Als gelesen markieren"
+    },
+    "MESSAGE": {
+      "API": {
+        "SIGN_UP_APPROVED": "Ihre Registrierung für <strong>{{ payload.apiId }}</strong> in Ihrem Client <strong>{{ payload.clientId }}</strong> wurde genehmigt.",
+        "SIGN_UP_REJECTED": "Ihre Registrierung für <strong>{{ payload.apiId }}</strong> in Ihrem Client <strong>{{ payload.clientId }}</strong> wurde abgelehnt.",
+        "SIGN_UP_REQUESTED": "Ihre Registrierung für <strong>{{ payload.apiId }}</strong> in Ihrem Client <strong>{{ payload.clientId }}</strong> wird derzeit geprüft.",
+        "RETIRED": "Die API <strong>{{ payload.apiId }}</strong> wurde eingestellt, daher kann der Vertrag im Client <strong>{{ payload.clientId }}</strong> nicht mehr verwendet werden."
+      },
+      "CLIENT": {
+        "REGISTERED": "Ihr Client <strong>{{ payload.clientId }}</strong> wurde registriert."
+      }
+    },
+    "STATUS": {
+      "READ": "Gelesen",
+      "UNREAD": "Ungelesen",
+      "ALL": "Alle"
+    },
+    "NO_DATA": "Es sind keine Benachrichtigungen vorhanden!"
+  }
+}

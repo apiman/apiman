@@ -23,6 +23,7 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Bean used when creating a new version of an API.
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author eric.wittmann@redhat.com
  */
 @JsonInclude(Include.NON_NULL)
+@Schema(description = "Initial information to create a new API version.")
 public class NewApiVersionBean implements Serializable {
 
     private static final long serialVersionUID = 7207058698209555294L;

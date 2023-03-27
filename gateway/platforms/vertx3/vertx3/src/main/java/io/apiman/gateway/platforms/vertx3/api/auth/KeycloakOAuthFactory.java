@@ -25,7 +25,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -185,9 +184,12 @@ public class KeycloakOAuthFactory {
 
         URI uri;
         try {
-            uri = new URIBuilder(authServer)
-                          .setPathSegments(List.of("realms", realmName))
-                          .build();
+            // Parse out initial segments
+            URIBuilder builder = new URIBuilder(authServer);
+            // Prepend builder.getPath to allow us to use URI with a non-zero path element (e.g. foo.com/keycloak)
+            uri = builder
+                    .setPathSegments(builder.getPath(), "realms", realmName)
+                    .build();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
