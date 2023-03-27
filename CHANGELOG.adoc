@@ -2,6 +2,10 @@
 
 All notable changes to Apiman will be documented here (as of Apiman 3).
 
+== 3.1.1.Final
+
+* No changes, this additional release was needed due to a problem with Apiman's CI/CD pipelines.
+
 // tag::3.1.0.Final[]
 == 3.1.0.Final
 
