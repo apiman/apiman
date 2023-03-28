@@ -8,7 +8,7 @@ Please leave feedback on https://github.com/apiman/apiman/discussions[Apiman Dis
 
 Main Apiman repo: https://www.github.com/apiman/apiman
 
-Apiman Docker repo: https://www.github.com/apiman/apiman-docker
+Apiman Docker repo: https://github.com/apiman/apiman/tree/master/containers
 
 === 3 step TL;DR
 
