@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.url="https://www.apiman.io"
 LABEL org.opencontainers.image.source="https://www.github.com/apiman/apiman"
 LABEL org.opencontainers.image.title="Apiman WildFly all-in-one image (legacy/deprecated)"
-LABEL org.opencontainers.image.documentation="https://github.com/apiman/apiman-docker/blob/$APIMAN_VERSION/on-wildfly/README.md"
+LABEL org.opencontainers.image.documentation="https://github.com/apiman/apiman/blob/$APIMAN_VERSION/containers/on-wildfly/README.md"
 LABEL org.opencontainers.image.version=$APIMAN_VERSION
 
 EXPOSE 8080 8443
