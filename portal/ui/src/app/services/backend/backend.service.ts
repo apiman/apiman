@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Scheer PAS Schweiz AG
+ * Copyright 2023 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -284,7 +284,7 @@ export class BackendService {
     organizationId: string,
     clientId: string,
     versionName: string,
-    contractId: number
+    contractId: number | string
   ): Observable<IContract> {
     const path = `organizations/${organizationId}/clients/${clientId}/versions/${versionName}/contracts/${contractId}`;
 

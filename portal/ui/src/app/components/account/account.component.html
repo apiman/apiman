@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2022 Scheer PAS Schweiz AG
+  ~ Copyright 2023 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@
         <label class="default-label">{{
           'ACCOUNT.USER_ENTITY.LOCALE' | translate
         }}</label>
-        <ng-container *ngIf="keycloakToken.locale"
+        <ng-container *ngIf="keycloakToken"
           ><div>{{ keycloakToken.locale }}</div></ng-container
         >
       </div>
@@ -89,7 +89,9 @@
 
   <br />
 
-  <app-account-idm [keycloakToken]="keycloakToken"></app-account-idm>
+  <app-account-idm
+    *ngIf="keycloakToken"
+    [keycloakToken]="keycloakToken"></app-account-idm>
 
   <br />
 

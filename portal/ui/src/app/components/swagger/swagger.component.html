@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2021 Scheer PAS Schweiz AG
+  ~ Copyright 2023 Scheer PAS Schweiz AG
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -14,18 +14,24 @@
   ~  imitations under the License.
   -->
 
-<mat-card id="swagger-ui-container">
-  <mat-card-title id="swagger-ui-title"
-    >{{ apiId }} ({{ apiVersion }})</mat-card-title
-  >
-  <ng-container *ngIf="contract">
-    <mat-card-subtitle id="swagger-ui-subtitle"
-      >{{ contract.client.client.name }} ({{ contract.client.version }}) -
-      {{ contract.plan.plan.name }} ({{
-        contract.plan.version
+<mat-card id="swagger-ui-container" *ngIf="apiVersion.version">
+  <div id="swagger-ui-title-container" class="primary">
+    <app-img-or-icon-selector
+      [imgUrl]="this.apiVersion.api.image"
+      [dimension]="imgSize"></app-img-or-icon-selector>
+    <div id="swagger-ui-title">
+      {{ this.apiVersion.api.id }} ({{ this.apiVersion.version }})<ng-container
+      *ngIf="contract">
+      - {{ contract.plan.plan.name
+      }}<mat-card-subtitle id="swagger-ui-subtitle"
+    >{{ contract.client.client.name }} ({{
+      contract.client.version
       }})</mat-card-subtitle
+    ></ng-container
     >
-  </ng-container>
+    </div>
+  </div>
+
   <hr />
   <div id="swagger-editor"></div>
 </mat-card>
