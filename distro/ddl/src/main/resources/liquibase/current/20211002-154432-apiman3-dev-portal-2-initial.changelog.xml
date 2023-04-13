@@ -61,7 +61,7 @@
             </column>
             <column name="created_on" type="TIMESTAMP"/>
             <column name="modified_on" type="TIMESTAMP"/>
-            <column name="payload" type="JSON">
+            <column name="payload" type="${apiman_json}">
                 <constraints nullable="false"/>
             </column>
             <column name="reason" type="VARCHAR(255)">
@@ -212,7 +212,7 @@
             <column name="event_version" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="payload" type="JSON">
+            <column name="payload" type="${apiman_json}">
                 <constraints nullable="false"/>
             </column>
             <column name="source" type="VARCHAR(255)">
