@@ -21,14 +21,14 @@
       [dimension]="imgSize"></app-img-or-icon-selector>
     <div id="swagger-ui-title">
       {{ this.apiVersion.api.id }} ({{ this.apiVersion.version }})<ng-container
-      *ngIf="contract">
-      - {{ contract.plan.plan.name
-      }}<mat-card-subtitle id="swagger-ui-subtitle"
-    >{{ contract.client.client.name }} ({{
-      contract.client.version
-      }})</mat-card-subtitle
-    ></ng-container
-    >
+        *ngIf="contract">
+        - {{ contract.plan.plan.name
+        }}<mat-card-subtitle id="swagger-ui-subtitle"
+          >{{ contract.client.client.name }} ({{
+            contract.client.version
+          }})</mat-card-subtitle
+        ></ng-container
+      >
     </div>
   </div>
 
