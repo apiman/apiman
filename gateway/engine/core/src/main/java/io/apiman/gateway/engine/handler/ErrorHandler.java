@@ -26,6 +26,10 @@ public final class ErrorHandler {
      */
     public static ConnectorException handleConnectionError(Throwable error) {
         ConnectorException ce = null;
+        // TODO: This is a bit of a hack.  We should really be using the vert.x
+        // exception types here, but they are not available in the servlet
+        // gateway.  So, we'll just use the exception message to determine
+        // what type of error it is.
         if (error instanceof UnknownHostException || error instanceof ConnectException || error instanceof NoRouteToHostException) {
             ce = new ConnectorException("Unable to connect to backend", error); //$NON-NLS-1$
             ce.setStatusCode(502); // BAD GATEWAY
