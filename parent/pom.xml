@@ -159,7 +159,7 @@
     <version.org.slf4j>1.7.36</version.org.slf4j>
     <version.org.testcontainers>1.18.0</version.org.testcontainers>
     <version.io.apicurio>1.1.26</version.io.apicurio>
-    <version.io.netty>4.1.74.Final</version.io.netty>
+    <version.io.netty>4.1.86.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
     <version.io.swagger>2.2.7</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
