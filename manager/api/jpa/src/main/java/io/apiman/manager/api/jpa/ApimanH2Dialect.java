@@ -30,7 +30,7 @@ public class ApimanH2Dialect extends H2Dialect {
      * Constructor.
      */
     public ApimanH2Dialect() {
-        registerColumnType(Types.LONGVARCHAR, "CLOB"); //$NON-NLS-1$
+        registerColumnType(Types.LONGVARCHAR, "CLOB");
         registerColumnType(Types.VARBINARY, "BLOB");
         registerColumnType(Types.NCLOB, "CLOB");
     }
