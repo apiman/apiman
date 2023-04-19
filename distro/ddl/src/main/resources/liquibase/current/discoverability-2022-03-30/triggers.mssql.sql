@@ -115,7 +115,7 @@ BEGIN
         plan_version = NULL,
         discoverability = inserted.discoverability
     FROM inserted
-    WHERE id = CONCAT_WS(':', inserted.api_org_id, inserted.api_id, inserted.version);
+    WHERE discoverability.id = CONCAT_WS(':', inserted.api_org_id, inserted.api_id, inserted.version);
 END;
 
 /
