@@ -2,8 +2,8 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
   <!-- A few DBs don't accept JSON data type still -->
-  <property name="apiman_json" value="JSON" dbms="!mssql"/>
-  <property name="apiman_json" value="nvarchar(max)" dbms="mssql"/>
+  <property name="apiman_json" value="json"/>
+<!--  <property name="apiman_json" value="nvarchar(max)" dbms="mssql"/>-->
   <!--
     MySQL has strict 3k limits on length of indexes, and each char is 4 bytes.
     We break this in several places with multiple standard 255 length fields.

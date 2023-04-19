@@ -18,12 +18,6 @@ package io.apiman.manager.api.jpa;
 
 import io.apiman.common.logging.ApimanLoggerFactory;
 import io.apiman.common.logging.IApimanLogger;
-
-import java.util.HashMap;
-import java.util.Map;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.MySQL8Dialect;
 import org.hibernate.dialect.MySQLDialect;
@@ -37,8 +31,12 @@ import org.hibernate.dialect.PostgreSQL94Dialect;
 import org.hibernate.dialect.PostgreSQL95Dialect;
 import org.hibernate.dialect.PostgreSQL9Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
-import org.hibernate.dialect.SQLServer2012Dialect;
 import org.hibernate.dialect.SQLServerDialect;
+
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Initializes the database by installing the appropriate DDL for the database in
@@ -79,9 +77,8 @@ public class JpaDialectMapper {
         DB_TYPE_MAP.put(PostgreSQL95Dialect.class.getName(), NamePair.of("postgresql11", PostgreSQL95Dialect.class.getName()));
 
         DB_TYPE_MAP.put("mssql15", NamePair.of(SQLServerDialect.class.getName(), "mssql15"));
-        DB_TYPE_MAP.put(SQLServerDialect.class.getName(), NamePair.of("mssql15", SQLServerDialect.class.getName()));
-        DB_TYPE_MAP.put(SQLServer2012Dialect.class.getName(), NamePair.of("mssql15", SQLServer2012Dialect.class.getName()));
-
+        DB_TYPE_MAP.put(SQLServerDialect.class.getName(), NamePair.of("mssql15", ApimanMSSQLDialect.class.getName()));
+        DB_TYPE_MAP.put(ApimanMSSQLDialect.class.getName(), NamePair.of("mssql15", ApimanMSSQLDialect.class.getName()));
     }
 
     private final DataSource ds;
