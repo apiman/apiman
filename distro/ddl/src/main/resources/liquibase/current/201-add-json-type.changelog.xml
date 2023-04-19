@@ -4,4 +4,8 @@
     <comment>H2 JSON field (needed for versions older than 1.4.200)</comment>
     <sql stripComments="true">CREATE domain IF NOT EXISTS json AS other</sql>
   </changeSet>
+  <changeSet author="msavy marc@blackparrotlabs.io" id="mssql-json-type" dbms="mssql" failOnError="false">
+    <comment>JSON field type</comment>
+    <sql stripComments="true">CREATE TYPE JSON FROM NVARCHAR(MAX)</sql>
+  </changeSet>
 </databaseChangeLog>
