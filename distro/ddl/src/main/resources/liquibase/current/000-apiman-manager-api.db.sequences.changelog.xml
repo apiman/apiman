@@ -10,7 +10,7 @@
         </sql>
     </changeSet>
 
-    <changeSet dbms="h2,postgresql" author="apiman (generated)" id="1434723514712-2">
-        <createSequence sequenceName="hibernate_sequence" startValue="999"/>
+    <changeSet author="apiman (generated)" id="1434723514712-2"> <!-- Was limited to h2 and postgres for some reason? -->
+        <createSequence sequenceName="hibernate_sequence" startValue="999"/> <!-- Why 999? -->
     </changeSet>
 </databaseChangeLog>
