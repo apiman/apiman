@@ -13,7 +13,8 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Fixed
 
-* [portal]: show REST API documentation even when user not logged in.
+* [portal]: show REST API documentation even when user not logged in. 
+By https://github.com/bastiangem[Bastian Gembalczyk (@BastianGem)^] and https://github.com/volkflo[Florian Volk (@volkflo)^].
 
 // end::3.2.0-SNAPSHOT[]
 
