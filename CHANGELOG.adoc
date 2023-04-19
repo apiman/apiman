@@ -13,6 +13,8 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Fixed
 
+* Multiple small MSSQL (Microsoft SQL Server) DDL fixes. By https://github.com/msavy[Marc Savy (@msavy)^].
+
 // end::3.2.0-SNAPSHOT[]
 
 == 3.1.1.Final
