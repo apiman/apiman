@@ -13,6 +13,9 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Fixed
 
+* [portal]: show REST API documentation even when user not logged in. 
+By https://github.com/bastiangem[Bastian Gembalczyk (@BastianGem)^] and https://github.com/volkflo[Florian Volk (@volkflo)^].
+
 * [gateway-vertx]: do not include `null`/empty path elements in Keycloak discovery URI. 
 If your Vert.x Gateway API was unable to speak to Keycloak because it had an unexpected `null` in the URI, this should fix it. By https://github.com/msavy[Marc Savy (@msavy)^].
 

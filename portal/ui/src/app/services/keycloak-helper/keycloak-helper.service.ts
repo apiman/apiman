@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Scheer PAS Schweiz AG
+ * Copyright 2023 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -117,8 +117,8 @@ export class KeycloakHelperService {
     this.executed = true;
   }
 
-  public getToken(): string {
-    return this.keycloak.getKeycloakInstance().token as string;
+  public getToken(): string | undefined {
+    return this.keycloak.getKeycloakInstance().token;
   }
 
   public getUsername(): string {
@@ -128,11 +128,16 @@ export class KeycloakHelperService {
     return this.username;
   }
 
-  public decodeCurrentKeycloakToken(): KeycloakTokenParsed {
+  public decodeCurrentKeycloakToken(): KeycloakTokenParsed | undefined {
     try {
-      return <KeycloakTokenParsed>(
-        JSON.parse(window.atob(this.getToken().split('.')[1]))
-      );
+      const token = this.getToken();
+      if (token) {
+        return <KeycloakTokenParsed>(
+          JSON.parse(window.atob(token.split('.')[1]))
+        );
+      } else {
+        return undefined;
+      }
     } catch (error) {
       console.error('Error while decoding keycloak token', error);
       throw error;

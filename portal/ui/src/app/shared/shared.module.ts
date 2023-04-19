@@ -16,14 +16,12 @@
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { SwaggerRoutingModule } from './swagger-routing.module';
-import { SwaggerComponent } from './swagger.component';
-import { MaterialModule } from '../../material.module';
-import { SharedModule } from '../../shared/shared.module';
+import { ImgOrIconSelectorComponent } from './components/img-or-icon-selector/img-or-icon-selector.component';
+import { MaterialModule } from '../material.module';
 
 @NgModule({
-  declarations: [SwaggerComponent],
-  imports: [CommonModule, SwaggerRoutingModule, MaterialModule, SharedModule]
+  declarations: [ImgOrIconSelectorComponent],
+  exports: [ImgOrIconSelectorComponent],
+  imports: [CommonModule, MaterialModule]
 })
-export class SwaggerModule {}
+export class SharedModule {}

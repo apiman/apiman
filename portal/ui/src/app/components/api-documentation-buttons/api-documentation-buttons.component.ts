@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2023 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IApiVersion, IContract } from '../../interfaces/ICommunication';
 import { ApiService } from '../../services/api/api.service';
+import { Params } from '@angular/router';
 
 @Component({
   selector: 'app-api-documentation-buttons',
@@ -29,32 +30,27 @@ export class ApiDocumentationButtonsComponent implements OnInit {
   @Input() apiVersion?: IApiVersion;
   @Input() contract?: IContract;
 
-  tryItOut: null | boolean = null;
-  publicApi = false;
   orgId = '';
   apiId = '';
   apiVersionNumber = '';
-  contractId: null | number = null;
+  queryParams: Params = {};
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     if (this.contract) {
-      this.tryItOut = true;
       this.orgId = this.contract.api.api.organization.id;
       this.apiId = this.contract.api.api.id;
       this.apiVersionNumber = this.contract.api.version;
-      this.contractId = this.contract.id;
 
-      sessionStorage.setItem(
-        `APIMAN_DEVPORTAL-${this.contract.id}`,
-        JSON.stringify(this.contract)
-      );
+      this.queryParams = {
+        clientOrgId: this.contract.client.client.organization.id,
+        clientId: this.contract.client.client.id,
+        clientVersion: this.contract.client.version,
+        contractId: this.contract.id
+      } as Params;
     }
     if (this.apiVersion) {
-      // if it's not public we disable try it out
-      this.tryItOut = this.apiVersion.publicAPI;
-      this.publicApi = this.apiVersion.publicAPI;
       this.orgId = this.apiVersion.api.organization.id;
       this.apiId = this.apiVersion.api.id;
       this.apiVersionNumber = this.apiVersion.version;
