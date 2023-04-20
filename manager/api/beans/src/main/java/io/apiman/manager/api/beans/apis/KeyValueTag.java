@@ -35,7 +35,7 @@ public class KeyValueTag {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "key", nullable = false, updatable = false)
+    @Column(name = "\"key\"", nullable = false, updatable = false)
     private String key;
 
     @Nullable
