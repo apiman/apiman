@@ -15,13 +15,14 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Fixed
 
-* [portal]: show REST API documentation even when user not logged in. 
+* [portal]: show REST API documentation even when user not logged in.
 By https://github.com/bastiangem[Bastian Gembalczyk (@BastianGem)^] and https://github.com/volkflo[Florian Volk (@volkflo)^].
 
-* [gateway-vertx]: do not include `null`/empty path elements in Keycloak discovery URI. 
+* [gateway-vertx]: do not include `null`/empty path elements in Keycloak discovery URI.
 If your Vert.x Gateway API was unable to speak to Keycloak because it had an unexpected `null` in the URI, this should fix it. By https://github.com/msavy[Marc Savy (@msavy)^].
 
-* Multiple small MSSQL (Microsoft SQL Server) DDL fixes. By https://github.com/msavy[Marc Savy (@msavy)^].
+* [distro-ddl]: Multiple small MSSQL (Microsoft SQL Server) DDL fixes.
+If you are using MSSQL, you should set the Java system property `hibernate.auto_quote_keyword=true` — in WildFly you can put this into the `properties` section of `standalone-apiman.xml`.
 
 // end::3.2.0-SNAPSHOT[]
 
