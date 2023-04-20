@@ -104,7 +104,7 @@ END;
 /
 
 CREATE TRIGGER update_apiversion_into_discoverability
-    ON api_versions AFTER INSERT
+    ON api_versions AFTER UPDATE
     AS
 BEGIN
     UPDATE discoverability
