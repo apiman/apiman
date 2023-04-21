@@ -16,18 +16,12 @@
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-test-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>io.apiman</groupId>
       <artifactId>apiman-manager-test-api</artifactId>
-    </dependency>
-
-    <!-- Third Party Dependencies -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
 

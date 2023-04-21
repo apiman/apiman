@@ -62,12 +62,12 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ManagerRestTester.class);
 
-    private static ManagerApiTestServer testServer = new ManagerApiTestServer();
+    private static final ManagerApiTestServer TEST_SERVER = new ManagerApiTestServer();
     private static final boolean USE_PROXY = false;
     private static final int PROXY_PORT = 7071;
 
-    private List<TestPlanInfo> testPlans = new ArrayList<>();
-    private Set<String> resetSysProps = new HashSet<>();
+    private final List<TestPlanInfo> testPlans = new ArrayList<>();
+    private final Set<String> resetSysProps = new HashSet<>();
 
     /**
      * Constructor.
@@ -158,7 +158,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
      */
     protected static void startServer() {
         try {
-            testServer.start();
+            TEST_SERVER.start();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -169,7 +169,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
      */
     protected static void stopServer() {
         try {
-            testServer.stop();
+            TEST_SERVER.stop();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -243,7 +243,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
             super.run(notifier);
         } finally {
             try {
-                testServer.flush();
+                TEST_SERVER.flush();
                 shutdown();
             } catch (Throwable e) {
                 e.printStackTrace(); // TODO: Was this deliberate?
@@ -268,7 +268,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         log("Starting Test [{0} / {1}]", testInfo.plan.name, testInfo.name);
         log("-----------------------------------------------------------");
 
-        testServer.flush();
+        TEST_SERVER.flush();
 
         Description description = describeChild(testInfo);
         if (testInfo instanceof GatewayAssertionTestInfo) {
@@ -399,7 +399,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         if (USE_PROXY) {
             return PROXY_PORT;
         } else {
-            return testServer.serverPort();
+            return TEST_SERVER.serverPort();
         }
     }
 

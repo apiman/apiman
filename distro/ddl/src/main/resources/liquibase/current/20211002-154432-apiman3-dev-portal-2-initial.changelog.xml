@@ -206,6 +206,7 @@
     </changeSet>
     <changeSet author="msavy (generated)" id="1633542267834-7">
         <createTable tableName="outbox">
+            <!-- TODO in v4 just remove auto-increment -->
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="outboxPK"/>
             </column>
@@ -229,6 +230,13 @@
             </column>
         </createTable>
     </changeSet>
+<!--    <changeSet id="drop-auto-increment-on-identity-cols-outbox-notifications" author="marc@blackparrotlabs.io" dbms="mssql">-->
+<!--        <comment>-->
+<!--            Accidentally had autoincrement on id column (don't really want to use IDENTITY to avoid perf penalty).-->
+<!--        </comment>-->
+<!--        <sql>ALTER TABLE "outbox" MODIFY id DROP identity;</sql>-->
+<!--        <sql>ALTER TABLE "notifications" MODIFY id DROP identity;</sql>-->
+<!--    </changeSet>-->
     <changeSet author="msavy (generated)" id="1633542267834-8">
         <addUniqueConstraint columnNames="id" constraintName="UC_BLOB_STOREID_COL" tableName="blob_store"/>
     </changeSet>
