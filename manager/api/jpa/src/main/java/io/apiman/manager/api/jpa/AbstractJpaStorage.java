@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
@@ -222,7 +223,7 @@ public abstract class AbstractJpaStorage {
         }
     }
 
-    protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, List<OrderByBean> uniqueOrderIdentifiers, Class<T> type, boolean paginate) throws StorageException {
+    protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Set<OrderByBean> uniqueOrderIdentifiers, Class<T> type, boolean paginate) throws StorageException {
         return find(criteria, uniqueOrderIdentifiers, (criteriaBuilder) -> {}, type, type.getSimpleName(), paginate);
     }
 
@@ -233,7 +234,7 @@ public abstract class AbstractJpaStorage {
      * @throws StorageException if a storage problem occurs while storing a bean
      */
     protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria,
-                                            List<OrderByBean> uniqueOrderIdentifiers,
+                                            Set<OrderByBean> uniqueOrderIdentifiers,
                                             Consumer<CriteriaBuilder<T>> builderCallback,
                                             Class<T> type,
                                             String typeAlias,
@@ -267,8 +268,12 @@ public abstract class AbstractJpaStorage {
                  *
                  * Without a unique tuple, the ordering may be unstable, which can cause pagination to behave unpredictably.
                  */
-                for (OrderByBean order : uniqueOrderIdentifiers) {
-                    paginatedCb = paginatedCb.orderBy(order.getName(), order.isAscending());
+                for (OrderByBean uniqueOrder : uniqueOrderIdentifiers) {
+                    // MSSQL issue: if the user provides a sort order, and it's also in our uniqueOrderIdentifiers list
+                    // we may end up with the same "orderBy" twice, which MSSQL rejects. All other DBs don't seem to care.
+                    if (!uniqueOrder.equals(criteria.getOrderBy())) {
+                        paginatedCb = paginatedCb.orderBy(uniqueOrder.getName(), uniqueOrder.isAscending());
+                    }
                 }
 
                 PagedList<T> resultList = paginatedCb.getResultList();
@@ -437,7 +442,4 @@ public abstract class AbstractJpaStorage {
         }
     }
 
-    public String getDialect() {
-        return (String) getActiveEntityManager().getEntityManagerFactory().getProperties().get("hibernate.dialect"); //$NON-NLS-1$
-    }
 }
