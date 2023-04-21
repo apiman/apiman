@@ -16,6 +16,7 @@
 package io.apiman.manager.api.beans.search;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Models order-by for a search.
@@ -33,7 +34,6 @@ public class OrderByBean implements Serializable {
         this.ascending = ascending;
         this.name = name;
     }
-
     /**
      * Constructor.
      */
@@ -68,38 +68,16 @@ public class OrderByBean implements Serializable {
         this.name = name;
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderByBean that = (OrderByBean) o;
+        return Objects.equals(name, that.name);
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (ascending ? 1231 : 1237);
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+        return Objects.hash(name);
     }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        OrderByBean other = (OrderByBean) obj;
-        if (ascending != other.ascending)
-            return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
-    }
-
 }
