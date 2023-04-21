@@ -17,6 +17,7 @@ package io.apiman.manager.api.beans.search;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * Models order-by for a search.
@@ -79,5 +80,13 @@ public class OrderByBean implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", OrderByBean.class.getSimpleName() + "[", "]")
+                .add("name='" + name + "'")
+                .add("ascending=" + ascending)
+                .toString();
     }
 }

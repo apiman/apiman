@@ -206,6 +206,7 @@
     </changeSet>
     <changeSet author="msavy (generated)" id="1633542267834-7">
         <createTable tableName="outbox">
+            <!-- TODO in v4 just remove auto-increment -->
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="outboxPK"/>
             </column>

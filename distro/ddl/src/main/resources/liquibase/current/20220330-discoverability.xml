@@ -52,7 +52,7 @@
         <!-- H2 uses Java triggers, ensure they are available on the classpath (you may need to battle with your module system) -->
         <sqlFile dbms="h2" path="discoverability-2022-03-30/triggers.h2.sql" relativeToChangelogFile="true" splitStatements="true" endDelimiter=";" stripComments="true"/>
         <sqlFile dbms="postgresql" path="discoverability-2022-03-30/triggers.postgres.sql" relativeToChangelogFile="true" splitStatements="true" endDelimiter="/" stripComments="true"/>
-        <sqlFile dbms="oracle" path="discoverability-2022-03-30/triggers.oracle.sql" relativeToChangelogFile="true" splitStatements="false" stripComments="true"/>
+<!--        <sqlFile dbms="oracle" path="discoverability-2022-03-30/triggers.oracle.sql" relativeToChangelogFile="true" splitStatements="false" stripComments="true"/>-->
         <sqlFile dbms="mariadb,mysql" path="discoverability-2022-03-30/triggers.mysql.sql" relativeToChangelogFile="true" splitStatements="true" endDelimiter="/" stripComments="true"/>
         <sqlFile dbms="mssql" path="discoverability-2022-03-30/triggers.mssql.sql" relativeToChangelogFile="true" splitStatements="true" endDelimiter="/" stripComments="true"/>
     </changeSet>

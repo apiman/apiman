@@ -31,6 +31,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -92,8 +93,8 @@ public abstract class AbstractJpaStorage {
         return getActiveEntityManager().unwrap(Session.class);
     }
 
-    private static javax.sql.DataSource lookupDS(String dsJndiLocation) {
-        javax.sql.DataSource ds;
+    private static DataSource lookupDS(String dsJndiLocation) {
+        DataSource ds;
         try {
             InitialContext ctx = new InitialContext();
             ds = (DataSource) ctx.lookup(dsJndiLocation);
@@ -269,9 +270,7 @@ public abstract class AbstractJpaStorage {
                  * Without a unique tuple, the ordering may be unstable, which can cause pagination to behave unpredictably.
                  */
                 for (OrderByBean uniqueOrder : uniqueOrderIdentifiers) {
-                    // MSSQL issue: if the user provides a sort order, and it's also in our uniqueOrderIdentifiers list
-                    // we may end up with the same "orderBy" twice, which MSSQL rejects. All other DBs don't seem to care.
-                    if (!uniqueOrder.equals(criteria.getOrderBy())) {
+                    if (!duplicateOrderBy(typeAlias, uniqueOrder, criteria.getOrderBy())) {
                         paginatedCb = paginatedCb.orderBy(uniqueOrder.getName(), uniqueOrder.isAscending());
                     }
                 }
@@ -296,6 +295,21 @@ public abstract class AbstractJpaStorage {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
+    }
+
+    /**
+     * MSSQL issue: if the user provides a sort order that is also in our default sort order list,  size = 2
+     * we may end up with the duplicate "orderBy" clauses, which MSSQL rejects. All other DBs don't seem to care...
+     */
+    private boolean duplicateOrderBy(String typeAlias, OrderByBean defaultOrderEntry, OrderByBean userOrder) {
+        Objects.requireNonNull(typeAlias);
+        Objects.requireNonNull(defaultOrderEntry);
+        if (userOrder == null || userOrder.getName() == null) {
+            return false;
+        }
+        return defaultOrderEntry.getName().equalsIgnoreCase(userOrder.getName()) ||
+                // Catch cases like "api.foo" vs "foo" where "foo" is implicitly referring to same entity.
+                defaultOrderEntry.getName().equalsIgnoreCase(typeAlias + "." + userOrder.getName());
     }
 
     /**

@@ -74,9 +74,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SuppressWarnings({ "nls", "javadoc" })
 public class TestPlanRunner {
-
-    //private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
-    private static Logger logger = LogManager.getLogger(TestPlanRunner.class);
+    private static final Logger LOGGER = LogManager.getLogger(TestPlanRunner.class);
     private final CaseInsensitiveStringMultiMap testMetaHeaders = new CaseInsensitiveStringMultiMap();
 
     /**
@@ -529,7 +527,7 @@ public class TestPlanRunner {
      */
     private void log(String message, Object... params) {
         String outmsg = MessageFormat.format(message, params);
-        logger.info("    >> " + outmsg);
+        LOGGER.info("    >> " + outmsg);
     }
 
     /**
@@ -538,7 +536,7 @@ public class TestPlanRunner {
      * @param message
      */
     private void logPlain(String message) {
-        logger.info("    >> " + message);
+        LOGGER.info("    >> " + message);
     }
 
 
@@ -547,7 +545,7 @@ public class TestPlanRunner {
      */
     public static final class RetryIfUnableToConnect implements Wire {
 
-        private transient Wire origin;
+        private final transient Wire origin;
 
         public RetryIfUnableToConnect(Wire wire) {
             this.origin = wire;
