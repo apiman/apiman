@@ -343,7 +343,11 @@ public abstract class AbstractJpaStorage {
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.neq) {
                     cb = cb.where(name).notEq(numberValueOf(pathKlazz, filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.like) {
-                    cb = cb.where(name).like(false).value(filter.getValue().toUpperCase().replace('*', '%')).noEscape();
+                    // Set escape character manually as MSSQL wants to use square brackets for escape.
+                    cb = cb.where(name)
+                            .like(false)
+                            .value(filter.getValue().toUpperCase().replace('*', '%'))
+                            .escape('\\');
                 }
             }
         }
