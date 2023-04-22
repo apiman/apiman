@@ -31,16 +31,16 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.apache.commons.dbutils.QueryRunner;
 
 /**
- * A JDBC implementation of the gateway registry.  Only suitable for a 
- * synchronous environment - should not be used when running an async 
+ * A JDBC implementation of the gateway registry.  Only suitable for a
+ * synchronous environment - should not be used when running an async
  * Gateway (e.g. vert.x).
- * 
+ *
  * Must be configured with the JNDI location of the datasource to use.
  * Example:
- * 
+ *
  *     apiman-gateway.metrics=io.apiman.gateway.engine.jdbc.JdbcRegistry
  *     apiman-gateway.metrics.datasource.jndi-location=java:/apiman/datasources/apiman-gateway
- * 
+ *
  * @author ewittman
  */
 public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
@@ -50,7 +50,7 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
 
     protected IComponentRegistry componentRegistry;
     protected final BlockingQueue<RequestMetric> queue;
-    
+
     private boolean stopped;
     private Thread thread;
 
@@ -82,7 +82,7 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
             }
         }, "JdbcMetricsConsumer"); //$NON-NLS-1$
         thread.setDaemon(true);
-        thread.start();        
+        thread.start();
     }
 
     /**
@@ -97,7 +97,7 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
             Calendar cal = Calendar.getInstance();
             cal.setTimeZone(TimeZone.getTimeZone("UTC"));
             cal.setTime(metric.getRequestStart());
-            
+
             long rstart = cal.getTimeInMillis();
             long rend = metric.getRequestEnd().getTime();
             long duration = metric.getRequestDuration();
@@ -130,10 +130,11 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
             long bytes_down = metric.getBytesDownloaded();
 
             // Now insert a row for the metric.
+            // plan quoted as it's a keyword in MSSQL.
             run.update("INSERT INTO gw_requests ("
                     + "rstart, rend, duration, month, week, day, hour, minute, "
                     + "api_org_id, api_id, api_version, "
-                    + "client_org_id, client_id, client_version, plan, "
+                    + "client_org_id, client_id, client_version, \"plan\", "
                     + "user_id, resp_type, bytes_up, bytes_down) VALUES ("
                     + "?, ?, ?, ?, ?, ?, ?, ?,"
                     + "?, ?, ?,"
@@ -173,7 +174,7 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
     public void setComponentRegistry(IComponentRegistry registry) {
         this.componentRegistry = registry;
     }
-    
+
     /**
      * Called to stop the consumer thread (used for testing only).
      */
