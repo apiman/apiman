@@ -309,13 +309,19 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
       <artifactId>mssqlserver</artifactId>
-      <version>1.18.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
-      <version>1.18.0</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -323,12 +329,11 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers</artifactId>
-      <version>1.18.0</version>
+      <artifactId>mysql</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.microsoft.sqlserver</groupId>
-      <artifactId>mssql-jdbc</artifactId>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
     </dependency>
 
     <!-- spec libs -->

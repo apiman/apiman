@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -62,7 +63,9 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ManagerRestTester.class);
 
-    private static final ManagerApiTestServer TEST_SERVER = new ManagerApiTestServer();
+    private static final ManagerApiTestServer TEST_SERVER = new ManagerApiTestServer(
+            Map.of("database", System.getProperty("apiman.test.manager.database", "h2"))
+    );
     private static final boolean USE_PROXY = false;
     private static final int PROXY_PORT = 7071;
 
@@ -243,7 +246,6 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
             super.run(notifier);
         } finally {
             try {
-                TEST_SERVER.flush();
                 shutdown();
             } catch (Throwable e) {
                 e.printStackTrace(); // TODO: Was this deliberate?
@@ -267,8 +269,6 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         log("-----------------------------------------------------------");
         log("Starting Test [{0} / {1}]", testInfo.plan.name, testInfo.name);
         log("-----------------------------------------------------------");
-
-        TEST_SERVER.flush();
 
         Description description = describeChild(testInfo);
         if (testInfo instanceof GatewayAssertionTestInfo) {

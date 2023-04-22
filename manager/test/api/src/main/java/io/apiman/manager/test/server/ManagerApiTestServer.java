@@ -21,8 +21,10 @@ import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.common.servlet.RootResourceFilter;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.api.war.TransactionWatchdogFilter;
-import io.apiman.manager.test.server.deployments.IDeployment;
+import io.apiman.manager.test.server.deployments.H2Deployment;
+import io.apiman.manager.test.server.deployments.ITestDatabaseDeployment;
 import io.apiman.manager.test.server.deployments.MsSqlDeployment;
+import io.apiman.manager.test.server.deployments.MySqlDeployment;
 import io.apiman.manager.test.server.deployments.PostgresDeployment;
 import io.apiman.test.common.util.TestUtil;
 
@@ -30,6 +32,7 @@ import java.io.File;
 import java.nio.file.NoSuchFileException;
 import java.util.EnumSet;
 import java.util.Map;
+import java.util.Objects;
 import javax.servlet.DispatcherType;
 
 import net.snowflake.client.jdbc.internal.org.bouncycastle.util.Arrays;
@@ -65,17 +68,24 @@ public class ManagerApiTestServer {
      */
     protected Server server;
 
-    protected IDeployment deployment = new PostgresDeployment();
-//    protected IDeployment deployment = new MsSqlDeployment();
+    private static final Map<String, ITestDatabaseDeployment> deploymentTypes = Map.of(
+            "h2", new H2Deployment(),
+            "postgres", new PostgresDeployment(),
+            "mssql", new MsSqlDeployment(),
+            "mysql", new MySqlDeployment()
+    );
+
+    protected ITestDatabaseDeployment deployment;
 
 
     /**
      * Constructor.
      */
     public ManagerApiTestServer(Map<String, String> config) {
+        this.deployment = deploymentTypes.get(config.get("database"));
+        Objects.requireNonNull(deployment, "Must select a valid database to use for Apiman Manager API." +
+                " Allowed values " + deploymentTypes.keySet());
     }
-
-    public ManagerApiTestServer() {}
 
     /**
      * Start/run the server.
@@ -120,8 +130,8 @@ public class ManagerApiTestServer {
      */
     protected void preStart() throws Exception {
         TestUtil.setProperty("liquibase.should.run", "true");
-        //TestUtil.setProperty("hibernate.hbm2ddl.import_files", "import.sql");
-        TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
+//        TestUtil.setProperty("hibernate.hbm2ddl.import_files", "import.sql");
+//        TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
         TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");
         TestUtil.setProperty("apiman-manager.config.features.rest-response-should-contain-stacktraces", "true");
 
@@ -231,8 +241,5 @@ public class ManagerApiTestServer {
         csh.setLoginService(l);
 
         return csh;
-    }
-
-    public void flush() {
     }
 }

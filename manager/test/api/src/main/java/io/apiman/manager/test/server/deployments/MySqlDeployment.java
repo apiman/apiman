@@ -18,7 +18,7 @@ package io.apiman.manager.test.server.deployments;
 import com.zaxxer.hikari.HikariDataSource;
 import io.apiman.test.common.util.TestUtil;
 import org.jdbi.v3.core.Jdbi;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.MySQLContainer;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -26,17 +26,17 @@ import javax.naming.NamingException;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public class PostgresDeployment implements ITestDatabaseDeployment {
+public class MySqlDeployment implements ITestDatabaseDeployment {
 
-    PostgreSQLContainer<?> postgresServer;
+    MySQLContainer<?> mysqlServer;
 
     private HikariDataSource ds;
     private InitialContext ctx;
 
     @Override
     public void start() {
-        postgresServer = new PostgreSQLContainer<>("postgres:14");
-        postgresServer.start();
+        mysqlServer = new MySQLContainer<>("mysql:8");
+        mysqlServer.withCommand("mysqld", "--lower_case_table_names=1").start();
         createEmpty();
         bindDs();
         setConnectionProps();
@@ -45,15 +45,15 @@ public class PostgresDeployment implements ITestDatabaseDeployment {
 
     @Override
     public void stop() {
-        postgresServer.stop();
+        mysqlServer.stop();
         ds.close();
     }
 
     void createEmpty() {
         this.ds = new HikariDataSource();
-        ds.setJdbcUrl(postgresServer.getJdbcUrl());
-        ds.setUsername(postgresServer.getUsername());
-        ds.setPassword(postgresServer.getPassword());
+        ds.setJdbcUrl(mysqlServer.getJdbcUrl());
+        ds.setUsername("root"); // mysqlserver.getUsername not working
+        ds.setPassword("test");
         Jdbi.create(ds).withHandle(h -> h.execute("CREATE DATABASE apiman_manager"));
     }
 
@@ -74,8 +74,8 @@ public class PostgresDeployment implements ITestDatabaseDeployment {
 
     void setConnectionProps() {
         System.setProperty("hibernate.show_sql", "false");
-        System.setProperty("apiman.hibernate.dialect", "io.apiman.manager.api.jpa.ApimanPostgreSQLDialect");
+        System.setProperty("apiman.hibernate.dialect", "io.apiman.manager.api.jpa.ApimanMySQL8Dialect");
         System.setProperty("apiman.hibernate.hbm2ddl.auto", "validate");
-        System.setProperty("hibernate.auto_quote_keyword", "false");
+        System.setProperty("hibernate.auto_quote_keyword", "true");
     }
 }
