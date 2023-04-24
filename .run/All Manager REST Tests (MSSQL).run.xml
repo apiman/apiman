@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="All Manager REST Tests (MSSQL)" type="JUnit" factoryName="JUnit" folderName="Manager REST Test">
+    <module name="apiman-manager-test-api" />
+    <option name="MAIN_CLASS_NAME" value="" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="directory" />
+    <option name="VM_PARAMETERS" value="-ea -Dapiman.test.manager.database=mssql" />
+    <dir value="$PROJECT_DIR$/manager/test/api/src/test/java" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
