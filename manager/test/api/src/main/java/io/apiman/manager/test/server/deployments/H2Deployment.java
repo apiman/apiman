@@ -25,20 +25,9 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
-import java.util.Map;
 
 public class H2Deployment implements ITestDatabaseDeployment {
-
-    /*
-     * DataSource created - only if using JPA
-     */
     private BasicDataSource ds = null;
-
-    /**
-     * Constructor.
-     */
-    public H2Deployment(Map<String, String> config) {
-    }
 
     public H2Deployment() {}
 
@@ -73,9 +62,16 @@ public class H2Deployment implements ITestDatabaseDeployment {
 
     }
 
+    @Override
+    public void start(String containerImageName) {
+        if (containerImageName != null) {
+            System.err.println("H2 test harness doesn't support multiple versions. " +
+                    containerImageName + " will be ignored");
+        }
+    }
+
     /**
      * Stop the server.
-     * @throws Exception
      */
     public void stop() {
         try {

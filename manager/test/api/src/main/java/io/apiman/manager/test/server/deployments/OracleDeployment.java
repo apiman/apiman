@@ -18,7 +18,7 @@ package io.apiman.manager.test.server.deployments;
 import com.zaxxer.hikari.HikariDataSource;
 import io.apiman.test.common.util.TestUtil;
 import org.jdbi.v3.core.Jdbi;
-import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.OracleContainer;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -27,18 +27,21 @@ import java.util.Optional;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public class MySqlDeployment implements ITestDatabaseDeployment {
+public class OracleDeployment implements ITestDatabaseDeployment {
 
-    static final String DEFAULT_IMAGE = "mysql:8";
-    MySQLContainer<?> mysqlServer;
+    static final String DEFAULT_IMAGE = "gvenzl/oracle-xe:21-slim-faststart";
+    OracleContainer oracleServer;
     HikariDataSource ds;
     InitialContext ctx;
 
     @Override
     public void start(String containerImageName) {
         String image = Optional.ofNullable(containerImageName).orElse(DEFAULT_IMAGE);
-        mysqlServer = new MySQLContainer<>(image);
-        mysqlServer.withCommand("mysqld", "--lower_case_table_names=1").start();
+        oracleServer = new OracleContainer(image)
+                .withDatabaseName("apiman_manager")
+                .withUsername("testUser")
+                .withPassword("testPassword");
+        oracleServer.start();
         createEmpty();
         bindDs();
         setConnectionProps();
@@ -47,16 +50,16 @@ public class MySqlDeployment implements ITestDatabaseDeployment {
 
     @Override
     public void stop() {
-        mysqlServer.stop();
+        oracleServer.stop();
         ds.close();
     }
 
     void createEmpty() {
         this.ds = new HikariDataSource();
-        ds.setJdbcUrl(mysqlServer.getJdbcUrl());
-        ds.setUsername("root"); // mysqlserver.getUsername not working
-        ds.setPassword("test");
-        Jdbi.create(ds).withHandle(h -> h.execute("CREATE DATABASE apiman_manager"));
+        ds.setJdbcUrl(oracleServer.getJdbcUrl());
+        ds.setUsername("testUser");
+        ds.setPassword("testPassword");
+        //Jdbi.create(ds).withHandle(h -> h.execute("CREATE DATABASE apiman_manager"));
     }
 
     void bindDs() {
@@ -76,7 +79,7 @@ public class MySqlDeployment implements ITestDatabaseDeployment {
 
     void setConnectionProps() {
         System.setProperty("hibernate.show_sql", "false");
-        System.setProperty("apiman.hibernate.dialect", "io.apiman.manager.api.jpa.ApimanMySQL8Dialect");
+        System.setProperty("apiman.hibernate.dialect", "org.hibernate.dialect.Oracle12cDialect");
         System.setProperty("apiman.hibernate.hbm2ddl.auto", "validate");
         System.setProperty("hibernate.auto_quote_keyword", "true");
     }

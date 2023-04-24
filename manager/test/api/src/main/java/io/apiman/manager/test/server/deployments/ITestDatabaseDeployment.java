@@ -15,10 +15,12 @@
  */
 package io.apiman.manager.test.server.deployments;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public interface ITestDatabaseDeployment {
-    void start();
+    void start(@Nullable String containerImageName);
     void stop();
 }

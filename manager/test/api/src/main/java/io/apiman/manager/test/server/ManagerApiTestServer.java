@@ -23,6 +23,7 @@ import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.api.war.TransactionWatchdogFilter;
 import io.apiman.manager.test.server.deployments.H2Deployment;
 import io.apiman.manager.test.server.deployments.ITestDatabaseDeployment;
+import io.apiman.manager.test.server.deployments.MariaDbDeployment;
 import io.apiman.manager.test.server.deployments.MsSqlDeployment;
 import io.apiman.manager.test.server.deployments.MySqlDeployment;
 import io.apiman.manager.test.server.deployments.PostgresDeployment;
@@ -68,23 +69,26 @@ public class ManagerApiTestServer {
      */
     protected Server server;
 
-    private static final Map<String, ITestDatabaseDeployment> deploymentTypes = Map.of(
+    static final Map<String, ITestDatabaseDeployment> deploymentTypes = Map.of(
             "h2", new H2Deployment(),
             "postgres", new PostgresDeployment(),
             "mssql", new MsSqlDeployment(),
-            "mysql", new MySqlDeployment()
+            "mysql", new MySqlDeployment(),
+            "mariadb", new MariaDbDeployment()
     );
+    private final String containerImageName;
 
     protected ITestDatabaseDeployment deployment;
-
 
     /**
      * Constructor.
      */
-    public ManagerApiTestServer(Map<String, String> config) {
-        this.deployment = deploymentTypes.get(config.get("database"));
-        Objects.requireNonNull(deployment, "Must select a valid database to use for Apiman Manager API." +
+    public ManagerApiTestServer(String database, String containerImageName) {
+        this.containerImageName = containerImageName;
+        Objects.requireNonNull(database, "Must select a valid database to use for Apiman Manager API." +
                 " Allowed values " + deploymentTypes.keySet());
+
+        deployment = deploymentTypes.get(database);
     }
 
     /**
@@ -95,7 +99,7 @@ public class ManagerApiTestServer {
         System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")");
         preStart();
 
-        deployment.start();
+        deployment.start(containerImageName);
 
         ContextHandlerCollection handlers = new ContextHandlerCollection();
         addModulesToJetty(handlers);

@@ -22,20 +22,22 @@ import org.testcontainers.containers.MSSQLServerContainer;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.util.Optional;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class MsSqlDeployment implements ITestDatabaseDeployment {
-
+    static final String DEFAULT_IMAGE = "mcr.microsoft.com/mssql/server:2022-latest";
     MSSQLServerContainer<?> mssqlserver;
-
-    private HikariDataSource ds;
-    private InitialContext ctx;
+    HikariDataSource ds;
+    InitialContext ctx;
 
     @Override
-    public void start() {
-        mssqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2022-latest").acceptLicense();
+    public void start(String containerImageName) {
+        String image = Optional.ofNullable(containerImageName).orElse(DEFAULT_IMAGE);
+        mssqlserver = new MSSQLServerContainer<>(image)
+                .acceptLicense();
         mssqlserver.start();
         createEmpty();
         bindDs();

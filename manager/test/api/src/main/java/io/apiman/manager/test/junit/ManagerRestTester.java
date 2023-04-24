@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -62,9 +61,9 @@ import org.junit.runners.model.Statement;
 public class ManagerRestTester extends ParentRunner<TestInfo> {
 
     private static final IApimanLogger LOGGER = ApimanLoggerFactory.getLogger(ManagerRestTester.class);
-
     private static final ManagerApiTestServer TEST_SERVER = new ManagerApiTestServer(
-            Map.of("database", System.getProperty("apiman.test.manager.database", "h2"))
+            System.getProperty("apiman.test.manager.database", "h2"),
+            System.getProperty("apiman.test.manager.database.image")
     );
     private static final boolean USE_PROXY = false;
     private static final int PROXY_PORT = 7071;

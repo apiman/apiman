@@ -22,20 +22,22 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.util.Optional;
 
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
 public class PostgresDeployment implements ITestDatabaseDeployment {
 
+    static final String DEFAULT_IMAGE = "postgres:15";
     PostgreSQLContainer<?> postgresServer;
-
-    private HikariDataSource ds;
-    private InitialContext ctx;
+    HikariDataSource ds;
+    InitialContext ctx;
 
     @Override
-    public void start() {
-        postgresServer = new PostgreSQLContainer<>("postgres:14");
+    public void start(String containerImageName) {
+        String image = Optional.ofNullable(containerImageName).orElse(DEFAULT_IMAGE);
+        postgresServer = new PostgreSQLContainer<>(image);
         postgresServer.start();
         createEmpty();
         bindDs();

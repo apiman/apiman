@@ -18,7 +18,7 @@ package io.apiman.manager.test.server.deployments;
 import com.zaxxer.hikari.HikariDataSource;
 import io.apiman.test.common.util.TestUtil;
 import org.jdbi.v3.core.Jdbi;
-import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.MariaDBContainer;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -27,18 +27,18 @@ import java.util.Optional;
 /**
  * @author Marc Savy {@literal <marc@blackparrotlabs.io>}
  */
-public class MySqlDeployment implements ITestDatabaseDeployment {
+public class MariaDbDeployment implements ITestDatabaseDeployment {
 
-    static final String DEFAULT_IMAGE = "mysql:8";
-    MySQLContainer<?> mysqlServer;
+    static final String DEFAULT_IMAGE = "mariadb:10.7";
+    MariaDBContainer<?> mariaDBServer;
     HikariDataSource ds;
     InitialContext ctx;
 
     @Override
     public void start(String containerImageName) {
         String image = Optional.ofNullable(containerImageName).orElse(DEFAULT_IMAGE);
-        mysqlServer = new MySQLContainer<>(image);
-        mysqlServer.withCommand("mysqld", "--lower_case_table_names=1").start();
+        mariaDBServer = new MariaDBContainer<>(image);
+        mariaDBServer.withCommand("mariadbd", "--lower_case_table_names=1").start();
         createEmpty();
         bindDs();
         setConnectionProps();
@@ -47,14 +47,14 @@ public class MySqlDeployment implements ITestDatabaseDeployment {
 
     @Override
     public void stop() {
-        mysqlServer.stop();
+        mariaDBServer.stop();
         ds.close();
     }
 
     void createEmpty() {
         this.ds = new HikariDataSource();
-        ds.setJdbcUrl(mysqlServer.getJdbcUrl());
-        ds.setUsername("root"); // mysqlserver.getUsername not working
+        ds.setJdbcUrl(mariaDBServer.getJdbcUrl());
+        ds.setUsername("root"); // mariaDBserver.getUsername not working
         ds.setPassword("test");
         Jdbi.create(ds).withHandle(h -> h.execute("CREATE DATABASE apiman_manager"));
     }
