@@ -18,6 +18,7 @@ package io.apiman.manager.test.server.deployments;
 import io.apiman.test.common.util.TestUtil;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.jdbi.v3.core.Jdbi;
+import org.jetbrains.annotations.Nullable;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -34,7 +35,14 @@ public class H2Deployment implements ITestDatabaseDeployment {
     /**
      * Start/run the server.
      */
-    public void start() {
+
+    @Override
+    public void start(@Nullable String containerImageName) {
+        if (containerImageName != null) {
+            System.err.println("H2 test harness doesn't support multiple versions. " +
+                    containerImageName + " will be ignored");
+        }
+
         TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "validate");
 
         try {
@@ -60,14 +68,6 @@ public class H2Deployment implements ITestDatabaseDeployment {
             throw new RuntimeException(e);
         }
 
-    }
-
-    @Override
-    public void start(String containerImageName) {
-        if (containerImageName != null) {
-            System.err.println("H2 test harness doesn't support multiple versions. " +
-                    containerImageName + " will be ignored");
-        }
     }
 
     /**

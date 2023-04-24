@@ -38,7 +38,7 @@ public class MySqlDeployment implements ITestDatabaseDeployment {
     public void start(String containerImageName) {
         String image = Optional.ofNullable(containerImageName).orElse(DEFAULT_IMAGE);
         mysqlServer = new MySQLContainer<>(image);
-        mysqlServer.withCommand("mysqld", "--lower_case_table_names=1").start();
+        mysqlServer.withCommand("mysqld", "--lower_case_table_names=1", "--ansi").start();
         createEmpty();
         bindDs();
         setConnectionProps();

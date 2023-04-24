@@ -58,7 +58,6 @@ import org.joda.time.DateTime;
 public class JdbcMetricsAccessor implements IMetricsAccessor {
 
     protected DataSource ds;
-    private final boolean quoteKeywords;
 
     /**
      * Constructor.
@@ -70,12 +69,6 @@ public class JdbcMetricsAccessor implements IMetricsAccessor {
             throw new RuntimeException("Missing datasource JNDI location from JdbcRegistry configuration."); //$NON-NLS-1$
         }
         ds = lookupDS(dsJndiLocation);
-
-        // Some databases get upset if we use keywords in their specific dialect like "plan" in MSSQL.
-        // We'll try to escape them manually... It's a pain, so let's use an alternative solution in future.
-        this.quoteKeywords = Optional.ofNullable(System.getProperty("hibernate.auto_quote_keyword"))
-                .map(Boolean::parseBoolean)
-                .orElse(false);
     }
 
     /**
@@ -125,7 +118,7 @@ public class JdbcMetricsAccessor implements IMetricsAccessor {
             DateTime from, DateTime to) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            String sql = "SELECT " + quote("plan") + ", count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY " + quote("plan") + ""; //$NON-NLS-1$
+            String sql = "SELECT `plan`, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY  `plan`"; //$NON-NLS-1$
             ResultSetHandler<UsagePerPlanBean> handler = new UsagePerPlanHandler();
             return run.query(sql, handler,  organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
@@ -198,7 +191,7 @@ public class JdbcMetricsAccessor implements IMetricsAccessor {
             String version, DateTime from, DateTime to) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            String sql = "SELECT " + quote("plan") + ", resp_type, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY " + quote("plan") + ", resp_type"; //$NON-NLS-1$
+            String sql = "SELECT `plan`, resp_type, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY  `plan` , resp_type"; //$NON-NLS-1$
             ResultSetHandler<ResponseStatsPerPlanBean> handler = new ResponseStatsPerPlanHandler();
             return run.query(sql, handler, organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
@@ -241,13 +234,6 @@ public class JdbcMetricsAccessor implements IMetricsAccessor {
             throw new RuntimeException("Datasource not found: " + dsJndiLocation); //$NON-NLS-1$
         }
         return ds;
-    }
-
-    private String quote(String candidate) {
-        if (quoteKeywords) {
-            return "\"" + candidate + "\"";
-        }
-        return candidate;
     }
 
 

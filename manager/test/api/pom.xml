@@ -302,11 +302,7 @@
       <artifactId>HikariCP</artifactId>
     </dependency>
 
-    <!-- Third Party Dependencies -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
+    <!-- Testcontainers and drivers -->
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>

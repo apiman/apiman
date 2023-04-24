@@ -69,7 +69,7 @@ public class JdbcMetricsTest {
             throw new RuntimeException(e);
         }
     }
-    
+
     @Before
     public void reset() throws SQLException {
         QueryRunner run = new QueryRunner(ds);
@@ -85,11 +85,11 @@ public class JdbcMetricsTest {
         config.put("datasource.jndi-location", DB_JNDI_LOC);
         JdbcMetrics metrics = new JdbcMetrics(config);
         metrics.record(request(
-                "2016-02-10T09:30:00Z", 300, "http://localhost:8080/test/1", "/test/1", 
-                "GET", "TestOrg", "TestApi", "1.0", "Gold", 
+                "2016-02-10T09:30:00Z", 300, "http://localhost:8080/test/1", "/test/1",
+                "GET", "TestOrg", "TestApi", "1.0", "Gold",
                 "TestOrg", "TestClient", "1.0", "12345", "user1",
                 200, "OK", false, 0, null, false, null, 0, 1024));
-        
+
         Thread.sleep(200);
         assertRowCount(1, "SELECT * FROM gw_requests WHERE api_org_id = ?", "TestOrg");
         metrics.stop();
@@ -104,21 +104,21 @@ public class JdbcMetricsTest {
         config.put("datasource.jndi-location", DB_JNDI_LOC);
         JdbcMetrics metrics = new JdbcMetrics(config);
         metrics.record(request(
-                "2016-02-10T09:30:00Z", 300, "http://localhost:8080/test/1", "/test/1", 
-                "GET", "TestOrg", "TestApi", "1.0", "Gold", 
+                "2016-02-10T09:30:00Z", 300, "http://localhost:8080/test/1", "/test/1",
+                "GET", "TestOrg", "TestApi", "1.0", "Gold",
                 "TestOrg", "TestClient", "1.0", "12345", "user1",
                 200, "OK", false, 0, null, false, null, 0, 1024));
         metrics.record(request(
-                "2016-02-10T09:31:00Z", 300, "http://localhost:8080/test/1", "/test/1", 
-                "GET", "TestOrg", "TestApi", "1.0", "Gold", 
+                "2016-02-10T09:31:00Z", 300, "http://localhost:8080/test/1", "/test/1",
+                "GET", "TestOrg", "TestApi", "1.0", "Gold",
                 "TestOrg", "TestClient", "1.0", "12345", "user1",
                 200, "OK", false, 0, null, false, null, 0, 1024));
         metrics.record(request(
-                "2016-02-10T09:32:00Z", 300, "http://localhost:8080/test/1", "/test/1", 
-                "GET", "TestOrg", "TestApi", "1.0", "Gold", 
+                "2016-02-10T09:32:00Z", 300, "http://localhost:8080/test/1", "/test/1",
+                "GET", "TestOrg", "TestApi", "1.0", "Gold",
                 "TestOrg", "TestClient", "1.0", "12345", "user1",
                 200, "OK", false, 0, null, false, null, 0, 1024));
-        
+
         Thread.sleep(200);
         assertRowCount(3, "SELECT * FROM gw_requests WHERE api_org_id = ?", "TestOrg");
         metrics.stop();
@@ -133,36 +133,36 @@ public class JdbcMetricsTest {
         config.put("datasource.jndi-location", DB_JNDI_LOC);
         JdbcMetrics metrics = new JdbcMetrics(config);
         metrics.record(request(
-                "2016-02-10T09:30:10Z", 300, "http://localhost:8080/test/1", "/test/1", 
-                "GET", "TestOrg", "TestApi", "1.0", "Gold", 
+                "2016-02-10T09:30:10Z", 300, "http://localhost:8080/test/1", "/test/1",
+                "GET", "TestOrg", "TestApi", "1.0", "Gold",
                 "TestOrg", "TestClient", "1.0", "12345", "user1",
                 200, "OK", false, 0, null, false, null, 0, 1024));
         metrics.record(request(
-                "2016-02-10T09:30:15Z", 300, "http://localhost:8080/test/1", "/test/1", 
-                "GET", "TestOrg", "TestApi", "1.0", "Gold", 
+                "2016-02-10T09:30:15Z", 300, "http://localhost:8080/test/1", "/test/1",
+                "GET", "TestOrg", "TestApi", "1.0", "Gold",
                 "TestOrg", "TestClient", "1.0", "12345", "user1",
                 200, "OK", false, 0, null, false, null, 0, 1024));
         metrics.record(request(
-                "2016-02-10T09:30:21Z", 300, "http://localhost:8080/test/1", "/test/1", 
-                "GET", "TestOrg", "TestApi", "1.0", "Gold", 
+                "2016-02-10T09:30:21Z", 300, "http://localhost:8080/test/1", "/test/1",
+                "GET", "TestOrg", "TestApi", "1.0", "Gold",
                 "TestOrg", "TestClient", "1.0", "12345", "user1",
                 200, "OK", false, 0, null, false, null, 0, 1024));
         metrics.record(request(
-                "2016-02-10T09:17:21Z", 300, "http://localhost:8080/test/1", "/test/1", 
-                "GET", "TestOrg", "TestApi", "1.0", "Gold", 
+                "2016-02-10T09:17:21Z", 300, "http://localhost:8080/test/1", "/test/1",
+                "GET", "TestOrg", "TestApi", "1.0", "Gold",
                 "TestOrg", "TestClient", "1.0", "12345", "user1",
                 200, "OK", false, 0, null, false, null, 0, 1024));
         metrics.record(request(
-                "2016-02-10T09:17:22Z", 300, "http://localhost:8080/test/1", "/test/1", 
-                "GET", "TestOrg", "TestApi", "1.0", "Gold", 
+                "2016-02-10T09:17:22Z", 300, "http://localhost:8080/test/1", "/test/1",
+                "GET", "TestOrg", "TestApi", "1.0", "Gold",
                 "TestOrg", "TestClient", "1.0", "12345", "user1",
                 200, "OK", false, 0, null, false, null, 0, 1024));
         metrics.record(request(
-                "2016-01-17T12:31:00Z", 300, "http://localhost:8080/test/1", "/test/1", 
-                "GET", "TestOrg", "TestApi", "1.0", "Gold", 
+                "2016-01-17T12:31:00Z", 300, "http://localhost:8080/test/1", "/test/1",
+                "GET", "TestOrg", "TestApi", "1.0", "Gold",
                 "TestOrg", "TestClient", "1.0", "12345", "user1",
                 200, "OK", false, 0, null, false, null, 0, 1024));
-        
+
         Thread.sleep(200);
         // aggregate per minute
         assertRowCount(3, "SELECT count(*) FROM gw_requests WHERE api_org_id = ? GROUP BY minute", "TestOrg");
@@ -170,13 +170,13 @@ public class JdbcMetricsTest {
         assertRowCount(2, "SELECT count(*) FROM gw_requests WHERE api_org_id = ? GROUP BY hour", "TestOrg");
         metrics.stop();
     }
-    
+
     /**
      * Asserts the row count of the given query.
      * @param count
      * @param query
      * @param params
-     * @throws SQLException 
+     * @throws SQLException
      */
     private void assertRowCount(int count, String query, Object ... params) throws SQLException {
         QueryRunner run = new QueryRunner(ds);
@@ -185,7 +185,7 @@ public class JdbcMetricsTest {
     }
 
     /**
-     * @throws ParseException 
+     * @throws ParseException
      */
     private RequestMetric request(String requestStart, long requestDuration, String url, String resource,
             String method, String apiOrgId, String apiId, String apiVersion, String planId,
@@ -260,7 +260,7 @@ public class JdbcMetricsTest {
             System.out.println("=======================================");
         }
     }
-    
+
     private static ResultSetHandler<Integer> COUNT_HANDLER = new ResultSetHandler<Integer>() {
 
         @Override
@@ -271,7 +271,7 @@ public class JdbcMetricsTest {
             }
             return rowCount;
         }
-        
+
     };
 
 }

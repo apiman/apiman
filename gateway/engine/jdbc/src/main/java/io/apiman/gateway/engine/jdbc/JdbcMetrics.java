@@ -134,7 +134,7 @@ public class JdbcMetrics extends AbstractJdbcComponent implements IMetrics {
             run.update("INSERT INTO gw_requests ("
                     + "rstart, rend, duration, month, week, day, hour, minute, "
                     + "api_org_id, api_id, api_version, "
-                    + "client_org_id, client_id, client_version, \"plan\", "
+                    + "client_org_id, client_id, client_version, `plan`, "
                     + "user_id, resp_type, bytes_up, bytes_down) VALUES ("
                     + "?, ?, ?, ?, ?, ?, ?, ?,"
                     + "?, ?, ?,"
