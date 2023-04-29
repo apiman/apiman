@@ -1,0 +1,61 @@
+name: Apiman Database Tests
+on:
+  push:
+    paths-ignore:
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README*'
+      - 'CODE_OF_CONDUCT*'
+    branches: [master, 3.x, 2.x]
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README*'
+      - 'CODE_OF_CONDUCT*'
+    branches: [master, 3.x, 2.x]
+
+jobs:
+  apiman-manager-db-tests:
+    runs-on: ubuntu-latest
+    name: Apiman Manager Database Test
+
+    strategy:
+      matrix:
+        database:
+          - name: Postgres Latest
+            tag: "postgres:latest"
+
+          - name: Postgres 15
+            tag: "postgres:15"
+
+          - name: Postgres 11
+            tag: "postgres:11"
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Set up `mvn`
+        run: bash .github/workflows/support/set-mvn-location.sh
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 11
+          cache: maven
+
+      - name: Build Apiman (without tests)
+        run: mvn clean install -DskipTests -Dmaven.javadoc.skip
+
+      - name: Run Apiman Manager Tests ${{ matrix.database.name }}
+        env:
+          TAG: ${{ matrix.database.tag }}
+        run: |
+          cd manager/test/api
+          mvn test -Dapiman.test.manager.database=postgres -Dapiman.test.manager.database.image=$TAG
