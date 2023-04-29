@@ -6,7 +6,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master, 3.x, 2.x]
+    branches: [master, 3.x]
   pull_request:
     paths-ignore:
       - '.github/**'
@@ -14,7 +14,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master, 3.x, 2.x]
+    branches: [master, 3.x]
 
 jobs:
   apiman-manager-db-tests:
