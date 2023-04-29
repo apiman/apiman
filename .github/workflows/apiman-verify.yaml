@@ -6,7 +6,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master, 2.x]
+    branches: [master, 3.x, 2.x]
   pull_request:
     paths-ignore:
       - '.github/**'
@@ -14,7 +14,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master, 2.x]
+    branches: [master, 3.x, 2.x]
 
 defaults:
   run:
@@ -233,8 +233,7 @@ jobs:
           prerelease: true
           files: |
             CHANGELOG.adoc
-            /tmp/releases/*
-            
+            /tmp/releases/* 
 
   publish-docker-images:
     needs: [build-verify, publish-snapshots]
