@@ -123,7 +123,7 @@ services:
       # - traefik.http.services.gateway-management-service.loadbalancer.server.port=8081
 
   postgres:
-    image: postgres:14.6
+    image: postgres:14
     # ports:
     #   - '5432:5432'
     environment:
@@ -155,7 +155,7 @@ services:
     #  - traefik.http.services.postgres-service.loadbalancer.server.port=5432
 
   elasticsearch:
-    image: elasticsearch:7.17.8
+    image: elasticsearch:7.17.10
     #ports:
     #  - '${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}'
     environment:
@@ -197,7 +197,7 @@ services:
       - traefik.http.services.elasticsearch-service.loadbalancer.server.port=9200
 
   keycloak:
-    image: quay.io/keycloak/keycloak:18.0.2
+    image: quay.io/keycloak/keycloak:21.1.1
     depends_on:
       - postgres
     entrypoint: [ '/bin/bash', '-c' ]
