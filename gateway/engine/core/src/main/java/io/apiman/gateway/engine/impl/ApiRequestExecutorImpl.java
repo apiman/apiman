@@ -95,16 +95,16 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
     private static final long DEFAULT_MAX_PAYLOAD_BUFFER_SIZE = 5 * 1024 * 1024; // in bytes
 
-    private static StrLookup<String> LOOKUP = new ApimanStrLookup();
-    private static StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
+    private static final StrLookup<String> LOOKUP = new ApimanStrLookup();
+    private static final StrSubstitutor PROPERTY_SUBSTITUTOR = new StrSubstitutor(LOOKUP);
     static {
         PROPERTY_SUBSTITUTOR.setValueDelimiter(':');
     }
 
     private final IRegistry registry;
-    private ApiRequest request;
+    private final ApiRequest request;
     private Api api;
-    private IPolicyContext context;
+    private final IPolicyContext context;
     private List<Policy> policies;
     private final IPolicyFactory policyFactory;
     private final IConnectorFactory connectorFactory;
@@ -113,9 +113,9 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
     private List<PolicyWithConfiguration> policyImpls;
 
-    private IAsyncResultHandler<IEngineResult> resultHandler;
-    private IAsyncHandler<PolicyFailure> policyFailureHandler;
-    private IAsyncHandler<Throwable> policyErrorHandler;
+    private final IAsyncResultHandler<IEngineResult> resultHandler;
+    private final IAsyncHandler<PolicyFailure> policyFailureHandler;
+    private final IAsyncHandler<Throwable> policyErrorHandler;
 
     private IAsyncHandler<ISignalWriteStream> inboundStreamHandler;
 
@@ -125,8 +125,8 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
     private IApiConnection apiConnection;
     private IApiConnectionResponse apiConnectionResponse;
 
-    private IMetrics metrics;
-    private RequestMetric requestMetric = new RequestMetric();
+    private final IMetrics metrics;
+    private final RequestMetric requestMetric = new RequestMetric();
 
     @SuppressWarnings("rawtypes")
     private IPayloadIO payloadIO;
@@ -162,7 +162,7 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
 
         String mbs = System.getProperty(GatewayConfigProperties.MAX_PAYLOAD_BUFFER_SIZE);
         if (mbs != null) {
-            maxPayloadBufferSize = new Long(mbs);
+            maxPayloadBufferSize = Long.parseLong(mbs);
         }
     }
 
@@ -220,28 +220,24 @@ public class ApiRequestExecutorImpl implements IApiRequestExecutor {
         requestMetric.setErrorMessage(error.getMessage());
     }
 
-    /**
-     * @see io.apiman.gateway.engine.IApiRequestExecutor#execute()
-     */
     @Override
     public void execute() {
-
-        //load the api data based on request
         registry.getApi(request.getApiOrgId(), request.getApiId(), request.getApiVersion(),
-                (IAsyncResult<Api> apiResult) -> {
-                    if (apiResult.isSuccess()) {
-                        api = apiResult.getResult();
-                    } else if (apiResult.isError()) {
-                        resultHandler.handle(AsyncResultImpl.create(apiResult.getError(), IEngineResult.class));
-                    }
-                });
+        (IAsyncResult<Api> apiResult) -> {
+            if (apiResult.isSuccess()) {
+                api = apiResult.getResult();
+                execute_();
+            } else if (apiResult.isError()) {
+                resultHandler.handle(AsyncResultImpl.create(apiResult.getError(), IEngineResult.class));
+            }
+        });
+    }
 
-        //check if api disable key are enabled
+    public void execute_() {
+        // TODO(msavy): remove confusing double negative...
         if (api != null && !api.isKeysStrippingDisabled()) {
-            // Strip apikey
             stripApiKey();
         }
-
 
         // Fill out some of the basic metrics structure.
         requestMetric.setRequestStart(new Date());
