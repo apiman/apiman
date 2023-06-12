@@ -1,0 +1,315 @@
+POST /system/import admin/admin
+Content-Type: application/json
+
+{
+   "Metadata": {
+     "id": 1686577330281,
+     "apimanVersion": "8.6.0-SNAPSHOT"
+   },
+   "Users": [
+     {
+       "username": "platform.admin",
+       "fullName": "Platform Admin",
+       "email": "admin@example.com",
+       "joinedOn": "2022-03-04T14:02:03Z",
+       "locale": "de",
+       "notificationPreferences": [],
+       "admin": false
+     }
+   ],
+   "Gateways": [
+     {
+       "id": "TheGateway",
+       "name": "The Gateway",
+       "description": "This is the gateway.",
+       "createdBy": "admin",
+       "createdOn": 1445973205874,
+       "modifiedBy": "admin",
+       "modifiedOn": 1445973205874,
+       "type": "REST",
+       "configuration": "{\"endpoint\":\"http://localhost:7070/mock-gateway\",\"username\":\"admin\",\"password\":\"$CRYPT::j8rdW76Z5gUI0I+9c8/GrA==\"}"
+     }
+   ],
+   "Plugins": [],
+   "Roles": [
+     {
+       "id": "Editor",
+       "name": "Editor",
+       "description": "A user with this role has the permission to edit.",
+       "createdBy": "admin",
+       "createdOn": "2018-05-09T12:00:00Z",
+       "autoGrant": true,
+       "permissions": [
+         "clientEdit",
+         "orgView",
+         "planEdit",
+         "planView",
+         "planAdmin",
+         "orgEdit",
+         "apiAdmin",
+         "apiView",
+         "apiEdit",
+         "clientView",
+         "clientAdmin"
+       ]
+     },
+     {
+       "id": "Organization-User-Manager",
+       "name": "Organization-User-Manager",
+       "description": "A user with this role can manage members of this organization.",
+       "createdBy": "admin",
+       "createdOn": "2018-05-09T12:00:00Z",
+       "autoGrant": true,
+       "permissions": [
+         "orgView",
+         "orgEdit",
+         "orgAdmin"
+       ]
+     },
+     {
+       "id": "Viewer",
+       "name": "Viewer",
+       "description": "A user with this role can only view things within an organization.",
+       "createdBy": "admin",
+       "createdOn": "2018-05-09T12:00:00Z",
+       "autoGrant": false,
+       "permissions": [
+         "orgView",
+         "planView",
+         "apiView",
+         "clientView"
+       ]
+     }
+   ],
+   "PolicyDefinitions": [],
+   "Developers": [],
+   "Blobs": [],
+   "Orgs": [
+     {
+       "OrganizationBean": {
+         "id": "Organization1",
+         "name": "Organization1",
+         "description": "",
+         "createdBy": "platform.admin",
+         "createdOn": "2023-06-12T13:39:47Z",
+         "modifiedBy": "platform.admin",
+         "modifiedOn": "2023-06-12T13:39:47Z"
+       },
+       "Memberships": [
+         {
+           "id": 10907,
+           "userId": "platform.admin",
+           "roleId": "Editor",
+           "organizationId": "Organization1",
+           "createdOn": "2023-06-12T13:39:47Z"
+         },
+         {
+           "id": 10908,
+           "userId": "platform.admin",
+           "roleId": "Organization-User-Manager",
+           "organizationId": "Organization1",
+           "createdOn": "2023-06-12T13:39:47Z"
+         }
+       ],
+       "Plans": [
+         {
+           "PlanBean": {
+             "id": "Plan1",
+             "name": "Plan1",
+             "description": "",
+             "createdBy": "platform.admin",
+             "createdOn": "2023-06-12T13:40:22Z"
+           },
+           "Versions": [
+             {
+               "PlanVersionBean": {
+                 "id": 10914,
+                 "status": "Locked",
+                 "version": "1.0",
+                 "createdBy": "platform.admin",
+                 "createdOn": "2023-06-12T13:40:22Z",
+                 "modifiedBy": "platform.admin",
+                 "modifiedOn": "2023-06-12T13:40:22Z",
+                 "lockedOn": "2023-06-12T13:40:25Z"
+               },
+               "Policies": []
+             }
+           ]
+         }
+       ],
+       "Apis": [
+         {
+           "ApiBean": {
+             "id": "API1",
+             "name": "API1",
+             "description": "",
+             "tags": [],
+             "createdBy": "platform.admin",
+             "createdOn": "2023-06-12T13:40:00Z"
+           },
+           "Versions": [
+             {
+               "ApiVersionBean": {
+                 "id": 10910,
+                 "status": "Published",
+                 "endpoint": "http://example.com",
+                 "endpointType": "rest",
+                 "endpointContentType": "json",
+                 "endpointProperties": {},
+                 "gateways": [
+                   {
+                     "gatewayId": "TheGateway"
+                   }
+                 ],
+                 "publicAPI": false,
+                 "discoverability": "ORG_MEMBERS",
+                 "plans": [
+                   {
+                     "planId": "Plan1",
+                     "version": "1.0",
+                     "requiresApproval": false,
+                     "discoverability": "ORG_MEMBERS"
+                   }
+                 ],
+                 "version": "1.0",
+                 "createdBy": "platform.admin",
+                 "createdOn": "2023-06-12T13:40:00Z",
+                 "modifiedBy": "platform.admin",
+                 "modifiedOn": "2023-06-12T13:40:43Z",
+                 "publishedOn": "2023-06-12T13:40:47Z",
+                 "definitionType": "None",
+                 "parsePayload": false,
+                 "disableKeysStrip": false
+               },
+               "Policies": []
+             }
+           ]
+         }
+       ],
+       "Clients": [],
+       "Audits": []
+     },
+     {
+       "OrganizationBean": {
+         "id": "Organization2",
+         "name": "Organization2",
+         "description": "",
+         "createdBy": "platform.admin",
+         "createdOn": "2023-06-12T13:41:02Z",
+         "modifiedBy": "platform.admin",
+         "modifiedOn": "2023-06-12T13:41:02Z"
+       },
+       "Memberships": [
+         {
+           "id": 10920,
+           "userId": "platform.admin",
+           "roleId": "Editor",
+           "organizationId": "Organization2",
+           "createdOn": "2023-06-12T13:41:02Z"
+         },
+         {
+           "id": 10921,
+           "userId": "platform.admin",
+           "roleId": "Organization-User-Manager",
+           "organizationId": "Organization2",
+           "createdOn": "2023-06-12T13:41:02Z"
+         }
+       ],
+       "Plans": [],
+       "Apis": [],
+       "Clients": [
+         {
+           "ClientBean": {
+             "id": "Client1",
+             "name": "Client1",
+             "description": "",
+             "createdBy": "platform.admin",
+             "createdOn": "2023-06-12T13:41:15Z"
+           },
+           "Versions": [
+             {
+               "ClientVersionBean": {
+                 "id": 10923,
+                 "status": "Retired",
+                 "version": "1.0",
+                 "createdBy": "platform.admin",
+                 "createdOn": "2023-06-12T13:41:15Z",
+                 "modifiedBy": "platform.admin",
+                 "modifiedOn": "2023-06-12T13:41:27Z",
+                 "publishedOn": "2023-06-12T13:41:28Z",
+                 "retiredOn": "2023-06-12T13:41:55Z",
+                 "apikey": "ed190df7-22b9-4925-8da1-cdb6ec46d603"
+               },
+               "Policies": [],
+               "Contracts": [
+                 {
+                   "id": 10928,
+                   "api": {
+                     "api": {
+                       "organization": {
+                         "id": "Organization1"
+                       },
+                       "id": "API1",
+                       "tags": []
+                     },
+                     "endpointProperties": {},
+                     "publicAPI": false,
+                     "discoverability": "ORG_MEMBERS",
+                     "plans": [],
+                     "version": "1.0",
+                     "parsePayload": false,
+                     "disableKeysStrip": false
+                   },
+                   "plan": {
+                     "plan": {
+                       "organization": {
+                         "id": "Organization1"
+                       },
+                       "id": "Plan1"
+                     },
+                     "version": "1.0"
+                   },
+                   "createdBy": "platform.admin",
+                   "createdOn": "2023-06-12T13:41:27Z",
+                   "status": "Created"
+                 }
+               ]
+             }
+           ]
+         }
+       ],
+       "Audits": []
+     }
+   ]
+ }
+----
+200
+Content-Type: text/plain;charset=utf-8
+X-RestTest-RegexMatching: true
+
+INFO: ----------------------------
+INFO: Starting apiman data import: .*apiman_import_migrated.*\.json
+INFO: Importing a user: platform.admin
+INFO: Importing a gateway: The Gateway
+INFO: Importing a role: Editor
+INFO: Importing a role: Organization-User-Manager
+INFO: Importing a role: Viewer
+INFO: Importing an organization: Organization1
+INFO:   Importing a role membership: platform.admin\+Editor=>Organization1
+INFO:   Importing a role membership: platform.admin\+Organization-User-Manager=>Organization1
+INFO:   Importing a plan: Plan1
+INFO:     Importing a plan version: 1.0
+INFO:     Importing an API: API1
+INFO:     Importing an API version: 1.0
+INFO: Importing an organization: Organization2
+INFO:   Importing a role membership: platform.admin\+Editor=>Organization2
+INFO:   Importing a role membership: platform.admin\+Organization-User-Manager=>Organization2
+INFO:   Importing a client: Client1
+INFO:     Importing a client version: 1.0
+INFO: Importing a client contract.
+INFO: Publishing APIs to the gateway.
+INFO:  Publishing API: Organization1 / API1 -> 1.0
+INFO: Registering clients in the gateway.
+INFO: -----------------------------------
+INFO: Data import completed successfully!
+INFO: -----------------------------------

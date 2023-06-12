@@ -2335,7 +2335,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 // Client
                 + " JOIN contractBean.client clientVersion "
                 + " JOIN clientVersion.client client "
-                + " JOIN api.organization clientOrg "
+                + " JOIN client.organization clientOrg "
                 // Check API status
                 + " WHERE (apiOrg.id = :orgId AND apiVersion.status = :apiStatus)"
                 // Check In-Org ClientApp status
@@ -2599,12 +2599,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
             "DELETE FROM ContractBean deleteBean " +
                 "   WHERE deleteBean IN ( " +
-                "       SELECT b " +
-                "           FROM ContractBean b " +
-                "           JOIN b.api apiVersion " +
+                "       SELECT contract " +
+                "           FROM ContractBean contract " +
+                "           JOIN contract.api apiVersion " +
                 "           JOIN apiVersion.api api " +
-                "           JOIN api.organization o " +
-                "       WHERE o.id = :orgId " +
+                "           JOIN api.organization apiOrg " +
+                "           JOIN contract.client clientVersion " +
+                "           JOIN clientVersion.client client " +
+                "           JOIN client.organization clientOrg " +
+                "       WHERE apiOrg.id = :orgId OR clientOrg.id = :orgId" +
                 "   )";
 
         Query query = getActiveEntityManager().createQuery(jpql);
