@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan name="delete and recreate" xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <!-- Create Test Data -->
+  <!-- One retired client with contract to an API in a different org -->
+  <testGroup name="Import Apiman Data">
+    <test name="Import Apiman Data">test-plan-data/apiman-2471/001_import.resttest</test>
+  </testGroup>
+
+  <!-- Delete Org -->
+  <testGroup name="Delete Organization">
+    <test name="Delete Org (with contract to different Org)">test-plan-data/apiman-2471/002_delete-org.resttest</test>
+  </testGroup>
+
+</testPlan>
