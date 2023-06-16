@@ -531,8 +531,8 @@ public class ApiService implements DataAccessUtilMixin {
                    return new ApiDefinitionStream(apiVersion.getDefinitionType(), defStream);
                }
                return new ApiDefinitionStream(
-                       apiVersion.getDefinitionType(),
-                       schemaRewriterService.rewrite(apiVersion, defStream, apiVersion.getDefinitionType()).asByteSource().openStream()
+                   apiVersion.getDefinitionType(),
+                   schemaRewriterService.rewrite(apiVersion, defStream).asByteSource().openStream()
                );
            }
        });
