@@ -119,7 +119,7 @@
     <version.commons-pool>1.6</version.commons-pool>
     <version.org.opensearch.opensearch>1.3.9</version.org.opensearch.opensearch>
     <version.com.zaxxer>2.7.9</version.com.zaxxer>
-    <version.com.google.guava>31.1-jre</version.com.google.guava>
+    <version.com.google.guava>32.0.0-jre</version.com.google.guava>
     <version.io.prometheus>0.0.13</version.io.prometheus>
     <version.joda-time>2.12.5</version.joda-time>
     <version.junit>4.13.2</version.junit>
