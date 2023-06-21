@@ -22,7 +22,7 @@ import {
   OnChanges,
   SimpleChanges
 } from '@angular/core';
-import { ConfigService } from '../../services/config/config.service';
+import { ConfigService } from '../../../services/config/config.service';
 
 @Component({
   selector: 'app-img-or-icon-selector',

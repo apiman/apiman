@@ -1,7 +1,7 @@
 = Apiman Quickstart
 Marc Savy <marc@rhymewithgravy.com>
 :gw-install-walkthrough: xref:vertx/install.adoc
-:docker-compose-distro: https://github.com/apiman/apiman-docker/releases/download/{apiman-version-release}/apiman-docker-compose-{apiman-version-release}.zip
+:docker-compose-distro: https://github.com/apiman/apiman/releases/download/{apiman-version-release}/apiman-docker-compose-{apiman-version-release}.zip
 
 == Docker Compose
 

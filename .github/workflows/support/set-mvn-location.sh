@@ -8,7 +8,7 @@
 #export SDKMAN_DIR="$HOME/.sdkman"; [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh" >> ~/.bashrc
 #export SDKMAN_DIR="$HOME/.sdkman"; [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh" >> ~/.bash_profile
 
-local mvnFunc='mvn-or-mvnw() {
+mvnFunc='mvn-or-mvnw() {
   local dir="$PWD"
   while [[ ! -x "$dir/mvnw" && "$dir" != / ]]; do
     dir="${dir:h}"
@@ -21,9 +21,9 @@ local mvnFunc='mvn-or-mvnw() {
   fi
 
   command mvn "$@"
-}' 
+}'
 
-echo $mvnFunc >> ~/.bash_profile 
-echo $mvnFunc >> ~/.bashrc 
+echo $mvnFunc >> ~/.bash_profile
+echo $mvnFunc >> ~/.bashrc
 alias mvn="mvn-or-mvnw" >> ~/.bash_profile
 alias mvn="mvn-or-mvnw" >> ~/.bash_profile

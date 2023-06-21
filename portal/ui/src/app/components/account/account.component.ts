@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Scheer PAS Schweiz AG
+ * Copyright 2023 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import { from, Observable, of } from 'rxjs';
 })
 export class AccountComponent implements OnInit {
   public userProfile$: Observable<KeycloakProfile | null> = of({});
-  public keycloakToken: KeycloakTokenParsed = {};
+  public keycloakToken?: KeycloakTokenParsed;
   public accountUrl = '';
   public apimanAccount$: Observable<ICurrentUser> = of({} as ICurrentUser);
 

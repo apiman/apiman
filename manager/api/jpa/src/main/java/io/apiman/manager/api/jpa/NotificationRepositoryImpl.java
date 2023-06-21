@@ -18,6 +18,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -56,7 +57,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
 
         searchCriteria.getFilters().add(recipientFilter);
 
-        return super.find(searchCriteria, List.of(new OrderByBean(true, NotificationEntity_.ID)), NotificationEntity.class, true);
+        return super.find(searchCriteria, Set.of(new OrderByBean(true, NotificationEntity_.ID)), NotificationEntity.class, true);
     }
 
     @Override
@@ -72,7 +73,7 @@ public class NotificationRepositoryImpl extends AbstractJpaStorage implements IN
              .setPaging(paging)
              .setOrder("id", false);
 
-        return super.find(searchCriteria, List.of(new OrderByBean(true, NotificationEntity_.ID)), NotificationEntity.class, true);
+        return super.find(searchCriteria, Set.of(new OrderByBean(true, NotificationEntity_.ID)), NotificationEntity.class, true);
     }
 
     @Override

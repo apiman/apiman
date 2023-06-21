@@ -753,7 +753,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
         SearchResultsBean<OrganizationBean> orgs = find(
                 criteria,
-                List.of(new OrderByBean(true, OrganizationBean_.ID)),
+                Set.of(new OrderByBean(true, OrganizationBean_.ID)),
                 constraintFunc,
                 OrganizationBean.class,
                 "org",
@@ -786,7 +786,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
 
         SearchResultsBean<ClientBean> result = find(criteria,
-                List.of(new OrderByBean(true, ClientBean_.ID), new OrderByBean(true, "organization.id")),
+                Set.of(new OrderByBean(true, ClientBean_.ID), new OrderByBean(true, "organization.id")),
                 constraintFunc,
                 ClientBean.class,
                 "client",
@@ -839,7 +839,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
 
         SearchResultsBean<ApiBean> result = find(
                 criteria,
-                List.of(new OrderByBean(true, "api.id"), new OrderByBean(true, "api.organization.id")),
+                Set.of(new OrderByBean(true, "api.id"), new OrderByBean(true, "api.organization.id")),
                 constraintFunc,
                 ApiBean.class,
                 "api",
@@ -882,7 +882,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
 
         SearchResultsBean<PlanBean> result = find(criteria,
-                List.of(new OrderByBean(true, PlanBean_.ID), new OrderByBean(true, "organization.id")),
+                Set.of(new OrderByBean(true, PlanBean_.ID), new OrderByBean(true, "organization.id")),
                 constraintFunc,
                 PlanBean.class,
                 "plan",
@@ -954,7 +954,8 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
         }
 
-        return find(criteria, List.of(new OrderByBean(true, AuditEntryBean_.ID)), AuditEntryBean.class, true);
+        // new OrderByBean(true, AuditEntryBean_.ID) -> don't need to do this twice, already done with criteria.setOrder
+        return find(criteria, Set.of(), AuditEntryBean.class, true);
     }
 
     /**
@@ -975,7 +976,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             criteria.addFilter("who", userId, SearchCriteriaFilterOperator.eq);
         }
 
-        return find(criteria, List.of(new OrderByBean(true, AuditEntryBean_.ID)), AuditEntryBean.class, true);
+        return find(criteria, Set.of(new OrderByBean(true, AuditEntryBean_.ID)), AuditEntryBean.class, true);
     }
 
     /**
@@ -1720,7 +1721,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         criteria.setOrder("orderIndex", false);
         criteria.setPage(1);
         criteria.setPageSize(1);
-        SearchResultsBean<PolicyBean> resultsBean = find(criteria, List.of(new OrderByBean(true, PolicyBean_.ID)), PolicyBean.class, true);
+        SearchResultsBean<PolicyBean> resultsBean = find(criteria, Set.of(new OrderByBean(true, PolicyBean_.ID)), PolicyBean.class, true);
         if (resultsBean.getBeans() == null || resultsBean.getBeans().isEmpty()) {
             return 0;
         } else {
@@ -1781,7 +1782,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public SearchResultsBean<UserBean> findUsers(SearchCriteriaBean criteria) throws StorageException {
-        return super.find(criteria, List.of(new OrderByBean(true, UserBean_.USERNAME)), UserBean.class, true);
+        return super.find(criteria, Set.of(new OrderByBean(true, UserBean_.USERNAME)), UserBean.class, true);
     }
 
     /**
@@ -1836,7 +1837,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @Override
     public SearchResultsBean<RoleBean> findRoles(SearchCriteriaBean criteria) throws StorageException {
-        return super.find(criteria, List.of(new OrderByBean(true, RoleBean_.ID)), RoleBean.class, true);
+        return super.find(criteria, Set.of(new OrderByBean(true, RoleBean_.ID)), RoleBean.class, true);
     }
 
     /**
@@ -2334,7 +2335,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 // Client
                 + " JOIN contractBean.client clientVersion "
                 + " JOIN clientVersion.client client "
-                + " JOIN api.organization clientOrg "
+                + " JOIN client.organization clientOrg "
                 // Check API status
                 + " WHERE (apiOrg.id = :orgId AND apiVersion.status = :apiStatus)"
                 // Check In-Org ClientApp status
@@ -2598,12 +2599,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         String jpql =
             "DELETE FROM ContractBean deleteBean " +
                 "   WHERE deleteBean IN ( " +
-                "       SELECT b " +
-                "           FROM ContractBean b " +
-                "           JOIN b.api apiVersion " +
+                "       SELECT contract " +
+                "           FROM ContractBean contract " +
+                "           JOIN contract.api apiVersion " +
                 "           JOIN apiVersion.api api " +
-                "           JOIN api.organization o " +
-                "       WHERE o.id = :orgId " +
+                "           JOIN api.organization apiOrg " +
+                "           JOIN contract.client clientVersion " +
+                "           JOIN clientVersion.client client " +
+                "           JOIN client.organization clientOrg " +
+                "       WHERE apiOrg.id = :orgId OR clientOrg.id = :orgId" +
                 "   )";
 
         Query query = getActiveEntityManager().createQuery(jpql);

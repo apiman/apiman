@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" name="Apiman #1214">
 
   <testGroup name="APIMAN-1214 Reproducer">
     <!-- Step #1 : Create Provider Org and API -->
@@ -25,7 +25,7 @@
     <test name="Register Client 2">test-plan-data/apiman-1214/014_register-client-2.resttest</test>
     <test name="Unregister Client 1">test-plan-data/apiman-1214/015_unregister-client-1.resttest</test>
     <test name="Unregister Client 2">test-plan-data/apiman-1214/016_unregister-client-2.resttest</test>
-    
+
   </testGroup>
 
 </testPlan>

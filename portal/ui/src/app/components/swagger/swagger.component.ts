@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Scheer PAS Schweiz AG
+ * Copyright 2023 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,16 +14,21 @@
  *  imitations under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HeroService } from '../../services/hero/hero.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '../../services/config/config.service';
 import SwaggerUI from 'swagger-ui';
 import { KeycloakHelperService } from '../../services/keycloak-helper/keycloak-helper.service';
-import { KeycloakService } from 'keycloak-angular';
 import { IUrlPath } from '../../interfaces/IUrlPath';
-import { IContract } from '../../interfaces/ICommunication';
+import { IApiVersion, IContract } from '../../interfaces/ICommunication';
+import { ApiService } from '../../services/api/api.service';
+import { forkJoin, Observable, of } from 'rxjs';
+import { BackendService } from '../../services/backend/backend.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-swagger',
@@ -33,20 +38,28 @@ import { IContract } from '../../interfaces/ICommunication';
 export class SwaggerComponent implements OnInit {
   private readonly apiKeyHeader = 'X-API-Key';
   endpoint = '';
-  isPublicApi = false;
   isTryEnabled = false;
-  contract: IContract = {} as IContract;
-  apiId = '';
-  apiVersion = '';
-  apiKey = '';
+  contract?: IContract;
+  imgSize = '40';
+  apiVersion: IApiVersion = {} as IApiVersion;
+
+  apiVersion$: Observable<IApiVersion> = of({} as IApiVersion);
+  contract$: Observable<IContract> = of({} as IContract);
+
+  @ViewChild('swagger-editor') swaggerEditorEl: HTMLElement = {} as HTMLElement;
 
   constructor(
     private route: ActivatedRoute,
+    private snackbar: SnackbarService,
+    private router: Router,
     private heroService: HeroService,
     private translator: TranslateService,
     private config: ConfigService,
+    private keycloak: KeycloakService,
     private keycloakHelperService: KeycloakHelperService,
-    private keycloakService: KeycloakService
+    private apiService: ApiService,
+    private backendService: BackendService,
+    private cdr: ChangeDetectorRef
   ) {
     this.endpoint = config.getEndpoint();
   }
@@ -54,25 +67,70 @@ export class SwaggerComponent implements OnInit {
   /**
    * Load the swagger definition and display it with the swagger ui bundle library on component initialization
    */
-  async ngOnInit(): Promise<void> {
-    const { organizationId, apiId, apiVersion } = this.getRouteParams();
-    const urls: IUrlPath = {
-      urlPath: `${this.endpoint}/devportal/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`,
-      loggedInUrlPath: `${this.endpoint}/devportal/protected/organizations/${organizationId}/apis/${apiId}/versions/${apiVersion}/definition`
-    };
-
-    this.apiId = apiId;
-    this.apiVersion = apiVersion;
-
+  ngOnInit() {
     this.heroService.setUpHero({
       title: this.translator.instant('COMMON.API_DOCS') as string,
       subtitle: ``
     });
+    this.handleRouteParams();
+    forkJoin([
+      this.apiVersion$,
+      this.contract$,
+      this.keycloak.isLoggedIn()
+    ]).subscribe({
+      next: ([apiVersion, contract, isLoggedIn]) => {
+        this.apiVersion = apiVersion;
+        this.contract = contract?.id ? contract : undefined;
+        this.isTryEnabled = this.apiVersion.publicAPI || !!this.contract;
+        this.imgSize = this.contract ? '70' : '40';
+        this.initSwaggerUi(isLoggedIn);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error(err);
+        this.snackbar.showErrorSnackBar(
+          this.translator.instant('SNACKBAR_ERROR_NO_PERMISSIONS') as string
+        );
+        void this.router.navigate(['/home']);
+      }
+    });
+  }
 
-    let definitionUrl = urls.urlPath;
-    if (await this.keycloakService.isLoggedIn()) {
-      definitionUrl = urls.loggedInUrlPath;
+  private handleRouteParams() {
+    const apiOrgId = this.route.snapshot.paramMap.get('orgId') ?? '';
+    const apiId = this.route.snapshot.paramMap.get('apiId') ?? '';
+    const apiVersion = this.route.snapshot.paramMap.get('apiVersion') ?? '';
+
+    this.apiVersion$ = this.apiService.getApiVersion(
+      apiOrgId,
+      apiId,
+      apiVersion
+    );
+
+    const clientOrgId = this.route.snapshot.queryParamMap.get('clientOrgId');
+    const clientId = this.route.snapshot.queryParamMap.get('clientId');
+    const clientVersion =
+      this.route.snapshot.queryParamMap.get('clientVersion');
+    const contractId = this.route.snapshot.queryParamMap.get('contractId');
+
+    if (clientOrgId && clientId && clientVersion && contractId) {
+      this.contract$ = this.backendService.getContract(
+        clientOrgId,
+        clientId,
+        clientVersion,
+        contractId
+      );
     }
+  }
+
+  private initSwaggerUi(isLoggedIn: boolean) {
+    const apiOrgId = this.apiVersion.api.organization.id;
+    const apiId = this.apiVersion.api.id;
+    const apiVersion = this.apiVersion.version;
+    const urls: IUrlPath = {
+      urlPath: `${this.endpoint}/devportal/organizations/${apiOrgId}/apis/${apiId}/versions/${apiVersion}/definition`,
+      loggedInUrlPath: `${this.endpoint}/devportal/protected/organizations/${apiOrgId}/apis/${apiId}/versions/${apiVersion}/definition`
+    };
+    const definitionUrl = isLoggedIn ? urls.loggedInUrlPath : urls.urlPath;
 
     const swaggerOptions: SwaggerUI.SwaggerUIOptions = {
       dom_id: '#swagger-editor',
@@ -84,33 +142,35 @@ export class SwaggerComponent implements OnInit {
       supportedSubmitMethods: this.getSupportedMethods(),
       requestInterceptor: (request: SwaggerUI.Request) => {
         this.setAuthorizationHeader(request);
-        this.setApiKeyHeader(this.apiKey, request);
+        this.setApiKeyHeader(request);
         return request;
       },
       responseInterceptor: (response: SwaggerUI.Response) => {
         return response;
       },
       onComplete: () => {
-        swaggerUI.preauthorizeApiKey(this.apiKeyHeader, this.apiKey);
+        swaggerUI.preauthorizeApiKey(
+          this.apiKeyHeader,
+          this.contract?.client.apikey
+        );
       }
     };
 
     this.setDisableAuth(swaggerOptions);
-
-    // Loads the swagger ui with its options
-    const swaggerUI = SwaggerUI(swaggerOptions);
+    this.cdr.detectChanges();
+    const swaggerUI: SwaggerUI = SwaggerUI(swaggerOptions);
   }
 
-  private setApiKeyHeader(apiKey: string | null, request: SwaggerUI.Request) {
-    if (!this.isPublicApi && apiKey != null) {
+  private setApiKeyHeader(request: SwaggerUI.Request) {
+    if (this.contract) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      request.headers[this.apiKeyHeader] = apiKey;
+      request.headers[this.apiKeyHeader] = this.contract.client.apikey;
     }
   }
 
   private setAuthorizationHeader(request: SwaggerUI.Request) {
     const token = this.keycloakHelperService.getToken();
-    if (token.length > 0) {
+    if (token && token.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       request.headers.Authorization = 'Bearer ' + token;
     }
@@ -125,32 +185,6 @@ export class SwaggerComponent implements OnInit {
       swaggerOptions.plugins = [];
       swaggerOptions.plugins.push(DisableAuthorizePlugin);
     }
-  }
-
-  private getRouteParams() {
-    const organizationId = this.route.snapshot.paramMap.get('orgId') ?? '';
-    const apiId: string = this.route.snapshot.paramMap.get('apiId') ?? '';
-    const apiVersion = this.route.snapshot.paramMap.get('apiVersion') ?? '';
-    const contractId =
-      this.route.snapshot.queryParamMap.get('contractId') ?? '';
-
-    this.contract = JSON.parse(
-      sessionStorage.getItem(`APIMAN_DEVPORTAL-${contractId}`) as string
-    ) as IContract;
-
-    if (contractId && this.contract.id) {
-      this.apiKey = this.contract.client.apikey;
-    }
-
-    this.isPublicApi = JSON.parse(
-      this.route.snapshot.queryParamMap.get('publicApi') ?? 'false'
-    ) as boolean;
-
-    this.isTryEnabled = JSON.parse(
-      this.route.snapshot.queryParamMap.get('try') ?? 'false'
-    ) as boolean;
-
-    return { organizationId, apiId, apiVersion };
   }
 
   private getSupportedMethods(): SwaggerUI.SupportedHTTPMethods[] {

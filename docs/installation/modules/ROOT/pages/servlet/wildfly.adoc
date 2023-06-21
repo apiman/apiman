@@ -101,6 +101,6 @@ If you followed this tutorial, it will be at http://localhost:8085/admin/
 == Installing using Docker
 
 * We have a variety of Docker images available with Apiman broken into its components.
-You can find them at: https://github.com/apiman/apiman-docker/#apiman-docker-images[apiman/apiman-docker^].
+You can find them at: https://github.com/apiman/apiman/tree/{apiman-version-release}/containers[apiman/apiman-docker^].
 
 * xref:/quickstart.adoc[Refer to our Docker Compose quickstart guide] for a full Docker setup that is already configured for you.

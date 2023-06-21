@@ -20,7 +20,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringJoiner;
 import javax.inject.Inject;
 
@@ -88,21 +90,21 @@ public class SchemaRewriterService {
     public SchemaRewriterService() {
     }
 
-    public FileBackedOutputStream rewrite(ApiVersionBean avb, InputStream is, ApiDefinitionType type) throws Exception {
+    public FileBackedOutputStream rewrite(ApiVersionBean avb, InputStream is) throws Exception {
         var ctx = new ProviderContext(
                 storage,
                 query,
                 avb,
                 gatewayLinkFactory
         );
-        var cacheKey = new SchemaCacheKey(ctx.getAvb().getId(), type);
+        var cacheKey = new SchemaCacheKey(ctx.getAvb().getId(), ctx.getAvb().getModifiedOn());
         // Due to checked exceptions, can't use the `#get(key, (cache) -> { lambda });` form
         @PolyNull FileBackedOutputStream cachedEntry = SCHEMA_CACHE.getIfPresent(cacheKey);
         if (cachedEntry != null) {
             return cachedEntry;
         } else {
-            ApiDefinitionProvider handler = SCHEMA_HANDLERS.getOrDefault(type, PASSTHROUGH_PROVIDER);
-            String rewritten = handler.rewrite(ctx, is, type);
+            ApiDefinitionProvider handler = SCHEMA_HANDLERS.getOrDefault(avb.getDefinitionType(), PASSTHROUGH_PROVIDER);
+            String rewritten = handler.rewrite(ctx, is, avb.getDefinitionType());
             FileBackedOutputStream fbos = new FileBackedOutputStream(Math.toIntExact(FileUtils.ONE_KB * 256));
             fbos.write(rewritten.getBytes(StandardCharsets.UTF_8));
             SCHEMA_CACHE.put(cacheKey, fbos);
@@ -124,27 +126,40 @@ public class SchemaRewriterService {
 
     private static class SchemaCacheKey {
         private final long apiVersionId;
-        private final ApiDefinitionType apiDefinitionType;
+        private final Date modifiedOn;
 
-        private SchemaCacheKey(long apiVersionId, ApiDefinitionType apiDefinitionType) {
+        private SchemaCacheKey(long apiVersionId, Date modifiedOn) {
             this.apiVersionId = apiVersionId;
-            this.apiDefinitionType = apiDefinitionType;
+            this.modifiedOn = modifiedOn;
         }
 
         public long getApiVersionId() {
             return apiVersionId;
         }
 
-        public ApiDefinitionType getApiDefinitionType() {
-            return apiDefinitionType;
+        public Date getModifiedOn() {
+            return modifiedOn;
         }
 
         @Override
         public String toString() {
             return new StringJoiner(", ", SchemaCacheKey.class.getSimpleName() + "[", "]")
                            .add("apiVersionId=" + apiVersionId)
-                           .add("apiDefinitionType=" + apiDefinitionType)
+                           .add("modifiedOn=" + modifiedOn)
                            .toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            SchemaCacheKey that = (SchemaCacheKey) o;
+            return apiVersionId == that.apiVersionId && Objects.equals(modifiedOn, that.modifiedOn);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(apiVersionId, modifiedOn);
         }
     }
 }

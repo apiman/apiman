@@ -49,13 +49,13 @@ All requests to the API Gateway WAR are assumed to be intended for managed APIs 
 
 * The Apiman source code is located in GitHub here: https://github.com/apiman/apiman
 
-* Source code for the Apiman policies can be found here: https://github.com/apiman/apiman-plugins
+* Source code for the Apiman policies can be found here: https://github.com/apiman/apiman/tree/{apiman-version-release}/plugins
 
 * Source code for the Apiman project website is here: https://github.com/apiman/apiman.github.io
 
-* The official Apiman docker files are currently here: https://github.com/apiman/apiman-docker
+* The official Apiman docker files are currently here: https://github.com/apiman/apiman/tree/{apiman-version-release}/containers
 
-* Source code for the Apiman Developer Portal can be found here: https://github.com/apiman/apiman-developer-portal
+* Source code for the Apiman Developer Portal can be found here: https://github.com/apiman/apiman/tree/{apiman-version-release}/portal
 
 == Issue Tracking
 

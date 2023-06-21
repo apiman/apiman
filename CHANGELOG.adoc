@@ -2,8 +2,36 @@
 
 All notable changes to Apiman will be documented here (as of Apiman 3).
 
+// tag::3.2.0-SNAPSHOT[]
+== 3.2.0-SNAPSHOT
+
+=== Added
+
+=== Changed
+
+* A large number of dependencies have been updated across the Apiman codebase in order to improve security. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+=== Removed
+
+=== Fixed
+
+* [portal]: show REST API documentation even when user not logged in.
+By https://github.com/bastiangem[Bastian Gembalczyk (@BastianGem)^] and https://github.com/volkflo[Florian Volk (@volkflo)^].
+
+* [gateway-vertx]: do not include `null`/empty path elements in Keycloak discovery URI.
+If your Vert.x Gateway API was unable to speak to Keycloak because it had an unexpected `null` in the URI, this should fix it. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+* [distro-ddl]: Multiple small MSSQL (Microsoft SQL Server) DDL fixes.
+If you are using MSSQL, you should set the Java system property `hibernate.auto_quote_keyword=true` — in WildFly you can put this into the `properties` section of `standalone-apiman.xml`.
+
+// end::3.2.0-SNAPSHOT[]
+
+== 3.1.1.Final
+
+* No changes, this additional release was needed due to a problem with Apiman's CI/CD pipelines.
+
 // tag::3.1.0.Final[]
-== 3.1.0-SNAPSHOT
+== 3.1.0.Final
 
 === Added
 
@@ -15,13 +43,28 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 * [manager-api-rest]: Apiman Manager API now has an OpenAPI v3 schema! You can access this at `/openapi.json` or `/openapi.yml`. For example, http://localhost:8080/apiman/openapi.json. By https://github.com/msavy[Marc Savy (@msavy)^].
 
+* Default plugin registry and API catalogue JSON files are now in the GitHub release, rather than directly in the repository. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+* Converted Apiman into a monorepo (as far as possible). Apiman plugins, default API catalogue, default plugin registry, developer portal, docker images, amongst others, have been painstakingly merged in. CI pipelines have also been updated to reflect this. Multi-repository releases are difficult with GitHub CI, so this will hopefully make more frequent releases much easier. By https://github.com/msavy[Marc Savy (@msavy)^].
+
 === Removed
 
 * [manager-api-rest]: Removed obsolete Qmino API documentation generator. I would like to thank the Qmino team for their support over the years. By https://github.com/msavy[Marc Savy (@msavy)^].
 
 === Fixed
 
-**Full Changelog**: link:https://github.com/apiman/apiman/compare/3.0.0.Final...3.1.0-SNAPSHOT[3.0.0.Final...3.1.0-SNAPSHOT]
+* fix[gateway-vertx]: in Keycloak discovery code `getAllowedIssuers` check was mistakenly inverted. By https://www.github.com/ronimhd[ronimhd].
+
+* fix[manager-api]: register subtypes for deserializing policy probe response, this step was
+inadvertently removed during refactoring. By https://github.com/volkflo[Florian Volk (@volkflo)^].
+
+* fix[ui]: move validation function for IP list into validate function to ensure list valid when switching between IP policies. By https://github.com/volkflo[Florian Volk (@volkflo)^].
+
+* fix[gateway-engine-es]: throw ClientNotFoundException if client not found when unregistering. By https://github.com/volkflo[Florian Volk (@volkflo)^].
+
+* [manager-api]: Perform unregister only if client is in correct state. By https://github.com/volkflo[Florian Volk (@volkflo)^].
+
+**Full Changelog**: link:https://github.com/apiman/apiman/compare/3.0.0.Final...3.1.0.Final[3.0.0.Final...3.1.0.Final]
 // end::3.1.0.Final[]
 
 // tag::3.0.0.Final[]

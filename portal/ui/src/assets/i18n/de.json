@@ -25,7 +25,8 @@
     "LOGOUT": "Abmelden",
     "VERSION": "Version",
     "OF": "von",
-    "AGREEMENT": "Zustimmung"
+    "AGREEMENT": "Zustimmung",
+    "IP_ADDRESS": "IP-Adresse"
   },
   "HOME": {
     "TITLE": "API Entwickler Portal",
@@ -38,7 +39,8 @@
     "SEARCH": "APIs und Tags",
     "LEARN_MORE": "Mehr",
     "NO_DESC": "Keine API-Beschreibung verfügbar",
-    "ERROR_WHILE_FETCHING_APIS": "Es konnten nicht alle APIs geladen werden."
+    "ERROR_WHILE_FETCHING_APIS": "Es konnten nicht alle APIs geladen werden.",
+    "NUM_PUBLISHED_TOOLTIP": "API Versionen veröffentlicht"
   },
   "ACCOUNT": {
     "TITLE": "Benutzerkonto",
@@ -65,8 +67,7 @@
     },
     "API_MANAGEMENT": {
       "TITLE": "Scheer PAS API Management",
-      "NO_PERMISSIONS": "Sie haben derzeit keine API Management Berechtigungen",
-      "VERSION": "Version"
+      "NO_PERMISSIONS": "Sie haben derzeit keine API Management Berechtigungen"
     }
   },
   "CLIENTS": {
@@ -107,7 +108,9 @@
     "CLIENT_TOOLTIP": "Client Organization: {{ client.organization.name }}\nClient Name (Version): {{ client.name }} ({{ version }})",
     "API_TOOLTIP": "API Organization: {{ api.api.organization.name }}\nAPI Name (Version): {{ api.api.name }} ({{ api.version }})\nPlan Name (Version): {{ plan.plan.name }} ({{ plan.version }})",
     "REGISTER": "Client registrieren",
-    "NO_CONTRACTS": "Für diesen Client wurden keine Verträge abgeschlossen"
+    "NO_CONTRACTS": "Für diesen Client wurden keine Verträge abgeschlossen",
+    "NO_ENDPOINT": "Derzeit ist kein API-Endpunkt verfügbar",
+    "POLICY_ERROR": "Beim Abrufen der Policydaten ist ein Fehler aufgetreten"
   },
   "WIZARD": {
     "FIRST_STEP_LABEL": "Client auswählen/erstellen",
@@ -131,21 +134,21 @@
   "POLICIES": {
     "RateLimitingPolicy": {
       "TITLE": "Rate Limiting Policy",
-      "DESCRIPTION": "Die Anfragefrequenz wird beschränkt auf <b>{{limit}}</b> Anfragen pro <b>{{timeUnit}}</b>",
+      "DESCRIPTION": "Die Anfragefrequenz wird beschränkt auf <b>{{limit}}</b> Anfragen pro <b>{{timeUnit}}</b> pro <b>{{granularity}}</b>",
       "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Beschränkung:",
       "LIMIT": "Beschränkung (pro Zeit)",
       "REMAINING": "Verbleibende Anzahl Anfragen",
       "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird (in Sekunden)",
-      "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> Anfragen pro <span class='bold'>{{timeUnit}}</span>"
+      "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> Anfragen pro <span class='bold'>{{timeUnit}}</span> pro <span class='bold'>{{granularity}}</span>"
     },
     "TransferQuotaPolicy": {
       "TITLE": "Transfer Quota Policy",
-      "DESCRIPTION": "Es können maximal <b>{{limit}}<b> Daten pro <b>{{timeUnit}}</b> konsumiert werden",
+      "DESCRIPTION": "Es können maximal <b>{{limit}}<b> Daten pro <b>{{timeUnit}}</b> pro <b>{{granularity}}</b> konsumiert werden",
       "MORE_INFO": "Die folgenden Header enthalten nützliche Informationen bzgl. der Beschränkung:",
       "LIMIT": "Maximale Datenmenge (pro Zeiteinheit in Bytes)",
       "REMAINING": "Verbleibende Datenmenge (in Bytes)",
       "RESET": "Verbleibende Zeit, bis die Beschränkung zurückgesetzt wird (in Sekunden)",
-      "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> Daten pro <span class='bold'>{{timeUnit}}</span>"
+      "CONDITION_LIGHT": "<span class='bold'>{{limit}}</span> Daten pro <span class='bold'>{{timeUnit}}</span> pro <span class='bold'>{{granularity}}</span>"
     },
     "PERIODS": {
       "SECOND": "Sekunde",
@@ -156,7 +159,8 @@
       "YEAR": "Jahr"
     },
     "USAGE": "Verbrauch",
-    "UNLIMITED": "Unbegrenzt"
+    "UNLIMITED": "Unbegrenzt",
+    "IP_GRANULARITY_EXPLANATION": "Diese Policy wurde pro IP-Adresse konfiguriert.\nBitte geben Sie eine IP-Adresse an, um den Status abzufragen:"
   },
   "DESCRIPTIONS": {
     "TRY_IT_OUT": "Öffnet die Open API Defintion (Swagger). Hier können Sie Testaufrufe auf die API durchführen.",
@@ -191,6 +195,7 @@
   },
   "API_DETAILS": {
     "PLANS": "Pläne",
+    "PLAN_REQUIRES_APPROVAL": "Dieser Plan muss freigegeben werden",
     "KEY_FEATURES": "Vorteile",
     "EXTENDED_DESCRIPTION": "Ausführliche Beschreibung",
     "NO_EXT_DESCRIPTION": "Für diese API wurde keine ausführliche Beschreibung hinterlegt",
@@ -232,5 +237,6 @@
       "ALL": "Alle"
     },
     "NO_DATA": "Es sind keine Benachrichtigungen vorhanden!"
-  }
+  },
+  "SNACKBAR_ERROR_NO_PERMISSIONS": "Sie haben nicht genügend Berechtigungen, um diese Seite aufzurufen."
 }

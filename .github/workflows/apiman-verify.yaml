@@ -6,7 +6,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master, 2.x]
+    branches: [master, 3.x, 2.x]
   pull_request:
     paths-ignore:
       - '.github/**'
@@ -14,7 +14,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master, 2.x]
+    branches: [master, 3.x, 2.x]
 
 defaults:
   run:
@@ -101,7 +101,7 @@ jobs:
         with:
           paths: '**/target/surefire-reports/TEST-*.xml'
         if: always()
-        
+
       - name: Upload test summary
         uses: actions/upload-artifact@v3
         with:
@@ -206,22 +206,34 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Collecting release assets
+        run: |
+          mkdir -p /tmp/releases
+          cp containers/docker-compose/target/apiman-docker-compose-$APIMAN_VERSION.zip /tmp/releases/
+          cp distro/wildfly/target/apiman-distro-wildfly-$APIMAN_VERSION-overlay.zip /tmp/releases/
+          cp distro/vertx/target/apiman-distro-vertx-$APIMAN_VERSION.zip /tmp/releases/
+          cp distro/tomcat/target/apiman-distro-tomcat-$APIMAN_VERSION-overlay.zip /tmp/releases/
+          cp api-catalog/catalog.json /tmp/releases/apiman-api-catalog.json
+          cp plugins/plugin-registry/target/classes/registry.json /tmp/releases/apiman-plugin-registry.json
+
       - name: Create/update GitHub snapshot release ${{ env.APIMAN_VERSION }}
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.APIMAN_VERSION }}
           name: ${{ env.APIMAN_VERSION }}
           body: | 
-            Snapshot ${{ env.APIMAN_VERSION }}. This is not a production-grade release!
+            Snapshot ${{ env.APIMAN_VERSION }}. **This is not a production-grade release!**
             
             Each time a snapshot of this version is built in CI, the artifacts in this release will be replaced.
             The date you see on the release itself may therefore be misleading.
+            
+            You can refer to CHANGELOG.adoc in the attached release files if you want to see the changes when the
+            snapshot was created.
+
           prerelease: true
           files: |
-            distro/wildfly/target/apiman-distro-wildfly-${{ env.APIMAN_VERSION }}-overlay.zip
-            distro/vertx/target/apiman-distro-vertx-${{ env.APIMAN_VERSION }}.zip
-            distro/tomcat/target/apiman-distro-tomcat-${{ env.APIMAN_VERSION }}-overlay.zip
-            containers/docker-compose/target/apiman-distro-docker-compose-${{ env.APIMAN_VERSION }}.zip
+            CHANGELOG.adoc
+            /tmp/releases/* 
 
   publish-docker-images:
     needs: [build-verify, publish-snapshots]

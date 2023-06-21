@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan" name="IDM">
 
   <!--  Auditing is tested in: test-plans/all-testPlan.xml-->
 
@@ -33,7 +33,7 @@
     <test name="Search All Roles">test-plan-data/idm/manage/006_search-all-roles.resttest</test>
     <test name="Get All Roles">test-plan-data/idm/manage/007_get-all-roles.resttest</test>
   </testGroup>
-  
+
   <!-- Now grant some memberships -->
   <testGroup name="Manage Memberships">
     <test name="Create Org 1">test-plan-data/idm/memberships/001_create-org-1.resttest</test>
@@ -86,5 +86,5 @@
     <test name="Get editable Clients again (Not Authorized)">test-plan-data/idm/clients/006_getEditableClientsAgain-user1-not-allowed.resttest</test>
     <test name="Get viewable Clients (Not Authorized)">test-plan-data/idm/clients/007_getViewableClients-user1-not-allowed.resttest</test>
   </testGroup>
-  
+
 </testPlan>

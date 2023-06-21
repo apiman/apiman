@@ -23,7 +23,7 @@
     <dependencySet>
       <outputDirectory>modules/com/mysql/main</outputDirectory>
       <includes>
-        <include>mysql:mysql-connector-java:jar</include>
+        <include>com.mysql:mysql-connector-j:jar</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>
@@ -203,7 +203,10 @@
     <fileSet>
       <directory>src/main/resources/overlay</directory>
       <outputDirectory></outputDirectory>
-      <filtered>false</filtered>
+      <filtered>true</filtered>
+      <nonFilteredFileExtensions>
+        <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+      </nonFilteredFileExtensions>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
       <excludes>

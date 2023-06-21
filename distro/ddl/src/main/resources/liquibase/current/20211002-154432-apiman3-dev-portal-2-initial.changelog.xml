@@ -61,7 +61,7 @@
             </column>
             <column name="created_on" type="TIMESTAMP"/>
             <column name="modified_on" type="TIMESTAMP"/>
-            <column name="payload" type="JSON">
+            <column name="payload" type="${apiman_json}">
                 <constraints nullable="false"/>
             </column>
             <column name="reason" type="VARCHAR(255)">
@@ -206,13 +206,14 @@
     </changeSet>
     <changeSet author="msavy (generated)" id="1633542267834-7">
         <createTable tableName="outbox">
+            <!-- TODO in v4 just remove auto-increment -->
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="outboxPK"/>
             </column>
             <column name="event_version" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="payload" type="JSON">
+            <column name="payload" type="${apiman_json}">
                 <constraints nullable="false"/>
             </column>
             <column name="source" type="VARCHAR(255)">
