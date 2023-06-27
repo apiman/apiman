@@ -22,7 +22,11 @@ By https://github.com/bastiangem[Bastian Gembalczyk (@BastianGem)^] and https://
 If your Vert.x Gateway API was unable to speak to Keycloak because it had an unexpected `null` in the URI, this should fix it. By https://github.com/msavy[Marc Savy (@msavy)^].
 
 * [distro-ddl]: Multiple small MSSQL (Microsoft SQL Server) DDL fixes.
-If you are using MSSQL, you should set the Java system property `hibernate.auto_quote_keyword=true` — in WildFly you can put this into the `properties` section of `standalone-apiman.xml`.
+If you are using MSSQL, you should set the Java system property `hibernate.auto_quote_keyword=true` — in WildFly you can put this into the `properties` section of `standalone-apiman.xml`. By https://github.com/msavy[Marc Savy (@msavy)^].
+
+* [manager-api-jpa]: Allow deletion of org with contracts. It should be possible to delete an organization with retired entities. By https://github.com/volkflo[Florian Volk (@volkflo)^].
+
+* [gateway-engine-vertx]: Ensure API is resolved before using it. An old contribution did not respect asynchronous patterns properly. By https://github.com/msavy[Marc Savy (@msavy)^].
 
 // end::3.2.0-SNAPSHOT[]
 
