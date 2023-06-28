@@ -199,7 +199,7 @@ services:
       - traefik.http.services.elasticsearch-service.loadbalancer.server.port=9200
 
   keycloak:
-    image: quay.io/keycloak/keycloak:21.1.1
+    image: quay.io/keycloak/keycloak:21.1.2
     depends_on:
       - postgres
     entrypoint: [ '/bin/bash', '-c' ]
@@ -268,7 +268,7 @@ services:
       - traefik.http.services.mailserver-service.loadbalancer.server.port=1080
 
   reverse-proxy:
-    image: traefik:v2.8.3
+    image: traefik:v2.10.3
     command:
       - --entrypoints.http.address=:8080
       - --entrypoints.https.address=:8443
