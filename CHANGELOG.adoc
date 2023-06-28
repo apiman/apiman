@@ -2,8 +2,8 @@
 
 All notable changes to Apiman will be documented here (as of Apiman 3).
 
-// tag::3.2.0-SNAPSHOT[]
-== 3.2.0-SNAPSHOT
+// tag::3.1.2.Final[]
+== 3.1.2.Final
 
 === Added
 
@@ -28,11 +28,13 @@ If you are using MSSQL, you should set the Java system property `hibernate.auto_
 
 * [gateway-engine-vertx]: Ensure API is resolved before using it. An old contribution did not respect asynchronous patterns properly. By https://github.com/msavy[Marc Savy (@msavy)^].
 
-// end::3.2.0-SNAPSHOT[]
+// end::3.1.2.Final[]
 
+// tag::3.1.1.Final[]
 == 3.1.1.Final
 
 * No changes, this additional release was needed due to a problem with Apiman's CI/CD pipelines.
+// end::3.1.1.Final[]
 
 // tag::3.1.0.Final[]
 == 3.1.0.Final
