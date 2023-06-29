@@ -75,6 +75,8 @@ services:
         -Dapiman.auth.url=${KEYCLOAK_PRIVATE_ENDPOINT}
         -Dapiman.auth.realm=${KEYCLOAK_REALM}
         -Dapiman.auth.gateway.secret=${KEYCLOAK_GATEWAY_SECRET}
+        -Dapiman.auth.public-endpoint=${KEYCLOAK_PUBLIC_ENDPOINT:-}
+        -Dapiman.auth.private-endpoint=${KEYCLOAK_PRIVATE_ENDPOINT:-}
         -DallowSelfSigned=${SELF_SIGNED}
         -DallowAnyHost=${SELF_SIGNED}
         -DcachingPolicy.maxCacheSize=${MAX_CACHE_SIZE_IN_MB}

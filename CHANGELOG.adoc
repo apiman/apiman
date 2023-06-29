@@ -7,13 +7,22 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Added
 
+* [gateway-vertx]: you can add a list of additional `allowed-issuers` in your Gateway API Keycloak Authentication config.
+This better supports situations where your Keycloak server returns multiple different issuers, for example for internal
+vs external domains, Docker, K8s, etc. By https://github.com/msavy[Marc Savy (@msavy)^].
+
 === Changed
 
 * A large number of dependencies have been updated across the Apiman codebase in order to improve security. By https://github.com/msavy[Marc Savy (@msavy)^].
 
+* [containers/docker-compose]: to support a change in Keycloak's behaviour, we now set `allowed-issuers` in the Vert.x
+Gateway API authentication configuration to allow both internal and external issuers. By https://github.com/msavy[Marc Savy (@msavy)^].
+
 === Removed
 
 === Fixed
+
+* [gateway-vertx]: array values are now always correctly substituted in Vert.x Gateway configuration. By https://github.com/msavy[Marc Savy (@msavy)^].
 
 * [portal]: show REST API documentation even when user not logged in.
 By https://github.com/bastiangem[Bastian Gembalczyk (@BastianGem)^] and https://github.com/volkflo[Florian Volk (@volkflo)^].

@@ -220,6 +220,40 @@ For more advanced setups, the environment variables/system properties may not be
 
 ==== Vert.x Gateway
 
+===== Additional OAuth2 issuers
+
+A common issue is that your issuers may appear different depending upon how your network is configured.
+
+For example, proxies, Docker internal vs external networks, Kubernetes, etc.
+
+To get around this, you can set additional accepted issuers via `allowed-issuers`:
+
+[source,json]
+----
+{
+ // <Other sections>
+
+ "auth": {
+    "type": "keycloak",
+    "config": {
+      "flowType": "PASSWORD",
+      "requiredRole": "realm:apipublisher",
+      "auth-server-url": "${apiman.auth.url:-http://localhost:8085}",
+      // You can add extra issuers here; this can be very useful if
+      // your setup has internal vs external issuers, and you need to
+      // support both simultaneously.
+      "allowed-issuers": [
+        "${apiman.auth.public-endpoint:-}",
+        "${apiman.auth.private-endpoint:-}",
+        "http://example.com:8080/"
+      ]
+    }
+  }
+}
+----
+
+===== Manual setup
+
 If you don't want to use the default discovery mechanism, then for the Vert.x gateway, the simplest way to retrieve the necessary configuration is to generate it from your Keycloak server administrator console.
 
 The gateway accepts Keycloak's generated JSON, allowing you to paste your chosen client configuration from the Keycloak console into the `auth.config` section.
