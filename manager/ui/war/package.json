@@ -76,7 +76,7 @@
     "@types/luxon": "2.3.2",
     "@types/swagger-ui": "3.52.0",
     "@types/urijs": "1.19.17",
-    "@types/webpack-env": "1.16.4",
+    "@types/webpack-env": "1.18.1",
     "copy-webpack-plugin": "9.1.0",
     "css-loader": "6.7.3",
     "cypress": "10.7.0",
