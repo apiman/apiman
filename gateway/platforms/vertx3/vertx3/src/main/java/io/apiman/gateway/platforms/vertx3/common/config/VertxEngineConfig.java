@@ -47,10 +47,13 @@ import io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory;
 import io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.apiman.gateway.platforms.vertx3.logging.VertxLoggerDelegate;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrSubstitutor;
+
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,9 +64,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.StrSubstitutor;
 
 
 /**
@@ -324,20 +324,20 @@ public class VertxEngineConfig implements IEngineConfig {
             return Collections.emptyMap();
 
         Map<String, String> outMap = new LinkedHashMap<>();
-        jsonMapToProperties("", new JsonObject(jsonObject.encode()).getMap(), outMap);
+        jsonMapToProperties("", new JsonObject(jsonObject.encode()), outMap);
         return outMap;
     }
 
     @SuppressWarnings("unchecked")
     protected void jsonMapToProperties(String pathSoFar, Object value, Map<String, String> output) {
-        if (value instanceof Map) {
+        if (value instanceof JsonObject) {
             // Descend again
-            Map<String, Object> map = (Map<String, Object>) value;
-            map.forEach((key, value1) -> jsonMapToProperties(determineKey(pathSoFar, key), value1, output));
-        } else if (value instanceof List) {
+            JsonObject map = (JsonObject) value;
+            map.forEach((mapEntry) -> jsonMapToProperties(determineKey(pathSoFar, mapEntry.getKey()), mapEntry.getValue(), output));
+        } else if (value instanceof JsonArray) {
             // Join objects and descend
-            List<Object> list = (List<Object>) value;
-            list.forEach(elem -> jsonMapToProperties(pathSoFar, elem, output));
+            JsonArray array = (JsonArray) value;
+            array.forEach(elem -> jsonMapToProperties(pathSoFar, elem, output));
         } else {
             // Value
             if (output.containsKey(pathSoFar)) {
@@ -470,19 +470,30 @@ public class VertxEngineConfig implements IEngineConfig {
                 .collect(Collectors.toList());
     }
 
-    protected void substituteLeafVars(JsonObject node) {
-        node.forEach(elem -> {
-           Object value = elem.getValue();
-           if (value instanceof JsonObject) {
-               // If still a JSON object, we haven't reached the leaf yet, so keep recursing.
-               substituteLeafVars((JsonObject) value);
-           } else if (value instanceof String) {
-               // Use substitutor to replace the value, looking in various locations such as sys props and env
-               String newValue = SUBSTITUTOR.replace((String) value);
-               node.put(elem.getKey(), newValue);
-               logger.trace("Variable substitution: {0} = ({1} -> {2})", elem.getKey(), value, newValue);
-           }
-        });
+    protected Object substituteLeafVars(Object currentNode) {
+        if (currentNode instanceof JsonObject) {
+            JsonObject jso = (JsonObject) currentNode;
+            for (Entry<String, Object> entry : jso) {
+                Object newVal = substituteLeafVars(entry.getValue());
+                jso.put(entry.getKey(), newVal);
+            }
+            return jso;
+        } else if (currentNode instanceof JsonArray) {
+            JsonArray jsa = (JsonArray) currentNode;
+            int i = 0;
+            for (Object entry : jsa) {
+                Object newVal = substituteLeafVars(entry);
+                jsa.set(i, newVal);
+                i++;
+            }
+            return jsa;
+        } else if (currentNode instanceof String) {
+            // Use substitutor to replace the value, looking in various locations such as sys props and env
+            String newValue = SUBSTITUTOR.replace((String) currentNode);
+            logger.trace("Variable substitution: ({0} -> {1})", currentNode, newValue);
+            return newValue;
+        }
+        return currentNode;
     }
 
     private final StrSubstitutor SUBSTITUTOR = new StrSubstitutor(new VertxEngineStrSubstitutor());
@@ -494,7 +505,7 @@ public class VertxEngineConfig implements IEngineConfig {
             // Upside of this approach is that we can capture any dynamically defined variables.
             // Downside is that it's slightly expensive but should only happen at startup.
             Map<String, String> flattenedMap = new LinkedHashMap<>();
-            jsonMapToProperties("", new JsonObject(getVariables().encode()).getMap(), flattenedMap);
+            jsonMapToProperties("", new JsonObject(getVariables().encode()), flattenedMap);
             if (flattenedMap.containsKey(key)) {
                 return flattenedMap.get(key);
             } else {
