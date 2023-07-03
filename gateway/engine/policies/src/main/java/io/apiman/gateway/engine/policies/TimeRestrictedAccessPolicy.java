@@ -26,19 +26,20 @@ import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalTime;
 
 /**
  * Policy that restrict access to resource by time when resource can be accessed.
  */
 public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestrictedAccessConfig> {
-    
+
     /**
      * Constructor.
      */
@@ -46,7 +47,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
+     * @see AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
     public Class<TimeRestrictedAccessConfig> getConfigurationClass() {
@@ -74,7 +75,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
         }
     }
 
-    
+
     /**
      * Evaluates whether the destination provided matches any of the configured
      * pathsToIgnore and matches specified time range.
@@ -93,7 +94,7 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
         }
         List<TimeRestrictedAccess> rulesEnabledForPath = getRulesMatchingPath(config, destination);
         if(rulesEnabledForPath.size()!=0){
-            DateTime currentTime = new DateTime(DateTimeZone.UTC);
+            Instant currentTime = Instant.now();
             for (TimeRestrictedAccess rule : rulesEnabledForPath) {
                 boolean matchesDay = matchesDay(currentTime, rule);
                 if (matchesDay) {
@@ -130,16 +131,16 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
      * filter/rule.
      */
     private boolean matchesTime(TimeRestrictedAccess filter) {
-        Date start = filter.getTimeStart();
-        Date end = filter.getTimeEnd();
+        OffsetDateTime start = filter.getTimeStart();
+        OffsetDateTime end = filter.getTimeEnd();
         if (end == null || start == null) {
             return true;
         }
-        long startMs = start.getTime();
-        long endMs = end.getTime();
-        DateTime currentTime = new LocalTime(DateTimeZone.UTC).toDateTime(new DateTime(0l));
-        long nowMs = currentTime.toDate().getTime();
-        
+        long startMs = start.toEpochSecond();
+        long endMs = end.toEpochSecond();
+        OffsetDateTime currentTime = OffsetTime.now().atDate(LocalDate.ofInstant(Instant.EPOCH, ZoneOffset.UTC));
+        long nowMs = currentTime.toEpochSecond();
+
         return nowMs >= startMs && nowMs < endMs;
     }
 
@@ -149,10 +150,10 @@ public class TimeRestrictedAccessPolicy extends AbstractMappedPolicy<TimeRestric
      * @param currentTime
      * @param filter
      */
-    private boolean matchesDay(DateTime currentTime, TimeRestrictedAccess filter) {
+    private boolean matchesDay(Instant currentTime, TimeRestrictedAccess filter) {
         Integer dayStart = filter.getDayStart();
         Integer dayEnd = filter.getDayEnd();
-        int dayNow = currentTime.getDayOfWeek();
+        int dayNow = currentTime.atZone(ZoneOffset.UTC).getDayOfWeek().getValue();
         if (dayStart >= dayEnd) {
             return dayNow >= dayStart && dayNow <= dayEnd;
         } else {

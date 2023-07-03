@@ -13,6 +13,9 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Fixed
 
+* [gateway]: Use UTC for Time Restricted-Access-Policy. The Gateway used the configured local (server) time instead of UTC while applying the rules. This could have lead to a mismatch between configuration (UTC) and execution.
+By https://github.com/volkflo[Florian Volk (@volkflo)^].
+
 // end::3.2.0-SNAPSHOT[]
 
 // tag::3.1.2.Final[]
@@ -20,14 +23,14 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Added
 
-* [gateway-vertx]: you can add a list of additional `allowed-issuers` in your Gateway API Keycloak Authentication config. 
+* [gateway-vertx]: you can add a list of additional `allowed-issuers` in your Gateway API Keycloak Authentication config.
 This better supports situations where your Keycloak server returns multiple different issuers, for example for internal vs external domains, Docker, K8s, etc. By https://github.com/msavy[Marc Savy (@msavy)^].
 
 === Changed
 
 * A large number of dependencies have been updated across the Apiman codebase in order to improve security. By https://github.com/msavy[Marc Savy (@msavy)^].
 
-* [containers/docker-compose]: to support a change in Keycloak's behaviour, we now set `allowed-issuers` in the Vert.x 
+* [containers/docker-compose]: to support a change in Keycloak's behaviour, we now set `allowed-issuers` in the Vert.x
 Gateway API authentication configuration to allow both internal and external issuers. By https://github.com/msavy[Marc Savy (@msavy)^].
 
 === Removed

@@ -15,31 +15,44 @@
  */
 package io.apiman.gateway.engine.policies.config;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 
 /**
  * Determines timeslot when service with specific path pattern can be called.
  * Extendible by adding additional cron type ranges like weeks,month years.
  * Empty values represents full range.
- * 
+ * <p>
  * Elements:
- * 
+ * <p>
  * - timeStart,timeEnd represents time range (in current implementation date part is ignored)
  * - dayStart,dayEnd: represents one of the weekdays with values from 1 to 7 (from Monday to Sunday)
- * 
- * @see http://joda-time.sourceforge.net/apidocs/org/joda/time/DateTimeConstants.html#MONDAY
+ *
  * @author wtr@redhat.com
+ * @author florian.volk@scheer-group.com
  */
 public class TimeRestrictedAccess {
-    
+
     private static final String TIME_PATTERN = "HH:mm:ss"; //$NON-NLS-1$
-    
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern=TIME_PATTERN)
-    private Date timeStart;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern=TIME_PATTERN)
-    private Date timeEnd;
+
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_PATTERN)
+    @JsonDeserialize(using = OffsetDateTimeDeserializer.class)
+    private OffsetDateTime timeStart;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_PATTERN)
+    @JsonDeserialize(using = OffsetDateTimeDeserializer.class)
+    private OffsetDateTime timeEnd;
     private Integer dayStart;
     private Integer dayEnd;
     private String pathPattern;
@@ -58,19 +71,19 @@ public class TimeRestrictedAccess {
         this.pathPattern = pathPattern;
     }
 
-    public Date getTimeStart() {
+    public OffsetDateTime getTimeStart() {
         return timeStart;
     }
 
-    public void setTimeStart(Date timeStart) {
+    public void setTimeStart(OffsetDateTime timeStart) {
         this.timeStart = timeStart;
     }
 
-    public Date getTimeEnd() {
+    public OffsetDateTime getTimeEnd() {
         return timeEnd;
     }
 
-    public void setTimeEnd(Date timeEnd) {
+    public void setTimeEnd(OffsetDateTime timeEnd) {
         this.timeEnd = timeEnd;
     }
 
@@ -132,12 +145,26 @@ public class TimeRestrictedAccess {
         } else if (!timeEnd.equals(other.timeEnd))
             return false;
         if (timeStart == null) {
-            if (other.timeStart != null)
-                return false;
-        } else if (!timeStart.equals(other.timeStart))
-            return false;
-        return true;
+            return other.timeStart == null;
+        } else return timeStart.equals(other.timeStart);
     }
 
-  
+
+    /**
+     * Custom deserializer as @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_PATTERN) is not able
+     * to parse the config string ("07:58:13") directly into the format that is currently need (1970-01-01T07:58:13Z)
+     */
+    public static class OffsetDateTimeDeserializer extends JsonDeserializer<OffsetDateTime> {
+        // make sure we are parsing the config always as UTC despite the gateways TZ
+        private final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendPattern(TIME_PATTERN)
+                .parseDefaulting(ChronoField.EPOCH_DAY, 0) // set default date
+                .toFormatter()
+                .withZone(ZoneOffset.UTC);
+
+        @Override
+        public OffsetDateTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+            return OffsetDateTime.parse(p.getText(), formatter);
+        }
+    }
 }
