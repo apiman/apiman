@@ -22,6 +22,8 @@ Gateway API authentication configuration to allow both internal and external iss
 
 === Fixed
 
+* [gateway-vertx]: allow access to Vert.x Gateway API's `/system/status` endpoint without auth. This allows health checks without needing to pass around auth credentials and/or relying on 4xx errors. By https://github.com/msavy[Marc Savy (@msavy)^].
+
 * [gateway-vertx]: array values are now always correctly substituted in Vert.x Gateway configuration. By https://github.com/msavy[Marc Savy (@msavy)^].
 
 * [portal]: show REST API documentation even when user not logged in.
