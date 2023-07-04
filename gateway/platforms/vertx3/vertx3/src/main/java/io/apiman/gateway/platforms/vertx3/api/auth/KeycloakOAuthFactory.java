@@ -211,6 +211,9 @@ public class KeycloakOAuthFactory {
         options.addAllowedIssuer(authServerPublic);
         options.setClientID(clientId);
 
+        // TODO(msavy): this is a total mess, needs redoing to remove all
+        // this hacky manual code and document the options that have been added.
+
         config.getJsonArray("allowed-issuers", new JsonArray())
                 .stream()
                 .map(Object::toString)

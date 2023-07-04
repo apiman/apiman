@@ -220,6 +220,61 @@ For more advanced setups, the environment variables/system properties may not be
 
 ==== Vert.x Gateway
 
+===== Additional options
+
+These options apply to the `auth.config` section.
+
+[source,json5]
+----
+{
+  // <Other sections>
+  "auth": {
+    "type": "keycloak",
+    "config": {
+      // Options inserted here.
+    }
+  }
+}
+----
+
+.Optional Params
+[cols="2,1,4",options="header"]
+|===
+
+| Name
+| Type
+| Description
+
+a| `ssl-required`
+| Boolean
+a| Whether SSL required for the server URL
+
+a| `allow-any-hostname`
+| Boolean
+a| Whether hostname verification should be performed (if true, all hostnames will be accepted).
+
+a| `disable-trust-manager`
+| Boolean
+a| Whether hostname verification should be performed (if true, all hostnames will be accepted).
+
+a| `truststore`
+| String
+a| Path to truststore
+
+a| `truststore-password`
+| String
+a| Truststore password
+
+a| `client-keystore`
+| String
+a| Path to client keystore
+
+a| `client-keystore-password`
+| String
+a| client keystore password
+
+|===
+
 ===== Additional OAuth2 issuers
 
 A common issue is that your issuers may appear different depending upon how your network is configured.
