@@ -327,7 +327,7 @@
       // "client-keystore-password": "${apiman.keycloak.keystore.password:-changeit}"
       "ssl-required": "none",
       "disable-trust-manager": true,
-      "allow-any-hostname" : true,
+      "allow-any-hostname" : true
     }
   },
 
