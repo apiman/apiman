@@ -6,7 +6,7 @@
   <parent>
     <artifactId>apiman-distro</artifactId>
     <groupId>io.apiman</groupId>
-    <version>3.1.2.RC1</version>
+    <version>3.1.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
