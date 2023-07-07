@@ -101,7 +101,7 @@
     <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
     <version.com.github.ben-manes.caffeine>3.1.6</version.com.github.ben-manes.caffeine>
     <version.com.github.seancfoley.ipaddress>5.3.4</version.com.github.seancfoley.ipaddress>
-    <version.com.h2database>1.4.199</version.com.h2database> <!-- Unclear why, but 1.4.200 seems to cause some random issues, including inability for DB viewers to parse the data -->
+    <version.com.h2database>2.2.220</version.com.h2database> <!-- Unclear why, but 1.4.200 seems to cause some random issues, including inability for DB viewers to parse the data -->
     <version.com.lmax>3.4.4</version.com.lmax>
     <version.com.squareup.okhttp>2.7.5</version.com.squareup.okhttp>
     <version.com.squareup.okio>2.10.0</version.com.squareup.okio>
