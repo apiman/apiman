@@ -85,7 +85,7 @@
               <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
-                <version>1.4.200</version> <!-- 1.4.200 has JSON type, so we can work around liquibase and a custom type definition it still breaking (output works OK for <1.4.200 w/ custom type) -->
+                <version>2.2.220</version> <!-- 2.2.220 has JSON type, so we can work around liquibase and a custom type definition it still breaking (output works OK for <1.4.200 w/ custom type) -->
               </dependency>
               <dependency>
                 <groupId>org.postgresql</groupId>
