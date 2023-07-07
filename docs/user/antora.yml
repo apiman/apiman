@@ -1,7 +1,7 @@
 name: user-guide
 title: User Guide
 version: 3.2
-prerelease: '.0-SNAPSHOT'
+prerelease: '.1-SNAPSHOT'
 start_page: ROOT:index.adoc
 nav:
   - modules/ROOT/nav.adoc
@@ -9,7 +9,7 @@ nav:
 asciidoc:
   attributes:
     inbuilt-policy-msg: This is a built-in policy and therefore no plugins need to be installed prior to using it.
-    apiman-version-release: 3.2.0-SNAPSHOT
+    apiman-version-release: 3.2.1-SNAPSHOT
     wildfly-version: 23.0.2.Final
     wildfly-version-major: 23
-    keycloak-version: 18.0.2
+    keycloak-version: 21.1.2
