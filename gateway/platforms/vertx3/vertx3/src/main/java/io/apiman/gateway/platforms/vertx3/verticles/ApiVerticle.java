@@ -87,7 +87,8 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
 
         AuthHandler authHandler = AuthFactory.getAuth(vertx, router, apimanConfig);
 
-        router.route("/*")
+        // Everything except system/status requires auth.
+        router.routeWithRegex("^((?!/system/status).)*$")
             .handler(authHandler);
 
         router.route("/*") // We did the previous stuff, now we call into JaxRS.

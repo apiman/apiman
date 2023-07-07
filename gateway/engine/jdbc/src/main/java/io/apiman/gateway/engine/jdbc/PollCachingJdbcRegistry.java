@@ -48,8 +48,8 @@ public class PollCachingJdbcRegistry extends CachingJdbcRegistry {
     private static final int DEFAULT_POLLING_INTERVAL = 10;
     private static final int DEFAULT_STARTUP_DELAY = 30;
 
-    private int pollIntervalMillis;
-    private int startupDelayMillis;
+    private final int pollIntervalMillis;
+    private final int startupDelayMillis;
 
     private boolean polling = false;
     private long dataVersion = -1;

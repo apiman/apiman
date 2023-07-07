@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Scheer PAS Schweiz AG
+ * Copyright 2023 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -58,7 +58,6 @@ import { TocComponent } from './components/toc/toc.component';
 import { PolicyCardLightComponent } from './components/policy-card-light/policy-card-light.component';
 import { NoDataComponent } from './components/no-data/no-data.component';
 import { UnregisterClientComponent } from './components/dialogs/unregister-client/unregister-client.component';
-import { ImgOrIconSelectorComponent } from './components/img-or-icon-selector/img-or-icon-selector.component';
 import { ApiDocumentationButtonsComponent } from './components/api-documentation-buttons/api-documentation-buttons.component';
 import { RateQuotaPolicyShortLimitComponent } from './components/policies/rate-quota-policy-short-limit/rate-quota-policy-short-limit.component';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -70,6 +69,7 @@ import { AccountOrganizationPermissionsComponent } from './components/account-or
 import { ApiPublicEndpointComponent } from './components/api-public-endpoint/api-public-endpoint.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { BreakContractComponent } from './components/dialogs/break-contract/break-contract.component';
+import { SharedModule } from './shared/shared.module';
 
 export function initializeApp(
   configService: ConfigService,
@@ -116,7 +116,6 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     GaugeChartComponent,
     HeaderComponent,
     HomeComponent,
-    ImgOrIconSelectorComponent,
     MarketplaceApiDescriptionComponent,
     MarketplaceApiDetailsComponent,
     MarketplaceApiTermsComponent,
@@ -162,7 +161,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     ReactiveFormsModule,
     NgxChartsModule,
     MatBadgeModule,
-    MatRadioModule
+    MatRadioModule,
+    SharedModule
   ],
   providers: [
     {

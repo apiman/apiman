@@ -211,7 +211,7 @@ public class EsMetrics extends AbstractEsComponent implements IMetrics {
                 public void onResponse(BulkResponse bulkItemResponses) {
                     if (bulkItemResponses.hasFailures()) {
                         LOGGER.warn("Errors were reported when submitting bulk metrics into Elasticsearch. "
-                                            + "This may have resulted in a loss of data: ", bulkItemResponses.buildFailureMessage());
+                                            + "This may have resulted in a loss of data: {0}", bulkItemResponses.buildFailureMessage());
                     }
                 }
 

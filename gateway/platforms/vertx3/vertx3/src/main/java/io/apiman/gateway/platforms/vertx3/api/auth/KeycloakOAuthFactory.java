@@ -25,13 +25,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -171,10 +175,28 @@ public class KeycloakOAuthFactory {
         return EnumUtils.getEnum(OAuth2FlowType.class, flowType.toUpperCase());
     }
 
+    private static String buildIssuerWithRealm(String issuerServer, String realmName) {
+        try {
+            URIBuilder builder = new URIBuilder(issuerServer);
+
+            List<String> pathSegments = Stream.of(builder.getPath(), "realms", realmName)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+           URI uri = builder
+                    .setPathSegments(pathSegments)
+                    .build();
+
+           return uri.toString();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static MultiSiteOAuth2ClientOptions buildClientOptions(JsonObject config) {
-        MultiSiteOAuth2ClientOptions options = new MultiSiteOAuth2ClientOptions();
+        MultiSiteOAuth2ClientOptions options = new MultiSiteOAuth2ClientOptions(config);
         String authServer = config.getString("auth-server-url");
-        String authServerPublic = config.getString("auth-server-public-url");
+        String authServerPublic = config.getString("auth-server-public-url"); // We can deprecate this, probably.
         String realmName = config.getString("realm");
         String clientId = config.getString("resource");
 
@@ -182,22 +204,21 @@ public class KeycloakOAuthFactory {
         Objects.requireNonNull(realmName, "Must provide realm");
         Objects.requireNonNull(clientId, "Must provide resource (also known as Client ID)");
 
-        URI uri;
-        try {
-            // Parse out initial segments
-            URIBuilder builder = new URIBuilder(authServer);
-            // Prepend builder.getPath to allow us to use URI with a non-zero path element (e.g. foo.com/keycloak)
-            uri = builder
-                    .setPathSegments(builder.getPath(), "realms", realmName)
-                    .build();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        String defaultSite = buildIssuerWithRealm(authServer, realmName);
 
         options.setFlow(OAuth2FlowType.PASSWORD);
-        options.setSite(uri.toString());
+        options.setSite(defaultSite);
         options.addAllowedIssuer(authServerPublic);
         options.setClientID(clientId);
+
+        // TODO(msavy): this is a total mess, needs redoing to remove all
+        // this hacky manual code and document the options that have been added.
+
+        config.getJsonArray("allowed-issuers", new JsonArray())
+                .stream()
+                .map(Object::toString)
+                .filter(s -> !s.isBlank())
+                .forEach(allowedIssuer -> options.addAllowedIssuer(buildIssuerWithRealm(allowedIssuer, realmName)));
 
         if (config.containsKey("credentials") && config.getJsonObject("credentials").containsKey("secret")) {
             options.setClientSecret(config.getJsonObject("credentials").getString("secret"));

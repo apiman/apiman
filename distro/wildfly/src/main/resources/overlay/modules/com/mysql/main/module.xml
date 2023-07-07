@@ -16,7 +16,7 @@
   -->
 <module name="com.mysql" xmlns="urn:jboss:module:1.9">
   <resources>
-    <resource-root path="mysql-connector-java-${version.mysql.jdbc.driver}.jar"/>
+    <resource-root path="mysql-connector-j-${version.mysql.jdbc.driver}.jar"/>
   </resources>
 
   <dependencies>

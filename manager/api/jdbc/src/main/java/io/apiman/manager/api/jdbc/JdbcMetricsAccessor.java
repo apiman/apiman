@@ -40,6 +40,7 @@ import io.apiman.manager.api.jdbc.handlers.UsagePerPlanHandler;
 
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -117,9 +118,9 @@ public class JdbcMetricsAccessor implements IMetricsAccessor {
             DateTime from, DateTime to) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            String sql = "SELECT plan, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY plan"; //$NON-NLS-1$
+            String sql = "SELECT `plan`, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY  `plan`"; //$NON-NLS-1$
             ResultSetHandler<UsagePerPlanBean> handler = new UsagePerPlanHandler();
-            return run.query(sql, handler, organizationId, apiId, version, from.getMillis(), to.getMillis());
+            return run.query(sql, handler,  organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
             e.printStackTrace();
             return new UsagePerPlanBean();
@@ -190,7 +191,7 @@ public class JdbcMetricsAccessor implements IMetricsAccessor {
             String version, DateTime from, DateTime to) {
         try {
             QueryRunner run = new QueryRunner(ds);
-            String sql = "SELECT plan, resp_type, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY plan, resp_type"; //$NON-NLS-1$
+            String sql = "SELECT `plan`, resp_type, count(*) FROM gw_requests WHERE api_org_id = ? AND api_id = ? AND api_version = ? AND rstart >= ? AND rstart < ? GROUP BY  `plan` , resp_type"; //$NON-NLS-1$
             ResultSetHandler<ResponseStatsPerPlanBean> handler = new ResponseStatsPerPlanHandler();
             return run.query(sql, handler, organizationId, apiId, version, from.getMillis(), to.getMillis());
         } catch (SQLException e) {
@@ -234,6 +235,7 @@ public class JdbcMetricsAccessor implements IMetricsAccessor {
         }
         return ds;
     }
+
 
     /**
      * Returns the group-by column to use for the given interval.

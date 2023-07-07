@@ -31,7 +31,9 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
@@ -91,8 +93,8 @@ public abstract class AbstractJpaStorage {
         return getActiveEntityManager().unwrap(Session.class);
     }
 
-    private static javax.sql.DataSource lookupDS(String dsJndiLocation) {
-        javax.sql.DataSource ds;
+    private static DataSource lookupDS(String dsJndiLocation) {
+        DataSource ds;
         try {
             InitialContext ctx = new InitialContext();
             ds = (DataSource) ctx.lookup(dsJndiLocation);
@@ -222,7 +224,7 @@ public abstract class AbstractJpaStorage {
         }
     }
 
-    protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, List<OrderByBean> uniqueOrderIdentifiers, Class<T> type, boolean paginate) throws StorageException {
+    protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Set<OrderByBean> uniqueOrderIdentifiers, Class<T> type, boolean paginate) throws StorageException {
         return find(criteria, uniqueOrderIdentifiers, (criteriaBuilder) -> {}, type, type.getSimpleName(), paginate);
     }
 
@@ -233,7 +235,7 @@ public abstract class AbstractJpaStorage {
      * @throws StorageException if a storage problem occurs while storing a bean
      */
     protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria,
-                                            List<OrderByBean> uniqueOrderIdentifiers,
+                                            Set<OrderByBean> uniqueOrderIdentifiers,
                                             Consumer<CriteriaBuilder<T>> builderCallback,
                                             Class<T> type,
                                             String typeAlias,
@@ -267,8 +269,10 @@ public abstract class AbstractJpaStorage {
                  *
                  * Without a unique tuple, the ordering may be unstable, which can cause pagination to behave unpredictably.
                  */
-                for (OrderByBean order : uniqueOrderIdentifiers) {
-                    paginatedCb = paginatedCb.orderBy(order.getName(), order.isAscending());
+                for (OrderByBean uniqueOrder : uniqueOrderIdentifiers) {
+                    if (!duplicateOrderBy(typeAlias, uniqueOrder, criteria.getOrderBy())) {
+                        paginatedCb = paginatedCb.orderBy(uniqueOrder.getName(), uniqueOrder.isAscending());
+                    }
                 }
 
                 PagedList<T> resultList = paginatedCb.getResultList();
@@ -291,6 +295,21 @@ public abstract class AbstractJpaStorage {
             LOGGER.error(t.getMessage(), t);
             throw new StorageException(t);
         }
+    }
+
+    /**
+     * MSSQL issue: if the user provides a sort order that is also in our default sort order list,  size = 2
+     * we may end up with the duplicate "orderBy" clauses, which MSSQL rejects. All other DBs don't seem to care...
+     */
+    private boolean duplicateOrderBy(String typeAlias, OrderByBean defaultOrderEntry, OrderByBean userOrder) {
+        Objects.requireNonNull(typeAlias);
+        Objects.requireNonNull(defaultOrderEntry);
+        if (userOrder == null || userOrder.getName() == null) {
+            return false;
+        }
+        return defaultOrderEntry.getName().equalsIgnoreCase(userOrder.getName()) ||
+                // Catch cases like "api.foo" vs "foo" where "foo" is implicitly referring to same entity.
+                defaultOrderEntry.getName().equalsIgnoreCase(typeAlias + "." + userOrder.getName());
     }
 
     /**
@@ -324,7 +343,11 @@ public abstract class AbstractJpaStorage {
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.neq) {
                     cb = cb.where(name).notEq(numberValueOf(pathKlazz, filter.getValue()));
                 } else if (filter.getOperator() == SearchCriteriaFilterOperator.like) {
-                    cb = cb.where(name).like(false).value(filter.getValue().toUpperCase().replace('*', '%')).noEscape();
+                    // Set escape character manually as MSSQL wants to use square brackets for escape.
+                    cb = cb.where(name)
+                            .like(false)
+                            .value(filter.getValue().toUpperCase().replace('*', '%'))
+                            .escape('\\');
                 }
             }
         }
@@ -437,7 +460,4 @@ public abstract class AbstractJpaStorage {
         }
     }
 
-    public String getDialect() {
-        return (String) getActiveEntityManager().getEntityManagerFactory().getProperties().get("hibernate.dialect"); //$NON-NLS-1$
-    }
 }

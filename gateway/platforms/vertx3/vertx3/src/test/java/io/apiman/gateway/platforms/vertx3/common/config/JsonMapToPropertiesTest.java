@@ -40,13 +40,13 @@ public class JsonMapToPropertiesTest {
         JsonObject jso = new JsonObject(str);
         VertxEngineConfig vxConf = new VertxEngineConfig(jso);
 
-        @SuppressWarnings("serial")
-        Map<String, String> expected = new LinkedHashMap<String, String>(){{
-            put("races", "human,goblin,dwarf,elf,gnome,troll,golem,vampire,werewolf,zombie");
-        }};
+
+        Map<String, String> expected = Map.of(
+            "races", "human,goblin,dwarf,elf,gnome,troll,golem,vampire,werewolf,zombie"
+        );
 
         Map<String, String> actual = new LinkedHashMap<>();
-        vxConf.jsonMapToProperties("", jso.getMap(), actual);
+        vxConf.jsonMapToProperties("", jso, actual);
         Assert.assertEquals(expected, actual);
     }
 
@@ -60,14 +60,13 @@ public class JsonMapToPropertiesTest {
         JsonObject jso = new JsonObject(str);
         VertxEngineConfig vxConf = new VertxEngineConfig(jso);
 
-        @SuppressWarnings("serial")
-        Map<String, String> expected = new LinkedHashMap<String, String>(){{
-            put("favourite.food", "prime rat fillet");
-            put("favourite.drink", "quirmian cognac");
-        }};
+        Map<String, String> expected = Map.of(
+            "favourite.food", "prime rat fillet",
+            "favourite.drink", "quirmian cognac"
+        );
 
         Map<String, String> actual = new LinkedHashMap<>();
-        vxConf.jsonMapToProperties("", jso.getMap(), actual);
+        vxConf.jsonMapToProperties("", jso, actual);
         Assert.assertEquals(expected, actual);
     }
 
@@ -86,15 +85,15 @@ public class JsonMapToPropertiesTest {
         JsonObject jso = new JsonObject(str);
         VertxEngineConfig vxConf = new VertxEngineConfig(jso);
 
-        @SuppressWarnings("serial")
-        Map<String, String> expected = new LinkedHashMap<String, String>(){{
-            put("config.port", "ankh morpork");
-            put("config.favourite.food", "prime rat fillet");
-            put("config.favourite.drink", "quirmian cognac");
-        }};
+
+        Map<String, String> expected = Map.of(
+            "config.port", "ankh morpork",
+            "config.favourite.food", "prime rat fillet",
+            "config.favourite.drink", "quirmian cognac"
+        );
 
         Map<String, String> actual = new LinkedHashMap<>();
-        vxConf.jsonMapToProperties("", jso.getMap(), actual);
+        vxConf.jsonMapToProperties("", jso, actual);
         Assert.assertEquals(expected, actual);
     }
 
@@ -114,16 +113,16 @@ public class JsonMapToPropertiesTest {
         JsonObject jso = new JsonObject(str);
         VertxEngineConfig vxConf = new VertxEngineConfig(jso);
 
-        @SuppressWarnings("serial")
-        Map<String, String> expected = new LinkedHashMap<String, String>(){{
-            put("config.port", "victoria");
-            put("config.favourite.food", "kari koko");
-            put("config.favourite.drink", "kalou");
-            put("config.places", "anse boileau,anse royale");
-        }};
+
+        Map<String, String> expected = Map.of(
+                "config.port", "victoria",
+                "config.favourite.food", "kari koko",
+                "config.favourite.drink", "kalou",
+                "config.places", "anse boileau,anse royale"
+        );
 
         Map<String, String> actual = new LinkedHashMap<>();
-        vxConf.jsonMapToProperties("", jso.getMap(), actual);
+        vxConf.jsonMapToProperties("", jso, actual);
         Assert.assertEquals(expected, actual);
     }
 

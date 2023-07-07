@@ -4,7 +4,7 @@
 
   <groupId>io.apiman</groupId>
   <artifactId>apiman-parent</artifactId>
-  <version>3.2.0-SNAPSHOT</version>
+  <version>3.1.2.Final</version>
   <packaging>pom</packaging>
 
   <name>apiman-parent</name>
@@ -63,7 +63,7 @@
     <!-- Plugin Versions -->
     <version.ant>1.10.11</version.ant>
     <version.antrun.plugin>1.7</version.antrun.plugin>
-    <version.assembly.plugin>3.3.0</version.assembly.plugin>
+    <version.assembly.plugin>3.5.0</version.assembly.plugin>
     <version.buildhelper.plugin>3.3.0</version.buildhelper.plugin>
     <version.buildnumber.plugin>1.4</version.buildnumber.plugin>
     <version.clean.plugin>3.1.0</version.clean.plugin>
@@ -82,7 +82,7 @@
     <version.failsafe.plugin>3.0.0-M5</version.failsafe.plugin>
     <version.war.plugin>3.3.2</version.war.plugin>
     <version.exec.plugin>3.1.0</version.exec.plugin>
-    <version.docker.plugin>0.38.0</version.docker.plugin>
+    <version.docker.plugin>0.42.1</version.docker.plugin>
     <version.frontend-maven.plugin>1.6</version.frontend-maven.plugin>
     <version.git-commit-id.plugin>2.2.1</version.git-commit-id.plugin>
     <version.shade.plugin>3.2.4</version.shade.plugin>
@@ -90,16 +90,16 @@
     <version.remote.resources.plugin>3.0.0</version.remote.resources.plugin>
 
     <!-- DBs -->
-    <version.org.postgresql.jdbc.driver>42.5.1</version.org.postgresql.jdbc.driver>
-    <version.mysql.jdbc.driver>8.0.30</version.mysql.jdbc.driver>
+    <version.org.postgresql.jdbc.driver>42.6.0</version.org.postgresql.jdbc.driver>
+    <version.mysql.jdbc.driver>8.0.33</version.mysql.jdbc.driver>
     <version.com.oracle.driver>21.7.0.0</version.com.oracle.driver>
-    <version.mssql.driver>9.4.0.jre11</version.mssql.driver>
+    <version.mssql.driver>12.2.0.jre11</version.mssql.driver>
     <version.org.liquibase>4.16.1</version.org.liquibase>
 
     <!-- Dependency Versions -->
     <version.com.blazebit.blaze-persistence>1.6.8</version.com.blazebit.blaze-persistence>
-    <version.com.fasterxml.jackson>2.14.1</version.com.fasterxml.jackson>
-    <version.com.github.ben-manes.caffeine>3.1.1</version.com.github.ben-manes.caffeine>
+    <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
+    <version.com.github.ben-manes.caffeine>3.1.6</version.com.github.ben-manes.caffeine>
     <version.com.github.seancfoley.ipaddress>5.3.4</version.com.github.seancfoley.ipaddress>
     <version.com.h2database>1.4.199</version.com.h2database> <!-- Unclear why, but 1.4.200 seems to cause some random issues, including inability for DB viewers to parse the data -->
     <version.com.lmax>3.4.4</version.com.lmax>
@@ -117,62 +117,62 @@
     <version.commons-io>2.11.0</version.commons-io>
     <version.commons-logging>1.2</version.commons-logging>
     <version.commons-pool>1.6</version.commons-pool>
-    <version.org.opensearch.opensearch>1.2.4</version.org.opensearch.opensearch>
+    <version.org.opensearch.opensearch>1.3.9</version.org.opensearch.opensearch>
     <version.com.zaxxer>2.7.9</version.com.zaxxer>
-    <version.com.google.guava>31.1-jre</version.com.google.guava>
+    <version.com.google.guava>32.0.0-jre</version.com.google.guava>
     <version.io.prometheus>0.0.13</version.io.prometheus>
-    <version.joda-time>2.12.2</version.joda-time>
+    <version.joda-time>2.12.5</version.joda-time>
     <version.junit>4.13.2</version.junit>
     <version.org.assertj>3.21.0</version.org.assertj>
-    <version.org.junit.jupiter>5.9.1</version.org.junit.jupiter>
+    <version.org.junit.jupiter>5.9.3</version.org.junit.jupiter>
     <version.org.apache.commons.commons-lang3>3.12.0</version.org.apache.commons.commons-lang3>
     <version.org.apache.directory.server>2.0.0.AM25</version.org.apache.directory.server>
     <version.org.apache.directory.api-all>2.1.0</version.org.apache.directory.api-all>
-    <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
+    <version.org.apache.httpcomponents.httpclient>4.5.14</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
-    <version.org.apache.httpcomponents.httpasyncclient>4.1.4</version.org.apache.httpcomponents.httpasyncclient>
-    <version.org.apache.logging.log4j>2.19.0</version.org.apache.logging.log4j>
-    <version.org.agrona>1.16.0</version.org.agrona>
-    <version.org.eclipse.jetty>9.4.41.v20210516</version.org.eclipse.jetty>
+    <version.org.apache.httpcomponents.httpasyncclient>4.1.5</version.org.apache.httpcomponents.httpasyncclient>
+    <version.org.apache.logging.log4j>2.20.0</version.org.apache.logging.log4j>
+    <version.org.agrona>1.18.1</version.org.agrona>
+    <version.org.eclipse.jetty>9.4.51.v20230217</version.org.eclipse.jetty>
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
-    <version.org.elasticsearch>7.17.6</version.org.elasticsearch>
+    <version.org.elasticsearch>7.17.9</version.org.elasticsearch>
     <version.org.hamcrest>1.3</version.org.hamcrest>
     <version.org.hibernate>5.3.20.Final</version.org.hibernate> <!-- Pin to WildFly version -->
     <version.org.infinispan>8.2.12.Final</version.org.infinispan>
     <version.org.jeasy.easy-rules>4.1.0</version.org.jeasy.easy-rules>
-    <version.org.jboss.jandex>2.4.2.Final</version.org.jboss.jandex>
+    <version.org.jboss.jandex>2.4.3.Final</version.org.jboss.jandex>
     <version.org.jboss.logging.jboss-logging>3.4.2.Final</version.org.jboss.logging.jboss-logging>
     <version.org.jboss.resteasy>3.15.3.Final</version.org.jboss.resteasy>
     <version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>1.1.1.Final</version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>
     <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>2.0.2.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>
     <version.org.jboss.weld.weld>3.1.8.Final</version.org.jboss.weld.weld>
-    <version.org.jdbi>3.32.0</version.org.jdbi>
-    <version.org.jsoup>1.15.3</version.org.jsoup>
+    <version.org.jdbi>3.37.1</version.org.jdbi>
+    <version.org.jsoup>1.15.4</version.org.jsoup>
     <version.org.keycloak>18.0.2</version.org.keycloak>
     <version.org.lz4.lz4-java>1.8.0</version.org.lz4.lz4-java>
-    <version.org.mockito>3.12.1</version.org.mockito>
-    <version.org.mapstruct>1.5.3.Final</version.org.mapstruct>
-    <version.org.mvel>2.4.12.Final</version.org.mvel>
-    <version.org.passay>1.6.2</version.org.passay>
+    <version.org.mockito>5.3.0</version.org.mockito>
+    <version.org.mapstruct>1.5.4.Final</version.org.mapstruct>
+    <version.org.mvel>2.4.15.Final</version.org.mvel>
+    <version.org.passay>1.6.3</version.org.passay>
     <version.org.picketbox>5.1.0.Final</version.org.picketbox>
-    <version.io.github.classgraph>4.8.152</version.io.github.classgraph>
+    <version.io.github.classgraph>4.8.157</version.io.github.classgraph>
     <version.org.slf4j>1.7.36</version.org.slf4j>
-    <version.org.testcontainers>1.17.3</version.org.testcontainers>
+    <version.org.testcontainers>1.18.0</version.org.testcontainers>
     <version.io.apicurio>1.1.26</version.io.apicurio>
-    <version.io.netty>4.1.74.Final</version.io.netty>
+    <version.io.netty>4.1.89.Final</version.io.netty>
     <version.io.quarkus.qute>2.7.0.Final</version.io.quarkus.qute>
     <version.io.swagger>2.2.7</version.io.swagger>
     <version.xmlunit>1.6</version.xmlunit>
-    <version.io.vertx>3.9.13</version.io.vertx>
+    <version.io.vertx>3.9.15</version.io.vertx>
     <version.net.openhft>0.15</version.net.openhft>
     <version.com.ibm.icu4j>71.1</version.com.ibm.icu4j>
     <version.com.icegreen.greenmail>1.6.8</version.com.icegreen.greenmail>
-    <version.com.hazelcast>4.2.6</version.com.hazelcast>
-    <version.com.jcbai>1.18.1</version.com.jcbai>
-    <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
-    <version.org.redisson>3.17.6</version.org.redisson>
-    <version.net.javacrumbs.json-unit>2.35.0</version.net.javacrumbs.json-unit>
-    <version.info.picocli>4.7.0</version.info.picocli>
+    <version.com.hazelcast>5.3.0</version.com.hazelcast>
+    <version.com.jcbai>1.20.1</version.com.jcbai>
+    <version.org.skyscreamer.jsonassert>1.5.1</version.org.skyscreamer.jsonassert>
+    <version.org.redisson>3.20.1</version.org.redisson>
+    <version.net.javacrumbs.json-unit>2.37.0</version.net.javacrumbs.json-unit>
+    <version.info.picocli>4.7.3</version.info.picocli>
 
     <!-- Sun and javax dependencies to maintain compatibility with Java 9+ module changes -->
     <version.com.sun.xml.ws>2.3.4</version.com.sun.xml.ws>
@@ -300,8 +300,8 @@
         <version>${version.org.postgresql.jdbc.driver}</version>
       </dependency>
       <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
         <version>${version.mysql.jdbc.driver}</version>
       </dependency>
       <dependency>
@@ -1102,6 +1102,21 @@
       <dependency>
         <groupId>org.testcontainers</groupId>
         <artifactId>elasticsearch</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>mssqlserver</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>mysql</artifactId>
         <version>${version.org.testcontainers}</version>
       </dependency>
       <dependency>

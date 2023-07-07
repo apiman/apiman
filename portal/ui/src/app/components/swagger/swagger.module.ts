@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Scheer PAS Schweiz AG
+ * Copyright 2022 Scheer PAS Schweiz AG
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,9 +20,10 @@ import { CommonModule } from '@angular/common';
 import { SwaggerRoutingModule } from './swagger-routing.module';
 import { SwaggerComponent } from './swagger.component';
 import { MaterialModule } from '../../material.module';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [SwaggerComponent],
-  imports: [CommonModule, SwaggerRoutingModule, MaterialModule]
+  imports: [CommonModule, SwaggerRoutingModule, MaterialModule, SharedModule]
 })
 export class SwaggerModule {}

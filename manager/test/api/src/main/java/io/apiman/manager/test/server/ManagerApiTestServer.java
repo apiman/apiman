@@ -21,22 +21,22 @@ import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.common.servlet.RootResourceFilter;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.api.war.TransactionWatchdogFilter;
-import io.apiman.manager.test.util.ManagerTestUtils;
-import io.apiman.manager.test.util.ManagerTestUtils.TestType;
+import io.apiman.manager.test.server.deployments.H2Deployment;
+import io.apiman.manager.test.server.deployments.ITestDatabaseDeployment;
+import io.apiman.manager.test.server.deployments.MariaDbDeployment;
+import io.apiman.manager.test.server.deployments.MsSqlDeployment;
+import io.apiman.manager.test.server.deployments.MySqlDeployment;
+import io.apiman.manager.test.server.deployments.PostgresDeployment;
 import io.apiman.test.common.util.TestUtil;
 
 import java.io.File;
 import java.nio.file.NoSuchFileException;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Map;
-import javax.naming.InitialContext;
-import javax.naming.NameAlreadyBoundException;
+import java.util.Objects;
 import javax.servlet.DispatcherType;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import net.snowflake.client.jdbc.internal.org.bouncycastle.util.Arrays;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
@@ -52,8 +52,6 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
-import org.jdbi.v3.core.Jdbi;
-import org.testcontainers.shaded.org.bouncycastle.util.Arrays;
 
 /**
  * This class starts up an embedded Jetty test server so that integration tests
@@ -69,20 +67,29 @@ public class ManagerApiTestServer {
     /*
      * The jetty server
      */
-    private Server server;
+    protected Server server;
 
-    /*
-     * DataSource created - only if using JPA
-     */
-    private BasicDataSource ds = null;
+    static final Map<String, ITestDatabaseDeployment> deploymentTypes = Map.of(
+            "h2", new H2Deployment(),
+            "postgres", new PostgresDeployment(),
+            "mssql", new MsSqlDeployment(),
+            "mysql", new MySqlDeployment(),
+            "mariadb", new MariaDbDeployment()
+    );
+    private final String containerImageName;
+
+    protected ITestDatabaseDeployment deployment;
 
     /**
      * Constructor.
      */
-    public ManagerApiTestServer(Map<String, String> config) {
-    }
+    public ManagerApiTestServer(String database, String containerImageName) {
+        this.containerImageName = containerImageName;
+        Objects.requireNonNull(database, "Must select a valid database to use for Apiman Manager API." +
+                " Allowed values " + deploymentTypes.keySet());
 
-    public ManagerApiTestServer() {}
+        deployment = deploymentTypes.get(database);
+    }
 
     /**
      * Start/run the server.
@@ -91,6 +98,8 @@ public class ManagerApiTestServer {
         long startTime = System.currentTimeMillis();
         System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")");
         preStart();
+
+        deployment.start(containerImageName);
 
         ContextHandlerCollection handlers = new ContextHandlerCollection();
         addModulesToJetty(handlers);
@@ -110,16 +119,7 @@ public class ManagerApiTestServer {
      */
     public void stop() throws Exception {
         server.stop();
-        if (ds != null) {
-            // Drop everything from the in-memory DB in case a subsequent run re-uses this: could end up with unexpected DB state.
-            try (var conn = ds.getConnection()){
-                conn.prepareStatement("DROP ALL OBJECTS DELETE FILES").executeUpdate();
-                conn.commit();
-            };
-            ds.close();
-            InitialContext ctx = TestUtil.initialContext();
-            ctx.unbind("java:/apiman/datasources/apiman-manager");
-        }
+        deployment.stop();
     }
 
     /**
@@ -133,81 +133,21 @@ public class ManagerApiTestServer {
      * Stuff to do before the server is started.
      */
     protected void preStart() throws Exception {
-        if (ManagerTestUtils.getTestType() == TestType.jpa) {
-            TestUtil.setProperty("liquibase.should.run", "false");
-            TestUtil.setProperty("hibernate.hbm2ddl.import_files", "import.sql");
-            TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
-            TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");
-            TestUtil.setProperty("apiman-manager.config.features.rest-response-should-contain-stacktraces", "true");
+        TestUtil.setProperty("liquibase.should.run", "true");
+//        TestUtil.setProperty("hibernate.hbm2ddl.import_files", "import.sql");
+//        TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
+        TestUtil.setProperty("apiman.hibernate.connection.datasource", "java:/apiman/datasources/apiman-manager");
+        TestUtil.setProperty("apiman-manager.config.features.rest-response-should-contain-stacktraces", "true");
 
-            // Set data directory to be test data dir
-            File apimanConfigDir = new File("src/test/resources/apiman/config");
-            if (!apimanConfigDir.exists()) {
-                throw new NoSuchFileException("src/test/resources/apiman/config not found. If you are using Eclipse you may need "
-                   + "to set the working directory manually (works automatically on all other platforms)");
-            }
-            TestUtil.setProperty("apiman.config.dir", apimanConfigDir.getAbsolutePath());
-            var apimanDataDir = new File("src/test/resources/apiman/data");
-            TestUtil.setProperty("apiman.data.dir", apimanDataDir.getAbsolutePath());
-
-            try {
-                InitialContext ctx = TestUtil.initialContext();
-                TestUtil.ensureCtx(ctx, "java:/apiman");
-                TestUtil.ensureCtx(ctx, "java:/apiman/datasources");
-                String dbOutputPath = System.getProperty("apiman.test.h2-output-dir", null);
-                if (dbOutputPath != null) {
-                    ds = createFileDatasource(new File(dbOutputPath));
-                } else {
-                    ds = createInMemoryDatasource();
-                }
-                try {
-                    // For H2 versions older than 1.4.200 this ensures JSON type exists.
-                    Jdbi.create(ds).useHandle(h -> {
-                        h.getConnection().setAutoCommit(false);
-                        h.execute("CREATE domain IF NOT EXISTS json AS other");
-                        h.commit();
-                    });
-                } catch (Exception e) {}
-                ctx.bind("java:/apiman/datasources/apiman-manager", ds);
-            } catch (NameAlreadyBoundException nbe) {
-                nbe.printStackTrace();
-            }
+        // Set data directory to be test data dir
+        File apimanConfigDir = new File("src/test/resources/apiman/config");
+        if (!apimanConfigDir.exists()) {
+            throw new NoSuchFileException("src/test/resources/apiman/config not found. If you are using Eclipse you may need "
+               + "to set the working directory manually (works automatically on all other platforms)");
         }
-    }
-
-    /**
-     * Creates an in-memory datasource.
-     * @throws SQLException
-     */
-    private static BasicDataSource createInMemoryDatasource() throws SQLException {
-        TestUtil.setProperty("apiman.hibernate.dialect", "io.apiman.manager.api.jpa.ApimanH2Dialect");
-        BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName(Driver.class.getName());
-        ds.setUsername("sa");
-        ds.setPassword("");
-        ds.setUrl("jdbc:h2:mem:test-apiman-inmem;DB_CLOSE_DELAY=-1");
-        // Use this for trace level JDBC logging
-        Connection connection = ds.getConnection();
-        connection.close();
-        System.out.println("DataSource created and bound to JNDI.");
-        return ds;
-    }
-
-    /**
-     * Creates an h2 file based datasource.
-     * @throws SQLException
-     */
-    private static BasicDataSource createFileDatasource(File outputDirectory) throws SQLException {
-        TestUtil.setProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName(Driver.class.getName());
-        ds.setUsername("sa");
-        ds.setPassword("");
-        ds.setUrl("jdbc:h2:" + outputDirectory.toString() + "/apiman-manager-api;MVCC=true");
-        Connection connection = ds.getConnection();
-        connection.close();
-        System.out.println("DataSource created and bound to JNDI.");
-        return ds;
+        TestUtil.setProperty("apiman.config.dir", apimanConfigDir.getAbsolutePath());
+        var apimanDataDir = new File("src/test/resources/apiman/data");
+        TestUtil.setProperty("apiman.data.dir", apimanDataDir.getAbsolutePath());
     }
 
     /**
@@ -305,8 +245,5 @@ public class ManagerApiTestServer {
         csh.setLoginService(l);
 
         return csh;
-    }
-
-    public void flush() {
     }
 }

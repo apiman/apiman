@@ -309,6 +309,12 @@
       "requiredRole": "realm:apipublisher",
       // Override with System Properties, or paste and overwrite your Client Keycloak config here.
       "auth-server-url": "${apiman.auth.url:-http://localhost:8085}", // Location of your keycloak server.
+      // You can add extra issuers here; this can be very useful if your setup has internal vs external issuers,
+      // and you need to support both simultaneously.
+      "allowed-issuers": [
+        "${apiman.auth.public-endpoint:-}",
+        "${apiman.auth.private-endpoint:-}"
+      ],
       "realm": "${apiman.auth.realm:-apiman}",
       "resource": "apiman-gateway-api",
       "credentials": {

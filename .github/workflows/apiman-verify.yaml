@@ -6,7 +6,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master, 2.x]
+    branches: [master, 3.x, 2.x]
   pull_request:
     paths-ignore:
       - '.github/**'
@@ -14,7 +14,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master, 2.x]
+    branches: [master, 3.x, 2.x]
 
 defaults:
   run:
@@ -209,7 +209,7 @@ jobs:
       - name: Collecting release assets
         run: |
           mkdir -p /tmp/releases
-          cp containers/docker-compose/target/apiman-distro-docker-compose-$APIMAN_VERSION.zip /tmp/releases/
+          cp containers/docker-compose/target/apiman-docker-compose-$APIMAN_VERSION.zip /tmp/releases/
           cp distro/wildfly/target/apiman-distro-wildfly-$APIMAN_VERSION-overlay.zip /tmp/releases/
           cp distro/vertx/target/apiman-distro-vertx-$APIMAN_VERSION.zip /tmp/releases/
           cp distro/tomcat/target/apiman-distro-tomcat-$APIMAN_VERSION-overlay.zip /tmp/releases/
@@ -233,8 +233,7 @@ jobs:
           prerelease: true
           files: |
             CHANGELOG.adoc
-            /tmp/releases/*
-            
+            /tmp/releases/* 
 
   publish-docker-images:
     needs: [build-verify, publish-snapshots]

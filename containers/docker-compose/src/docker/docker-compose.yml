@@ -75,6 +75,8 @@ services:
         -Dapiman.auth.url=${KEYCLOAK_PRIVATE_ENDPOINT}
         -Dapiman.auth.realm=${KEYCLOAK_REALM}
         -Dapiman.auth.gateway.secret=${KEYCLOAK_GATEWAY_SECRET}
+        -Dapiman.auth.public-endpoint=${KEYCLOAK_PUBLIC_ENDPOINT:-}
+        -Dapiman.auth.private-endpoint=${KEYCLOAK_PRIVATE_ENDPOINT:-}
         -DallowSelfSigned=${SELF_SIGNED}
         -DallowAnyHost=${SELF_SIGNED}
         -DcachingPolicy.maxCacheSize=${MAX_CACHE_SIZE_IN_MB}
@@ -123,7 +125,7 @@ services:
       # - traefik.http.services.gateway-management-service.loadbalancer.server.port=8081
 
   postgres:
-    image: postgres:14.6
+    image: postgres:14
     # ports:
     #   - '5432:5432'
     environment:
@@ -155,7 +157,7 @@ services:
     #  - traefik.http.services.postgres-service.loadbalancer.server.port=5432
 
   elasticsearch:
-    image: elasticsearch:7.17.8
+    image: elasticsearch:7.17.10
     #ports:
     #  - '${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}'
     environment:
@@ -197,7 +199,7 @@ services:
       - traefik.http.services.elasticsearch-service.loadbalancer.server.port=9200
 
   keycloak:
-    image: quay.io/keycloak/keycloak:18.0.2
+    image: quay.io/keycloak/keycloak:21.1.2
     depends_on:
       - postgres
     entrypoint: [ '/bin/bash', '-c' ]
@@ -266,7 +268,7 @@ services:
       - traefik.http.services.mailserver-service.loadbalancer.server.port=1080
 
   reverse-proxy:
-    image: traefik:v2.8.3
+    image: traefik:v2.10.3
     command:
       - --entrypoints.http.address=:8080
       - --entrypoints.https.address=:8443

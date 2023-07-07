@@ -29,8 +29,8 @@ public interface KeycloakDiscovery {
     class MultiSiteOAuth2ClientOptions extends OAuth2ClientOptions {
         private final Set<String> allowedIssuers = new HashSet<>();
 
-        public MultiSiteOAuth2ClientOptions() {
-            super();
+        public MultiSiteOAuth2ClientOptions(JsonObject jso) {
+            super(jso);
         }
 
         @Override

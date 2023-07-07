@@ -8,7 +8,7 @@ nav:
 asciidoc:
   attributes:
     inbuilt-policy-msg: This is a built-in policy and therefore no plugins need to be installed prior to using it.
-    apiman-version-release: 3.1.1.Final
+    apiman-version-release: 3.1.2.Final
     wildfly-version: 23.0.2.Final
     wildfly-version-major: 23
-    keycloak-version: 18.0.2
+    keycloak-version: 21.1.2

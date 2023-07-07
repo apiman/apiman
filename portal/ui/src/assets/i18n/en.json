@@ -231,6 +231,7 @@
       "UNREAD": "Unread",
       "ALL": "All"
     },
-    "NO_DATA": "There are no notifications available!"
+    "NO_DATA": "There are no notifications available!",
+    "SNACKBAR_ERROR_NO_PERMISSIONS": "You do not have enough permissions to visit the page."
   }
 }
