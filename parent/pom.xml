@@ -104,7 +104,7 @@
     <version.com.h2database>1.4.199</version.com.h2database> <!-- Unclear why, but 1.4.200 seems to cause some random issues, including inability for DB viewers to parse the data -->
     <version.com.lmax>3.4.4</version.com.lmax>
     <version.com.squareup.okhttp>2.7.5</version.com.squareup.okhttp>
-    <version.com.squareup.okio>2.10.0</version.com.squareup.okio>
+    <version.com.squareup.okio>3.4.0</version.com.squareup.okio>
     <version.com.unboundid.unboundid-ldapsdk>6.0.4</version.com.unboundid.unboundid-ldapsdk>
     <version.com.vladmihalcea.hibernate-types>2.14.0</version.com.vladmihalcea.hibernate-types>
     <version.commons-beanutils>1.9.4</version.commons-beanutils>
