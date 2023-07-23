@@ -18,7 +18,7 @@
   <!-- todo: push to parent when possible -->
   <properties>
     <version.org.bouncycastle>1.67</version.org.bouncycastle>
-    <version.org.json>20140107</version.org.json>
+    <version.org.json>20230227</version.org.json>
     <version.org.mock-server>5.11.2</version.org.mock-server>
     <version.io.jsonwebtoken.jjwt>0.9.1</version.io.jsonwebtoken.jjwt>
     <version.com.auth0.jwks-rsa>0.8.2</version.com.auth0.jwks-rsa>
