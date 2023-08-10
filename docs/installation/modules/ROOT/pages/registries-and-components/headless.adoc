@@ -124,7 +124,6 @@ IMPORTANT: Due to a current limitation in the underlying OAuth2 library you may 
   "password": "bar",
   // Start paste & replace your Keycloak config here.
   "realm": "apiman",
-  "realm-public-key": "< snip >",
   "auth-server-url": "http://localhost:8080/auth",
   "ssl-required": "none",
   "resource": "apiman-gateway-api",
