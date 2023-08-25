@@ -17,12 +17,11 @@
 
   <!-- todo: push to parent when possible -->
   <properties>
-    <version.org.bouncycastle>1.67</version.org.bouncycastle>
-    <version.org.json>20140107</version.org.json>
+    <version.org.bouncycastle>1.76</version.org.bouncycastle>
+    <version.org.json>20230618</version.org.json>
     <version.org.mock-server>5.11.2</version.org.mock-server>
-    <version.io.jsonwebtoken.jjwt>0.9.1</version.io.jsonwebtoken.jjwt>
-    <version.com.auth0.jwks-rsa>0.8.2</version.com.auth0.jwks-rsa>
-    <version.commons-lang>2.6</version.commons-lang>
+    <version.io.jsonwebtoken.jjwt>0.11.5</version.io.jsonwebtoken.jjwt>
+    <version.com.auth0.jwks-rsa>0.22.1</version.com.auth0.jwks-rsa>
     <version.commons-validator>1.7</version.commons-validator>
   </properties>
 
@@ -116,11 +115,6 @@
         <version>${version.org.mock-server}</version>
       </dependency>
       <!-- others -->
-      <dependency> <!-- Look to replace this with lang3? beware breaking compat! -->
-        <groupId>commons-lang</groupId>
-        <artifactId>commons-lang</artifactId>
-        <version>${version.commons-lang}</version>
-      </dependency>
       <dependency>
         <groupId>commons-validator</groupId>
         <artifactId>commons-validator</artifactId>
@@ -128,7 +122,7 @@
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
-        <artifactId>bcprov-jdk15on</artifactId>
+        <artifactId>bcprov-jdk18on</artifactId>
         <version>${version.org.bouncycastle}</version>
       </dependency>
       <dependency>
@@ -138,7 +132,17 @@
       </dependency>
       <dependency>
         <groupId>io.jsonwebtoken</groupId>
-        <artifactId>jjwt</artifactId>
+        <artifactId>jjwt-api</artifactId>
+        <version>${version.io.jsonwebtoken.jjwt}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>${version.io.jsonwebtoken.jjwt}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-jackson</artifactId>
         <version>${version.io.jsonwebtoken.jjwt}</version>
       </dependency>
       <dependency>
