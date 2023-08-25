@@ -15,9 +15,9 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
+      <scope>provided</scope>
     </dependency>
-
-    <!-- apiman dependencies (must be excluded from the WAR) -->
+    <!-- Apiman dependencies (must be excluded from the WAR) -->
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-beans</artifactId>
