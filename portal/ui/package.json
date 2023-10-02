@@ -61,7 +61,7 @@
     "@types/swagger-ui": "3.52.0",
     "@typescript-eslint/eslint-plugin": "5.47.0",
     "@typescript-eslint/parser": "5.47.0",
-    "cypress": "10.9.0",
+    "cypress": "13.3.0",
     "cypress-real-events": "1.7.1",
     "eslint": "8.50.0",
     "eslint-config-prettier": "8.5.0",
