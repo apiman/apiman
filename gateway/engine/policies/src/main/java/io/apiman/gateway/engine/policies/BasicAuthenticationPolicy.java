@@ -33,6 +33,7 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.PolicyContextKeys;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * An implementation of an apiman policy that supports multiple styles of authentication.
@@ -138,9 +139,11 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
                         if (metric != null) {
                             metric.setUser(forwardedUsername);
                         }
-                        // Remove the authorization header so that it doesn't get passed through to the backend API
-                        // TODO: make this optional - perhaps they *want* the auth header passed through?
-                        request.getHeaders().remove("Authorization"); //$NON-NLS-1$
+                        boolean forwardBasicAuthDownstream = BooleanUtils.toBooleanDefaultIfNull(config.isForwardBasicAuthDownstream(), Boolean.FALSE);
+                        if(!forwardBasicAuthDownstream) {
+                            // Remove the authorization header so that it doesn't get passed through to the backend API
+                            request.getHeaders().remove("Authorization"); //$NON-NLS-1$
+                        }
                         chain.doApply(request);
                     } else {
                         sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_FAILED);
