@@ -1504,6 +1504,11 @@ small > pre {
   text-decoration: underline;
 }
 
+/* Fix issue where patternfly-extras sets D3 tooltip to white, which makes the text invisible */
+.c3-tooltip td {
+  color: unset !important;
+}
+
 #apiman-api-metrics-selector .bootstrap-select, #apiman-client-metrics-selector .bootstrap-select {
   width: auto;
 }
@@ -2217,4 +2222,5 @@ img#devportal-api-logo {
 .apiman-border-dashed {
   border: black dashed 2px;
 }
+
 /* End */
