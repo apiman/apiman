@@ -1,13 +1,11 @@
 package io.apiman.plugins.transformation_policy.transformer;
 
-import static org.junit.Assert.assertTrue;
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 @SuppressWarnings("nls")
 public class XmlToJsonTransformerTest {
@@ -32,13 +30,8 @@ public class XmlToJsonTransformerTest {
 	private void test(String xmlFileName, String jsonFileName) throws Exception {
 		String xml = readFile(xmlFileName);
 		String expectedJson = readFile(jsonFileName);
-
 		String actualJson = transformer.transform(xml);
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode expectedJsonNode = mapper.readTree(expectedJson);
-        JsonNode actualJsonNode = mapper.readTree(actualJson);
-		assertTrue(expectedJsonNode.equals(actualJsonNode));
+        assertThatJson(actualJson).isEqualTo(expectedJson);
 	}
 
 	private String readFile(String fileName) throws IOException {

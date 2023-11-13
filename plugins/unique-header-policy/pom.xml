@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman.plugins</groupId>
     <artifactId>apiman-plugins</artifactId>
-    <version>3.1.2.Final</version>
+    <version>3.1.3.Final</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-plugins-unique-header-policy</artifactId>
@@ -14,16 +14,18 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <scope>provided</scope>
     </dependency>
-
     <!-- apiman dependencies (must be excluded from the WAR) -->
     <dependency>
       <groupId>io.apiman</groupId>

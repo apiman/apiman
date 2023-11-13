@@ -19,11 +19,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -47,12 +49,14 @@ import io.apiman.test.policies.TestingPolicy;
 @SuppressWarnings({ "nls" })
 public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
 
-    private String path = "/admin";
+    private final String path = "/admin";
     private ObjectMapper mapper;
 
     @Before
     public void init() {
         mapper = new ObjectMapper();
+        // Enable various Java 8 and library data structures to be serialized
+        mapper.findAndRegisterModules();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
@@ -74,8 +78,8 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         rule.setDayEnd(1);
         rule.setDayStart(4);
         rule.setPathPattern(path);
-        rule.setTimeEnd(new Date());
-        rule.setTimeStart(new Date());
+        rule.setTimeEnd(OffsetDateTime.now(ZoneOffset.UTC));
+        rule.setTimeStart(OffsetDateTime.now(ZoneOffset.UTC));
         elements.add(rule);
         configObj.setRules(elements);
 
@@ -92,7 +96,7 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         assertEquals(expected.getPathPattern(), actual.getPathPattern());
     }
 
-    //@Test
+    @Test
     public void testApply() throws Exception {
         TimeRestrictedAccessPolicy policy = new TimeRestrictedAccessPolicy();
 
@@ -110,11 +114,10 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         elements.add(rule);
         configObj.setRules(elements);
 
-        int dayOfWeek = new DateTime().getDayOfWeek();
         rule.setDayEnd(7);
-        rule.setDayStart(dayOfWeek);
-        rule.setTimeEnd(new DateTime().plusHours(2).toDate());
-        rule.setTimeStart(new DateTime().minusHours(2).toDate());
+        rule.setDayStart(1);
+        rule.setTimeEnd(OffsetDateTime.now(ZoneOffset.UTC).plusHours(2));
+        rule.setTimeStart(OffsetDateTime.now(ZoneOffset.UTC).minusHours(2));
         rule.setPathPattern("PathNotListed");
         configObj.setRules(elements);
         Object config = updateConfig(policy, configObj);
@@ -127,25 +130,26 @@ public class TimeRestrictedAccessPolicyTest extends PolicyTestBase {
         Mockito.verify(chain, Mockito.times(2)).doApply(request);
         Mockito.verify(chain, Mockito.never()).doFailure(Mockito.<PolicyFailure> any());
 
-        chain = Mockito.mock(IPolicyChain.class);
-
-        // Failed requests
-        rule.setDayEnd(dayOfWeek + 1);
-        rule.setDayStart(dayOfWeek - 1);
+        // Fail requests by day
+        DayOfWeek dayOfWeek = Instant.now().atZone(ZoneOffset.UTC).getDayOfWeek();
+        rule.setDayStart(dayOfWeek.plus(1).getValue());
+        rule.setDayEnd(dayOfWeek.plus(2).getValue());
         rule.setPathPattern(path);
-        rule.setTimeEnd(new DateTime().plusHours(1).toDate());
-        rule.setTimeStart(new Date());
+        rule.setTimeEnd(OffsetDateTime.now(ZoneOffset.UTC).plusHours(1));
+        rule.setTimeStart(OffsetDateTime.now(ZoneOffset.UTC));
         request.setDestination(path);
         config = updateConfig(policy, configObj);
 
         policy.apply(request, context, config, chain);
 
-        rule.setDayEnd(1);
-        rule.setDayStart(7);
-        rule.setTimeEnd(new DateTime().plusHours(2).toDate());
-        rule.setTimeStart(new DateTime().plusHours(1).toDate());
+        // Fail requests by time
+        rule.setDayStart(1);
+        rule.setDayEnd(7);
+        rule.setTimeEnd(OffsetDateTime.now(ZoneOffset.UTC).plusHours(2));
+        rule.setTimeStart(OffsetDateTime.now(ZoneOffset.UTC).plusHours(1));
         config = updateConfig(policy, configObj);
         policy.apply(request, context, config, chain);
+        Mockito.verify(chain, Mockito.times(2)).doApply(request);
         Mockito.verify(chain, Mockito.times(2)).doFailure(failure);
     }
 

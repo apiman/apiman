@@ -15,9 +15,12 @@
  */
 package io.apiman.common.config;
 
-import java.util.List;
-
 import org.apache.commons.lang.text.StrLookup;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Allows users to AesEncrypt their properties in apiman.properties.
@@ -43,7 +46,9 @@ public class EnvLookup extends StrLookup {
     private List<String> synonyms(String key) {
         String dotToUnderscore = key.replace(".", "_").replace("-", "_");
         String upperCase = dotToUnderscore.toUpperCase();
-        return List.of(System.getenv(dotToUnderscore), System.getenv(upperCase));
+        return Stream.of(System.getenv(dotToUnderscore), System.getenv(upperCase))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     }
 
 }
