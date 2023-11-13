@@ -21,6 +21,8 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Changed
 
+* A large number of dependencies have been updated across the Apiman codebase to improve security. By https://github.com/msavy[Marc Savy (@msavy)^].
+
 === Removed
 
 === Fixed
