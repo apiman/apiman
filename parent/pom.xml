@@ -166,7 +166,7 @@
     <version.io.vertx>3.9.15</version.io.vertx>
     <version.net.openhft>0.15</version.net.openhft>
     <version.com.ibm.icu4j>71.1</version.com.ibm.icu4j>
-    <version.com.icegreen.greenmail>1.6.8</version.com.icegreen.greenmail>
+    <version.com.icegreen.greenmail>2.0.1</version.com.icegreen.greenmail>
     <version.com.hazelcast>5.3.0</version.com.hazelcast>
     <version.com.jcbai>1.20.1</version.com.jcbai>
     <version.org.skyscreamer.jsonassert>1.5.1</version.org.skyscreamer.jsonassert>
