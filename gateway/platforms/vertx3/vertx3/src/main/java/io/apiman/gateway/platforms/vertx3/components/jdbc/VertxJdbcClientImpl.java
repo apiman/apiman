@@ -15,6 +15,9 @@
  */
 package io.apiman.gateway.platforms.vertx3.components.jdbc;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.RemovalCause;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.jdbc.IJdbcClient;
@@ -25,24 +28,27 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.jdbc.spi.impl.HikariCPDataSourceProvider;
 
-import java.util.Map.Entry;
-
 import javax.sql.DataSource;
+import java.util.Map.Entry;
 
 /**
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class VertxJdbcClientImpl implements IJdbcClient {
-    //TODO cache jdbcClients && json configs? LinkedHashMap + removeEldestEntry?
-    //private static Map<>
-    private JDBCClient jdbcClient;
+    private static final Cache<String, JDBCClient> cache = Caffeine.newBuilder()
+            .maximumSize(20)
+            .evictionListener((String key, JDBCClient client, RemovalCause cause) -> closeOnEviction(client))
+            .build();
+
+    private final JDBCClient jdbcClient;
 
     public VertxJdbcClientImpl(Vertx vertx, String dsName, JdbcOptionsBean config) {
         jdbcClient = JDBCClient.createShared(vertx, parseConfig(config), dsName);
     }
 
     public VertxJdbcClientImpl(Vertx vertx, JdbcOptionsBean config) {
-        jdbcClient = JDBCClient.createNonShared(vertx, parseConfig(config));
+        // currently only cache non-shared clients as shared clients already share the same ds/pool
+        jdbcClient = cache.get(config.getJdbcUrl() + "-" + config.getUsername(), k -> JDBCClient.create(vertx, parseConfig(config)));
     }
 
     public VertxJdbcClientImpl(Vertx vertx, DataSource ds) {
@@ -62,7 +68,7 @@ public class VertxJdbcClientImpl implements IJdbcClient {
 
     /**
      * Translate our abstracted {@link JdbcOptionsBean} into a Vert.x-specific config.
-     *
+     * <p>
      * We are assuming that the user is using HikariCP.
      */
     @SuppressWarnings("nls")
@@ -94,5 +100,12 @@ public class VertxJdbcClientImpl implements IJdbcClient {
         if (value == null)
             return;
         jsonObject.put(key, value);
+    }
+
+    // Explicitly close the client when it gets evicted from the cache
+    private static void closeOnEviction(JDBCClient client) {
+        if (client != null) {
+            client.close();
+        }
     }
 }
