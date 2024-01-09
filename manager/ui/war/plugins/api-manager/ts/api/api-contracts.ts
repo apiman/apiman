@@ -27,6 +27,7 @@ _module.controller("Apiman.ApiContractsController",
             contracts: $q(function(resolve, reject) {
                 $scope.currentPage = 0;
                 getNextPage(resolve, reject);
+                Logger.error('Debugging: {0}', "Henry");
             })
         });
 
@@ -93,7 +94,12 @@ _module.controller("Apiman.ApiContractsController",
                 .catch((err) => handleError(err));
         };
 
-        $scope.getNextPage = getNextPage;
+        $scope.getNextPage = function() {
+          getNextPage(function(data) {
+            $scope.contracts.push.apply($scope.contracts, data);
+          }, function(){
+          });
+        };
 
         PageLifecycle.loadPage('ApiContracts', 'apiView', pageData, $scope, function() {
             Logger.debug("::: is public: {0}", $scope.version.publicAPI);
