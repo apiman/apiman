@@ -3,14 +3,14 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-parent</artifactId>
-    <version>3.1.3.Final</version>
+    <version>3.2.0-SNAPSHOT</version>
     <relativePath>parent/pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>apiman</artifactId>
-  <version>3.1.3.Final</version>
+  <version>3.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>apiman</name>
 
