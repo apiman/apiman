@@ -27,7 +27,6 @@ _module.controller("Apiman.ApiContractsController",
             contracts: $q(function(resolve, reject) {
                 $scope.currentPage = 0;
                 getNextPage(resolve, reject);
-                Logger.error('Debugging: {0}', "Henry");
             })
         });
 
