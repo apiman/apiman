@@ -3,6 +3,8 @@
 
 # Apiman (Open Source API Management)
 
+**⚡️⚡️ Apiman 4 is under active development ⚡️⚡️**
+
 Apiman is a flexible and open source API Management platform.
 
 With just a few clicks you can get Apiman running, putting a platform at your fingertips that covers the whole API Management lifecycle. Whether you want to offer existing APIs to external consumers in a secure way, or have a centralised location to discover and govern APIs, Apiman has you covered.
