@@ -57,13 +57,6 @@ a| Keycloak secret credential for the Apiman Gateway API (`apiman-gateway-api` c
 
 * *Default Value*: password
 
-a| * System property: apiman.auth.realm-public-key
-* Env var: APIMAN_AUTH_REALM_PUBLIC_KEY
-| String
-a| Public key for Apiman realm (only needed on Vert.x Gateway).
-
-* *Default Value*: example Apiman realm key
-
 |===
 
 WARNING: Please change default secrets and keys before deploying Apiman to production.
@@ -170,7 +163,6 @@ You can change your client type to `confidential`, or simply provide a dummy `cr
     "requiredRole": "realm:apipublisher",
     // Paste and overwrite your Keycloak config here.
     "realm": "apiman",
-    "realm-public-key": "<snip>",
     "auth-server-url": "http://localhost:8080/auth",
     "ssl-required": "none",
     "resource": "apiman-gateway-api",

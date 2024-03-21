@@ -11,6 +11,8 @@ All notable changes to Apiman will be documented here (as of Apiman 3).
 
 === Removed
 
+* [docs]: removed deprecated documentation for `realm-public-key` in vert.x gateway auth config
+
 === Fixed
 // end::3.2.0-SNAPSHOT[]
 
