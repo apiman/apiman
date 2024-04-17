@@ -188,10 +188,8 @@ _module.controller("Apiman.ConsumerApiDefController",
                         ],
 
                         requestInterceptor: function(request) {
-                            // Only add auth header to requests where the URL matches the one specified above.
-                            if (request.url === url) {
-                                request.headers.Authorization = Configuration.getAuthorizationHeader();
-                            }
+                            // Send keycloak token
+                            request.headers.Authorization = Configuration.getAuthorizationHeader();
 
                             // Send the API-Key always as parameter if the URL is not the URL whrere the SwaggerFile comes from
                             // to avoid CORS Problems with the backend
