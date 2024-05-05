@@ -31,6 +31,7 @@ public class BasicAuthenticationConfig {
     private String forwardIdentityHttpHeader;
     private boolean requireTransportSecurity;
     private Boolean requireBasicAuth;
+    private Boolean forwardBasicAuthDownstream;
 
     private StaticIdentitySource staticIdentity;
     private LDAPIdentitySource ldapIdentity;
@@ -140,4 +141,17 @@ public class BasicAuthenticationConfig {
         this.requireBasicAuth = requireBasicAuth;
     }
 
+    /**
+     * @return the forwardBasicAuthDownstream
+     */
+    public Boolean isForwardBasicAuthDownstream() {
+        return forwardBasicAuthDownstream;
+    }
+
+    /**
+     * @param forwardBasicAuthDownstream the forwardBasicAuthDownstream to set
+     */
+    public void setForwardBasicAuthDownstream(Boolean forwardBasicAuthDownstream) {
+        this.forwardBasicAuthDownstream = forwardBasicAuthDownstream;
+    }
 }

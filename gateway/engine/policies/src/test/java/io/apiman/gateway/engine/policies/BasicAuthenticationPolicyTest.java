@@ -62,6 +62,8 @@ public class BasicAuthenticationPolicyTest extends ApimanPolicyTest {
             Assert.assertNotNull(policyFailure);
             Assert.assertEquals(PolicyFailureType.Authentication, policyFailure.getType());
             Assert.assertEquals(10004, policyFailure.getFailureCode());
+            String header = failure.getFailure().getHeaders().get("Authorization");
+            Assert.assertNull(header);
         }
 
         // Failure
@@ -74,6 +76,8 @@ public class BasicAuthenticationPolicyTest extends ApimanPolicyTest {
             Assert.assertNotNull(policyFailure);
             Assert.assertEquals(PolicyFailureType.Authentication, policyFailure.getType());
             Assert.assertEquals(10003, policyFailure.getFailureCode());
+            String header = failure.getFailure().getHeaders().get("Authorization");
+            Assert.assertNull(header);
         }
 
         // Success
@@ -85,6 +89,8 @@ public class BasicAuthenticationPolicyTest extends ApimanPolicyTest {
         String header = echo.getHeaders().get("X-Authenticated-Identity");
         Assert.assertNotNull(header);
         Assert.assertEquals("ckent", header);
+        String basicAuthHeader = echo.getHeaders().get("Authorization");
+        Assert.assertNull(basicAuthHeader);
     }
 
     @Test
@@ -107,5 +113,33 @@ public class BasicAuthenticationPolicyTest extends ApimanPolicyTest {
         Assert.assertNotNull(echo);
         String header = echo.getHeaders().get("X-Authenticated-Identity");
         Assert.assertNull(header);
+        header = echo.getHeaders().get("Authorization");
+        Assert.assertNull(header);
+    }
+
+    @Test
+    @Configuration("{\r\n" +
+            "    \"realm\" : \"TestRealm\",\r\n" +
+            "    \"requireBasicAuth\" : true,\r\n" +
+            "    \"staticIdentity\" : {\r\n" +
+            "      \"identities\" : [\r\n" +
+            "        { \"username\" : \"ckent\", \"password\" : \"ckent123!\" }\r\n" +
+            "      ]\r\n" +
+            "    },\r\n" +
+            "    \"forwardBasicAuthDownstream\" : true \r\n" +
+            "}")
+    public void testForwardBasicAuthHeaders() throws Throwable {
+        PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource");
+        request.basicAuth("ckent", "ckent123!");
+
+        PolicyTestResponse response = send(request);
+        Assert.assertEquals(200, response.code());
+        EchoResponse echo = response.entity(EchoResponse.class);
+        Assert.assertNotNull(echo);
+        String header = echo.getHeaders().get("X-Authenticated-Identity");
+        Assert.assertNull(header);
+        header = echo.getHeaders().get("Authorization");
+        Assert.assertNotNull(header);
+        Assert.assertEquals("Basic Y2tlbnQ6Y2tlbnQxMjMh", header);
     }
 }
