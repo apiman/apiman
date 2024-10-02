@@ -20,7 +20,7 @@
     <version.org.bouncycastle>1.76</version.org.bouncycastle>
     <version.org.json>20230618</version.org.json>
     <version.org.mock-server>5.11.2</version.org.mock-server>
-    <version.io.jsonwebtoken.jjwt>0.11.5</version.io.jsonwebtoken.jjwt>
+    <version.io.jsonwebtoken.jjwt>0.12.6</version.io.jsonwebtoken.jjwt>
     <version.com.auth0.jwks-rsa>0.22.1</version.com.auth0.jwks-rsa>
     <version.commons-validator>1.7</version.commons-validator>
   </properties>

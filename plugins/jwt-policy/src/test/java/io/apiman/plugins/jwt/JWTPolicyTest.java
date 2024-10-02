@@ -28,7 +28,6 @@ import io.apiman.test.policies.PolicyTestResponse;
 import io.apiman.test.policies.TestingPolicy;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
@@ -63,7 +62,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     @Rule
     // http://www.mock-server.com/mock_server/running_mock_server.html#junit_rule
     public MockServerRule mockServerRule = new MockServerRule(this, 1080);
-    private MockServerClient mockServerClient = mockServerRule.getClient();
+    private final MockServerClient mockServerClient = mockServerRule.getClient();
 
     @Before
     public void initialize(){
@@ -72,7 +71,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
             .respond(response().withStatusCode(200)
             .withBody("{\"keys\": [\n" +
                     "    {\n" +
-                    "      \"kid\": null,\n" +
+                    "      \"kid\":\"apiman\",\n" +
                     "      \"e\": \""+ Base64.getUrlEncoder().encodeToString(rsa.getPublicExponent().toByteArray()) +"\",\n" +
                     "      \"n\": \""+ Base64.getUrlEncoder().encodeToString(rsa.getModulus().toByteArray()) +"\",\n" +
                     "      \"kty\":\"RSA\",\n" +
@@ -147,7 +146,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
             .respond(response().withStatusCode(200)
             .withBody("{\"keys\": [\n" +
                     "    {\n" +
-                    "      \"kid\": null,\n" +
+                    "      \"kid\":\"apiman\",\n" +
                     "      \"e\": \""+ Base64.getUrlEncoder().encodeToString(rsa.getPublicExponent().toByteArray()) +"\",\n" +
                     "      \"n\": \""+ Base64.getUrlEncoder().encodeToString(rsa.getModulus().toByteArray()) +"\",\n" +
                     "      \"kty\":\"RSA\",\n" +
@@ -223,7 +222,7 @@ public class JWTPolicyTest extends ApimanPolicyTest {
     )
     public void shouldForwardClaimsAsHeaders() throws Throwable {
         PolicyTestRequest request = PolicyTestRequest.build(PolicyTestRequestType.GET, "/amirante")
-                .header(AUTHORIZATION, "Bearer " + Jwts.builder().setSubject("aride").compact());
+                .header(AUTHORIZATION, "Bearer " + Jwts.builder().subject("aride").compact());
 
         PolicyTestResponse response = send(request);
         EchoResponse echo = response.entity(EchoResponse.class);
@@ -455,28 +454,28 @@ public class JWTPolicyTest extends ApimanPolicyTest {
         Assert.assertEquals(PolicyFailureType.Authentication, failure.getType());
     }
 
-    private String signedToken(String privateKey) throws Exception {
-        JwtBuilder jwts = Jwts.builder().setSubject("france frichot")
-                .signWith(SignatureAlgorithm.RS256, PemUtils.decodePrivateKey(privateKey));
+    private String signedToken(String privateKey) {
+        JwtBuilder jwts = Jwts.builder().header().keyId("apiman").and().subject("france frichot")
+                .signWith(PemUtils.decodePrivateKey(privateKey), Jwts.SIG.RS256);
         return jwts.compact();
    }
 
-    private String unsignedToken() throws Exception {
-         JwtBuilder jwts = Jwts.builder().setSubject("france frichot");
+    private String unsignedToken() {
+         JwtBuilder jwts = Jwts.builder().subject("france frichot");
          return jwts.compact();
     }
 
-    private String unsignedNotYetValidToken() throws Exception {
+    private String unsignedNotYetValidToken() {
         Instant instant = LocalDateTime.now().plusDays(5).toInstant(ZoneOffset.UTC);
         Date nbf = Date.from(instant);
-        JwtBuilder jwts = Jwts.builder().setSubject("france frichot").setNotBefore(nbf);
+        JwtBuilder jwts = Jwts.builder().subject("france frichot").notBefore(nbf);
         return jwts.compact();
     }
 
-    private String unsignedExpiredToken() throws Exception {
+    private String unsignedExpiredToken() {
         Instant instant = LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC);
         Date exp = Date.from(instant);
-        JwtBuilder jwts = Jwts.builder().setSubject("france frichot").setExpiration(exp);
+        JwtBuilder jwts = Jwts.builder().subject("france frichot").expiration(exp);
         return jwts.compact();
     }
 

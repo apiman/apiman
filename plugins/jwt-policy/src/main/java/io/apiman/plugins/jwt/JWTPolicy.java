@@ -23,20 +23,26 @@ import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.jwt.beans.ForwardAuthInfo;
 import io.apiman.plugins.jwt.beans.JWTPolicyBean;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
 import io.jsonwebtoken.InvalidClaimException;
-import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.JwsHeader;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.JwtParserBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.lang.Objects;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
+import java.security.Key;
 import java.util.Optional;
 
 /**
@@ -84,8 +90,8 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
 
         if (jwt != null) {
             try {
-                Map<String, Object> claims = validateJwt(jwt, config);
-                forwardHeaders(request, config, jwt, claims);
+                Jwt<? extends Header, ?> token = validateJwt(jwt, config);
+                forwardHeaders(request, config, jwt, (Claims) token.getPayload());
                 stripAuthTokens(request, config);
                 chain.doApply(request);
             } catch (ExpiredJwtException e) {
@@ -112,35 +118,20 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
         }
     }
 
-    private Map<String, Object> validateJwt(String token, JWTPolicyBean config)
+    private Jwt<? extends Header, ?> validateJwt(String token, JWTPolicyBean config)
             throws ExpiredJwtException, PrematureJwtException, MalformedJwtException, SignatureException, InvalidClaimException {
 
-        // check if we have to use jwk(s)
-        if (urlValidator.isValid(config.getSigningKeyString())){
-            if (provider == null){
-                provider = getNewJwksProvider(config.getSigningKeyString());
-            }
-
-            Jwk jwk;
-            try {
-                jwk = provider.get(config.getKid());
-                if (config.getSigningKey() == null || !(config.getSigningKey().equals(jwk.getPublicKey()))) {
-                    config.setSigningKey(jwk.getPublicKey());
-                }
-            } catch (JwkException e) {
-               throw new SignatureException("JWK was not found with kid: " + config.getKid(), e);
-            }
-        }
-
-        JwtParser parser = Jwts.parser()
-                .setSigningKey(config.getSigningKey())
-                .setAllowedClockSkewSeconds(config.getAllowedClockSkew());
+        JwtParserBuilder parserBuilder = Jwts.parser().keyLocator(header -> getKey(config, header)).clockSkewSeconds(config.getAllowedClockSkew());
 
         // Set all claims
         config.getRequiredClaims().stream() // TODO add type variable to allow dates, etc
-            .forEach(requiredClaim -> parser.require(requiredClaim.getClaimName(), requiredClaim.getClaimValue()));
+            .forEach(requiredClaim -> parserBuilder.require(requiredClaim.getClaimName(), requiredClaim.getClaimValue()));
 
-        return parser.parse(token, new ConfigCheckingJwtHandler(config));
+        if (!config.getRequireSigned()) {
+            parserBuilder.unsecured();
+        }
+        return parserBuilder.build().parse(token);
+
     }
 
     private void stripAuthTokens(ApiRequest request, JWTPolicyBean config) {
@@ -150,7 +141,7 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
         }
     }
 
-    private void forwardHeaders(ApiRequest request, JWTPolicyBean config, String rawToken, Map<String, Object> claims) {
+    private void forwardHeaders(ApiRequest request, JWTPolicyBean config, String rawToken, Claims claims) {
         for (ForwardAuthInfo entry : config.getForwardAuthInfo()) {
             // Add the header if we've been able to look it up, else it'll just be empty.
             Object claimValue = ACCESS_TOKEN_QUERY_KEY.equals(entry.getField()) ? rawToken : claims.get(entry.getField());
@@ -168,5 +159,33 @@ public class JWTPolicy extends AbstractMappedPolicy<JWTPolicyBean> {
             e.printStackTrace();
         }
         return new GuavaCachedJwkProvider(http);
+    }
+
+    /**
+     * Retrieves a cryptographic key based on the provided configuration and JWT header.
+     *
+     * @param config the JWT policy configuration
+     * @param header the JWT header
+     * @return the cryptographic key
+     * @throws SignatureException if the JWK was not found with the specified kid
+     */
+    private Key getKey(JWTPolicyBean config, Header header) {
+        // check if we have to use jwk(s)
+        if (urlValidator.isValid(config.getSigningKeyString())) {
+            if (provider == null) {
+                provider = getNewJwksProvider(config.getSigningKeyString());
+            }
+
+            // Determine the Key ID (kid), giving precedence to the config's kid over the header's kid
+            String kidFromHeader = header instanceof JwsHeader ? ((JwsHeader) header).getKeyId() : null;
+            String kid = !StringUtils.isEmpty(config.getKid()) ? config.getKid() : kidFromHeader;
+            try {
+                return provider.get(kid).getPublicKey();
+            } catch (JwkException e) {
+                throw new SignatureException("JWK was not found with kid: " + kid, e);
+            }
+        } else {
+            return config.getSigningKey();
+        }
     }
 }
